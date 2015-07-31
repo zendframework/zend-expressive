@@ -13,7 +13,6 @@ use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Expressive\App;
 use Zend\Diactoros\ServerRequest as Request;
 use Zend\Diactoros\Response as Response;
-use Zend\Stratigility\MiddlewarePipe;
 
 class AppTest extends TestCase
 {
