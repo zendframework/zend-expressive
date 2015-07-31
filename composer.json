@@ -9,8 +9,15 @@
         "psr",
         "psr-7"
     ],
+    "repositories": [
+      {
+        "type": "vcs",
+        "url": "https://github.com/ezimuel/zend-stratigility-dispatch.git"
+      }
+    ],
     "require": {
         "zendframework/zend-stratigility": "^1.1",
+        "zendframework/zend-stratigility-dispatch": "dev-master@dev",
         "psr/http-message": "^1.0"
     },
     "require-dev": {
