@@ -7,7 +7,7 @@
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\Expressive\Router;
+namespace Zend\Stratigility\Dispatch\Router;
 
 interface RouterInterface
 {
@@ -26,18 +26,20 @@ interface RouterInterface
     /**
      * @return string
      */
-    public function getMatchedName();
+    public function getMatchedRouteName();
 
     /**
      * @return mixed
      */
-    public function getMatchedCallable();
+    public function getMatchedAction();
 
     /**
-     * @param string $name
-     * @param string $path
-     * @param callable $callable
-     * @param array $options
+     * @param array $config
      */
-    public function addRoute($name, $path, $callable, $options = []);
+    public function setConfig(array $config);
+
+    /**
+     * @return array
+     */
+    public function getConfig();
 }

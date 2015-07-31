@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
-namespace Zend\Expressive\Router;
+namespace Zend\Stratigility\Dispatch\Router;
 
 use FastRoute\DataGenerator\GroupCountBased as RouteGenerator;
 use FastRoute\Dispatcher\GroupCountBased as Dispatcher;
@@ -120,7 +120,7 @@ class FastRoute implements RouterInterface
     /**
      * @return mixed
      */
-    public function getMatchedCallable()
+    public function getMatchedAction()
     {
         $action = isset($this->routeInfo[1]) ? $this->config['routes'][$this->routeInfo[1]]['action'] : null;
         return $action;

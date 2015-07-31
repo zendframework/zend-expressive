@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
-namespace Zend\Expressive\Router;
+namespace Zend\Stratigility\Dispatch\Router;
 
 use Aura\Router\Generator;
 use Aura\Router\RouteCollection;
@@ -30,14 +30,73 @@ class Aura implements RouterInterface
     protected $route;
 
     /**
+     * Router configuration
+     *
+     * @var array
+     */
+    protected $config;
+
+    /**
      * Construct
      */
     public function __construct()
+    {
+        $this->createRouter();
+    }
+
+    /**
+     * Create the Aura router instance
+     */
+    protected function createRouter()
     {
         $this->router = new Router(
             new RouteCollection(new RouteFactory()),
             new Generator()
         );
+    }
+
+    /**
+     * Set config
+     *
+     * @param array $config
+     */
+    public function setConfig(array $config)
+    {
+        if (!empty($this->config)) {
+            $this->createRouter();
+        }
+        foreach ($config['routes'] as $name => $data) {
+            $this->router->add($name, $data['url']);
+            if (!isset($data['values'])) {
+                $data['values'] = [];
+            }
+            $data['values']['action'] = $data['action'];
+            if (isset($data['methods']) && is_array($data['methods'])) {
+                $methods = implode('|', $data['methods']);
+            } else {
+                $methods = 'GET';
+            }
+            $this->router->setServer(['REQUEST_METHOD' => $methods]);
+            if (!isset($data['tokens'])) {
+                $this->router->add($name, $data['url'])
+                             ->addValues($data['values']);
+            } else {
+                $this->router->add($name, $data['url'])
+                             ->addValues($data['values'])
+                             ->addTokens($data['tokens']);
+            }
+        }
+        $this->config = $config;
+    }
+
+    /**
+     * Get config
+     *
+     * @return array
+     */
+    public function getConfig()
+    {
+        return $this->config;
     }
 
     /**
@@ -62,7 +121,7 @@ class Aura implements RouterInterface
     /**
      * @return string
      */
-    public function getMatchedName()
+    public function getMatchedRouteName()
     {
         return $this->route->name;
     }
@@ -70,26 +129,8 @@ class Aura implements RouterInterface
     /**
      * @return mixed
      */
-    public function getMatchedCallable()
+    public function getMatchedAction()
     {
         return $this->route->params['action'];
-    }
-
-    /**
-     * Add a route
-     *
-     * @param string $name
-     * @param string $path
-     * @param callable $callable
-     * @param array $options
-     */
-    public function addRoute($name, $path, $callable, $options = [])
-    {
-        $values = isset($options['values']) ? $options['values'] : [];
-        $values['action'] = $callable;
-        $tokens = isset($options['tokens']) ? $options['tokens'] : [];
-        $this->router->add($name, $path)
-                     ->addValues($values)
-                     ->addTokens($tokens);
     }
 }
