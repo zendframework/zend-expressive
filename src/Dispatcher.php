@@ -7,19 +7,18 @@
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\Stratigility\Dispatch;
+namespace Zend\Expressive;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Interop\Container\ContainerInterface;
 use Interop\Container\Exception\NotFoundException;
 use Interop\Container\Exception\ContainerException;
-use Zend\Stratigility\Dispatch\Router\RouterInterface;
 
 class Dispatcher
 {
     /**
-     * @var RouterInterface
+     * @var Router\RouterInterface
      */
     protected $router;
 
@@ -31,10 +30,10 @@ class Dispatcher
     /**
      * Constructor
      *
-     * @param RouterInterface $router
+     * @param Router\RouterInterface $router
      * @param ContainerInterface $container
      */
-    public function __construct(RouterInterface $router, ContainerInterface $container = null)
+    public function __construct(Router\RouterInterface $router, ContainerInterface $container = null)
     {
         $this->setRouter($router);
         if (null !== $container) {
@@ -53,16 +52,16 @@ class Dispatcher
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
     {
-        $path  = $request->getUri()->getPath();
-        if (!$this->router->match($path, $request->getServerParams())) {
-            var_dump($path);
+        $path   = $request->getUri()->getPath();
+        $router = $this->getRouter();
+        if (! $router->match($path, $request->getServerParams())) {
             return $next($request, $response);
         }
-        foreach ($this->router->getMatchedParams() as $param => $value) {
+        foreach ($router->getMatchedParams() as $param => $value) {
             $request = $request->withAttribute($param, $value);
         }
-        $action = $this->router->getMatchedAction();
-        if (!$action) {
+        $action = $router->getMatchedAction();
+        if (! $action) {
             throw new Exception\InvalidArgumentException(
                 sprintf("The route %s doesn't have an action to dispatch", $this->router->getMatchedName())
             );
@@ -75,9 +74,10 @@ class Dispatcher
             ]);
         } elseif (is_string($action)) {
             // try to get the action name from the container (if exists)
-            if ($this->container && $this->container->has($action)) {
+            $container = $this->getContainer();
+            if ($container && $container->has($action)) {
                 try {
-                    $call = $this->container->get($action);
+                    $call = $container->get($action);
                     if (is_callable($call)) {
                         return call_user_func_array($call, [
                             $request,
@@ -115,9 +115,9 @@ class Dispatcher
     /**
      * Set Router
      *
-     * @param RouterInterface $router
+     * @param Router\RouterInterface $router
      */
-    public function setRouter(RouterInterface $router)
+    public function setRouter(Router\RouterInterface $router)
     {
         $this->router = $router;
     }
@@ -125,7 +125,7 @@ class Dispatcher
     /**
      * Get Router
      *
-     * @return RouterInterface
+     * @return Router\RouterInterface
      */
     public function getRouter()
     {

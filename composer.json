@@ -17,8 +17,8 @@
     ],
     "require": {
         "zendframework/zend-stratigility": "^1.1",
-        "zendframework/zend-stratigility-dispatch": "dev-master@dev",
-        "psr/http-message": "^1.0"
+        "psr/http-message": "^1.0",
+        "container-interop/container-interop": "^1.1"
     },
     "require-dev": {
         "zendframework/zend-diactoros": "^1.1",

@@ -7,7 +7,7 @@
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\Stratigility\Dispatch\Router;
+namespace Zend\Expressive\Router;
 
 interface RouterInterface
 {
@@ -36,10 +36,5 @@ interface RouterInterface
     /**
      * @param array $config
      */
-    public function setConfig(array $config);
-
-    /**
-     * @return array
-     */
-    public function getConfig();
+    public function addRoute(Route $route);
 }

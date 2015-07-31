@@ -1,5 +1,5 @@
 <?php
-namespace Zend\Expressive;
+namespace Zend\Expressive\Router;
 
 use InvalidArgumentException;
 

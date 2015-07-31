@@ -5,7 +5,6 @@ use BadMethodCallException;
 use DomainException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Zend\Stratigility\Dispatch\Dispatcher;
 use Zend\Stratigility\MiddlewarePipe;
 
 class Application extends MiddlewarePipe
@@ -60,7 +59,9 @@ class Application extends MiddlewarePipe
     {
         if ($this->dispatcherInPipeline) {
             $router = $this->dispatcher->getRouter();
-            $router->injectRoutes($this->routes);
+            array_walk($this->routes, function ($route) use ($router) {
+                $router->addRoute($route);
+            });
         }
         return parent::__invoke($request, $response, $out);
     }
@@ -68,7 +69,7 @@ class Application extends MiddlewarePipe
     /**
      * @param string $method
      * @param array $args
-     * @return Route
+     * @return Router\Route
      * @throws BadMethodCallException if the $method is not in $httpRouteMethods.
      * @throws BadMethodCallException if receiving more or less than 2 arguments.
      */
@@ -92,22 +93,22 @@ class Application extends MiddlewarePipe
     }
 
     /**
-     * @param string|Route $path
+     * @param string|Router\Route $path
      * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
      * @param null|array $methods HTTP method to accept; null indicates any.
-     * @return Route
-     * @throws InvalidArgumentException if $path is not a Route AND middleware is null.
+     * @return Router\Route
+     * @throws InvalidArgumentException if $path is not a Router\Route AND middleware is null.
      */
     public function route($path, $middleware = null, array $methods = null)
     {
-        if (! $path instanceof Route && null === $middleware) {
+        if (! $path instanceof Router\Route && null === $middleware) {
             throw new InvalidArgumentException(sprintf(
                 '%s expects either a route argument, or a combination of a path and middleware arguments',
                 __METHOD__
             ));
         }
 
-        if ($path instanceof Route) {
+        if ($path instanceof Router\Route) {
             $route   = $path;
             $path    = $route->getPath();
             $methods = $route->getAllowedMethods();
@@ -116,7 +117,7 @@ class Application extends MiddlewarePipe
         $this->checkForDuplicateRoute($path, $methods);
 
         if (! isset($route)) {
-            $route = new Route($path, $middleware);
+            $route = new Router\Route($path, $middleware);
             if (is_array($methods)) {
                 $route->setAllowedMethods($methods);
             }
@@ -141,7 +142,7 @@ class Application extends MiddlewarePipe
     private function checkForDuplicateRoute($path, $methods = null)
     {
         if ($methods === null) {
-            $methods = Route::HTTP_METHOD_ANY;
+            $methods = Router\Route::HTTP_METHOD_ANY;
         }
 
         $matches = array_filter($this->routes, function ($route) use ($path, $methods) {
@@ -149,7 +150,7 @@ class Application extends MiddlewarePipe
                 return false;
             }
 
-            if ($methods === Route::HTTP_METHOD_ANY) {
+            if ($methods === Router\Route::HTTP_METHOD_ANY) {
                 return true;
             }
 

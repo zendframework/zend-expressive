@@ -7,7 +7,7 @@ use ReflectionProperty;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequest as Request;
 use Zend\Expressive\Application;
-use Zend\Expressive\Route;
+use Zend\Expressive\Router\Route;
 
 class ApplicationTest extends TestCase
 {
@@ -16,7 +16,7 @@ class ApplicationTest extends TestCase
         $this->noopMiddleware = function ($req, $res, $next) {
         };
 
-        $this->dispatcher = $this->prophesize('Zend\Stratigility\Dispatch\Dispatcher');
+        $this->dispatcher = $this->prophesize('Zend\Expressive\Dispatcher');
     }
 
     public function getApp()
@@ -187,8 +187,10 @@ class ApplicationTest extends TestCase
         $request  = new Request([], [], 'http://example.com/', 'GET', 'php://temp', []);
         $response = new Response();
 
-        $router = $this->prophesize('Zend\Expressive\RouterInterface');
-        $router->injectRoutes($expected)->shouldBeCalled();
+        $router = $this->prophesize('Zend\Expressive\Router\RouterInterface');
+        foreach ($expected as $route) {
+            $router->addRoute($route)->shouldBeCalled();
+        }
 
         $this->dispatcher->getRouter()->willReturn($router->reveal());
         $this->dispatcher->__invoke(

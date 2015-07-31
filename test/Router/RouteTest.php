@@ -1,8 +1,8 @@
 <?php
-namespace ZendTest\Expressive;
+namespace ZendTest\Expressive\Router;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Expressive\Route;
+use Zend\Expressive\Router\Route;
 
 class RouteTest extends TestCase
 {
