@@ -111,7 +111,7 @@ class App
                     );
                 }
             }
-            // try to instanciate the class name (if exists) and invoke it (if invokables)
+            // try to instantiate the class name (if exists) and invoke it (if invokables)
             if (class_exists($callable)) {
                 $call = new $callable;
                 if (is_callable($call)) {
