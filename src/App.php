@@ -112,15 +112,12 @@ class App
                 }
             }
             // try to instanciate the class name (if exists) and invoke it (if invokables)
-            if (class_exists($callable)) {
-                $call = new $callable;
-                if (is_callable($call)) {
-                    return call_user_func_array($call, [
-                        $request,
-                        $response,
-                        $next,
-                    ]);
-                }
+            if (class_exists($callable) && is_callable(($call = new $callable))) {
+                return call_user_func_array($call, [
+                    $request,
+                    $response,
+                    $next,
+                ]);
             }
         }
         throw new Exception\InvalidArgumentException(
