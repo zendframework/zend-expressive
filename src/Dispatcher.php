@@ -18,14 +18,14 @@ use Interop\Container\Exception\ContainerException;
 class Dispatcher
 {
     /**
+     * @var null|ContainerInterface
+     */
+    protected $container;
+
+    /**
      * @var Router\RouterInterface
      */
     protected $router;
-
-    /**
-     * @var ContainerInterface
-     */
-    protected $container;
 
     /**
      * Constructor
@@ -35,10 +35,8 @@ class Dispatcher
      */
     public function __construct(Router\RouterInterface $router, ContainerInterface $container = null)
     {
-        $this->setRouter($router);
-        if (null !== $container) {
-            $this->setContainer($container);
-        }
+        $this->router    = $router;
+        $this->container = $container;
     }
 
     /**
@@ -47,79 +45,63 @@ class Dispatcher
      * @param  ServerRequestInterface $request
      * @param  ResponseInterface $response
      * @param  callable $next
-     * @throws Exception\InvalidArgumentException
-     * @return callable
+     * @return ResponseInterface
+     * @throws Exception\InvalidArgumentException if the route result does not contain middleware
+     * @throws Exception\InvalidArgumentException if unable to retrieve middleware from the container
+     * @throws Exception\InvalidArgumentException if unable to resolve middleware to a callable
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
     {
         $path   = $request->getUri()->getPath();
         $router = $this->getRouter();
-        if (! $router->match($path, $request->getServerParams())) {
+        $result = $router->match($request);
+
+        if ($result->isFailure()) {
+            if ($result->isMethodFailure()) {
+                $response = $response->withStatus(405)
+                    ->withHeader('Allow', implode(',', $result->getAllowedMethods()));
+            }
             return $next($request, $response);
         }
-        foreach ($router->getMatchedParams() as $param => $value) {
+
+        foreach ($result->getMatchedParams() as $param => $value) {
             $request = $request->withAttribute($param, $value);
         }
-        $action = $router->getMatchedAction();
-        if (! $action) {
+
+        $middleware = $router->getMatchedMiddleware();
+        if (! $middleware) {
+            throw new Exception\InvalidArgumentException(sprintf(
+                'The route %s does not have a middleware to dispatch',
+                $result->getMatchedRouteName()
+            ));
+        }
+
+        if (is_callable($middleware)) {
+            return $middleware($request, $response, $next);
+        }
+
+        if (! is_string($middleware)) {
             throw new Exception\InvalidArgumentException(
-                sprintf("The route %s doesn't have an action to dispatch", $this->router->getMatchedName())
+                sprintf("The action class specified %s is not invokable", $action)
             );
         }
-        if (is_callable($action)) {
-            return call_user_func_array($action, [
-                $request,
-                $response,
-                $next,
-            ]);
-        } elseif (is_string($action)) {
-            // try to get the action name from the container (if exists)
-            $container = $this->getContainer();
-            if ($container && $container->has($action)) {
-                try {
-                    $call = $container->get($action);
-                    if (is_callable($call)) {
-                        return call_user_func_array($call, [
-                            $request,
-                            $response,
-                            $next,
-                        ]);
-                    }
-                } catch (ContainerException $e) {
-                    throw new Exception\InvalidArgumentException(
-                        sprintf(
-                            "The action class %s, from the container, has thrown the exception: %s",
-                            $action,
-                            $e->getMessage()
-                        )
-                    );
-                }
-            }
-            // try to instanciate the class name (if exists) and invoke it (if invokables)
-            if (class_exists($action)) {
-                $call = new $action;
-                if (is_callable($call)) {
-                    return call_user_func_array($call, [
-                        $request,
-                        $response,
-                        $next,
-                    ]);
-                }
-            }
-        }
-        throw new Exception\InvalidArgumentException(
-            sprintf("The action class specified %s is not invokable", $action)
-        );
-    }
 
-    /**
-     * Set Router
-     *
-     * @param Router\RouterInterface $router
-     */
-    public function setRouter(Router\RouterInterface $router)
-    {
-        $this->router = $router;
+        // try to get the action name from the container (if exists)
+        $callable = $this->marshalMiddlewareFromContainer($middleware);
+        if (is_callable($callable)) {
+            return $callable($request, $response, $next);
+        }
+
+        // try to instantiate the middleware directly, if possible
+        $callable = $this->marshalInvokableMiddleware($middleware);
+        if (! is_callable($callable)) {
+            throw new Exception\InvalidArgumentException(sprintf(
+                'Unable to resolve middleware "%s" to a callable',
+                $middleware
+            ));
+        }
+
+        return $callable($request, $response, $next);
     }
 
     /**
@@ -133,16 +115,6 @@ class Dispatcher
     }
 
     /**
-     * Set Container
-     *
-     * @param ContainerInterface $container
-     */
-    public function setContainer(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
-
-    /**
      * Get Container
      *
      * @return ContainerInterface
@@ -150,5 +122,46 @@ class Dispatcher
     public function getContainer()
     {
         return $this->container;
+    }
+
+    /**
+     * Attempt to retrieve the given middleware from the container.
+     *
+     * @param string $middleware
+     * @return string|callable Returns $middleware intact on failure, and the
+     *     middleware instance on success.
+     * @throws Exception\InvalidArgumentException if a container exception occurs.
+     */
+    private function marshalMiddlewareFromContainer($middleware)
+    {
+        $container = $this->getContainer();
+        if (! $container || ! $container->has($middleware)) {
+            return $middleware;
+        }
+
+        try {
+            return $container->get($middleware);
+        } catch (ContainerException $e) {
+            throw new Exception\InvalidArgumentException(sprintf(
+                'Unable to retrieve middleware "%s" from the container',
+                $middleware
+            ), $e->getCode(), $e);
+        }
+    }
+
+    /**
+     * Attempt to instantiate the given middleware.
+     *
+     * @param string $middleware
+     * @return string|callable Returns $middleware intact on failure, and the
+     *     middleware instance on success.
+     */
+    private function marshalInvokableMiddleware($middleware)
+    {
+        if (! class_exists($middleware)) {
+            return $middleware;
+        }
+
+        return new $middleware();
     }
 }
