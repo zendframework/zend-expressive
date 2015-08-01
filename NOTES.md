@@ -474,7 +474,14 @@ $server->listen();
   $app->setEmitter($emitter);
   ```
 
-  This approach allows more flexibility than using `Server::listen()`.
+  Alternately, a stack could be used instead; the first to return a known
+  response (e.g., `EmitterStack::IS_COMPLETE`) would short-circuit so that the
+  next emitters in the stack do not trigger. This would allow for emitters that
+  test on the composed stream, for instance. By implementing as a stack, it
+  could register the SapiEmitter as the default. Stack exhaustion assumes the
+  response was emitted.
+
+  Both approaches allow more flexibility than using `Server::listen()`.
 
   Because an `Application` is simply middleware, the emitter is _not_ required
   for all paths, only when using `run()`. `Application::create()` _should_
