@@ -15,11 +15,6 @@ class Application extends MiddlewarePipe
     private $dispatcher;
 
     /**
-     * @var boolean Whether or not the dispatcher has been added to the pipeline.
-     */
-    private $dispatcherInPipeline = false;
-
-    /**
      * @var string[] HTTP methods that can be used for routing
      */
     private $httpRouteMethods = [
@@ -42,6 +37,7 @@ class Application extends MiddlewarePipe
     {
         parent::__construct();
         $this->dispatcher = $dispatcher;
+        $this->pipe($dispatcher);
     }
 
     /**
@@ -57,12 +53,11 @@ class Application extends MiddlewarePipe
      */
     public function __invoke(Request $request, Response $response, callable $out = null)
     {
-        if ($this->dispatcherInPipeline) {
-            $router = $this->dispatcher->getRouter();
-            array_walk($this->routes, function ($route) use ($router) {
-                $router->addRoute($route);
-            });
-        }
+        $router = $this->dispatcher->getRouter();
+        array_walk($this->routes, function ($route) use ($router) {
+            $router->addRoute($route);
+        });
+
         return parent::__invoke($request, $response, $out);
     }
 
@@ -124,7 +119,6 @@ class Application extends MiddlewarePipe
         }
 
         $this->routes[] = $route;
-        $this->injectDispatcher();
         return $route;
     }
 
@@ -164,19 +158,5 @@ class Application extends MiddlewarePipe
                 'Duplicate route detected; same path, and one or more HTTP methods intersect'
             );
         }
-    }
-
-    /**
-     * Inject the dispatcher into the pipeline.
-     *
-     * But only if it hasn't been already.
-     */
-    private function injectDispatcher()
-    {
-        if ($this->dispatcherInPipeline) {
-            return;
-        }
-        $this->pipe($this->dispatcher);
-        $this->dispatcherInPipeline = true;
     }
 }

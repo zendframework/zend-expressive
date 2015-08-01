@@ -138,7 +138,7 @@ class ApplicationTest extends TestCase
         });
     }
 
-    public function testDispatcherIsNotPipedPriorToInvocation()
+    public function testDispatcherIsPipedAtInstantiation()
     {
         $app = $this->getApp();
         $r = new ReflectionProperty($app, 'dispatcher');
@@ -148,31 +148,12 @@ class ApplicationTest extends TestCase
         $r = new ReflectionProperty($app, 'pipeline');
         $r->setAccessible(true);
         $pipeline = $r->getValue($app);
-        $middleware = iterator_to_array($pipeline);
-        $this->assertNotContains($dispatcher, $middleware);
-        return $app;
-    }
-
-    /**
-     * @depends testDispatcherIsNotPipedPriorToInvocation
-     */
-    public function testDispatcherIsPipedAfterFirstRouteCreated($app)
-    {
-        $route = $app->get('/foo', $this->noopMiddleware);
-
-        $r = new ReflectionProperty($app, 'dispatcher');
-        $r->setAccessible(true);
-        $dispatcher = $r->getValue($app);
-
-        $r = new ReflectionProperty($app, 'pipeline');
-        $r->setAccessible(true);
-        $pipeline = $r->getValue($app);
 
         $this->assertCount(1, $pipeline);
-
-        $test = $pipeline->dequeue();
-        $this->assertInstanceOf('Zend\Stratigility\Route', $test);
-        $this->assertSame($dispatcher, $test->handler);
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $test  = $route->handler;
+        $this->assertSame($dispatcher, $test);
     }
 
     public function testInvokeInjectsRoutesIntoRouterComposedByDispatcher()
