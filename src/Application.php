@@ -108,10 +108,8 @@ class Application extends MiddlewarePipe
         $this->checkForDuplicateRoute($path, $methods);
 
         if (! isset($route)) {
-            $route = new Router\Route($path, $middleware);
-            if (is_array($methods)) {
-                $route->setAllowedMethods($methods);
-            }
+            $methods = ($methods === null) ? Router\Route::HTTP_METHOD_ANY : $methods;
+            $route   = new Router\Route($path, $middleware, $methods);
         }
 
         $this->routes[] = $route;

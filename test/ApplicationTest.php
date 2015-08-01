@@ -116,8 +116,7 @@ class ApplicationTest extends TestCase
     public function testCreatingHttpRouteMethodWithExistingPathButDifferentMethodCreatesNewRouteInstance()
     {
         $app = $this->getApp();
-        $route = $app->route('/foo', $this->noopMiddleware);
-        $route->setAllowedMethods([]);
+        $route = $app->route('/foo', $this->noopMiddleware, []);
 
         $middleware = function ($req, $res, $next) {
         };
@@ -158,10 +157,8 @@ class ApplicationTest extends TestCase
 
     public function testInvokeInjectsRoutesIntoRouterComposedByDispatcher()
     {
-        $get  = new Route('/foo', $this->noopMiddleware);
-        $get->setAllowedMethods(['GET']);
-        $post = new Route('/foo', clone $this->noopMiddleware);
-        $post->setAllowedMethods(['POST']);
+        $get  = new Route('/foo', $this->noopMiddleware, ['GET']);
+        $post = new Route('/foo', clone $this->noopMiddleware, ['POST']);
 
         $expected = [ $get, $post ];
 
@@ -195,10 +192,8 @@ class ApplicationTest extends TestCase
 
     public function testCallingInvokeMultipleTimesWillNotReinjectTheSameRoute()
     {
-        $get  = new Route('/foo', $this->noopMiddleware);
-        $get->setAllowedMethods(['GET']);
-        $post = new Route('/foo', clone $this->noopMiddleware);
-        $post->setAllowedMethods(['POST']);
+        $get  = new Route('/foo', $this->noopMiddleware, ['GET']);
+        $post = new Route('/foo', clone $this->noopMiddleware, ['POST']);
 
         $expected = [ $get, $post ];
 
@@ -210,8 +205,7 @@ class ApplicationTest extends TestCase
             $router->addRoute($route)->shouldBeCalledTimes(1);
         }
 
-        $put = new Route('/foo', clone $this->noopMiddleware);
-        $put->setAllowedMethods(['PUT']);
+        $put = new Route('/foo', clone $this->noopMiddleware, ['PUT']);
         $router->addRoute($put)->shouldBeCalledTimes(1);
 
         $this->dispatcher->getRouter()->willReturn($router->reveal());

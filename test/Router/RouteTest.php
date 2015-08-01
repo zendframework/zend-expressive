@@ -39,16 +39,14 @@ class RouteTest extends TestCase
     public function testRouteAllowsSpecifyingHttpMethods()
     {
         $methods = ['GET', 'POST'];
-        $route = new Route('/foo', $this->noopMiddleware);
-        $route->setAllowedMethods($methods);
+        $route = new Route('/foo', $this->noopMiddleware, $methods);
         $this->assertSame($methods, $route->getAllowedMethods($methods));
     }
 
     public function testRouteCanMatchMethod()
     {
         $methods = ['GET', 'POST'];
-        $route = new Route('/foo', $this->noopMiddleware);
-        $route->setAllowedMethods($methods);
+        $route = new Route('/foo', $this->noopMiddleware, $methods);
         $this->assertTrue($route->allowsMethod('GET'));
         $this->assertTrue($route->allowsMethod('POST'));
         $this->assertFalse($route->allowsMethod('PATCH'));
@@ -57,15 +55,13 @@ class RouteTest extends TestCase
 
     public function testRouteAlwaysAllowsHeadMethod()
     {
-        $route = new Route('/foo', $this->noopMiddleware);
-        $route->setAllowedMethods([]);
+        $route = new Route('/foo', $this->noopMiddleware, []);
         $this->assertTrue($route->allowsMethod('HEAD'));
     }
 
     public function testRouteAlwaysAllowsOptionsMethod()
     {
-        $route = new Route('/foo', $this->noopMiddleware);
-        $route->setAllowedMethods([]);
+        $route = new Route('/foo', $this->noopMiddleware, []);
         $this->assertTrue($route->allowsMethod('OPTIONS'));
     }
 

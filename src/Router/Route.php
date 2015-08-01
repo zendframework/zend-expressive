@@ -37,10 +37,12 @@ class Route
     /**
      * @param string $path Path to match.
      * @param string|callable $middleware Middleware to use when this route is matched.
+     * @param int|array Allowed HTTP methods; defaults to HTTP_METHOD_ANY.
      * @throws InvalidArgumentException for invalid path type.
      * @throws InvalidArgumentException for invalid middleware type.
+     * @throws InvalidArgumentException for any invalid HTTP method names.
      */
-    public function __construct($path, $middleware)
+    public function __construct($path, $middleware, $methods = self::HTTP_METHOD_ANY)
     {
         if (! is_string($path)) {
             throw new InvalidArgumentException('Invalid path; must be a string');
@@ -50,8 +52,16 @@ class Route
             throw new InvalidArgumentException('Invalid middleware; must be callable or a service name');
         }
 
-        $this->path = $path;
+        if ($methods !== self::HTTP_METHOD_ANY && ! is_array($methods)) {
+            throw new InvalidArgumentException(sprintf(
+                'Invalid HTTP methods; must be an array or %s::HTTP_METHOD_ANY',
+                __CLASS__
+            ));
+        }
+
+        $this->path       = $path;
         $this->middleware = $middleware;
+        $this->methods    = is_array($methods) ? $this->validateHttpMethods($methods) : $methods;
     }
 
     /**
@@ -79,46 +89,11 @@ class Route
     }
 
     /**
-     * @param int|string[] HTTP_METHOD_ANY or an array of HTTP method names.
-     * @throws InvalidArgumentException for any invalid method names.
+     * Indicate whether the specified method is allowed by the route.
+     *
+     * @param string $method HTTP method to test.
+     * @return bool
      */
-    public function setAllowedMethods($methods)
-    {
-        if ($methods !== self::HTTP_METHOD_ANY
-            && ! is_array($methods)
-        ) {
-            throw new InvalidArgumentException(sprintf(
-                'Invalid methods provided; must be an array or %s::HTTP_METHOD_ANY',
-                __CLASS__
-            ));
-        }
-
-        if ($methods === self::HTTP_METHOD_ANY) {
-            $this->methods = $methods;
-            return;
-        }
-
-        if (false === array_reduce($methods, function ($valid, $method) {
-            if (false === $valid) {
-                return false;
-            }
-
-            if (! is_string($method)) {
-                return false;
-            }
-
-            if (! preg_match('/^[!#$%&\'*+.^_`\|~0-9a-z-]+$/i', $method)) {
-                return false;
-            }
-
-            return $valid;
-        }, true)) {
-            throw new InvalidArgumentException('One or more HTTP methods were invalid');
-        }
-
-        $this->methods = array_map('strtoupper', $methods);
-    }
-
     public function allowsMethod($method)
     {
         $method = strtoupper($method);
@@ -165,5 +140,37 @@ class Route
     public function inject()
     {
         $this->injected = true;
+    }
+
+    /**
+     * Validate the provided HTTP method names.
+     *
+     * Validates, and then normalizes to upper case.
+     *
+     * @param string[] An array of HTTP method names.
+     * @return string[]
+     * @throws InvalidArgumentException for any invalid method names.
+     */
+    private function validateHttpMethods(array $methods)
+    {
+        if (false === array_reduce($methods, function ($valid, $method) {
+            if (false === $valid) {
+                return false;
+            }
+
+            if (! is_string($method)) {
+                return false;
+            }
+
+            if (! preg_match('/^[!#$%&\'*+.^_`\|~0-9a-z-]+$/i', $method)) {
+                return false;
+            }
+
+            return $valid;
+        }, true)) {
+            throw new InvalidArgumentException('One or more HTTP methods were invalid');
+        }
+
+        return array_map('strtoupper', $methods);
     }
 }
