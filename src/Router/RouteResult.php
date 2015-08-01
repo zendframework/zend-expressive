@@ -108,7 +108,7 @@ class RouteResult
             return false;
         }
 
-        return $this->matched;
+        return $this->matchedMiddleware;
     }
 
     /**
@@ -130,7 +130,7 @@ class RouteResult
      */
     public function isFailure()
     {
-        return (! $this>success);
+        return (! $this->success);
     }
 
     /**
@@ -151,22 +151,15 @@ class RouteResult
      * Retrieve the allowed methods for the route failure.
      *
      * @return string[] HTTP methods allowed
-     * @throws RuntimeException if the result represents routing success.
-     * @throws RuntimeException if the failures was due to inability to match a path.
      */
     public function getAllowedMethods()
     {
         if ($this->isSuccess()) {
-            throw new RuntimeException(sprintf(
-                '%s can only be called for route failure results',
-                __METHOD__
-            ));
+            return [];
         }
 
         if (null === $this->allowedMethods) {
-            throw new RuntimeException(
-                'Route failure was due to inability to match a path'
-            );
+            return [];
         }
 
         return $this->allowedMethods;

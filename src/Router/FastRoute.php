@@ -17,29 +17,36 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class FastRoute implements RouterInterface
 {
     /**
+     * @var callable A factory callback that can return a dispatcher.
+     */
+    private $dispatcherCallback;
+
+    /**
      * FastRoute router
      *
      * @var FastRoute\RouteCollector
      */
-    protected $router;
+    private $router;
 
     /**
      * All attached routes as Route instances
      *
      * @var Route[]
      */
-    protected $routes;
+    private $routes;
 
     /**
-     * Construct
+     * @param null|RouteCollector $router If not provided, a default implementation will be used.
+     * @param null|callable $dispatcherFactory
      */
-    public function __construct(RouteCollector $router = null)
+    public function __construct(RouteCollector $router = null, callable $dispatcherFactory = null)
     {
         if (null === $router) {
             $router = $this->createRouter();
         }
 
         $this->router = $router;
+        $this->dispatcherCallback = $dispatcherFactory;
     }
 
     /**
@@ -47,7 +54,7 @@ class FastRoute implements RouterInterface
      *
      * @return RouteCollector
      */
-    protected function createRouter()
+    private function createRouter()
     {
         return new RouteCollector(new RouteParser, new RouteGenerator);
     }
@@ -63,11 +70,14 @@ class FastRoute implements RouterInterface
      */
     public function addRoute(Route $route)
     {
-        $methods = $route->getMethods();
-        if (! is_array($methods)) {
-            $methods = ($methods === Route::HTTP_METHOD_ANY)
-                ? ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS', 'TRACE']
-                : ['GET', 'HEAD', 'OPTIONS'];
+        $methods = $route->getAllowedMethods();
+
+        if ($methods === Route::HTTP_METHOD_ANY) {
+            $methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS', 'TRACE'];
+        }
+
+        if (empty($methods)) {
+            $methods = ['GET', 'HEAD', 'OPTIONS'];
         }
 
         $this->router->addRoute($methods, $route->getPath(), $route->getPath());
@@ -82,7 +92,7 @@ class FastRoute implements RouterInterface
     {
         $path       = $request->getUri()->getPath();
         $method     = $request->getMethod();
-        $dispatcher = new Dispatcher($this->router->getData());
+        $dispatcher = $this->getDispatcher($this->router->getData());
         $result     = $dispatcher->dispatch($method, $path);
 
         if ($result[0] != Dispatcher::FOUND) {
@@ -139,5 +149,37 @@ class FastRoute implements RouterInterface
             $middleware,
             $result[2]
         );
+    }
+
+    /**
+     * Retrieve the dispatcher instance.
+     *
+     * Uses the callable factory in $dispatcherCallback, passing it $data
+     * (which should be derived from the router's getData() method); this
+     * approach is done to allow testing against the dispatcher.
+     *
+     * @param  array|object $data Data from RouteCollection::getData()
+     * @return Dispatcher
+     */
+    private function getDispatcher($data)
+    {
+        if (! $this->dispatcherCallback) {
+            $this->dispatcherCallback = $this->createDispatcherCallback();
+        }
+
+        $factory = $this->dispatcherCallback;
+        return $factory($data);
+    }
+
+    /**
+     * Return a default implemententation of a callback that can return a Dispatcher.
+     *
+     * @return callable
+     */
+    private function createDispatcherCallback()
+    {
+        return function ($data) {
+            return new Dispatcher($data);
+        };
     }
 }
