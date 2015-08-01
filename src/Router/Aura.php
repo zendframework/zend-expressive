@@ -56,47 +56,34 @@ class Aura implements RouterInterface
     }
 
     /**
-     * Set config
+     * Add a route to the underlying router.
      *
-     * @param array $config
+     * Adds the route to the Aura.Router, using the path as the name, and the
+     * "action" value equivalent to the middleware in the Route instance.
+     *
+     * If tokens or values are present in the options array, they are also
+     * added to the router.
+     *
+     * @param Route $route
      */
-    public function setConfig(array $config)
+    public function addRoute(Route $route)
     {
-        if (!empty($this->config)) {
-            $this->createRouter();
-        }
-        foreach ($config['routes'] as $name => $data) {
-            $this->router->add($name, $data['url']);
-            if (!isset($data['values'])) {
-                $data['values'] = [];
-            }
-            $data['values']['action'] = $data['action'];
-            if (isset($data['methods']) && is_array($data['methods'])) {
-                $methods = implode('|', $data['methods']);
-            } else {
-                $methods = 'GET';
-            }
-            $this->router->setServer(['REQUEST_METHOD' => $methods]);
-            if (!isset($data['tokens'])) {
-                $this->router->add($name, $data['url'])
-                             ->addValues($data['values']);
-            } else {
-                $this->router->add($name, $data['url'])
-                             ->addValues($data['values'])
-                             ->addTokens($data['tokens']);
-            }
-        }
-        $this->config = $config;
-    }
+        $auraRoute = $this->router->add(
+            $route->getPath(),
+            $route->getPath(),
+            $route->getMiddleware()
+        );
 
-    /**
-     * Get config
-     *
-     * @return array
-     */
-    public function getConfig()
-    {
-        return $this->config;
+        foreach ($route->getOptions() as $key => $value) {
+            switch ($key) {
+                case 'tokens':
+                    $auraRoute->addTokens($value);
+                    break;
+                case 'values':
+                    $auraRoute->addValues($value);
+                    break;
+            }
+        }
     }
 
     /**
@@ -129,7 +116,7 @@ class Aura implements RouterInterface
     /**
      * @return mixed
      */
-    public function getMatchedAction()
+    public function getMatchedMiddleware()
     {
         return $this->route->params['action'];
     }

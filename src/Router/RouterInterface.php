@@ -12,6 +12,11 @@ namespace Zend\Expressive\Router;
 interface RouterInterface
 {
     /**
+     * @param array $config
+     */
+    public function addRoute(Route $route);
+
+    /**
      * @param  string $patch
      * @param  array $params
      * @return boolean
@@ -32,9 +37,4 @@ interface RouterInterface
      * @return mixed
      */
     public function getMatchedAction();
-
-    /**
-     * @param array $config
-     */
-    public function addRoute(Route $route);
 }
