@@ -6,7 +6,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\Diactoros\Server;
-use Zend\Stratigility\MiddlewareInterface;
 use Router\RouterInterface;
 
 class App
