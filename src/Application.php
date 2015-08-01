@@ -53,15 +53,7 @@ class Application extends MiddlewarePipe
      */
     public function __invoke(Request $request, Response $response, callable $out = null)
     {
-        $router = $this->dispatcher->getRouter();
-        array_walk($this->routes, function ($route) use ($router) {
-            if ($route->isInjected()) {
-                return;
-            }
-            $router->addRoute($route);
-            $route->inject();
-        });
-
+        $this->injectRoutes();
         return parent::__invoke($request, $response, $out);
     }
 
@@ -162,5 +154,20 @@ class Application extends MiddlewarePipe
                 'Duplicate route detected; same path, and one or more HTTP methods intersect'
             );
         }
+    }
+
+    /**
+     * Inject routes into the router associated with the dispatcher.
+     */
+    private function injectRoutes()
+    {
+        $router = $this->dispatcher->getRouter();
+        array_walk($this->routes, function ($route) use ($router) {
+            if ($route->isInjected()) {
+                return;
+            }
+            $router->addRoute($route);
+            $route->inject();
+        });
     }
 }

@@ -414,3 +414,8 @@ $server->listen();
   authorization, content negotiation, validation, etc. Likely we can do this via
   delegator factories, but what if we could specify decorators during route
   creation?
+
+- Should Route instances allow manipulating HTTP methods *after the fact*? This
+  will likely lead to wierd edge-cases where HTTP methods were added that
+  overlap methods on other routes with the same path. I think they MUST be
+  required at instantiation and remain immutable.
