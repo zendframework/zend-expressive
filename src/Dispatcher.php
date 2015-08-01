@@ -9,11 +9,10 @@
 
 namespace Zend\Expressive;
 
+use Interop\Container\ContainerInterface;
+use Interop\Container\Exception\ContainerException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Interop\Container\ContainerInterface;
-use Interop\Container\Exception\NotFoundException;
-use Interop\Container\Exception\ContainerException;
 
 class Dispatcher
 {
@@ -52,7 +51,6 @@ class Dispatcher
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
     {
-        $path   = $request->getUri()->getPath();
         $router = $this->getRouter();
         $result = $router->match($request);
 
@@ -68,9 +66,9 @@ class Dispatcher
             $request = $request->withAttribute($param, $value);
         }
 
-        $middleware = $router->getMatchedMiddleware();
+        $middleware = $result->getMatchedMiddleware();
         if (! $middleware) {
-            throw new Exception\InvalidArgumentException(sprintf(
+            throw new Exception\InvalidMiddlewareException(sprintf(
                 'The route %s does not have a middleware to dispatch',
                 $result->getMatchedRouteName()
             ));
@@ -81,7 +79,7 @@ class Dispatcher
         }
 
         if (! is_string($middleware)) {
-            throw new Exception\InvalidArgumentException(
+            throw new Exception\InvalidMiddlewareException(
                 sprintf("The action class specified %s is not invokable", $action)
             );
         }
@@ -95,7 +93,7 @@ class Dispatcher
         // try to instantiate the middleware directly, if possible
         $callable = $this->marshalInvokableMiddleware($middleware);
         if (! is_callable($callable)) {
-            throw new Exception\InvalidArgumentException(sprintf(
+            throw new Exception\InvalidMiddlewareException(sprintf(
                 'Unable to resolve middleware "%s" to a callable',
                 $middleware
             ));
@@ -142,7 +140,7 @@ class Dispatcher
         try {
             return $container->get($middleware);
         } catch (ContainerException $e) {
-            throw new Exception\InvalidArgumentException(sprintf(
+            throw new Exception\InvalidMiddlewareException(sprintf(
                 'Unable to retrieve middleware "%s" from the container',
                 $middleware
             ), $e->getCode(), $e);
