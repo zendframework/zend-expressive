@@ -55,7 +55,11 @@ class Application extends MiddlewarePipe
     {
         $router = $this->dispatcher->getRouter();
         array_walk($this->routes, function ($route) use ($router) {
+            if ($route->isInjected()) {
+                return;
+            }
             $router->addRoute($route);
+            $route->inject();
         });
 
         return parent::__invoke($request, $response, $out);

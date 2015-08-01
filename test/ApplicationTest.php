@@ -192,4 +192,48 @@ class ApplicationTest extends TestCase
         };
         $app($request, $response, $finalHandler);
     }
+
+    public function testCallingInvokeMultipleTimesWillNotReinjectTheSameRoute()
+    {
+        $get  = new Route('/foo', $this->noopMiddleware);
+        $get->setAllowedMethods(['GET']);
+        $post = new Route('/foo', clone $this->noopMiddleware);
+        $post->setAllowedMethods(['POST']);
+
+        $expected = [ $get, $post ];
+
+        $request  = new Request([], [], 'http://example.com/', 'GET', 'php://temp', []);
+        $response = new Response();
+
+        $router = $this->prophesize('Zend\Expressive\Router\RouterInterface');
+        foreach ($expected as $route) {
+            $router->addRoute($route)->shouldBeCalledTimes(1);
+        }
+
+        $put = new Route('/foo', clone $this->noopMiddleware);
+        $put->setAllowedMethods(['PUT']);
+        $router->addRoute($put)->shouldBeCalledTimes(1);
+
+        $this->dispatcher->getRouter()->willReturn($router->reveal());
+        $this->dispatcher->__invoke(
+            Argument::type('Psr\Http\Message\ServerRequestInterface'),
+            Argument::type('Psr\Http\Message\ResponseInterface'),
+            Argument::type('callable')
+        )->willReturn($response);
+
+        $app = $this->getApp();
+        $app->route($get);
+        $app->route($post);
+
+        // invoke and test
+        // Will need mocks for request, response
+        // Will need a final handler
+        $finalHandler = function ($req, $res) {
+            return $res;
+        };
+        $app($request, $response, $finalHandler);
+
+        $app->route($put);
+        $app($request, $response, $finalHandler);
+    }
 }

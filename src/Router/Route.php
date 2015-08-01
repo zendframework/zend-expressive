@@ -8,6 +8,13 @@ class Route
     const HTTP_METHOD_ANY = 0xff;
 
     /**
+     * Whether or not the route has already been injected into a router.
+     *
+     * @var bool
+     */
+    private $injected = false;
+
+    /**
      * @var int|string[] HTTP methods allowed with this route.
      */
     private $methods = self::HTTP_METHOD_ANY;
@@ -140,5 +147,23 @@ class Route
     public function getOptions()
     {
         return $this->options;
+    }
+
+    /**
+     * Is the route already injected in the router?
+     *
+     * @return bool
+     */
+    public function isInjected()
+    {
+        return $this->injected;
+    }
+
+    /**
+     * Flag the route as injected into a router.
+     */
+    public function inject()
+    {
+        $this->injected = true;
     }
 }
