@@ -1,65 +1,63 @@
 <?php
 namespace ZendTest\Expressive\Router;
 
-use FastRoute\Dispatcher\GroupCountBased as Dispatcher;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Expressive\Router\FastRoute;
+use Zend\Expressive\Router\Aura as AuraRouter;
 use Zend\Expressive\Router\Route;
 
-class FastRouteTest extends TestCase
+class AuraRouteTest extends TestCase
 {
     public function setUp()
     {
-        $this->fastRouter = $this->prophesize('FastRoute\RouteCollector');
-        $this->dispatcher = $this->prophesize('FastRoute\Dispatcher\GroupCountBased');
-        $this->dispatchCallback = function ($data) {
-            return $this->dispatcher->reveal();
-        };
+        $this->auraRouter = $this->prophesize('Aura\Router\Router');
+        $this->auraRoute  = $this->prophesize('Aura\Router\Route');
     }
 
     public function getRouter()
     {
-        return new FastRoute(
-            $this->fastRouter->reveal(),
-            $this->dispatchCallback
-        );
+        return new AuraRouter($this->auraRouter->reveal());
     }
 
-    public function testAddRouteProxiesToFastRouteAddRouteMethod()
+    public function testAddingRouteProxiesToAuraRouter()
     {
         $route = new Route('/foo', 'foo', ['GET']);
-        $this->fastRouter->addRoute(['GET'], '/foo', '/foo')->shouldBeCalled();
+
+        $this->auraRoute->setServer([
+            'REQUEST_METHOD' => 'GET',
+        ])->shouldBeCalled();
+        $this->auraRouter->add('/foo', '/foo', 'foo')->willReturn($this->auraRoute->reveal());
 
         $router = $this->getRouter();
         $router->addRoute($route);
     }
 
-    public function testIfRouteSpecifiesAnyHttpMethodFastRouteIsPassedHardCodedListOfMethods()
+    public function testCanSpecifyAuraRouteTokensViaRouteOptions()
     {
-        $route = new Route('/foo', 'foo');
-        $this->fastRouter->addRoute([
-            'GET',
-            'POST',
-            'PUT',
-            'PATCH',
-            'DELETE',
-            'HEAD',
-            'OPTIONS',
-            'TRACE'
-        ], '/foo', '/foo')->shouldBeCalled();
+        $route = new Route('/foo', 'foo', ['GET']);
+        $route->setOptions(['tokens' => ['foo' => 'bar']]);
+
+        $this->auraRoute->setServer([
+            'REQUEST_METHOD' => 'GET',
+        ])->shouldBeCalled();
+        $this->auraRoute->addTokens($route->getOptions()['tokens'])->shouldBeCalled();
+
+        $this->auraRouter->add('/foo', '/foo', 'foo')->willReturn($this->auraRoute->reveal());
 
         $router = $this->getRouter();
         $router->addRoute($route);
     }
 
-    public function testIfRouteSpecifiesNoHttpMethodsFastRouteIsPassedHardCodedListOfMethods()
+    public function testCanSpecifyAuraRouteValuesViaRouteOptions()
     {
-        $route = new Route('/foo', 'foo', []);
-        $this->fastRouter->addRoute([
-            'GET',
-            'HEAD',
-            'OPTIONS',
-        ], '/foo', '/foo')->shouldBeCalled();
+        $route = new Route('/foo', 'foo', ['GET']);
+        $route->setOptions(['values' => ['foo' => 'bar']]);
+
+        $this->auraRoute->setServer([
+            'REQUEST_METHOD' => 'GET',
+        ])->shouldBeCalled();
+        $this->auraRoute->addValues($route->getOptions()['values'])->shouldBeCalled();
+
+        $this->auraRouter->add('/foo', '/foo', 'foo')->willReturn($this->auraRoute->reveal());
 
         $router = $this->getRouter();
         $router->addRoute($route);
@@ -67,32 +65,34 @@ class FastRouteTest extends TestCase
 
     public function testMatchingRouteShouldReturnSuccessfulRouteResult()
     {
-        $route = new Route('/foo', 'foo', ['GET']);
-
         $uri     = $this->prophesize('Psr\Http\Message\UriInterface');
         $uri->getPath()->willReturn('/foo');
 
         $request = $this->prophesize('Psr\Http\Message\ServerRequestInterface');
         $request->getUri()->willReturn($uri);
-        $request->getMethod()->willReturn('GET');
-
-        $this->dispatcher->dispatch('GET', '/foo')->willReturn([
-            Dispatcher::FOUND,
-            '/foo',
-            ['bar' => 'baz']
+        $request->getServerParams()->willReturn([
+            'REQUEST_METHOD' => 'GET',
         ]);
 
-        $this->fastRouter->addRoute(['GET'], '/foo', '/foo')->shouldBeCalled();
-        $this->fastRouter->getData()->shouldBeCalled();
+        $auraRoute = new TestAsset\AuraRoute;
+        $auraRoute->name = '/foo';
+        $auraRoute->params = [
+            'action' => 'foo',
+            'bar'    => 'baz',
+        ];
+
+        $this->auraRouter->match('/foo', ['REQUEST_METHOD' => 'GET'])->willReturn($auraRoute);
 
         $router = $this->getRouter();
-        $router->addRoute($route); // Must add, so we can determine middleware later
         $result = $router->match($request->reveal());
         $this->assertInstanceOf('Zend\Expressive\Router\RouteResult', $result);
         $this->assertTrue($result->isSuccess());
         $this->assertEquals('/foo', $result->getMatchedRouteName());
         $this->assertEquals('foo', $result->getMatchedMiddleware());
-        $this->assertSame(['bar' => 'baz'], $result->getMatchedParams());
+        $this->assertSame([
+            'action' => 'foo',
+            'bar'    => 'baz',
+        ], $result->getMatchedParams());
     }
 
     public function testMatchFailureDueToHttpMethodReturnsRouteResultWithAllowedMethods()
@@ -104,18 +104,18 @@ class FastRouteTest extends TestCase
 
         $request = $this->prophesize('Psr\Http\Message\ServerRequestInterface');
         $request->getUri()->willReturn($uri);
-        $request->getMethod()->willReturn('GET');
-
-        $this->dispatcher->dispatch('GET', '/foo')->willReturn([
-            Dispatcher::METHOD_NOT_ALLOWED,
-            ['POST']
+        $request->getServerParams()->willReturn([
+            'REQUEST_METHOD' => 'GET',
         ]);
 
-        $this->fastRouter->addRoute(['POST'], '/foo', '/foo')->shouldBeCalled();
-        $this->fastRouter->getData()->shouldBeCalled();
+        $this->auraRouter->match('/foo', ['REQUEST_METHOD' => 'GET'])->willReturn(false);
+
+        $auraRoute = new TestAsset\AuraRoute;
+        $auraRoute->method = ['POST'];
+
+        $this->auraRouter->getFailedRoute()->willReturn($auraRoute);
 
         $router = $this->getRouter();
-        $router->addRoute($route); // Must add, so we can determine middleware later
         $result = $router->match($request->reveal());
         $this->assertInstanceOf('Zend\Expressive\Router\RouteResult', $result);
         $this->assertTrue($result->isFailure());
@@ -132,17 +132,15 @@ class FastRouteTest extends TestCase
 
         $request = $this->prophesize('Psr\Http\Message\ServerRequestInterface');
         $request->getUri()->willReturn($uri);
-        $request->getMethod()->willReturn('GET');
-
-        $this->dispatcher->dispatch('GET', '/bar')->willReturn([
-            Dispatcher::NOT_FOUND,
+        $request->getServerParams()->willReturn([
+            'REQUEST_METHOD' => 'PUT',
         ]);
 
-        $this->fastRouter->addRoute(['GET'], '/foo', '/foo')->shouldBeCalled();
-        $this->fastRouter->getData()->shouldBeCalled();
+
+        $this->auraRouter->match('/bar', ['REQUEST_METHOD' => 'PUT'])->willReturn(false);
+        $this->auraRouter->getFailedRoute()->willReturn(new TestAsset\AuraRoute);
 
         $router = $this->getRouter();
-        $router->addRoute($route); // Must add, so we can determine middleware later
         $result = $router->match($request->reveal());
         $this->assertInstanceOf('Zend\Expressive\Router\RouteResult', $result);
         $this->assertTrue($result->isFailure());

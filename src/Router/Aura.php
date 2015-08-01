@@ -71,7 +71,7 @@ class Aura implements RouterInterface
             $route->getMiddleware()
         );
 
-        $httpMethods = $route->getMethods();
+        $httpMethods = $route->getAllowedMethods();
         if (is_array($httpMethods)) {
             $auraRoute->setServer([
                 'REQUEST_METHOD' => implode('|', $httpMethods),
@@ -129,9 +129,14 @@ class Aura implements RouterInterface
     /**
      * Marshals a route result based on the matched AuraRoute.
      *
+     * Note: no actual typehint is provided here; Aura Route instances provide
+     * property overloading, which is difficult to mock for testing; we simply
+     * assume an object at this point.
+     *
+     * @param AuraRoute $route
      * @return RouteResult
      */
-    private function marshalMatchedRoute(AuraRoute $route)
+    private function marshalMatchedRoute($route)
     {
         return RouteResult::fromRouteMatch(
             $route->name,
