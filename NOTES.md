@@ -418,4 +418,64 @@ $server->listen();
 - Should Route instances allow manipulating HTTP methods *after the fact*? This
   will likely lead to wierd edge-cases where HTTP methods were added that
   overlap methods on other routes with the same path. I think they MUST be
-  required at instantiation and remain immutable.
+  required at instantiation and remain immutable. (Refactored to incorporate
+  this in 2ccd3381)
+
+- How do we handle the default, simplest use case, where no DI is required?
+
+  ```php
+  <?php
+  use Zend\Expressive\Application;
+  $app = new Application();
+  $app->get(/* ... */);
+  $app->run();
+  ```
+
+  In such a situation, several assumptions are made:
+
+  - The dispatcher is present.
+  - The dispatcher has a router injected already.
+  - An emitter is present and/or the application is passing itself to
+    `Zend\Diactoros\Server` and calling `listen()`.
+
+  I'd argue that we should have a factory for this instead:
+
+  ```php
+  <?php
+  use Zend\Expressive\Application;
+
+  $app = Application::create();
+  $app->get(/* ... */);
+  $app->run();
+  ```
+
+  The method could even allow passing a container for pulling the dispatcher
+  (and router, and emitter).
+
+- How should we handle emitting the response? The simplest solution would be to
+  delegate to `Zend\Diactoros\Server::listen`, as that will handle the most
+  common use cases. However, one idea I've discussed before with Enrico is
+  having a strategy-based approach:
+
+  ```php
+  <?php
+  use Zend\Diactoros\Response\SapiEmitter;
+
+  $emitter = new EmitterMap();
+  // The following would likely be present by default, and be the fallback
+  // if a response type is not known.
+  $emitter->map('Psr\Http\Message\ResponseInterface', new SapiEmitter());
+
+  // But we could then add maps for our specific response types:
+  $emitter->map('GeneratorResponse', new GeneratorEmitter());
+  $emitter->map('TemplatedResponse', new TemplatedEmitter());
+
+  // The following would type-hint on Zend\Diactoros\Response\EmitterInterface:
+  $app->setEmitter($emitter);
+  ```
+
+  This approach allows more flexibility than using `Server::listen()`.
+
+  Because an `Application` is simply middleware, the emitter is _not_ required
+  for all paths, only when using `run()`. `Application::create()` _should_
+  create and inject an implementation, however.
