@@ -71,7 +71,7 @@ class App
         // Match the HTTP methods in the routes array
         $routeName = $this->router->getMatchedName();
         if (!in_array($request->getMethod(), $this->routes[$routeName]['methods'])) {
-            return $response->withStatus(405, "Method now allowed");
+            return $response->withStatus(405, "Method not allowed");
         }
         foreach ($this->router->getMatchedParams() as $param => $value) {
             $request = $request->withAttribute($param, $value);
