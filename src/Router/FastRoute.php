@@ -12,6 +12,7 @@ use FastRoute\DataGenerator\GroupCountBased as RouteGenerator;
 use FastRoute\Dispatcher\GroupCountBased as Dispatcher;
 use FastRoute\RouteCollector;
 use FastRoute\RouteParser\Std as RouteParser;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
 class FastRoute implements RouterInterface
 {
@@ -23,106 +24,120 @@ class FastRoute implements RouterInterface
     protected $router;
 
     /**
-     * Matched route data
+     * All attached routes as Route instances
      *
-     * @var array
+     * @var Route[]
      */
-    protected $routeInfo;
-
-    /**
-     * Router configuration
-     *
-     * @var array
-     */
-    protected $config;
+    protected $routes;
 
     /**
      * Construct
      */
-    public function __construct()
+    public function __construct(RouteCollector $router = null)
     {
-        $this->createRouter();
+        if (null === $router) {
+            $router = $this->createRouter();
+        }
+
+        $this->router = $router;
     }
 
     /**
-     * Create the FastRoute Collector instance
+     * Create a default FastRoute Collector instance
+     *
+     * @return RouteCollector
      */
     protected function createRouter()
     {
-        $this->router = new RouteCollector(new RouteParser, new RouteGenerator);
+        return new RouteCollector(new RouteParser, new RouteGenerator);
     }
 
     /**
-     * Set config
+     * Add a route to the collection.
      *
-     * @param array $config
-     */
-    public function setConfig(array $config)
-    {
-        if (!empty($this->config)) {
-            $this->createRouter();
-        }
-        foreach ($config['routes'] as $name => $data) {
-            if (isset($data['methods']) && is_array($data['methods'])) {
-                $methods = $data['methods'];
-            } else {
-                $methods = ['GET'];
-            }
-            $this->router->addRoute($methods, $data['url'], $name);
-        }
-        $this->config = $config;
-    }
-
-    /**
-     * Get config
+     * Uses the HTTP methods associated (creating sane defaults for an empty
+     * list or Route::HTTP_METHOD_ANY) and the path, and uses the path as
+     * the name (to allow later lookup of the middleware).
      *
-     * @return array
+     * @param Route $route
      */
-    public function getConfig()
+    public function addRoute(Route $route)
     {
-        return $this->config;
+        $methods = $route->getMethods();
+        if (! is_array($methods)) {
+            $methods = ($methods === Route::HTTP_METHOD_ANY)
+                ? ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS', 'TRACE']
+                : ['GET', 'HEAD', 'OPTIONS'];
+        }
+
+        $this->router->addRoute($methods, $route->getPath(), $route->getPath());
+        $this->routes[] = $route;
     }
 
     /**
-     * @param  string $patch
-     * @param  array $params
+     * @param  Request $request
      * @return boolean
      */
-    public function match($path, $params)
+    public function match(Request $request)
     {
+        $path       = $request->getUri()->getPath();
+        $method     = $request->getMethod();
         $dispatcher = new Dispatcher($this->router->getData());
-        $result     = $dispatcher->dispatch($params['REQUEST_METHOD'], $path);
+        $result     = $dispatcher->dispatch($method, $path);
+
         if ($result[0] != Dispatcher::FOUND) {
-            return false;
+            return $this->marshalFailedRoute($result);
         }
-        $this->routeInfo = $result;
-        return true;
+
+        return $this->marshalMatchedRoute($result, $method);
     }
 
     /**
-     * @return array
+     * Marshal a routing failure result.
+     *
+     * If the failure was due to the HTTP method, passes the allowed HTTP
+     * methods to the factory.
+     *
+     * @return RouteResult
      */
-    public function getMatchedParams()
+    private function marshalFailedRoute(array $result)
     {
-        $params = isset($this->routeInfo[2]) ? $this->routeInfo[2] : [];
-        return $params;
+        if ($result[0] === Dispatcher::METHOD_NOT_ALLOWED) {
+            return RouteResult::fromRouteFailure($result[1]);
+        }
+        return RouteResult::fromRouteFailure();
     }
 
     /**
-     * @return string
+     * Marshals a route result based on the results of matching and the current HTTP method.
+     *
+     * @param array $result
+     * @param string $method
+     * @return RouteResult
      */
-    public function getMatchedRouteName()
+    private function marshalMatchedRoute(array $result, $method)
     {
-        $name = isset($this->routeInfo[1]) ? $this->routeInfo[1] : [];
-        return $name;
-    }
+        $path       = $result[1];
+        $middleware = array_reduce($this->routes, function ($middleware, $route) use ($path, $method) {
+            if ($middleware) {
+                return $middleware;
+            }
 
-    /**
-     * @return mixed
-     */
-    public function getMatchedAction()
-    {
-        $action = isset($this->routeInfo[1]) ? $this->config['routes'][$this->routeInfo[1]]['action'] : null;
-        return $action;
+            if ($path !== $route->getPath()) {
+                return $middleware;
+            }
+
+            if (! $route->allowsMethod($method)) {
+                return $middleware;
+            }
+
+            return $route->getMiddleware();
+        }, false);
+
+        return RouteResult::fromRouteMatch(
+            $path,
+            $middleware,
+            $result[2]
+        );
     }
 }

@@ -9,6 +9,8 @@
 
 namespace Zend\Expressive\Router;
 
+use Psr\Http\Message\ServerRequestInterface as Request;
+
 interface RouterInterface
 {
     /**
@@ -17,9 +19,8 @@ interface RouterInterface
     public function addRoute(Route $route);
 
     /**
-     * @param  string $patch
-     * @param  array $params
+     * @param  Request $request
      * @return RouteResult
      */
-    public function match($path, $params);
+    public function match(Request $request);
 }

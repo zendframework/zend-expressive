@@ -13,6 +13,7 @@ use Aura\Router\Route as AuraRoute;
 use Aura\Router\RouteCollection;
 use Aura\Router\RouteFactory;
 use Aura\Router\Router;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
 class Aura implements RouterInterface
 {
@@ -22,20 +23,6 @@ class Aura implements RouterInterface
      * @var Aura\Router\Router
      */
     protected $router;
-
-    /**
-     * Matched Aura route
-     *
-     * @var Aura\Router\Route
-     */
-    protected $route;
-
-    /**
-     * Router configuration
-     *
-     * @var array
-     */
-    protected $config;
 
     /**
      * Construct
@@ -108,9 +95,11 @@ class Aura implements RouterInterface
      * @param  array $params
      * @return boolean
      */
-    public function match($path, $params)
+    public function match(Request $request)
     {
-        $route = $this->router->match($path, $params);
+        $path   = $request->getUri()->getPath();
+        $params = $request->getServerParams();
+        $route  = $this->router->match($path, $params);
 
         if (false === $route) {
             return $this->marshalFailedRoute();
