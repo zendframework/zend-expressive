@@ -9,6 +9,7 @@
 namespace Zend\Expressive\Router;
 
 use Aura\Router\Generator;
+use Aura\Router\Route as AuraRoute;
 use Aura\Router\RouteCollection;
 use Aura\Router\RouteFactory;
 use Aura\Router\Router;
@@ -39,17 +40,23 @@ class Aura implements RouterInterface
     /**
      * Construct
      */
-    public function __construct()
+    public function __construct(Router $router = null)
     {
-        $this->createRouter();
+        if (null === $router) {
+            $router = $this->createRouter();
+        }
+
+        $this->router = $router;
     }
 
     /**
-     * Create the Aura router instance
+     * Create a default Aura router instance
+     *
+     * @return Router
      */
     protected function createRouter()
     {
-        $this->router = new Router(
+        return new Router(
             new RouteCollection(new RouteFactory()),
             new Generator()
         );
@@ -58,8 +65,11 @@ class Aura implements RouterInterface
     /**
      * Add a route to the underlying router.
      *
-     * Adds the route to the Aura.Router, using the path as the name, and the
-     * "action" value equivalent to the middleware in the Route instance.
+     * Adds the route to the Aura.Router, using the path as the name, and a
+     * middleware value equivalent to the middleware in the Route instance.
+     *
+     * If HTTP methods are defined (and not the wildcard), they are imploded
+     * with a pipe symbol and added as server REQUEST_METHOD criteria.
      *
      * If tokens or values are present in the options array, they are also
      * added to the router.
@@ -73,6 +83,13 @@ class Aura implements RouterInterface
             $route->getPath(),
             $route->getMiddleware()
         );
+
+        $httpMethods = $route->getMethods();
+        if (is_array($httpMethods)) {
+            $auraRoute->setServer([
+                'REQUEST_METHOD' => implode('|', $httpMethods),
+            ]);
+        }
 
         foreach ($route->getOptions() as $key => $value) {
             switch ($key) {
@@ -93,31 +110,44 @@ class Aura implements RouterInterface
      */
     public function match($path, $params)
     {
-        $this->route = $this->router->match($path, $params);
-        return (false !== $this->route);
+        $route = $this->router->match($path, $params);
+
+        if (false === $route) {
+            return $this->marshalFailedRoute();
+        }
+
+        return $this->marshalMatchedRoute($route);
     }
 
     /**
-     * @return array
+     * Marshal a RouteResult representing a route failure.
+     *
+     * If the route failure is due to the HTTP method, passes the allowed
+     * methods when creating the result.
+     *
+     * @return RouteResult
      */
-    public function getMatchedParams()
+    private function marshalFailedRoute()
     {
-        return $this->route->params;
+        $failedRoute = $this->router->getFailedRoute();
+        if (! $failedRoute->failedMethod()) {
+            return RouteResult::fromRouteFailure();
+        }
+
+        return RouteResult::fromRouteFailure($failedRoute->method);
     }
 
     /**
-     * @return string
+     * Marshals a route result based on the matched AuraRoute.
+     *
+     * @return RouteResult
      */
-    public function getMatchedRouteName()
+    private function marshalMatchedRoute(AuraRoute $route)
     {
-        return $this->route->name;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getMatchedMiddleware()
-    {
-        return $this->route->params['action'];
+        return RouteResult::fromRouteMatch(
+            $route->name,
+            $route->params['action'],
+            $route->params
+        );
     }
 }

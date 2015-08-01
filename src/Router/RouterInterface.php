@@ -19,22 +19,7 @@ interface RouterInterface
     /**
      * @param  string $patch
      * @param  array $params
-     * @return boolean
+     * @return RouteResult
      */
     public function match($path, $params);
-
-    /**
-     * @return array
-     */
-    public function getMatchedParams();
-
-    /**
-     * @return string
-     */
-    public function getMatchedRouteName();
-
-    /**
-     * @return mixed
-     */
-    public function getMatchedAction();
 }
