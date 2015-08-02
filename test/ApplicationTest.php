@@ -7,7 +7,9 @@ use ReflectionProperty;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequest as Request;
 use Zend\Expressive\Application;
+use Zend\Expressive\Dispatcher;
 use Zend\Expressive\Router\Route;
+use Zend\Expressive\Router\RouteResult;
 
 class ApplicationTest extends TestCase
 {
@@ -229,5 +231,44 @@ class ApplicationTest extends TestCase
 
         $app->route($put);
         $app($request, $response, $finalHandler);
+    }
+
+    public function testComposesStratigilityFinalHandlerByDefault()
+    {
+        $app   = $this->getApp();
+        $final = $app->getFinalHandler();
+        $this->assertInstanceOf('Zend\Stratigility\FinalHandler', $final);
+    }
+
+    public function testCanInjectFinalHandlerViaConstructor()
+    {
+        $finalHandler = function ($req, $res, $err = null) {
+        };
+        $app  = new Application($this->dispatcher->reveal(), $finalHandler);
+        $test = $app->getFinalHandler();
+        $this->assertSame($finalHandler, $test);
+    }
+
+    public function testFinalHandlerIsUsedAtInvocationIfNoOutArgumentIsSupplied()
+    {
+        $routeResult = RouteResult::fromRouteFailure();
+
+        $router = $this->prophesize('Zend\Expressive\Router\RouterInterface');
+        $router->match()->willReturn($routeResult);
+
+        $dispatcher = new Dispatcher($router->reveal());
+
+        $finalResponse = $this->prophesize('Psr\Http\Message\ResponseInterface')->reveal();
+        $finalHandler = function ($req, $res, $err = null) use ($finalResponse) {
+            return $finalResponse;
+        };
+
+        $app = new Application($dispatcher, $finalHandler);
+
+        $request  = new Request([], [], 'http://example.com/');
+        $response = $this->prophesize('Psr\Http\Message\ResponseInterface');
+
+        $test = $app($request, $response->reveal());
+        $this->assertSame($finalResponse, $test);
     }
 }

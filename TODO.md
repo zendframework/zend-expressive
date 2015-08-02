@@ -5,12 +5,12 @@
   need revisions, and a few will need to be added (particularly concepts of
   pipeline workflows and middleware nesting).
 
-- [ ] Error handling in `Application`
-  - [ ] Add a method for injecting a "final handler" to use when `$next` is
+- [X] Error handling in `Application`
+  - [X] Add a method for injecting a "final handler" to use when `$next` is
     null.
-  - [ ] Add a default final handler implementation. (Or will the one from
+  - [X] Add a default final handler implementation. (Or will the one from
     Stratigility be sufficient?)
-  - [ ] Modify `__invoke()` to create the final handler implementation if `$out`
+  - [X] Modify `__invoke()` to create the final handler implementation if `$out`
     is null.
 
 - [ ] Emitters

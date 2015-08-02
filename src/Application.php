@@ -5,6 +5,7 @@ use BadMethodCallException;
 use DomainException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Zend\Stratigility\FinalHandler;
 use Zend\Stratigility\MiddlewarePipe;
 
 class Application extends MiddlewarePipe
@@ -13,6 +14,11 @@ class Application extends MiddlewarePipe
      * @var Dispatcher
      */
     private $dispatcher;
+
+    /**
+     * @var callable
+     */
+    private $finalHandler;
 
     /**
      * @var string[] HTTP methods that can be used for routing
@@ -32,11 +38,14 @@ class Application extends MiddlewarePipe
 
     /**
      * @param Dispatcher $dispatcher
+     * @param null|callable $finalHandler Final handler to use when $out is not
+     *     provided on invocation.
      */
-    public function __construct(Dispatcher $dispatcher)
+    public function __construct(Dispatcher $dispatcher, callable $finalHandler = null)
     {
         parent::__construct();
-        $this->dispatcher = $dispatcher;
+        $this->dispatcher   = $dispatcher;
+        $this->finalHandler = $finalHandler;
         $this->pipe($dispatcher);
     }
 
@@ -46,6 +55,8 @@ class Application extends MiddlewarePipe
      * If the dispatcher is in the pipeline, this method will inject the routes
      * it has aggregated prior to self invocation.
      *
+     * If $out is not provided, uses the result of `getFinalHandler()`.
+     *
      * @param Request $request
      * @param Response $response
      * @param callable|null $out
@@ -54,6 +65,9 @@ class Application extends MiddlewarePipe
     public function __invoke(Request $request, Response $response, callable $out = null)
     {
         $this->injectRoutes();
+        if (null === $out) {
+            $out = $this->getFinalHandler();
+        }
         return parent::__invoke($request, $response, $out);
     }
 
@@ -114,6 +128,22 @@ class Application extends MiddlewarePipe
 
         $this->routes[] = $route;
         return $route;
+    }
+
+    /**
+     * Return the final handler to use during `run()` if the stack is exhausted.
+     *
+     * Creates an instance of Zend\Stratigility\FinalHandler if no handler is
+     * already registered.
+     *
+     * @return callable
+     */
+    public function getFinalHandler()
+    {
+        if (! $this->finalHandler) {
+            $this->finalHandler = new FinalHandler();
+        }
+        return $this->finalHandler;
     }
 
     /**
