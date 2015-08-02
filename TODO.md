@@ -33,8 +33,12 @@
   - [X] Getter **must** raise an exception if no container is present, to
     prevent "[method] on a null" errors.
 
-- [ ] Create static factory for default use case
-  - [ ] Decide if that factory belongs in the base Expressive package, or a
+- [X] Create static factory for default use case
+  - [X] Decide if that factory belongs in the base Expressive package, or a
     skeleton. It will require selecting default router (and potentially
     container, if we make it required) implementations!
-  - [ ] Factory SHOULD allow passing router and potentially container.
+    - Decision: factory will be a separate class, but in the same package. This
+      simplifies the story of knowing what package is the entry point.
+    - Decision: the factory will also create a container.
+    - Decision: Aura.Router and ZF2 SM will be used.
+  - [X] Factory SHOULD allow passing router and potentially container.

@@ -16,16 +16,17 @@
       }
     ],
     "require": {
-        "zendframework/zend-diactoros": "^1.1",
-        "zendframework/zend-stratigility": "^1.1",
+        "aura/router": "^2.3",
+        "container-interop/container-interop": "^1.1",
         "psr/http-message": "^1.0",
-        "container-interop/container-interop": "^1.1"
+        "zendframework/zend-diactoros": "^1.1",
+        "zendframework/zend-servicemanager": "^2.6",
+        "zendframework/zend-stratigility": "^1.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "^4.7",
-        "squizlabs/php_codesniffer": "^2.3",
         "nikic/fast-route": "^0.6.0",
-        "aura/router": "^2.3"
+        "phpunit/phpunit": "^4.7",
+        "squizlabs/php_codesniffer": "^2.3"
     },
     "autoload": {
       "psr-4": {
@@ -38,7 +39,6 @@
       }
     },
     "suggest": {
-        "aura/router": "^2.3 to use the AuraRoute routing adapter",
         "nikic/fast-route": "^0.6.0 to use the FastRoute routing adapter"
     }
 }
