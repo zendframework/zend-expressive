@@ -57,7 +57,7 @@ class RouteResult
     {
         $result = new self();
         $result->success = false;
-        
+
         if ($methods === Route::HTTP_METHOD_ANY) {
             $result->allowedMethods = ['*'];
         }

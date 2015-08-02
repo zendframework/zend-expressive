@@ -45,7 +45,7 @@ class EmitterStack extends SplStack implements EmitterInterface
     {
         $this->validateEmitter($emitter);
         return parent::offsetSet($index, $emitter);
-        
+
     }
 
     /**
@@ -70,7 +70,7 @@ class EmitterStack extends SplStack implements EmitterInterface
     {
         $this->validateEmitter($emitter);
         return parent::unshift($emitter);
-        
+
     }
 
     /**
