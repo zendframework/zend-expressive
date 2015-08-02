@@ -271,4 +271,50 @@ class ApplicationTest extends TestCase
         $test = $app($request, $response->reveal());
         $this->assertSame($finalResponse, $test);
     }
+
+    public function testComposesSapiEmitterByDefault()
+    {
+        $app     = $this->getApp();
+        $emitter = $app->getEmitter();
+        $this->assertInstanceOf('Zend\Diactoros\Response\SapiEmitter', $emitter);
+    }
+
+    public function testAllowsInjectingEmitterAtInstantiation()
+    {
+        $emitter = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
+        $app     = new Application(
+            $this->dispatcher->reveal(),
+            null,
+            $emitter->reveal()
+        );
+        $test = $app->getEmitter();
+        $this->assertSame($emitter->reveal(), $test);
+    }
+
+    public function testComposedEmitterIsCalledByRun()
+    {
+        $routeResult = RouteResult::fromRouteFailure();
+
+        $router = $this->prophesize('Zend\Expressive\Router\RouterInterface');
+        $router->match()->willReturn($routeResult);
+
+        $dispatcher = new Dispatcher($router->reveal());
+
+        $finalResponse = $this->prophesize('Psr\Http\Message\ResponseInterface')->reveal();
+        $finalHandler = function ($req, $res, $err = null) use ($finalResponse) {
+            return $finalResponse;
+        };
+
+        $emitter = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
+        $emitter->emit(
+            Argument::type('Psr\Http\Message\ResponseInterface')
+        )->shouldBeCalled();
+
+        $app = new Application($dispatcher, $finalHandler, $emitter->reveal());
+
+        $request  = new Request([], [], 'http://example.com/');
+        $response = $this->prophesize('Psr\Http\Message\ResponseInterface');
+
+        $app->run($request, $response->reveal());
+    }
 }

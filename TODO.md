@@ -13,11 +13,11 @@
   - [X] Modify `__invoke()` to create the final handler implementation if `$out`
     is null.
 
-- [ ] Emitters
-  - [ ] Add the ability to inject an `EmitterInterface` into `Application`
-  - [ ] Create an `EmitterMap` or `EmitterStack` (or both?) implementation
+- [X] Emitters
+  - [X] Add the ability to inject an `EmitterInterface` into `Application`
+  - [X] Create an `EmitterMap` or `EmitterStack` (or both?) implementation
 
-- [ ] Create a `run()` method
+- [X] Create a `run()` method
   This method will accept request and response objects *optionally*, creating
   them if none are passed. It will then use the final handler instance, creating
   a default instance if none is present, and pass the three to its own

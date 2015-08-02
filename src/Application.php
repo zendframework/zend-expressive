@@ -5,6 +5,9 @@ use BadMethodCallException;
 use DomainException;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Zend\Diactoros\Response\EmitterInterface;
+use Zend\Diactoros\Response\SapiEmitter;
+use Zend\Diactoros\ServerRequestFactory;
 use Zend\Stratigility\FinalHandler;
 use Zend\Stratigility\MiddlewarePipe;
 
@@ -14,6 +17,11 @@ class Application extends MiddlewarePipe
      * @var Dispatcher
      */
     private $dispatcher;
+
+    /**
+     * @var EmitterInterface
+     */
+    private $emitter;
 
     /**
      * @var callable
@@ -40,12 +48,15 @@ class Application extends MiddlewarePipe
      * @param Dispatcher $dispatcher
      * @param null|callable $finalHandler Final handler to use when $out is not
      *     provided on invocation.
+     * @param null|EmitterInterface $emitter Emitter to use when `run()` is
+     *     invoked.
      */
-    public function __construct(Dispatcher $dispatcher, callable $finalHandler = null)
+    public function __construct(Dispatcher $dispatcher, callable $finalHandler = null, EmitterInterface $emitter = null)
     {
         parent::__construct();
         $this->dispatcher   = $dispatcher;
         $this->finalHandler = $finalHandler;
+        $this->emitter      = $emitter;
         $this->pipe($dispatcher);
     }
 
@@ -131,6 +142,30 @@ class Application extends MiddlewarePipe
     }
 
     /**
+     * Run the application
+     *
+     * If no request or response are provided, the method will use
+     * ServerRequestFactory::fromGlobals to create a request instance, and
+     * instantiate a default response instance.
+     *
+     * It then will invoke itself with the request and response, and emit
+     * the returned response using the composed emitter.
+     *
+     * @param null|Request $request
+     * @param null|Response $response
+     */
+    public function run(Request $request = null, Response $response = null)
+    {
+        $request  = $request ?: ServerRequestFactory::fromGlobals();
+        $response = $response ?: new Response();
+
+        $response = $this($request, $response);
+
+        $emitter = $this->getEmitter();
+        $emitter->emit($response);
+    }
+
+    /**
      * Return the final handler to use during `run()` if the stack is exhausted.
      *
      * Creates an instance of Zend\Stratigility\FinalHandler if no handler is
@@ -144,6 +179,22 @@ class Application extends MiddlewarePipe
             $this->finalHandler = new FinalHandler();
         }
         return $this->finalHandler;
+    }
+
+    /**
+     * Retrieve an emitter to use during run().
+     *
+     * If none was registered during instantiation, this will lazy-load a
+     * SapiEmitter instance.
+     *
+     * @return EmitterInterface
+     */
+    public function getEmitter()
+    {
+        if (! $this->emitter) {
+            $this->emitter = new SapiEmitter;
+        }
+        return $this->emitter;
     }
 
     /**
