@@ -135,7 +135,7 @@ class DispatcherTest extends TestCase
         };
 
         $dispatcher = $this->getDispatcher();
-        $this->setExpectedException('Zend\Expressive\Exception\InvalidMiddlewareException', 'invokable');
+        $this->setExpectedException('Zend\Expressive\Exception\InvalidMiddlewareException', 'callable');
         $dispatcher($request, $response, $next);
     }
 

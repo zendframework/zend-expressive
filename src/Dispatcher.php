@@ -80,7 +80,7 @@ class Dispatcher
 
         if (! is_string($middleware)) {
             throw new Exception\InvalidMiddlewareException(
-                sprintf("The action class specified %s is not invokable", $action)
+                'The middleware specified is not callable'
             );
         }
 
