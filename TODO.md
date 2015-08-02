@@ -24,9 +24,14 @@
   `__invoke()` method. Finally, it will pass the returned response to the
   composed emitter (using the `SapiEmitter` by default).
 
-- [ ] Decide if dispatcher *requires* a container.
+- [X] Decide if dispatcher *requires* a container.
+  Decision: no. Path of least dependencies would allow using only callables
+  and/or invokable callable classes.
 
-- [ ] Add getter for container to Application.
+- [X] Add getter for container to Application.
+  - [X] Will retrieve container from dispatcher on instantiation.
+  - [X] Getter **must** raise an exception if no container is present, to
+    prevent "[method] on a null" errors.
 
 - [ ] Create static factory for default use case
   - [ ] Decide if that factory belongs in the base Expressive package, or a

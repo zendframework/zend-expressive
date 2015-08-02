@@ -198,6 +198,27 @@ class Application extends MiddlewarePipe
     }
 
     /**
+     * Retrieve the IoC container.
+     *
+     * The IoC container is registered in the Dispatcher, when present, so we
+     * pull from there.
+     *
+     * If no IoC container is registered with the Dispatcher, we raise an
+     * exception.
+     *
+     * @return \Interop\Container\ContainerInterface
+     * @throws Exception\ContainerNotRegisteredException
+     */
+    public function getContainer()
+    {
+        $container = $this->dispatcher->getContainer();
+        if (null === $container) {
+            throw new Exception\ContainerNotRegisteredException();
+        }
+        return $container;
+    }
+
+    /**
      * Determine if the route is duplicated in the current list.
      *
      * Checks if a route with the same path exists already in the list;

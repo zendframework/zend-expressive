@@ -317,4 +317,12 @@ class ApplicationTest extends TestCase
 
         $app->run($request, $response->reveal());
     }
+
+    public function testCallingGetContainerWhenDispatcherDoesNotComposeContainerWillRaiseException()
+    {
+        $this->dispatcher->getContainer()->willReturn(null);
+        $app = $this->getApp();
+        $this->setExpectedException('RuntimeException');
+        $app->getContainer();
+    }
 }
