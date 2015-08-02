@@ -3,8 +3,10 @@ namespace Zend\Expressive;
 
 use BadMethodCallException;
 use DomainException;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Request;
+use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Diactoros\ServerRequestFactory;
@@ -68,12 +70,12 @@ class Application extends MiddlewarePipe
      *
      * If $out is not provided, uses the result of `getFinalHandler()`.
      *
-     * @param Request $request
-     * @param Response $response
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
      * @param callable|null $out
-     * @return Response
+     * @return ResponseInterface
      */
-    public function __invoke(Request $request, Response $response, callable $out = null)
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $out = null)
     {
         $this->injectRoutes();
         if (null === $out) {
@@ -151,10 +153,10 @@ class Application extends MiddlewarePipe
      * It then will invoke itself with the request and response, and emit
      * the returned response using the composed emitter.
      *
-     * @param null|Request $request
-     * @param null|Response $response
+     * @param null|ServerRequestInterface $request
+     * @param null|ResponseInterface $response
      */
-    public function run(Request $request = null, Response $response = null)
+    public function run(ServerRequestInterface $request = null, ResponseInterface $response = null)
     {
         $request  = $request ?: ServerRequestFactory::fromGlobals();
         $response = $response ?: new Response();
