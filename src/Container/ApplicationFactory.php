@@ -2,21 +2,31 @@
 namespace Zend\Expressive\Container;
 
 use Interop\Container\ContainerInterface;
+use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Expressive\Application;
 use Zend\Expressive\Dispatcher;
+use Zend\Expressive\Emitter\EmitterStack;
+use Zend\Expressive\Router\Aura as AuraRouter;
 use Zend\Expressive\Router\Route;
 
 class ApplicationFactory
 {
     public function __invoke(ContainerInterface $services)
     {
-        $router     = $services->get('Zend\Expressive\Router\RouterInterface');
+        $router = $services->has('Zend\Expressive\Router\RouterInterface')
+            ? $services->get('Zend\Expressive\Router\RouterInterface')
+            : new AuraRouter();
         $dispatcher = new Dispatcher($router, $services);
-        $app        = new Application(
-            $dispatcher,
-            $services->get('Zend\Expressive\FinalHandler'),
-            $services->get('Zend\Diactoros\Response\EmitterInterface')
-        );
+
+        $finalHandler = $services->has('Zend\Expressive\FinalHandler')
+            ? $services->get('Zend\Expressive\FinalHandler')
+            : null;
+
+        $emitter = $services->has('Zend\Diactoros\Response\EmitterInterface')
+            ? $services->get('Zend\Diactoros\Response\EmitterInterface')
+            : $this->createEmitterStack();
+
+        $app = new Application($dispatcher, $finalHandler, $emitter);
 
         $this->injectRoutes($app, $services);
 
@@ -50,5 +60,17 @@ class ApplicationFactory
                 $route->setOptions($spec['options']);
             }
         }
+    }
+
+    /**
+     * Create the default emitter stack.
+     *
+     * @return EmitterStack
+     */
+    private function createEmitterStack()
+    {
+        $emitter = new EmitterStack();
+        $emitter->push(new SapiEmitter());
+        return $emitter;
     }
 }

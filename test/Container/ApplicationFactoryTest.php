@@ -44,13 +44,16 @@ class ApplicationFactoryTest extends TestCase
         return $r->getValue($app);
     }
 
-    public function testFactoryPullsAllReplaceableDependenciesFromContainer()
+    public function testFactoryWillPullAllReplaceableDependenciesFromContainerWhenPresent()
     {
-        $router = $this->prophesize('Zend\Expressive\Router\RouterInterface');
-        $emitter = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
+        $router       = $this->prophesize('Zend\Expressive\Router\RouterInterface');
+        $emitter      = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
         $finalHandler = function ($req, $res, $err = null) {
         };
 
+        $this->container
+            ->has('Zend\Expressive\Router\RouterInterface')
+            ->willReturn(true);
         $this->container
             ->get('Zend\Expressive\Router\RouterInterface')
             ->will(function () use ($router) {
@@ -58,11 +61,17 @@ class ApplicationFactoryTest extends TestCase
             });
 
         $this->container
+            ->has('Zend\Diactoros\Response\EmitterInterface')
+            ->willReturn(true);
+        $this->container
             ->get('Zend\Diactoros\Response\EmitterInterface')
             ->will(function () use ($emitter) {
                 return $emitter->reveal();
             });
 
+        $this->container
+            ->has('Zend\Expressive\FinalHandler')
+            ->willReturn(true);
         $this->container
             ->get('Zend\Expressive\FinalHandler')
             ->willReturn($finalHandler);
@@ -104,17 +113,26 @@ class ApplicationFactoryTest extends TestCase
         ];
 
         $this->container
+            ->has('Zend\Expressive\Router\RouterInterface')
+            ->willReturn(true);
+        $this->container
             ->get('Zend\Expressive\Router\RouterInterface')
             ->will(function () use ($router) {
                 return $router->reveal();
             });
 
         $this->container
+            ->has('Zend\Diactoros\Response\EmitterInterface')
+            ->willReturn(true);
+        $this->container
             ->get('Zend\Diactoros\Response\EmitterInterface')
             ->will(function () use ($emitter) {
                 return $emitter->reveal();
             });
 
+        $this->container
+            ->has('Zend\Expressive\FinalHandler')
+            ->willReturn(true);
         $this->container
             ->get('Zend\Expressive\FinalHandler')
             ->willReturn($finalHandler);
@@ -136,5 +154,44 @@ class ApplicationFactoryTest extends TestCase
         foreach ($config['routes'] as $route) {
             $this->assertRoute($route, $routes);
         }
+    }
+
+    public function testWillUseSaneDefaultsForOptionalServices()
+    {
+        $this->container
+            ->has('Zend\Expressive\Router\RouterInterface')
+            ->willReturn(false);
+        $this->container
+            ->get('Zend\Expressive\Router\RouterInterface')
+            ->shouldNotBeCalled();
+
+        $this->container
+            ->has('Zend\Diactoros\Response\EmitterInterface')
+            ->willReturn(false);
+        $this->container
+            ->get('Zend\Diactoros\Response\EmitterInterface')
+            ->shouldNotBeCalled();
+
+        $this->container
+            ->has('Zend\Expressive\FinalHandler')
+            ->willReturn(false);
+        $this->container
+            ->get('Zend\Expressive\FinalHandler')
+            ->shouldNotBeCalled();
+
+        $this->container
+            ->has('Config')
+            ->willReturn(false);
+
+        $app = $this->factory->__invoke($this->container->reveal());
+        $this->assertInstanceOf('Zend\Expressive\Application', $app);
+        $dispatcher = $this->getDispatcherFromApplication($app);
+        $this->assertInstanceOf('Zend\Expressive\Dispatcher', $dispatcher);
+        $this->assertInstanceOf('Zend\Expressive\Router\Aura', $dispatcher->getRouter());
+        $this->assertSame($this->container->reveal(), $app->getContainer());
+        $this->assertInstanceOf('Zend\Expressive\Emitter\EmitterStack', $app->getEmitter());
+        $this->assertCount(1, $app->getEmitter());
+        $this->assertInstanceOf('Zend\Diactoros\Response\SapiEmitter', $app->getEmitter()->pop());
+        $this->assertInstanceOf('Zend\Stratigility\FinalHandler', $app->getFinalHandler());
     }
 }
