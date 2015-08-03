@@ -22,7 +22,7 @@ class Aura implements RouterInterface
      *
      * @var Aura\Router\Router
      */
-    protected $router;
+    private $router;
 
     /**
      * Construct
@@ -41,7 +41,7 @@ class Aura implements RouterInterface
      *
      * @return Router
      */
-    protected function createRouter()
+    private function createRouter()
     {
         return new Router(
             new RouteCollection(new RouteFactory()),
