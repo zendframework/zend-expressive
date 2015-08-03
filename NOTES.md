@@ -1,5 +1,19 @@
 # Expressive API brainstorming/notes
 
+> ## Out-of-date
+>
+> The various use case notes below were brainstorming ideas that were then used
+> to create test cases and help guide implementation. In the end, direct
+> instantiation of Application was undesirable in order to promote proper IoC;
+> this was when AppFactory was introduced.
+>
+> Consider them an historical record, and not actual usage examples; those can
+> be found in [doc/book/usage-examples.md](doc/book/usage-examples.md) at this time.
+>
+> The sections on "Templated Middleware", "Middleware for any method", and
+> "Design concerns" remain relevant still, and detail decisions made or still in
+> progress.
+
 ## Hello world
 
 ```php
