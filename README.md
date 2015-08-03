@@ -2,7 +2,6 @@
 
 [![Build Status](https://secure.travis-ci.org/zendframework/zend-expressive.svg?branch=master)](https://secure.travis-ci.org/zendframework/zend-expressive)
 
-<<<<<<< c58a67f3967f7e94a4153be6e526e0bd0aa3fae4
 *Start to develop PSR-7 middleware applications in PHP in a minute!*
 
 **Note: This project is a work in progress. Don't use it in production!**
