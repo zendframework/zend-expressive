@@ -69,6 +69,117 @@ has a few dependencies it requires, however, which may or may not be of interest
 to you at first. As such, `AppFactory` marshals some sane defaults for you to
 get you on your way.
 
+### Routing
+
+By default, zend-expressive uses [Aura.Router](https://github.com/auraphp/Aura.Router).
+We also provide an implementation that consumes [FastRoute](https://github.com/nikic/FastRoute),
+and have plans for others.
+
+In order to abstract routing, we have created a `RouterInterface`; this defines
+two methods:
+
+```php
+namespace Zend\Expressive\Router;
+
+use Psr\Http\Message\ServerRequestInterface;
+
+interface RouterInterface
+{
+    public function addRoute(Route $route);
+    public function match(ServerRequestInterface $request);
+}
+```
+
+The `Route` instance is an abstraction that encapsulates the various required
+routing information for any given route, as well as any optional arguments you
+wish to pass on to the underlying routing implementation. A `Route` instance
+requires a path, middleware (as either a callable or a service name), and
+optionally the HTTP methods it can respond to (defaulting to any). You can then
+pass optional arguments via its `setOptions()` method; these should be an array
+of key/value pairs.
+
+Typically, however, you will add routes via the `Application` instance itself.
+This will be done in one of two ways:
+
+- Via a method named after the HTTP method. (We support `get()`, `post()`,
+  `put()`, `patch()`, and `delete()` as method calls.) These methods require the
+  path and middleware as arguments.
+- Via the `route()` method. This method requires the path and middleware as
+  arguments, and optionally allows you to specify a list of HTTP methods
+  (defaulting to any HTTP method if none is provided).
+
+Each of these will return a `Route` instance, allowing you to set options if
+desired.
+
+```php
+// GET
+// This demonstrates passing a callable middleware (assuming $helloWorld is
+// callable).
+$app->get('/', $helloWorld);
+
+// POST
+// This example specifies the middleware as a service name instead of as a
+// callable.
+$app->post('/trackback', 'TrackBack');
+
+// PUT
+// This example shows operating on the returned route. In this case, it's adding
+// regex tokens to restrict what values for {id} will match. (The tokens feature
+// is specific to Aura.Router.)
+$app->put('/post/{id}', 'ReplacePost')
+    ->setOptions([
+        'tokens' => [ 'id' => '\d+' ],
+    ]);
+
+// PATCH
+// This example builds on the one above. zend-expressive allows you to specify
+// the same path for a route matching on a different HTTP method, and
+// corresponding to different middleware.
+$app->patch('/post/{id}', 'UpdatePost')
+    ->setOptions([
+        'tokens' => [ 'id' => '\d+' ],
+    ]);
+
+// DELETE
+$app->delete('/post/{id}', 'DeletePost')
+    ->setOptions([
+        'tokens' => [ 'id' => '\d+' ],
+    ]);
+
+// Matching ALL HTTP methods
+// If the underlying router supports matching any HTTP method, the following
+// will do so. Note: FastRoute *requires* you to specify the HTTP methods
+// allowed explicitly, and does not support wildcard routes. As such, the
+// following example maps to the combination of HEAD, OPTIONS, GET, POST, PATCH,
+// PUT, TRACE, and DELETE.
+// Just like the previous examples, it returns a Route instance that you can
+// further manipulate.
+$app->route('/post/{id}', 'HandlePost')
+    ->setOptions([
+        'tokens' => [ 'id' => '\d+' ],
+    ]);
+
+// Matching multiple HTTP methods
+// You can pass an array of HTTP methods as a third argument to route(); in such
+// cases, routing will match if any of the specified HTTP methods are provided.
+$app->route('/post', 'HandlePostCollection', ['GET', 'POST']);
+
+// Matching NO HTTP methods
+// Pass an empty array to the HTTP methods. HEAD and OPTIONS will still be
+// honored. (In FastRoute, GET is also honored.)
+$app->route('/post', 'WillThisHandlePost', []);
+```
+
+Finally, if desired, you can create a `Zend\Expressive\Router\Route` instance
+manually and pass it to `route()` as the sole argument:
+
+```php
+$route = new Route('/post', 'HandlePost', ['GET', 'POST']);
+$route->setOptions($options);
+
+$app->route($route);
+```
+
 ## Hello World using a Container
 
 zend-expressive works with
