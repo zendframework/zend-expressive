@@ -2,6 +2,7 @@
 
 [![Build Status](https://secure.travis-ci.org/zendframework/zend-expressive.svg?branch=master)](https://secure.travis-ci.org/zendframework/zend-expressive)
 
+<<<<<<< c58a67f3967f7e94a4153be6e526e0bd0aa3fae4
 *Start to develop PSR-7 middleware applications in PHP in a minute!*
 
 **Note: This project is a work in progress. Don't use it in production!**
@@ -32,3 +33,9 @@ $ php -S 0.0.0.0:8080 -t doc/html/ # then browse to http://localhost:8080/
 >
 > You can install bookdown globally using `composer global require bookdown/bookdown`. If you do
 > this, make sure that `$HOME/.composer/vendor/bin` is on your `$PATH`.
+
+## Architecture
+
+Architectural notes are in [NOTES.md](NOTES.md).
+
+Please see the tests for full information on capabilities.
