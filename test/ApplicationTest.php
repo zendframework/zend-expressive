@@ -7,7 +7,6 @@ use ReflectionProperty;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequest as Request;
 use Zend\Expressive\Application;
-use Zend\Expressive\Dispatcher;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouteResult;
 
@@ -18,12 +17,12 @@ class ApplicationTest extends TestCase
         $this->noopMiddleware = function ($req, $res, $next) {
         };
 
-        $this->dispatcher = $this->prophesize('Zend\Expressive\Dispatcher');
+        $this->router = $this->prophesize('Zend\Expressive\Router\RouterInterface');
     }
 
     public function getApp()
     {
-        return new Application($this->dispatcher->reveal());
+        return new Application($this->router->reveal());
     }
 
     public function commonHttpMethods()
@@ -43,11 +42,6 @@ class ApplicationTest extends TestCase
         $this->assertInstanceOf('Zend\Expressive\Application', $app);
     }
 
-    public function testApplicationCreatesDispatcherIfNoneProvidedAtInstantiation()
-    {
-        $this->markTestIncomplete();
-    }
-
     public function testApplicationIsAMiddlewarePipe()
     {
         $app = $this->getApp();
@@ -56,6 +50,7 @@ class ApplicationTest extends TestCase
 
     public function testRouteMethodReturnsRouteInstance()
     {
+        $this->router->addRoute(Argument::type(Route::class))->shouldBeCalled();
         $route = $this->getApp()->route('/foo', $this->noopMiddleware);
         $this->assertInstanceOf(Route::class, $route);
         $this->assertEquals('/foo', $route->getPath());
@@ -67,6 +62,7 @@ class ApplicationTest extends TestCase
      */
     public function testCanCallRouteWithHttpMethods($method)
     {
+        $this->router->addRoute(Argument::type(Route::class))->shouldBeCalled();
         $route = $this->getApp()->route('/foo', $this->noopMiddleware, [$method]);
         $this->assertInstanceOf(Route::class, $route);
         $this->assertEquals('/foo', $route->getPath());
@@ -77,6 +73,7 @@ class ApplicationTest extends TestCase
 
     public function testCanCallRouteWithMultipleHttpMethods()
     {
+        $this->router->addRoute(Argument::type(Route::class))->shouldBeCalled();
         $methods = array_keys($this->commonHttpMethods());
         $route = $this->getApp()->route('/foo', $this->noopMiddleware, $methods);
         $this->assertInstanceOf(Route::class, $route);
@@ -88,6 +85,7 @@ class ApplicationTest extends TestCase
     public function testCanCallRouteWithARoute()
     {
         $route = new Route('/foo', $this->noopMiddleware);
+        $this->router->addRoute($route)->shouldBeCalled();
         $app   = $this->getApp();
         $test  = $app->route($route);
         $this->assertSame($route, $test);
@@ -95,6 +93,7 @@ class ApplicationTest extends TestCase
 
     public function testCallingRouteWithExistingPathAndOmittingMethodsArgumentRaisesException()
     {
+        $this->router->addRoute(Argument::type(Route::class))->shouldBeCalledTimes(1);
         $app = $this->getApp();
         $route = $app->route('/foo', $this->noopMiddleware);
         $this->setExpectedException('DomainException');
@@ -117,6 +116,7 @@ class ApplicationTest extends TestCase
 
     public function testCreatingHttpRouteMethodWithExistingPathButDifferentMethodCreatesNewRouteInstance()
     {
+        $this->router->addRoute(Argument::type(Route::class))->shouldBeCalledTimes(2);
         $app = $this->getApp();
         $route = $app->route('/foo', $this->noopMiddleware, []);
 
@@ -131,6 +131,7 @@ class ApplicationTest extends TestCase
 
     public function testCreatingHttpRouteWithExistingPathAndMethodRaisesException()
     {
+        $this->router->addRoute(Argument::type(Route::class))->shouldBeCalledTimes(1);
         $app   = $this->getApp();
         $route = $app->get('/foo', $this->noopMiddleware);
 
@@ -139,12 +140,10 @@ class ApplicationTest extends TestCase
         });
     }
 
-    public function testDispatcherIsPipedAtInstantiation()
+    public function testRouteMiddlewareIsPipedAtInstantiation()
     {
         $app = $this->getApp();
-        $r = new ReflectionProperty($app, 'dispatcher');
-        $r->setAccessible(true);
-        $dispatcher = $r->getValue($app);
+        $routeMiddleware = [$app, 'routeMiddleware'];
 
         $r = new ReflectionProperty($app, 'pipeline');
         $r->setAccessible(true);
@@ -154,83 +153,7 @@ class ApplicationTest extends TestCase
         $route = $pipeline->dequeue();
         $this->assertInstanceOf('Zend\Stratigility\Route', $route);
         $test  = $route->handler;
-        $this->assertSame($dispatcher, $test);
-    }
-
-    public function testInvokeInjectsRoutesIntoRouterComposedByDispatcher()
-    {
-        $get  = new Route('/foo', $this->noopMiddleware, ['GET']);
-        $post = new Route('/foo', clone $this->noopMiddleware, ['POST']);
-
-        $expected = [ $get, $post ];
-
-        $request  = new Request([], [], 'http://example.com/', 'GET', 'php://temp', []);
-        $response = new Response();
-
-        $router = $this->prophesize('Zend\Expressive\Router\RouterInterface');
-        foreach ($expected as $route) {
-            $router->addRoute($route)->shouldBeCalled();
-        }
-
-        $this->dispatcher->getRouter()->willReturn($router->reveal());
-        $this->dispatcher->__invoke(
-            Argument::type('Psr\Http\Message\ServerRequestInterface'),
-            Argument::type('Psr\Http\Message\ResponseInterface'),
-            Argument::type('callable')
-        )->willReturn($response);
-
-        $app = $this->getApp();
-        $app->route($get);
-        $app->route($post);
-
-        // invoke and test
-        // Will need mocks for request, response
-        // Will need a final handler
-        $finalHandler = function ($req, $res) {
-            return $res;
-        };
-        $app($request, $response, $finalHandler);
-    }
-
-    public function testCallingInvokeMultipleTimesWillNotReinjectTheSameRoute()
-    {
-        $get  = new Route('/foo', $this->noopMiddleware, ['GET']);
-        $post = new Route('/foo', clone $this->noopMiddleware, ['POST']);
-
-        $expected = [ $get, $post ];
-
-        $request  = new Request([], [], 'http://example.com/', 'GET', 'php://temp', []);
-        $response = new Response();
-
-        $router = $this->prophesize('Zend\Expressive\Router\RouterInterface');
-        foreach ($expected as $route) {
-            $router->addRoute($route)->shouldBeCalledTimes(1);
-        }
-
-        $put = new Route('/foo', clone $this->noopMiddleware, ['PUT']);
-        $router->addRoute($put)->shouldBeCalledTimes(1);
-
-        $this->dispatcher->getRouter()->willReturn($router->reveal());
-        $this->dispatcher->__invoke(
-            Argument::type('Psr\Http\Message\ServerRequestInterface'),
-            Argument::type('Psr\Http\Message\ResponseInterface'),
-            Argument::type('callable')
-        )->willReturn($response);
-
-        $app = $this->getApp();
-        $app->route($get);
-        $app->route($post);
-
-        // invoke and test
-        // Will need mocks for request, response
-        // Will need a final handler
-        $finalHandler = function ($req, $res) {
-            return $res;
-        };
-        $app($request, $response, $finalHandler);
-
-        $app->route($put);
-        $app($request, $response, $finalHandler);
+        $this->assertSame($routeMiddleware, $test);
     }
 
     public function testComposesStratigilityFinalHandlerByDefault()
@@ -244,7 +167,7 @@ class ApplicationTest extends TestCase
     {
         $finalHandler = function ($req, $res, $err = null) {
         };
-        $app  = new Application($this->dispatcher->reveal(), $finalHandler);
+        $app  = new Application($this->router->reveal(), null, $finalHandler);
         $test = $app->getFinalHandler();
         $this->assertSame($finalHandler, $test);
     }
@@ -252,18 +175,14 @@ class ApplicationTest extends TestCase
     public function testFinalHandlerIsUsedAtInvocationIfNoOutArgumentIsSupplied()
     {
         $routeResult = RouteResult::fromRouteFailure();
-
-        $router = $this->prophesize('Zend\Expressive\Router\RouterInterface');
-        $router->match()->willReturn($routeResult);
-
-        $dispatcher = new Dispatcher($router->reveal());
+        $this->router->match()->willReturn($routeResult);
 
         $finalResponse = $this->prophesize('Psr\Http\Message\ResponseInterface')->reveal();
         $finalHandler = function ($req, $res, $err = null) use ($finalResponse) {
             return $finalResponse;
         };
 
-        $app = new Application($dispatcher, $finalHandler);
+        $app = new Application($this->router->reveal(), null, $finalHandler);
 
         $request  = new Request([], [], 'http://example.com/');
         $response = $this->prophesize('Psr\Http\Message\ResponseInterface');
@@ -283,7 +202,8 @@ class ApplicationTest extends TestCase
     {
         $emitter = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
         $app     = new Application(
-            $this->dispatcher->reveal(),
+            $this->router->reveal(),
+            null,
             null,
             $emitter->reveal()
         );
@@ -294,11 +214,7 @@ class ApplicationTest extends TestCase
     public function testComposedEmitterIsCalledByRun()
     {
         $routeResult = RouteResult::fromRouteFailure();
-
-        $router = $this->prophesize('Zend\Expressive\Router\RouterInterface');
-        $router->match()->willReturn($routeResult);
-
-        $dispatcher = new Dispatcher($router->reveal());
+        $this->router->match()->willReturn($routeResult);
 
         $finalResponse = $this->prophesize('Psr\Http\Message\ResponseInterface')->reveal();
         $finalHandler = function ($req, $res, $err = null) use ($finalResponse) {
@@ -310,7 +226,7 @@ class ApplicationTest extends TestCase
             Argument::type('Psr\Http\Message\ResponseInterface')
         )->shouldBeCalled();
 
-        $app = new Application($dispatcher, $finalHandler, $emitter->reveal());
+        $app = new Application($this->router->reveal(), null, $finalHandler, $emitter->reveal());
 
         $request  = new Request([], [], 'http://example.com/');
         $response = $this->prophesize('Psr\Http\Message\ResponseInterface');
@@ -318,9 +234,8 @@ class ApplicationTest extends TestCase
         $app->run($request, $response->reveal());
     }
 
-    public function testCallingGetContainerWhenDispatcherDoesNotComposeContainerWillRaiseException()
+    public function testCallingGetContainerWhenNoContainerComposedWillRaiseException()
     {
-        $this->dispatcher->getContainer()->willReturn(null);
         $app = $this->getApp();
         $this->setExpectedException('RuntimeException');
         $app->getContainer();

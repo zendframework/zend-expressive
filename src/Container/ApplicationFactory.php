@@ -4,7 +4,6 @@ namespace Zend\Expressive\Container;
 use Interop\Container\ContainerInterface;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Expressive\Application;
-use Zend\Expressive\Dispatcher;
 use Zend\Expressive\Emitter\EmitterStack;
 use Zend\Expressive\Router\Aura as AuraRouter;
 use Zend\Expressive\Router\Route;
@@ -16,7 +15,6 @@ class ApplicationFactory
         $router = $services->has('Zend\Expressive\Router\RouterInterface')
             ? $services->get('Zend\Expressive\Router\RouterInterface')
             : new AuraRouter();
-        $dispatcher = new Dispatcher($router, $services);
 
         $finalHandler = $services->has('Zend\Expressive\FinalHandler')
             ? $services->get('Zend\Expressive\FinalHandler')
@@ -26,7 +24,7 @@ class ApplicationFactory
             ? $services->get('Zend\Diactoros\Response\EmitterInterface')
             : $this->createEmitterStack();
 
-        $app = new Application($dispatcher, $finalHandler, $emitter);
+        $app = new Application($router, $services, $finalHandler, $emitter);
 
         $this->injectRoutes($app, $services);
 

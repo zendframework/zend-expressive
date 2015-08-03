@@ -4,10 +4,10 @@ namespace ZendTest\Expressive;
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Response;
-use Zend\Expressive\Dispatcher;
+use Zend\Expressive\Application;
 use Zend\Expressive\Router\RouteResult;
 
-class DispatcherTest extends TestCase
+class RouteMiddlewareTest extends TestCase
 {
     public function setUp()
     {
@@ -15,9 +15,9 @@ class DispatcherTest extends TestCase
         $this->container = $this->prophesize('Interop\Container\ContainerInterface');
     }
 
-    public function getDispatcher()
+    public function getApplication()
     {
-        return new Dispatcher(
+        return new Application(
             $this->router->reveal(),
             $this->container->reveal()
         );
@@ -35,8 +35,8 @@ class DispatcherTest extends TestCase
             return $response;
         };
 
-        $dispatcher = $this->getDispatcher();
-        $test = $dispatcher($request, $response, $next);
+        $app  = $this->getApplication();
+        $test = $app->routeMiddleware($request, $response, $next);
         $this->assertInstanceOf('Psr\Http\Message\ResponseInterface', $test);
         $this->assertEquals(405, $test->getStatusCode());
         $allow = $test->getHeaderLine('Allow');
@@ -59,8 +59,8 @@ class DispatcherTest extends TestCase
             $called = true;
         };
 
-        $dispatcher = $this->getDispatcher();
-        $dispatcher($request, $response, $next);
+        $app = $this->getApplication();
+        $app->routeMiddleware($request, $response, $next);
         $this->assertTrue($called);
     }
 
@@ -86,8 +86,8 @@ class DispatcherTest extends TestCase
             $this->fail('Should not enter $next');
         };
 
-        $dispatcher = $this->getDispatcher();
-        $test = $dispatcher($request, $response, $next);
+        $app  = $this->getApplication();
+        $test = $app->routeMiddleware($request, $response, $next);
         $this->assertSame($finalResponse, $test);
     }
 
@@ -110,9 +110,9 @@ class DispatcherTest extends TestCase
             $this->fail('Should not enter $next');
         };
 
-        $dispatcher = $this->getDispatcher();
+        $app = $this->getApplication();
         $this->setExpectedException('Zend\Expressive\Exception\InvalidMiddlewareException', 'does not have');
-        $dispatcher($request, $response, $next);
+        $app->routeMiddleware($request, $response, $next);
     }
 
     public function testRoutingSuccessResolvingToNonCallableNonStringMiddlewareRaisesException()
@@ -134,9 +134,9 @@ class DispatcherTest extends TestCase
             $this->fail('Should not enter $next');
         };
 
-        $dispatcher = $this->getDispatcher();
+        $app = $this->getApplication();
         $this->setExpectedException('Zend\Expressive\Exception\InvalidMiddlewareException', 'callable');
-        $dispatcher($request, $response, $next);
+        $app->routeMiddleware($request, $response, $next);
     }
 
     public function testRoutingSuccessResolvingToUninvokableMiddlewareRaisesException()
@@ -155,14 +155,14 @@ class DispatcherTest extends TestCase
         $this->router->match($request)->willReturn($result);
 
         // No container for this one, to ensure we marshal only a potential object instance.
-        $dispatcher = new Dispatcher($this->router->reveal());
+        $app = new Application($this->router->reveal());
 
         $next = function ($request, $response) {
             $this->fail('Should not enter $next');
         };
 
         $this->setExpectedException('Zend\Expressive\Exception\InvalidMiddlewareException', 'callable');
-        $dispatcher($request, $response, $next);
+        $app->routeMiddleware($request, $response, $next);
     }
 
     public function testRoutingSuccessResolvingToInvokableMiddlewareCallsIt()
@@ -178,13 +178,13 @@ class DispatcherTest extends TestCase
         $this->router->match($request)->willReturn($result);
 
         // No container for this one, to ensure we marshal only a potential object instance.
-        $dispatcher = new Dispatcher($this->router->reveal());
+        $app = new Application($this->router->reveal());
 
         $next = function ($request, $response) {
             $this->fail('Should not enter $next');
         };
 
-        $test = $dispatcher($request, $response, $next);
+        $test = $app->routeMiddleware($request, $response, $next);
         $this->assertInstanceOf('Psr\Http\Message\ResponseInterface', $test);
         $this->assertTrue($test->hasHeader('X-Invoked'));
         $this->assertEquals(__NAMESPACE__ . '\TestAsset\InvokableMiddleware', $test->getHeaderLine('X-Invoked'));
@@ -209,13 +209,13 @@ class DispatcherTest extends TestCase
         $this->container->has('TestAsset\Middleware')->willReturn(true);
         $this->container->get('TestAsset\Middleware')->willReturn($middleware);
 
-        $dispatcher = $this->getDispatcher();
+        $app = $this->getApplication();
 
         $next = function ($request, $response) {
             $this->fail('Should not enter $next');
         };
 
-        $test = $dispatcher($request, $response, $next);
+        $test = $app->routeMiddleware($request, $response, $next);
         $this->assertInstanceOf('Psr\Http\Message\ResponseInterface', $test);
         $this->assertTrue($test->hasHeader('X-Middleware'));
         $this->assertEquals('Invoked', $test->getHeaderLine('X-Middleware'));
@@ -237,13 +237,13 @@ class DispatcherTest extends TestCase
         $this->container->has('TestAsset\Middleware')->willReturn(true);
         $this->container->get('TestAsset\Middleware')->willThrow(new TestAsset\ContainerException());
 
-        $dispatcher = $this->getDispatcher();
+        $app = $this->getApplication();
 
         $next = function ($request, $response) {
             $this->fail('Should not enter $next');
         };
 
         $this->setExpectedException('Zend\Expressive\Exception\InvalidMiddlewareException', 'retrieve');
-        $dispatcher($request, $response, $next);
+        $app->routeMiddleware($request, $response, $next);
     }
 }

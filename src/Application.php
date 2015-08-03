@@ -3,6 +3,8 @@ namespace Zend\Expressive;
 
 use BadMethodCallException;
 use DomainException;
+use Interop\Container\ContainerInterface;
+use Interop\Container\Exception\ContainerException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Request;
@@ -13,12 +15,21 @@ use Zend\Diactoros\ServerRequestFactory;
 use Zend\Stratigility\FinalHandler;
 use Zend\Stratigility\MiddlewarePipe;
 
+/**
+ * Middleware application providing routing based on paths and HTTP methods.
+ *
+ * @method Router\Route get($path, $middleware)
+ * @method Router\Route post($path, $middleware)
+ * @method Router\Route put($path, $middleware)
+ * @method Router\Route patch($path, $middleware)
+ * @method Router\Route delete($path, $middleware)
+ */
 class Application extends MiddlewarePipe
 {
     /**
-     * @var Dispatcher
+     * @var null|ContainerInterface
      */
-    private $dispatcher;
+    private $container;
 
     /**
      * @var EmitterInterface
@@ -42,31 +53,47 @@ class Application extends MiddlewarePipe
     ];
 
     /**
+     * @var Router\RouterInterface
+     */
+    private $router;
+
+    /**
+     * List of all routes registered directly with the application.
+     *
      * @var Route[]
      */
     private $routes = [];
 
     /**
+     * Constructor
+     *
+     * Calls on the parent constructor, and then uses the provided arguments
+     * to set internal properties. On completion, pipes its own
+     * `routeMiddleware()` method to its internal pipeline.
+     *
      * @param Dispatcher $dispatcher
+     * @param null|ContainerInterface $container IoC container from which to pull services, if any.
      * @param null|callable $finalHandler Final handler to use when $out is not
      *     provided on invocation.
      * @param null|EmitterInterface $emitter Emitter to use when `run()` is
      *     invoked.
      */
-    public function __construct(Dispatcher $dispatcher, callable $finalHandler = null, EmitterInterface $emitter = null)
-    {
+    public function __construct(
+        Router\RouterInterface $router,
+        ContainerInterface $container = null,
+        callable $finalHandler = null,
+        EmitterInterface $emitter = null
+    ) {
         parent::__construct();
-        $this->dispatcher   = $dispatcher;
+        $this->router       = $router;
+        $this->container    = $container;
         $this->finalHandler = $finalHandler;
         $this->emitter      = $emitter;
-        $this->pipe($dispatcher);
+        $this->pipe([$this, 'routeMiddleware']);
     }
 
     /**
      * Overload middleware invocation.
-     *
-     * If the dispatcher is in the pipeline, this method will inject the routes
-     * it has aggregated prior to self invocation.
      *
      * If $out is not provided, uses the result of `getFinalHandler()`.
      *
@@ -77,10 +104,7 @@ class Application extends MiddlewarePipe
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $out = null)
     {
-        $this->injectRoutes();
-        if (null === $out) {
-            $out = $this->getFinalHandler();
-        }
+        $out = $out ?: $this->getFinalHandler();
         return parent::__invoke($request, $response, $out);
     }
 
@@ -108,6 +132,72 @@ class Application extends MiddlewarePipe
 
         $args[] = [$method];
         return call_user_func_array([$this, 'route'], $args);
+    }
+
+    /**
+     * Middleware that routes the incoming request and delegates to the matched middleware.
+     *
+     * Uses the router to route the incoming request, dispatching matched
+     * middleware on a request success condition.
+     *
+     * @param  ServerRequestInterface $request
+     * @param  ResponseInterface $response
+     * @param  callable $next
+     * @return ResponseInterface
+     * @throws Exception\InvalidArgumentException if the route result does not contain middleware
+     * @throws Exception\InvalidArgumentException if unable to retrieve middleware from the container
+     * @throws Exception\InvalidArgumentException if unable to resolve middleware to a callable
+     */
+    public function routeMiddleware(ServerRequestInterface $request, ResponseInterface $response, callable $next)
+    {
+        $result = $this->router->match($request);
+
+        if ($result->isFailure()) {
+            if ($result->isMethodFailure()) {
+                $response = $response->withStatus(405)
+                    ->withHeader('Allow', implode(',', $result->getAllowedMethods()));
+            }
+            return $next($request, $response);
+        }
+
+        foreach ($result->getMatchedParams() as $param => $value) {
+            $request = $request->withAttribute($param, $value);
+        }
+
+        $middleware = $result->getMatchedMiddleware();
+        if (! $middleware) {
+            throw new Exception\InvalidMiddlewareException(sprintf(
+                'The route %s does not have a middleware to dispatch',
+                $result->getMatchedRouteName()
+            ));
+        }
+
+        if (is_callable($middleware)) {
+            return $middleware($request, $response, $next);
+        }
+
+        if (! is_string($middleware)) {
+            throw new Exception\InvalidMiddlewareException(
+                'The middleware specified is not callable'
+            );
+        }
+
+        // try to get the action name from the container (if exists)
+        $callable = $this->marshalMiddlewareFromContainer($middleware);
+        if (is_callable($callable)) {
+            return $callable($request, $response, $next);
+        }
+
+        // try to instantiate the middleware directly, if possible
+        $callable = $this->marshalInvokableMiddleware($middleware);
+        if (! is_callable($callable)) {
+            throw new Exception\InvalidMiddlewareException(sprintf(
+                'Unable to resolve middleware "%s" to a callable',
+                $middleware
+            ));
+        }
+
+        return $callable($request, $response, $next);
     }
 
     /**
@@ -140,6 +230,7 @@ class Application extends MiddlewarePipe
         }
 
         $this->routes[] = $route;
+        $this->router->addRoute($route);
         return $route;
     }
 
@@ -165,6 +256,22 @@ class Application extends MiddlewarePipe
 
         $emitter = $this->getEmitter();
         $emitter->emit($response);
+    }
+
+    /**
+     * Retrieve the IoC container.
+     *
+     * If no IoC container is registered, we raise an exception.
+     *
+     * @return \Interop\Container\ContainerInterface
+     * @throws Exception\ContainerNotRegisteredException
+     */
+    public function getContainer()
+    {
+        if (null === $this->container) {
+            throw new Exception\ContainerNotRegisteredException();
+        }
+        return $this->container;
     }
 
     /**
@@ -197,27 +304,6 @@ class Application extends MiddlewarePipe
             $this->emitter = new SapiEmitter;
         }
         return $this->emitter;
-    }
-
-    /**
-     * Retrieve the IoC container.
-     *
-     * The IoC container is registered in the Dispatcher, when present, so we
-     * pull from there.
-     *
-     * If no IoC container is registered with the Dispatcher, we raise an
-     * exception.
-     *
-     * @return \Interop\Container\ContainerInterface
-     * @throws Exception\ContainerNotRegisteredException
-     */
-    public function getContainer()
-    {
-        $container = $this->dispatcher->getContainer();
-        if (null === $container) {
-            throw new Exception\ContainerNotRegisteredException();
-        }
-        return $container;
     }
 
     /**
@@ -259,17 +345,43 @@ class Application extends MiddlewarePipe
     }
 
     /**
-     * Inject routes into the router associated with the dispatcher.
+     * Attempt to retrieve the given middleware from the container.
+     *
+     * @param string $middleware
+     * @return string|callable Returns $middleware intact on failure, and the
+     *     middleware instance on success.
+     * @throws Exception\InvalidArgumentException if a container exception occurs.
      */
-    private function injectRoutes()
+    private function marshalMiddlewareFromContainer($middleware)
     {
-        $router = $this->dispatcher->getRouter();
-        array_walk($this->routes, function ($route) use ($router) {
-            if ($route->isInjected()) {
-                return;
-            }
-            $router->addRoute($route);
-            $route->inject();
-        });
+        $container = $this->container;
+        if (! $container || ! $container->has($middleware)) {
+            return $middleware;
+        }
+
+        try {
+            return $container->get($middleware);
+        } catch (ContainerException $e) {
+            throw new Exception\InvalidMiddlewareException(sprintf(
+                'Unable to retrieve middleware "%s" from the container',
+                $middleware
+            ), $e->getCode(), $e);
+        }
+    }
+
+    /**
+     * Attempt to instantiate the given middleware.
+     *
+     * @param string $middleware
+     * @return string|callable Returns $middleware intact on failure, and the
+     *     middleware instance on success.
+     */
+    private function marshalInvokableMiddleware($middleware)
+    {
+        if (! class_exists($middleware)) {
+            return $middleware;
+        }
+
+        return new $middleware();
     }
 }

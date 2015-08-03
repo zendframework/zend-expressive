@@ -8,9 +8,9 @@ use Zend\Expressive\AppFactory;
 
 class AppFactoryTest extends TestCase
 {
-    public function getDispatcherFromApplication(Application $app)
+    public function getRouterFromApplication(Application $app)
     {
-        $r = new ReflectionProperty($app, 'dispatcher');
+        $r = new ReflectionProperty($app, 'router');
         $r->setAccessible(true);
         return $r->getValue($app);
     }
@@ -23,9 +23,8 @@ class AppFactoryTest extends TestCase
 
     public function testFactoryUsesAuraRouterByDefault()
     {
-        $app        = AppFactory::create();
-        $dispatcher = $this->getDispatcherFromApplication($app);
-        $router     = $dispatcher->getRouter();
+        $app    = AppFactory::create();
+        $router = $this->getRouterFromApplication($app);
         $this->assertInstanceOf('Zend\Expressive\Router\Aura', $router);
     }
 
@@ -58,9 +57,7 @@ class AppFactoryTest extends TestCase
     {
         $router = $this->prophesize('Zend\Expressive\Router\RouterInterface');
         $app    = AppFactory::create(null, $router->reveal());
-
-        $dispatcher = $this->getDispatcherFromApplication($app);
-        $test       = $dispatcher->getRouter();
+        $test   = $this->getRouterFromApplication($app);
         $this->assertSame($router->reveal(), $test);
     }
 }

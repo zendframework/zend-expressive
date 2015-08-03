@@ -37,9 +37,9 @@ class ApplicationFactoryTest extends TestCase
         }, false));
     }
 
-    public function getDispatcherFromApplication(Application $app)
+    public function getRouterFromApplication(Application $app)
     {
-        $r = new ReflectionProperty($app, 'dispatcher');
+        $r = new ReflectionProperty($app, 'router');
         $r->setAccessible(true);
         return $r->getValue($app);
     }
@@ -82,9 +82,8 @@ class ApplicationFactoryTest extends TestCase
 
         $app = $this->factory->__invoke($this->container->reveal());
         $this->assertInstanceOf('Zend\Expressive\Application', $app);
-        $dispatcher = $this->getDispatcherFromApplication($app);
-        $this->assertInstanceOf('Zend\Expressive\Dispatcher', $dispatcher);
-        $this->assertSame($router->reveal(), $dispatcher->getRouter());
+        $test = $this->getRouterFromApplication($app);
+        $this->assertSame($router->reveal(), $test);
         $this->assertSame($this->container->reveal(), $app->getContainer());
         $this->assertSame($emitter->reveal(), $app->getEmitter());
         $this->assertSame($finalHandler, $app->getFinalHandler());
@@ -185,9 +184,8 @@ class ApplicationFactoryTest extends TestCase
 
         $app = $this->factory->__invoke($this->container->reveal());
         $this->assertInstanceOf('Zend\Expressive\Application', $app);
-        $dispatcher = $this->getDispatcherFromApplication($app);
-        $this->assertInstanceOf('Zend\Expressive\Dispatcher', $dispatcher);
-        $this->assertInstanceOf('Zend\Expressive\Router\Aura', $dispatcher->getRouter());
+        $router = $this->getRouterFromApplication($app);
+        $this->assertInstanceOf('Zend\Expressive\Router\Aura', $router);
         $this->assertSame($this->container->reveal(), $app->getContainer());
         $this->assertInstanceOf('Zend\Expressive\Emitter\EmitterStack', $app->getEmitter());
         $this->assertCount(1, $app->getEmitter());

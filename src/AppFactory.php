@@ -11,14 +11,12 @@ final class AppFactory
         ContainerInterface $container = null,
         Router\RouterInterface $router = null
     ) {
-        $container  = $container ?: new ServiceManager();
-        $router     = $router    ?: new Router\Aura();
-        $dispatcher = new Dispatcher($router, $container);
-
+        $container = $container ?: new ServiceManager();
+        $router    = $router    ?: new Router\Aura();
         $emitter   = new Emitter\EmitterStack();
         $emitter->push(new SapiEmitter());
 
-        return new Application($dispatcher, null, $emitter);
+        return new Application($router, $container, null, $emitter);
     }
 
     /**
