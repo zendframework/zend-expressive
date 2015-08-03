@@ -16,7 +16,7 @@ and offers an easy way to start developing using a single application object.
 Install this library using composer:
 
 ```console
-$ composer install
+$ composer require zendframework/zend-expressive
 ```
 
 ## Documentation

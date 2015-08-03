@@ -1,6 +1,6 @@
 # TODO
 
-- [ ] Document all use cases that were explicit to the design.
+- [X] Document all use cases that were explicit to the design.
   These are primarily already done, in the [NOTES.md](NOTES.md), but they will
   need revisions, and a few will need to be added (particularly concepts of
   pipeline workflows and middleware nesting).
