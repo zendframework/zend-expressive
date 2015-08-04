@@ -12,7 +12,6 @@ namespace ZendTest\Expressive;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Argument;
 use ReflectionProperty;
-use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequest as Request;
 use Zend\Expressive\Application;
 use Zend\Expressive\Router\Route;
