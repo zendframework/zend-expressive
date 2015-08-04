@@ -1,4 +1,12 @@
 <?php
+/**
+ * Zend Framework (http://framework.zend.com/)
+ *
+ * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
+ * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
+ */
+
 namespace Zend\Expressive\Emitter;
 
 use InvalidArgumentException;
@@ -6,6 +14,14 @@ use Psr\Http\Message\ResponseInterface;
 use SplStack;
 use Zend\Diactoros\Response\EmitterInterface;
 
+/**
+ * Provides an EmitterInterface implementation that acts as a stack of Emitters.
+ *
+ * The implementations emit() method iterates itself.
+ *
+ * When iterating the stack, the first emitter to return a value that is not
+ * identical to boolean false will short-circuit iteration.
+ */
 class EmitterStack extends SplStack implements EmitterInterface
 {
     /**

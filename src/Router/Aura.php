@@ -6,6 +6,7 @@
  * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
+
 namespace Zend\Expressive\Router;
 
 use Aura\Router\Generator;
@@ -15,6 +16,9 @@ use Aura\Router\RouteFactory;
 use Aura\Router\Router;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
+/**
+ * Router implementation bridging the Aura.Router.
+ */
 class Aura implements RouterInterface
 {
     /**
@@ -25,7 +29,13 @@ class Aura implements RouterInterface
     private $router;
 
     /**
-     * Construct
+     * Constructor
+     *
+     * If no Aura.Router instance is provided, the constructor will lazy-load
+     * an instance. If you need to customize the Aura.Router instance in any
+     * way, you MUST inject it yourself.
+     *
+     * @param null|Router $router
      */
     public function __construct(Router $router = null)
     {

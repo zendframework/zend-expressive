@@ -11,6 +11,9 @@ namespace Zend\Expressive\Router;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 
+/**
+ * Interface defining required router capabilities.
+ */
 interface RouterInterface
 {
     /**

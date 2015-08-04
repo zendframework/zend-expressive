@@ -1,6 +1,34 @@
 <?php
+/**
+ * Zend Framework (http://framework.zend.com/)
+ *
+ * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
+ * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
+ */
+
 namespace Zend\Expressive\Router;
 
+/**
+ * Value object representing the results of routing.
+ *
+ * RouterInterface::match() is defined as returning a RouteResult instance,
+ * which will contain the following state:
+ *
+ * - isSuccess()/isFailure() indicate whether routing succeeded or not.
+ * - On success, it will contain:
+ *   - the matched route name (typically the path)
+ *   - the matched route middleware
+ *   - any parameters matched by routing
+ * - On failure:
+ *   - isMethodFailure() further qualifies a routing failure to indicate that it
+ *     was due to using an HTTP method not allowed for the given path.
+ *   - If the failure was due to HTTP method negotiation, it will contain the
+ *     list of allowed HTTP methods.
+ *
+ * RouteResult instances are consumed by the Application in the routing
+ * middleware.
+ */
 class RouteResult
 {
     /**

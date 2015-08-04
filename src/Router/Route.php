@@ -1,8 +1,31 @@
 <?php
+/**
+ * Zend Framework (http://framework.zend.com/)
+ *
+ * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
+ * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
+ */
+
 namespace Zend\Expressive\Router;
 
 use InvalidArgumentException;
 
+/**
+ * Value object representing a single route.
+ *
+ * Routes are a combination of path, middleware, and HTTP methods; two routes
+ * representing the same path and overlapping HTTP methods are not allowed,
+ * while two routes representing the same path and non-overlapping HTTP methods
+ * can be used (and should typically resolve to different middleware).
+ *
+ * Internally, only those three properties are required. However, underlying
+ * router implementations may allow or require additional information, such as
+ * information defining how to generate a URL from the given route, qualifiers
+ * for how segments of a route match, or even default values to use. These may
+ * be provided after instantiation via the "options" property and related
+ * setOptions() method.
+ */
 class Route
 {
     const HTTP_METHOD_ANY = 0xff;
