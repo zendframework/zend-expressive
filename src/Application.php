@@ -277,7 +277,9 @@ class Application extends MiddlewarePipe
     public function getContainer()
     {
         if (null === $this->container) {
-            throw new Exception\ContainerNotRegisteredException();
+            throw new Exception\ContainerNotRegisteredException(
+                'Container did not registered, please register in ' . static::class . '::__construct'
+            );
         }
         return $this->container;
     }

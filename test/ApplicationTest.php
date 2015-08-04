@@ -245,7 +245,10 @@ class ApplicationTest extends TestCase
     public function testCallingGetContainerWhenNoContainerComposedWillRaiseException()
     {
         $app = $this->getApp();
-        $this->setExpectedException('RuntimeException');
+        $this->setExpectedException(
+            'Zend\Expressive\Exception\ContainerNotRegisteredException',
+            'Container did not registered, please register in '. Application::class . '::__construct'
+        );
         $app->getContainer();
     }
 }
