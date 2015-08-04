@@ -12,117 +12,174 @@ use FastRoute\DataGenerator\GroupCountBased as RouteGenerator;
 use FastRoute\Dispatcher\GroupCountBased as Dispatcher;
 use FastRoute\RouteCollector;
 use FastRoute\RouteParser\Std as RouteParser;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
 class FastRoute implements RouterInterface
 {
+    /**
+     * @var callable A factory callback that can return a dispatcher.
+     */
+    private $dispatcherCallback;
+
     /**
      * FastRoute router
      *
      * @var FastRoute\RouteCollector
      */
-    protected $router;
+    private $router;
 
     /**
-     * Matched route data
+     * All attached routes as Route instances
      *
-     * @var array
+     * @var Route[]
      */
-    protected $routeInfo;
+    private $routes;
 
     /**
-     * Router configuration
-     *
-     * @var array
+     * @param null|RouteCollector $router If not provided, a default implementation will be used.
+     * @param null|callable $dispatcherFactory
      */
-    protected $config;
-
-    /**
-     * Construct
-     */
-    public function __construct()
+    public function __construct(RouteCollector $router = null, callable $dispatcherFactory = null)
     {
-        $this->createRouter();
-    }
-
-    /**
-     * Create the FastRoute Collector instance
-     */
-    protected function createRouter()
-    {
-        $this->router = new RouteCollector(new RouteParser, new RouteGenerator);
-    }
-
-    /**
-     * Set config
-     *
-     * @param array $config
-     */
-    public function setConfig(array $config)
-    {
-        if (!empty($this->config)) {
-            $this->createRouter();
+        if (null === $router) {
+            $router = $this->createRouter();
         }
-        foreach ($config['routes'] as $name => $data) {
-            if (isset($data['methods']) && is_array($data['methods'])) {
-                $methods = $data['methods'];
-            } else {
-                $methods = ['GET'];
-            }
-            $this->router->addRoute($methods, $data['url'], $name);
-        }
-        $this->config = $config;
+
+        $this->router = $router;
+        $this->dispatcherCallback = $dispatcherFactory;
     }
 
     /**
-     * Get config
+     * Create a default FastRoute Collector instance
      *
-     * @return array
+     * @return RouteCollector
      */
-    public function getConfig()
+    private function createRouter()
     {
-        return $this->config;
+        return new RouteCollector(new RouteParser, new RouteGenerator);
     }
 
     /**
-     * @param  string $patch
-     * @param  array $params
+     * Add a route to the collection.
+     *
+     * Uses the HTTP methods associated (creating sane defaults for an empty
+     * list or Route::HTTP_METHOD_ANY) and the path, and uses the path as
+     * the name (to allow later lookup of the middleware).
+     *
+     * @param Route $route
+     */
+    public function addRoute(Route $route)
+    {
+        $methods = $route->getAllowedMethods();
+
+        if ($methods === Route::HTTP_METHOD_ANY) {
+            $methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS', 'TRACE'];
+        }
+
+        if (empty($methods)) {
+            $methods = ['GET', 'HEAD', 'OPTIONS'];
+        }
+
+        $this->router->addRoute($methods, $route->getPath(), $route->getPath());
+        $this->routes[] = $route;
+    }
+
+    /**
+     * @param  Request $request
      * @return boolean
      */
-    public function match($path, $params)
+    public function match(Request $request)
     {
-        $dispatcher = new Dispatcher($this->router->getData());
-        $result     = $dispatcher->dispatch($params['REQUEST_METHOD'], $path);
+        $path       = $request->getUri()->getPath();
+        $method     = $request->getMethod();
+        $dispatcher = $this->getDispatcher($this->router->getData());
+        $result     = $dispatcher->dispatch($method, $path);
+
         if ($result[0] != Dispatcher::FOUND) {
-            return false;
+            return $this->marshalFailedRoute($result);
         }
-        $this->routeInfo = $result;
-        return true;
+
+        return $this->marshalMatchedRoute($result, $method);
     }
 
     /**
-     * @return array
+     * Marshal a routing failure result.
+     *
+     * If the failure was due to the HTTP method, passes the allowed HTTP
+     * methods to the factory.
+     *
+     * @return RouteResult
      */
-    public function getMatchedParams()
+    private function marshalFailedRoute(array $result)
     {
-        $params = isset($this->routeInfo[2]) ? $this->routeInfo[2] : [];
-        return $params;
+        if ($result[0] === Dispatcher::METHOD_NOT_ALLOWED) {
+            return RouteResult::fromRouteFailure($result[1]);
+        }
+        return RouteResult::fromRouteFailure();
     }
 
     /**
-     * @return string
+     * Marshals a route result based on the results of matching and the current HTTP method.
+     *
+     * @param array $result
+     * @param string $method
+     * @return RouteResult
      */
-    public function getMatchedRouteName()
+    private function marshalMatchedRoute(array $result, $method)
     {
-        $name = isset($this->routeInfo[1]) ? $this->routeInfo[1] : [];
-        return $name;
+        $path       = $result[1];
+        $middleware = array_reduce($this->routes, function ($middleware, $route) use ($path, $method) {
+            if ($middleware) {
+                return $middleware;
+            }
+
+            if ($path !== $route->getPath()) {
+                return $middleware;
+            }
+
+            if (! $route->allowsMethod($method)) {
+                return $middleware;
+            }
+
+            return $route->getMiddleware();
+        }, false);
+
+        return RouteResult::fromRouteMatch(
+            $path,
+            $middleware,
+            $result[2]
+        );
     }
 
     /**
-     * @return mixed
+     * Retrieve the dispatcher instance.
+     *
+     * Uses the callable factory in $dispatcherCallback, passing it $data
+     * (which should be derived from the router's getData() method); this
+     * approach is done to allow testing against the dispatcher.
+     *
+     * @param  array|object $data Data from RouteCollection::getData()
+     * @return Dispatcher
      */
-    public function getMatchedCallable()
+    private function getDispatcher($data)
     {
-        $action = isset($this->routeInfo[1]) ? $this->config['routes'][$this->routeInfo[1]]['action'] : null;
-        return $action;
+        if (! $this->dispatcherCallback) {
+            $this->dispatcherCallback = $this->createDispatcherCallback();
+        }
+
+        $factory = $this->dispatcherCallback;
+        return $factory($data);
+    }
+
+    /**
+     * Return a default implemententation of a callback that can return a Dispatcher.
+     *
+     * @return callable
+     */
+    private function createDispatcherCallback()
+    {
+        return function ($data) {
+            return new Dispatcher($data);
+        };
     }
 }

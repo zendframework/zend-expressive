@@ -16,7 +16,7 @@ and offers an easy way to start developing using a single application object.
 Install this library using composer:
 
 ```console
-$ composer install
+$ composer require zendframework/zend-expressive
 ```
 
 ## Documentation
@@ -32,3 +32,9 @@ $ php -S 0.0.0.0:8080 -t doc/html/ # then browse to http://localhost:8080/
 >
 > You can install bookdown globally using `composer global require bookdown/bookdown`. If you do
 > this, make sure that `$HOME/.composer/vendor/bin` is on your `$PATH`.
+
+## Architecture
+
+Architectural notes are in [NOTES.md](NOTES.md).
+
+Please see the tests for full information on capabilities.

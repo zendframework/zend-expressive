@@ -9,35 +9,18 @@
 
 namespace Zend\Expressive\Router;
 
+use Psr\Http\Message\ServerRequestInterface as Request;
+
 interface RouterInterface
 {
     /**
-     * @param  string $patch
-     * @param  array $params
-     * @return boolean
+     * @param array $config
      */
-    public function match($path, $params);
+    public function addRoute(Route $route);
 
     /**
-     * @return array
+     * @param  Request $request
+     * @return RouteResult
      */
-    public function getMatchedParams();
-
-    /**
-     * @return string
-     */
-    public function getMatchedName();
-
-    /**
-     * @return mixed
-     */
-    public function getMatchedCallable();
-
-    /**
-     * @param string $name
-     * @param string $path
-     * @param callable $callable
-     * @param array $options
-     */
-    public function addRoute($name, $path, $callable, $options = []);
+    public function match(Request $request);
 }
