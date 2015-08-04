@@ -40,7 +40,7 @@ use Zend\Expressive\Router\Route;
  *         [
  *             'path' => '/path/to/match',
  *             'middleware' => 'Middleware Service Name or Callable',
- *             'allowed_methods' => [ 'string', 'method', 'names' ],
+ *             'allowed_methods' => [ 'GET', 'POST', 'PATCH' ],
  *             'options' => [
  *                 'stuff' => 'to',
  *                 'pass'  => 'to',
@@ -52,11 +52,15 @@ use Zend\Expressive\Router\Route;
  * ];
  * </code>
  *
- * Each route MUST have a path and middleware key at the minimum. The
- * "allowed_methods" key may be omitted, can be either an array or the value of
- * the Zend\Expressive\Router\Route::HTTP_METHOD_ANY constant. The "options"
- * key may also be omitted, and its interpretation will be dependent on the
- * underlying router used.
+ * Each route MUST have a path and middleware key at the minimum.
+ *
+ * The "allowed_methods" key may be omitted, can be either an array or the
+ * value of the Zend\Expressive\Router\Route::HTTP_METHOD_ANY constant; any
+ * valid HTTP method token is allowed, which means you can specify custom HTTP
+ * methods as well.
+ *
+ * The "options" key may also be omitted, and its interpretation will be
+ * dependent on the underlying router used.
  */
 class ApplicationFactory
 {
