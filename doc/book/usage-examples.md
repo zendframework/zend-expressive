@@ -425,7 +425,7 @@ along to the next by calling `$next()`.
 `Zend\Expressive\Application` extends `Zend\Stratigility\MiddlewarePipe`,
 allowing composition of multiple middleware.
 
-It also implements routing middleware (`Application\RouteMiddleware`), which it
+It also implements routing middleware (`Application::routeMiddleware()`), which it
 pipes to itself the first time a route is added.
 
 As such, if you want to execute middleware on every request, you have several
