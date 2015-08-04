@@ -12,8 +12,6 @@ namespace Zend\Expressive\Exception;
 /**
  * Marker interface for package-specific exceptions.
  */
-namespace Zend\Expressive\Exception;
-
 interface ExceptionInterface
 {
 }

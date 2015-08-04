@@ -6,6 +6,7 @@
  * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
+
 namespace Zend\Expressive\Router;
 
 use FastRoute\DataGenerator\GroupCountBased as RouteGenerator;
@@ -14,6 +15,9 @@ use FastRoute\RouteCollector;
 use FastRoute\RouteParser\Std as RouteParser;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
+/**
+ * Router implementation bridging nikic/fast-route.
+ */
 class FastRoute implements RouterInterface
 {
     /**
@@ -36,8 +40,21 @@ class FastRoute implements RouterInterface
     private $routes;
 
     /**
-     * @param null|RouteCollector $router If not provided, a default implementation will be used.
-     * @param null|callable $dispatcherFactory
+     * Constructor
+     *
+     * Accepts optionally a FastRoute RouteCollector and a callable factory
+     * that can return a FastRoute dispatcher.
+     *
+     * If either is not provided defaults will be used:
+     *
+     * - A RouteCollector instance will be created composing a RouteParser and
+     *   RouteGenerator.
+     * - A callable that returns a GroupCountBased dispatcher will be created.
+     *
+     * @param null|RouteCollector $router If not provided, a default
+     *     implementation will be used.
+     * @param null|callable $dispatcherFactory Callable that will return a
+     *     FastRoute dispatcher.
      */
     public function __construct(RouteCollector $router = null, callable $dispatcherFactory = null)
     {
@@ -47,16 +64,6 @@ class FastRoute implements RouterInterface
 
         $this->router = $router;
         $this->dispatcherCallback = $dispatcherFactory;
-    }
-
-    /**
-     * Create a default FastRoute Collector instance
-     *
-     * @return RouteCollector
-     */
-    private function createRouter()
-    {
-        return new RouteCollector(new RouteParser, new RouteGenerator);
     }
 
     /**
@@ -100,6 +107,48 @@ class FastRoute implements RouterInterface
         }
 
         return $this->marshalMatchedRoute($result, $method);
+    }
+
+    /**
+     * Create a default FastRoute Collector instance
+     *
+     * @return RouteCollector
+     */
+    private function createRouter()
+    {
+        return new RouteCollector(new RouteParser, new RouteGenerator);
+    }
+
+    /**
+     * Retrieve the dispatcher instance.
+     *
+     * Uses the callable factory in $dispatcherCallback, passing it $data
+     * (which should be derived from the router's getData() method); this
+     * approach is done to allow testing against the dispatcher.
+     *
+     * @param  array|object $data Data from RouteCollection::getData()
+     * @return Dispatcher
+     */
+    private function getDispatcher($data)
+    {
+        if (! $this->dispatcherCallback) {
+            $this->dispatcherCallback = $this->createDispatcherCallback();
+        }
+
+        $factory = $this->dispatcherCallback;
+        return $factory($data);
+    }
+
+    /**
+     * Return a default implemententation of a callback that can return a Dispatcher.
+     *
+     * @return callable
+     */
+    private function createDispatcherCallback()
+    {
+        return function ($data) {
+            return new Dispatcher($data);
+        };
     }
 
     /**
@@ -149,37 +198,5 @@ class FastRoute implements RouterInterface
             $middleware,
             $result[2]
         );
-    }
-
-    /**
-     * Retrieve the dispatcher instance.
-     *
-     * Uses the callable factory in $dispatcherCallback, passing it $data
-     * (which should be derived from the router's getData() method); this
-     * approach is done to allow testing against the dispatcher.
-     *
-     * @param  array|object $data Data from RouteCollection::getData()
-     * @return Dispatcher
-     */
-    private function getDispatcher($data)
-    {
-        if (! $this->dispatcherCallback) {
-            $this->dispatcherCallback = $this->createDispatcherCallback();
-        }
-
-        $factory = $this->dispatcherCallback;
-        return $factory($data);
-    }
-
-    /**
-     * Return a default implemententation of a callback that can return a Dispatcher.
-     *
-     * @return callable
-     */
-    private function createDispatcherCallback()
-    {
-        return function ($data) {
-            return new Dispatcher($data);
-        };
     }
 }
