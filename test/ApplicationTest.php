@@ -147,10 +147,23 @@ class ApplicationTest extends TestCase
         });
     }
 
-    public function testRouteMiddlewareIsPipedAtInstantiation()
+    public function testRouteMiddlewareIsNotPipedAtInstantation()
     {
         $app = $this->getApp();
-        $routeMiddleware = [$app, 'routeMiddleware'];
+
+        $r = new ReflectionProperty($app, 'pipeline');
+        $r->setAccessible(true);
+        $pipeline = $r->getValue($app);
+
+        $this->assertCount(0, $pipeline);
+    }
+
+    public function testRouteMiddlewareIsPipedAtFirstCallToRoute()
+    {
+        $this->router->addRoute(Argument::type(Route::class))->shouldBeCalled();
+
+        $app = $this->getApp();
+        $app->route('/foo', 'bar');
 
         $r = new ReflectionProperty($app, 'pipeline');
         $r->setAccessible(true);
@@ -160,6 +173,28 @@ class ApplicationTest extends TestCase
         $route = $pipeline->dequeue();
         $this->assertInstanceOf('Zend\Stratigility\Route', $route);
         $test  = $route->handler;
+
+        $routeMiddleware = [$app, 'routeMiddleware'];
+        $this->assertSame($routeMiddleware, $test);
+    }
+
+    public function testCannotPipeRouteMiddlewareMoreThanOnce()
+    {
+        $app             = $this->getApp();
+        $routeMiddleware = [$app, 'routeMiddleware'];
+
+        $app->pipe($routeMiddleware);
+        $app->pipe($routeMiddleware);
+
+        $r = new ReflectionProperty($app, 'pipeline');
+        $r->setAccessible(true);
+        $pipeline = $r->getValue($app);
+
+        $this->assertCount(1, $pipeline);
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $test  = $route->handler;
+
         $this->assertSame($routeMiddleware, $test);
     }
 

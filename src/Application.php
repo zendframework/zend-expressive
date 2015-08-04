@@ -61,6 +61,12 @@ class Application extends MiddlewarePipe
     ];
 
     /**
+     * @var bool Flag indicating whether or not the route middleware is
+     *     registered in the middleware pipeline.
+     */
+    private $routeMiddlewareIsRegistered = false;
+
+    /**
      * @var Router\RouterInterface
      */
     private $router;
@@ -97,7 +103,6 @@ class Application extends MiddlewarePipe
         $this->container    = $container;
         $this->finalHandler = $finalHandler;
         $this->emitter      = $emitter;
-        $this->pipe([$this, 'routeMiddleware']);
     }
 
     /**
@@ -140,6 +145,35 @@ class Application extends MiddlewarePipe
 
         $args[] = [$method];
         return call_user_func_array([$this, 'route'], $args);
+    }
+
+    /**
+     * Overload pipe() operation
+     *
+     * Ensures that the route middleware is only ever registered once.
+     *
+     * @param string|callable|object $path Either a URI path prefix, or middleware.
+     * @param null|callable|object $middleware Middleware
+     * @return self
+     */
+    public function pipe($path, $middleware = null)
+    {
+        if (null === $middleware && is_callable($path)) {
+            $middleware = $path;
+            $path       = '/';
+        }
+
+        if ($middleware === [$this, 'routeMiddleware'] && $this->routeMiddlewareIsRegistered) {
+            return $this;
+        }
+
+        parent::pipe($path, $middleware);
+
+        if ($middleware === [$this, 'routeMiddleware']) {
+            $this->routeMiddlewareIsRegistered = true;
+        }
+
+        return $this;
     }
 
     /**
@@ -209,6 +243,14 @@ class Application extends MiddlewarePipe
     }
 
     /**
+     * Add a route for the route middleware to match.
+     *
+     * Accepts either a Router\Route instance, or a combination of a path and
+     * middleware, and optionally the HTTP methods allowed.
+     *
+     * On first invocation, pipes the route middleware to the middleware
+     * pipeline.
+     *
      * @param string|Router\Route $path
      * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
      * @param null|array $methods HTTP method to accept; null indicates any.
@@ -239,6 +281,11 @@ class Application extends MiddlewarePipe
 
         $this->routes[] = $route;
         $this->router->addRoute($route);
+
+        if (! $this->routeMiddlewareIsRegistered) {
+            $this->pipe([$this, 'routeMiddleware']);
+        }
+
         return $route;
     }
 

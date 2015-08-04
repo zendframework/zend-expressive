@@ -422,32 +422,66 @@ along to the next by calling `$next()`.
 
 ## Middleware that executes on every request
 
-`Zend\Expressive\Application` pipes `Zend\Expressive\Dispatcher` immediately on
-instantiation, making it impossible to add middleware to execute on each request
-out-of-the-box. Since `Application` is itself middleware, however, you can
-compose it within another middleware pipeline.
+`Zend\Expressive\Application` extends `Zend\Stratigility\MiddlewarePipe`,
+allowing composition of multiple middleware.
+
+It also implements routing middleware (`Application\RouteMiddleware`), which it
+pipes to itself the first time a route is added.
+
+As such, if you want to execute middleware on every request, you have several
+options:
+
+- For middleware you want to match for every request (not just error
+  middleware), pipe it to the application prior to registering any routes.
+- Error middleware should typically be piped *after* registering any routes.
 
 As an example:
 
 ```php
-use Zend\Diactoros\Server;
 use Zend\Expressive\AppFactory;
+
+$app = AppFactory::create();
+
+$app->pipe($middlewareToExecuteOnEachRequest)
+$app->route(/* ... */);
+$app->pipe($anErrorHandler);
+
+$app->run();
+```
+
+## Segregating your application to a subpath
+
+One benefit of a middleware-based application is the ability to compose
+middleware and segregate them by paths. `Zend\Expressive\Application` is itself
+middleware, allowing you to do exactly that if desired.
+
+In the following example, we'll assume that `$api` and `$blog` are
+`Zend\Expressive\Application` instances, and compose them into a
+`Zend\Stratigility\MiddlewarePipe`.
+
+```php
+use Zend\Diactoros\Server;
 use Zend\Stratigility\MiddlewarePipe;
 
 require __DIR__ . '/../vendor/autoload.php';
 
 $app = new MiddlewarePipe();
-$app->pipe(function ($req, $res, $next) {
-    // executes on every request
-});
-$app->pipe(AppFactory::create());
+$app->pipe('/blog', $blog);
+$app->pipe('/api', $api);
 
-$server = Server::createServer($app);
+$server = Server::fromGlobals($app);
 $server->listen();
 ```
 
-(Instead of using `Zend\DiactorosServer`, you could use an emitter; this is just
-the simplest example for the scenario.)
+You could also compose them in an `Application` instance, and utilize `run()`:
 
-With this workflow, you can even segregate your application instance to a
-subpath if desired!
+```php
+$app = AppFactory::create();
+$app->pipe('/blog', $blog);
+$app->pipe('/api', $api);
+
+$app->run();
+```
+
+This approach allows you to develop discrete applications and compose them
+together to create a website.
