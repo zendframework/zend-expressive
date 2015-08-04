@@ -363,8 +363,7 @@ use Zend\ServiceManager\ServiceManager;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$config = new Config(include __DIR__ . '/../config/services.php');
-$services = new ServiceManager($config);
+$services = new ServiceManager(new Config(include __DIR__ . '/../config/services.php'));
 
 $app = $services->get('Zend\Expressive\Application');
 $app->run();
