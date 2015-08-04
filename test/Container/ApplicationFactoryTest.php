@@ -200,4 +200,489 @@ class ApplicationFactoryTest extends TestCase
         $this->assertInstanceOf('Zend\Diactoros\Response\SapiEmitter', $app->getEmitter()->pop());
         $this->assertInstanceOf('Zend\Stratigility\FinalHandler', $app->getFinalHandler());
     }
+
+    /**
+     * @group piping
+     */
+    public function testCanPipeMiddlewareProvidedDuringConfigurationPriorToSettingRoutes()
+    {
+        $router = $this->prophesize('Zend\Expressive\Router\RouterInterface');
+        $emitter = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
+        $finalHandler = function ($req, $res, $err = null) {
+        };
+
+        $middleware = function ($req, $res, $next = null) {
+        };
+
+        $config = [
+            'routes' => [
+                [
+                    'path' => '/',
+                    'middleware' => 'HelloWorld',
+                    'allowed_methods' => [ 'GET' ],
+                ],
+            ],
+            'middleware_pipeline' => [
+                'pre_routing' => [
+                    [ 'middleware' => $middleware ],
+                    [ 'path' => '/foo', 'middleware' => $middleware ],
+                ],
+                'post_routing' => [ ],
+            ],
+        ];
+
+        $this->container
+            ->has('Zend\Expressive\Router\RouterInterface')
+            ->willReturn(true);
+        $this->container
+            ->get('Zend\Expressive\Router\RouterInterface')
+            ->will(function () use ($router) {
+                return $router->reveal();
+            });
+
+        $this->container
+            ->has('Zend\Diactoros\Response\EmitterInterface')
+            ->willReturn(true);
+        $this->container
+            ->get('Zend\Diactoros\Response\EmitterInterface')
+            ->will(function () use ($emitter) {
+                return $emitter->reveal();
+            });
+
+        $this->container
+            ->has('Zend\Expressive\FinalHandler')
+            ->willReturn(true);
+        $this->container
+            ->get('Zend\Expressive\FinalHandler')
+            ->willReturn($finalHandler);
+
+        $this->container
+            ->has('Config')
+            ->willReturn(true);
+
+        $this->container
+            ->get('Config')
+            ->willReturn($config);
+
+        $app = $this->factory->__invoke($this->container->reveal());
+
+        $r = new ReflectionProperty($app, 'pipeline');
+        $r->setAccessible(true);
+        $pipeline = $r->getValue($app);
+
+        $this->assertCount(3, $pipeline);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertSame($middleware, $route->handler);
+        $this->assertEquals('/', $route->path);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertSame($middleware, $route->handler);
+        $this->assertEquals('/foo', $route->path);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertSame([$app, 'routeMiddleware'], $route->handler);
+        $this->assertEquals('/', $route->path);
+    }
+
+    /**
+     * @group piping
+     */
+    public function testCanPipeMiddlewareProvidedDuringConfigurationAfterSettingRoutes()
+    {
+        $router = $this->prophesize('Zend\Expressive\Router\RouterInterface');
+        $emitter = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
+        $finalHandler = function ($req, $res, $err = null) {
+        };
+
+        $middleware = function ($req, $res, $next = null) {
+            return true;
+        };
+
+        $config = [
+            'routes' => [
+                [
+                    'path' => '/',
+                    'middleware' => 'HelloWorld',
+                    'allowed_methods' => [ 'GET' ],
+                ],
+            ],
+            'middleware_pipeline' => [
+                'pre_routing' => [ ],
+                'post_routing' => [
+                    [ 'middleware' => $middleware ],
+                    [ 'path' => '/foo', 'middleware' => $middleware ],
+                ],
+            ],
+        ];
+
+        $this->container
+            ->has('Zend\Expressive\Router\RouterInterface')
+            ->willReturn(true);
+        $this->container
+            ->get('Zend\Expressive\Router\RouterInterface')
+            ->will(function () use ($router) {
+                return $router->reveal();
+            });
+
+        $this->container
+            ->has('Zend\Diactoros\Response\EmitterInterface')
+            ->willReturn(true);
+        $this->container
+            ->get('Zend\Diactoros\Response\EmitterInterface')
+            ->will(function () use ($emitter) {
+                return $emitter->reveal();
+            });
+
+        $this->container
+            ->has('Zend\Expressive\FinalHandler')
+            ->willReturn(true);
+        $this->container
+            ->get('Zend\Expressive\FinalHandler')
+            ->willReturn($finalHandler);
+
+        $this->container
+            ->has('Config')
+            ->willReturn(true);
+
+        $this->container
+            ->get('Config')
+            ->willReturn($config);
+
+        $app = $this->factory->__invoke($this->container->reveal());
+
+        $r = new ReflectionProperty($app, 'pipeline');
+        $r->setAccessible(true);
+        $pipeline = $r->getValue($app);
+
+        $this->assertCount(3, $pipeline);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertSame([$app, 'routeMiddleware'], $route->handler);
+        $this->assertEquals('/', $route->path);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertInstanceOf('Closure', $route->handler);
+        $this->assertTrue(call_user_func($route->handler, 'req', 'res'));
+        $this->assertEquals('/', $route->path);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertInstanceOf('Closure', $route->handler);
+        $this->assertTrue(call_user_func($route->handler, 'req', 'res'));
+        $this->assertEquals('/foo', $route->path);
+    }
+
+    /**
+     * @group piping
+     */
+    public function testPipedMiddlewareAsServiceNamesAreReturnedAsClosuresThatPullFromContainer()
+    {
+        $router = $this->prophesize('Zend\Expressive\Router\RouterInterface');
+        $emitter = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
+        $finalHandler = function ($req, $res, $err = null) {
+        };
+
+        $middleware = function ($req, $res, $next = null) {
+            return true;
+        };
+
+        $config = [
+            'middleware_pipeline' => [
+                'post_routing' => [
+                    [ 'middleware' => 'Middleware' ],
+                    [ 'path' => '/foo', 'middleware' => 'Middleware' ],
+                ],
+            ],
+        ];
+
+        $this->container
+            ->has('Zend\Expressive\Router\RouterInterface')
+            ->willReturn(true);
+        $this->container
+            ->get('Zend\Expressive\Router\RouterInterface')
+            ->will(function () use ($router) {
+                return $router->reveal();
+            });
+
+        $this->container
+            ->has('Zend\Diactoros\Response\EmitterInterface')
+            ->willReturn(true);
+        $this->container
+            ->get('Zend\Diactoros\Response\EmitterInterface')
+            ->will(function () use ($emitter) {
+                return $emitter->reveal();
+            });
+
+        $this->container
+            ->has('Zend\Expressive\FinalHandler')
+            ->willReturn(true);
+        $this->container
+            ->get('Zend\Expressive\FinalHandler')
+            ->willReturn($finalHandler);
+
+        $this->container
+            ->has('Config')
+            ->willReturn(true);
+
+        $this->container
+            ->get('Config')
+            ->willReturn($config);
+
+        $this->container
+            ->has('Middleware')
+            ->willReturn(true);
+
+        $this->container
+            ->get('Middleware')
+            ->willReturn($middleware);
+
+        $app = $this->factory->__invoke($this->container->reveal());
+
+        $r = new ReflectionProperty($app, 'pipeline');
+        $r->setAccessible(true);
+        $pipeline = $r->getValue($app);
+
+        $this->assertCount(2, $pipeline);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertInstanceOf('Closure', $route->handler);
+        $this->assertTrue(call_user_func($route->handler, 'req', 'res'));
+        $this->assertEquals('/', $route->path);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertInstanceOf('Closure', $route->handler);
+        $this->assertTrue(call_user_func($route->handler, 'req', 'res'));
+        $this->assertEquals('/foo', $route->path);
+    }
+
+    public function uncallableMiddleware()
+    {
+        return [
+            'null'       => [null],
+            'true'       => [true],
+            'false'      => [false],
+            'zero'       => [0],
+            'int'        => [1],
+            'zero-float' => [0.0],
+            'float'      => [1.1],
+            'array'      => [['Middleware']],
+            'object'     => [(object) ['call' => 'Middleware']],
+        ];
+    }
+
+    /**
+     * @group piping
+     * @dataProvider uncallableMiddleware
+     */
+    public function testRaisesExceptionForNonCallableNonServiceMiddleware($middleware)
+    {
+        $router = $this->prophesize('Zend\Expressive\Router\RouterInterface');
+        $emitter = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
+        $finalHandler = function ($req, $res, $err = null) {
+        };
+
+        $config = [
+            'middleware_pipeline' => [
+                'post_routing' => [
+                    [ 'middleware' => $middleware ],
+                    [ 'path' => '/foo', 'middleware' => $middleware ],
+                ],
+            ],
+        ];
+
+        $this->container
+            ->has('Zend\Expressive\Router\RouterInterface')
+            ->willReturn(true);
+        $this->container
+            ->get('Zend\Expressive\Router\RouterInterface')
+            ->will(function () use ($router) {
+                return $router->reveal();
+            });
+
+        $this->container
+            ->has('Zend\Diactoros\Response\EmitterInterface')
+            ->willReturn(true);
+        $this->container
+            ->get('Zend\Diactoros\Response\EmitterInterface')
+            ->will(function () use ($emitter) {
+                return $emitter->reveal();
+            });
+
+        $this->container
+            ->has('Zend\Expressive\FinalHandler')
+            ->willReturn(true);
+        $this->container
+            ->get('Zend\Expressive\FinalHandler')
+            ->willReturn($finalHandler);
+
+        $this->container
+            ->has('Config')
+            ->willReturn(true);
+
+        $this->container
+            ->get('Config')
+            ->willReturn($config);
+
+        $this->setExpectedException('Zend\Expressive\Exception\InvalidMiddlewareException');
+        $app = $this->factory->__invoke($this->container->reveal());
+    }
+
+    /**
+     * @group piping
+     */
+    public function testRaisesExceptionForPipedMiddlewareServiceNamesNotFoundInContainer()
+    {
+        $router = $this->prophesize('Zend\Expressive\Router\RouterInterface');
+        $emitter = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
+        $finalHandler = function ($req, $res, $err = null) {
+        };
+
+        $config = [
+            'middleware_pipeline' => [
+                'post_routing' => [
+                    [ 'middleware' => 'Middleware' ],
+                    [ 'path' => '/foo', 'middleware' => 'Middleware' ],
+                ],
+            ],
+        ];
+
+        $this->container
+            ->has('Zend\Expressive\Router\RouterInterface')
+            ->willReturn(true);
+        $this->container
+            ->get('Zend\Expressive\Router\RouterInterface')
+            ->will(function () use ($router) {
+                return $router->reveal();
+            });
+
+        $this->container
+            ->has('Zend\Diactoros\Response\EmitterInterface')
+            ->willReturn(true);
+        $this->container
+            ->get('Zend\Diactoros\Response\EmitterInterface')
+            ->will(function () use ($emitter) {
+                return $emitter->reveal();
+            });
+
+        $this->container
+            ->has('Zend\Expressive\FinalHandler')
+            ->willReturn(true);
+        $this->container
+            ->get('Zend\Expressive\FinalHandler')
+            ->willReturn($finalHandler);
+
+        $this->container
+            ->has('Config')
+            ->willReturn(true);
+
+        $this->container
+            ->get('Config')
+            ->willReturn($config);
+
+        $this->container
+            ->has('Middleware')
+            ->willReturn(false);
+
+        $this->setExpectedException('Zend\Expressive\Exception\InvalidMiddlewareException');
+        $app = $this->factory->__invoke($this->container->reveal());
+    }
+
+    /**
+     * @group piping
+     */
+    public function testRaisesExceptionOnInvocationOfUninvokableServiceSpecifiedMiddlewarePulledFromContainer()
+    {
+        $router = $this->prophesize('Zend\Expressive\Router\RouterInterface');
+        $emitter = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
+        $finalHandler = function ($req, $res, $err = null) {
+        };
+
+        $middleware = (object) [];
+
+        $config = [
+            'middleware_pipeline' => [
+                'post_routing' => [
+                    [ 'middleware' => 'Middleware' ],
+                    [ 'path' => '/foo', 'middleware' => 'Middleware' ],
+                ],
+            ],
+        ];
+
+        $this->container
+            ->has('Zend\Expressive\Router\RouterInterface')
+            ->willReturn(true);
+        $this->container
+            ->get('Zend\Expressive\Router\RouterInterface')
+            ->will(function () use ($router) {
+                return $router->reveal();
+            });
+
+        $this->container
+            ->has('Zend\Diactoros\Response\EmitterInterface')
+            ->willReturn(true);
+        $this->container
+            ->get('Zend\Diactoros\Response\EmitterInterface')
+            ->will(function () use ($emitter) {
+                return $emitter->reveal();
+            });
+
+        $this->container
+            ->has('Zend\Expressive\FinalHandler')
+            ->willReturn(true);
+        $this->container
+            ->get('Zend\Expressive\FinalHandler')
+            ->willReturn($finalHandler);
+
+        $this->container
+            ->has('Config')
+            ->willReturn(true);
+
+        $this->container
+            ->get('Config')
+            ->willReturn($config);
+
+        $this->container
+            ->has('Middleware')
+            ->willReturn(true);
+
+        $this->container
+            ->get('Middleware')
+            ->willReturn($middleware);
+
+        $app = $this->factory->__invoke($this->container->reveal());
+
+        $r = new ReflectionProperty($app, 'pipeline');
+        $r->setAccessible(true);
+        $pipeline = $r->getValue($app);
+
+        $this->assertCount(2, $pipeline);
+
+        $first = $pipeline->dequeue();
+        $this->assertInstanceOf('Zend\Stratigility\Route', $first);
+        $this->assertInstanceOf('Closure', $first->handler);
+        $this->assertEquals('/', $first->path);
+
+        $second = $pipeline->dequeue();
+        $this->assertInstanceOf('Zend\Stratigility\Route', $second);
+        $this->assertInstanceOf('Closure', $second->handler);
+        $this->assertEquals('/foo', $second->path);
+
+        foreach (['first' => $first->handler, 'second' => $second->handler] as $index => $handler) {
+            try {
+                $handler('req', 'res');
+                $this->fail(sprintf('%s handler succeed, but should have raised an exception', $index));
+            } catch (\Exception $e) {
+                $this->assertInstanceOf('Zend\Expressive\Exception\InvalidMiddlewareException', $e);
+                $this->assertContains('Lazy-loaded', $e->getMessage());
+            }
+        }
+    }
 }

@@ -449,6 +449,76 @@ $app->pipe($anErrorHandler);
 $app->run();
 ```
 
+### Using the container to register middleware
+
+If you use a container to fetch your application instance, you have an
+additional option for specifying middleware for the pipeline: configuration:
+
+```php
+return [
+    'routes' => [
+        [
+            'path' => '/path/to/match',
+            'middleware' => 'Middleware Service Name or Callable',
+            'allowed_methods' => [ 'GET', 'POST', 'PATCH' ],
+            'options' => [
+                'stuff' => 'to',
+                'pass'  => 'to',
+                'the'   => 'underlying router',
+            ],
+        ],
+        // etc.
+    ],
+    'middleware_pipeline' => [
+        'pre_routing' => [
+            'middleware services',
+            'to register BEFORE',
+            'routing',
+        ],
+        'post_routing' => [
+            'middleware services',
+            'to register AFTER',
+            'routing',
+        ],
+    ],
+];
+```
+
+The key to note is `middleware_pipeline`, which can have two subkeys,
+`pre_routing` and `post_routing`. Each accepts an array of middlewares to
+register in the pipeline; they will each be `pipe()`'d to the Application in the
+order specified. Those specified `pre_routing` will be registered before any
+routes, and thus before the routing middleware, while those specified
+`post_routing` will be `pipe()`'d afterwards (again, also in the order
+specified).
+
+Middleware may be any callable, `Zend\Stratigility\MiddlewareInterface`
+implementation, or a service name that resolves to one of the two.
+
+> #### Lazy-loaded Middleware
+>
+> One feature of the `middleware_pipeline` is that any middleware service pulled
+> from the container is actually wrapped in a closure:
+>
+> ```php
+> function ($request, $response, $next = null) use ($services, $middleware) {
+>     $invokable = $services->get($middleware);
+>     if (! is_callable($invokable)) {
+>         throw new Exception\InvalidMiddlewareException(sprintf(
+>             'Lazy-loaded middleware "%s" is not invokable',
+>             $middleware
+>         ));
+>     }
+>     return $invokable($request, $response, $next);
+> };
+> ```
+>
+> This implements *lazy-loading* for middleware pipeline services, delaying
+> retrieval from the container until the middleware is actually invoked.
+>
+> This also means that if the service specified is not valid middleware, you
+> will not find out until the application attempts to invoke it.
+
 ## Segregating your application to a subpath
 
 One benefit of a middleware-based application is the ability to compose
