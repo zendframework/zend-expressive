@@ -361,9 +361,10 @@ Finally, in `public/index.php`, place the following:
 use Zend\ServiceManager\Config;
 use Zend\ServiceManager\ServiceManager;
 
-$services = new ServiceManager();
+require __DIR__ . '/../vendor/autoload.php';
+
 $config = new Config(include __DIR__ . '/../config/services.php');
-$config->configure($services);
+$services = new ServiceManager($config);
 
 $app = $services->get('Zend\Expressive\Application');
 $app->run();
@@ -433,6 +434,8 @@ As an example:
 use Zend\Diactoros\Server;
 use Zend\Expressive\AppFactory;
 use Zend\Stratigility\MiddlewarePipe;
+
+require __DIR__ . '/../vendor/autoload.php';
 
 $app = new MiddlewarePipe();
 $app->pipe(function ($req, $res, $next) {
