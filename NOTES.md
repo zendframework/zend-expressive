@@ -43,12 +43,9 @@ use Zend\ServiceManager\ServiceManager;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$services = new ServiceManager();
-$config = new Config(require 'config/services.php');
-$config->configureServiceManager($services);
+$services = new ServiceManager(new Config(include __DIR__ . '/../config/services.php'));
 
 $app = $services->get('Zend\Expressive\Application');
-
 $app->run();
 ```
 
@@ -99,12 +96,9 @@ use Zend\ServiceManager\ServiceManager;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$services = new ServiceManager();
-$config = new Config(require 'config/services.php');
-$config->configureServiceManager($services);
+$services = new ServiceManager(new Config(include __DIR__ . '/../config/services.php'));
 
 $app = $services->get('Zend\Expressive\Application');
-
 $app->run();
 ```
 
@@ -387,6 +381,8 @@ use Zend\Diactoros\Server;
 use Zend\Expressive\Application;
 use Zend\Stratigility\MiddlewarePipe;
 
+require __DIR__ . '/../vendor/autoload.php';
+
 $app = new Application();
 $app->get('/foo', function ($req, $res, $next) {
     // ...
@@ -440,6 +436,9 @@ $server->listen();
   ```php
   <?php
   use Zend\Expressive\Application;
+  
+  require __DIR__ . '/../vendor/autoload.php';
+  
   $app = new Application();
   $app->get(/* ... */);
   $app->run();
@@ -457,7 +456,9 @@ $server->listen();
   ```php
   <?php
   use Zend\Expressive\Application;
-
+  
+  require __DIR__ . '/../vendor/autoload.php';
+  
   $app = Application::create();
   $app->get(/* ... */);
   $app->run();
@@ -474,6 +475,8 @@ $server->listen();
   ```php
   <?php
   use Zend\Diactoros\Response\SapiEmitter;
+  
+  require __DIR__ . '/../vendor/autoload.php';
 
   $emitter = new EmitterMap();
   // The following would likely be present by default, and be the fallback
