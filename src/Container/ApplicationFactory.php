@@ -24,7 +24,7 @@ use Zend\Expressive\Router\Route;
  *
  * - Zend\Expressive\Router\RouterInterface. If missing, an Aura router bridge
  *   will be instantiated and used.
- * - Zend\Expressive\FinalHandler. The service should be a callable to use as
+ * - Zend\Stratigility\FinalHandler. The service should be a callable to use as
  *   the final handler when the middleware pipeline is exhausted.
  * - Zend\Diactoros\Response\EmitterInterface. If missing, an EmitterStack is
  *   created, adding a SapiEmitter to the bottom of the stack.
@@ -123,8 +123,8 @@ class ApplicationFactory
             ? $services->get('Zend\Expressive\Router\RouterInterface')
             : new AuraRouter();
 
-        $finalHandler = $services->has('Zend\Expressive\FinalHandler')
-            ? $services->get('Zend\Expressive\FinalHandler')
+        $finalHandler = $services->has('Zend\Stratigility\FinalHandler')
+            ? $services->get('Zend\Stratigility\FinalHandler')
             : null;
 
         $emitter = $services->has('Zend\Diactoros\Response\EmitterInterface')
