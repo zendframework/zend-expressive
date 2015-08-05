@@ -4,6 +4,12 @@
 combinations for how to both parse routes and match incoming requests against
 them.
 
+To use FastRoute, you will first need to install it:
+
+```bash
+$ composer require nikic/fast-route
+```
+
 Internally, we use the standard route parser (`FastRoute\RouterParser\Std`) to
 parse routes, a `RouteCollector` to collect them, and the "Group Count Based"
 dispatcher to match incoming requests against routes.
