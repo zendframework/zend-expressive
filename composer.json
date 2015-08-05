@@ -9,12 +9,6 @@
         "psr",
         "psr-7"
     ],
-    "repositories": [
-      {
-        "type": "vcs",
-        "url": "https://github.com/ezimuel/zend-stratigility-dispatch.git"
-      }
-    ],
     "require": {
         "php": ">=5.5",
         "aura/router": "^2.3",
