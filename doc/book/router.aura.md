@@ -119,7 +119,7 @@ class AuraRouterFactory
 {
     /**
      * @param ContainerInterface $services
-     * @return \Aura\Router\Router
+     * @return AuraBridge
      */
     public function __invoke(ContainerInterface $services)
     {
