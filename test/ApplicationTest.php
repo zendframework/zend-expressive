@@ -136,6 +136,13 @@ class ApplicationTest extends TestCase
         $this->assertSame($middleware, $test->getMiddleware());
     }
 
+    public function testRouteCallWithPathIsNotInstanceOfRouteAndMiddleWareIsNull()
+    {
+        $app = $this->getApp();
+        $this->setExpectedException('InvalidArgumentException');
+        $app->route('/foo', null);
+    }
+
     public function testCreatingHttpRouteWithExistingPathAndMethodRaisesException()
     {
         $this->router->addRoute(Argument::type(Route::class))->shouldBeCalledTimes(1);
