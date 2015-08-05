@@ -13,6 +13,7 @@ use Interop\Container\ContainerInterface;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Expressive\Application;
 use Zend\Expressive\Emitter\EmitterStack;
+use Zend\Expressive\Exception;
 use Zend\Expressive\Router\Aura as AuraRouter;
 use Zend\Expressive\Router\Route;
 
@@ -61,6 +62,49 @@ use Zend\Expressive\Router\Route;
  *
  * The "options" key may also be omitted, and its interpretation will be
  * dependent on the underlying router used.
+ *
+ * Furthermore, you can define middleware to pipe to the application to run on
+ * every invocation (assuming they match and/or other middleware does not
+ * return a response earlier). Use the following configuration:
+ *
+ * <code>
+ * return [
+ *     'middleware_pipeline' => [
+ *         // An array of middleware to register prior to registration of the
+ *         // routing middleware:
+ *         'pre_routing' => [
+ *         ],
+ *         // An array of middleware to register after registration of the
+ *         // routing middleware:
+ *         'post_routing' => [
+ *         ],
+ *     ],
+ * ];
+ * </code>
+ *
+ * Middleware are pipe()'d to the application instance in the order in which
+ * they appear. "pre_routing" middleware will execute before the application's
+ * routing middleware, while "post_routing" middleware will execute afterwards.
+ *
+ * Middleware piped may be either callables or service names. Middleware
+ * specified as services will be wrapped in a closure similar to the following:
+ *
+ * <code>
+ * function ($request, $response, $next = null) use ($services, $middleware) {
+ *     $invokable = $services->get($middleware);
+ *     if (! is_callable($invokable)) {
+ *         throw new Exception\InvalidMiddlewareException(sprintf(
+ *             'Lazy-loaded middleware "%s" is not invokable',
+ *             $middleware
+ *         ));
+ *     }
+ *     return $invokable($request, $response, $next);
+ * };
+ * </code>
+ *
+ * This is done to delay fetching the middleware until it is actually used; the
+ * upshot is that you will not be notified if the service is invalid to use as
+ * middleware until runtime.
  */
 class ApplicationFactory
 {
@@ -89,7 +133,9 @@ class ApplicationFactory
 
         $app = new Application($router, $services, $finalHandler, $emitter);
 
+        $this->injectPreMiddleware($app, $services);
         $this->injectRoutes($app, $services);
+        $this->injectPostMiddleware($app, $services);
 
         return $app;
     }
@@ -133,5 +179,118 @@ class ApplicationFactory
         $emitter = new EmitterStack();
         $emitter->push(new SapiEmitter());
         return $emitter;
+    }
+
+    /**
+     * Given a collection of middleware specifications, pipe them to the application.
+     *
+     * @param array $collection
+     * @param Application $app
+     * @param ContainerInterface $services
+     * @throws Exception\InvalidMiddlewareException for invalid middleware.
+     */
+    private function injectMiddleware(array $collection, Application $app, ContainerInterface $services)
+    {
+        foreach ($collection as $spec) {
+            if (! array_key_exists('middleware', $spec)) {
+                continue;
+            }
+
+            $middleware = $spec['middleware'];
+            if (! is_callable($middleware)) {
+                $middleware = $this->marshalMiddleware($middleware, $services);
+            }
+
+            $path = isset($spec['path']) ? $spec['path'] : '/';
+
+            $app->pipe($path, $middleware);
+        }
+    }
+
+    /**
+     * Marshal middleware from the IoC container.
+     *
+     * If middleware is found in the container, this method returns a closure
+     * in which the middleware is retrieved from the container and then invoked;
+     * if the middleware is not callable, an exception is raised prior to
+     * invocation.
+     *
+     * This practice provides lazy-loading of middleware, so that it is only
+     * retrieved from the IoC container when it is actually used.
+     *
+     * @param string $middleware
+     * @param ContainerInterface $services
+     * @return callable
+     * @throws Exception\InvalidMiddlewareException if $middleware is not a string.
+     * @throws Exception\InvalidMiddlewareException if $middleware is not found in $services
+     */
+    private function marshalMiddleware($middleware, ContainerInterface $services)
+    {
+        if (! is_string($middleware)) {
+            throw new Exception\InvalidMiddlewareException(sprintf(
+                'Invalid pipeline middleware; expects a callable or service name, received "%s"',
+                (is_object($middleware) ? get_class($middleware) : gettype($middleware))
+            ));
+        }
+
+        if (! $services->has($middleware)) {
+            throw new Exception\InvalidMiddlewareException(sprintf(
+                'Invalid pipeline middleware; service "%s" not found in container',
+                $middleware
+            ));
+        }
+
+        return function ($request, $response, $next = null) use ($services, $middleware) {
+            $invokable = $services->get($middleware);
+            if (! is_callable($invokable)) {
+                throw new Exception\InvalidMiddlewareException(sprintf(
+                    'Lazy-loaded middleware "%s" is not invokable',
+                    $middleware
+                ));
+            }
+            return $invokable($request, $response, $next);
+        };
+    }
+
+    /**
+     * Inject middleware to pipe before the routing middleware.
+     *
+     * Pre-routing middleware is specified as the configuration subkey
+     * middleware_pipeline.pre_routing.
+     *
+     * @param Application $app
+     * @param ContainerInterface $services
+     */
+    private function injectPreMiddleware(Application $app, ContainerInterface $services)
+    {
+        $config = $services->has('Config') ? $services->get('Config') : [];
+        if (! isset($config['middleware_pipeline']['pre_routing']) ||
+            ! is_array($config['middleware_pipeline']['pre_routing'])
+        ) {
+            return;
+        }
+
+        $this->injectMiddleware($config['middleware_pipeline']['pre_routing'], $app, $services);
+    }
+
+    /**
+     * Inject middleware to pipe after the routing middleware.
+     *
+     * Post-routing middleware is specified as the configuration subkey
+     * middleware_pipeline.post_routing.
+     *
+     * @param Application $app
+     * @param ContainerInterface $services
+     */
+    private function injectPostMiddleware(Application $app, ContainerInterface $services)
+    {
+        $config = $services->has('Config') ? $services->get('Config') : [];
+        if (! isset($config['middleware_pipeline']['post_routing']) ||
+            ! is_array($config['middleware_pipeline']['post_routing'])
+        ) {
+            return;
+        }
+
+        $this->injectMiddleware($config['middleware_pipeline']['post_routing'], $app, $services);
     }
 }

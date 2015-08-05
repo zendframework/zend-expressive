@@ -422,32 +422,136 @@ along to the next by calling `$next()`.
 
 ## Middleware that executes on every request
 
-`Zend\Expressive\Application` pipes `Zend\Expressive\Dispatcher` immediately on
-instantiation, making it impossible to add middleware to execute on each request
-out-of-the-box. Since `Application` is itself middleware, however, you can
-compose it within another middleware pipeline.
+`Zend\Expressive\Application` extends `Zend\Stratigility\MiddlewarePipe`,
+allowing composition of multiple middleware.
+
+It also implements routing middleware (`Application::routeMiddleware()`), which it
+pipes to itself the first time a route is added.
+
+As such, if you want to execute middleware on every request, you have several
+options:
+
+- For middleware you want to match for every request (not just error
+  middleware), pipe it to the application prior to registering any routes.
+- Error middleware should typically be piped *after* registering any routes.
 
 As an example:
 
 ```php
-use Zend\Diactoros\Server;
 use Zend\Expressive\AppFactory;
+
+$app = AppFactory::create();
+
+$app->pipe($middlewareToExecuteOnEachRequest)
+$app->route(/* ... */);
+$app->pipe($anErrorHandler);
+
+$app->run();
+```
+
+### Using the container to register middleware
+
+If you use a container to fetch your application instance, you have an
+additional option for specifying middleware for the pipeline: configuration:
+
+```php
+return [
+    'routes' => [
+        [
+            'path' => '/path/to/match',
+            'middleware' => 'Middleware Service Name or Callable',
+            'allowed_methods' => [ 'GET', 'POST', 'PATCH' ],
+            'options' => [
+                'stuff' => 'to',
+                'pass'  => 'to',
+                'the'   => 'underlying router',
+            ],
+        ],
+        // etc.
+    ],
+    'middleware_pipeline' => [
+        'pre_routing' => [
+            'middleware services',
+            'to register BEFORE',
+            'routing',
+        ],
+        'post_routing' => [
+            'middleware services',
+            'to register AFTER',
+            'routing',
+        ],
+    ],
+];
+```
+
+The key to note is `middleware_pipeline`, which can have two subkeys,
+`pre_routing` and `post_routing`. Each accepts an array of middlewares to
+register in the pipeline; they will each be `pipe()`'d to the Application in the
+order specified. Those specified `pre_routing` will be registered before any
+routes, and thus before the routing middleware, while those specified
+`post_routing` will be `pipe()`'d afterwards (again, also in the order
+specified).
+
+Middleware may be any callable, `Zend\Stratigility\MiddlewareInterface`
+implementation, or a service name that resolves to one of the two.
+
+> #### Lazy-loaded Middleware
+>
+> One feature of the `middleware_pipeline` is that any middleware service pulled
+> from the container is actually wrapped in a closure:
+>
+> ```php
+> function ($request, $response, $next = null) use ($services, $middleware) {
+>     $invokable = $services->get($middleware);
+>     if (! is_callable($invokable)) {
+>         throw new Exception\InvalidMiddlewareException(sprintf(
+>             'Lazy-loaded middleware "%s" is not invokable',
+>             $middleware
+>         ));
+>     }
+>     return $invokable($request, $response, $next);
+> };
+> ```
+>
+> This implements *lazy-loading* for middleware pipeline services, delaying
+> retrieval from the container until the middleware is actually invoked.
+>
+> This also means that if the service specified is not valid middleware, you
+> will not find out until the application attempts to invoke it.
+
+## Segregating your application to a subpath
+
+One benefit of a middleware-based application is the ability to compose
+middleware and segregate them by paths. `Zend\Expressive\Application` is itself
+middleware, allowing you to do exactly that if desired.
+
+In the following example, we'll assume that `$api` and `$blog` are
+`Zend\Expressive\Application` instances, and compose them into a
+`Zend\Stratigility\MiddlewarePipe`.
+
+```php
+use Zend\Diactoros\Server;
 use Zend\Stratigility\MiddlewarePipe;
 
 require __DIR__ . '/../vendor/autoload.php';
 
 $app = new MiddlewarePipe();
-$app->pipe(function ($req, $res, $next) {
-    // executes on every request
-});
-$app->pipe(AppFactory::create());
+$app->pipe('/blog', $blog);
+$app->pipe('/api', $api);
 
-$server = Server::createServer($app);
+$server = Server::fromGlobals($app);
 $server->listen();
 ```
 
-(Instead of using `Zend\DiactorosServer`, you could use an emitter; this is just
-the simplest example for the scenario.)
+You could also compose them in an `Application` instance, and utilize `run()`:
 
-With this workflow, you can even segregate your application instance to a
-subpath if desired!
+```php
+$app = AppFactory::create();
+$app->pipe('/blog', $blog);
+$app->pipe('/api', $api);
+
+$app->run();
+```
+
+This approach allows you to develop discrete applications and compose them
+together to create a website.
