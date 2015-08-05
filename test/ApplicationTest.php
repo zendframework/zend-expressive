@@ -108,6 +108,38 @@ class ApplicationTest extends TestCase
         });
     }
 
+    public function testCallingRouteWithOnlyAPathRaisesAnException()
+    {
+        $app = $this->getApp();
+        $this->setExpectedException('Zend\Expressive\Exception\InvalidArgumentException');
+        $app->route('/path');
+    }
+
+    public function invalidPathTypes()
+    {
+        return [
+            'null'       => [null],
+            'true'       => [true],
+            'false'      => [false],
+            'zero'       => [0],
+            'int'        => [1],
+            'zero-float' => [0.0],
+            'float'      => [1.1],
+            'array'      => [['path' => 'route']],
+            'object'     => [(object) ['path' => 'route']],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidPathTypes
+     */
+    public function testCallingRouteWithAnInvalidPathTypeRaisesAnException($path)
+    {
+        $app = $this->getApp();
+        $this->setExpectedException('Zend\Expressive\Exception\InvalidArgumentException');
+        $app->route($path, 'middleware');
+    }
+
     /**
      * @dataProvider commonHttpMethods
      */
