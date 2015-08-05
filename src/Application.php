@@ -82,10 +82,9 @@ class Application extends MiddlewarePipe
      * Constructor
      *
      * Calls on the parent constructor, and then uses the provided arguments
-     * to set internal properties. On completion, pipes its own
-     * `routeMiddleware()` method to its internal pipeline.
+     * to set internal properties.
      *
-     * @param Dispatcher $dispatcher
+     * @param Router\RouterInterface $router
      * @param null|ContainerInterface $container IoC container from which to pull services, if any.
      * @param null|callable $finalHandler Final handler to use when $out is not
      *     provided on invocation.
