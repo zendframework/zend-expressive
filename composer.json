@@ -16,6 +16,7 @@
       }
     ],
     "require": {
+        "php": ">=5.5",
         "aura/router": "^2.3",
         "container-interop/container-interop": "^1.1",
         "psr/http-message": "^1.0",
