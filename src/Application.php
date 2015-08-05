@@ -85,7 +85,7 @@ class Application extends MiddlewarePipe
      * to set internal properties. On completion, pipes its own
      * `routeMiddleware()` method to its internal pipeline.
      *
-     * @param Dispatcher $dispatcher
+     * @param Router\RouterInterface $router
      * @param null|ContainerInterface $container IoC container from which to pull services, if any.
      * @param null|callable $finalHandler Final handler to use when $out is not
      *     provided on invocation.
@@ -255,11 +255,11 @@ class Application extends MiddlewarePipe
      * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
      * @param null|array $methods HTTP method to accept; null indicates any.
      * @return Router\Route
-     * @throws InvalidArgumentException if $path is not a Router\Route AND middleware is null.
+     * @throws InvalidArgumentException if $path is not a Router\Route|string AND middleware is null.
      */
     public function route($path, $middleware = null, array $methods = null)
     {
-        if (! $path instanceof Router\Route && null === $middleware) {
+        if ((! is_string($path) || ! $path instanceof Router\Route) && null === $middleware) {
             throw new InvalidArgumentException(sprintf(
                 '%s expects either a route argument, or a combination of a path and middleware arguments',
                 __METHOD__
@@ -271,7 +271,6 @@ class Application extends MiddlewarePipe
             $path    = $route->getPath();
             $methods = $route->getAllowedMethods();
         }
-
         $this->checkForDuplicateRoute($path, $methods);
 
         if (! isset($route)) {
