@@ -254,12 +254,12 @@ class Application extends MiddlewarePipe
      * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
      * @param null|array $methods HTTP method to accept; null indicates any.
      * @return Router\Route
-     * @throws InvalidArgumentException if $path is not a Router\Route AND middleware is null.
+     * @throws Exception\InvalidArgumentException if $path is not a Router\Route AND middleware is null.
      */
     public function route($path, $middleware = null, array $methods = null)
     {
         if (! $path instanceof Router\Route && null === $middleware) {
-            throw new InvalidArgumentException(sprintf(
+            throw new Exception\InvalidArgumentException(sprintf(
                 '%s expects either a route argument, or a combination of a path and middleware arguments',
                 __METHOD__
             ));

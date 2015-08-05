@@ -9,7 +9,7 @@
 
 namespace Zend\Expressive\Router;
 
-use InvalidArgumentException;
+use Zend\Expressive\Exception;
 
 /**
  * Value object representing a single route.
@@ -54,22 +54,22 @@ class Route
      * @param string $path Path to match.
      * @param string|callable $middleware Middleware to use when this route is matched.
      * @param int|array Allowed HTTP methods; defaults to HTTP_METHOD_ANY.
-     * @throws InvalidArgumentException for invalid path type.
-     * @throws InvalidArgumentException for invalid middleware type.
-     * @throws InvalidArgumentException for any invalid HTTP method names.
+     * @throws Exception\InvalidArgumentException for invalid path type.
+     * @throws Exception\InvalidArgumentException for invalid middleware type.
+     * @throws Exception\InvalidArgumentException for any invalid HTTP method names.
      */
     public function __construct($path, $middleware, $methods = self::HTTP_METHOD_ANY)
     {
         if (! is_string($path)) {
-            throw new InvalidArgumentException('Invalid path; must be a string');
+            throw new Exception\InvalidArgumentException('Invalid path; must be a string');
         }
 
         if (! is_callable($middleware) && ! is_string($middleware)) {
-            throw new InvalidArgumentException('Invalid middleware; must be callable or a service name');
+            throw new Exception\InvalidArgumentException('Invalid middleware; must be callable or a service name');
         }
 
         if ($methods !== self::HTTP_METHOD_ANY && ! is_array($methods)) {
-            throw new InvalidArgumentException(sprintf(
+            throw new Exception\InvalidArgumentException(sprintf(
                 'Invalid HTTP methods; must be an array or %s::HTTP_METHOD_ANY',
                 __CLASS__
             ));
@@ -147,7 +147,7 @@ class Route
      *
      * @param string[] An array of HTTP method names.
      * @return string[]
-     * @throws InvalidArgumentException for any invalid method names.
+     * @throws Exception\InvalidArgumentException for any invalid method names.
      */
     private function validateHttpMethods(array $methods)
     {
@@ -166,7 +166,7 @@ class Route
 
             return $valid;
         }, true)) {
-            throw new InvalidArgumentException('One or more HTTP methods were invalid');
+            throw new Exception\InvalidArgumentException('One or more HTTP methods were invalid');
         }
 
         return array_map('strtoupper', $methods);
