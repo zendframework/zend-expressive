@@ -1,4 +1,4 @@
-# Using the ZF2 Router
+# ZF2 Router Usage
 
 [zend-mvc](https://github.com/zendframework/zend-mvc) provides a router
 implementation; for HTTP applications, the default used in ZF2 applications it
@@ -50,7 +50,7 @@ The answer, then, is to use dependency injection. This can be done in two ways:
 programmatically, or via a factory to use in conjunction with your container
 instance.
 
-## Programmtic Creation
+## Programmatic Creation
 
 To handle it programmatically, you will need to setup the `TreeRouteStack` instance
 manually, inject it into a `Zend\Expressive\Router\Zf2` instance, and inject
