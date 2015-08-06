@@ -143,6 +143,8 @@ class Application extends MiddlewarePipe
         }
 
         $args[] = [$method];
+
+        // @TODO: we can use variadic parameters when dependency is raised to PHP 5.6
         return call_user_func_array([$this, 'route'], $args);
     }
 
