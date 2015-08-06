@@ -90,8 +90,8 @@ use Zend\Expressive\Router\Route;
  * specified as services will be wrapped in a closure similar to the following:
  *
  * <code>
- * function ($request, $response, $next = null) use ($services, $middleware) {
- *     $invokable = $services->get($middleware);
+ * function ($request, $response, $next = null) use ($container, $middleware) {
+ *     $invokable = $container->get($middleware);
  *     if (! is_callable($invokable)) {
  *         throw new Exception\InvalidMiddlewareException(sprintf(
  *             'Lazy-loaded middleware "%s" is not invokable',
@@ -114,28 +114,28 @@ class ApplicationFactory
      * See the class level docblock for information on what services this
      * factory will optionally consume.
      *
-     * @param ContainerInterface $services
+     * @param ContainerInterface $container
      * @return Application
      */
-    public function __invoke(ContainerInterface $services)
+    public function __invoke(ContainerInterface $container)
     {
-        $router = $services->has('Zend\Expressive\Router\RouterInterface')
-            ? $services->get('Zend\Expressive\Router\RouterInterface')
+        $router = $container->has('Zend\Expressive\Router\RouterInterface')
+            ? $container->get('Zend\Expressive\Router\RouterInterface')
             : new AuraRouter();
 
-        $finalHandler = $services->has('Zend\Expressive\FinalHandler')
-            ? $services->get('Zend\Expressive\FinalHandler')
+        $finalHandler = $container->has('Zend\Expressive\FinalHandler')
+            ? $container->get('Zend\Expressive\FinalHandler')
             : null;
 
-        $emitter = $services->has('Zend\Diactoros\Response\EmitterInterface')
-            ? $services->get('Zend\Diactoros\Response\EmitterInterface')
+        $emitter = $container->has('Zend\Diactoros\Response\EmitterInterface')
+            ? $container->get('Zend\Diactoros\Response\EmitterInterface')
             : $this->createEmitterStack();
 
-        $app = new Application($router, $services, $finalHandler, $emitter);
+        $app = new Application($router, $container, $finalHandler, $emitter);
 
-        $this->injectPreMiddleware($app, $services);
-        $this->injectRoutes($app, $services);
-        $this->injectPostMiddleware($app, $services);
+        $this->injectPreMiddleware($app, $container);
+        $this->injectRoutes($app, $container);
+        $this->injectPostMiddleware($app, $container);
 
         return $app;
     }
@@ -144,11 +144,11 @@ class ApplicationFactory
      * Inject routes from configuration, if any.
      *
      * @param Application $app
-     * @param ContainerInterface $services
+     * @param ContainerInterface $container
      */
-    private function injectRoutes(Application $app, ContainerInterface $services)
+    private function injectRoutes(Application $app, ContainerInterface $container)
     {
-        $config = $services->has('Config') ? $services->get('Config') : [];
+        $config = $container->has('Config') ? $container->get('Config') : [];
         if (! isset($config['routes'])) {
             return;
         }
@@ -186,10 +186,10 @@ class ApplicationFactory
      *
      * @param array $collection
      * @param Application $app
-     * @param ContainerInterface $services
+     * @param ContainerInterface $container
      * @throws Exception\InvalidMiddlewareException for invalid middleware.
      */
-    private function injectMiddleware(array $collection, Application $app, ContainerInterface $services)
+    private function injectMiddleware(array $collection, Application $app, ContainerInterface $container)
     {
         foreach ($collection as $spec) {
             if (! array_key_exists('middleware', $spec)) {
@@ -198,7 +198,7 @@ class ApplicationFactory
 
             $middleware = $spec['middleware'];
             if (! is_callable($middleware)) {
-                $middleware = $this->marshalMiddleware($middleware, $services);
+                $middleware = $this->marshalMiddleware($middleware, $container);
             }
 
             $path = isset($spec['path']) ? $spec['path'] : '/';
@@ -219,12 +219,12 @@ class ApplicationFactory
      * retrieved from the IoC container when it is actually used.
      *
      * @param string $middleware
-     * @param ContainerInterface $services
+     * @param ContainerInterface $container
      * @return callable
      * @throws Exception\InvalidMiddlewareException if $middleware is not a string.
-     * @throws Exception\InvalidMiddlewareException if $middleware is not found in $services
+     * @throws Exception\InvalidMiddlewareException if $middleware is not found in $container
      */
-    private function marshalMiddleware($middleware, ContainerInterface $services)
+    private function marshalMiddleware($middleware, ContainerInterface $container)
     {
         if (! is_string($middleware)) {
             throw new Exception\InvalidMiddlewareException(sprintf(
@@ -233,15 +233,15 @@ class ApplicationFactory
             ));
         }
 
-        if (! $services->has($middleware)) {
+        if (! $container->has($middleware)) {
             throw new Exception\InvalidMiddlewareException(sprintf(
                 'Invalid pipeline middleware; service "%s" not found in container',
                 $middleware
             ));
         }
 
-        return function ($request, $response, $next = null) use ($services, $middleware) {
-            $invokable = $services->get($middleware);
+        return function ($request, $response, $next = null) use ($container, $middleware) {
+            $invokable = $container->get($middleware);
             if (! is_callable($invokable)) {
                 throw new Exception\InvalidMiddlewareException(sprintf(
                     'Lazy-loaded middleware "%s" is not invokable',
@@ -259,18 +259,18 @@ class ApplicationFactory
      * middleware_pipeline.pre_routing.
      *
      * @param Application $app
-     * @param ContainerInterface $services
+     * @param ContainerInterface $container
      */
-    private function injectPreMiddleware(Application $app, ContainerInterface $services)
+    private function injectPreMiddleware(Application $app, ContainerInterface $container)
     {
-        $config = $services->has('Config') ? $services->get('Config') : [];
+        $config = $container->has('Config') ? $container->get('Config') : [];
         if (! isset($config['middleware_pipeline']['pre_routing']) ||
             ! is_array($config['middleware_pipeline']['pre_routing'])
         ) {
             return;
         }
 
-        $this->injectMiddleware($config['middleware_pipeline']['pre_routing'], $app, $services);
+        $this->injectMiddleware($config['middleware_pipeline']['pre_routing'], $app, $container);
     }
 
     /**
@@ -280,17 +280,17 @@ class ApplicationFactory
      * middleware_pipeline.post_routing.
      *
      * @param Application $app
-     * @param ContainerInterface $services
+     * @param ContainerInterface $container
      */
-    private function injectPostMiddleware(Application $app, ContainerInterface $services)
+    private function injectPostMiddleware(Application $app, ContainerInterface $container)
     {
-        $config = $services->has('Config') ? $services->get('Config') : [];
+        $config = $container->has('Config') ? $container->get('Config') : [];
         if (! isset($config['middleware_pipeline']['post_routing']) ||
             ! is_array($config['middleware_pipeline']['post_routing'])
         ) {
             return;
         }
 
-        $this->injectMiddleware($config['middleware_pipeline']['post_routing'], $app, $services);
+        $this->injectMiddleware($config['middleware_pipeline']['post_routing'], $app, $container);
     }
 }
