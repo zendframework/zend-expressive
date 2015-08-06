@@ -116,7 +116,7 @@ class Application extends MiddlewarePipe
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $out = null)
     {
-        $out = $out ?: $this->getFinalHandler();
+        $out = $out ?: $this->getFinalHandler($response);
         return parent::__invoke($request, $response, $out);
     }
 
@@ -334,12 +334,15 @@ class Application extends MiddlewarePipe
      * Creates an instance of Zend\Stratigility\FinalHandler if no handler is
      * already registered.
      *
+     * @param null|ResponseInterface Response instance with which to seed the
+     *     FinalHandler; used to determine if the response passed to the handler
+     *     represents the original or final response state.
      * @return callable
      */
-    public function getFinalHandler()
+    public function getFinalHandler(ResponseInterface $response = null)
     {
         if (! $this->finalHandler) {
-            $this->finalHandler = new FinalHandler();
+            $this->finalHandler = new FinalHandler([], $response);
         }
         return $this->finalHandler;
     }

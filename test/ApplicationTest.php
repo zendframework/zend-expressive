@@ -265,6 +265,35 @@ class ApplicationTest extends TestCase
         $this->assertSame($finalResponse, $test);
     }
 
+    public function testFinalHandlerCreatedAtInvocationIsProvidedResponseInstance()
+    {
+        $routeResult = RouteResult::fromRouteFailure();
+        $this->router->match()->willReturn($routeResult);
+
+        $app = new Application($this->router->reveal());
+
+        $finalResponse = $this->prophesize('Psr\Http\Message\ResponseInterface');
+        $app->pipe(function ($req, $res, $next) use ($finalResponse) {
+            return $finalResponse->reveal();
+        });
+
+        $responseStream = $this->prophesize('Psr\Http\Message\StreamInterface');
+        $responseStream->getSize()->willReturn(0);
+
+        $request  = new Request([], [], 'http://example.com/');
+        $response = $this->prophesize('Psr\Http\Message\ResponseInterface');
+        $response->getBody()->willReturn($responseStream->reveal());
+
+        $test = $app($request, $response->reveal());
+
+        $finalHandler = $app->getFinalHandler();
+        $this->assertInstanceOf('Zend\Stratigility\FinalHandler', $finalHandler);
+        $r = new ReflectionProperty($finalHandler, 'response');
+        $r->setAccessible(true);
+        $handlerResponse = $r->getValue($finalHandler);
+        $this->assertSame($response->reveal(), $handlerResponse);
+    }
+
     public function testComposesSapiEmitterByDefault()
     {
         $app     = $this->getApp();
