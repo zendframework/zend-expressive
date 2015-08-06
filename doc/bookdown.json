@@ -3,7 +3,8 @@
   "content": [
     "book/intro.md",
     "book/install.md",
-    "book/usage-examples.md"
+    "book/usage-examples.md",
+    "book/router.fast-route.md"
   ],
   "target": "./html"
 }

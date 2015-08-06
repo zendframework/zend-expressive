@@ -1,4 +1,4 @@
-# Advanced FastRoute Usage
+# FastRoute Usage
 
 [FastRoute](https://github.com/nikic/FastRoute) provides a number of different
 combinations for how to both parse routes and match incoming requests against
@@ -27,7 +27,7 @@ The `FastRoute` bridge class accepts two arguments at instantiation:
 Injection can be done either programmatically or via a factory to use in
 conjunction with your container instance.
 
-## Programmtic FastRoute Creation
+## Programmatic Creation
 
 To handle it programmatically, you will need to setup your `RouteCollector`
 instance and/or optionally callable to return your `RegexBasedAbstract` instance
@@ -60,7 +60,7 @@ $router = new FastRouteBridge($fastRoute, $getDispatcher);
 $app = AppFactory::create(null, $router);
 ```
 
-## Factory-Driven FastRoute Creation
+## Factory-Driven Creation
 
 We recommend using an Inversion of Control container for your applications;
 doing so provides the ability to substitute alternate implementations, and
