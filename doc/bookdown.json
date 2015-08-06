@@ -5,7 +5,8 @@
     "book/install.md",
     "book/usage-examples.md",
     "book/router.aura.md",
-    "book/router.fast-route.md"
+    "book/router.fast-route.md",
+    "book/router.zf2.md"
   ],
   "target": "./html"
 }
