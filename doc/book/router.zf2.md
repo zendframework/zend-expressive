@@ -107,10 +107,10 @@ use Zend\Http\Mvc\Router\TreeRouteStack;
 class TreeRouteStackFactory
 {
     /**
-     * @param ContainerInterface $services
+     * @param ContainerInterface $container
      * @return TreeRouteStack
      */
-    public function __invoke(ContainerInterface $services)
+    public function __invoke(ContainerInterface $container)
     {
         $router = new TreeRouteStack();
         $router->addPrototypes(/* ... */);
@@ -120,21 +120,21 @@ class TreeRouteStackFactory
     }
 }
 
-// in src/Application/Container/Zf2RouterFactory.php
+// in src/Application/Container/RouterFactory.php
 namespace Application\Container;
 
 use Interop\Container\ContainerInterface;
 use Zend\Expressive\Router\Zf2 as Zf2Bridge;
 
-class Zf2RouterFactory
+class RouterFactory
 {
     /**
-     * @param ContainerInterface $services
+     * @param ContainerInterface $container
      * @return Zf2Bridge
      */
-    public function __invoke(ContainerInterface $services)
+    public function __invoke(ContainerInterface $container)
     {
-        return new Zf2Bridge($services->get('Zend\Mvc\Router\Http\TreeRouteStack'));
+        return new Zf2Bridge($container->get('Zend\Mvc\Router\Http\TreeRouteStack'));
     }
 }
 ```
@@ -146,14 +146,14 @@ If you are using `Zend\ServiceManager`, this might look like the following:
 ```php
 use Zend\ServiceManager\ServiceManager;
 
-$services = new ServiceManager();
-$services->addFactory(
+$container = new ServiceManager();
+$container->addFactory(
     'Zend\Mvc\Router\Http\TreeRouteStack',
     'Application\Container\TreeRouteStackFactory'
 );
-$services->addFactory(
+$container->addFactory(
     'Zend\Expressive\Router\RouterInterface',
-    'Application\Container\Zf2RouterFactory'
+    'Application\Container\RouterFactory'
 );
 
 // alternately, via service_manager configuration:
@@ -161,7 +161,7 @@ return [
     'service_manager' => [
         'factories' => [
             'Zend\Mvc\Router\Http\TreeRouteStack' => 'Application\Container\TreeRouteStackFactory',
-            'Zend\Expressive\Router\RouterInterface' => 'Application\Container\Zf2RouterFactory',
+            'Zend\Expressive\Router\RouterInterface' => 'Application\Container\RouterFactory',
         ],
     ],
 ];
@@ -177,7 +177,7 @@ use Application\Container\TreeRouteStackFactory;
 use Application\Container\ZfRouterFactory;
 use Interop\Container\Pimple\PimpleInterop;
 
-$pimple = new PimpleInterop();
-$pimple['Zend\Mvc\Router\Http\TreeRouteStackFactory'] = new TreeRouteStackFactory();
-$pimple['Zend\Expressive\Router\RouterInterface'] = new Zf2RouterFactory();
+$container = new PimpleInterop();
+$container['Zend\Mvc\Router\Http\TreeRouteStackFactory'] = new TreeRouteStackFactory();
+$container['Zend\Expressive\Router\RouterInterface'] = new RouterFactory();
 ```
