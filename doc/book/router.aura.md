@@ -94,10 +94,10 @@ use Interop\Container\ContainerInterface;
 class AuraRouterFactory
 {
     /**
-     * @param ContainerInterface $services
+     * @param ContainerInterface $container
      * @return \Aura\Router\Router
      */
-    public function __invoke(ContainerInterface $services)
+    public function __invoke(ContainerInterface $container)
     {
         $router = (new RouterFactory())->newInstance();
         $router->setSecure(true);
@@ -118,12 +118,12 @@ use Zend\Expressive\Router\Aura as AuraBridge;
 class RouterFactory
 {
     /**
-     * @param ContainerInterface $services
+     * @param ContainerInterface $container
      * @return AuraBridge
      */
-    public function __invoke(ContainerInterface $services)
+    public function __invoke(ContainerInterface $container)
     {
-        return new AuraBridge($services->get('Aura\Router\Router'));
+        return new AuraBridge($container->get('Aura\Router\Router'));
     }
 }
 ```
@@ -135,12 +135,12 @@ If you are using `Zend\ServiceManager`, this might look like the following:
 ```php
 use Zend\ServiceManager\ServiceManager;
 
-$services = new ServiceManager();
-$services->addFactory(
+$container = new ServiceManager();
+$container->addFactory(
     'Aura\Router\Router',
     'Application\Container\AuraRouterFactory'
 );
-$services->addFactory(
+$container->addFactory(
     'Zend\Expressive\Router\RouterInterface',
     'Application\Container\RouterFactory'
 );
@@ -166,7 +166,7 @@ use Application\Container\AuraRouterFactory;
 use Application\Container\RouterFactory;
 use Interop\Container\Pimple\PimpleInterop;
 
-$pimple = new PimpleInterop();
-$pimple['Aura\Router\Router'] = new AuraRouterFactory();
-$pimple['Zend\Expressive\Router\RouterInterface'] = new RouterFactory();
+$container = new PimpleInterop();
+$container['Aura\Router\Router'] = new AuraRouterFactory();
+$container['Zend\Expressive\Router\RouterInterface'] = new RouterFactory();
 ```
