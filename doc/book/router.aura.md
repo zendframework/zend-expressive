@@ -1,4 +1,4 @@
-# Advanced Aura.Router usage
+# Aura.Router Usage
 
 [Aura.Router](https://github.com/auraphp/Aura.Router) provides a plethora of
 methods for further configuring the router instance. One of the more useful
@@ -36,7 +36,7 @@ The answer, then, is to use dependency injection. This can be done in two ways:
 programmatically, or via a factory to use in conjunction with your container
 instance.
 
-## Programmatic Aura.Router Creation
+## Programmatic Creation
 
 To handle it programmatically, you will need to setup the Aura.Router instance
 manually, inject it into a `Zend\Expressive\Router\Aura` instance, and inject
@@ -61,7 +61,7 @@ $router = new AuraBridge($auraRouter);
 $app = AppFactory::create(null, $router);
 ```
 
-## Factory-Driven Aura.Router Creation
+## Factory-Driven Creation
 
 We recommend using an Inversion of Control container for your applications;
 doing so provides the ability to substitute alternate implementations, and
