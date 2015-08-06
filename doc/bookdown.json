@@ -1,7 +1,7 @@
 {
   "title": "zend-expressive: PSR-7 Middleware Microframework",
   "content": [
-    "book/index.md",
+    "book/intro.md",
     "book/install.md",
     "book/usage-examples.md"
   ],
