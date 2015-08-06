@@ -97,10 +97,10 @@ use Interop\Container\ContainerInterface;
 class FastRouteCollectorFactory
 {
     /**
-     * @param ContainerInterface $services
+     * @param ContainerInterface $container
      * @return RouteCollector
      */
-    public function __invoke(ContainerInterface $services)
+    public function __invoke(ContainerInterface $container)
     {
         return new RouteCollector(
             new RouteParser(),
@@ -118,10 +118,10 @@ use Interop\Container\ContainerInterface;
 class FastRouteDispatcherFactory
 {
     /**
-     * @param ContainerInterface $services
+     * @param ContainerInterface $container
      * @return callable
      */
-    public function __invoke(ContainerInterface $services)
+    public function __invoke(ContainerInterface $container)
     {
         return function ($data) {
             return new FastRouteDispatcher($data);
@@ -138,14 +138,14 @@ use Zend\Expressive\Router\FastRoute as FastRouteBridge;
 class FastRouteFactory
 {
     /**
-     * @param ContainerInterface $services
+     * @param ContainerInterface $container
      * @return FastRouteBridge
      */
-    public function __invoke(ContainerInterface $services)
+    public function __invoke(ContainerInterface $container)
     {
         return new FastRouteBridge(
-            $services->get('FastRoute\RouteCollector'),
-            $services->get('FastRoute\DispatcherFactory'),
+            $container->get('FastRoute\RouteCollector'),
+            $container->get('FastRoute\DispatcherFactory'),
         );
     }
 }
@@ -158,16 +158,16 @@ If you are using `Zend\ServiceManager`, this might look like the following:
 ```php
 use Zend\ServiceManager\ServiceManager;
 
-$services = new ServiceManager();
-$services->addFactory(
+$container = new ServiceManager();
+$container->addFactory(
     'FastRoute\RouteCollector',
     'Application\Container\FastRouteCollectorFactory'
 );
-$services->addFactory(
+$container->addFactory(
     'FastRoute\DispatcherFactory',
     'Application\Container\FastRouteDispatcherFactory'
 );
-$services->addFactory(
+$container->addFactory(
     'Zend\Expressive\Router\RouterInterface',
     'Application\Container\RouterFactory'
 );
@@ -195,8 +195,8 @@ use Application\Container\FastRouteDispatcherFactory;
 use Application\Container\RouterFactory;
 use Interop\Container\Pimple\PimpleInterop;
 
-$pimple = new PimpleInterop();
-$pimple['FastRoute\RouteCollector'] = new FastRouteCollectorFactory();
-$pimple['FastRoute\RouteDispatcher'] = new FastRouteDispatcherFactory();
-$pimple['Zend\Expressive\Router\RouterInterface'] = new RouterFactory();
+$container = new PimpleInterop();
+$container['FastRoute\RouteCollector'] = new FastRouteCollectorFactory();
+$container['FastRoute\RouteDispatcher'] = new FastRouteDispatcherFactory();
+$container['Zend\Expressive\Router\RouterInterface'] = new RouterFactory();
 ```
