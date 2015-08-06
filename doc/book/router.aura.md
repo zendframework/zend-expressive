@@ -36,7 +36,7 @@ The answer, then, is to use dependency injection. This can be done in two ways:
 programmatically, or via a factory to use in conjunction with your container
 instance.
 
-## Programmtic Aura.Router Creation
+## Programmatic Aura.Router Creation
 
 To handle it programmatically, you will need to setup the Aura.Router instance
 manually, inject it into a `Zend\Expressive\Router\Aura` instance, and inject
@@ -115,7 +115,7 @@ namespace Application\Container;
 use Interop\Container\ContainerInterface;
 use Zend\Expressive\Router\Aura as AuraBridge;
 
-class AuraRouterFactory
+class RouterFactory
 {
     /**
      * @param ContainerInterface $services
