@@ -10,12 +10,15 @@
 namespace Zend\Expressive\Container;
 
 use Interop\Container\ContainerInterface;
+use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Expressive\Application;
 use Zend\Expressive\Emitter\EmitterStack;
 use Zend\Expressive\Exception;
 use Zend\Expressive\Router\Aura as AuraRouter;
 use Zend\Expressive\Router\Route;
+use Zend\Expressive\Router\RouterInterface;
+use Zend\Stratigility\FinalHandler;
 
 /**
  * Factory to use with an IoC container in order to return an Application instance.
@@ -119,16 +122,16 @@ class ApplicationFactory
      */
     public function __invoke(ContainerInterface $services)
     {
-        $router = $services->has('Zend\Expressive\Router\RouterInterface')
-            ? $services->get('Zend\Expressive\Router\RouterInterface')
+        $router = $services->has(RouterInterface::class)
+            ? $services->get(RouterInterface::class)
             : new AuraRouter();
 
-        $finalHandler = $services->has('Zend\Expressive\FinalHandler')
-            ? $services->get('Zend\Expressive\FinalHandler')
+        $finalHandler = $services->has(FinalHandler::class)
+            ? $services->get(FinalHandler::class)
             : null;
 
-        $emitter = $services->has('Zend\Diactoros\Response\EmitterInterface')
-            ? $services->get('Zend\Diactoros\Response\EmitterInterface')
+        $emitter = $services->has(EmitterInterface::class)
+            ? $services->get(EmitterInterface::class)
             : $this->createEmitterStack();
 
         $app = new Application($router, $services, $finalHandler, $emitter);
