@@ -140,7 +140,7 @@ class FastRoute implements RouterInterface
     }
 
     /**
-     * Return a default implemententation of a callback that can return a Dispatcher.
+     * Return a default implementation of a callback that can return a Dispatcher.
      *
      * @return callable
      */
