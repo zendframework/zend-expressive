@@ -53,6 +53,7 @@ class Zf2 implements RouterInterface
      */
     public function addRoute(Route $route)
     {
+        $path    = $route->getPath();
         $options = $route->getOptions() ?: [];
         $options = array_replace_recursive($options, [
             'route'   => $route->getPath(),
@@ -66,8 +67,8 @@ class Zf2 implements RouterInterface
             'options' => $options,
         ];
 
-        $this->zf2Router->addRoute($route->getPath(), $spec);
-        $this->routes[] = $route;
+        $this->zf2Router->addRoute($path, $spec);
+        $this->routes[$path] = $route;
     }
 
     /**
@@ -128,17 +129,12 @@ class Zf2 implements RouterInterface
      */
     private function getMiddlewareFromRoute($name)
     {
-        return array_reduce($this->routes, function ($carry, $route) use ($name) {
-            if ($carry) {
-                return $carry;
-            }
-
-            if ($route->getPath() === $name) {
-                return $route->getMiddleware();
-            }
-
+        if (! array_key_exists($name, $this->routes)) {
             return null;
-        }, null);
+        }
+
+        $route = $this->routes[$name];
+        return $route->getMiddleware();
     }
 
     /**
@@ -149,21 +145,12 @@ class Zf2 implements RouterInterface
      */
     private function getAllowedMethods($name)
     {
-        $allowedMethods = array_reduce($this->routes, function ($carry, $route) use ($name) {
-            if (null !== $carry) {
-                return $carry;
-            }
+        if (! array_key_exists($name, $this->routes)) {
+            return Route::HTTP_METHOD_ANY;
+        }
 
-            if ($route->getPath() === $name) {
-                return $route->getAllowedMethods();
-            }
-
-            return null;
-        }, null);
-
-        return ($allowedMethods === null)
-            ? Route::HTTP_METHOD_ANY
-            : $allowedMethods;
+        $route = $this->routes[$name];
+        return $route->getAllowedMethods();
     }
 
     /**
