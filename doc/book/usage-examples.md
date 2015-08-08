@@ -200,22 +200,22 @@ use Zend\ServiceManager\ServiceManager;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$services = new ServiceManager();
+$container = new ServiceManager();
 
-$services->setFactory('HelloWorld', function ($services) {
+$container->setFactory('HelloWorld', function ($container) {
     return function ($req, $res, $next) {
         $res->write('Hello, world!');
         return $res;
     };
 });
 
-$services->setFactory('Ping', function ($services) {
+$container->setFactory('Ping', function ($container) {
     return function ($req, $res, $next) {
         return new JsonResponse(['ack' => time()]);
     };
 });
 
-$app = AppFactory::create($services);
+$app = AppFactory::create($container);
 $app->get('/', 'HelloWorld');
 $app->get('/ping', 'Ping');
 
@@ -227,7 +227,7 @@ done this instead:
 
 ```php
 $app = AppFactory::create();
-$services = $app->getContainer();
+$container = $app->getContainer();
 ```
 
 and then added our service definitions. We recommend passing the container to
@@ -259,14 +259,14 @@ One other approach you could take would be to define the application itself in
 the container, and then pull it from there:
 
 ```php
-$services->setFactory('Zend\Expressive\Application', function ($services) {
-    $app = AppFactory::create($services);
+$container->setFactory('Zend\Expressive\Application', function ($container) {
+    $app = AppFactory::create($container);
     $app->get('/', 'HelloWorld');
     $app->get('/ping', 'Ping');
     return $app;
 });
 
-$app = $services->get('Zend\Expressive\Application');
+$app = $container->get('Zend\Expressive\Application');
 $app->run();
 ```
 
@@ -363,9 +363,9 @@ use Zend\ServiceManager\ServiceManager;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$services = new ServiceManager(new Config(include __DIR__ . '/../config/services.php'));
+$container = new ServiceManager(new Config(include __DIR__ . '/../config/services.php'));
 
-$app = $services->get('Zend\Expressive\Application');
+$app = $container->get('Zend\Expressive\Application');
 $app->run();
 ```
 
@@ -517,8 +517,8 @@ this is done to ensure that lazy-loading of error middleware works as expected.
 > from the container is actually wrapped in a closure:
 >
 > ```php
-> function ($request, $response, $next = null) use ($services, $middleware) {
->     $invokable = $services->get($middleware);
+> function ($request, $response, $next = null) use ($container, $middleware) {
+>     $invokable = $container->get($middleware);
 >     if (! is_callable($invokable)) {
 >         throw new Exception\InvalidMiddlewareException(sprintf(
 >             'Lazy-loaded middleware "%s" is not invokable',
@@ -534,8 +534,8 @@ this is done to ensure that lazy-loading of error middleware works as expected.
 > middleware:
 >
 > ```php
-> function ($error, $request, $response, $next) use ($services, $middleware) {
->     $invokable = $services->get($middleware);
+> function ($error, $request, $response, $next) use ($container, $middleware) {
+>     $invokable = $container->get($middleware);
 >     if (! is_callable($invokable)) {
 >         throw new Exception\InvalidMiddlewareException(sprintf(
 >             'Lazy-loaded middleware "%s" is not invokable',
