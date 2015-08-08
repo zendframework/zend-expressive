@@ -84,6 +84,20 @@ use Zend\Expressive\Router\RouterInterface;
  * ];
  * </code>
  *
+ * Each item in either the `pre_routing` or `post_routing` array must be an
+ * array with the following specification:
+ *
+ * <code>
+ * [
+ *     // required:
+ *     'middleware' => 'Name of middleware service, or a callable',
+ *     // optional:
+ *     'path' => '/path/to/match',
+ * ]
+ * </code>
+ *
+ * Note that the `path` element can only be a literal.
+ *
  * Middleware are pipe()'d to the application instance in the order in which
  * they appear. "pre_routing" middleware will execute before the application's
  * routing middleware, while "post_routing" middleware will execute afterwards.

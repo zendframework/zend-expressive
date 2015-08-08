@@ -471,14 +471,10 @@ return [
     ],
     'middleware_pipeline' => [
         'pre_routing' => [
-            'middleware services',
-            'to register BEFORE',
-            'routing',
+            // See specification below
         ],
         'post_routing' => [
-            'middleware services',
-            'to register AFTER',
-            'routing',
+            // See specification below
         ],
     ],
 ];
@@ -492,8 +488,24 @@ routes, and thus before the routing middleware, while those specified
 `post_routing` will be `pipe()`'d afterwards (again, also in the order
 specified).
 
+Each middleware specified in either `pre_routing` or `post_routing` must be in
+the following form:
+
+```php
+[
+    // required:
+    'middleware' => 'Name of middleware service, or a callable',
+    // optional:
+    'path' => '/path/to/match',
+]
+```
+
 Middleware may be any callable, `Zend\Stratigility\MiddlewareInterface`
 implementation, or a service name that resolves to one of the two.
+
+The path, if specified, can only be a literal path to match, and is typically
+used for segregating middleware applications or applying rules to subsets of an
+application that match a common path root.
 
 > #### Lazy-loaded Middleware
 >
