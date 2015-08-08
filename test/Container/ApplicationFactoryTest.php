@@ -13,6 +13,7 @@ use PHPUnit_Framework_TestCase as TestCase;
 use ReflectionProperty;
 use Zend\Expressive\Application;
 use Zend\Expressive\Container\ApplicationFactory;
+use Zend\Expressive\Router\Route;
 
 class ApplicationFactoryTest extends TestCase
 {
@@ -37,8 +38,16 @@ class ApplicationFactoryTest extends TestCase
                 return false;
             }
 
-            if ($route->getAllowedMethods() !== $spec['allowed_methods']) {
-                return false;
+            if (isset($spec['allowed_methods'])) {
+                if ($route->getAllowedMethods() !== $spec['allowed_methods']) {
+                    return false;
+                }
+            }
+
+            if (! isset($spec['allowed_methods'])) {
+                if ($route->getAllowedMethods() !== Route::HTTP_METHOD_ANY) {
+                    return false;
+                }
             }
 
             return true;
@@ -683,6 +692,66 @@ class ApplicationFactoryTest extends TestCase
                 $this->assertInstanceOf('Zend\Expressive\Exception\InvalidMiddlewareException', $e);
                 $this->assertContains('Lazy-loaded', $e->getMessage());
             }
+        }
+    }
+
+    public function testCanSpecifyRouteViaConfigurationWithNoMethods()
+    {
+        $router = $this->prophesize('Zend\Expressive\Router\RouterInterface');
+        $emitter = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
+        $finalHandler = function ($req, $res, $err = null) {
+        };
+
+        $config = [
+            'routes' => [
+                [
+                    'path' => '/',
+                    'middleware' => 'HelloWorld',
+                ],
+            ],
+        ];
+
+        $this->container
+            ->has('Zend\Expressive\Router\RouterInterface')
+            ->willReturn(true);
+        $this->container
+            ->get('Zend\Expressive\Router\RouterInterface')
+            ->will(function () use ($router) {
+                return $router->reveal();
+            });
+
+        $this->container
+            ->has('Zend\Diactoros\Response\EmitterInterface')
+            ->willReturn(true);
+        $this->container
+            ->get('Zend\Diactoros\Response\EmitterInterface')
+            ->will(function () use ($emitter) {
+                return $emitter->reveal();
+            });
+
+        $this->container
+            ->has('Zend\Expressive\FinalHandler')
+            ->willReturn(true);
+        $this->container
+            ->get('Zend\Expressive\FinalHandler')
+            ->willReturn($finalHandler);
+
+        $this->container
+            ->has('Config')
+            ->willReturn(true);
+
+        $this->container
+            ->get('Config')
+            ->willReturn($config);
+
+        $app = $this->factory->__invoke($this->container->reveal());
+
+        $r = new ReflectionProperty($app, 'routes');
+        $r->setAccessible(true);
+        $routes = $r->getValue($app);
+
+        foreach ($config['routes'] as $route) {
+            $this->assertRoute($route, $routes);
         }
     }
 }
