@@ -183,6 +183,11 @@ class Application extends MiddlewarePipe
      * Uses the router to route the incoming request, dispatching matched
      * middleware on a request success condition.
      *
+     * If routing fails, `$next()` is called; if routing fails due to HTTP
+     * method negotiation, the response is set to a 405, injected with an
+     * Allow header, and `$next()` is called with its `$error` argument set
+     * to the value `405` (invoking the next error middleware).
+     *
      * @param  ServerRequestInterface $request
      * @param  ResponseInterface $response
      * @param  callable $next
@@ -199,6 +204,7 @@ class Application extends MiddlewarePipe
             if ($result->isMethodFailure()) {
                 $response = $response->withStatus(405)
                     ->withHeader('Allow', implode(',', $result->getAllowedMethods()));
+                return $next($request, $response, 405);
             }
             return $next($request, $response);
         }
