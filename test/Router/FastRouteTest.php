@@ -11,6 +11,7 @@ namespace ZendTest\Expressive\Router;
 
 use FastRoute\Dispatcher\GroupCountBased as Dispatcher;
 use PHPUnit_Framework_TestCase as TestCase;
+use ReflectionProperty;
 use Zend\Expressive\Router\FastRoute;
 use Zend\Expressive\Router\Route;
 
@@ -31,6 +32,15 @@ class FastRouteTest extends TestCase
             $this->fastRouter->reveal(),
             $this->dispatchCallback
         );
+    }
+
+    public function testGetRouterPropertyWithNullInConstruct()
+    {
+        $router = new FastRoute();
+        $r = new ReflectionProperty($router, 'router');
+        $r->setAccessible(true);
+
+        $this->assertInstanceOf('FastRoute\RouteCollector', $r->getValue($router));
     }
 
     public function testAddRouteProxiesToFastRouteAddRouteMethod()
