@@ -92,11 +92,16 @@ use Zend\Expressive\Router\RouterInterface;
  *     // required:
  *     'middleware' => 'Name of middleware service, or a callable',
  *     // optional:
- *     'path' => '/path/to/match',
+ *     'path'  => '/path/to/match',
+ *     'error' => true,
  * ]
  * </code>
  *
- * Note that the `path` element can only be a literal.
+ * Note that the `path` element can only be a literal. `error` indicates
+ * whether or not the middleware represents error middleware; this is done
+ * so that Expressive can lazy-load an error middleware service (more below).
+ * Omitting `error` or setting it to a non-true value is the default,
+ * indicating the middleware is standard middleware.
  *
  * Middleware are pipe()'d to the application instance in the order in which
  * they appear. "pre_routing" middleware will execute before the application's
@@ -115,6 +120,22 @@ use Zend\Expressive\Router\RouterInterface;
  *         ));
  *     }
  *     return $invokable($request, $response, $next);
+ * };
+ * </code>
+ *
+ * If you specify the middleware's `error` flag as `true`, the closure will
+ * look like this:
+ *
+ * <code>
+ * function ($error, $request, $response, $next) use ($container, $middleware) {
+ *     $invokable = $container->get($middleware);
+ *     if (! is_callable($invokable)) {
+ *         throw new Exception\InvalidMiddlewareException(sprintf(
+ *             'Lazy-loaded middleware "%s" is not invokable',
+ *             $middleware
+ *         ));
+ *     }
+ *     return $invokable($error, $request, $response, $next);
  * };
  * </code>
  *
@@ -214,7 +235,10 @@ class ApplicationFactory
 
             $middleware = $spec['middleware'];
             if (! is_callable($middleware)) {
-                $middleware = $this->marshalMiddleware($middleware, $container);
+                $isErrorMiddleware = array_key_exists('error', $spec)
+                    ? (bool) $spec['error']
+                    : false;
+                $middleware = $this->marshalMiddleware($middleware, $isErrorMiddleware, $container);
             }
 
             $path = isset($spec['path']) ? $spec['path'] : '/';
@@ -235,12 +259,13 @@ class ApplicationFactory
      * retrieved from the IoC container when it is actually used.
      *
      * @param string $middleware
+     * @param bool $isErrorMiddleware
      * @param ContainerInterface $container
      * @return callable
      * @throws Exception\InvalidMiddlewareException if $middleware is not a string.
      * @throws Exception\InvalidMiddlewareException if $middleware is not found in $container
      */
-    private function marshalMiddleware($middleware, ContainerInterface $container)
+    private function marshalMiddleware($middleware, $isErrorMiddleware, ContainerInterface $container)
     {
         if (! is_string($middleware)) {
             throw new Exception\InvalidMiddlewareException(sprintf(
@@ -254,6 +279,19 @@ class ApplicationFactory
                 'Invalid pipeline middleware; service "%s" not found in container',
                 $middleware
             ));
+        }
+
+        if ($isErrorMiddleware) {
+            return function ($error, $request, $response, $next) use ($container, $middleware) {
+                $invokable = $container->get($middleware);
+                if (! is_callable($invokable)) {
+                    throw new Exception\InvalidMiddlewareException(sprintf(
+                        'Lazy-loaded middleware "%s" is not invokable',
+                        $middleware
+                    ));
+                }
+                return $invokable($error, $request, $response, $next);
+            };
         }
 
         return function ($request, $response, $next = null) use ($container, $middleware) {

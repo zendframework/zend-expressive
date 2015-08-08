@@ -10,6 +10,7 @@
 namespace ZendTest\Expressive\Container;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use ReflectionFunction;
 use ReflectionProperty;
 use Zend\Expressive\Application;
 use Zend\Expressive\Container\ApplicationFactory;
@@ -753,5 +754,86 @@ class ApplicationFactoryTest extends TestCase
         foreach ($config['routes'] as $route) {
             $this->assertRoute($route, $routes);
         }
+    }
+
+    /**
+     * @group piping
+     */
+    public function testCanMarkPipedMiddlewareServiceAsErrorMiddleware()
+    {
+        $router = $this->prophesize('Zend\Expressive\Router\RouterInterface');
+        $emitter = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
+        $finalHandler = function ($req, $res, $err = null) {
+        };
+
+        $middleware = function ($err, $req, $res, $next) {
+            return true;
+        };
+
+        $config = [
+            'middleware_pipeline' => [
+                'post_routing' => [
+                    [ 'middleware' => 'Middleware', 'error' => true ],
+                ],
+            ],
+        ];
+
+        $this->container
+            ->has('Zend\Expressive\Router\RouterInterface')
+            ->willReturn(true);
+        $this->container
+            ->get('Zend\Expressive\Router\RouterInterface')
+            ->will(function () use ($router) {
+                return $router->reveal();
+            });
+
+        $this->container
+            ->has('Zend\Diactoros\Response\EmitterInterface')
+            ->willReturn(true);
+        $this->container
+            ->get('Zend\Diactoros\Response\EmitterInterface')
+            ->will(function () use ($emitter) {
+                return $emitter->reveal();
+            });
+
+        $this->container
+            ->has('Zend\Expressive\FinalHandler')
+            ->willReturn(true);
+        $this->container
+            ->get('Zend\Expressive\FinalHandler')
+            ->willReturn($finalHandler);
+
+        $this->container
+            ->has('Config')
+            ->willReturn(true);
+
+        $this->container
+            ->get('Config')
+            ->willReturn($config);
+
+        $this->container
+            ->has('Middleware')
+            ->willReturn(true);
+
+        $this->container
+            ->get('Middleware')
+            ->willReturn($middleware);
+
+        $app = $this->factory->__invoke($this->container->reveal());
+
+        $r = new ReflectionProperty($app, 'pipeline');
+        $r->setAccessible(true);
+        $pipeline = $r->getValue($app);
+
+        $this->assertCount(1, $pipeline);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertEquals('/', $route->path);
+        $this->assertInstanceOf('Closure', $route->handler);
+
+        $r = new ReflectionFunction($route->handler);
+        $this->assertEquals(4, $r->getNumberOfRequiredParameters());
+        $this->assertTrue(call_user_func($route->handler, 'error', 'req', 'res', 'next'));
     }
 }

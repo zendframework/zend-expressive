@@ -496,7 +496,8 @@ the following form:
     // required:
     'middleware' => 'Name of middleware service, or a callable',
     // optional:
-    'path' => '/path/to/match',
+    'path'  => '/path/to/match',
+    'error' => true,
 ]
 ```
 
@@ -506,6 +507,9 @@ implementation, or a service name that resolves to one of the two.
 The path, if specified, can only be a literal path to match, and is typically
 used for segregating middleware applications or applying rules to subsets of an
 application that match a common path root.
+
+`error` indicates whether or not the middleware represents error middleware;
+this is done to ensure that lazy-loading of error middleware works as expected.
 
 > #### Lazy-loaded Middleware
 >
@@ -522,6 +526,23 @@ application that match a common path root.
 >         ));
 >     }
 >     return $invokable($request, $response, $next);
+> };
+> ```
+>
+> If the `error` flag is specified and is truthy, the closure looks like this
+> instead, to ensure the middleware is treated by Stratigility as error
+> middleware:
+>
+> ```php
+> function ($error, $request, $response, $next) use ($services, $middleware) {
+>     $invokable = $services->get($middleware);
+>     if (! is_callable($invokable)) {
+>         throw new Exception\InvalidMiddlewareException(sprintf(
+>             'Lazy-loaded middleware "%s" is not invokable',
+>             $middleware
+>         ));
+>     }
+>     return $invokable($error, $request, $response, $next);
 > };
 > ```
 >
