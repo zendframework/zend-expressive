@@ -31,7 +31,7 @@ class RouteMiddlewareTest extends TestCase
         );
     }
 
-    public function testRoutingFailureDueToHttpMethodCallsNextWithNotAllowedResponse()
+    public function testRoutingFailureDueToHttpMethodCallsNextWithNotAllowedResponseAndError()
     {
         $request  = new ServerRequest();
         $response = new Response();
@@ -39,7 +39,9 @@ class RouteMiddlewareTest extends TestCase
 
         $this->router->match($request)->willReturn($result);
 
-        $next = function ($request, $response) {
+        $next = function ($request, $response, $error = false) {
+            $this->assertEquals(405, $error);
+            $this->assertEquals(405, $response->getStatusCode());
             return $response;
         };
 
@@ -61,7 +63,8 @@ class RouteMiddlewareTest extends TestCase
         $this->router->match($request)->willReturn($result);
 
         $called = false;
-        $next = function ($req, $res) use (&$called, $request, $response) {
+        $next = function ($req, $res, $error = null) use (&$called, $request, $response) {
+            $this->assertNull($error);
             $this->assertSame($request, $req);
             $this->assertSame($response, $res);
             $called = true;
