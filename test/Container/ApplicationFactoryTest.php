@@ -13,6 +13,7 @@ use PHPUnit_Framework_TestCase as TestCase;
 use ReflectionProperty;
 use Zend\Expressive\Application;
 use Zend\Expressive\Container\ApplicationFactory;
+use Zend\Expressive\Router\Route;
 
 class ApplicationFactoryTest extends TestCase
 {
@@ -37,8 +38,14 @@ class ApplicationFactoryTest extends TestCase
                 return false;
             }
 
-            if ($route->getAllowedMethods() !== $spec['allowed_methods']) {
-                return false;
+            if (isset($spec['allowed_methods'])) {
+                if ($route->getAllowedMethods() !== $spec['allowed_methods']) {
+                    return false;
+                }
+            } else {
+                if ($route->getAllowedMethods() !== Route::HTTP_METHOD_ANY) {
+                    return false;
+                }
             }
 
             return true;
@@ -115,6 +122,10 @@ class ApplicationFactoryTest extends TestCase
                     'path' => '/ping',
                     'middleware' => 'Ping',
                     'allowed_methods' => [ 'GET' ],
+                ],
+                [
+                    'path' => '/resource',
+                    'middleware' => 'Resource',
                 ],
             ],
         ];

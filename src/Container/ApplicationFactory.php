@@ -162,7 +162,7 @@ class ApplicationFactory
 
             $methods = (isset($spec['allowed_methods']) && is_array($spec['allowed_methods']))
                 ? $spec['allowed_methods']
-                : Route::HTTP_METHOD_ANY;
+                : null;
             $route = $app->route($spec['path'], $spec['middleware'], $methods);
 
             if (isset($spec['options']) && is_array($spec['options'])) {
