@@ -30,7 +30,7 @@ $app->pipe($middleware1);
 $app->pipe($middleware2);
 
 $finalApp = AppFactory::create();
-$finalApp->pipe('/api', $finalApp);
+$finalApp->pipe('/api', $app);
 
 $finalApp->run();
 ```
