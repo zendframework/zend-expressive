@@ -34,7 +34,7 @@ class Zf2 implements RouterInterface
     /**
      * @var TreeRouteStack
      */
-    private $zf2Router;
+    private $router;
 
     /**
      * @param null|TreeRouteStack $router
@@ -45,7 +45,7 @@ class Zf2 implements RouterInterface
             $router = $this->createRouter();
         }
 
-        $this->zf2Router = $router;
+        $this->router = $router;
     }
 
     /**
@@ -67,7 +67,7 @@ class Zf2 implements RouterInterface
             'options' => $options,
         ];
 
-        $this->zf2Router->addRoute($path, $spec);
+        $this->router->addRoute($path, $spec);
         $this->routes[$path] = $route;
     }
 
@@ -79,7 +79,7 @@ class Zf2 implements RouterInterface
      */
     public function match(PsrRequest $request)
     {
-        $match = $this->zf2Router->match(Psr7ServerRequest::toZend($request, true));
+        $match = $this->router->match(Psr7ServerRequest::toZend($request, true));
 
         if (null === $match) {
             return RouteResult::fromRouteFailure();
