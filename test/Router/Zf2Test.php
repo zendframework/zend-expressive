@@ -27,7 +27,7 @@ class Zf2Test extends TestCase
         return new Zf2Router($this->zf2Router->reveal());
     }
 
-    public function testWillLazyInstantiateAFastRouteCollectorIfNoneIsProvidedToConstructor()
+    public function testWillLazyInstantiateAZf2TreeRouteStackIfNoneIsProvidedToConstructor()
     {
         $router = new Zf2Router();
         $r = new ReflectionProperty($router, 'zf2Router');
