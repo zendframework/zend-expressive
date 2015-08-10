@@ -1,6 +1,6 @@
 # Cookbook
 
-Below are several common problems that could occur.
+Below are several common scenarios.
 
 ## How can I prepend a common path to all my routes?
 
@@ -17,20 +17,30 @@ $app->pipe($middleware2);
 $app->run();
 ```
 
-However, as you are creating an API, you may want to prepend all the paths provided by those middlewares by "/api". To do that,
-you can simply create a new application, and pipe the previous application (this works because an application is also a
-middleware):
+Let's assume the above represents an API.
+
+As your application progresses, you may have a mixture of different content, and now want to have
+the above segregated under the path `/api`.
+
+To do that:
+
+- Create a new application.
+- Pipe the previous application to the new one, under the path `/api`.
 
 ```php
 $middleware1 = new UserMiddleware();
 $middleware2 = new ProjectMiddleware();
 
+$api = AppFactory::create();
+$api->pipe($middleware1);
+$api->pipe($middleware2);
+
 $app = AppFactory::create();
-$app->pipe($middleware1);
-$app->pipe($middleware2);
+$app->pipe('/api', $api);
 
-$finalApp = AppFactory::create();
-$finalApp->pipe('/api', $app);
-
-$finalApp->run();
+$app->run();
 ```
+
+The above works, because ever `Application` instance is itself middleware, and, more specifically,
+an instance of [Stratigility's `MiddlewarePipe`](https://github.com/zendframework/zend-stratigility/blob/master/doc/book/middleware.md),
+which provides the ability to compose middleware.
