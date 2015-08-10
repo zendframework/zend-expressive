@@ -34,7 +34,7 @@ class FastRouteTest extends TestCase
         );
     }
 
-    public function testGetRouterPropertyWithNullInConstruct()
+    public function testWillLazyInstantiateAFastRouteCollectorIfNoneIsProvidedToConstructor()
     {
         $router = new FastRoute();
         $r = new ReflectionProperty($router, 'router');
