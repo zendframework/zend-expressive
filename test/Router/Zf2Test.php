@@ -11,7 +11,6 @@ namespace ZendTest\Expressive\Router;
 
 use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Argument;
-use ReflectionProperty;
 use Zend\Expressive\Router\Zf2 as Zf2Router;
 use Zend\Expressive\Router\Route;
 
@@ -30,10 +29,7 @@ class Zf2Test extends TestCase
     public function testWillLazyInstantiateAZf2TreeRouteStackIfNoneIsProvidedToConstructor()
     {
         $router = new Zf2Router();
-        $r = new ReflectionProperty($router, 'zf2Router');
-        $r->setAccessible(true);
-
-        $this->assertInstanceOf('Zend\Mvc\Router\Http\TreeRouteStack', $r->getValue($router));
+        $this->assertAttributeInstanceOf('Zend\Mvc\Router\Http\TreeRouteStack', 'zf2Router', $router);
     }
 
     public function createRequestProphecy()
