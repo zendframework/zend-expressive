@@ -33,6 +33,12 @@ class FastRouteTest extends TestCase
         );
     }
 
+    public function testWillLazyInstantiateAFastRouteCollectorIfNoneIsProvidedToConstructor()
+    {
+        $router = new FastRoute();
+        $this->assertAttributeInstanceOf('FastRoute\RouteCollector', 'router', $router);
+    }
+
     public function testAddRouteProxiesToFastRouteAddRouteMethod()
     {
         $route = new Route('/foo', 'foo', ['GET']);

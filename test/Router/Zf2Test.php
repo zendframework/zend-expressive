@@ -26,6 +26,12 @@ class Zf2Test extends TestCase
         return new Zf2Router($this->zf2Router->reveal());
     }
 
+    public function testWillLazyInstantiateAZf2TreeRouteStackIfNoneIsProvidedToConstructor()
+    {
+        $router = new Zf2Router();
+        $this->assertAttributeInstanceOf('Zend\Mvc\Router\Http\TreeRouteStack', 'zf2Router', $router);
+    }
+
     public function createRequestProphecy()
     {
         $request = $this->prophesize('Psr\Http\Message\ServerRequestInterface');
