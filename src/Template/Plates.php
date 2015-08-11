@@ -10,6 +10,7 @@
 namespace Zend\Expressive\Template;
 
 use League\Plates\Engine;
+use ReflectionProperty;
 
 /**
  * Template implementation bridging league/plates
@@ -19,7 +20,7 @@ class Plates implements TemplateInterface
     /**
      * @var Engine
      */
-    protected $template;
+    private $template;
 
     public function __construct(Engine $template = null)
     {
@@ -27,17 +28,6 @@ class Plates implements TemplateInterface
             $template = $this->createTemplate();
         }
         $this->template = $template;
-    }
-
-    /**
-     * Create a default Plates engine
-     *
-     * @params string $path
-     * @return Engine
-     */
-    private function createTemplate()
-    {
-        return new Engine();
     }
 
     /**
@@ -55,15 +45,26 @@ class Plates implements TemplateInterface
     /**
      * Add a path for template
      *
+     * Multiple calls to this method without a namespace will trigger an
+     * E_USER_WARNING and act as a no-op. Plates does not handle non-namespaced
+     * folders, only the default directory; overwriting the default directory
+     * is likely unintended.
+     *
      * @param string $path
      * @param string $namespace
      */
     public function addPath($path, $namespace = null)
     {
-        if (!$namespace && !$this->template->getDirectory()) {
+        if (! $namespace && ! $this->template->getDirectory()) {
             $this->template->setDirectory($path);
             return;
         }
+
+        if (! $namespace) {
+            trigger_error('Cannot add duplicate un-namespaced path in Plates template adapter', E_USER_WARNING);
+            return;
+        }
+
         $this->template->addFolder($namespace, $path, true);
     }
 
@@ -74,13 +75,47 @@ class Plates implements TemplateInterface
      */
     public function getPaths()
     {
-        $paths = [];
-        if ($this->template->getDirectory()) {
-            $paths[] = new TemplatePath($this->template->getDirectory());
-        }
-        foreach ($this->template->getFolders() as $folder) {
+        $paths = $this->template->getDirectory()
+            ? [ $this->getDefaultPath() ]
+            : [];
+
+        foreach ($this->getPlatesFolders() as $folder) {
             $paths[] = new TemplatePath($folder->getPath(), $folder->getName());
         }
         return $paths;
+    }
+
+    /**
+     * Create a default Plates engine
+     *
+     * @params string $path
+     * @return Engine
+     */
+    private function createTemplate()
+    {
+        return new Engine();
+    }
+
+    /**
+     * Create and return a TemplatePath representing the default Plates directory.
+     *
+     * @return TemplatePath
+     */
+    private function getDefaultPath()
+    {
+        return new TemplatePath($this->template->getDirectory());
+    }
+
+    /**
+     * Return the internal array of plates folders.
+     *
+     * @return \League\Plates\Template\Folder[]
+     */
+    private function getPlatesFolders()
+    {
+        $folders = $this->template->getFolders();
+        $r = new ReflectionProperty($folders, 'folders');
+        $r->setAccessible(true);
+        return $r->getValue($folders);
     }
 }

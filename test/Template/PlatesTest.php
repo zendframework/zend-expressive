@@ -16,39 +16,79 @@ use Zend\Expressive\Template\TemplatePath;
 
 class PlatesTest extends TestCase
 {
+    use TemplatePathAssertionsTrait;
+
     public function setUp()
     {
+        $this->error = false;
         $this->platesEngine = new Engine();
     }
 
     public function testConstructorWithEngine()
     {
         $template = new PlatesTemplate($this->platesEngine);
-        $this->assertTrue($template instanceof PlatesTemplate);
+        $this->assertInstanceOf(PlatesTemplate::class, $template);
         $this->assertEmpty($template->getPaths());
     }
 
     public function testConstructorWithoutEngine()
     {
         $template = new PlatesTemplate();
-        $this->assertTrue($template instanceof PlatesTemplate);
+        $this->assertInstanceOf(PlatesTemplate::class, $template);
         $this->assertEmpty($template->getPaths());
     }
 
-    public function testSetPath()
+    public function testCanAddPath()
     {
         $template = new PlatesTemplate();
         $template->addPath(__DIR__ . '/TestAsset');
         $paths = $template->getPaths();
-        $this->assertTrue(is_array($paths));
+        $this->assertInternalType('array', $paths);
         $this->assertEquals(1, count($paths));
-        $this->assertTrue($paths[0] instanceof TemplatePath);
-        $this->assertEquals($paths[0]->getPath(), __DIR__ . '/TestAsset');
-        $this->assertEquals((string) $paths[0], __DIR__ . '/TestAsset');
-        $this->assertEmpty($paths[0]->getNamespace());
+        $this->assertTemplatePath(__DIR__ . '/TestAsset', $paths[0]);
+        $this->assertTemplatePathString(__DIR__ . '/TestAsset', $paths[0]);
+        $this->assertEmptyTemplatePathNamespace($paths[0]);
+        return $template;
     }
 
-    public function testRender()
+    /**
+     * @depends testCanAddPath
+     */
+    public function testAddingSecondPathWithoutNamespaceIsANoopAndRaisesWarning($template)
+    {
+        $paths = $template->getPaths();
+        $path  = array_shift($paths);
+
+        set_error_handler(function ($error, $message) {
+            $this->error = true;
+            $this->assertContains('duplicate', $message);
+            return true;
+        }, E_USER_WARNING);
+        $template->addPath(__DIR__);
+        restore_error_handler();
+
+        $this->assertTrue($this->error, 'Error handler was not triggered when calling addPath() multiple times');
+
+        $paths = $template->getPaths();
+        $this->assertInternalType('array', $paths);
+        $this->assertEquals(1, count($paths));
+        $test = array_shift($paths);
+        $this->assertEqualTemplatePath($path, $test);
+    }
+
+    public function testCanAddPathWithNamespace()
+    {
+        $template = new PlatesTemplate();
+        $template->addPath(__DIR__ . '/TestAsset', 'test');
+        $paths = $template->getPaths();
+        $this->assertInternalType('array', $paths);
+        $this->assertEquals(1, count($paths));
+        $this->assertTemplatePath(__DIR__ . '/TestAsset', $paths[0]);
+        $this->assertTemplatePathString(__DIR__ . '/TestAsset', $paths[0]);
+        $this->assertTemplatePathNamespace('test', $paths[0]);
+    }
+
+    public function testDelegatesRenderingToUnderlyingImplementation()
     {
         $template = new PlatesTemplate();
         $template->addPath(__DIR__ . '/TestAsset');
