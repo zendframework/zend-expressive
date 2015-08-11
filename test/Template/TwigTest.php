@@ -9,11 +9,13 @@
 
 namespace ZendTest\Expressive\Template;
 
+use ArrayObject;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Expressive\Template\Twig as TwigTemplate;
 use Twig_Loader_Filesystem;
 use Twig_Environment;
+use Zend\Expressive\Exception;
 use Zend\Expressive\Template\TemplatePath;
+use Zend\Expressive\Template\Twig as TwigTemplate;
 
 class TwigTest extends TestCase
 {
@@ -72,6 +74,65 @@ class TwigTest extends TestCase
         $this->assertContains($name, $result);
         $content = file_get_contents(__DIR__ . '/TestAsset/twig.html');
         $content = str_replace('{{ name }}', $name, $content);
+        $this->assertEquals($content, $result);
+    }
+
+    public function invalidParameterValues()
+    {
+        return [
+            'true'       => [true],
+            'false'      => [false],
+            'zero'       => [0],
+            'int'        => [1],
+            'zero-float' => [0.0],
+            'float'      => [1.1],
+            'string'     => ['value'],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidParameterValues
+     */
+    public function testRenderRaisesExceptionForInvalidParameterTypes($params)
+    {
+        $template = new TwigTemplate();
+        $this->setExpectedException(Exception\InvalidArgumentException::class);
+        $template->render('foo', $params);
+    }
+
+    public function testCanRenderWithNullParams()
+    {
+        $template = new TwigTemplate();
+        $template->addPath(__DIR__ . '/TestAsset');
+        $result = $template->render('twig-null.html', null);
+        $content = file_get_contents(__DIR__ . '/TestAsset/twig-null.html');
+        $this->assertEquals($content, $result);
+    }
+
+    public function objectParameterValues()
+    {
+        $names = [
+            'stdClass'    => uniqid(),
+            'ArrayObject' => uniqid(),
+        ];
+
+        return [
+            'stdClass'    => [(object) ['name' => $names['stdClass']], $names['stdClass']],
+            'ArrayObject' => [new ArrayObject(['name' => $names['ArrayObject']]), $names['ArrayObject']],
+        ];
+    }
+
+    /**
+     * @dataProvider objectParameterValues
+     */
+    public function testCanRenderWithParameterObjects($params, $search)
+    {
+        $template = new TwigTemplate();
+        $template->addPath(__DIR__ . '/TestAsset');
+        $result = $template->render('twig.html', $params);
+        $this->assertContains($search, $result);
+        $content = file_get_contents(__DIR__ . '/TestAsset/twig.html');
+        $content = str_replace('{{ name }}', $search, $content);
         $this->assertEquals($content, $result);
     }
 }

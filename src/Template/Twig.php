@@ -17,6 +17,8 @@ use Twig_Environment as TwigEnvironment;
  */
 class Twig implements TemplateInterface
 {
+    use ArrayParametersTrait;
+
     /**
      * @var TwigFilesystem
      */
@@ -68,11 +70,13 @@ class Twig implements TemplateInterface
      * Render
      *
      * @param string $name
-     * @param array $params
+     * @param array|object $params
      * @return string
+     * @throws \Zend\Expressive\Exception\InvalidArgumentException for non-array, non-object parameters.
      */
-    public function render($name, array $params)
+    public function render($name, $params = [])
     {
+        $params = $this->normalizeParams($params);
         return $this->template->render($name, $params);
     }
 

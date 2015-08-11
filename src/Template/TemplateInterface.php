@@ -16,10 +16,10 @@ interface TemplateInterface
 {
     /**
      * @param string $name
-     * @param array $params
+     * @param array|object $params
      * @return string
      */
-    public function render($name, array $params);
+    public function render($name, $params = []);
 
     /**
      * @param string $path
