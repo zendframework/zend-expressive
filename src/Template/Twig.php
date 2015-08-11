@@ -27,31 +27,41 @@ class Twig implements TemplateInterface
      */
     protected $template;
 
+    /**
+     *  Constructor
+     *
+     * @param TwigEnvironment $template
+     */
     public function __construct(TwigEnvironment $template = null)
     {
         if (null === $template) {
-            $template = $this->createTemplate();
-        } else {
-            if (!$template->getLoader()) {
-                $this->twigLoader = new TwigFilesystem();
-                $template->setLoader($this->twigLoader);
-            } else {
-                $this->twigLoader = $template->getLoader();
-            }
+            $template = $this->createTemplate($this->getDefaultLoader());
         }
-        $this->template = $template;
+        if (! $template->getLoader()) {
+            $template->setLoader($this->getDefaultLoader());
+        }
+        $this->template   = $template;
+        $this->twigLoader = $template->getLoader();
     }
 
     /**
      * Create a default Twig environment
      *
-     * @params string $path
      * @return TwigEnvironment
      */
-    private function createTemplate()
+    private function createTemplate(TwigFilesystem $loader)
     {
-        $this->twigLoader = new TwigFilesystem();
-        return new TwigEnvironment($this->twigLoader);
+        return new TwigEnvironment($loader);
+    }
+
+    /**
+     * Get the default loader for template
+     *
+     * @return TwigFilesystem
+     */
+    private function getDefaultLoader()
+    {
+        return new TwigFilesystem();
     }
 
     /**
@@ -67,26 +77,34 @@ class Twig implements TemplateInterface
     }
 
     /**
-     * Set the template directory
+     * Add a path for template
      *
      * @param string $path
+     * @param string $namespace
      */
-    public function setPath($path)
+    public function addPath($path, $namespace = null)
     {
-        $this->twigLoader->setPaths($path);
+        if (null === $namespace) {
+            $this->twigLoader->addPath($path);
+        } else {
+            $this->twigLoader->addPath($path, $namespace);
+        }
     }
 
     /**
      * Get the template directory
      *
-     * @return string
+     * @return TemplatePath[]
      */
-    public function getPath()
+    public function getPaths()
     {
-        $path = $this->twigLoader->getPaths();
-        if (empty($path)) {
-            return null;
+        $paths = [];
+        foreach ($this->twigLoader->getNamespaces() as $namespace) {
+            $name = ($namespace !== TwigFilesystem::MAIN_NAMESPACE) ? $namespace : null;
+            foreach ($this->twigLoader->getPaths($namespace) as $path) {
+                $paths[] = new TemplatePath($path, $name);
+            }
         }
-        return is_array($path) ? $path[0] : $path;
+        return $paths;
     }
 }

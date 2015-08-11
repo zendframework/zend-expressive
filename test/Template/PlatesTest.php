@@ -12,40 +12,46 @@ namespace ZendTest\Expressive\Template;
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Expressive\Template\Plates as PlatesTemplate;
 use League\Plates\Engine;
+use Zend\Expressive\Template\TemplatePath;
 
 class PlatesTest extends TestCase
 {
     public function setUp()
     {
-        $this->platesEngine = $this->prophesize('League\Plates\Engine');
+        $this->platesEngine = new Engine();
     }
 
     public function testConstructorWithEngine()
     {
-        $template = new PlatesTemplate($this->platesEngine->reveal());
+        $template = new PlatesTemplate($this->platesEngine);
         $this->assertTrue($template instanceof PlatesTemplate);
-        $this->assertEmpty($template->getPath());
+        $this->assertEmpty($template->getPaths());
     }
 
     public function testConstructorWithoutEngine()
     {
         $template = new PlatesTemplate();
         $this->assertTrue($template instanceof PlatesTemplate);
-        $this->assertEmpty($template->getPath());
+        $this->assertEmpty($template->getPaths());
     }
 
     public function testSetPath()
     {
         $template = new PlatesTemplate();
-        $template->setPath(__DIR__ . '/TestAsset');
-        $this->assertTrue($template instanceof PlatesTemplate);
-        $this->assertEquals(__DIR__ . '/TestAsset', $template->getPath());
+        $template->addPath(__DIR__ . '/TestAsset');
+        $paths = $template->getPaths();
+        $this->assertTrue(is_array($paths));
+        $this->assertEquals(1, count($paths));
+        $this->assertTrue($paths[0] instanceof TemplatePath);
+        $this->assertEquals($paths[0]->getPath(), __DIR__ . '/TestAsset');
+        $this->assertEquals((string) $paths[0], __DIR__ . '/TestAsset');
+        $this->assertEmpty($paths[0]->getNamespace());
     }
 
     public function testRender()
     {
         $template = new PlatesTemplate();
-        $template->setPath(__DIR__ . '/TestAsset');
+        $template->addPath(__DIR__ . '/TestAsset');
         $name = 'Plates';
         $result = $template->render('plates', [ 'name' => $name ]);
         $this->assertContains($name, $result);

@@ -53,22 +53,34 @@ class Plates implements TemplateInterface
     }
 
     /**
-     * Set the template directory
+     * Add a path for template
      *
      * @param string $path
+     * @param string $namespace
      */
-    public function setPath($path)
+    public function addPath($path, $namespace = null)
     {
-        $this->template->setDirectory($path);
+        if (!$namespace && !$this->template->getDirectory()) {
+            $this->template->setDirectory($path);
+            return;
+        }
+        $this->template->addFolder($namespace, $path, true);
     }
 
     /**
      * Get the template directory
      *
-     * @return string
+     * @return TemplatePath[]
      */
-    public function getPath()
+    public function getPaths()
     {
-        return $this->template->getDirectory();
+        $paths = [];
+        if ($this->template->getDirectory()) {
+            $paths[] = new TemplatePath($this->template->getDirectory());
+        }
+        foreach ($this->template->getFolders() as $folder) {
+            $paths[] = new TemplatePath($folder->getPath(), $folder->getName());
+        }
+        return $paths;
     }
 }
