@@ -9,9 +9,11 @@
 
 namespace ZendTest\Expressive\Template;
 
-use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Expressive\Template\Plates as PlatesTemplate;
+use ArrayObject;
 use League\Plates\Engine;
+use PHPUnit_Framework_TestCase as TestCase;
+use Zend\Expressive\Exception;
+use Zend\Expressive\Template\Plates as PlatesTemplate;
 use Zend\Expressive\Template\TemplatePath;
 
 class PlatesTest extends TestCase
@@ -24,14 +26,14 @@ class PlatesTest extends TestCase
         $this->platesEngine = new Engine();
     }
 
-    public function testConstructorWithEngine()
+    public function testCanProvideEngineAtInstantiation()
     {
         $template = new PlatesTemplate($this->platesEngine);
         $this->assertInstanceOf(PlatesTemplate::class, $template);
         $this->assertEmpty($template->getPaths());
     }
 
-    public function testConstructorWithoutEngine()
+    public function testLazyLoadsEngineAtInstantiationIfNoneProvided()
     {
         $template = new PlatesTemplate();
         $this->assertInstanceOf(PlatesTemplate::class, $template);
@@ -97,6 +99,65 @@ class PlatesTest extends TestCase
         $this->assertContains($name, $result);
         $content = file_get_contents(__DIR__ . '/TestAsset/plates.php');
         $content = str_replace('<?=$this->e($name)?>', $name, $content);
+        $this->assertEquals($content, $result);
+    }
+
+    public function invalidParameterValues()
+    {
+        return [
+            'true'       => [true],
+            'false'      => [false],
+            'zero'       => [0],
+            'int'        => [1],
+            'zero-float' => [0.0],
+            'float'      => [1.1],
+            'string'     => ['value'],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidParameterValues
+     */
+    public function testRenderRaisesExceptionForInvalidParameterTypes($params)
+    {
+        $template = new PlatesTemplate();
+        $this->setExpectedException(Exception\InvalidArgumentException::class);
+        $template->render('foo', $params);
+    }
+
+    public function testCanRenderWithNullParams()
+    {
+        $template = new PlatesTemplate();
+        $template->addPath(__DIR__ . '/TestAsset');
+        $result = $template->render('plates-null', null);
+        $content = file_get_contents(__DIR__ . '/TestAsset/plates-null.php');
+        $this->assertEquals($content, $result);
+    }
+
+    public function objectParameterValues()
+    {
+        $names = [
+            'stdClass'    => uniqid(),
+            'ArrayObject' => uniqid(),
+        ];
+
+        return [
+            'stdClass'    => [(object) ['name' => $names['stdClass']], $names['stdClass']],
+            'ArrayObject' => [new ArrayObject(['name' => $names['ArrayObject']]), $names['ArrayObject']],
+        ];
+    }
+
+    /**
+     * @dataProvider objectParameterValues
+     */
+    public function testCanRenderWithParameterObjects($params, $search)
+    {
+        $template = new PlatesTemplate();
+        $template->addPath(__DIR__ . '/TestAsset');
+        $result = $template->render('plates', $params);
+        $this->assertContains($search, $result);
+        $content = file_get_contents(__DIR__ . '/TestAsset/plates.php');
+        $content = str_replace('<?=$this->e($name)?>', $search, $content);
         $this->assertEquals($content, $result);
     }
 }

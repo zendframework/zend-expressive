@@ -18,4 +18,5 @@
     <!-- Paths to check -->
     <file>src</file>
     <file>test</file>
+    <exclude-pattern>*/test/Template/TestAsset/plates-null.php</exclude-pattern>
 </ruleset>

@@ -17,6 +17,8 @@ use ReflectionProperty;
  */
 class Plates implements TemplateInterface
 {
+    use ArrayParametersTrait;
+
     /**
      * @var Engine
      */
@@ -34,11 +36,12 @@ class Plates implements TemplateInterface
      * Render
      *
      * @param string $name
-     * @param array $params
+     * @param array|object $params
      * @return string
      */
-    public function render($name, array $params)
+    public function render($name, $params = [])
     {
+        $params = $this->normalizeParams($params);
         return $this->template->render($name, $params);
     }
 
