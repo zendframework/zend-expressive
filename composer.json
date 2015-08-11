@@ -16,7 +16,8 @@
         "psr/http-message": "^1.0",
         "zendframework/zend-diactoros": "^1.1",
         "zendframework/zend-servicemanager": "^2.6",
-        "zendframework/zend-stratigility": "^1.1"
+        "zendframework/zend-stratigility": "^1.1",
+        "filp/whoops": "^1.1"
     },
     "require-dev": {
         "league/plates": "^3.1",
