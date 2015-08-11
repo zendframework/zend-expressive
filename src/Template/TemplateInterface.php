@@ -23,11 +23,12 @@ interface TemplateInterface
 
     /**
      * @param string $path
+     * @param string $namespace
      */
-    public function setPath($path);
+    public function addPath($path, $namespace = null);
 
     /**
-     * @return string
+     * @return TemplatePath[]
      */
-    public function getPath();
+    public function getPaths();
 }
