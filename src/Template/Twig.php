@@ -84,11 +84,8 @@ class Twig implements TemplateInterface
      */
     public function addPath($path, $namespace = null)
     {
-        if (null === $namespace) {
-            $this->twigLoader->addPath($path);
-        } else {
-            $this->twigLoader->addPath($path, $namespace);
-        }
+        $namespace = $namespace ?: TwigFilesystem::MAIN_NAMESPACE;
+        $this->twigLoader->addPath($path, $namespace);
     }
 
     /**
@@ -101,6 +98,7 @@ class Twig implements TemplateInterface
         $paths = [];
         foreach ($this->twigLoader->getNamespaces() as $namespace) {
             $name = ($namespace !== TwigFilesystem::MAIN_NAMESPACE) ? $namespace : null;
+
             foreach ($this->twigLoader->getPaths($namespace) as $path) {
                 $paths[] = new TemplatePath($path, $name);
             }

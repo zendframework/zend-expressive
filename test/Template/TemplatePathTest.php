@@ -14,28 +14,28 @@ use Zend\Expressive\Template\TemplatePath;
 
 class TemplatePathTest extends TestCase
 {
-    public function testConstructWithNamespace()
+    use TemplatePathAssertionsTrait;
+
+    public function testCanProvideNamespaceAtInstantiation()
     {
         $templatePath = new TemplatePath('/tmp', 'test');
-        $this->assertTrue($templatePath instanceof TemplatePath);
-        $this->assertEquals('/tmp', $templatePath->getPath());
-        $this->assertEquals('test', $templatePath->getNamespace());
+        $this->assertTemplatePath('/tmp', $templatePath);
+        $this->assertTemplatePathNamespace('test', $templatePath);
     }
 
-    public function testConstructWithoutNamespace()
+    public function testCanInstantiateWithoutANamespace()
     {
         $templatePath = new TemplatePath('/tmp');
-        $this->assertTrue($templatePath instanceof TemplatePath);
-        $this->assertEquals('/tmp', $templatePath->getPath());
-        $this->assertEmpty($templatePath->getNamespace());
+        $this->assertTemplatePath('/tmp', $templatePath);
+        $this->assertEmptyTemplatePathNamespace($templatePath);
     }
 
-    public function testToString()
+    public function testCastingToStringReturnsPathOnly()
     {
         $templatePath = new TemplatePath('/tmp');
-        $this->assertEquals('/tmp', (string) $templatePath);
+        $this->assertTemplatePathString('/tmp', $templatePath);
 
         $templatePath = new TemplatePath('/tmp', 'test');
-        $this->assertEquals('/tmp', (string) $templatePath);
+        $this->assertTemplatePathString('/tmp', $templatePath);
     }
 }

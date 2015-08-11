@@ -25,7 +25,7 @@ class TemplatePath
      * Constructor
      *
      * @param string $path
-     * @param string $namespace
+     * @param null|string $namespace
      */
     public function __construct($path, $namespace = null)
     {
@@ -34,7 +34,7 @@ class TemplatePath
     }
 
     /**
-     * __toString
+     * Casts to string by returning the path only.
      *
      * @return string
      */
@@ -46,7 +46,7 @@ class TemplatePath
     /**
      * Get the namespace
      *
-     * @return string
+     * @return null|string
      */
     public function getNamespace()
     {

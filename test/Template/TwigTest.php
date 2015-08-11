@@ -17,53 +17,53 @@ use Zend\Expressive\Template\TemplatePath;
 
 class TwigTest extends TestCase
 {
+    use TemplatePathAssertionsTrait;
+
     public function setUp()
     {
         $this->twigFilesystem  = new Twig_Loader_Filesystem;
         $this->twigEnvironment = new Twig_Environment($this->twigFilesystem);
     }
 
-    public function testConstructorWithEngine()
+    public function testCanPassEngineToConstructor()
     {
         $template = new TwigTemplate($this->twigEnvironment);
-        $this->assertTrue($template instanceof TwigTemplate);
+        $this->assertInstanceOf(TwigTemplate::class, $template);
         $this->assertEmpty($template->getPaths());
     }
 
-    public function testConstructorWithoutEngine()
+    public function testInstantiatingWithoutEngineLazyLoadsOne()
     {
         $template = new TwigTemplate();
-        $this->assertTrue($template instanceof TwigTemplate);
+        $this->assertInstanceOf(TwigTemplate::class, $template);
         $this->assertEmpty($template->getPaths());
     }
 
-    public function testAddPath()
+    public function testCanAddPathWithEmptyNamespace()
     {
         $template = new TwigTemplate();
         $template->addPath(__DIR__ . '/TestAsset');
         $paths = $template->getPaths();
-        $this->assertTrue(is_array($paths));
+        $this->assertInternalType('array', $paths);
         $this->assertEquals(1, count($paths));
-        $this->assertTrue($paths[0] instanceof TemplatePath);
-        $this->assertEquals(__DIR__ . '/TestAsset', (string) $paths[0]);
-        $this->assertEquals(__DIR__ . '/TestAsset', $paths[0]->getPath());
-        $this->assertEmpty($paths[0]->getNamespace());
+        $this->assertTemplatePath(__DIR__ . '/TestAsset', $paths[0]);
+        $this->assertTemplatePathString(__DIR__ . '/TestAsset', $paths[0]);
+        $this->assertEmptyTemplatePathNamespace($paths[0]);
     }
 
-    public function testAddPathWithNamespace()
+    public function testCanAddPathWithNamespace()
     {
         $template = new TwigTemplate();
         $template->addPath(__DIR__ . '/TestAsset', 'test');
         $paths = $template->getPaths();
-        $this->assertTrue(is_array($paths));
+        $this->assertInternalType('array', $paths);
         $this->assertEquals(1, count($paths));
-        $this->assertTrue($paths[0] instanceof TemplatePath);
-        $this->assertEquals(__DIR__ . '/TestAsset', (string) $paths[0]);
-        $this->assertEquals(__DIR__ . '/TestAsset', $paths[0]->getPath());
-        $this->assertEquals('test', $paths[0]->getNamespace());
+        $this->assertTemplatePath(__DIR__ . '/TestAsset', $paths[0]);
+        $this->assertTemplatePathString(__DIR__ . '/TestAsset', $paths[0]);
+        $this->assertTemplatePathNamespace('test', $paths[0]);
     }
 
-    public function testRender()
+    public function testDelegatesRenderingToUnderlyingImplementation()
     {
         $template = new TwigTemplate();
         $template->addPath(__DIR__ . '/TestAsset');
