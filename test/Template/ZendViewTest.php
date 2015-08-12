@@ -27,18 +27,18 @@ class ZendViewTest extends TestCase
         $this->render->setResolver($this->resolver);
     }
 
-    public function testCanPassRenderToConstructor()
+    public function testCanPassRendererToConstructor()
     {
         $template = new ZendView($this->render);
         $this->assertInstanceOf(ZendView::class, $template);
-        $this->assertEmpty($template->getPaths());
+        $this->assertAttributeSame($this->render, 'template', $template);
     }
 
     public function testInstantiatingWithoutEngineLazyLoadsOne()
     {
         $template = new ZendView();
         $this->assertInstanceOf(ZendView::class, $template);
-        $this->assertEmpty($template->getPaths());
+        $this->assertAttributeInstanceOf(PhpRenderer::class, 'template', $template);
     }
 
     public function testCanAddPathWithEmptyNamespace()
