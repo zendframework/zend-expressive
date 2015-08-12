@@ -93,7 +93,7 @@ class Twig implements TemplateInterface
     }
 
     /**
-     * Get the template directory
+     * Get the template directories
      *
      * @return TemplatePath[]
      */
