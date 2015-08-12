@@ -352,6 +352,13 @@ class Application extends MiddlewarePipe
         if (! $this->finalHandler) {
             $this->finalHandler = new FinalHandler([], $response);
         }
+
+        // Inject the handler with the response, if possible (e.g., the
+        // TemplatedErrorResponse and WhoopsErrorResponse implementations).
+        if (method_exists($this->finalHandler, 'setOriginalResponse')) {
+            $this->finalHandler->setOriginalResponse($response);
+        }
+
         return $this->finalHandler;
     }
 
