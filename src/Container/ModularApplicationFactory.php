@@ -37,7 +37,7 @@ class ModularApplicationFactory
         }
 
         $additionalConfig = ConfigFactory::fromFiles(
-            glob($systemConfig['config_glob_paths'], GLOB_BRACE)
+            glob($systemConfig['module_listener_options']['config_glob_paths'], GLOB_BRACE)
         );
 
         return ArrayUtils::merge($moduleConfig, $additionalConfig);
