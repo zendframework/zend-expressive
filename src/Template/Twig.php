@@ -39,9 +39,6 @@ class Twig implements TemplateInterface
         if (null === $template) {
             $template = $this->createTemplate($this->getDefaultLoader());
         }
-        if (! $template->getLoader()) {
-            $template->setLoader($this->getDefaultLoader());
-        }
         $this->template   = $template;
         $this->twigLoader = $template->getLoader();
     }
