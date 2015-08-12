@@ -255,7 +255,7 @@ class ErrorHandler
         $uri = $request->getUri();
         $this->whoopsHandler->addDataTable('Expressive Application Request', [
             'HTTP Method'            => $request->getMethod(),
-            'URI'                    => $uri,
+            'URI'                    => (string) $uri,
             'Script'                 => $request->getServerParams()['SCRIPT_NAME'],
             'Headers'                => $request->getHeaders(),
             'Cookies'                => $request->getCookieParams(),
