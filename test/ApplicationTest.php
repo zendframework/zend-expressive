@@ -343,4 +343,18 @@ class ApplicationTest extends TestCase
         $this->setExpectedException('RuntimeException');
         $app->getContainer();
     }
+
+    public function testUnsupportedMethodCall()
+    {
+        $app = $this->getApp();
+        $this->setExpectedException('BadMethodCallException');
+        $app->foo();
+    }
+
+    public function testCallMethodWithCountOfArgsNotEqualsWith2()
+    {
+        $app = $this->getApp();
+        $this->setExpectedException('BadMethodCallException');
+        $app->post('/foo');
+    }
 }
