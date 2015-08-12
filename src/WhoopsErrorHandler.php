@@ -16,49 +16,17 @@ use Whoops\Run as Whoops;
 use Zend\Stratigility\Http\Request as StratigilityRequest;
 use Zend\Stratigility\Utils;
 
-class WhoopsErrorHandler
+/**
+ * Final handler with templated page capabilities plus Whoops exception reporting.
+ *
+ * Extends from TemplatedErrorHandler in order to provide templated error and 404
+ * pages; for exceptions, it delegates to Whoops to provide a user-friendly
+ * interface for navigating an exception stack trace.
+ *
+ * @see http://filp.github.io/whoops/
+ */
+class WhoopsErrorHandler extends TemplatedErrorHandler
 {
-    /**
-     * Body size on the original response; used to compare against received
-     * response in order to determine if changes have been made.
-     *
-     * @var int
-     */
-    private $bodySize;
-
-    /**
-     * Original response against which to compare when determining if the
-     * received response is a different instance, and thus should be directly
-     * returned.
-     *
-     * @var Response
-     */
-    private $originalResponse;
-
-    /**
-     * Template renderer to use when rendering error pages; if not provided,
-     * only the status will be updated.
-     *
-     * @var Template\TemplateInterface
-     */
-    private $template;
-
-    /**
-     * Name of 404 template to use when creating 404 response content with the
-     * template renderer.
-     *
-     * @var string
-     */
-    private $template404;
-
-    /**
-     * Name of error template to use when creating response content for pages
-     * with errors.
-     *
-     * @var string
-     */
-    private $templateError;
-
     /**
      * Whoops runner instance to use when returning exception details.
      *
@@ -76,6 +44,7 @@ class WhoopsErrorHandler
 
     /**
      * @param Whoops $whoops
+     * @param PrettyPageHandler $whoopsHandler
      * @param null|Template\TemplateInterface $template
      * @param null|string $template404
      * @param null|string $templateError
@@ -91,153 +60,28 @@ class WhoopsErrorHandler
     ) {
         $this->whoops        = $whoops;
         $this->whoopsHandler = $whoopsHandler;
-        $this->template      = $template;
-        $this->template404   = $template404;
-        $this->templateError = $templateError;
-        if ($originalResponse) {
-            $this->setOriginalResponse($originalResponse);
-        }
+        parent::__construct($template, $template404, $templateError, $originalResponse);
     }
 
     /**
-     * Set the original response for comparisons.
+     * Handle an exception.
      *
-     * @param Response $originalResponse
-     */
-    public function setOriginalResponse(Response $response)
-    {
-        $this->bodySize = $response->getBody()->getSize();
-        $this->originalResponse = $response;
-    }
-
-    /**
-     * Final handler for an application.
+     * Calls on prepareWhoopsHandler() to inject additional data tables into
+     * the generated payload, and then injects the response with the result
+     * of whoops handling the exception.
      *
+     * @param \Exception $exception
      * @param Request $request
      * @param Response $response
-     * @param null|mixed $err
-     * @return Response
      */
-    public function __invoke(Request $request, Response $response, $err = null)
+    protected function handleException(\Exception $exception, Request $request, Response $response)
     {
-        if (! $err) {
-            return $this->handlePotentialSuccess($request, $response);
-        }
-
-        return $this->handleError($err, $request, $response);
-    }
-
-    /**
-     * Handle a non-error condition.
-     *
-     * Non-error conditions mean either all middleware called $next(), and we
-     * have a complete response, or no middleware was able to handle the
-     * request.
-     *
-     * This method determines which occurred, returning the response in the
-     * first instance, and returning a 404 response in the second.
-     *
-     * @param Request $request
-     * @param Response $response
-     * @return Response
-     */
-    private function handlePotentialSuccess(Request $request, Response $response)
-    {
-        if (! $this->originalResponse) {
-            return $this->marshalReceivedResponse($request, $response);
-        }
-
-        if ($this->originalResponse !== $response) {
-            return $response;
-        }
-
-        if ($this->bodySize !== $response->getBody()->getSize()) {
-            return $response;
-        }
-
-        return $this->create404($request, $response);
-    }
-
-    /**
-     * Determine whether to return the given response, or a 404.
-     *
-     * If no original response was present, we check to see if we have a 200
-     * response with empty content; if so, we treat it as a 404.
-     *
-     * Otherwise, we return the response intact.
-     *
-     * @param Request $request
-     * @param Response $response
-     * @return Response
-     */
-    private function marshalReceivedResponse(Request $request, Response $response)
-    {
-        if ($response->getStatusCode() === 200
-            && $response->getBody()->getSize() === 0
-        ) {
-            return $this->create404($request, $response);
-        }
-
-        return $response;
-    }
-
-    /**
-     * Create a 404 response.
-     *
-     * If we have a template renderer composed, renders the 404 template into
-     * the response.
-     *
-     * @param Request $request
-     * @param Response $response
-     * @return Response
-     */
-    private function create404(Request $request, Response $response)
-    {
-        if ($this->template) {
-            $response->getBody()->write(
-                $this->template->render($this->template404, [ 'uri' => $request->getUri() ])
-            );
-        }
-        return $response->withStatus(404);
-    }
-
-    /**
-     * Handle an error.
-     *
-     * Marshals the response status from the error.
-     *
-     * If the error is not an exception, and we have a template renderer,
-     * renders the error template into the response.
-     *
-     * If the error is an exception, uses whoops to create the payload.
-     *
-     * @param mixed $error
-     * @param Request $request
-     * @param Response $response
-     * @return Response
-     */
-    private function handleError($error, Request $request, Response $response)
-    {
-        $response = $response->withStatus(Utils::getStatusCode($error, $response));
-
-        if (! $error instanceof \Exception) {
-            if ($this->template) {
-                $response->getBody()->write(
-                    $this->template->render($this->templateError, [
-                        'uri'    => $request->getUri(),
-                        'error'  => $error,
-                        'status' => $response->getStatusCode(),
-                        'reason' => $response->getReasonPhrase(),
-                    ])
-                );
-            }
-            return $response;
-        }
-
         $this->prepareWhoopsHandler($request);
 
-        $content = $this->whoops->handleException($error);
-        $response->getBody()->write($content);
+        $response
+            ->getBody()
+            ->write($this->whoops->handleException($exception));
+
         return $response;
     }
 

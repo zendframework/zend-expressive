@@ -10,10 +10,10 @@
 namespace Zend\Expressive\Container;
 
 use Interop\Container\ContainerInterface;
-use Zend\Expressive\WhoopsErrorHandler;
+use Zend\Expressive\TemplatedErrorHandler;
 
 /**
- * Create and return an instance of the whoops error handler.
+ * Create and return an instance of the templated error handler.
  *
  * Register this factory as the service `Zend\Expressive\FinalHandler` in
  * the container of your choice.
@@ -26,12 +26,6 @@ use Zend\Expressive\WhoopsErrorHandler;
  * - Config (which should return an array or array-like object with a
  *   "zend-expressive" top-level key, and an "error_handler" subkey,
  *   containing the configuration for the error handler).
- *
- * This factory has required dependencies on the following services:
- *
- * - Zend\Expressive\Whoops, which should return a Whoops\Run instance.
- * - Zend\Expressive\WhoopsPageHandler, which should return a
- *   Whoops\Handler\PrettyPageHandler instance.
  *
  * Configuration should look like the following:
  *
@@ -46,7 +40,7 @@ use Zend\Expressive\WhoopsErrorHandler;
  *
  * If any of the keys are missing, default values will be used.
  */
-class WhoopsErrorHandlerFactory
+class TemplatedErrorHandlerFactory
 {
     public function __invoke(ContainerInterface $container)
     {
@@ -62,9 +56,7 @@ class WhoopsErrorHandlerFactory
             ? $config['zend-expressive']['error_handler']
             : [];
 
-        return new WhoopsErrorHandler(
-            $container->get('Zend\Expressive\Whoops'),
-            $container->get('Zend\Expressive\WhoopsPageHandler'),
+        return new TemplatedErrorHandler(
             $template,
             (isset($config['template_404']) ? $config['template_404'] : 'error/404'),
             (isset($config['template_error']) ? $config['template_error'] : 'error/error')
