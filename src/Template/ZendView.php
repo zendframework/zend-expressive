@@ -16,14 +16,14 @@ use Zend\View\Resolver\TemplatePathStack;
 use Zend\Expressive\Exception;
 
 /**
- * Template implementation bridging zendframework/zend-view
+ * Template implementation bridging zendframework/zend-view.
  */
 class ZendView implements TemplateInterface
 {
     use ArrayParametersTrait;
 
     /**
-     * Paths and namespaces data store
+     * Paths and namespaces data store.
      */
     private $paths = [];
 
@@ -38,14 +38,12 @@ class ZendView implements TemplateInterface
     private $resolver;
 
     /**
-     * Constructor
-     *
-     * @param RendererInterface $template
+     * @param null|RendererInterface $template
      */
     public function __construct(RendererInterface $template = null)
     {
         if (null === $template) {
-            $template = $this->createRender();
+            $template = $this->createRenderer();
         }
         $this->template = $template;
         $this->resolver = $template->resolver();
@@ -56,7 +54,7 @@ class ZendView implements TemplateInterface
      *
      * @return PhpRenderer
      */
-    private function createRender()
+    private function createRenderer()
     {
         $render = new PhpRenderer();
         $render->setResolver($this->getDefaultResolver());
@@ -95,7 +93,8 @@ class ZendView implements TemplateInterface
     public function addPath($path, $namespace = null)
     {
         $this->resolver->addPath($path);
-        // Normalize the path to be compliant with zend view's resolver
+
+        // Normalize the path to be compliant with the TemplatePathStack
         $this->paths[TemplatePathStack::normalizePath($path)] = $namespace;
     }
 
