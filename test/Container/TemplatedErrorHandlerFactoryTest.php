@@ -10,34 +10,26 @@
 namespace ZendTest\Expressive\Container;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use Whoops\Handler\JsonResponseHandler;
-use Whoops\Handler\PrettyPageHandler;
-use Whoops\Run as Whoops;
-use Zend\Expressive\Container\WhoopsErrorHandlerFactory;
+use Zend\Expressive\Container\TemplatedErrorHandlerFactory;
 use Zend\Expressive\Template\TemplateInterface;
-use Zend\Expressive\WhoopsErrorHandler;
+use Zend\Expressive\TemplatedErrorHandler;
 
-class WhoopsErrorHandlerFactoryTest extends TestCase
+class TemplatedErrorHandlerFactoryTest extends TestCase
 {
     public function setUp()
     {
-        $whoops      = $this->prophesize(Whoops::class);
-        $pageHandler = $this->prophesize(PrettyPageHandler::class);
         $this->container = $this->prophesize('Interop\Container\ContainerInterface');
-        $this->container->get('Zend\Expressive\WhoopsPageHandler')->willReturn($pageHandler->reveal());
-        $this->container->get('Zend\Expressive\Whoops')->willReturn($whoops->reveal());
-
-        $this->factory   = new WhoopsErrorHandlerFactory();
+        $this->factory   = new TemplatedErrorHandlerFactory();
     }
 
-    public function testReturnsAWhoopsErrorHandler()
+    public function testReturnsATemplatedErrorHandler()
     {
         $this->container->has(TemplateInterface::class)->willReturn(false);
         $this->container->has('Config')->willReturn(false);
 
         $factory = $this->factory;
         $result  = $factory($this->container->reveal());
-        $this->assertInstanceOf(WhoopsErrorHandler::class, $result);
+        $this->assertInstanceOf(TemplatedErrorHandler::class, $result);
     }
 
     public function testWillInjectTemplateIntoErrorHandlerWhenServiceIsPresent()
@@ -49,7 +41,7 @@ class WhoopsErrorHandlerFactoryTest extends TestCase
 
         $factory = $this->factory;
         $result  = $factory($this->container->reveal());
-        $this->assertInstanceOf(WhoopsErrorHandler::class, $result);
+        $this->assertInstanceOf(TemplatedErrorHandler::class, $result);
         $this->assertAttributeInstanceOf(TemplateInterface::class, 'template', $result);
     }
 
@@ -65,7 +57,7 @@ class WhoopsErrorHandlerFactoryTest extends TestCase
 
         $factory = $this->factory;
         $result  = $factory($this->container->reveal());
-        $this->assertInstanceOf(WhoopsErrorHandler::class, $result);
+        $this->assertInstanceOf(TemplatedErrorHandler::class, $result);
         $this->assertAttributeEquals('error::404', 'template404', $result);
         $this->assertAttributeEquals('error::500', 'templateError', $result);
     }
