@@ -30,7 +30,9 @@ class ModularApplicationFactory
         $manager->loadModules();
         $moduleConfig = $configListener->getMergedConfig(false);
 
-        if (!isset($systemConfig['config_glob_paths'])) {
+        if (!isset($systemConfig['module_listener_options'])
+            || !isset($systemConfig['module_listener_options']['config_glob_paths'])
+        ) {
             return $moduleConfig;
         }
 
