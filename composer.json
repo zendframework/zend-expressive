@@ -22,6 +22,7 @@
         "league/plates": "^3.1",
         "nikic/fast-route": "^0.6.0",
         "twig/twig": "^1.19",
+        "zendframework/zend-view": "^2.5",
         "phpunit/phpunit": "^4.7",
         "squizlabs/php_codesniffer": "^2.3",
         "zendframework/zend-mvc": "^2.5",
@@ -42,6 +43,7 @@
         "nikic/fast-route": "^0.6.0 to use the FastRoute routing adapter",
         "zendframework/zend-mvc": "^2.5 to use the zend-mvc TreeRouteStack routing adapter",
         "zendframework/zend-psr7bridge": "^0.1.0 to use the zend-mvc TreeRouteStack routing adapter",
-        "twig/twig": "^1.19 to use the Twig template adapter"
+        "twig/twig": "^1.19 to use the Twig template adapter",
+        "zendframework/zend-view": "^2.5 to use the Zend View template adapter"
     }
 }
