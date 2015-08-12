@@ -10,7 +10,7 @@
 namespace Zend\Expressive\Container;
 
 use Interop\Container\ContainerInterface;
-use Zend\Expressive\ErrorHandler;
+use Zend\Expressive\WhoopsErrorHandler;
 
 /**
  * Create and return an instance of the error handler.
@@ -46,7 +46,7 @@ use Zend\Expressive\ErrorHandler;
  *
  * If any of the keys are missing, default values will be used.
  */
-class ErrorHandlerFactory
+class WhoopsErrorHandlerFactory
 {
     public function __invoke(ContainerInterface $container)
     {
@@ -62,7 +62,7 @@ class ErrorHandlerFactory
             ? $config['zend-expressive']['error_handler']
             : [];
 
-        return new ErrorHandler(
+        return new WhoopsErrorHandler(
             $container->get('Zend\Expressive\Whoops'),
             $container->get('Zend\Expressive\WhoopsPageHandler'),
             $template,

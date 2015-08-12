@@ -16,7 +16,7 @@ use Whoops\Run as Whoops;
 use Zend\Stratigility\Http\Request as StratigilityRequest;
 use Zend\Stratigility\Utils;
 
-class ErrorHandler
+class WhoopsErrorHandler
 {
     /**
      * Body size on the original response; used to compare against received
