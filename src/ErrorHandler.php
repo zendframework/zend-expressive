@@ -236,7 +236,6 @@ class ErrorHandler
 
         $this->prepareWhoopsHandler($request);
 
-        ob_clean();
         $content = $this->whoops->handleException($error);
         $response->getBody()->write($content);
         return $response;
