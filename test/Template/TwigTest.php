@@ -27,6 +27,13 @@ class TwigTest extends TestCase
         $this->twigEnvironment = new Twig_Environment($this->twigFilesystem);
     }
 
+    public function testIfNoneProvidedInTwigEnvironmentWillRaiseLogicExceptionOnCallGetLoader()
+    {
+        $twigEnvironment = new Twig_Environment();
+        $this->setExpectedException('LogicException');
+        $template = new TwigTemplate($twigEnvironment);
+    }
+
     public function testCanPassEngineToConstructor()
     {
         $template = new TwigTemplate($this->twigEnvironment);
