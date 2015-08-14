@@ -223,6 +223,8 @@ $services->setService('Config', $config);
 $services->setFactory('Zend\Expressive\Template\TemplateInterface', function ($container) {
     $plates = new Plates();
     $plates->addPath($container->get('Config')['templates']['error'], 'error');
+    
+    return $plates;
 });
 $services->setFactory('Zend\Expressive\Application', 'Zend\Expressive\Container\ApplicationFactory');
 
@@ -257,6 +259,8 @@ return [
             'Zend\Expressive\Template\TemplateInterface' => function ($container) {
                 $plates = new Plates();
                 $plates->addPath($container->get('Config')['templates']['error'], 'error');
+                
+                return $plates;
             },
             'Zend\Expressive\Whoops' => 'Zend\Expressive\Container\WhoopsFactory',
             'Zend\Expressive\WhoopsPageHandler' => 'Zend\Expressive\Container\WhoopsPageHandlerFactory',
@@ -329,6 +333,8 @@ $pimple['Zend\Expressive\Application'] = new Container\ApplicationFactory();
 $pimple['Zend\Expressive\Template\TemplateInterface'] = function ($container) {
     $plates = new Plates();
     $plates->addPath($container->get('Config')['templates']['error'], 'error');
+    
+    return $plates;
 };
 $pimple['Zend\Expressive\Whoops'] = new Container\WhoopsFactory();
 $pimple['Zend\Expressive\WhoopsPageHandler'] = new Container\WhoopsPageHandlerFactory();
