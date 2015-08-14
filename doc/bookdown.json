@@ -7,6 +7,7 @@
     "book/router.aura.md",
     "book/router.fast-route.md",
     "book/router.zf2.md",
+    "book/error-handling.md",
     "book/cookbook.md"
   ],
   "target": "./html"

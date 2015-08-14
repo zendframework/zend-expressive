@@ -67,7 +67,7 @@ class WhoopsPageHandlerFactory
         $editor = $config['editor'];
 
         if (is_callable($editor)) {
-            $pageHandler->setEditor($editor);
+            $handler->setEditor($editor);
             return;
         }
 
@@ -82,6 +82,6 @@ class WhoopsPageHandlerFactory
             $editor = $container->get($editor);
         }
 
-        $pageHandler->setEditor($editor);
+        $handler->setEditor($editor);
     }
 }

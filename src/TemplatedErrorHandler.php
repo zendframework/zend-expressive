@@ -11,12 +11,16 @@ namespace Zend\Expressive;
 
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Whoops\Handler\PrettyPageHandler;
-use Whoops\Run as Whoops;
-use Zend\Stratigility\Http\Request as StratigilityRequest;
 use Zend\Stratigility\Utils;
 
-class ErrorHandler
+/**
+ * Final handler with templated page capabilities.
+ *
+ * Provides the optional ability to render a template for each of 404 and
+ * general error conditions. If no template renderer is provided, returns
+ * empty responses with appropriate status codes.
+ */
+class TemplatedErrorHandler
 {
     /**
      * Body size on the original response; used to compare against received
@@ -60,37 +64,19 @@ class ErrorHandler
     private $templateError;
 
     /**
-     * Whoops runner instance to use when returning exception details.
-     *
-     * @var Whoops
-     */
-    private $whoops;
-
-    /**
-     * Whoops PrettyPageHandler; injected to allow runtime configuration with
-     * request information.
-     *
-     * @var PrettyPageHandler
-     */
-    private $whoopsHandler;
-
-    /**
-     * @param Whoops $whoops
-     * @param null|Template\TemplateInterface $template
-     * @param null|string $template404
-     * @param null|string $templateError
-     * @param null|Response $originalResponse
+     * @param null|Template\TemplateInterface $template Template renderer.
+     * @param null|string $template404 Template to use for 404 responses.
+     * @param null|string $templateError Template to use for general errors.
+     * @param null|Response $originalResponse Original response (used to
+     *     calculate if the response has changed during middleware
+     *     execution).
      */
     public function __construct(
-        Whoops $whoops,
-        PrettyPageHandler $whoopsHandler,
         Template\TemplateInterface $template = null,
         $template404 = 'error/404',
         $templateError = 'error/error',
         Response $originalResponse = null
     ) {
-        $this->whoops        = $whoops;
-        $this->whoopsHandler = $whoopsHandler;
         $this->template      = $template;
         $this->template404   = $template404;
         $this->templateError = $templateError;
@@ -124,7 +110,62 @@ class ErrorHandler
             return $this->handlePotentialSuccess($request, $response);
         }
 
-        return $this->handleError($err, $request, $response);
+        return $this->handleErrorResponse($err, $request, $response);
+    }
+
+    /**
+     * Handle a non-exception error.
+     *
+     * If a template renderer is present, passes the following to the template
+     * specified in the $templateError property:
+     *
+     * - error (the error itsel)
+     * - uri
+     * - status (response status)
+     * - reason (reason associated with response status)
+     * - request (full PSR-7 request instance)
+     * - response (full PSR-7 response instance)
+     *
+     * The results of rendering are then written to the response body.
+     *
+     * This method may be used as an extension point.
+     *
+     * @param mixed $error
+     * @param Request $request
+     * @param Response $response
+     * @return Response
+     */
+    protected function handleError($error, Request $request, Response $response)
+    {
+        if ($this->template) {
+            $response->getBody()->write(
+                $this->template->render($this->templateError, [
+                    'uri'      => $request->getUri(),
+                    'error'    => $error,
+                    'status'   => $response->getStatusCode(),
+                    'reason'   => $response->getReasonPhrase(),
+                    'request'  => $request,
+                    'response' => $response,
+                ])
+            );
+        }
+
+        return $response;
+    }
+
+    /**
+     * Prepare the exception for display.
+     *
+     * Proxies to `handleError()`; exists primarily to as an extension point
+     * for other handlers.
+     *
+     * @param \Exception $exception
+     * @param Request $request
+     * @param Response $response
+     */
+    protected function handleException(\Exception $exception, Request $request, Response $response)
+    {
+        return $this->handleError($exception, $request, $response);
     }
 
     /**
@@ -202,66 +243,27 @@ class ErrorHandler
     }
 
     /**
-     * Handle an error.
+     * Handle an error response.
      *
      * Marshals the response status from the error.
      *
-     * If the error is not an exception, and we have a template renderer,
-     * renders the error template into the response.
-     *
-     * If the error is an exception, uses whoops to create the payload.
+     * If the error is not an exception, it then proxies to handleError();
+     * otherwise, it proxies to handleException().
      *
      * @param mixed $error
      * @param Request $request
      * @param Response $response
      * @return Response
      */
-    private function handleError($error, Request $request, Response $response)
+    private function handleErrorResponse($error, Request $request, Response $response)
     {
         $response = $response->withStatus(Utils::getStatusCode($error, $response));
 
         if (! $error instanceof \Exception) {
-            if ($this->template) {
-                $response->getBody()->write(
-                    $this->template->render($this->templateError, [
-                        'uri'    => $request->getUri(),
-                        'error'  => $error,
-                        'status' => $response->getStatusCode(),
-                        'reason' => $response->getReasonPhrase(),
-                    ])
-                );
-            }
-            return $response;
+            return $this->handleError($error, $request, $response);
         }
 
-        $this->prepareWhoopsHandler($request);
 
-        $content = $this->whoops->handleException($error);
-        $response->getBody()->write($content);
-        return $response;
-    }
-
-    /**
-     * Prepare the Whoops page handler with a table displaying request information
-     *
-     * @param Request $request
-     */
-    private function prepareWhoopsHandler(Request $request)
-    {
-        if ($request instanceof StratigilityRequest) {
-            $request = $request->getOriginalRequest();
-        }
-
-        $uri = $request->getUri();
-        $this->whoopsHandler->addDataTable('Expressive Application Request', [
-            'HTTP Method'            => $request->getMethod(),
-            'URI'                    => (string) $uri,
-            'Script'                 => $request->getServerParams()['SCRIPT_NAME'],
-            'Headers'                => $request->getHeaders(),
-            'Cookies'                => $request->getCookieParams(),
-            'Attributes'             => $request->getAttributes(),
-            'Query String Arguments' => $request->getQueryParams(),
-            'Body Params'            => $request->getParsedBody(),
-        ]);
+        return $this->handleException($error, $request, $response);
     }
 }
