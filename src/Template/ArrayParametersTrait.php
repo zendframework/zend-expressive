@@ -40,8 +40,9 @@ trait ArrayParametersTrait
         }
 
         throw new Exception\InvalidArgumentException(sprintf(
-            'Twig template adapter can only handle arrays, Traversables, and objects '
+            '%s template adapter can only handle arrays, Traversables, and objects '
             . 'when rendering; received %s',
+            get_class($this),
             gettype($params)
         ));
     }
