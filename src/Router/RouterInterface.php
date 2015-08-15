@@ -17,7 +17,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 interface RouterInterface
 {
     /**
-     * @param array $config
+     * @param Route $route
      */
     public function addRoute(Route $route);
 
