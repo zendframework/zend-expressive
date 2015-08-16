@@ -354,7 +354,7 @@ class Application extends MiddlewarePipe
         }
 
         // Inject the handler with the response, if possible (e.g., the
-        // TemplatedErrorResponse and WhoopsErrorResponse implementations).
+        // TemplatedErrorHandler and WhoopsErrorHandler implementations).
         if (method_exists($this->finalHandler, 'setOriginalResponse')) {
             $this->finalHandler->setOriginalResponse($response);
         }
