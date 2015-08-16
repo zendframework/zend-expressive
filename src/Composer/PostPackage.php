@@ -64,9 +64,7 @@ class PostPackage
     private static function doInstall(PackageEvent $event, $overrideConfig)
     {
         $applicationExtra = $event->getComposer()->getPackage()->getExtra();
-        $flags            = isset($applicationExtra['zend_expressive_flags'])
-            ? $applicationExtra['zend_expressive_flags']
-            : [];
+        $flags            = isset($applicationExtra['install_flags']) ? $applicationExtra['install_flags'] : [];
 
         /** @var \Composer\Package\CompletePackage $installedPackage */
         $installedPackage = $event->getOperation()->getPackage();
