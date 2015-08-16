@@ -32,7 +32,7 @@ use Composer\Installer\PackageEvent;
  * include the necessary information. Here is the required format:
  *
  *   "extra": {
- *     "middleware_config": [
+ *     "container_config": [
  *       {
  *         "path": "config/general.php"
  *       },
@@ -72,9 +72,9 @@ class PostPackage
         $installedPackage = $event->getOperation()->getPackage();
         $installedExtra   = $installedPackage->getExtra();
 
-        $middlewareConfig = isset($installedExtra['middleware_config']) ? $installedExtra['middleware_config'] : [];
+        $containerConfig = isset($installedExtra['container_config']) ? $installedExtra['container_config'] : [];
 
-        foreach ($middlewareConfig as $singleConfig) {
+        foreach ($containerConfig as $singleConfig) {
             // If the config has an "only_if" key, this means the config must only be merged if this option
             // was passed as part of the consumer
             if (isset($singleConfig['only_if']) && !in_array($singleConfig['only_if'], $flags, true)) {
