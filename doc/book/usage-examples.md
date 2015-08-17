@@ -21,7 +21,7 @@ We assume also that:
 - You have installed zend-expressive per the installation instructions.
 - `public/` will be the document root of your application.
 - Your own classes are under `src/` with the top-level namespace `Application`,
-  and you have configured autoloading in your `composer.json` for those classes.
+  and you have configured [autoloading](https://getcomposer.org/doc/01-basic-usage.md#autoloading) in your `composer.json` for those classes.
 
 > ## Using the built-in web server
 >
