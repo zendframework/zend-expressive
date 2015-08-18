@@ -29,6 +29,7 @@ use Zend\Expressive\Exception;
 class Route
 {
     const HTTP_METHOD_ANY = 0xff;
+    const HTTP_METHOD_SEPARATOR = ':';
 
     /**
      * @var int|string[] HTTP methods allowed with this route.
@@ -51,14 +52,20 @@ class Route
     private $path;
 
     /**
+     * @var string
+     */
+    private $name;
+
+    /**
      * @param string $path Path to match.
      * @param string|callable $middleware Middleware to use when this route is matched.
      * @param int|array Allowed HTTP methods; defaults to HTTP_METHOD_ANY.
+     * @param string|null $name the route name
      * @throws Exception\InvalidArgumentException for invalid path type.
      * @throws Exception\InvalidArgumentException for invalid middleware type.
      * @throws Exception\InvalidArgumentException for any invalid HTTP method names.
      */
-    public function __construct($path, $middleware, $methods = self::HTTP_METHOD_ANY)
+    public function __construct($path, $middleware, $methods = self::HTTP_METHOD_ANY, $name = null)
     {
         if (! is_string($path)) {
             throw new Exception\InvalidArgumentException('Invalid path; must be a string');
@@ -78,6 +85,9 @@ class Route
         $this->path       = $path;
         $this->middleware = $middleware;
         $this->methods    = is_array($methods) ? $this->validateHttpMethods($methods) : $methods;
+        $this->name       = empty($name) ?
+                            $path . '^' . implode(self::HTTP_METHOD_SEPARATOR, (array) $this->methods) :
+                            $name;
     }
 
     /**
@@ -86,6 +96,14 @@ class Route
     public function getPath()
     {
         return $this->path;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 
     /**
@@ -130,6 +148,14 @@ class Route
     public function setOptions(array $options)
     {
         $this->options = $options;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
     }
 
     /**

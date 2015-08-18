@@ -13,6 +13,7 @@ use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Argument;
 use Zend\Expressive\Router\Zf2 as Zf2Router;
 use Zend\Expressive\Router\Route;
+use Zend\Diactoros\ServerRequest;
 
 class Zf2Test extends TestCase
 {
@@ -54,10 +55,29 @@ class Zf2Test extends TestCase
             'type' => 'segment',
             'options' => [
                 'route' => '/foo',
-                'defaults' => [
-                    'middleware' => 'foo',
-                ],
             ],
+            'may_terminate' => false,
+            'child_routes' => [
+                'GET' => [
+                    'type' => 'method',
+                    'options' => [
+                        'verb' => 'GET',
+                        'defaults' => [
+                            'middleware' => 'foo',
+                        ]
+                    ]
+                ],
+                Zf2Router::METHOD_NOT_ALLOWED_ROUTE => [
+                    'type' => 'segment',
+                    'priority' => -1,
+                    'options' => [
+                        'route' => '[/]',
+                        'defaults' => [
+                            'middleware' => null
+                        ]
+                    ]
+                ]
+            ]
         ])->shouldBeCalled();
 
         $router = $this->getRouter();
@@ -84,10 +104,31 @@ class Zf2Test extends TestCase
                     'id' => '\d+',
                 ],
                 'defaults' => [
-                    'bar' => 'baz',
-                    'middleware' => 'foo',
+                    'bar' => 'baz'
                 ],
             ],
+            'may_terminate' => false,
+            'child_routes' => [
+                'GET' => [
+                    'type' => 'method',
+                    'options' => [
+                        'verb' => 'GET',
+                        'defaults' => [
+                            'middleware' => 'foo',
+                        ]
+                    ]
+                ],
+                Zf2Router::METHOD_NOT_ALLOWED_ROUTE => [
+                    'type' => 'segment',
+                    'priority' => -1,
+                    'options' => [
+                        'route' => '[/]',
+                        'defaults' => [
+                            'middleware' => null
+                        ]
+                    ]
+                ]
+            ]
         ])->shouldBeCalled();
 
         $router = $this->getRouter();
@@ -107,6 +148,24 @@ class Zf2Test extends TestCase
                 RouteResult::fromRouteFailure(),
             ],
         ];
+    }
+
+    public function testMatch()
+    {
+        $middleware = function ($req, $res, $next) {
+            return $res;
+        };
+
+        $route = new Route('/foo', $middleware, ['GET']);
+        $zf2Router = new Zf2Router();
+        $zf2Router->addRoute($route);
+
+        $request = new ServerRequest([ 'REQUEST_METHOD' => 'GET' ], [], '/foo', 'GET');
+
+        $result = $zf2Router->match($request);
+        $this->assertInstanceOf('Zend\Expressive\Router\RouteResult', $result);
+        $this->assertEquals('/foo/GET', $result->getMatchedRouteName());
+        $this->assertEquals($middleware, $result->getMatchedMiddleware());
     }
 
     /**
@@ -157,31 +216,11 @@ class Zf2Test extends TestCase
      */
     public function testMatchFailureDueToHttpMethodReturnsRouteResultWithAllowedMethods()
     {
-        $routeMatch = $this->prophesize('Zend\Mvc\Router\RouteMatch');
-        $routeMatch->getMatchedRouteName()->willReturn('/foo');
-        $routeMatch->getParams()->willReturn([
-            'middleware' => 'bar',
-        ]);
 
-        $this->zf2Router->addRoute('/foo', [
-            'type' => 'segment',
-            'options' => [
-                'route' => '/foo',
-                'defaults' => [
-                    'middleware' => 'bar',
-                ],
-            ],
-        ])->shouldBeCalled();
-        $this->zf2Router
-            ->match(Argument::type('Zend\Http\PhpEnvironment\Request'))
-            ->willReturn($routeMatch->reveal());
-
-
-        $router = $this->getRouter();
+        $router = new Zf2Router();
         $router->addRoute(new Route('/foo', 'bar', ['POST', 'DELETE']));
-
-        $request = $this->createRequestProphecy();
-        $result = $router->match($request->reveal());
+        $request = new ServerRequest([ 'REQUEST_METHOD' => 'GET' ], [], '/foo', 'GET');
+        $result = $router->match($request);
 
         $this->assertInstanceOf('Zend\Expressive\Router\RouteResult', $result);
         $this->assertTrue($result->isFailure());

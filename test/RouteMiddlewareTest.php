@@ -14,6 +14,7 @@ use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Response;
 use Zend\Expressive\Application;
 use Zend\Expressive\Router\RouteResult;
+use Zend\Expressive\Router\RouterInterface;
 
 class RouteMiddlewareTest extends TestCase
 {
@@ -256,5 +257,243 @@ class RouteMiddlewareTest extends TestCase
 
         $this->setExpectedException('Zend\Expressive\Exception\InvalidMiddlewareException', 'retrieve');
         $app->routeMiddleware($request, $response, $next);
+    }
+
+    /**
+     * Get the router adapters to test
+     */
+    public function getRouterAdapters()
+    {
+        return [
+          [ 'Zend\Expressive\Router\Aura' ],
+          [ 'Zend\Expressive\Router\FastRoute' ],
+          [ 'Zend\Expressive\Router\Zf2' ]
+        ];
+    }
+
+    /**
+     * Create an Application object with 2 routes, a GET and a POST
+     * using Application::get() and Application::post()
+     *
+     * @param string $adapter
+     * @param string $getName
+     * @param string $postName
+     * @return Application
+     */
+    private function getApplicationWithGetPost($adapter, $getName = null, $postName = null)
+    {
+        $app = new Application(new $adapter);
+        $app->get('/foo', function ($req, $res, $next) {
+            $res->getBody()->write('Middleware GET');
+            return $res;
+        }, $getName);
+        $app->post('/foo', function ($req, $res, $next) {
+            $res->getBody()->write('Middleware POST');
+            return $res;
+        }, $postName);
+
+        return $app;
+    }
+
+    /**
+     * Create an Application object with 2 routes, a GET and a POST
+     * using Application::route()
+     *
+     * @param string $adapter
+     * @param string $getName
+     * @param string $postName
+     * @return Application
+     */
+    private function getApplicationWithRouteGetPost($adapter, $getName = null, $postName = null)
+    {
+        $app = new Application(new $adapter);
+        $app->route('/foo', function ($req, $res, $next) {
+            $res->getBody()->write('Middleware GET');
+            return $res;
+        }, ['GET'], $getName);
+        $app->route('/foo', function ($req, $res, $next) {
+            $res->getBody()->write('Middleware POST');
+            return $res;
+        }, ['POST'], $postName);
+
+        return $app;
+    }
+
+    /**
+     * @dataProvider getRouterAdapters
+     */
+    public function testRoutingNoMatch($adapter)
+    {
+        $app  = $this->getApplicationWithGetPost($adapter);
+        $next = function ($req, $res) {
+            return $res;
+        };
+
+        $request  = new ServerRequest([ 'REQUEST_METHOD' => 'DELETE' ], [], '/foo', 'DELETE');
+        $response = new Response();
+        $result   = $app->routeMiddleware($request, $response, $next);
+        $this->assertSame(405, $result->getStatusCode());
+        $headers = $result->getHeaders();
+        $this->assertSame([ 'GET,POST' ], $headers['Allow']);
+    }
+
+
+    /**
+     * @see https://github.com/zendframework/zend-expressive/issues/40
+     * @dataProvider getRouterAdapters
+     */
+    public function testRoutingWithSamePathWithoutName($adapter)
+    {
+        $app  = $this->getApplicationWithGetPost($adapter);
+        $next = function ($req, $res) {
+            return $res;
+        };
+
+        $request  = new ServerRequest([ 'REQUEST_METHOD' => 'GET' ], [], '/foo', 'GET');
+        $response = new Response();
+        $result   = $app->routeMiddleware($request, $response, $next);
+
+        $this->assertEquals('Middleware GET', (string) $result->getBody());
+
+        $request  = new ServerRequest([ 'REQUEST_METHOD' => 'POST' ], [], '/foo', 'POST');
+        $response = new Response();
+        $result   = $app->routeMiddleware($request, $response, $next);
+
+        $this->assertEquals('Middleware POST', (string) $result->getBody());
+    }
+
+    /**
+     * @see https://github.com/zendframework/zend-expressive/issues/40
+     * @dataProvider getRouterAdapters
+     */
+    public function testRoutingWithSamePathWithName($adapter)
+    {
+        $app  = $this->getApplicationWithGetPost($adapter, 'foo-get', 'foo-post');
+        $next = function ($req, $res) {
+            return $res;
+        };
+
+        $request  = new ServerRequest([ 'REQUEST_METHOD' => 'GET' ], [], '/foo', 'GET');
+        $response = new Response();
+        $result   = $app->routeMiddleware($request, $response, $next);
+
+        $this->assertEquals('Middleware GET', (string) $result->getBody());
+
+        $request  = new ServerRequest([ 'REQUEST_METHOD' => 'POST' ], [], '/foo', 'POST');
+        $response = new Response();
+        $result   = $app->routeMiddleware($request, $response, $next);
+
+        $this->assertEquals('Middleware POST', (string) $result->getBody());
+    }
+
+    /**
+     * @see https://github.com/zendframework/zend-expressive/issues/40
+     * @dataProvider getRouterAdapters
+     */
+    public function testRoutingWithSamePathWithRouteWithoutName($adapter)
+    {
+        $app  = $this->getApplicationWithRouteGetPost($adapter);
+        $next = function ($req, $res) {
+            return $res;
+        };
+
+        $request  = new ServerRequest([ 'REQUEST_METHOD' => 'GET' ], [], '/foo', 'GET');
+        $response = new Response();
+        $result   = $app->routeMiddleware($request, $response, $next);
+
+        $this->assertEquals('Middleware GET', (string) $result->getBody());
+
+        $request  = new ServerRequest([ 'REQUEST_METHOD' => 'POST' ], [], '/foo', 'POST');
+        $response = new Response();
+        $result   = $app->routeMiddleware($request, $response, $next);
+
+        $this->assertEquals('Middleware POST', (string) $result->getBody());
+    }
+
+    /**
+     * @see https://github.com/zendframework/zend-expressive/issues/40
+     * @dataProvider getRouterAdapters
+     */
+    public function testRoutingWithSamePathWithRouteWithName($adapter)
+    {
+        $app  = $this->getApplicationWithRouteGetPost($adapter, 'foo-get', 'foo-post');
+        $next = function ($req, $res) {
+            return $res;
+        };
+
+        $request  = new ServerRequest([ 'REQUEST_METHOD' => 'GET' ], [], '/foo', 'GET');
+        $response = new Response();
+        $result   = $app->routeMiddleware($request, $response, $next);
+
+        $this->assertEquals('Middleware GET', (string) $result->getBody());
+
+        $request  = new ServerRequest([ 'REQUEST_METHOD' => 'POST' ], [], '/foo', 'POST');
+        $response = new Response();
+        $result   = $app->routeMiddleware($request, $response, $next);
+
+        $this->assertEquals('Middleware POST', (string) $result->getBody());
+    }
+
+    /**
+     * @see https://github.com/zendframework/zend-expressive/issues/40
+     * @dataProvider getRouterAdapters
+     */
+    public function testRoutingWithSamePathWithRouteWithMultipleMethods($adapter)
+    {
+        $app = new Application(new $adapter);
+        $app->route('/foo', function ($req, $res, $next) {
+            $res->getBody()->write('Middleware GET, POST');
+            return $res;
+        }, [ 'GET', 'POST' ]);
+        $app->route('/foo', function ($req, $res, $next) {
+            $res->getBody()->write('Middleware DELETE');
+            return $res;
+        }, [ 'DELETE' ]);
+        $next = function ($req, $res) {
+            return $res;
+        };
+
+        $request  = new ServerRequest([ 'REQUEST_METHOD' => 'GET' ], [], '/foo', 'GET');
+        $response = new Response();
+        $result   = $app->routeMiddleware($request, $response, $next);
+        $this->assertEquals('Middleware GET, POST', (string) $result->getBody());
+
+        $request  = new ServerRequest([ 'REQUEST_METHOD' => 'POST' ], [], '/foo', 'POST');
+        $response = new Response();
+        $result   = $app->routeMiddleware($request, $response, $next);
+        $this->assertEquals('Middleware GET, POST', (string) $result->getBody());
+
+        $request  = new ServerRequest([ 'REQUEST_METHOD' => 'DELETE' ], [], '/foo', 'DELETE');
+        $response = new Response();
+        $result   = $app->routeMiddleware($request, $response, $next);
+        $this->assertEquals('Middleware DELETE', (string) $result->getBody());
+    }
+
+    private function getAllHttpMethods()
+    {
+        return [ 'GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS' ];
+    }
+
+    /**
+     * @dataProvider getRouterAdapters
+     */
+    public function testMatchWithAllHttpMethods($adapter)
+    {
+        $app = new Application(new $adapter);
+        // Add a route with Zend\Expressive\Router\Route::HTTP_METHOD_ANY
+        $app->route('/foo', function ($req, $res, $next) {
+            $res->getBody()->write('Middleware');
+            return $res;
+        });
+        $next = function ($req, $res) {
+            return $res;
+        };
+
+        foreach ($this->getAllHttpMethods() as $method) {
+            $request  = new ServerRequest([ 'REQUEST_METHOD' => $method ], [], '/foo', $method);
+            $response = new Response();
+            $result   = $app->routeMiddleware($request, $response, $next);
+            $this->assertEquals('Middleware', (string) $result->getBody());
+        }
     }
 }
