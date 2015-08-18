@@ -260,21 +260,15 @@ class RouteMiddlewareTest extends TestCase
     }
 
     /**
-     * Get the router adapters installed
+     * Get the router adapters to test
      */
     public function getRouterAdapters()
     {
-        $adapters = [];
-        if (class_exists('Aura\Router\Router')) {
-            $adapters[] = [ 'Zend\Expressive\Router\Aura' ];
-        }
-        if (class_exists('FastRoute\RouteCollector')) {
-            $adapters[] = [ 'Zend\Expressive\Router\FastRoute' ];
-        }
-        if (class_exists('Zend\Mvc\Router\RouteMatch')) {
-            $adapters[] = [ 'Zend\Expressive\Router\Zf2' ];
-        }
-        return $adapters;
+        return [
+          [ 'Zend\Expressive\Router\Aura' ],
+          [ 'Zend\Expressive\Router\FastRoute' ],
+          [ 'Zend\Expressive\Router\Zf2' ]
+        ];
     }
 
     /**
