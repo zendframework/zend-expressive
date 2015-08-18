@@ -86,4 +86,35 @@ class RouteTest extends TestCase
         $route = new Route('/foo', $this->noopMiddleware);
         $this->assertSame([], $route->getOptions());
     }
+
+    public function testRouteSetName()
+    {
+        $route = new Route('/test', $this->noopMiddleware);
+        $route->setName('test');
+        $this->assertSame('test', $route->getName());
+    }
+
+    public function testRouteName()
+    {
+        $route = new Route('/test', $this->noopMiddleware);
+        $this->assertSame('/test^' . Route::HTTP_METHOD_ANY, $route->getName());
+    }
+
+    public function testRouteNameWithConstructor()
+    {
+        $route = new Route('/test', $this->noopMiddleware, [], 'test');
+        $this->assertSame('test', $route->getName());
+    }
+
+    public function testRouteNameWithGET()
+    {
+        $route = new Route('/test', $this->noopMiddleware, [ 'GET' ]);
+        $this->assertSame('/test^GET', $route->getName());
+    }
+
+    public function testRouteNameWithGetAndPost()
+    {
+        $route = new Route('/test', $this->noopMiddleware, [ 'GET', 'POST' ]);
+        $this->assertSame('/test^GET_POST', $route->getName());
+    }
 }
