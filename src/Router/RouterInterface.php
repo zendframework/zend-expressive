@@ -10,6 +10,7 @@
 namespace Zend\Expressive\Router;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Zend\Expressive\Exception;
 
 /**
  * Interface defining required router capabilities.
@@ -26,4 +27,19 @@ interface RouterInterface
      * @return RouteResult
      */
     public function match(Request $request);
+
+    /**
+     * Generate a URI from the named route.
+     *
+     * Takes the named route and any substitutions, and attempts to generate a
+     * URI from it.
+     *
+     * @see https://github.com/auraphp/Aura.Router#generating-a-route-path
+     * @see http://framework.zend.com/manual/current/en/modules/zend.mvc.routing.html
+     * @param string $name
+     * @param array $substitutions
+     * @return string
+     * @throws Exception\RuntimeException if unable to generate the given URI.
+     */
+    public function generateUri($name, array $substitutions = []);
 }

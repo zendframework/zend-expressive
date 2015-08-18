@@ -154,4 +154,26 @@ class AuraRouteTest extends TestCase
         $this->assertFalse($result->isMethodFailure());
         $this->assertSame([], $result->getAllowedMethods());
     }
+
+    /**
+     * @group 53
+     */
+    public function testCanGenerateUriFromRoutes()
+    {
+        $router = new AuraRouter();
+        $route1 = new Route('/foo', 'foo', ['POST'], 'foo-create');
+        $route2 = new Route('/foo', 'foo', ['GET'], 'foo-list');
+        $route3 = new Route('/foo/{id}', 'foo', ['GET'], 'foo');
+        $route4 = new Route('/bar/{baz}', 'bar', Route::HTTP_METHOD_ANY, 'bar');
+
+        $router->addRoute($route1);
+        $router->addRoute($route2);
+        $router->addRoute($route3);
+        $router->addRoute($route4);
+
+        $this->assertEquals('/foo', $router->generateUri('foo-create'));
+        $this->assertEquals('/foo', $router->generateUri('foo-list'));
+        $this->assertEquals('/foo/bar', $router->generateUri('foo', ['id' => 'bar']));
+        $this->assertEquals('/bar/BAZ', $router->generateUri('bar', ['baz' => 'BAZ']));
+    }
 }
