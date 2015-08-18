@@ -26,11 +26,11 @@ use Zend\Stratigility\MiddlewarePipe;
 /**
  * Middleware application providing routing based on paths and HTTP methods.
  *
- * @method Router\Route get($path, $middleware)
- * @method Router\Route post($path, $middleware)
- * @method Router\Route put($path, $middleware)
- * @method Router\Route patch($path, $middleware)
- * @method Router\Route delete($path, $middleware)
+ * @method Router\Route get($path, $middleware, $name = null)
+ * @method Router\Route post($path, $middleware, $name = null)
+ * @method Router\Route put($path, $middleware, $name = null)
+ * @method Router\Route patch($path, $middleware, $name = null)
+ * @method Router\Route delete($path, $middleware, $name = null)
  */
 class Application extends MiddlewarePipe
 {
@@ -133,16 +133,25 @@ class Application extends MiddlewarePipe
             throw new BadMethodCallException('Unsupported method');
         }
 
-        if (count($args) !== 2) {
-            throw new BadMethodCallException(sprintf(
-                '%s::%s requires exactly 2 arguments; received %d',
-                __CLASS__,
-                $method,
-                count($args)
-            ));
+        switch (count($args)) {
+            case 2:
+                // We have path and middleware; append the HTTP method.
+                $args[] = [$method];
+                break;
+            case 3:
+                // Need to reflow arguments to (0 => path, 1 => middleware, 2 => methods, 3 => name)
+                // from (0 => path, 1 => middleware, 2 => name)
+                $args[3] = $args[2];  // place name in $args[3]
+                $args[2] = [$method]; // method becomes $args[2]
+                break;
+            default:
+                throw new BadMethodCallException(sprintf(
+                    '%s::%s requires at least 2 arguments, and no more than 3; received %d',
+                    __CLASS__,
+                    $method,
+                    count($args)
+                ));
         }
-
-        $args[] = [$method];
 
         // @TODO: we can use variadic parameters when dependency is raised to PHP 5.6
         return call_user_func_array([$this, 'route'], $args);
@@ -261,10 +270,11 @@ class Application extends MiddlewarePipe
      * @param string|Router\Route $path
      * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
      * @param null|array $methods HTTP method to accept; null indicates any.
+     * @param null|string $name the name of the route
      * @return Router\Route
      * @throws Exception\InvalidArgumentException if $path is not a Router\Route AND middleware is null.
      */
-    public function route($path, $middleware = null, array $methods = null)
+    public function route($path, $middleware = null, array $methods = null, $name = null)
     {
         if (! $path instanceof Router\Route && null === $middleware) {
             throw new Exception\InvalidArgumentException(sprintf(
@@ -277,13 +287,14 @@ class Application extends MiddlewarePipe
             $route   = $path;
             $path    = $route->getPath();
             $methods = $route->getAllowedMethods();
+            $name    = $route->getName();
         }
 
         $this->checkForDuplicateRoute($path, $methods);
 
         if (! isset($route)) {
             $methods = (null === $methods) ? Router\Route::HTTP_METHOD_ANY : $methods;
-            $route   = new Router\Route($path, $middleware, $methods);
+            $route   = new Router\Route($path, $middleware, $methods, $name);
         }
 
         $this->routes[] = $route;
@@ -381,7 +392,7 @@ class Application extends MiddlewarePipe
     /**
      * Determine if the route is duplicated in the current list.
      *
-     * Checks if a route with the same path exists already in the list;
+     * Checks if a route with the same name or path exists already in the list;
      * if so, and it responds to any of the $methods indicated, raises
      * a DomainException indicating a duplicate route.
      *
@@ -411,7 +422,7 @@ class Application extends MiddlewarePipe
 
         if (count($matches) > 0) {
             throw new DomainException(
-                'Duplicate route detected; same path, and one or more HTTP methods intersect'
+                'Duplicate route detected; same name or path, and one or more HTTP methods intersect'
             );
         }
     }

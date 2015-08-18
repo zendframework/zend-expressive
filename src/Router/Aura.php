@@ -29,6 +29,13 @@ class Aura implements RouterInterface
     private $router;
 
     /**
+     * Store the path and the HTTP methods allowed
+     *
+     * @var array
+     */
+    private $routes = [];
+
+    /**
      * Constructor
      *
      * If no Aura.Router instance is provided, the constructor will lazy-load
@@ -75,18 +82,12 @@ class Aura implements RouterInterface
      */
     public function addRoute(Route $route)
     {
+        $path      = $route->getPath();
         $auraRoute = $this->router->add(
-            $route->getPath(),
-            $route->getPath(),
+            $route->getName(),
+            $path,
             $route->getMiddleware()
         );
-
-        $httpMethods = $route->getAllowedMethods();
-        if (is_array($httpMethods)) {
-            $auraRoute->setServer([
-                'REQUEST_METHOD' => implode('|', $httpMethods),
-            ]);
-        }
 
         foreach ($route->getOptions() as $key => $value) {
             switch ($key) {
@@ -98,12 +99,26 @@ class Aura implements RouterInterface
                     break;
             }
         }
+
+        $allowedMethods = $route->getAllowedMethods();
+        if (Route::HTTP_METHOD_ANY === $allowedMethods) {
+            return;
+        }
+
+        $auraRoute->setServer([
+            'REQUEST_METHOD' => implode('|', $allowedMethods)
+        ]);
+
+        if (array_key_exists($path, $this->routes)) {
+            $allowedMethods = array_merge($this->routes[$path], $allowedMethods);
+        }
+        $this->routes[$path] = $allowedMethods;
     }
 
     /**
      * @param  string $patch
      * @param  array $params
-     * @return boolean
+     * @return RouteResult
      */
     public function match(Request $request)
     {
@@ -129,11 +144,16 @@ class Aura implements RouterInterface
     private function marshalFailedRoute()
     {
         $failedRoute = $this->router->getFailedRoute();
-        if (! $failedRoute->failedMethod()) {
-            return RouteResult::fromRouteFailure();
+        if ($failedRoute->failedMethod()) {
+            return RouteResult::fromRouteFailure($failedRoute->method);
         }
 
-        return RouteResult::fromRouteFailure($failedRoute->method);
+        list($path) = explode('^', $failedRoute->name);
+        if (array_key_exists($path, $this->routes)) {
+            return RouteResult::fromRouteFailure($this->routes[$path]);
+        }
+
+        return RouteResult::fromRouteFailure();
     }
 
     /**

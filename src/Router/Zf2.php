@@ -19,15 +19,19 @@ use Zend\Psr7Bridge\Psr7ServerRequest;
  *
  * This router implementation consumes zend-mvc's TreeRouteStack, (the default
  * router implementation in a ZF2 application). The addRoute() method injects
- * segment routes into the TreeRouteStack, and manages an internal route stack
- * in order to do HTTP method negotiation after a successful match (as the ZF2
- * "Method" router implementation will return a result indistinguishable from a
- * 404 otherwise).
+ * segment routes into the TreeRouteStack, and creates a route failure for HTTP
+ * method negotiation (as the ZF2 "Method" router implementation will return
+ * a result indistinguishable from a 404 otherwise).
  */
 class Zf2 implements RouterInterface
 {
+    // Name of the method not allowed route
+    const METHOD_NOT_ALLOWED_ROUTE = 'method_not_allowed';
+
     /**
-     * @var Route[] Registered routes
+     * Store the path and the HTTP methods allowed
+     *
+     * @var array
      */
     private $routes = [];
 
@@ -54,21 +58,51 @@ class Zf2 implements RouterInterface
     public function addRoute(Route $route)
     {
         $path    = $route->getPath();
-        $options = $route->getOptions() ?: [];
+        $options = $route->getOptions();
         $options = array_replace_recursive($options, [
-            'route'   => $route->getPath(),
+            'route' => $path,
             'defaults' => [
-                'middleware' => $route->getMiddleware(),
-            ],
+                'middleware' => $route->getMiddleware()
+            ]
         ]);
 
+        $allowedMethods =  $route->getAllowedMethods();
+        if (Route::HTTP_METHOD_ANY === $allowedMethods) {
+            $this->zf2Router->addRoute($path, [
+                'type'    => 'segment',
+                'options' => $options
+            ]);
+            return;
+        }
+
+        // Remove the middleware from the segment route in favor of method route
+        unset($options['defaults']['middleware']);
+        if (empty($options['defaults'])) {
+            unset($options['defaults']);
+        }
+
+        $childRouteName = implode('-', $allowedMethods);
+        $childRoutes    = $this->getMethodRouteConfig($route);
+
         $spec = [
-            'type'    => 'segment',
-            'options' => $options,
+            'type'          => 'segment',
+            'options'       => $options,
+            'may_terminate' => false,
+            'child_routes'  => [ $childRouteName => $childRoutes ]
         ];
 
-        $this->zf2Router->addRoute($path, $spec);
-        $this->routes[$path] = $route;
+        $routeFail = $path . '/' . self::METHOD_NOT_ALLOWED_ROUTE;
+        if (array_key_exists($routeFail, $this->routes)) {
+            $this->zf2Router->getRoute($path)->addRoute($childRouteName, $childRoutes);
+        } else {
+            $spec['child_routes'][self::METHOD_NOT_ALLOWED_ROUTE] = $this->getFailRouteConfig();
+            $this->zf2Router->addRoute($path, $spec);
+        }
+
+        if (array_key_exists($routeFail, $this->routes)) {
+            $allowedMethods = array_merge($this->routes[$routeFail], $allowedMethods);
+        }
+        $this->routes[$routeFail] = $allowedMethods;
     }
 
     /**
@@ -83,11 +117,6 @@ class Zf2 implements RouterInterface
 
         if (null === $match) {
             return RouteResult::fromRouteFailure();
-        }
-
-        $allowedMethods = $this->getAllowedMethods($match->getMatchedRouteName());
-        if (! $this->methodIsAllowed($request->getMethod(), $allowedMethods)) {
-            return RouteResult::fromRouteFailure($allowedMethods);
         }
 
         return $this->marshalSuccessResultFromRouteMatch($match);
@@ -109,63 +138,63 @@ class Zf2 implements RouterInterface
      */
     private function marshalSuccessResultFromRouteMatch(RouteMatch $match)
     {
-        $params = $match->getParams();
-        $middleware = isset($params['middleware'])
-            ? $params['middleware']
-            : $this->getMiddlewareFromRoute($match->getMatchedRouteName());
+        $params    = $match->getParams();
+        $routeName = $match->getMatchedRouteName();
+
+        // Check to see if this is the method indicating method not allowed; if
+        // so, return a routing failure.
+        if (false !== strstr($routeName, self::METHOD_NOT_ALLOWED_ROUTE)) {
+            // Retrieve the HTTP method allowed from stored routes
+            return RouteResult::fromRouteFailure($this->routes[$routeName]);
+        }
 
         return RouteResult::fromRouteMatch(
-            $match->getMatchedRouteName(),
-            $middleware,
+            $routeName,
+            $params['middleware'],
             $params
         );
     }
 
     /**
-     * Given a route name (the path), retrieve the middleware associated with it.
+     * Get the method route configuration
      *
-     * @param string $name
-     * @return null|string|callable
+     * @param Route $route
+     * @return array
      */
-    private function getMiddlewareFromRoute($name)
+    private function getMethodRouteConfig($route)
     {
-        if (! array_key_exists($name, $this->routes)) {
-            return null;
-        }
-
-        $route = $this->routes[$name];
-        return $route->getMiddleware();
+        return [
+            'type'    => 'method',
+            'options' => [
+                'verb'     => implode(',', $route->getAllowedMethods()),
+                'defaults' => [
+                    'middleware' => $route->getMiddleware(),
+                ],
+            ],
+        ];
     }
 
     /**
-     * Get list of allowed methods for this route.
+     * Get the configuration for the fail route.
      *
-     * @param name $string
-     * @return int|string[]
-     */
-    private function getAllowedMethods($name)
-    {
-        if (! array_key_exists($name, $this->routes)) {
-            return Route::HTTP_METHOD_ANY;
-        }
-
-        $route = $this->routes[$name];
-        return $route->getAllowedMethods();
-    }
-
-    /**
-     * Is the provided method in the list of allowed methods?
+     * The specification is used for routes that have HTTP method negotiation;
+     * essentially, this is a route that will always match, but *after* the
+     * HTTP method route has already failed. By checking for this route later,
+     * we can return a 405 response with the allowed methods.
      *
-     * @param string $method
-     * @param int|string[] $allowedMethods
-     * @return bool
+     * @return array
      */
-    private function methodIsAllowed($method, $allowedMethods)
+    private function getFailRouteConfig()
     {
-        if ($allowedMethods === Route::HTTP_METHOD_ANY) {
-            return true;
-        }
-
-        return in_array(strtoupper($method), array_map('strtoupper', $allowedMethods), true);
+        return [
+            'type'     => 'segment',
+            'priority' => -1,
+            'options'  => [
+                'route'    => '[/]',
+                'defaults' => [
+                    'middleware' => null,
+                ],
+            ],
+        ];
     }
 }
