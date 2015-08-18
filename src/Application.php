@@ -26,11 +26,11 @@ use Zend\Stratigility\MiddlewarePipe;
 /**
  * Middleware application providing routing based on paths and HTTP methods.
  *
- * @method Router\Route get($path, $middleware)
- * @method Router\Route post($path, $middleware)
- * @method Router\Route put($path, $middleware)
- * @method Router\Route patch($path, $middleware)
- * @method Router\Route delete($path, $middleware)
+ * @method Router\Route get($path, $middleware, $name = null)
+ * @method Router\Route post($path, $middleware, $name = null)
+ * @method Router\Route put($path, $middleware, $name = null)
+ * @method Router\Route patch($path, $middleware, $name = null)
+ * @method Router\Route delete($path, $middleware, $name = null)
  */
 class Application extends MiddlewarePipe
 {
@@ -132,22 +132,25 @@ class Application extends MiddlewarePipe
         if (! in_array(strtoupper($method), $this->httpRouteMethods, true)) {
             throw new BadMethodCallException('Unsupported method');
         }
-        $numArgs = count($args);
-        if ($numArgs < 2) {
-            throw new BadMethodCallException(sprintf(
-                '%s::%s requires at least 2 arguments; received %d',
-                __CLASS__,
-                $method,
-                count($args)
-            ));
-        }
 
-        if ($numArgs === 3) {
-            $name    = $args[2];
-            $args[2] = [$method];
-            $args[]  = $name;
-        } else {
-            $args[] = [$method];
+        switch (count($args)) {
+            case 2:
+                // We have path and middleware; append the HTTP method.
+                $args[] = [$method];
+                break;
+            case 3:
+                // Need to reflow arguments to (0 => path, 1 => middleware, 2 => methods, 3 => name)
+                // from (0 => path, 1 => middleware, 2 => name)
+                $args[3] = $args[2];  // place name in $args[3]
+                $args[2] = [$method]; // method becomes $args[2]
+                break;
+            default:
+                throw new BadMethodCallException(sprintf(
+                    '%s::%s requires at least 2 arguments, and no more than 3; received %d',
+                    __CLASS__,
+                    $method,
+                    count($args)
+                ));
         }
 
         // @TODO: we can use variadic parameters when dependency is raised to PHP 5.6
