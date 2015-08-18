@@ -100,8 +100,8 @@ class Aura implements RouterInterface
             }
         }
 
-        $allowedMethods = (array) $route->getAllowedMethods();
-        if ([ Route::HTTP_METHOD_ANY ] === $allowedMethods) {
+        $allowedMethods = $route->getAllowedMethods();
+        if (Route::HTTP_METHOD_ANY === $allowedMethods) {
             return;
         }
 
@@ -147,10 +147,12 @@ class Aura implements RouterInterface
         if ($failedRoute->failedMethod()) {
             return RouteResult::fromRouteFailure($failedRoute->method);
         }
+
         list($path) = explode('^', $failedRoute->name);
         if (array_key_exists($path, $this->routes)) {
             return RouteResult::fromRouteFailure($this->routes[$path]);
         }
+
         return RouteResult::fromRouteFailure();
     }
 
