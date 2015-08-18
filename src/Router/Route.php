@@ -29,6 +29,7 @@ use Zend\Expressive\Exception;
 class Route
 {
     const HTTP_METHOD_ANY = 0xff;
+    const HTTP_METHOD_SEPARATOR = ':';
 
     /**
      * @var int|string[] HTTP methods allowed with this route.
@@ -84,7 +85,9 @@ class Route
         $this->path       = $path;
         $this->middleware = $middleware;
         $this->methods    = is_array($methods) ? $this->validateHttpMethods($methods) : $methods;
-        $this->name       = empty($name) ? $path . '^' . implode('_', (array) $this->methods) : $name;
+        $this->name       = empty($name) ?
+                            $path . '^' . implode(self::HTTP_METHOD_SEPARATOR, (array) $this->methods) :
+                            $name;
     }
 
     /**

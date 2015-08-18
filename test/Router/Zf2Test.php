@@ -67,7 +67,7 @@ class Zf2Test extends TestCase
                         ]
                     ]
                 ],
-                'fail' => [
+                Zf2Router::METHOD_NOT_ALLOWED_ROUTE => [
                     'type' => 'segment',
                     'priority' => -1,
                     'options' => [
@@ -118,7 +118,7 @@ class Zf2Test extends TestCase
                         ]
                     ]
                 ],
-                'fail' => [
+                Zf2Router::METHOD_NOT_ALLOWED_ROUTE => [
                     'type' => 'segment',
                     'priority' => -1,
                     'options' => [
