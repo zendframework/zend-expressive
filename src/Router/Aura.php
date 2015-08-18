@@ -89,11 +89,6 @@ class Aura implements RouterInterface
             $route->getMiddleware()
         );
 
-        $allowedMethods = (array) $route->getAllowedMethods();
-        $auraRoute->setServer([
-            'REQUEST_METHOD' => implode('|', $allowedMethods)
-        ]);
-
         foreach ($route->getOptions() as $key => $value) {
             switch ($key) {
                 case 'tokens':
@@ -104,6 +99,15 @@ class Aura implements RouterInterface
                     break;
             }
         }
+
+        $allowedMethods = (array) $route->getAllowedMethods();
+        if ([ Route::HTTP_METHOD_ANY ] === $allowedMethods) {
+            return;
+        }
+
+        $auraRoute->setServer([
+            'REQUEST_METHOD' => implode('|', $allowedMethods)
+        ]);
 
         if (array_key_exists($path, $this->routes)) {
             $allowedMethods = array_merge($this->routes[$path], $allowedMethods);

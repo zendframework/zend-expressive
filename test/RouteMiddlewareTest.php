@@ -468,4 +468,32 @@ class RouteMiddlewareTest extends TestCase
         $result   = $app->routeMiddleware($request, $response, $next);
         $this->assertEquals('Middleware DELETE', (string) $result->getBody());
     }
+
+    private function getAllHttpMethods()
+    {
+        return [ 'GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS' ];
+    }
+
+    /**
+     * @dataProvider getRouterAdapters
+     */
+    public function testMatchWithAllHttpMethods($adapter)
+    {
+        $app = new Application(new $adapter);
+        // Add a route with Zend\Expressive\Router\Route::HTTP_METHOD_ANY
+        $app->route('/foo', function ($req, $res, $next) {
+            $res->getBody()->write('Middleware');
+            return $res;
+        });
+        $next = function ($req, $res) {
+            return $res;
+        };
+
+        foreach ($this->getAllHttpMethods() as $method) {
+            $request  = new ServerRequest([ 'REQUEST_METHOD' => $method ], [], '/foo', $method);
+            $response = new Response();
+            $result   = $app->routeMiddleware($request, $response, $next);
+            $this->assertEquals('Middleware', (string) $result->getBody());
+        }
+    }
 }

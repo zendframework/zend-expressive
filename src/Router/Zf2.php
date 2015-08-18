@@ -19,14 +19,14 @@ use Zend\Psr7Bridge\Psr7ServerRequest;
  *
  * This router implementation consumes zend-mvc's TreeRouteStack, (the default
  * router implementation in a ZF2 application). The addRoute() method injects
- * segment routes into the TreeRouteStack, and create a fail route for HTTP
+ * segment routes into the TreeRouteStack, and creates a route failure for HTTP
  * method negotiation (as the ZF2 "Method" router implementation will return
  * a result indistinguishable from a 404 otherwise).
  */
 class Zf2 implements RouterInterface
 {
-    // Name of the route fail
-    const ROUTE_FAIL = 'fail';
+    // Name of the method not allowed route
+    const METHOD_NOT_ALLOWED_ROUTE = 'method_not_allowed';
 
     /**
      * @var TreeRouteStack
@@ -59,9 +59,27 @@ class Zf2 implements RouterInterface
         $path    = $route->getPath();
         $options = $route->getOptions();
         $options = array_replace_recursive($options, [
-            'route' => $path
+            'route' => $path,
+            'defaults' => [
+                'middleware' => $route->getMiddleware()
+            ]
         ]);
-        $childRouteName = implode('-', $route->getAllowedMethods());
+
+        $allowedMethods =  (array) $route->getAllowedMethods();
+        if ([ Route::HTTP_METHOD_ANY ] === $allowedMethods) {
+            $this->zf2Router->addRoute($path, [
+                'type' => 'segment',
+                'options' => $options
+            ]);
+            return;
+        }
+
+        // Remove the middleware from the segment route in favor of method route
+        unset($options['defaults']['middleware']);
+        if (empty($options['defaults'])) {
+            unset($options['defaults']);
+        }
+        $childRouteName = implode('-', $allowedMethods);
         $childRoutes    = $this->getMethodRouteConfig($route);
         $spec = [
             'type'          => 'segment',
@@ -69,15 +87,14 @@ class Zf2 implements RouterInterface
             'may_terminate' => false,
             'child_routes'  => [ $childRouteName => $childRoutes ]
         ];
-        $routeFail = $path . '/' . self::ROUTE_FAIL;
+        $routeFail = $path . '/' . self::METHOD_NOT_ALLOWED_ROUTE;
         if (array_key_exists($routeFail, $this->routes)) {
             $this->zf2Router->getRoute($path)->addRoute($childRouteName, $childRoutes);
         } else {
-            $spec['child_routes'][self::ROUTE_FAIL] = $this->getFailRouteConfig();
+            $spec['child_routes'][self::METHOD_NOT_ALLOWED_ROUTE] = $this->getFailRouteConfig();
             $this->zf2Router->addRoute($path, $spec);
         }
 
-        $allowedMethods = (array) $route->getAllowedMethods();
         if (array_key_exists($routeFail, $this->routes)) {
             $allowedMethods = array_merge($this->routes[$routeFail], $allowedMethods);
         }
@@ -158,7 +175,9 @@ class Zf2 implements RouterInterface
         $params    = $match->getParams();
         $routeName = $match->getMatchedRouteName();
 
+        // If middleware is null means 405 Method not allowed
         if (null === $params['middleware']) {
+            // Retrieve the HTTP methow allowed from stored routes
             return RouteResult::fromRouteFailure($this->routes[$routeName]);
         }
 

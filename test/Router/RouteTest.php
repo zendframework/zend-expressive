@@ -115,6 +115,6 @@ class RouteTest extends TestCase
     public function testRouteNameWithGetAndPost()
     {
         $route = new Route('/test', $this->noopMiddleware, [ 'GET', 'POST' ]);
-        $this->assertSame('/test^GET_POST', $route->getName());
+        $this->assertSame('/test^GET' . Route::HTTP_METHOD_SEPARATOR . 'POST', $route->getName());
     }
 }
