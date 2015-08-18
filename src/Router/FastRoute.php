@@ -93,7 +93,7 @@ class FastRoute implements RouterInterface
 
     /**
      * @param  Request $request
-     * @return boolean
+     * @return RouteResult
      */
     public function match(Request $request)
     {

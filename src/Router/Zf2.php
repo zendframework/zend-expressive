@@ -19,22 +19,26 @@ use Zend\Psr7Bridge\Psr7ServerRequest;
  *
  * This router implementation consumes zend-mvc's TreeRouteStack, (the default
  * router implementation in a ZF2 application). The addRoute() method injects
- * segment routes into the TreeRouteStack, and manages an internal route stack
- * in order to do HTTP method negotiation after a successful match (as the ZF2
- * "Method" router implementation will return a result indistinguishable from a
- * 404 otherwise).
+ * segment routes into the TreeRouteStack, and create a fail route for HTTP
+ * method negotiation (as the ZF2 "Method" router implementation will return
+ * a result indistinguishable from a 404 otherwise).
  */
 class Zf2 implements RouterInterface
 {
-    /**
-     * @var Route[] Registered routes
-     */
-    private $routes = [];
+    // Name of the route fail
+    const ROUTE_FAIL = 'fail';
 
     /**
      * @var TreeRouteStack
      */
     private $zf2Router;
+
+    /**
+     * Store the path and the HTTP methods allowed
+     *
+     * @var array
+     */
+    private $routes = [];
 
     /**
      * @param null|TreeRouteStack $router
@@ -44,7 +48,6 @@ class Zf2 implements RouterInterface
         if (null === $router) {
             $router = $this->createRouter();
         }
-
         $this->zf2Router = $router;
     }
 
@@ -54,21 +57,69 @@ class Zf2 implements RouterInterface
     public function addRoute(Route $route)
     {
         $path    = $route->getPath();
-        $options = $route->getOptions() ?: [];
+        $options = $route->getOptions();
         $options = array_replace_recursive($options, [
-            'route'   => $route->getPath(),
-            'defaults' => [
-                'middleware' => $route->getMiddleware(),
-            ],
+            'route' => $path
         ]);
-
+        $childRouteName = implode('-', $route->getAllowedMethods());
+        $childRoutes    = $this->getMethodRouteConfig($route);
         $spec = [
-            'type'    => 'segment',
-            'options' => $options,
+            'type'          => 'segment',
+            'options'       => $options,
+            'may_terminate' => false,
+            'child_routes'  => [ $childRouteName => $childRoutes ]
         ];
+        $routeFail = $path . '/' . self::ROUTE_FAIL;
+        if (array_key_exists($routeFail, $this->routes)) {
+            $this->zf2Router->getRoute($path)->addRoute($childRouteName, $childRoutes);
+        } else {
+            $spec['child_routes'][self::ROUTE_FAIL] = $this->getFailRouteConfig();
+            $this->zf2Router->addRoute($path, $spec);
+        }
 
-        $this->zf2Router->addRoute($path, $spec);
-        $this->routes[$path] = $route;
+        $allowedMethods = (array) $route->getAllowedMethods();
+        if (array_key_exists($routeFail, $this->routes)) {
+            $allowedMethods = array_merge($this->routes[$routeFail], $allowedMethods);
+        }
+        $this->routes[$routeFail] = $allowedMethods;
+    }
+
+    /**
+     * Get the method route configuration
+     *
+     * @param Route $route
+     * @return array
+     */
+    private function getMethodRouteConfig($route)
+    {
+        return [
+            'type'    => 'method',
+            'options' => [
+                'verb'     => implode(',', (array) $route->getAllowedMethods()),
+                'defaults' => [
+                    'middleware' => $route->getMiddleware()
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * Get the configuration for the fail route
+     *
+     * @return array
+     */
+    private function getFailRouteConfig()
+    {
+        return [
+            'type'     => 'segment',
+            'priority' => -1,
+            'options'  => [
+                'route'    => '[/]',
+                'defaults' => [
+                    'middleware' => null
+                ]
+            ]
+        ];
     }
 
     /**
@@ -83,11 +134,6 @@ class Zf2 implements RouterInterface
 
         if (null === $match) {
             return RouteResult::fromRouteFailure();
-        }
-
-        $allowedMethods = $this->getAllowedMethods($match->getMatchedRouteName());
-        if (! $this->methodIsAllowed($request->getMethod(), $allowedMethods)) {
-            return RouteResult::fromRouteFailure($allowedMethods);
         }
 
         return $this->marshalSuccessResultFromRouteMatch($match);
@@ -109,63 +155,17 @@ class Zf2 implements RouterInterface
      */
     private function marshalSuccessResultFromRouteMatch(RouteMatch $match)
     {
-        $params = $match->getParams();
-        $middleware = isset($params['middleware'])
-            ? $params['middleware']
-            : $this->getMiddlewareFromRoute($match->getMatchedRouteName());
+        $params    = $match->getParams();
+        $routeName = $match->getMatchedRouteName();
+
+        if (null === $params['middleware']) {
+            return RouteResult::fromRouteFailure($this->routes[$routeName]);
+        }
 
         return RouteResult::fromRouteMatch(
-            $match->getMatchedRouteName(),
-            $middleware,
+            $routeName,
+            $params['middleware'],
             $params
         );
-    }
-
-    /**
-     * Given a route name (the path), retrieve the middleware associated with it.
-     *
-     * @param string $name
-     * @return null|string|callable
-     */
-    private function getMiddlewareFromRoute($name)
-    {
-        if (! array_key_exists($name, $this->routes)) {
-            return null;
-        }
-
-        $route = $this->routes[$name];
-        return $route->getMiddleware();
-    }
-
-    /**
-     * Get list of allowed methods for this route.
-     *
-     * @param name $string
-     * @return int|string[]
-     */
-    private function getAllowedMethods($name)
-    {
-        if (! array_key_exists($name, $this->routes)) {
-            return Route::HTTP_METHOD_ANY;
-        }
-
-        $route = $this->routes[$name];
-        return $route->getAllowedMethods();
-    }
-
-    /**
-     * Is the provided method in the list of allowed methods?
-     *
-     * @param string $method
-     * @param int|string[] $allowedMethods
-     * @return bool
-     */
-    private function methodIsAllowed($method, $allowedMethods)
-    {
-        if ($allowedMethods === Route::HTTP_METHOD_ANY) {
-            return true;
-        }
-
-        return in_array(strtoupper($method), array_map('strtoupper', $allowedMethods), true);
     }
 }

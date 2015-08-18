@@ -33,7 +33,7 @@ class AuraRouteTest extends TestCase
         $this->auraRoute->setServer([
             'REQUEST_METHOD' => 'GET',
         ])->shouldBeCalled();
-        $this->auraRouter->add('/foo', '/foo', 'foo')->willReturn($this->auraRoute->reveal());
+        $this->auraRouter->add('/foo^GET', '/foo', 'foo')->willReturn($this->auraRoute->reveal());
 
         $router = $this->getRouter();
         $router->addRoute($route);
@@ -49,7 +49,7 @@ class AuraRouteTest extends TestCase
         ])->shouldBeCalled();
         $this->auraRoute->addTokens($route->getOptions()['tokens'])->shouldBeCalled();
 
-        $this->auraRouter->add('/foo', '/foo', 'foo')->willReturn($this->auraRoute->reveal());
+        $this->auraRouter->add('/foo^GET', '/foo', 'foo')->willReturn($this->auraRoute->reveal());
 
         $router = $this->getRouter();
         $router->addRoute($route);
@@ -65,7 +65,7 @@ class AuraRouteTest extends TestCase
         ])->shouldBeCalled();
         $this->auraRoute->addValues($route->getOptions()['values'])->shouldBeCalled();
 
-        $this->auraRouter->add('/foo', '/foo', 'foo')->willReturn($this->auraRoute->reveal());
+        $this->auraRouter->add('/foo^GET', '/foo', 'foo')->willReturn($this->auraRoute->reveal());
 
         $router = $this->getRouter();
         $router->addRoute($route);
@@ -127,7 +127,6 @@ class AuraRouteTest extends TestCase
         $result = $router->match($request->reveal());
         $this->assertInstanceOf('Zend\Expressive\Router\RouteResult', $result);
         $this->assertTrue($result->isFailure());
-        $this->assertTrue($result->isMethodFailure());
         $this->assertSame(['POST'], $result->getAllowedMethods());
     }
 
