@@ -85,9 +85,13 @@ class Route
         $this->path       = $path;
         $this->middleware = $middleware;
         $this->methods    = is_array($methods) ? $this->validateHttpMethods($methods) : $methods;
-        $this->name       = empty($name) ?
-                            $path . '^' . implode(self::HTTP_METHOD_SEPARATOR, (array) $this->methods) :
-                            $name;
+
+        if (empty($name)) {
+            $name = ($this->methods === self::HTTP_METHOD_ANY)
+                ? $path
+                : $path . '^' . implode(self::HTTP_METHOD_SEPARATOR, $this->methods);
+        }
+        $this->name = $name;
     }
 
     /**
@@ -148,14 +152,6 @@ class Route
     public function setOptions(array $options)
     {
         $this->options = $options;
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
     }
 
     /**
