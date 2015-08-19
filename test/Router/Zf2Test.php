@@ -11,6 +11,7 @@ namespace ZendTest\Expressive\Router;
 
 use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Argument;
+use ReflectionProperty;
 use Zend\Expressive\Router\Zf2 as Zf2Router;
 use Zend\Expressive\Router\Route;
 use Zend\Diactoros\ServerRequest;
@@ -68,20 +69,21 @@ class Zf2Test extends TestCase
                         'verb' => 'GET',
                         'defaults' => [
                             'middleware' => 'foo',
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 Zf2Router::METHOD_NOT_ALLOWED_ROUTE => [
-                    'type'     => 'segment',
+                    'type'     => 'regex',
                     'priority' => -1,
                     'options'  => [
-                        'route'    => '[/]',
+                        'regex' => '/*$',
                         'defaults' => [
                             Zf2Router::METHOD_NOT_ALLOWED_ROUTE => '/foo',
                         ],
-                    ]
-                ]
-            ]
+                        'spec' => '',
+                    ],
+                ],
+            ],
         ])->shouldBeCalled();
 
         $router = $this->getRouter();
@@ -119,20 +121,21 @@ class Zf2Test extends TestCase
                         'verb' => 'GET',
                         'defaults' => [
                             'middleware' => 'foo',
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 Zf2Router::METHOD_NOT_ALLOWED_ROUTE => [
-                    'type'     => 'segment',
+                    'type'     => 'regex',
                     'priority' => -1,
                     'options'  => [
-                        'route'    => '[/]',
+                        'regex' => '/*$',
                         'defaults' => [
                             Zf2Router::METHOD_NOT_ALLOWED_ROUTE => '/foo/:id',
                         ],
-                    ]
-                ]
-            ]
+                        'spec' => '',
+                    ],
+                ],
+            ],
         ])->shouldBeCalled();
 
         $router = $this->getRouter();
@@ -245,5 +248,27 @@ class Zf2Test extends TestCase
         $this->assertTrue($result->isFailure());
         $this->assertTrue($result->isMethodFailure());
         $this->assertEquals(['POST', 'DELETE'], $result->getAllowedMethods());
+    }
+
+    /**
+     * @group 53
+     */
+    public function testCanGenerateUriFromRoutes()
+    {
+        $router = new Zf2Router();
+        $route1 = new Route('/foo', 'foo', ['POST'], 'foo-create');
+        $route2 = new Route('/foo', 'foo', ['GET'], 'foo-list');
+        $route3 = new Route('/foo/:id', 'foo', ['GET'], 'foo');
+        $route4 = new Route('/bar/:baz', 'bar', Route::HTTP_METHOD_ANY, 'bar');
+
+        $router->addRoute($route1);
+        $router->addRoute($route2);
+        $router->addRoute($route3);
+        $router->addRoute($route4);
+
+        $this->assertEquals('/foo', $router->generateUri('foo-create'));
+        $this->assertEquals('/foo', $router->generateUri('foo-list'));
+        $this->assertEquals('/foo/bar', $router->generateUri('foo', ['id' => 'bar']));
+        $this->assertEquals('/bar/BAZ', $router->generateUri('bar', ['baz' => 'BAZ']));
     }
 }
