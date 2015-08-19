@@ -9,8 +9,6 @@
 
 namespace Zend\Expressive;
 
-use BadMethodCallException;
-use DomainException;
 use Interop\Container\ContainerInterface;
 use Interop\Container\Exception\ContainerException;
 use Psr\Http\Message\ResponseInterface;
@@ -124,13 +122,13 @@ class Application extends MiddlewarePipe
      * @param string $method
      * @param array $args
      * @return Router\Route
-     * @throws BadMethodCallException if the $method is not in $httpRouteMethods.
-     * @throws BadMethodCallException if receiving more or less than 2 arguments.
+     * @throws Exception\BadMethodCallException if the $method is not in $httpRouteMethods.
+     * @throws Exception\BadMethodCallException if receiving more or less than 2 arguments.
      */
     public function __call($method, $args)
     {
         if (! in_array(strtoupper($method), $this->httpRouteMethods, true)) {
-            throw new BadMethodCallException('Unsupported method');
+            throw new Exception\BadMethodCallException('Unsupported method');
         }
 
         switch (count($args)) {
@@ -145,7 +143,7 @@ class Application extends MiddlewarePipe
                 $args[2] = [$method]; // method becomes $args[2]
                 break;
             default:
-                throw new BadMethodCallException(sprintf(
+                throw new Exception\BadMethodCallException(sprintf(
                     '%s::%s requires at least 2 arguments, and no more than 3; received %d',
                     __CLASS__,
                     $method,
@@ -394,11 +392,11 @@ class Application extends MiddlewarePipe
      *
      * Checks if a route with the same name or path exists already in the list;
      * if so, and it responds to any of the $methods indicated, raises
-     * a DomainException indicating a duplicate route.
+     * a DuplicateRouteException indicating a duplicate route.
      *
      * @param string $path
      * @param null|array $methods
-     * @throws DomainException on duplicate route detection.
+     * @throws Exception\DuplicateRouteException on duplicate route detection.
      */
     private function checkForDuplicateRoute($path, $methods = null)
     {
@@ -421,7 +419,7 @@ class Application extends MiddlewarePipe
         });
 
         if (count($matches) > 0) {
-            throw new DomainException(
+            throw new Exception\DuplicateRouteException(
                 'Duplicate route detected; same name or path, and one or more HTTP methods intersect'
             );
         }
