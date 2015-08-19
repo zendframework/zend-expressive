@@ -19,12 +19,15 @@ use Zend\Psr7Bridge\Psr7ServerRequest;
  *
  * This router implementation consumes zend-mvc's TreeRouteStack, (the default
  * router implementation in a ZF2 application). The addRoute() method injects
- * segment routes into the TreeRouteStack. We store the HTTP allowed methods
- * for each route in a private array and we use it to find a 404 error in
- * case of match failure.
+ * segment routes into the TreeRouteStack. To manage the 405 Method not allowed
+ * error we inject a METHOD_NOT_ALLOWED_ROUTE route to the child routes.
+ * If the request match with this special route we can send the HTTP allowed
+ * methods stored in the private array $allowedMethods.
  */
 class Zf2 implements RouterInterface
 {
+    const METHOD_NOT_ALLOWED_ROUTE = 'not_allowed_method';
+
     /**
      * Store the HTTP methods allowed for each route
      *
@@ -54,13 +57,13 @@ class Zf2 implements RouterInterface
      */
     public function addRoute(Route $route)
     {
-        $name       = $route->getName();
-        $path       = $route->getPath();
-        $options    = $route->getOptions();
-        $options    = array_replace_recursive($options, [
-            'route' => $path,
+        $name    = $route->getName();
+        $path    = $route->getPath();
+        $options = $route->getOptions();
+        $options = array_replace_recursive($options, [
+            'route'    => $path,
             'defaults' => [
-                'middleware' => $route->getMiddleware(),
+                'middleware' => $route->getMiddleware()
             ]
         ]);
 
@@ -81,19 +84,25 @@ class Zf2 implements RouterInterface
 
         $childRouteName = implode('-', $allowedMethods);
         $childRoutes    = $this->getMethodRouteConfig($route);
+        $failRoute      = $this->getFailRouteConfig($path);
 
         $spec = [
             'type'          => 'segment',
             'options'       => $options,
             'may_terminate' => false,
-            'child_routes'  => [ $childRouteName => $childRoutes ]
+            'child_routes'  => [
+                $childRouteName => $childRoutes,
+                self::METHOD_NOT_ALLOWED_ROUTE => $failRoute,
+            ]
         ];
-
-        $this->zf2Router->addRoute($name, $spec);
 
         if (array_key_exists($path, $this->allowedMethods)) {
             $allowedMethods = array_merge($this->allowedMethods[$path], $allowedMethods);
+            // Remove the method not allowed route because already present for the path
+            unset($spec['child_routes'][self::METHOD_NOT_ALLOWED_ROUTE]);
         }
+
+        $this->zf2Router->addRoute($name, $spec);
         $this->allowedMethods[$path] = $allowedMethods;
     }
 
@@ -108,10 +117,6 @@ class Zf2 implements RouterInterface
         $match = $this->zf2Router->match(Psr7ServerRequest::toZend($request, true));
 
         if (null === $match) {
-            $path = $request->getUri()->getPath();
-            if (array_key_exists($path, $this->allowedMethods)) {
-                return RouteResult::fromRouteFailure($this->allowedMethods[$path]);
-            }
             return RouteResult::fromRouteFailure();
         }
 
@@ -136,6 +141,12 @@ class Zf2 implements RouterInterface
     {
         $params = $match->getParams();
 
+        if (array_key_exists(self::METHOD_NOT_ALLOWED_ROUTE, $params)) {
+            return RouteResult::fromRouteFailure(
+                $this->allowedMethods[$params[self::METHOD_NOT_ALLOWED_ROUTE]]
+            );
+        }
+
         return RouteResult::fromRouteMatch(
             $match->getMatchedRouteName(),
             $params['middleware'],
@@ -157,6 +168,30 @@ class Zf2 implements RouterInterface
                 'verb'     => implode(',', $route->getAllowedMethods()),
                 'defaults' => [
                     'middleware' => $route->getMiddleware(),
+                ],
+            ],
+        ];
+    }
+    /**
+     * Get the configuration for the fail route.
+     *
+     * The specification is used for routes that have HTTP method negotiation;
+     * essentially, this is a route that will always match, but *after* the
+     * HTTP method route has already failed. By checking for this route later,
+     * we can return a 405 response with the allowed methods.
+     *
+     * @param string $path
+     * @return array
+     */
+    private function getFailRouteConfig($path)
+    {
+        return [
+            'type'     => 'segment',
+            'priority' => -1,
+            'options'  => [
+                'route'    => '[/]',
+                'defaults' => [
+                    self::METHOD_NOT_ALLOWED_ROUTE => $path,
                 ],
             ],
         ];
