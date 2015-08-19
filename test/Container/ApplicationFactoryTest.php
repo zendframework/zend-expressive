@@ -458,7 +458,12 @@ class ApplicationFactoryTest extends TestCase
         $r->setAccessible(true);
         $pipeline = $r->getValue($app);
 
-        $this->assertCount(2, $pipeline);
+        $this->assertCount(3, $pipeline);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertSame([$app, 'routeMiddleware'], $route->handler);
+        $this->assertEquals('/', $route->path);
 
         $route = $pipeline->dequeue();
         $this->assertInstanceOf('Zend\Stratigility\Route', $route);
@@ -673,7 +678,12 @@ class ApplicationFactoryTest extends TestCase
         $r->setAccessible(true);
         $pipeline = $r->getValue($app);
 
-        $this->assertCount(2, $pipeline);
+        $this->assertCount(3, $pipeline);
+
+        $routing = $pipeline->dequeue();
+        $this->assertInstanceOf('Zend\Stratigility\Route', $routing);
+        $this->assertSame([$app, 'routeMiddleware'], $routing->handler);
+        $this->assertEquals('/', $routing->path);
 
         $first = $pipeline->dequeue();
         $this->assertInstanceOf('Zend\Stratigility\Route', $first);
@@ -825,7 +835,12 @@ class ApplicationFactoryTest extends TestCase
         $r->setAccessible(true);
         $pipeline = $r->getValue($app);
 
-        $this->assertCount(1, $pipeline);
+        $this->assertCount(2, $pipeline);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertEquals('/', $route->path);
+        $this->assertSame([$app, 'routeMiddleware'], $route->handler);
 
         $route = $pipeline->dequeue();
         $this->assertInstanceOf('Zend\Stratigility\Route', $route);
@@ -835,5 +850,85 @@ class ApplicationFactoryTest extends TestCase
         $r = new ReflectionFunction($route->handler);
         $this->assertEquals(4, $r->getNumberOfRequiredParameters());
         $this->assertTrue(call_user_func($route->handler, 'error', 'req', 'res', 'next'));
+    }
+
+    /**
+     * @group 64
+     */
+    public function testWillPipeRoutingMiddlewareEvenIfNoRoutesAreRegistered()
+    {
+        $router  = $this->prophesize('Zend\Expressive\Router\RouterInterface');
+        $emitter = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
+        $finalHandler = function ($req, $res, $err = null) {
+        };
+
+        $middleware = function ($req, $res, $next = null) {
+        };
+
+        $config = [
+            'middleware_pipeline' => [
+                'pre_routing' => [
+                    [ 'middleware' => $middleware ],
+                    [ 'path' => '/foo', 'middleware' => $middleware ],
+                ],
+                'post_routing' => [ ],
+            ],
+        ];
+
+        $this->container
+            ->has('Zend\Expressive\Router\RouterInterface')
+            ->willReturn(true);
+        $this->container
+            ->get('Zend\Expressive\Router\RouterInterface')
+            ->will(function () use ($router) {
+                return $router->reveal();
+            });
+
+        $this->container
+            ->has('Zend\Diactoros\Response\EmitterInterface')
+            ->willReturn(true);
+        $this->container
+            ->get('Zend\Diactoros\Response\EmitterInterface')
+            ->will(function () use ($emitter) {
+                return $emitter->reveal();
+            });
+
+        $this->container
+            ->has('Zend\Expressive\FinalHandler')
+            ->willReturn(true);
+        $this->container
+            ->get('Zend\Expressive\FinalHandler')
+            ->willReturn($finalHandler);
+
+        $this->container
+            ->has('Config')
+            ->willReturn(true);
+
+        $this->container
+            ->get('Config')
+            ->willReturn($config);
+
+        $app = $this->factory->__invoke($this->container->reveal());
+
+        $r = new ReflectionProperty($app, 'pipeline');
+        $r->setAccessible(true);
+        $pipeline = $r->getValue($app);
+
+        $this->assertCount(3, $pipeline);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertSame($middleware, $route->handler);
+        $this->assertEquals('/', $route->path);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertSame($middleware, $route->handler);
+        $this->assertEquals('/foo', $route->path);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertSame([$app, 'routeMiddleware'], $route->handler);
+        $this->assertEquals('/', $route->path);
     }
 }

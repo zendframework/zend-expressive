@@ -187,6 +187,7 @@ class ApplicationFactory
     {
         $config = $container->has('Config') ? $container->get('Config') : [];
         if (! isset($config['routes'])) {
+            $app->pipeRoutingMiddleware();
             return;
         }
 
