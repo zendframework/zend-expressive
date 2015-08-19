@@ -114,6 +114,7 @@ class Application extends MiddlewarePipe
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $out = null)
     {
+        $this->pipeRoutingMiddleware();
         $out = $out ?: $this->getFinalHandler($response);
         return parent::__invoke($request, $response, $out);
     }
@@ -182,6 +183,17 @@ class Application extends MiddlewarePipe
         }
 
         return $this;
+    }
+
+    /**
+     * Register the routing middleware in the middleware pipeline.
+     */
+    public function pipeRoutingMiddleware()
+    {
+        if ($this->routeMiddlewareIsRegistered) {
+            return;
+        }
+        $this->pipe([$this, 'routeMiddleware']);
     }
 
     /**
@@ -297,10 +309,7 @@ class Application extends MiddlewarePipe
 
         $this->routes[] = $route;
         $this->router->addRoute($route);
-
-        if (! $this->routeMiddlewareIsRegistered) {
-            $this->pipe([$this, 'routeMiddleware']);
-        }
+        $this->pipeRoutingMiddleware();
 
         return $route;
     }

@@ -9,6 +9,7 @@
 
 namespace ZendTest\Expressive;
 
+use Interop\Container\ContainerInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Argument;
 use ReflectionProperty;
@@ -16,6 +17,7 @@ use Zend\Diactoros\ServerRequest as Request;
 use Zend\Expressive\Application;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouteResult;
+use Zend\Stratigility\Route as StratigilityRoute;
 
 class ApplicationTest extends TestCase
 {
@@ -356,5 +358,70 @@ class ApplicationTest extends TestCase
         $app = $this->getApp();
         $this->setExpectedException('BadMethodCallException');
         $app->post('/foo');
+    }
+
+    /**
+     * @group 64
+     */
+    public function testCanTriggerPipingOfRouteMiddleware()
+    {
+        $app = $this->getApp();
+        $app->pipeRoutingMiddleware();
+
+        $r = new ReflectionProperty($app, 'pipeline');
+        $r->setAccessible(true);
+        $pipeline = $r->getValue($app);
+
+        $this->assertCount(1, $pipeline);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertSame([$app, 'routeMiddleware'], $route->handler);
+        $this->assertEquals('/', $route->path);
+    }
+
+    /**
+     * @group 64
+     */
+    public function testInvocationWillPipeRoutingMiddlewareIfNotAlreadyPiped()
+    {
+        $request  = new Request([], [], 'http://example.com/');
+        $response = $this->prophesize('Psr\Http\Message\ResponseInterface');
+
+        $middleware = function ($req, $res, $next = null) {
+            return $res;
+        };
+
+        $this->router->match($request)->willReturn(RouteResult::fromRouteMatch('foo', 'foo', []));
+
+        $container = $this->prophesize(ContainerInterface::class);
+        $container->has('foo')->willReturn(true);
+        $container->get('foo')->willReturn($middleware);
+
+        $app = new Application($this->router->reveal(), $container->reveal());
+
+        $pipeline = $this->prophesize('SplQueue');
+
+        // Test that the route middleware is enqueued
+        $pipeline->enqueue(Argument::that(function ($route) use ($app) {
+            if (! $route instanceof StratigilityRoute) {
+                return false;
+            }
+
+            if ($route->path !== '/') {
+                return false;
+            }
+
+            return ($route->handler === [$app, 'routeMiddleware']);
+        }))->shouldBeCalled();
+
+        // Prevent dequeueing
+        $pipeline->isEmpty()->willReturn(true);
+
+        $r = new ReflectionProperty($app, 'pipeline');
+        $r->setAccessible(true);
+        $r->setValue($app, $pipeline->reveal());
+
+        $app($request, $response->reveal(), $middleware);
     }
 }
