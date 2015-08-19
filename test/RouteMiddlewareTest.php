@@ -505,4 +505,28 @@ class RouteMiddlewareTest extends TestCase
         $result   = $app->routeMiddleware($request, $response, $next);
         $this->assertEquals('Middleware', (string) $result->getBody());
     }
+
+    /**
+     * @dataProvider routerAdapters
+     * @group 74
+     */
+    public function testWithOnlyRootPathRouteDefinedRoutingToSubPathsShouldReturn404($adapter)
+    {
+        $app = new Application(new $adapter);
+
+        $app->route('/', function ($req, $res, $next) {
+            $res->getBody()->write('Middleware');
+            return $res;
+        }, ['GET']);
+
+        $next = function ($req, $res) {
+            return $res;
+        };
+
+        $request  = new ServerRequest([ 'REQUEST_METHOD' => 'GET' ], [], '/foo', 'GET');
+        $response = new Response();
+        $result   = $app->routeMiddleware($request, $response, $next);
+        $this->assertInstanceOf(Response::class, $result);
+        $this->assertNotEquals(405, $result->getStatusCode());
+    }
 }
