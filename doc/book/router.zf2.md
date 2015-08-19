@@ -73,6 +73,30 @@ $router = new Zf2Bridge($zf2Router);
 $app = AppFactory::create(null, $router);
 ```
 
+> ### Piping the route middleware
+>
+> If you programmatically configure the router and add routes without using
+> `Application::route()`, you may run into issues with the order in which piped
+> middleware (middleware added to the application via the `pipe()` method) is
+> executed.
+>
+> To ensure that everything executes in the correct order, you can call
+> `Application::pipeRouteMiddleware()` at any time to pipe it to the
+> application. As an example, after you have created your application
+> instance:
+>
+> ```php
+> $app->pipe($middlewareToExecuteFirst);
+> $app->pipeRouteMiddleware();
+> $app->pipe($errorMiddleware);
+> ```
+>
+> If you fail to add any routes via `Application::route()` or to call
+> `Application::pipeRouteMiddleware()`, the routing middleware will be called
+> when executing the application. **This means that it will be last in the
+> middleware pipeline,** which means that if you registered any error
+> middleware, it can never be invoked.
+
 ## Factory-Driven Creation
 
 We recommend using an Inversion of Control container for your applications;
