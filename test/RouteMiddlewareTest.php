@@ -363,6 +363,7 @@ class RouteMiddlewareTest extends TestCase
         $this->assertEquals('Middleware POST', (string) $result->getBody());
     }
 
+
     /**
      * @see https://github.com/zendframework/zend-expressive/issues/40
      * @group 40

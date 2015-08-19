@@ -70,6 +70,16 @@ class Zf2Test extends TestCase
                             'middleware' => 'foo',
                         ]
                     ]
+                ],
+                Zf2Router::METHOD_NOT_ALLOWED_ROUTE => [
+                    'type'     => 'segment',
+                    'priority' => -1,
+                    'options'  => [
+                        'route'    => '[/]',
+                        'defaults' => [
+                            Zf2Router::METHOD_NOT_ALLOWED_ROUTE => '/foo',
+                        ],
+                    ]
                 ]
             ]
         ])->shouldBeCalled();
@@ -110,6 +120,16 @@ class Zf2Test extends TestCase
                         'defaults' => [
                             'middleware' => 'foo',
                         ]
+                    ]
+                ],
+                Zf2Router::METHOD_NOT_ALLOWED_ROUTE => [
+                    'type'     => 'segment',
+                    'priority' => -1,
+                    'options'  => [
+                        'route'    => '[/]',
+                        'defaults' => [
+                            Zf2Router::METHOD_NOT_ALLOWED_ROUTE => '/foo/:id',
+                        ],
                     ]
                 ]
             ]
@@ -200,10 +220,25 @@ class Zf2Test extends TestCase
      */
     public function testMatchFailureDueToHttpMethodReturnsRouteResultWithAllowedMethods()
     {
-
         $router = new Zf2Router();
         $router->addRoute(new Route('/foo', 'bar', ['POST', 'DELETE']));
         $request = new ServerRequest([ 'REQUEST_METHOD' => 'GET' ], [], '/foo', 'GET');
+        $result = $router->match($request);
+
+        $this->assertInstanceOf('Zend\Expressive\Router\RouteResult', $result);
+        $this->assertTrue($result->isFailure());
+        $this->assertTrue($result->isMethodFailure());
+        $this->assertEquals(['POST', 'DELETE'], $result->getAllowedMethods());
+    }
+
+    /**
+     * @group match
+     */
+    public function testMatchFailureDueToMethodNotAllowedWithParamsInTheRoute()
+    {
+        $router = new Zf2Router();
+        $router->addRoute(new Route('/foo[/:id]', 'foo', ['POST', 'DELETE']));
+        $request = new ServerRequest([ 'REQUEST_METHOD' => 'GET' ], [], '/foo/1', 'GET');
         $result = $router->match($request);
 
         $this->assertInstanceOf('Zend\Expressive\Router\RouteResult', $result);
