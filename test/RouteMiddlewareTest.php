@@ -528,5 +528,6 @@ class RouteMiddlewareTest extends TestCase
         $result   = $app->routeMiddleware($request, $response, $next);
         $this->assertInstanceOf(Response::class, $result);
         $this->assertNotEquals(405, $result->getStatusCode());
+        $this->assertEquals(404, $result->getStatusCode());
     }
 }
