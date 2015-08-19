@@ -37,8 +37,12 @@ class Zf2Test extends TestCase
     {
         $request = $this->prophesize('Psr\Http\Message\ServerRequestInterface');
 
+        $uri = $this->prophesize('Psr\Http\Message\UriInterface');
+        $uri->getPath()->willReturn('/foo');
+        $uri->__toString()->willReturn('http://www.example.com/foo');
+
         $request->getMethod()->willReturn('GET');
-        $request->getUri()->willReturn('https://example.com/foo');
+        $request->getUri()->willReturn($uri);
         $request->getHeaders()->willReturn([]);
         $request->getCookieParams()->willReturn([]);
         $request->getQueryParams()->willReturn([]);
@@ -51,7 +55,7 @@ class Zf2Test extends TestCase
     {
         $route = new Route('/foo', 'foo', ['GET']);
 
-        $this->zf2Router->addRoute('/foo', [
+        $this->zf2Router->addRoute('/foo^GET', [
             'type' => 'segment',
             'options' => [
                 'route' => '/foo',
@@ -68,13 +72,13 @@ class Zf2Test extends TestCase
                     ]
                 ],
                 Zf2Router::METHOD_NOT_ALLOWED_ROUTE => [
-                    'type' => 'segment',
+                    'type'     => 'segment',
                     'priority' => -1,
-                    'options' => [
-                        'route' => '[/]',
+                    'options'  => [
+                        'route'    => '[/]',
                         'defaults' => [
-                            'middleware' => null
-                        ]
+                            Zf2Router::METHOD_NOT_ALLOWED_ROUTE => '/foo',
+                        ],
                     ]
                 ]
             ]
@@ -96,7 +100,7 @@ class Zf2Test extends TestCase
             ],
         ]);
 
-        $this->zf2Router->addRoute('/foo/:id', [
+        $this->zf2Router->addRoute('/foo/:id^GET', [
             'type' => 'segment',
             'options' => [
                 'route' => '/foo/:id',
@@ -119,13 +123,13 @@ class Zf2Test extends TestCase
                     ]
                 ],
                 Zf2Router::METHOD_NOT_ALLOWED_ROUTE => [
-                    'type' => 'segment',
+                    'type'     => 'segment',
                     'priority' => -1,
-                    'options' => [
-                        'route' => '[/]',
+                    'options'  => [
+                        'route'    => '[/]',
                         'defaults' => [
-                            'middleware' => null
-                        ]
+                            Zf2Router::METHOD_NOT_ALLOWED_ROUTE => '/foo/:id',
+                        ],
                     ]
                 ]
             ]
@@ -164,7 +168,7 @@ class Zf2Test extends TestCase
 
         $result = $zf2Router->match($request);
         $this->assertInstanceOf('Zend\Expressive\Router\RouteResult', $result);
-        $this->assertEquals('/foo/GET', $result->getMatchedRouteName());
+        $this->assertEquals('/foo^GET', $result->getMatchedRouteName());
         $this->assertEquals($middleware, $result->getMatchedMiddleware());
     }
 
@@ -216,10 +220,25 @@ class Zf2Test extends TestCase
      */
     public function testMatchFailureDueToHttpMethodReturnsRouteResultWithAllowedMethods()
     {
-
         $router = new Zf2Router();
         $router->addRoute(new Route('/foo', 'bar', ['POST', 'DELETE']));
         $request = new ServerRequest([ 'REQUEST_METHOD' => 'GET' ], [], '/foo', 'GET');
+        $result = $router->match($request);
+
+        $this->assertInstanceOf('Zend\Expressive\Router\RouteResult', $result);
+        $this->assertTrue($result->isFailure());
+        $this->assertTrue($result->isMethodFailure());
+        $this->assertEquals(['POST', 'DELETE'], $result->getAllowedMethods());
+    }
+
+    /**
+     * @group match
+     */
+    public function testMatchFailureDueToMethodNotAllowedWithParamsInTheRoute()
+    {
+        $router = new Zf2Router();
+        $router->addRoute(new Route('/foo[/:id]', 'foo', ['POST', 'DELETE']));
+        $request = new ServerRequest([ 'REQUEST_METHOD' => 'GET' ], [], '/foo/1', 'GET');
         $result = $router->match($request);
 
         $this->assertInstanceOf('Zend\Expressive\Router\RouteResult', $result);
