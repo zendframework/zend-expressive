@@ -127,7 +127,7 @@ class Aura implements RouterInterface
         $route  = $this->router->match($path, $params);
 
         if (false === $route) {
-            return $this->marshalFailedRoute();
+            return $this->marshalFailedRoute($request);
         }
 
         return $this->marshalMatchedRoute($route);
@@ -147,17 +147,23 @@ class Aura implements RouterInterface
      * If the route failure is due to the HTTP method, passes the allowed
      * methods when creating the result.
      *
+     * @param Request $request
      * @return RouteResult
      */
-    private function marshalFailedRoute()
+    private function marshalFailedRoute(Request $request)
     {
         $failedRoute = $this->router->getFailedRoute();
         if ($failedRoute->failedMethod()) {
             return RouteResult::fromRouteFailure($failedRoute->method);
         }
 
+        // Check to see if the route regex matched; if so, and we have an entry
+        // for the path, register a 405.
         list($path) = explode('^', $failedRoute->name);
-        if (array_key_exists($path, $this->routes)) {
+        if (isset($failedRoute->failed)
+            && $failedRoute->failed !== AuraRoute::FAILED_REGEX
+            && array_key_exists($path, $this->routes)
+        ) {
             return RouteResult::fromRouteFailure($this->routes[$path]);
         }
 
