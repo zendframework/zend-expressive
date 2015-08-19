@@ -1,0 +1,19 @@
+site_name: zend-expressive
+site_description: Expressive middleware applications in PHP
+
+repo_url: https://github.com/zendframework/zend-expressive
+
+docs_dir: doc
+site_dir: doc/html
+
+pages:
+- book/intro.md
+- book/install.md
+- book/usage-examples.md
+- book/router.aura.md
+- book/router.fast-route.md
+- book/router.zf2.md
+- book/error-handling.md
+- book/cookbook.md
+
+copyright: Copyright (c) 2015 <a href="http://www.zend.com">Zend Technologies USA Inc.</a>
