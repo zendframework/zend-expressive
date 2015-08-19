@@ -168,7 +168,7 @@ class Zf2Test extends TestCase
 
         $result = $zf2Router->match($request);
         $this->assertInstanceOf('Zend\Expressive\Router\RouteResult', $result);
-        $this->assertEquals('/foo^GET/GET', $result->getMatchedRouteName());
+        $this->assertEquals('/foo^GET', $result->getMatchedRouteName());
         $this->assertEquals($middleware, $result->getMatchedMiddleware());
     }
 

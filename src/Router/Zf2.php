@@ -153,7 +153,7 @@ class Zf2 implements RouterInterface
         }
 
         return RouteResult::fromRouteMatch(
-            $match->getMatchedRouteName(),
+            $this->getMatchedRouteName($match->getMatchedRouteName()),
             $params['middleware'],
             $params
         );
@@ -201,5 +201,25 @@ class Zf2 implements RouterInterface
                 ],
             ],
         ];
+    }
+
+    /**
+     * Calculate the route name.
+     *
+     * Routes will generally match the child HTTP method routes, which will not
+     * match the names they were registered with; this method strips the method
+     * route name if present.
+     *
+     * @param string $name
+     * @return string
+     */
+    private function getMatchedRouteName($name)
+    {
+        $lastSlashPos = strrpos($name, '/');
+        if (false === $lastSlashPos || 0 === $lastSlashPos) {
+            return $name;
+        }
+
+        return substr($name, 0, $lastSlashPos);
     }
 }
