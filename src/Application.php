@@ -9,7 +9,6 @@
 
 namespace Zend\Expressive;
 
-use DomainException;
 use Interop\Container\ContainerInterface;
 use Interop\Container\Exception\ContainerException;
 use Psr\Http\Message\ResponseInterface;
@@ -393,11 +392,11 @@ class Application extends MiddlewarePipe
      *
      * Checks if a route with the same name or path exists already in the list;
      * if so, and it responds to any of the $methods indicated, raises
-     * a DomainException indicating a duplicate route.
+     * a DuplicateRouteException indicating a duplicate route.
      *
      * @param string $path
      * @param null|array $methods
-     * @throws DomainException on duplicate route detection.
+     * @throws Exception\DuplicateRouteException on duplicate route detection.
      */
     private function checkForDuplicateRoute($path, $methods = null)
     {
@@ -420,7 +419,7 @@ class Application extends MiddlewarePipe
         });
 
         if (count($matches) > 0) {
-            throw new DomainException(
+            throw new Exception\DuplicateRouteException(
                 'Duplicate route detected; same name or path, and one or more HTTP methods intersect'
             );
         }
