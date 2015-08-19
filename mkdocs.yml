@@ -4,7 +4,7 @@ site_description: Expressive middleware applications in PHP
 repo_url: https://github.com/zendframework/zend-expressive
 
 docs_dir: doc
-site_dir: doc/html
+# site_dir: doc/html
 
 pages:
 - book/intro.md
