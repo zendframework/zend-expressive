@@ -37,8 +37,12 @@ class Zf2Test extends TestCase
     {
         $request = $this->prophesize('Psr\Http\Message\ServerRequestInterface');
 
+        $uri = $this->prophesize('Psr\Http\Message\UriInterface');
+        $uri->getPath()->willReturn('/foo');
+        $uri->__toString()->willReturn('http://www.example.com/foo');
+
         $request->getMethod()->willReturn('GET');
-        $request->getUri()->willReturn('https://example.com/foo');
+        $request->getUri()->willReturn($uri);
         $request->getHeaders()->willReturn([]);
         $request->getCookieParams()->willReturn([]);
         $request->getQueryParams()->willReturn([]);
@@ -51,7 +55,7 @@ class Zf2Test extends TestCase
     {
         $route = new Route('/foo', 'foo', ['GET']);
 
-        $this->zf2Router->addRoute('/foo', [
+        $this->zf2Router->addRoute('/foo^GET', [
             'type' => 'segment',
             'options' => [
                 'route' => '/foo',
@@ -64,16 +68,6 @@ class Zf2Test extends TestCase
                         'verb' => 'GET',
                         'defaults' => [
                             'middleware' => 'foo',
-                        ]
-                    ]
-                ],
-                Zf2Router::METHOD_NOT_ALLOWED_ROUTE => [
-                    'type' => 'segment',
-                    'priority' => -1,
-                    'options' => [
-                        'route' => '[/]',
-                        'defaults' => [
-                            'middleware' => null
                         ]
                     ]
                 ]
@@ -96,7 +90,7 @@ class Zf2Test extends TestCase
             ],
         ]);
 
-        $this->zf2Router->addRoute('/foo/:id', [
+        $this->zf2Router->addRoute('/foo/:id^GET', [
             'type' => 'segment',
             'options' => [
                 'route' => '/foo/:id',
@@ -115,16 +109,6 @@ class Zf2Test extends TestCase
                         'verb' => 'GET',
                         'defaults' => [
                             'middleware' => 'foo',
-                        ]
-                    ]
-                ],
-                Zf2Router::METHOD_NOT_ALLOWED_ROUTE => [
-                    'type' => 'segment',
-                    'priority' => -1,
-                    'options' => [
-                        'route' => '[/]',
-                        'defaults' => [
-                            'middleware' => null
                         ]
                     ]
                 ]
@@ -164,7 +148,7 @@ class Zf2Test extends TestCase
 
         $result = $zf2Router->match($request);
         $this->assertInstanceOf('Zend\Expressive\Router\RouteResult', $result);
-        $this->assertEquals('/foo/GET', $result->getMatchedRouteName());
+        $this->assertEquals('/foo^GET/GET', $result->getMatchedRouteName());
         $this->assertEquals($middleware, $result->getMatchedMiddleware());
     }
 
