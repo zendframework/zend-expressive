@@ -10,6 +10,8 @@
 namespace Zend\Expressive\Router;
 
 use Psr\Http\Message\ServerRequestInterface as PsrRequest;
+use Zend\Expressive\Exception;
+use Zend\Mvc\Router\Http\Part as PartRoute;
 use Zend\Mvc\Router\Http\TreeRouteStack;
 use Zend\Mvc\Router\RouteMatch;
 use Zend\Psr7Bridge\Psr7ServerRequest;
@@ -35,6 +37,13 @@ class Zf2 implements RouterInterface
      * @var array
      */
     private $allowedMethodsByPath = [];
+
+    /**
+     * Map a named route to a ZF2 route name to use for URI generation.
+     *
+     * @var array
+     */
+    private $routeNameMap = [];
 
     /**
      * @var TreeRouteStack
@@ -68,16 +77,17 @@ class Zf2 implements RouterInterface
         $options = array_replace_recursive($options, [
             'route'    => $path,
             'defaults' => [
-                'middleware' => $route->getMiddleware()
-            ]
+                'middleware' => $route->getMiddleware(),
+            ],
         ]);
 
         $allowedMethods = $route->getAllowedMethods();
         if (Route::HTTP_METHOD_ANY === $allowedMethods) {
             $this->zf2Router->addRoute($name, [
                 'type'    => 'segment',
-                'options' => $options
+                'options' => $options,
             ]);
+            $this->routeNameMap[$name] = $name;
             return;
         }
 
@@ -103,12 +113,13 @@ class Zf2 implements RouterInterface
 
         if (array_key_exists($path, $this->allowedMethodsByPath)) {
             $allowedMethods = array_merge($this->allowedMethodsByPath[$path], $allowedMethods);
-            // Remove the method not allowed route because already present for the path
+            // Remove the method not allowed route as it is already present for the path
             unset($spec['child_routes'][self::METHOD_NOT_ALLOWED_ROUTE]);
         }
 
         $this->zf2Router->addRoute($name, $spec);
         $this->allowedMethodsByPath[$path] = $allowedMethods;
+        $this->routeNameMap[$name] = sprintf('%s/%s', $name, $httpMethodRouteName);
     }
 
     /**
@@ -126,6 +137,28 @@ class Zf2 implements RouterInterface
         }
 
         return $this->marshalSuccessResultFromRouteMatch($match);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function generateUri($name, array $substitutions = [])
+    {
+        if (! $this->zf2Router->hasRoute($name)) {
+            throw new Exception\RuntimeException(sprintf(
+                'Cannot generate URI based on route "%s"; route not found',
+                $name
+            ));
+        }
+
+        $name = isset($this->routeNameMap[$name]) ? $this->routeNameMap[$name] : $name;
+
+        $options = [
+            'name'             => $name,
+            'only_return_path' => true,
+        ];
+
+        return $this->zf2Router->assemble($substitutions, $options);
     }
 
     /**
@@ -192,13 +225,14 @@ class Zf2 implements RouterInterface
     private function createMethodNotAllowedRoute($path)
     {
         return [
-            'type'     => 'segment',
+            'type'     => 'regex',
             'priority' => -1,
             'options'  => [
-                'route'    => '[/]',
+                'regex'    => '/*$',
                 'defaults' => [
                     self::METHOD_NOT_ALLOWED_ROUTE => $path,
                 ],
+                'spec' => '',
             ],
         ];
     }
@@ -215,11 +249,13 @@ class Zf2 implements RouterInterface
      */
     private function getMatchedRouteName($name)
     {
-        $lastSlashPos = strrpos($name, '/');
-        if (false === $lastSlashPos || 0 === $lastSlashPos) {
-            return $name;
+        // Check for <name>/GET:POST style route names; if so, strip off the
+        // child route matching the method.
+        if (preg_match('/(?P<name>.+)\/([!#$%&\'*+.^_`\|~0-9a-z-]+:?)+$/i', $name, $matches)) {
+            return $matches['name'];
         }
 
-        return substr($name, 0, $lastSlashPos);
+        // Otherwise, just use the name.
+        return $name;
     }
 }

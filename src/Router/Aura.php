@@ -134,6 +134,14 @@ class Aura implements RouterInterface
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function generateUri($name, array $substitutions = [])
+    {
+        return $this->router->generate($name, $substitutions);
+    }
+
+    /**
      * Marshal a RouteResult representing a route failure.
      *
      * If the route failure is due to the HTTP method, passes the allowed

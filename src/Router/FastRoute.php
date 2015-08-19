@@ -14,6 +14,7 @@ use FastRoute\Dispatcher\GroupCountBased as Dispatcher;
 use FastRoute\RouteCollector;
 use FastRoute\RouteParser\Std as RouteParser;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Zend\Expressive\Exception;
 
 /**
  * Router implementation bridging nikic/fast-route.
@@ -88,7 +89,7 @@ class FastRoute implements RouterInterface
         }
 
         $this->router->addRoute($methods, $route->getPath(), $route->getPath());
-        $this->routes[] = $route;
+        $this->routes[$route->getName()] = $route;
     }
 
     /**
@@ -107,6 +108,43 @@ class FastRoute implements RouterInterface
         }
 
         return $this->marshalMatchedRoute($result, $method);
+    }
+
+    /**
+     * Generate a URI based on a given route.
+     *
+     * Replacements in FastRoute are written as `{name}` or `{name:<pattern>}`;
+     * this method uses a regular expression to search for substitutions that
+     * match, and replaces them with the value provided.
+     *
+     * It does *not* use the pattern to validate that the substitution value is
+     * valid beforehand, however.
+     *
+     * @param string $name Route name.
+     * @param array $substitutions Key/value pairs to substitute into the route
+     *     pattern.
+     * @return string URI path generated.
+     * @throws Exception\InvalidArgumentException if the route name is not
+     *     known.
+     */
+    public function generateUri($name, array $substitutions = [])
+    {
+        if (! array_key_exists($name, $this->routes)) {
+            throw new Exception\InvalidArgumentException(sprintf(
+                'Cannot generate URI for route "%s"; route not found',
+                $name
+            ));
+        }
+
+        $route = $this->routes[$name];
+        $path  = $route->getPath();
+
+        foreach ($substitutions as $key => $value) {
+            $pattern = sprintf('#\{%s(:[^}]+)?\}#', preg_quote($key));
+            $path = preg_replace($pattern, $value, $path);
+        }
+
+        return $path;
     }
 
     /**
