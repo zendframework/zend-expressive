@@ -27,6 +27,14 @@ class TwigTest extends TestCase
         $this->twigEnvironment = new Twig_Environment($this->twigFilesystem);
     }
 
+    public function testShouldInjectDefaultLoaderIfProvidedEnvironmentDoesNotComposeOne()
+    {
+        $twigEnvironment = new Twig_Environment();
+        $template        = new TwigTemplate($twigEnvironment);
+        $loader          = $twigEnvironment->getLoader();
+        $this->assertInstanceOf('Twig_Loader_Filesystem', $loader);
+    }
+
     public function testCanPassEngineToConstructor()
     {
         $template = new TwigTemplate($this->twigEnvironment);

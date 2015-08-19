@@ -9,6 +9,7 @@
 
 namespace Zend\Expressive\Template;
 
+use LogicException;
 use Twig_Loader_Filesystem as TwigFilesystem;
 use Twig_Environment as TwigEnvironment;
 
@@ -39,11 +40,16 @@ class Twig implements TemplateInterface
         if (null === $template) {
             $template = $this->createTemplate($this->getDefaultLoader());
         }
-        if (! $template->getLoader()) {
-            $template->setLoader($this->getDefaultLoader());
+
+        try {
+            $loader = $template->getLoader();
+        } catch (LogicException $e) {
+            $loader = $this->getDefaultLoader();
+            $template->setLoader($loader);
         }
+
         $this->template   = $template;
-        $this->twigLoader = $template->getLoader();
+        $this->twigLoader = $loader;
     }
 
     /**
