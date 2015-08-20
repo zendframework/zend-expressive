@@ -33,7 +33,7 @@ class WhoopsErrorHandlerFactoryTest extends TestCase
     public function testReturnsAWhoopsErrorHandler()
     {
         $this->container->has(TemplateInterface::class)->willReturn(false);
-        $this->container->has('Config')->willReturn(false);
+        $this->container->has('config')->willReturn(false);
 
         $factory = $this->factory;
         $result  = $factory($this->container->reveal());
@@ -45,7 +45,7 @@ class WhoopsErrorHandlerFactoryTest extends TestCase
         $template = $this->prophesize(TemplateInterface::class);
         $this->container->has(TemplateInterface::class)->willReturn(true);
         $this->container->get(TemplateInterface::class)->willReturn($template->reveal());
-        $this->container->has('Config')->willReturn(false);
+        $this->container->has('config')->willReturn(false);
 
         $factory = $this->factory;
         $result  = $factory($this->container->reveal());
@@ -60,8 +60,8 @@ class WhoopsErrorHandlerFactoryTest extends TestCase
             'template_error' => 'error::500',
         ]]];
         $this->container->has(TemplateInterface::class)->willReturn(false);
-        $this->container->has('Config')->willReturn(true);
-        $this->container->get('Config')->willReturn($config);
+        $this->container->has('config')->willReturn(true);
+        $this->container->get('config')->willReturn($config);
 
         $factory = $this->factory;
         $result  = $factory($this->container->reveal());
