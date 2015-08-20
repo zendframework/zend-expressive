@@ -1,19 +1,12 @@
-site_name: zend-expressive
-site_description: Expressive middleware applications in PHP
-
-repo_url: https://github.com/zendframework/zend-expressive
-
 docs_dir: doc/book
 site_dir: doc/html
-
 pages:
-- 'index.md'
-- 'Examples': 'usage-examples.md'
-- 'Routing Adapters':
-    - 'Aura': 'router/aura.md'
-    - 'FastRoute': 'router/fast-route.md'
-    - 'ZF2': 'router/zf2.md'
-- 'Error Handling': 'error-handling.md'
-- 'Cookbook': 'cookbook.md'
-
-copyright: Copyright (c) 2015 <a href="http://www.zend.com">Zend Technologies USA Inc.</a>
+    - index.md
+    - { Examples: usage-examples.md }
+    - { 'Routing Adapters': [{ Aura: router/aura.md }, { FastRoute: router/fast-route.md }, { ZF2: router/zf2.md }] }
+    - { 'Error Handling': error-handling.md }
+    - { Cookbook: cookbook.md }
+site_name: zend-expressive
+site_description: 'zend-expressive: PSR-7 Middleware Microframework'
+repo_url: 'https://github.com/zendframework/zend-expressive'
+copyright: 'Copyright (c) 2015 <a href="http://www.zend.com/">Zend Technologies USA Inc.</a>'
