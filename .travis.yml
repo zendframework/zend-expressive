@@ -2,6 +2,11 @@ sudo: false
 
 language: php
 
+cache:
+  directories:
+    - $HOME/.composer/cache
+    - vendor
+
 matrix:
   fast_finish: true
   include:
@@ -17,10 +22,15 @@ matrix:
     - php: 7
     - php: hhvm
 
-before_script:
+before_install:
   - composer self-update
-  - composer install --prefer-source
-  - if [[ $EXECUTE_DOC_CHECK == 'true' ]]; then composer require --no-update phly/bookdown2mkdocs ; fi
+  - if [[ $EXECUTE_DOC_CHECK == 'true' ]]; then composer require --dev --no-update phly/bookdown2mkdocs ; fi
+
+install:
+  - travis_retry composer install --no-interaction --ignore-platform-reqs --prefer-source
+  - composer info -i
+
+before_script:
   - if [[ $EXECUTE_DOC_CHECK == 'true' ]]; then cp mkdocs.yml mkdocs.yml.orig ; fi
 
 script:
