@@ -6,6 +6,8 @@ matrix:
   fast_finish: true
   include:
     - php: 5.5
+      env:
+        - EXECUTE_DOC_CHECK=true
     - php: 5.6
       env:
         - EXECUTE_CS_CHECK=true
@@ -18,10 +20,13 @@ matrix:
 before_script:
   - composer self-update
   - composer install --prefer-source
+  - if [[ $EXECUTE_DOC_CHECK == 'true' ]]; then composer require --no-update phly/bookdown2mkdocs ; fi
+  - if [[ $EXECUTE_DOC_CHECK == 'true' ]]; then cp mkdocs.yml mkdocs.yml.orig ; fi
 
 script:
   - ./vendor/bin/phpunit
   - if [[ $EXECUTE_CS_CHECK == 'true' ]]; then ./vendor/bin/phpcs ; fi
+  - if [[ $EXECUTE_DOC_CHECK == 'true' ]]; then make mkdocs ; diff mkdocs.yml mkdocs.yml.orig ; return $? ; fi
 
 notifications:
   email: true
