@@ -18,7 +18,7 @@ use Whoops\Handler\PrettyPageHandler;
  * Register this factory as the service `Zend\Expressive\WhoopsPageHandler` in
  * the container of your choice.
  *
- * This service has an optional dependency on the "Config" service, which should
+ * This service has an optional dependency on the "config" service, which should
  * return an array or ArrayAccess instance. If found, it looks for the following
  * structure:
  *
@@ -39,7 +39,7 @@ class WhoopsPageHandlerFactory
      */
     public function __invoke(ContainerInterface $container)
     {
-        $config = $container->has('Config') ? $container->get('Config') : [];
+        $config = $container->has('config') ? $container->get('config') : [];
         $config = isset($config['whoops']) ? $config['whoops'] : [];
 
         $pageHandler = new PrettyPageHandler();

@@ -113,10 +113,10 @@ container implementations to simplify setup.
 ### WhoopsPageHandlerFactory
 
 > - Register this factory as `Zend\Expressive\WhoopsPageHandler`.
-> - This service optionally consumes the service `Config`
+> - This service optionally consumes the service `config`
 
 `Zend\Expressive\Container\WhoopsPageHandlerFactory` will create and return a
-`Whoops\Handler\PrettyPageHandler` instance. If the `Config` service is also defined, and returns an
+`Whoops\Handler\PrettyPageHandler` instance. If the `config` service is also defined, and returns an
 array with the following structure:
 
 ```php
@@ -132,7 +132,7 @@ the output that will open the editor with the file).
 
 > - Register this factory as `Zend\Expressive\Whoops`.
 > - This factory requires and consumes a service named `Zend\Expressive\WhoopsPageHandler`, and
->   optionally the service `Config`.
+>   optionally the service `config`.
 
 `Zend\Expressive\Container\WhoopsFactory` will create and return a `Whoops\Run` instance. It will
 inject the `Zend\Expressive\WhoopsPageHandler` as a handler. Additionally, it calls the following
@@ -142,7 +142,7 @@ methods with the specified arguments:
 - `allowQuit(false)`
 - `register()`
 
-If the `Config` service is defined, and has the following structure:
+If the `config` service is defined, and has the following structure:
 
 ```php
 'whoops' => [
@@ -162,7 +162,7 @@ configured per the settings provided.
 > - Register this factory as `Zend\Expressive\FinalHandler`.
 > - This factory requires and consumes the services `Zend\Expressive\Whoops` and
 >   `Zend\Expressive\WhoopsPageHandler`, and optionally the services
->   `Zend\Expressive\Template\TemplateInterface` and `Config`.
+>   `Zend\Expressive\Template\TemplateInterface` and `config`.
 
 `Zend\Expressive\Container\WhoopsErrorHandlerFactory` creates and returns an instance of
 `Zend\Expressive\WhoopsErrorHandler`, injecting it with the services `Zend\Expressive\Whoops` and
@@ -171,7 +171,7 @@ configured per the settings provided.
 If the `Zend\Expressive\Template\TemplateInterface` service is available, that, too, will be
 injected.
 
-If the `Config` service is available, and contains the following structure:
+If the `config` service is available, and contains the following structure:
 
 ```php
 'zend-expressive' => [
@@ -188,14 +188,14 @@ then the factory will inject the values for the given templates.
 
 > - Register this factory as `Zend\Expressive\FinalHandler`.
 > - This factory optionally consumes the services `Zend\Expressive\Template\TemplateInterface` and
->   `Config`.
+>   `config`.
 
 `Zend\Expressive\Container\TemplatedErrorHandlerFactory` creates and returns an instance of
 `Zend\Expressive\TemplatedErrorHandler`.
 
 If the `Zend\Expressive\Template\TemplateInterface` service is available, it will be injected.
 
-If the `Config` service is available, and contains the following structure:
+If the `config` service is available, and contains the following structure:
 
 ```php
 'zend-expressive' => [
@@ -219,10 +219,10 @@ so via configuration.
 use Zend\Expressive\Template\Plates;
 
 // For all examples:
-$services->setService('Config', $config);
+$services->setService('config', $config);
 $services->setFactory('Zend\Expressive\Template\TemplateInterface', function ($container) {
     $plates = new Plates();
-    $plates->addPath($container->get('Config')['templates']['error'], 'error');
+    $plates->addPath($container->get('config')['templates']['error'], 'error');
     
     return $plates;
 });
@@ -258,7 +258,7 @@ return [
             'Zend\Expressive\Application' => 'Zend\Expressive\Container\ApplicationFactory',
             'Zend\Expressive\Template\TemplateInterface' => function ($container) {
                 $plates = new Plates();
-                $plates->addPath($container->get('Config')['templates']['error'], 'error');
+                $plates->addPath($container->get('config')['templates']['error'], 'error');
                 
                 return $plates;
             },
@@ -295,7 +295,7 @@ use Zend\ServiceManager\ServiceManager;
 
 $config    = include 'config/config.php';
 $container = new ServiceManager(new Config($config));
-$container->setService('Config', $config);
+$container->setService('config', $config);
 
 $app = $container->get('Zend\Expressive\Application');
 $app->run();
@@ -328,11 +328,11 @@ use Zend\Expressive\Template\Plates;
 
 $pimple = new Pimple()
 
-$pimple['Config'] = $config;
+$pimple['config'] = $config;
 $pimple['Zend\Expressive\Application'] = new Container\ApplicationFactory();
 $pimple['Zend\Expressive\Template\TemplateInterface'] = function ($container) {
     $plates = new Plates();
-    $plates->addPath($container->get('Config')['templates']['error'], 'error');
+    $plates->addPath($container->get('config')['templates']['error'], 'error');
     
     return $plates;
 };

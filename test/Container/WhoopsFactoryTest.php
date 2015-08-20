@@ -48,7 +48,7 @@ class WhoopsFactoryTest extends TestCase
 
     public function testReturnsAWhoopsRuntimeWithPageHandlerComposed()
     {
-        $this->container->has('Config')->willReturn(false);
+        $this->container->has('config')->willReturn(false);
         $factory = $this->factory;
         $result  = $factory($this->container->reveal());
         $this->assertInstanceOf(Whoops::class, $result);
@@ -58,8 +58,8 @@ class WhoopsFactoryTest extends TestCase
     public function testWillInjectJsonResponseHandlerIfConfigurationExpectsIt()
     {
         $config = ['whoops' => ['json_exceptions' => ['display' => true]]];
-        $this->container->has('Config')->willReturn(true);
-        $this->container->get('Config')->willReturn($config);
+        $this->container->has('config')->willReturn(true);
+        $this->container->get('config')->willReturn($config);
 
         $factory = $this->factory;
         $result  = $factory($this->container->reveal());
@@ -78,8 +78,8 @@ class WhoopsFactoryTest extends TestCase
             'show_trace' => true,
             'ajax_only'  => true,
         ]]];
-        $this->container->has('Config')->willReturn(true);
-        $this->container->get('Config')->willReturn($config);
+        $this->container->has('config')->willReturn(true);
+        $this->container->get('config')->willReturn($config);
 
         $factory = $this->factory;
         $whoops  = $factory($this->container->reveal());

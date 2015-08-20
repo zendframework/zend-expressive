@@ -19,9 +19,9 @@ use Whoops\Run as Whoops;
  * Register this factory as the service `Zend\Expressive\Whoops` in the
  * container of your choice. This service depends on two others:
  *
- * - Config (which should return an array or array-like object with a "whoops"
+ * - 'config' (which should return an array or array-like object with a "whoops"
  *   key, containing the configuration for whoops).
- * - Zend\Expressive\WhoopsPageHandler, which should return a
+ * - 'Zend\Expressive\WhoopsPageHandler', which should return a
  *   Whoops\Handler\PrettyPageHandler instance to register on the whoops
  *   instance.
  *
@@ -49,7 +49,7 @@ class WhoopsFactory
      */
     public function __invoke(ContainerInterface $container)
     {
-        $config = $container->has('Config') ? $container->get('Config') : [];
+        $config = $container->has('config') ? $container->get('config') : [];
         $config = isset($config['whoops']) ? $config['whoops'] : [];
 
         $whoops = new Whoops();

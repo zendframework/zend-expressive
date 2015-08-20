@@ -95,7 +95,7 @@ class ApplicationFactoryTest extends TestCase
             ->willReturn($finalHandler);
 
         $this->container
-            ->has('Config')
+            ->has('config')
             ->willReturn(false);
 
         $app = $this->factory->__invoke($this->container->reveal());
@@ -155,11 +155,11 @@ class ApplicationFactoryTest extends TestCase
             ->willReturn($finalHandler);
 
         $this->container
-            ->has('Config')
+            ->has('config')
             ->willReturn(true);
 
         $this->container
-            ->get('Config')
+            ->get('config')
             ->willReturn($config);
 
         $app = $this->factory->__invoke($this->container->reveal());
@@ -197,7 +197,7 @@ class ApplicationFactoryTest extends TestCase
             ->shouldNotBeCalled();
 
         $this->container
-            ->has('Config')
+            ->has('config')
             ->willReturn(false);
 
         $app = $this->factory->__invoke($this->container->reveal());
@@ -267,11 +267,11 @@ class ApplicationFactoryTest extends TestCase
             ->willReturn($finalHandler);
 
         $this->container
-            ->has('Config')
+            ->has('config')
             ->willReturn(true);
 
         $this->container
-            ->get('Config')
+            ->get('config')
             ->willReturn($config);
 
         $app = $this->factory->__invoke($this->container->reveal());
@@ -355,11 +355,11 @@ class ApplicationFactoryTest extends TestCase
             ->willReturn($finalHandler);
 
         $this->container
-            ->has('Config')
+            ->has('config')
             ->willReturn(true);
 
         $this->container
-            ->get('Config')
+            ->get('config')
             ->willReturn($config);
 
         $app = $this->factory->__invoke($this->container->reveal());
@@ -437,11 +437,11 @@ class ApplicationFactoryTest extends TestCase
             ->willReturn($finalHandler);
 
         $this->container
-            ->has('Config')
+            ->has('config')
             ->willReturn(true);
 
         $this->container
-            ->get('Config')
+            ->get('config')
             ->willReturn($config);
 
         $this->container
@@ -539,11 +539,11 @@ class ApplicationFactoryTest extends TestCase
             ->willReturn($finalHandler);
 
         $this->container
-            ->has('Config')
+            ->has('config')
             ->willReturn(true);
 
         $this->container
-            ->get('Config')
+            ->get('config')
             ->willReturn($config);
 
         $this->setExpectedException('Zend\Expressive\Exception\InvalidMiddlewareException');
@@ -595,11 +595,11 @@ class ApplicationFactoryTest extends TestCase
             ->willReturn($finalHandler);
 
         $this->container
-            ->has('Config')
+            ->has('config')
             ->willReturn(true);
 
         $this->container
-            ->get('Config')
+            ->get('config')
             ->willReturn($config);
 
         $this->container
@@ -657,11 +657,11 @@ class ApplicationFactoryTest extends TestCase
             ->willReturn($finalHandler);
 
         $this->container
-            ->has('Config')
+            ->has('config')
             ->willReturn(true);
 
         $this->container
-            ->get('Config')
+            ->get('config')
             ->willReturn($config);
 
         $this->container
@@ -748,11 +748,11 @@ class ApplicationFactoryTest extends TestCase
             ->willReturn($finalHandler);
 
         $this->container
-            ->has('Config')
+            ->has('config')
             ->willReturn(true);
 
         $this->container
-            ->get('Config')
+            ->get('config')
             ->willReturn($config);
 
         $app = $this->factory->__invoke($this->container->reveal());
@@ -814,11 +814,11 @@ class ApplicationFactoryTest extends TestCase
             ->willReturn($finalHandler);
 
         $this->container
-            ->has('Config')
+            ->has('config')
             ->willReturn(true);
 
         $this->container
-            ->get('Config')
+            ->get('config')
             ->willReturn($config);
 
         $this->container
@@ -901,11 +901,11 @@ class ApplicationFactoryTest extends TestCase
             ->willReturn($finalHandler);
 
         $this->container
-            ->has('Config')
+            ->has('config')
             ->willReturn(true);
 
         $this->container
-            ->get('Config')
+            ->get('config')
             ->willReturn($config);
 
         $app = $this->factory->__invoke($this->container->reveal());

@@ -20,10 +20,10 @@ use Zend\Expressive\TemplatedErrorHandler;
  *
  * This factory has optional dependencies on the following services:
  *
- * - Zend\Expressive\Template\TemplateInterface, which should return an
+ * - 'Zend\Expressive\Template\TemplateInterface', which should return an
  *   implementation of that interface. If not present, the error handler
  *   will not create templated responses.
- * - Config (which should return an array or array-like object with a
+ * - 'config' (which should return an array or array-like object with a
  *   "zend-expressive" top-level key, and an "error_handler" subkey,
  *   containing the configuration for the error handler).
  *
@@ -48,8 +48,8 @@ class TemplatedErrorHandlerFactory
             ? $container->get('Zend\Expressive\Template\TemplateInterface')
             : null;
 
-        $config = $container->has('Config')
-            ? $container->get('Config')
+        $config = $container->has('config')
+            ? $container->get('config')
             : [];
 
         $config = isset($config['zend-expressive']['error_handler'])

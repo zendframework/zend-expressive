@@ -26,7 +26,7 @@ class WhoopsPageHandlerFactoryTest extends TestCase
 
     public function testReturnsAPrettyPageHandler()
     {
-        $this->container->has('Config')->willReturn(false);
+        $this->container->has('config')->willReturn(false);
         $factory = $this->factory;
 
         $result = $factory($this->container->reveal());
@@ -36,8 +36,8 @@ class WhoopsPageHandlerFactoryTest extends TestCase
     public function testWillInjectStringEditor()
     {
         $config = ['whoops' => ['editor' => 'emacs']];
-        $this->container->has('Config')->willReturn(true);
-        $this->container->get('Config')->willReturn($config);
+        $this->container->has('config')->willReturn(true);
+        $this->container->get('config')->willReturn($config);
         $this->container->has('emacs')->willReturn(false);
 
         $factory = $this->factory;
@@ -50,8 +50,8 @@ class WhoopsPageHandlerFactoryTest extends TestCase
     {
         $config = ['whoops' => ['editor' => function () {
         }]];
-        $this->container->has('Config')->willReturn(true);
-        $this->container->get('Config')->willReturn($config);
+        $this->container->has('config')->willReturn(true);
+        $this->container->get('config')->willReturn($config);
         $factory = $this->factory;
 
         $result = $factory($this->container->reveal());
@@ -64,8 +64,8 @@ class WhoopsPageHandlerFactoryTest extends TestCase
         $config = ['whoops' => ['editor' => 'custom']];
         $editor = function () {
         };
-        $this->container->has('Config')->willReturn(true);
-        $this->container->get('Config')->willReturn($config);
+        $this->container->has('config')->willReturn(true);
+        $this->container->get('config')->willReturn($config);
         $this->container->has('custom')->willReturn(true);
         $this->container->get('custom')->willReturn($editor);
 
@@ -95,8 +95,8 @@ class WhoopsPageHandlerFactoryTest extends TestCase
     public function testInvalidEditorWillRaiseException($editor)
     {
         $config = ['whoops' => ['editor' => $editor]];
-        $this->container->has('Config')->willReturn(true);
-        $this->container->get('Config')->willReturn($config);
+        $this->container->has('config')->willReturn(true);
+        $this->container->get('config')->willReturn($config);
 
         $factory = $this->factory;
 

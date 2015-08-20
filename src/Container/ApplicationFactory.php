@@ -24,17 +24,17 @@ use Zend\Expressive\Router\RouterInterface;
  *
  * This factory uses the following services, if available:
  *
- * - Zend\Expressive\Router\RouterInterface. If missing, an Aura router bridge
+ * - 'Zend\Expressive\Router\RouterInterface'. If missing, an Aura router bridge
  *   will be instantiated and used.
- * - Zend\Expressive\FinalHandler. The service should be a callable to use as
+ * - 'Zend\Expressive\FinalHandler'. The service should be a callable to use as
  *   the final handler when the middleware pipeline is exhausted.
- * - Zend\Diactoros\Response\EmitterInterface. If missing, an EmitterStack is
+ * - 'Zend\Diactoros\Response\EmitterInterface'. If missing, an EmitterStack is
  *   created, adding a SapiEmitter to the bottom of the stack.
- * - Config (an array or ArrayAccess object). If present, and it contains route
+ * - 'config' (an array or ArrayAccess object). If present, and it contains route
  *   definitions, these will be used to seed routes in the Application instance
  *   before returning it.
  *
- * When introspecting the `Config` service, the following structure can be used
+ * When introspecting the `config` service, the following structure can be used
  * to define routes:
  *
  * <code>
@@ -185,7 +185,7 @@ class ApplicationFactory
      */
     private function injectRoutes(Application $app, ContainerInterface $container)
     {
-        $config = $container->has('Config') ? $container->get('Config') : [];
+        $config = $container->has('config') ? $container->get('config') : [];
         if (! isset($config['routes'])) {
             $app->pipeRoutingMiddleware();
             return;
@@ -318,7 +318,7 @@ class ApplicationFactory
      */
     private function injectPreMiddleware(Application $app, ContainerInterface $container)
     {
-        $config = $container->has('Config') ? $container->get('Config') : [];
+        $config = $container->has('config') ? $container->get('config') : [];
         if (! isset($config['middleware_pipeline']['pre_routing']) ||
             ! is_array($config['middleware_pipeline']['pre_routing'])
         ) {
@@ -339,7 +339,7 @@ class ApplicationFactory
      */
     private function injectPostMiddleware(Application $app, ContainerInterface $container)
     {
-        $config = $container->has('Config') ? $container->get('Config') : [];
+        $config = $container->has('config') ? $container->get('config') : [];
         if (! isset($config['middleware_pipeline']['post_routing']) ||
             ! is_array($config['middleware_pipeline']['post_routing'])
         ) {
