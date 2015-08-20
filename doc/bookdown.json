@@ -1,14 +1,11 @@
 {
   "title": "zend-expressive: PSR-7 Middleware Microframework",
   "content": [
-    "book/intro.md",
-    "book/install.md",
-    "book/usage-examples.md",
-    "book/router.aura.md",
-    "book/router.fast-route.md",
-    "book/router.zf2.md",
-    "book/error-handling.md",
-    "book/cookbook.md"
+    {"Intro": "../README.md"},
+    {"Examples": "book/usage-examples.md"},
+    "book/router/bookdown.json",
+    {"Error Handling": "book/error-handling.md"},
+    {"Cookbook": "book/cookbook.md"}
   ],
   "target": "./html"
 }

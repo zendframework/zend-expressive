@@ -15,7 +15,7 @@ and offers an easy way to start developing using a single application object.
 
 Install this library using composer:
 
-```console
+```bash
 $ composer require zendframework/zend-expressive:*@dev
 ```
 
@@ -23,7 +23,7 @@ $ composer require zendframework/zend-expressive:*@dev
 
 Documentation is [in the doc tree](doc/), and can be compiled using [bookdown](http://bookdown.io):
 
-```console
+```bash
 $ bookdown doc/bookdown.json
 $ php -S 0.0.0.0:8080 -t doc/html/ # then browse to http://localhost:8080/
 ```
