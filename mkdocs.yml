@@ -8,8 +8,6 @@ site_dir: doc/html
 
 pages:
 - 'index.md'
-- 'Intro': 'intro.md'
-- 'Installation': 'install.md'
 - 'Examples': 'usage-examples.md'
 - 'Routing Adapters':
     - 'Aura': 'router/aura.md'
