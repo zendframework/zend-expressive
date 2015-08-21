@@ -228,7 +228,62 @@ return [
                     'ValidationMiddleware',
                 ],
             ],
-        ], 
+        ],
     ],
 ];
+```
+
+## How can I set 404 page?
+
+We can set 404 page with create new Middleware that set 404 status from response object.
+
+Let's create a `NotFound` middleware:
+
+```php
+namespace Application;
+
+use Zend\Expressive\Template\TemplateInterface;
+
+class NotFound
+{
+    public function __invoke($req, $res, $next)
+    {
+        return $next($req, $res->withStatus(404), 'Page Not Found');
+    }
+}
+```
+
+After it, we need to register the middleware into `invokables` type in our service config:
+
+```php
+//... config/services.php
+    'invokables' => [
+        // ...
+        'Application\NotFound' => 'Application\NotFound',
+    ],
+//...
+```
+Now, we can configure the `middleware_pipeline` under `post_routing`:
+
+```php
+'middleware_pipeline' => [
+    'pre_routing' => [
+        [
+            //...
+        ],
+
+    ],
+    'post_routing' => [
+        [
+            'middleware' => 'Application\NotFound',
+        ],
+    ],
+],
+```
+
+The other thing that we can do is programmatically pipe in `public/index.php`:
+
+```php
+$app->pipe($services->get('Application\NotFound'));
+$app->run();
 ```
