@@ -71,6 +71,9 @@ For this example, we'll assume your application configuration (used by several
 factories to configure instances) is in `config/config.php`, and that that file
 returns an array.
 
+We'll create a `config/services.php` file that creates and returns a
+`Zend\ServiceManager\ServiceManager` instance as follows:
+
 ```php
 use Zend\ServiceManager\ServiceManager;
 
@@ -81,6 +84,14 @@ $container->setService('config', include 'config/config.php');
 $container->setFactory(
     'Zend\Expressive\Application',
     'Zend\Expressive\Container\ApplicationFactory'
+);
+
+// Routing
+// In most cases, you can instantiate the router you want to use without using a
+// factory:
+$container->setInvokableClass(
+    'Zend\Expressive\Router\RouterInterface',
+    'Zend\Expressive\Router\Aura'
 );
 
 // Templating
@@ -115,7 +126,14 @@ $container->setFactory(
     'Zend\Expressive\Container\TemplatedErrorHandlerFactory'
 );
 
-// Once done:
+return $container;
+```
+
+Your bootstrap (typically `public/index.php`) will then look like this:
+
+```php
+chdir(dirname(__DIR__));
+$container = require 'config/services.php';
 $app = $container->get('Zend\Expressive\Application');
 $app->run();
 ```
@@ -123,8 +141,9 @@ $app->run();
 ### Configuration-Driven Container
 
 Alternately, you can use a configuration file to define the container. As
-before, we'll define our configuration in `config/config.php`, but now we'll
-place our service configuration in `config/services.php`:
+before, we'll define our configuration in `config/config.php`, and our
+`config/services.php` file will still return our service manager instance; we'll
+define the service configuration in `config/dependencies.php`:
 
 ```php
 return [
@@ -132,6 +151,7 @@ return [
         'config' => include __DIR__ . '/config.php',
     ],
     'invokables' => [
+        'Zend\Expressive\Router\RouterInterface'     => 'Zend\Expressive\Router\Aura',
         'Zend\Expressive\Template\TemplateInterface' => 'Zend\Expressive\Template\Plates'
     ],
     'factories' => [
@@ -142,16 +162,13 @@ return [
 ];
 ```
 
-Then, in your `public/index.php` (or wherever you bootstrap and run the
-application):
+`config/services.php` becomes:
 
 ```php
 use Zend\ServiceManager\Config;
 use Zend\ServiceManager\ServiceManager;
 
-$container = new ServiceManager(new Config(include 'config/services.php'));
-$app = $container->get('Zend\Expressive\Application');
-$app->run();
+return new ServiceManager(new Config(include 'config/dependencies.php'));
 ```
 
 There is one problem, however: which final handler should you configure? You
@@ -161,7 +178,8 @@ have two choices on how to approach this:
 - Define the final handler service in an environment specific file and use file
   globbing to merge files.
 
-In the first case, you would change the bootstrap example to look like this:
+In the first case, you would change the `config/services.php` example to look
+like this:
 
 ```php
 use Zend\ServiceManager\Config;
@@ -176,14 +194,13 @@ switch ($variableOrConstantIndicatingEnvironment) {
         );
         break;
     case 'production':
+    default:
         $container->setFactory(
             'Zend\Expressive\FinalHandler',
             'Zend\Expressive\Container\TemplatedErrorHandlerFactory'
         );
-    default:
 }
-$app = $container->get('Zend\Expressive\Application');
-$app->run();
+return $container;
 ```
 
 In the second case, you will need to install zend-config:
@@ -193,21 +210,21 @@ $ composer require zendframework/zend-config
 ```
 
 Then, create the directory `config/autoload/`, and create two files,
-`services.global.php` and `services.local.php`. In your `.gitignore`, add an
-entry for `config/autoload/*local.php` to ensure "local" (environment-specific)
-files are excluded from the repository.
+`dependencies.global.php` and `dependencies.local.php`. In your `.gitignore`,
+add an entry for `config/autoload/*local.php` to ensure "local"
+(environment-specific) files are excluded from the repository.
 
-`config/services.php` will look like this:
+`config/dependencies.php` will look like this:
 
 ```php
 use Zend\Config\Config;
 
 return Config::fromFiles(
-    glob('config/autoload/services.{global,local}.php', GLOB_BRACE)
+    glob('config/autoload/dependencies.{global,local}.php', GLOB_BRACE)
 );
 ```
 
-`config/autoload/services.global.php` will look like this:
+`config/autoload/dependencies.global.php` will look like this:
 
 ```php
 return [
@@ -215,6 +232,7 @@ return [
         'config' => include __DIR__ . '/config.php',
     ],
     'invokables' => [
+        'Zend\Expressive\Router\RouterInterface'     => 'Zend\Expressive\Router\Aura',
         'Zend\Expressive\Template\TemplateInterface' => 'Zend\Expressive\Template\Plates'
     ],
     'factories' => [
@@ -224,8 +242,8 @@ return [
 ];
 ```
 
-`config/autoload/services.local.php` on your development machine can look like
-this:
+`config/autoload/dependencies.local.php` on your development machine can look
+like this:
 
 ```php
 return [
