@@ -18,7 +18,7 @@ such, you need to install the `mouf/pimple-interop` project, which provides a
 container-interop wrapper around Pimple:
 
 ```bash
-$ composer install mouf/pimple-interop
+$ composer require mouf/pimple-interop
 ```
 
 ## Configuring Pimple
