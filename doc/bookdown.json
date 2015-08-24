@@ -3,6 +3,7 @@
   "content": [
     {"Intro": "../README.md"},
     {"Quick Start": "quick-start.md"},
+    {"Applications": "application.md"},
     {"Examples": "book/usage-examples.md"},
     "book/container/bookdown.json",
     "book/router/bookdown.json",

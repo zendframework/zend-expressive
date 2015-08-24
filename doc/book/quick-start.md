@@ -82,6 +82,7 @@ http://localhost:8080/ to see if your application responds correctly!
 At this point, you have a working zend-expressive application, that responds to
 a single route. From here, you may want to read up on:
 
+- [Applications](application.md)
 - [Containers](container/intro.md)
 - [Routing](router/intro.md)
 - [Templating](template/intro.md)
