@@ -2,7 +2,9 @@
     "title": "Containers",
     "content": [
         {"Intro": "intro.md"},
-        {"Container Factories": "factories.md"}
+        {"Container Factories": "factories.md"},
+        {"Using zend-servicemanager": "zend-servicemanager.md"},
+        {"Using Pimple": "pimple.md"}
     ]
 }
 
