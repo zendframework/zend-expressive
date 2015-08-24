@@ -4,6 +4,7 @@ pages:
     - index.md
     - { Examples: usage-examples.md }
     - { 'Routing Adapters': [{ Aura: router/aura.md }, { FastRoute: router/fast-route.md }, { ZF2: router/zf2.md }, { 'URI Generation': router/uri-generation.md }] }
+    - { Templating: [{ Introduction: template/intro.md }, { 'Template Interface': template/interface.md }, { 'Templated Middleware': template/middleware.md }, { 'Using Plates': template/plates.md }, { 'Using Twig': template/twig.md }, { 'Using zend-view': template/zend-view.md }] }
     - { 'Error Handling': error-handling.md }
     - { Cookbook: cookbook.md }
 site_name: zend-expressive
