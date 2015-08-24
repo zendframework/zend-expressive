@@ -1,5 +1,3 @@
-markdown_extensions:
-    - py-gfm
 docs_dir: doc/book
 site_dir: doc/html
 pages:
