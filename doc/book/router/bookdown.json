@@ -1,9 +1,12 @@
 {
     "title": "Routing Adapters",
     "content": [
-        {"Aura": "aura.md"},
-        {"FastRoute": "fast-route.md"},
-        {"ZF2": "zf2.md"},
-        {"URI Generation": "uri-generation.md"}
+        {"Introduction": "intro.md"},
+        {"Routing Interface": "interface.md"},
+        {"URI Generation": "uri-generation.md"},
+        {"Routing vs Piping": "piping.md"},
+        {"Using Aura": "aura.md"},
+        {"Using FastRoute": "fast-route.md"},
+        {"Using the ZF2 Router": "zf2.md"}
     ]
 }
