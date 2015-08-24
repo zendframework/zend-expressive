@@ -56,7 +56,7 @@ You can also use the `TemplatedErrorHandler` as a substitute for the `FinalHandl
 templated capabilities, by omitting the `TemplateInterface` instance when instantiating it. In this
 case, the response message bodies will be empty, though the response status will reflect the error.
 
-### Whoops
+## Whoops
 
 [whoops](http://filp.github.io/whoops/) is a library for providing a more usable UI around
 exceptions and PHP errors. We provide integration with this library through
