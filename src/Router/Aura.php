@@ -116,8 +116,7 @@ class Aura implements RouterInterface
     }
 
     /**
-     * @param  string $patch
-     * @param  array $params
+     * @param Request $request
      * @return RouteResult
      */
     public function match(Request $request)
