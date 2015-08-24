@@ -19,6 +19,11 @@ prefer, zend-expressive typehints against [container-interop](https://github.com
 and throughout this manual, we attempt to show using a variety of containers in
 examples.
 
+At this time, we document support for the following specific containers:
+
+- [zend-servicemanager](zend-servicemanager.md)
+- [Pimple](pimple.md)
+
 > ## Service Names
 >
 > We recommend using fully-qualified class names whenever possible as service
