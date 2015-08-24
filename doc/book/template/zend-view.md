@@ -65,18 +65,18 @@ Layouts are accomplished in one of two ways:
 
 - Multiple rendering passes:
 
-  ```php
-  $content = $templates->render('blog/entry', [ 'entry' => $entry ]);
-  $layout  = $templates->render('layout/layout', [ 'content' => $content ]);
-  ```
+    ```php
+    $content = $templates->render('blog/entry', [ 'entry' => $entry ]);
+    $layout  = $templates->render('layout/layout', [ 'content' => $content ]);
+    ```
 
 - View models.  To accomplish this, you will compose a view model for the
   content, and pass it as a value to the layout:
 
-  ```php
-  use Zend\View\Model\ViewModel;
-  
-  $viewModel = new ViewModel(['entry' => $entry]);
-  $viewModel->setTemplate('blog/entry');
-  $layout = $templates->render('layout/layout', [ 'content' => $viewModel ]);
-  ```
+    ```php
+    use Zend\View\Model\ViewModel;
+    
+    $viewModel = new ViewModel(['entry' => $entry]);
+    $viewModel->setTemplate('blog/entry');
+    $layout = $templates->render('layout/layout', [ 'content' => $viewModel ]);
+    ```
