@@ -24,7 +24,7 @@ class Aura implements RouterInterface
     /**
      * Aura router
      *
-     * @var Aura\Router\Router
+     * @var Router
      */
     private $router;
 
@@ -116,8 +116,7 @@ class Aura implements RouterInterface
     }
 
     /**
-     * @param  string $patch
-     * @param  array $params
+     * @param Request $request
      * @return RouteResult
      */
     public function match(Request $request)

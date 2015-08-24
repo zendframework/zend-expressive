@@ -88,7 +88,7 @@ class TemplatedErrorHandler
     /**
      * Set the original response for comparisons.
      *
-     * @param Response $originalResponse
+     * @param Response $response
      */
     public function setOriginalResponse(Response $response)
     {
@@ -160,8 +160,9 @@ class TemplatedErrorHandler
      * for other handlers.
      *
      * @param \Exception $exception
-     * @param Request $request
-     * @param Response $response
+     * @param Request    $request
+     * @param Response   $response
+     * @return Response
      */
     protected function handleException(\Exception $exception, Request $request, Response $response)
     {
