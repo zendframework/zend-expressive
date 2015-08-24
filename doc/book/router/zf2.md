@@ -1,30 +1,18 @@
-# ZF2 Router Usage
+# Using the ZF2 Router
 
 [zend-mvc](https://github.com/zendframework/zend-mvc) provides a router
-implementation; for HTTP applications, the default used in ZF2 applications it
+implementation; for HTTP applications, the default used in ZF2 applications is
 `Zend\Mvc\Router\Http\TreeRouteStack`, which can compose a number of different
 routes of differing types in order to perform routing.
 
-The ZF2 bridge we provide uses the `TreeRouteStack`, and injects `Segment`
-routes to it. We emulate HTTP method negotiation in the implementation, however,
-instead of creating `Method` routes, as the `TreeRouteStack` does not
-differentiate between failure to route and failure due to HTTP method
-negotiation.
+The ZF2 bridge we provide, `Zend\Expressive\Router\Zf`, uses the
+`TreeRouteStack`, and injects `Segment` routes to it; these are in turn injected
+with `Method` routes, and a special "method not allowed" route at negative
+priority to enable us to distinguish between failure to match the path and
+failure to match the HTTP method.
 
-To use the ZF2 router, you will need to install two dependencies,
-`zendframework/zend-mvc`, and `zendframework/zend-psr7bridge`; the latter is
-used to convert the PSR-7 `ServerRequestInterface` request instances used by
-zend-expressive into zend-http equivalents to pass to the `TreeRouteStack`. You
-can add these via Composer by executing the following in your project root:
-
-```bash
-$ composer require zendframework/zend-mvc zendframework/zend-psr7bridge
-```
-
-`Zend\Expressive\Router\Zf2` is the zend-expressive router implementation that
-consumes a `TreeRouteStack`. If you instantiate it with no arguments, it will
-create an empty `TreeRouteStack`. Thus, the simplest way to start with this
-router is:
+If you instantiate it with no arguments, it will create an empty
+`TreeRouteStack`. Thus, the simplest way to start with this router is:
 
 ```php
 use Zend\Expressive\AppFactory;
@@ -50,14 +38,26 @@ The answer, then, is to use dependency injection. This can be done in two ways:
 programmatically, or via a factory to use in conjunction with your container
 instance.
 
+## Installing the ZF2 Router
+
+To use the ZF2 router, you will need to install two dependencies,
+`zendframework/zend-mvc`, and `zendframework/zend-psr7bridge`; the latter is
+used to convert the PSR-7 `ServerRequestInterface` request instances used by
+zend-expressive into zend-http equivalents to pass to the `TreeRouteStack`. You
+can add these via Composer by executing the following in your project root:
+
+```bash
+$ composer require zendframework/zend-mvc zendframework/zend-psr7bridge
+```
+
 ## Programmatic Creation
 
-To handle it programmatically, you will need to setup the `TreeRouteStack` instance
-manually, inject it into a `Zend\Expressive\Router\Zf2` instance, and inject
-use that when creating your `Application` instance.
+To configure the ZF2 router programmatically, you will need to setup the
+`TreeRouteStack` instance manually, inject it into a
+`Zend\Expressive\Router\Zf2` instance, and inject use that when creating your
+`Application` instance.
 
 ```php
-<?php
 use Zend\Expressive\AppFactory;
 use Zend\Expressive\Router\Zf2 as Zf2Bridge;
 use Zend\Mvc\Router\Http\TreeRouteStack;
@@ -75,42 +75,17 @@ $app = AppFactory::create(null, $router);
 
 > ### Piping the route middleware
 >
-> If you programmatically configure the router and add routes without using
-> `Application::route()`, you may run into issues with the order in which piped
-> middleware (middleware added to the application via the `pipe()` method) is
-> executed.
->
-> To ensure that everything executes in the correct order, you can call
-> `Application::pipeRouteMiddleware()` at any time to pipe it to the
-> application. As an example, after you have created your application
-> instance:
->
-> ```php
-> $app->pipe($middlewareToExecuteFirst);
-> $app->pipeRouteMiddleware();
-> $app->pipe($errorMiddleware);
-> ```
->
-> If you fail to add any routes via `Application::route()` or to call
-> `Application::pipeRouteMiddleware()`, the routing middleware will be called
-> when executing the application. **This means that it will be last in the
-> middleware pipeline,** which means that if you registered any error
-> middleware, it can never be invoked.
+> As a reminder, you will need to ensure that middleware is piped in the order
+> in which it needs to be executed; please see the section on "Controlling
+> middleware execution order" in the [piping documentation](piping.md). This is
+> particularly salient when defining routes before injecting the router in the
+> application instance!
 
 ## Factory-Driven Creation
 
-We recommend using an Inversion of Control container for your applications;
-doing so provides the ability to substitute alternate implementations, and
-removes the logic of creating instances from your code, so you can focus on the
-business logic.
-
-Some containers will auto-wire based on discovery in your code. Other IoC
-containers require your to register factories with the code for
-creating and configuring your instances. We tend to prefer code-driven
-factories, as they allow you to fully shape the instantiation and configuration
-process.
-
-In this case, we'll define two factories:
+[We recommend using an Inversion of Control container](../container/intro.md)
+for your applications; as such, in this section we will demonstrate 
+defining two factories:
 
 - A factory to register as and generate an `Zend\Mvc\Router\Http\TreeRouteStack`
   instance.
@@ -121,7 +96,6 @@ In this case, we'll define two factories:
 Sound difficult? It's not; we've essentially done it above already!
 
 ```php
-<?php
 // in src/Application/Container/TreeRouteStackFactory.php:
 namespace Application\Container;
 
@@ -165,9 +139,10 @@ class RouterFactory
 
 From here, you will need to register your factories with your IoC container.
 
-If you are using `Zend\ServiceManager`, this might look like the following:
+If you are using zend-servicemanager, this will look like:
 
 ```php
+// Programmatically:
 use Zend\ServiceManager\ServiceManager;
 
 $container = new ServiceManager();
@@ -180,21 +155,16 @@ $container->addFactory(
     'Application\Container\RouterFactory'
 );
 
-// alternately, via service_manager configuration:
+// Alternately, via configuration:
 return [
-    'service_manager' => [
-        'factories' => [
-            'Zend\Mvc\Router\Http\TreeRouteStack' => 'Application\Container\TreeRouteStackFactory',
-            'Zend\Expressive\Router\RouterInterface' => 'Application\Container\RouterFactory',
-        ],
+    'factories' => [
+        'Zend\Mvc\Router\Http\TreeRouteStack' => 'Application\Container\TreeRouteStackFactory',
+        'Zend\Expressive\Router\RouterInterface' => 'Application\Container\RouterFactory',
     ],
 ];
 ```
 
-[Pimple-interop](https://github.com/moufmouf/pimple-interop) is a version of
-[Pimple](http://pimple.sensiolabs.org/) that supports
-[container-interop](https://github.com/container-interop/container-interop).
-Configuration of that container looks like the following.
+For Pimple, configuration looks like:
 
 ```php
 use Application\Container\TreeRouteStackFactory;

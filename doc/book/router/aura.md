@@ -1,4 +1,4 @@
-# Aura.Router Usage
+# Using Aura.Router
 
 [Aura.Router](https://github.com/auraphp/Aura.Router) provides a plethora of
 methods for further configuring the router instance. One of the more useful
@@ -36,6 +36,14 @@ The answer, then, is to use dependency injection. This can be done in two ways:
 programmatically, or via a factory to use in conjunction with your container
 instance.
 
+## Installing Aura.Router
+
+To use Aura.Router, you will first need to install it:
+
+```bash
+$ composer require aura/router
+```
+
 ## Programmatic Creation
 
 To handle it programmatically, you will need to setup the Aura.Router instance
@@ -63,42 +71,17 @@ $app = AppFactory::create(null, $router);
 
 > ### Piping the route middleware
 >
-> If you programmatically configure the router and add routes without using
-> `Application::route()`, you may run into issues with the order in which piped
-> middleware (middleware added to the application via the `pipe()` method) is
-> executed.
->
-> To ensure that everything executes in the correct order, you can call
-> `Application::pipeRouteMiddleware()` at any time to pipe it to the
-> application. As an example, after you have created your application
-> instance:
->
-> ```php
-> $app->pipe($middlewareToExecuteFirst);
-> $app->pipeRouteMiddleware();
-> $app->pipe($errorMiddleware);
-> ```
->
-> If you fail to add any routes via `Application::route()` or to call
-> `Application::pipeRouteMiddleware()`, the routing middleware will be called
-> when executing the application. **This means that it will be last in the
-> middleware pipeline,** which means that if you registered any error
-> middleware, it can never be invoked.
+> As a reminder, you will need to ensure that middleware is piped in the order
+> in which it needs to be executed; please see the section on "Controlling
+> middleware execution order" in the [piping documentation](piping.md). This is
+> particularly salient when defining routes before injecting the router in the
+> application instance!
 
 ## Factory-Driven Creation
 
-We recommend using an Inversion of Control container for your applications;
-doing so provides the ability to substitute alternate implementations, and
-removes the logic of creating instances from your code, so you can focus on the
-business logic.
-
-Some containers will auto-wire based on discovery in your code. Other IoC
-containers require your to register factories with the code for
-creating and configuring your instances. We tend to prefer code-driven
-factories, as they allow you to fully shape the instantiation and configuration
-process.
-
-In this case, we'll define two factories:
+[We recommend using an Inversion of Control container](../container/intro.md)
+for your applications; as such, in this section we will demonstrate 
+defining two factories:
 
 - A factory to register as and generate an `Aura\Router\Router` instance.
 - A factory registered as `Zend\Expressive\Router\RouterInterface`, which
@@ -108,7 +91,6 @@ In this case, we'll define two factories:
 Sound difficult? It's not; we've essentially done it above already!
 
 ```php
-<?php
 // in src/Application/Container/AuraRouterFactory.php:
 namespace Application\Container;
 
@@ -154,9 +136,10 @@ class RouterFactory
 
 From here, you will need to register your factories with your IoC container.
 
-If you are using `Zend\ServiceManager`, this might look like the following:
+If you are using zend-servicemanager, this will look like:
 
 ```php
+// Programmatically:
 use Zend\ServiceManager\ServiceManager;
 
 $container = new ServiceManager();
@@ -169,28 +152,23 @@ $container->addFactory(
     'Application\Container\RouterFactory'
 );
 
-// alternately, via service_manager configuration:
+// Alternately, via configuration:
 return [
-    'service_manager' => [
-        'factories' => [
-            'Aura\Router\Router' => 'Application\Container\AuraRouterFactory',
-            'Zend\Expressive\Router\RouterInterface' => 'Application\Container\RouterFactory',
-        ],
+    'factories' => [
+        'Aura\Router\Router' => 'Application\Container\AuraRouterFactory',
+        'Zend\Expressive\Router\RouterInterface' => 'Application\Container\RouterFactory',
     ],
 ];
 ```
 
-[Pimple-interop](https://github.com/moufmouf/pimple-interop) is a version of
-[Pimple](http://pimple.sensiolabs.org/) that supports
-[container-interop](https://github.com/container-interop/container-interop).
-Configuration of that container looks like the following.
+For Pimple, configuration looks like:
 
 ```php
 use Application\Container\AuraRouterFactory;
 use Application\Container\RouterFactory;
-use Interop\Container\Pimple\PimpleInterop;
+use Interop\Container\Pimple\PimpleInterop as Pimple;
 
-$container = new PimpleInterop();
+$container = new Pimple();
 $container['Aura\Router\Router'] = new AuraRouterFactory();
 $container['Zend\Expressive\Router\RouterInterface'] = new RouterFactory();
 ```

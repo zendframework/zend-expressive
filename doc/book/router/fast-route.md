@@ -1,14 +1,8 @@
-# FastRoute Usage
+# Using FastRoute
 
 [FastRoute](https://github.com/nikic/FastRoute) provides a number of different
 combinations for how to both parse routes and match incoming requests against
 them.
-
-To use FastRoute, you will first need to install it:
-
-```bash
-$ composer require nikic/fast-route
-```
 
 Internally, we use the standard route parser (`FastRoute\RouterParser\Std`) to
 parse routes, a `RouteCollector` to collect them, and the "Group Count Based"
@@ -26,6 +20,14 @@ The `FastRoute` bridge class accepts two arguments at instantiation:
 
 Injection can be done either programmatically or via a factory to use in
 conjunction with your container instance.
+
+## Installing FastRoute
+
+To use FastRoute, you will first need to install it:
+
+```bash
+$ composer require nikic/fast-route
+```
 
 ## Programmatic Creation
 
@@ -62,42 +64,17 @@ $app = AppFactory::create(null, $router);
 
 > ### Piping the route middleware
 >
-> If you programmatically configure the router and add routes without using
-> `Application::route()`, you may run into issues with the order in which piped
-> middleware (middleware added to the application via the `pipe()` method) is
-> executed.
->
-> To ensure that everything executes in the correct order, you can call
-> `Application::pipeRouteMiddleware()` at any time to pipe it to the
-> application. As an example, after you have created your application
-> instance:
->
-> ```php
-> $app->pipe($middlewareToExecuteFirst);
-> $app->pipeRouteMiddleware();
-> $app->pipe($errorMiddleware);
-> ```
->
-> If you fail to add any routes via `Application::route()` or to call
-> `Application::pipeRouteMiddleware()`, the routing middleware will be called
-> when executing the application. **This means that it will be last in the
-> middleware pipeline,** which means that if you registered any error
-> middleware, it can never be invoked.
+> As a reminder, you will need to ensure that middleware is piped in the order
+> in which it needs to be executed; please see the section on "Controlling
+> middleware execution order" in the [piping documentation](piping.md). This is
+> particularly salient when defining routes before injecting the router in the
+> application instance!
 
 ## Factory-Driven Creation
 
-We recommend using an Inversion of Control container for your applications;
-doing so provides the ability to substitute alternate implementations, and
-removes the logic of creating instances from your code, so you can focus on the
-business logic.
-
-Some containers will auto-wire based on discovery in your code. Other IoC
-containers require your to register factories with the code for
-creating and configuring your instances. We tend to prefer code-driven
-factories, as they allow you to fully shape the instantiation and configuration
-process.
-
-In this case, we'll define two factories:
+[We recommend using an Inversion of Control container](../container/intro.md)
+for your applications; as such, in this section we will demonstrate 
+defining three factories:
 
 - A factory to register as and generate a `FastRoute\RouteCollector` instance.
 - A factory to register as `FastRoute\DispatcherFactory` and return a callable
@@ -177,9 +154,10 @@ class FastRouteFactory
 
 From here, you will need to register your factories with your IoC container.
 
-If you are using `Zend\ServiceManager`, this might look like the following:
+If you are using zend-servicemanager, this will look like:
 
 ```php
+// Programmatically:
 use Zend\ServiceManager\ServiceManager;
 
 $container = new ServiceManager();
@@ -196,30 +174,25 @@ $container->addFactory(
     'Application\Container\RouterFactory'
 );
 
-// alternately, via service_manager configuration:
+// Alternately, via configuration:
 return [
-    'service_manager' => [
-        'factories' => [
-            'FastRoute\RouteCollector' => 'Application\Container\FastRouteCollectorFactory',
-            'FastRoute\DispatcherFactory' => 'Application\Container\FastRouteDispatcherFactory',
-            'Zend\Expressive\Router\RouterInterface' => 'Application\Container\RouterFactory',
-        ],
+    'factories' => [
+        'FastRoute\RouteCollector' => 'Application\Container\FastRouteCollectorFactory',
+        'FastRoute\DispatcherFactory' => 'Application\Container\FastRouteDispatcherFactory',
+        'Zend\Expressive\Router\RouterInterface' => 'Application\Container\RouterFactory',
     ],
 ];
 ```
 
-[Pimple-interop](https://github.com/moufmouf/pimple-interop) is a version of
-[Pimple](http://pimple.sensiolabs.org/) that supports
-[container-interop](https://github.com/container-interop/container-interop).
-Configuration of that container looks like the following.
+For Pimple, configuration looks like:
 
 ```php
 use Application\Container\FastRouteCollectorFactory;
 use Application\Container\FastRouteDispatcherFactory;
 use Application\Container\RouterFactory;
-use Interop\Container\Pimple\PimpleInterop;
+use Interop\Container\Pimple\PimpleInterop as Pimple;
 
-$container = new PimpleInterop();
+$container = new Pimple();
 $container['FastRoute\RouteCollector'] = new FastRouteCollectorFactory();
 $container['FastRoute\RouteDispatcher'] = new FastRouteDispatcherFactory();
 $container['Zend\Expressive\Router\RouterInterface'] = new RouterFactory();
