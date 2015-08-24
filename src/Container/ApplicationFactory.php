@@ -199,7 +199,8 @@ class ApplicationFactory
             $methods = (isset($spec['allowed_methods']) && is_array($spec['allowed_methods']))
                 ? $spec['allowed_methods']
                 : null;
-            $route = $app->route($spec['path'], $spec['middleware'], $methods);
+            $name    = isset($spec['name']) ? $spec['name'] : null;
+            $route   = $app->route($spec['path'], $spec['middleware'], $methods, $name);
 
             if (isset($spec['options']) && is_array($spec['options'])) {
                 $route->setOptions($spec['options']);
