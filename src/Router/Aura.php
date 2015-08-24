@@ -152,6 +152,12 @@ class Aura implements RouterInterface
     private function marshalFailedRoute(Request $request)
     {
         $failedRoute = $this->router->getFailedRoute();
+
+        // Evidently, getFailedRoute() can sometimes return null; these are 404 conditions.
+        if (null === $failedRoute) {
+            return RouteResult::fromRouteFailure();
+        }
+
         if ($failedRoute->failedMethod()) {
             return RouteResult::fromRouteFailure($failedRoute->method);
         }

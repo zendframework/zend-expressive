@@ -176,4 +176,32 @@ class AuraRouteTest extends TestCase
         $this->assertEquals('/foo/bar', $router->generateUri('foo', ['id' => 'bar']));
         $this->assertEquals('/bar/BAZ', $router->generateUri('bar', ['baz' => 'BAZ']));
     }
+
+    /**
+     * @group 85
+     */
+    public function testReturns404ResultIfAuraReturnsNullForFailedRoute()
+    {
+        $route = new Route('/foo', 'foo', ['GET']);
+
+        $uri     = $this->prophesize('Psr\Http\Message\UriInterface');
+        $uri->getPath()->willReturn('/bar');
+
+        $request = $this->prophesize('Psr\Http\Message\ServerRequestInterface');
+        $request->getUri()->willReturn($uri);
+        $request->getServerParams()->willReturn([
+            'REQUEST_METHOD' => 'PUT',
+        ]);
+
+
+        $this->auraRouter->match('/bar', ['REQUEST_METHOD' => 'PUT'])->willReturn(false);
+        $this->auraRouter->getFailedRoute()->willReturn(null);
+
+        $router = $this->getRouter();
+        $result = $router->match($request->reveal());
+        $this->assertInstanceOf('Zend\Expressive\Router\RouteResult', $result);
+        $this->assertTrue($result->isFailure());
+        $this->assertFalse($result->isMethodFailure());
+        $this->assertSame([], $result->getAllowedMethods());
+    }
 }
