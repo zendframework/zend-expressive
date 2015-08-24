@@ -24,7 +24,7 @@ class Aura implements RouterInterface
     /**
      * Aura router
      *
-     * @var \Aura\Router\Router
+     * @var Router
      */
     private $router;
 
