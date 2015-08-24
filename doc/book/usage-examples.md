@@ -18,7 +18,7 @@ In all examples, the assumption is the following directory structure:
 
 We assume also that:
 
-- You have installed zend-expressive per the installation instructions.
+- You have installed zend-expressive per the [installation instructions](index.md#installation).
 - `public/` will be the document root of your application.
 - Your own classes are under `src/` with the top-level namespace `Application`,
   and you have configured [autoloading](https://getcomposer.org/doc/01-basic-usage.md#autoloading) in your `composer.json` for those classes.
@@ -34,49 +34,15 @@ We assume also that:
 > from the application root to start up a web server running on port 8080, and
 > then browse to http://localhost:8080
 
-## Hello World
-
-In this example, we assume the defaults are fine, and simply grab an application
-instance, add routes to it, and run it.
-
-Put the code below in your `public/index.php`:
-
-```php
-use Zend\Diactoros\Response\JsonResponse;
-use Zend\Expressive\AppFactory;
-
-require __DIR__ . '/../vendor/autoload.php';
-
-$app = AppFactory::create();
-
-$app->get('/', function ($req, $res, $next) {
-    $res->write('Hello, world!');
-    return $res;
-});
-
-$app->get('/ping', function ($req, $res, $next) {
-    return new JsonResponse(['ack' => time()]);
-});
-
-$app->run();
-```
-
-You should be able to access the site at the paths `/` and `/ping` at this
-point. If you try any other path, you should receive a 404 response.
-
-`$app` above will be an instance of `Zend\Expressive\Application`. That class
-has a few dependencies it requires, however, which may or may not be of interest
-to you at first. As such, `AppFactory` marshals some sane defaults for you to
-get you on your way.
-
 ### Routing
 
 By default, zend-expressive uses [Aura.Router](https://github.com/auraphp/Aura.Router).
-We also provide an implementation that consumes [FastRoute](https://github.com/nikic/FastRoute),
+We also provide implementations that consume [FastRoute](https://github.com/nikic/FastRoute)
+and the [ZF2 MVC router](https://github.com/zendframework/zend-mvc/tree/a22422d1d17f3afa031de2be5453f45109e4b7f4/src/Router),
 and have plans for others.
 
 In order to abstract routing, we have created a `RouterInterface`; this defines
-two methods:
+three methods:
 
 ```php
 namespace Zend\Expressive\Router;
@@ -87,16 +53,17 @@ interface RouterInterface
 {
     public function addRoute(Route $route);
     public function match(ServerRequestInterface $request);
+    public function generateUri($routeName, array $substitutions = []);
 }
 ```
 
 The `Route` instance is an abstraction that encapsulates the various required
 routing information for any given route, as well as any optional arguments you
 wish to pass on to the underlying routing implementation. A `Route` instance
-requires a path, middleware (as either a callable or a service name), and
-optionally the HTTP methods it can respond to (defaulting to any). You can then
-pass optional arguments via its `setOptions()` method; these should be an array
-of key/value pairs.
+requires a path, middleware (as either a callable or a service name), optionally
+the HTTP methods it can respond to (defaulting to any), and optionally a name.
+You can then pass optional arguments via its `setOptions()` method; these should
+be an array of key/value pairs.
 
 Typically, however, you will add routes via the `Application` instance itself.
 This will be done in one of two ways:
