@@ -72,7 +72,7 @@ class Application extends MiddlewarePipe
     /**
      * List of all routes registered directly with the application.
      *
-     * @var Route[]
+     * @var Router\Route[]
      */
     private $routes = [];
 
@@ -360,7 +360,7 @@ class Application extends MiddlewarePipe
      * Creates an instance of Zend\Stratigility\FinalHandler if no handler is
      * already registered.
      *
-     * @param null|ResponseInterface Response instance with which to seed the
+     * @param null|ResponseInterface $response Response instance with which to seed the
      *     FinalHandler; used to determine if the response passed to the handler
      *     represents the original or final response state.
      * @return callable
@@ -413,7 +413,7 @@ class Application extends MiddlewarePipe
             $methods = Router\Route::HTTP_METHOD_ANY;
         }
 
-        $matches = array_filter($this->routes, function ($route) use ($path, $methods) {
+        $matches = array_filter($this->routes, function (Router\Route $route) use ($path, $methods) {
             if ($path !== $route->getPath()) {
                 return false;
             }
