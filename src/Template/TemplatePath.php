@@ -17,7 +17,7 @@ class TemplatePath
     protected $path;
 
     /**
-     * @var string
+     * @var null|string
      */
     protected $namespace;
 
