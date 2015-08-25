@@ -13,6 +13,7 @@ use ArrayObject;
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Expressive\Template\ZendView;
 use Zend\Expressive\Exception;
+use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\PhpRenderer;
 use Zend\View\Resolver\TemplatePathStack;
 
@@ -31,14 +32,14 @@ class ZendViewTest extends TestCase
     {
         $template = new ZendView($this->render);
         $this->assertInstanceOf(ZendView::class, $template);
-        $this->assertAttributeSame($this->render, 'template', $template);
+        $this->assertAttributeSame($this->render, 'renderer', $template);
     }
 
     public function testInstantiatingWithoutEngineLazyLoadsOne()
     {
         $template = new ZendView();
         $this->assertInstanceOf(ZendView::class, $template);
-        $this->assertAttributeInstanceOf(PhpRenderer::class, 'template', $template);
+        $this->assertAttributeInstanceOf(PhpRenderer::class, 'renderer', $template);
     }
 
     public function testCanAddPathWithEmptyNamespace()
@@ -134,5 +135,93 @@ class ZendViewTest extends TestCase
         $content = file_get_contents(__DIR__ . '/TestAsset/zendview.phtml');
         $content = str_replace('<?php echo $name ?>', $search, $content);
         $this->assertEquals($content, $result);
+    }
+
+    /**
+     * @group layout
+     */
+    public function testWillRenderContentInLayoutPassedToConstructor()
+    {
+        $template = new ZendView(null, 'zendview-layout');
+        $template->addPath(__DIR__ . '/TestAsset');
+        $name = 'ZendView';
+        $result = $template->render('zendview', [ 'name' => $name ]);
+        $this->assertContains($name, $result);
+        $content = file_get_contents(__DIR__ . '/TestAsset/zendview.phtml');
+        $content = str_replace('<?php echo $name ?>', $name, $content);
+        $this->assertContains($content, $result);
+        $this->assertContains('<title>Layout Page</title>', $result, sprintf("Received %s", $result));
+    }
+
+    /**
+     * @group layout
+     */
+    public function testWillRenderContentInLayoutPassedDuringRendering()
+    {
+        $template = new ZendView(null);
+        $template->addPath(__DIR__ . '/TestAsset');
+        $name = 'ZendView';
+        $result = $template->render('zendview', [ 'name' => $name, 'layout' => 'zendview-layout' ]);
+        $this->assertContains($name, $result);
+        $content = file_get_contents(__DIR__ . '/TestAsset/zendview.phtml');
+        $content = str_replace('<?php echo $name ?>', $name, $content);
+        $this->assertContains($content, $result);
+
+        $this->assertContains('<title>Layout Page</title>', $result);
+    }
+
+    /**
+     * @group layout
+     */
+    public function testLayoutPassedWhenRenderingOverridesLayoutPassedToConstructor()
+    {
+        $template = new ZendView(null, 'zendview-layout');
+        $template->addPath(__DIR__ . '/TestAsset');
+        $name = 'ZendView';
+        $result = $template->render('zendview', [ 'name' => $name, 'layout' => 'zendview-layout2' ]);
+        $this->assertContains($name, $result);
+        $content = file_get_contents(__DIR__ . '/TestAsset/zendview.phtml');
+        $content = str_replace('<?php echo $name ?>', $name, $content);
+        $this->assertContains($content, $result);
+
+        $this->assertContains('<title>ALTERNATE LAYOUT PAGE</title>', $result);
+    }
+
+    /**
+     * @group layout
+     */
+    public function testCanPassViewModelForLayoutToConstructor()
+    {
+        $layout = new ViewModel();
+        $layout->setTemplate('zendview-layout');
+
+        $template = new ZendView(null, $layout);
+        $template->addPath(__DIR__ . '/TestAsset');
+        $name = 'ZendView';
+        $result = $template->render('zendview', [ 'name' => $name ]);
+        $this->assertContains($name, $result);
+        $content = file_get_contents(__DIR__ . '/TestAsset/zendview.phtml');
+        $content = str_replace('<?php echo $name ?>', $name, $content);
+        $this->assertContains($content, $result);
+        $this->assertContains('<title>Layout Page</title>', $result, sprintf("Received %s", $result));
+    }
+
+    /**
+     * @group layout
+     */
+    public function testCanPassViewModelForLayoutParameterWhenRendering()
+    {
+        $layout = new ViewModel();
+        $layout->setTemplate('zendview-layout2');
+
+        $template = new ZendView(null, 'zendview-layout');
+        $template->addPath(__DIR__ . '/TestAsset');
+        $name = 'ZendView';
+        $result = $template->render('zendview', [ 'name' => $name, 'layout' => $layout ]);
+        $this->assertContains($name, $result);
+        $content = file_get_contents(__DIR__ . '/TestAsset/zendview.phtml');
+        $content = str_replace('<?php echo $name ?>', $name, $content);
+        $this->assertContains($content, $result);
+        $this->assertContains('<title>ALTERNATE LAYOUT PAGE</title>', $result);
     }
 }
