@@ -106,41 +106,9 @@ use Zend\Expressive\Router\RouterInterface;
  * they appear. "pre_routing" middleware will execute before the application's
  * routing middleware, while "post_routing" middleware will execute afterwards.
  *
- * Middleware piped may be either callables or service names. Middleware
- * specified as services will be wrapped in a closure similar to the following:
- *
- * <code>
- * function ($request, $response, $next = null) use ($container, $middleware) {
- *     $invokable = $container->get($middleware);
- *     if (! is_callable($invokable)) {
- *         throw new Exception\InvalidMiddlewareException(sprintf(
- *             'Lazy-loaded middleware "%s" is not invokable',
- *             $middleware
- *         ));
- *     }
- *     return $invokable($request, $response, $next);
- * };
- * </code>
- *
- * If you specify the middleware's `error` flag as `true`, the closure will
- * look like this:
- *
- * <code>
- * function ($error, $request, $response, $next) use ($container, $middleware) {
- *     $invokable = $container->get($middleware);
- *     if (! is_callable($invokable)) {
- *         throw new Exception\InvalidMiddlewareException(sprintf(
- *             'Lazy-loaded middleware "%s" is not invokable',
- *             $middleware
- *         ));
- *     }
- *     return $invokable($error, $request, $response, $next);
- * };
- * </code>
- *
- * This is done to delay fetching the middleware until it is actually used; the
- * upshot is that you will not be notified if the service is invalid to use as
- * middleware until runtime.
+ * Middleware piped may be either callables or service names. If you specify
+ * the middleware's `error` flag as `true`, the middleware will be piped using
+ * Application::pipeErrorHandler() instead of Application::pipe().
  */
 class ApplicationFactory
 {
@@ -234,77 +202,13 @@ class ApplicationFactory
                 continue;
             }
 
+            $path       = isset($spec['path']) ? $spec['path'] : '/';
             $middleware = $spec['middleware'];
-            if (! is_callable($middleware)) {
-                $isErrorMiddleware = array_key_exists('error', $spec)
-                    ? (bool) $spec['error']
-                    : false;
-                $middleware = $this->marshalMiddleware($middleware, $isErrorMiddleware, $container);
-            }
+            $error      = array_key_exists('error', $spec) ? (bool) $spec['error'] : false;
+            $pipe       = $error ? 'pipeErrorHandler' : 'pipe';
 
-            $path = isset($spec['path']) ? $spec['path'] : '/';
-
-            $app->pipe($path, $middleware);
+            $app->{$pipe}($path, $middleware);
         }
-    }
-
-    /**
-     * Marshal middleware from the IoC container.
-     *
-     * If middleware is found in the container, this method returns a closure
-     * in which the middleware is retrieved from the container and then invoked;
-     * if the middleware is not callable, an exception is raised prior to
-     * invocation.
-     *
-     * This practice provides lazy-loading of middleware, so that it is only
-     * retrieved from the IoC container when it is actually used.
-     *
-     * @param string $middleware
-     * @param bool $isErrorMiddleware
-     * @param ContainerInterface $container
-     * @return callable
-     * @throws Exception\InvalidMiddlewareException if $middleware is not a string.
-     * @throws Exception\InvalidMiddlewareException if $middleware is not found in $container
-     */
-    private function marshalMiddleware($middleware, $isErrorMiddleware, ContainerInterface $container)
-    {
-        if (! is_string($middleware)) {
-            throw new Exception\InvalidMiddlewareException(sprintf(
-                'Invalid pipeline middleware; expects a callable or service name, received "%s"',
-                (is_object($middleware) ? get_class($middleware) : gettype($middleware))
-            ));
-        }
-
-        if (! $container->has($middleware)) {
-            throw new Exception\InvalidMiddlewareException(sprintf(
-                'Invalid pipeline middleware; service "%s" not found in container',
-                $middleware
-            ));
-        }
-
-        if ($isErrorMiddleware) {
-            return function ($error, $request, $response, $next) use ($container, $middleware) {
-                $invokable = $container->get($middleware);
-                if (! is_callable($invokable)) {
-                    throw new Exception\InvalidMiddlewareException(sprintf(
-                        'Lazy-loaded middleware "%s" is not invokable',
-                        $middleware
-                    ));
-                }
-                return $invokable($error, $request, $response, $next);
-            };
-        }
-
-        return function ($request, $response, $next = null) use ($container, $middleware) {
-            $invokable = $container->get($middleware);
-            if (! is_callable($invokable)) {
-                throw new Exception\InvalidMiddlewareException(sprintf(
-                    'Lazy-loaded middleware "%s" is not invokable',
-                    $middleware
-                ));
-            }
-            return $invokable($request, $response, $next);
-        };
     }
 
     /**

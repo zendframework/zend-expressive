@@ -159,10 +159,29 @@ class Application extends MiddlewarePipe
     /**
      * Overload pipe() operation.
      *
-     * Allows specifying service names for middleware, instead of requiring a
-     * callable.
+     * Middleware piped may be either callables or service names. Middleware
+     * specified as services will be wrapped in a closure similar to the
+     * following:
      *
-     * Ensures that the route middleware is only ever registered once.
+     * <code>
+     * function ($request, $response, $next = null) use ($container, $middleware) {
+     *     $invokable = $container->get($middleware);
+     *     if (! is_callable($invokable)) {
+     *         throw new Exception\InvalidMiddlewareException(sprintf(
+     *             'Lazy-loaded middleware "%s" is not invokable',
+     *             $middleware
+     *         ));
+     *     }
+     *     return $invokable($request, $response, $next);
+     * };
+     * </code>
+     *
+     * This is done to delay fetching the middleware until it is actually used;
+     * the upshot is that you will not be notified if the service is invalid to
+     * use as middleware until runtime.
+     *
+     * Additionally, ensures that the route middleware is only ever registered
+     * once.
      *
      * @param string|callable $path Either a URI path prefix, or middleware.
      * @param null|string|callable $middleware Middleware
@@ -198,8 +217,29 @@ class Application extends MiddlewarePipe
     /**
      * Pipe an error handler.
      *
-     * Proxies to pipe(), after first determining if the middleware represents
-     * a service to lazy-load via the container.
+     * Middleware piped may be either callables or service names. Middleware
+     * specified as services will be wrapped in a closure similar to the
+     * following:
+     *
+     * <code>
+     * function ($error, $request, $response, $next) use ($container, $middleware) {
+     *     $invokable = $container->get($middleware);
+     *     if (! is_callable($invokable)) {
+     *         throw new Exception\InvalidMiddlewareException(sprintf(
+     *             'Lazy-loaded middleware "%s" is not invokable',
+     *             $middleware
+     *         ));
+     *     }
+     *     return $invokable($error, $request, $response, $next);
+     * };
+     * </code>
+     *
+     * This is done to delay fetching the middleware until it is actually used;
+     * the upshot is that you will not be notified if the service is invalid to
+     * use as middleware until runtime.
+     *
+     * Once middleware detection and wrapping (if necessary) is complete,
+     * proxies to pipe().
      *
      * @param string|callable $path Either a URI path prefix, or middleware.
      * @param null|string|callable $middleware Middleware
