@@ -208,7 +208,7 @@ class ApplicationFactoryTest extends TestCase
         $this->assertInstanceOf('Zend\Expressive\Emitter\EmitterStack', $app->getEmitter());
         $this->assertCount(1, $app->getEmitter());
         $this->assertInstanceOf('Zend\Diactoros\Response\SapiEmitter', $app->getEmitter()->pop());
-        $this->assertInstanceOf('Zend\Stratigility\FinalHandler', $app->getFinalHandler());
+        $this->assertNull($app->getFinalHandler());
     }
 
     /**

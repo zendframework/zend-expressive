@@ -11,6 +11,7 @@ namespace Zend\Expressive;
 
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use Zend\Stratigility\Http\Response as StratigilityResponse;
 use Zend\Stratigility\Utils;
 
 /**
@@ -186,14 +187,30 @@ class TemplatedErrorHandler
     private function handlePotentialSuccess(Request $request, Response $response)
     {
         if (! $this->originalResponse) {
+            // No original response detected; decide whether we have a
+            // response to return
             return $this->marshalReceivedResponse($request, $response);
         }
 
-        if ($this->originalResponse !== $response) {
+        $originalResponse  = $this->originalResponse;
+        $decoratedResponse = $response instanceof StratigilityResponse
+            ? $response->getOriginalResponse()
+            : $response;
+
+        if ($originalResponse !== $response
+            && $originalResponse !== $decoratedResponse
+        ) {
+            // Response does not match either the original response or the
+            // decorated response; return it verbatim.
             return $response;
         }
 
-        if ($this->bodySize !== $response->getBody()->getSize()) {
+        if (($originalResponse === $response || $decoratedResponse === $response)
+            && $this->bodySize !== $response->getBody()->getSize()
+        ) {
+            // Response matches either the original response or the
+            // decorated response; but the body size has changed; return it
+            // verbatim.
             return $response;
         }
 
