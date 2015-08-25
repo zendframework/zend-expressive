@@ -48,6 +48,7 @@ The above works, because every `Application` instance is itself middleware, and,
 an instance of [Stratigility's `MiddlewarePipe`](https://github.com/zendframework/zend-stratigility/blob/master/doc/book/middleware.md),
 which provides the ability to compose middleware.
 
+<<<<<<< HEAD
 ## How can I specify a route-specific middleware pipeline?
 
 Sometimes you may want to use a middleware pipeline only if a particular route
@@ -234,8 +235,11 @@ return [
 ```
 
 ## How can I set 404 page?
+=======
+## How can I set custom 404 page handling?
+>>>>>>> wording current 404 for custom
 
-We can set 404 page with create new Middleware that set 404 status from response object.
+We can set custom 404 page handling with create new Middleware that set 404 status from response object, or do logging.
 
 Let's create a `NotFound` middleware:
 
@@ -248,6 +252,7 @@ class NotFound
 {
     public function __invoke($req, $res, $next)
     {
+        // other things can be done here, for eg: logging
         return $next($req, $res->withStatus(404), 'Page Not Found');
     }
 }
