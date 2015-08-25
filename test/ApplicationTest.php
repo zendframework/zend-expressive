@@ -341,7 +341,7 @@ class ApplicationTest extends TestCase
 
     public function testCallingGetContainerWhenNoContainerComposedWillRaiseException()
     {
-        $app = $this->getApp();
+        $app = new Application($this->router->reveal());
         $this->setExpectedException('RuntimeException');
         $app->getContainer();
     }
@@ -423,5 +423,113 @@ class ApplicationTest extends TestCase
         $r->setValue($app, $pipeline->reveal());
 
         $app($request, $response->reveal(), $middleware);
+    }
+
+    /**
+     * @group lazy-piping
+     */
+    public function testPipingAllowsPassingMiddlewareServiceNameAsSoleArgument()
+    {
+        $middleware = function ($req, $res, $next = null) {
+            return 'invoked';
+        };
+
+        $container = $this->prophesize(ContainerInterface::class);
+        $container->has('foo')->willReturn(true);
+        $container->get('foo')->willReturn($middleware);
+
+        $app = new Application($this->router->reveal(), $container->reveal());
+        $app->pipe('foo');
+
+        $r = new ReflectionProperty($app, 'pipeline');
+        $r->setAccessible(true);
+        $pipeline = $r->getValue($app);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $handler = $route->handler;
+
+        $this->assertEquals('invoked', $handler('foo', 'bar'));
+    }
+
+    /**
+     * @group lazy-piping
+     */
+    public function testAllowsPipingErrorMiddlewareUsingServiceNameAsSoleArgument()
+    {
+        $middleware = function ($error, $req, $res, $next) {
+            return 'invoked';
+        };
+
+        $container = $this->prophesize(ContainerInterface::class);
+        $container->has('foo')->willReturn(true);
+        $container->get('foo')->willReturn($middleware);
+
+        $app = new Application($this->router->reveal(), $container->reveal());
+        $app->pipeErrorHandler('foo');
+
+        $r = new ReflectionProperty($app, 'pipeline');
+        $r->setAccessible(true);
+        $pipeline = $r->getValue($app);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $handler = $route->handler;
+
+        $this->assertEquals('invoked', $handler('foo', 'bar', 'baz', 'bat'));
+    }
+
+    /**
+     * @group lazy-piping
+     */
+    public function testAllowsPipingMiddlewareAsServiceNameWithPath()
+    {
+        $middleware = function ($req, $res, $next = null) {
+            return 'invoked';
+        };
+
+        $container = $this->prophesize(ContainerInterface::class);
+        $container->has('foo')->willReturn(true);
+        $container->get('foo')->willReturn($middleware);
+
+        $app = new Application($this->router->reveal(), $container->reveal());
+        $app->pipe('/foo', 'foo');
+
+        $r = new ReflectionProperty($app, 'pipeline');
+        $r->setAccessible(true);
+        $pipeline = $r->getValue($app);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $handler = $route->handler;
+
+        $this->assertEquals('invoked', $handler('foo', 'bar'));
+    }
+
+    /**
+     * @group lazy-piping
+     */
+    public function testAllowsPipingErrorMiddlewareAsServiceNameWithPath()
+    {
+        $middleware = function ($error, $req, $res, $next) {
+            return 'invoked';
+        };
+
+        $container = $this->prophesize(ContainerInterface::class);
+        $container->has('foo')->willReturn(true);
+        $container->get('foo')->willReturn($middleware);
+
+        $app = new Application($this->router->reveal(), $container->reveal());
+        $app->pipeErrorHandler('/foo', 'foo');
+
+        $r = new ReflectionProperty($app, 'pipeline');
+        $r->setAccessible(true);
+        $pipeline = $r->getValue($app);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $handler = $route->handler;
+
+        $this->assertEquals('invoked', $handler('foo', 'bar', 'baz', 'bat'));
     }
 }
