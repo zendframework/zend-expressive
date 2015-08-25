@@ -45,7 +45,23 @@ class ZendView implements TemplateInterface
     private $resolver;
 
     /**
+     * Constructor
+     *
+     * Allows specifying the renderer to use (any zend-view renderer is
+     * allowed), and optionally also the layout.
+     *
+     * The layout may be:
+     *
+     * - a string layout name
+     * - a ModelInterface instance representing the layout
+     *
+     * If no renderer is provided, a default PhpRenderer instance is created;
+     * omitting the layout indicates no layout should be used by default when
+     * rendering.
+     *
      * @param null|RendererInterface $renderer
+     * @param null|string|ModelInterface $layout
+     * @throws InvalidArgumentException for invalid $layout types
      */
     public function __construct(RendererInterface $renderer = null, $layout = null)
     {
@@ -201,11 +217,11 @@ class ZendView implements TemplateInterface
      * Do a recursive, depth-first rendering of a view model.
      *
      * @param ModelInterface $model
-     * @param PhpRenderer $renderer
+     * @param RendererInterface $renderer
      * @return string
      * @throws Exception\RenderingException if it encounters a terminal child.
      */
-    private function renderModel(ModelInterface $model, PhpRenderer $renderer)
+    private function renderModel(ModelInterface $model, RendererInterface $renderer)
     {
         foreach ($model as $child) {
             if ($child->terminate()) {
