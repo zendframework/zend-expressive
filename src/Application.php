@@ -18,7 +18,6 @@ use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Diactoros\ServerRequestFactory;
-use Zend\Stratigility\FinalHandler;
 use Zend\Stratigility\MiddlewarePipe;
 
 /**
@@ -436,18 +435,15 @@ class Application extends MiddlewarePipe
     /**
      * Return the final handler to use during `run()` if the stack is exhausted.
      *
-     * Creates an instance of Zend\Stratigility\FinalHandler if no handler is
-     * already registered.
-     *
      * @param null|ResponseInterface $response Response instance with which to seed the
      *     FinalHandler; used to determine if the response passed to the handler
      *     represents the original or final response state.
-     * @return callable
+     * @return callable|null
      */
     public function getFinalHandler(ResponseInterface $response = null)
     {
         if (! $this->finalHandler) {
-            $this->finalHandler = new FinalHandler([], $response);
+            return null;
         }
 
         // Inject the handler with the response, if possible (e.g., the
