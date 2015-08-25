@@ -94,7 +94,6 @@ $whoops = new Whoops;
 $whoops->writeToOutput(false);
 $whoops->allowQuit(false);
 $whoops->pushHandler($handler);
-$whoops->register();
 
 $plates = new Plates();
 $plates->addPath(__DIR__ . '/templates/error', 'error');
@@ -107,6 +106,11 @@ $finalHandler = new WhoopsErrorHandler(
 );
 
 $app = new Application($router, $container, $finalHandler);
+
+// Register Whoops just before running the application, as otherwise it can
+// swallow bootstrap errors. 
+$whoops->register();
+$app->run();
 ```
 
 The calls to `writeToOutput(false)`, `allowQuit(false)`, and `register()` must be made to guarantee
