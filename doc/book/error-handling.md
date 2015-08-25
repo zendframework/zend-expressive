@@ -37,6 +37,13 @@ You'll typically want to provide error messages in your site template. To do so,
 optionally, a `Zend\Expressive\Template\TemplateInterface` instance, and template names to use for
 404 and general error conditions. This makes it a good choice for use in production.
 
+First, of course, you'll need to select a templating system and ensure you have
+the appropriate dependencies installed; see the [templating documentation](../template/intro.md)
+for information on what we support and how to install supported systems.
+
+Once you have selected your templating system, you can setup the templated error
+handler.
+
 ```php
 use Zend\Expressive\Application;
 use Zend\Expressive\Template\Plates;
@@ -64,7 +71,13 @@ exceptions and PHP errors. We provide integration with this library through
 uses its features for 404 status and non-exception errors. For exceptions, however, it will return
 the whoops output. As such, it is a good choice for use in development.
 
-To use it, you will need to provide it a whoops runtime instance, as well as a
+To use it, you must first install whoops:
+
+```bash
+$ composer require filp/whoops
+```
+
+Then you will need to provide the error handler a whoops runtime instance, as well as a
 `Whoops\Handler\PrettyPageHandler` instance. You can also optionally provide a `TemplateInterface`
 instance and template names, just as you would for a `TemplatedErrorHandler`.
 
