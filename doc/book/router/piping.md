@@ -31,6 +31,10 @@ This path segregation, however, is limited: it will only match literal paths.
 This is done purposefully, to provide excellent baseline performance, and to
 prevent feature creep in the library.
 
+zend-expressive uses and exposes piping to users, with one addition: middleware
+may be specified by service name, and zend-expressive will lazy-load the service
+only when the middleware is invoked.
+
 ## Routing
 
 Routing is the process of discovering values from the incoming request based on

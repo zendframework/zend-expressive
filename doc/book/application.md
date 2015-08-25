@@ -135,14 +135,37 @@ applications by subpath.
 The signature of `pipe()` is:
 
 ```php
-public function pipe($pathOrMiddleware, callable $middleware = null)
+public function pipe($pathOrMiddleware, $middleware = null)
 ```
 
 where:
 
-- `$pathOrMiddleware` is either a string URI path (for path segregation), or a
-  callable middleware.
-- `$middleware` is required if `$pathOrMiddleware` is a string URI path.
+- `$pathOrMiddleware` is either a string URI path (for path segregation), a
+  callable middleware, or the service name for a middleware to fetch from the
+  composed container.
+- `$middleware` is required if `$pathOrMiddleware` is a string URI path. It can
+  be either a callable, or the service name for a middleware to fetch from the
+  composed container.
+
+Unlike `Zend\Stratigility\MiddlewarePipe`, `Application::pipe()` *allows
+fetching middleware by service name*. This facility allows lazy-loading of
+middleware only when it is invoked. Internally, it wraps the call to fetch and
+dispatch the middleware inside a closure.
+
+Additionally, we define a new method, `pipeErrorHandler()`, with the following
+signature:
+
+```php
+public function pipeErrorHandler($pathOrMiddleware, $middleware = null)
+```
+
+It acts just like `pipe()` except when the middleware specified is a service
+name; in that particular case, when it wraps the middleware in a closure, it
+uses the error handler signature:
+
+```php
+function ($error, ServerRequestInterface $request, ResponseInterface $response, callable $next);
+```
 
 Read the section on [piping vs routing](router/piping.md) for more information.
 
