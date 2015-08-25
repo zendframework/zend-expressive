@@ -253,16 +253,8 @@ class NotFound
 }
 ```
 
-After it, we need to register the middleware into `invokables` type in our service config:
+> We can register the `Application\NotFound` instance as a service in [service container](https://github.com/zendframework/zend-expressive/blob/master/doc/book/container/intro.md).
 
-```php
-//... config/services.php
-    'invokables' => [
-        // ...
-        'Application\NotFound' => 'Application\NotFound',
-    ],
-//...
-```
 Now, we can configure the `middleware_pipeline` under `post_routing`:
 
 ```php
