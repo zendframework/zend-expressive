@@ -96,7 +96,7 @@ $finalHandler = new WhoopsErrorHandler(
 $app = new Application($router, $container, $finalHandler);
 ```
 
-The calls to `writeToOutput(false)`, `allowQuite(false)`, and `register()` must be made to guarantee
+The calls to `writeToOutput(false)`, `allowQuit(false)`, and `register()` must be made to guarantee
 whoops will interoperate well with zend-expressive.
 
 You can add more handlers if desired.
