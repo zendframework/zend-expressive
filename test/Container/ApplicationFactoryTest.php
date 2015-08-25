@@ -494,6 +494,7 @@ class ApplicationFactoryTest extends TestCase
     }
 
     /**
+     * @group fail
      * @group piping
      * @dataProvider uncallableMiddleware
      */
@@ -546,7 +547,11 @@ class ApplicationFactoryTest extends TestCase
             ->get('config')
             ->willReturn($config);
 
-        $this->setExpectedException('Zend\Expressive\Exception\InvalidMiddlewareException');
+        $this->container
+            ->has('/')
+            ->willReturn(false);
+
+        $this->setExpectedException('InvalidArgumentException');
         $app = $this->factory->__invoke($this->container->reveal());
     }
 
@@ -606,7 +611,7 @@ class ApplicationFactoryTest extends TestCase
             ->has('Middleware')
             ->willReturn(false);
 
-        $this->setExpectedException('Zend\Expressive\Exception\InvalidMiddlewareException');
+        $this->setExpectedException('InvalidArgumentException');
         $app = $this->factory->__invoke($this->container->reveal());
     }
 

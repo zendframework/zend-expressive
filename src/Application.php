@@ -157,17 +157,46 @@ class Application extends MiddlewarePipe
     }
 
     /**
-     * Overload pipe() operation
+     * Overload pipe() operation.
      *
-     * Ensures that the route middleware is only ever registered once.
+     * Middleware piped may be either callables or service names. Middleware
+     * specified as services will be wrapped in a closure similar to the
+     * following:
      *
-     * @param string|callable|object $path Either a URI path prefix, or middleware.
-     * @param null|callable|object $middleware Middleware
+     * <code>
+     * function ($request, $response, $next = null) use ($container, $middleware) {
+     *     $invokable = $container->get($middleware);
+     *     if (! is_callable($invokable)) {
+     *         throw new Exception\InvalidMiddlewareException(sprintf(
+     *             'Lazy-loaded middleware "%s" is not invokable',
+     *             $middleware
+     *         ));
+     *     }
+     *     return $invokable($request, $response, $next);
+     * };
+     * </code>
+     *
+     * This is done to delay fetching the middleware until it is actually used;
+     * the upshot is that you will not be notified if the service is invalid to
+     * use as middleware until runtime.
+     *
+     * Additionally, ensures that the route middleware is only ever registered
+     * once.
+     *
+     * @param string|callable $path Either a URI path prefix, or middleware.
+     * @param null|string|callable $middleware Middleware
      * @return self
      */
     public function pipe($path, $middleware = null)
     {
-        if (null === $middleware && is_callable($path)) {
+        // Lazy-load middleware from the container when possible
+        $container = $this->container;
+        if (null === $middleware && is_string($path) && $container && $container->has($path)) {
+            $middleware = $this->marshalLazyMiddlewareService($path, $container);
+            $path       = '/';
+        } elseif (is_string($middleware) && ! is_callable($middleware) && $container && $container->has($middleware)) {
+            $middleware = $this->marshalLazyMiddlewareService($middleware, $container);
+        } elseif (null === $middleware && is_callable($path)) {
             $middleware = $path;
             $path       = '/';
         }
@@ -181,6 +210,56 @@ class Application extends MiddlewarePipe
         if ($middleware === [$this, 'routeMiddleware']) {
             $this->routeMiddlewareIsRegistered = true;
         }
+
+        return $this;
+    }
+
+    /**
+     * Pipe an error handler.
+     *
+     * Middleware piped may be either callables or service names. Middleware
+     * specified as services will be wrapped in a closure similar to the
+     * following:
+     *
+     * <code>
+     * function ($error, $request, $response, $next) use ($container, $middleware) {
+     *     $invokable = $container->get($middleware);
+     *     if (! is_callable($invokable)) {
+     *         throw new Exception\InvalidMiddlewareException(sprintf(
+     *             'Lazy-loaded middleware "%s" is not invokable',
+     *             $middleware
+     *         ));
+     *     }
+     *     return $invokable($error, $request, $response, $next);
+     * };
+     * </code>
+     *
+     * This is done to delay fetching the middleware until it is actually used;
+     * the upshot is that you will not be notified if the service is invalid to
+     * use as middleware until runtime.
+     *
+     * Once middleware detection and wrapping (if necessary) is complete,
+     * proxies to pipe().
+     *
+     * @param string|callable $path Either a URI path prefix, or middleware.
+     * @param null|string|callable $middleware Middleware
+     * @return self
+     */
+    public function pipeErrorHandler($path, $middleware = null)
+    {
+        // Lazy-load middleware from the container
+        $container = $this->container;
+        if (null === $middleware && is_string($path) && $container && $container->has($path)) {
+            $middleware = $this->marshalLazyErrorMiddlewareService($path, $container);
+            $path       = '/';
+        } elseif (is_string($middleware) && ! is_callable($middleware) && $container && $container->has($middleware)) {
+            $middleware = $this->marshalLazyErrorMiddlewareService($middleware, $container);
+        } elseif (null === $middleware && is_callable($path)) {
+            $middleware = $path;
+            $path       = '/';
+        }
+
+        $this->pipe($path, $middleware);
 
         return $this;
     }
@@ -473,5 +552,43 @@ class Application extends MiddlewarePipe
         }
 
         return new $middleware();
+    }
+
+    /**
+     * @param string $middleware
+     * @param ContainerInterface $container
+     * @return callable
+     */
+    private function marshalLazyMiddlewareService($middleware, ContainerInterface $container)
+    {
+        return function ($request, $response, $next = null) use ($container, $middleware) {
+            $invokable = $container->get($middleware);
+            if (! is_callable($invokable)) {
+                throw new Exception\InvalidMiddlewareException(sprintf(
+                    'Lazy-loaded middleware "%s" is not invokable',
+                    $middleware
+                ));
+            }
+            return $invokable($request, $response, $next);
+        };
+    }
+
+    /**
+     * @param string $middleware
+     * @param ContainerInterface $container
+     * @return callable
+     */
+    private function marshalLazyErrorMiddlewareService($middleware, ContainerInterface $container)
+    {
+        return function ($error, $request, $response, $next) use ($container, $middleware) {
+            $invokable = $container->get($middleware);
+            if (! is_callable($invokable)) {
+                throw new Exception\InvalidMiddlewareException(sprintf(
+                    'Lazy-loaded middleware "%s" is not invokable',
+                    $middleware
+                ));
+            }
+            return $invokable($error, $request, $response, $next);
+        };
     }
 }
