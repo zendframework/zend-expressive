@@ -21,8 +21,10 @@ examples.
 
 At this time, we document support for the following specific containers:
 
-- [zend-servicemanager](zend-servicemanager.md)
-- [Pimple](pimple.md)
+- [zend-servicemanager](https://github.com/zendframework/zend-servicemanager):
+  `composer require zendframework/zend-servicemanager`
+- [pimple-interop](https://github.com/moufmouf/pimple-interop):
+  `composer require mouf/pimple-interop`
 
 > ## Service Names
 >
