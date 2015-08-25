@@ -239,7 +239,7 @@ return [
 ## How can I set custom 404 page handling?
 >>>>>>> wording current 404 for custom
 
-We can set custom 404 page handling with create new Middleware that set 404 status from response object, or do logging.
+We can set custom 404 page handling instead of [using the final handler](http://zend-expressive.readthedocs.org/en/latest/error-handling/) for logging or other purpose with create new middleware that we want to intercept if no other middleware has executed, and is indicate a "not found" situation.
 
 Let's create a `NotFound` middleware:
 
