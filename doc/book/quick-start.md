@@ -16,10 +16,10 @@ $ cd expressive
 ## 2. Install Expressive
 
 If you haven't already, [install Composer](https://getcomposer.org). Once you
-have, we can install Expressive:
+have, we can install Expressive, along with a router and a container:
 
 ```bash
-$ composer require zendframework/zend-expressive aura/router
+$ composer require zendframework/zend-expressive aura/router zendframework/zend-servicemanager
 ```
 
 > ### Routers
@@ -27,6 +27,14 @@ $ composer require zendframework/zend-expressive aura/router
 > Expressive needs a routing implementation in order to create routed
 > middleware. We suggest Aura.Router in the quick start, but you can also
 > currently choose from FastRoute and the ZF2 MVC router.
+
+> ### Containers
+>
+> We highly recommend using dependency injection containers with Expressive;
+> they allow you to define dependencies for your middleware, as well as to lazy
+> load your middleware only when it needs to be executed. We suggest
+> zend-servicemanager in the quick start, but you can also use any container
+> supporting [container-interop](https://github.com/container-interop/container-interop).
 
 ## 3. Create a web root directory
 
