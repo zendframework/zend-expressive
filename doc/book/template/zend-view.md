@@ -153,6 +153,3 @@ We recommend the following practices when using the zend-view adapter:
   service; this allows you to inject it into middleware and add variables to it.
 - While we support passing the layout as a rendering parameter, be aware that if
   you change engines, this may not be supported.
-- While you can use alternate resolvers, not all of them will work with the
-  `addPath()` implementation. As such, we recommend setting up resolvers and
-  paths only during creation of the template adapter.
