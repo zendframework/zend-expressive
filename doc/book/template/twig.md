@@ -1,13 +1,13 @@
 # Using Twig
 
-[Twig](http://twig.sensiolabs.org/) is a template langauge and engine provided
+[Twig](http://twig.sensiolabs.org/) is a template language and engine provided
 as a standalone component by SensioLabs. It provides:
 
 - Layout facilities.
 - Template inheritance.
 - Helpers for escaping, and the ability to provide custom helper extensions.
 
-We provide a [TemplateInterface](interface.md) wrapper for Plates via
+We provide a [TemplateInterface](interface.md) wrapper for Twig via
 `Zend\Expressive\Template\Twig`.
 
 ## Installing Twig
