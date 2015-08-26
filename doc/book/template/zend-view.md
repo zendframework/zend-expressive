@@ -56,6 +56,26 @@ $zendView->setResolver($resolver);
 $templates = new ZendView($zendView);
 ```
 
+> ### Namespaced path resolving
+>
+> Expressive defines a custom zend-view resolver,
+> `Zend\Expressive\Template\ZendView\NamespacedPathStackResolver`. This resolver
+> provides the ability to segregate paths by namespace, and later resolve a
+> template according to the namespace, using the `namespace::template` notation
+> required of `TemplateInterface` implementations.
+>
+> The ZendView adapter ensures that:
+>
+> - An AggregateResolver is registered with the renderer. If the registered
+>   resolver is not an AggregateResolver, it creates one and adds the original
+>   resolver to it.
+> - A NamespacedPathStackResolver is registered with the AggregateResolver, at
+>   a low priority (0), ensuring attempts to resolve hit it later.
+> 
+> With resolvers such as the TemplateMapResolver, you can also resolve
+> namespaced templates, mapping them directly to the template on the filesystem
+> that matches; adding such a resolver can be a nice performance boost!
+
 ## Layouts
 
 Unlike the other supported template engines, zend-view does not support layouts

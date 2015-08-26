@@ -15,6 +15,11 @@ namespace Zend\Expressive\Template;
 interface TemplateInterface
 {
     /**
+     * Render a template, optionally with parameters.
+     *
+     * Implementations MUST support the `namespace::template` naming convention,
+     * and allow omitting the filename extension.
+     *
      * @param string $name
      * @param array|object $params
      * @return string
@@ -22,12 +27,19 @@ interface TemplateInterface
     public function render($name, $params = []);
 
     /**
+     * Add a template path to the engine.
+     *
+     * Adds a template path, with optional namespace the templates in that path
+     * provide.
+     *
      * @param string $path
      * @param string $namespace
      */
     public function addPath($path, $namespace = null);
 
     /**
+     * Retrieve configured paths from the engine.
+     *
      * @return TemplatePath[]
      */
     public function getPaths();

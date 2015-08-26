@@ -21,6 +21,11 @@ class Twig implements TemplateInterface
     use ArrayParametersTrait;
 
     /**
+     * @var string
+     */
+    private $suffix;
+
+    /**
      * @var TwigFilesystem
      */
     protected $twigLoader;
@@ -35,7 +40,7 @@ class Twig implements TemplateInterface
      *
      * @param TwigEnvironment $template
      */
-    public function __construct(TwigEnvironment $template = null)
+    public function __construct(TwigEnvironment $template = null, $suffix = 'html')
     {
         if (null === $template) {
             $template = $this->createTemplate($this->getDefaultLoader());
@@ -50,6 +55,7 @@ class Twig implements TemplateInterface
 
         $this->template   = $template;
         $this->twigLoader = $loader;
+        $this->suffix     = is_string($suffix) ? $suffix : 'html';
     }
 
     /**
@@ -82,6 +88,7 @@ class Twig implements TemplateInterface
      */
     public function render($name, $params = [])
     {
+        $name   = $this->normalizeTemplate($name);
         $params = $this->normalizeParams($params);
         return $this->template->render($name, $params);
     }
@@ -114,5 +121,24 @@ class Twig implements TemplateInterface
             }
         }
         return $paths;
+    }
+
+    /**
+     * Normalize namespaced template.
+     *
+     * Normalizes templates in the format "namespace::template" to
+     * "@namespace/template".
+     *
+     * @param string $template
+     * @return string
+     */
+    public function normalizeTemplate($template)
+    {
+        $template = preg_replace('#^([^:]+)::(.*)$#', '@$1/$2', $template);
+        if (! preg_match('#\.[a-z]+$#i', $template)) {
+            return sprintf('%s.%s', $template, $this->suffix);
+        }
+
+        return $template;
     }
 }
