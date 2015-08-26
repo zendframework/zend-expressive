@@ -217,9 +217,9 @@ add an entry for `config/autoload/*local.php` to ensure "local"
 `config/dependencies.php` will look like this:
 
 ```php
-use Zend\Config\Config;
+use Zend\Config\Factory;
 
-return Config::fromFiles(
+return Factory::fromFiles(
     glob('config/autoload/dependencies.{global,local}.php', GLOB_BRACE)
 );
 ```
