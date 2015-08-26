@@ -458,15 +458,16 @@ class Application extends MiddlewarePipe
     /**
      * Retrieve an emitter to use during run().
      *
-     * If none was registered during instantiation, this will lazy-load a
-     * SapiEmitter instance.
+     * If none was registered during instantiation, this will lazy-load an
+     * EmitterStack composing an SapiEmitter instance.
      *
      * @return EmitterInterface
      */
     public function getEmitter()
     {
         if (! $this->emitter) {
-            $this->emitter = new SapiEmitter;
+            $this->emitter = new Emitter\EmitterStack();
+            $this->emitter->push(new SapiEmitter());
         }
         return $this->emitter;
     }
