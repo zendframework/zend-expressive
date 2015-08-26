@@ -16,10 +16,10 @@ $ cd expressive
 ## 2. Install Expressive
 
 If you haven't already, [install Composer](https://getcomposer.org). Once you
-have, we can install Expressive:
+have, we can install Expressive, along with a router and a container:
 
 ```bash
-$ composer require zendframework/zend-expressive aura/router
+$ composer require zendframework/zend-expressive aura/router zendframework/zend-servicemanager
 ```
 
 > ### Routers
