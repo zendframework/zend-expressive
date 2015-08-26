@@ -85,7 +85,7 @@ $zendView = new PhpRenderer(null, 'layout');
 
 ```php
 use Zend\Expressive\Template\ZendView;
-use Zend\View\Model\ViewModel
+use Zend\View\Model\ViewModel;
 
 // Create the layout view model:
 $layout = new ViewModel([
@@ -110,7 +110,7 @@ $content = $templates->render('blog/entry', [
 ### Provide a layout view model when rendering
 
 ```php
-use Zend\View\Model\ViewModel
+use Zend\View\Model\ViewModel;
 
 // Create the layout view model:
 $layout = new ViewModel([
