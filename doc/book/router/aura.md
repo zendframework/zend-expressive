@@ -6,28 +6,28 @@ configuration is to provide default specifications:
 
 - A regular expression that applies the same for a given routing match:
 
-  ```php
-  // Parameters named "id" will only match digits by default:
-  $router->addTokens([
-    'id' => '\d+',
-  ]);
-  ```
+```php
+// Parameters named "id" will only match digits by default:
+$router->addTokens([
+'id' => '\d+',
+]);
+```
 
 - A default parameter and/or its default value to always provide:
 
-  ```php
-  // mediatype defaults to "application/xhtml+xml" and will be available in all
-  // requests:
-  $router->addValues([
-    'mediatype' => 'application/xhtml+xml',
-  ]);
-  ```
+```php
+// mediatype defaults to "application/xhtml+xml" and will be available in all
+// requests:
+$router->addValues([
+'mediatype' => 'application/xhtml+xml',
+]);
+```
 
 - Only match if secure (i.e., under HTTPS):
 
-  ```php
-  $router->setSecure(true);
-  ```
+```php
+$router->setSecure(true);
+```
 
 In order to specify these, you need access to the underlying Aura.Router
 instance, however, and the `RouterInterface` does not provide an accessor!
@@ -81,13 +81,13 @@ $router = new AuraBridge($auraRouter);
 $app = AppFactory::create(null, $router);
 ```
 
-> ### Piping the route middleware
->
-> As a reminder, you will need to ensure that middleware is piped in the order
-> in which it needs to be executed; please see the section on "Controlling
-> middleware execution order" in the [piping documentation](piping.md). This is
-> particularly salient when defining routes before injecting the router in the
-> application instance!
+### Piping the route middleware
+
+As a reminder, you will need to ensure that middleware is piped in the order
+in which it needs to be executed; please see the section on "Controlling
+middleware execution order" in the [piping documentation](piping.md). This is
+particularly salient when defining routes before injecting the router in the
+application instance!
 
 ## Factory-Driven Creation
 
