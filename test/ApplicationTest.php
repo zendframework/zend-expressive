@@ -13,8 +13,10 @@ use Interop\Container\ContainerInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Argument;
 use ReflectionProperty;
+use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Diactoros\ServerRequest as Request;
 use Zend\Expressive\Application;
+use Zend\Expressive\Emitter\EmitterStack;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouteResult;
 use Zend\Stratigility\Route as StratigilityRoute;
@@ -260,11 +262,15 @@ class ApplicationTest extends TestCase
         $this->assertSame($finalResponse, $test);
     }
 
-    public function testComposesSapiEmitterByDefault()
+    public function testComposesEmitterStackWithSapiEmitterByDefault()
     {
-        $app     = $this->getApp();
-        $emitter = $app->getEmitter();
-        $this->assertInstanceOf('Zend\Diactoros\Response\SapiEmitter', $emitter);
+        $app   = $this->getApp();
+        $stack = $app->getEmitter();
+        $this->assertInstanceOf(EmitterStack::class, $stack);
+
+        $this->assertCount(1, $stack);
+        $test = $stack->pop();
+        $this->assertInstanceOf(SapiEmitter::class, $test);
     }
 
     public function testAllowsInjectingEmitterAtInstantiation()

@@ -133,7 +133,7 @@ class ApplicationFactory
 
         $emitter = $container->has(EmitterInterface::class)
             ? $container->get(EmitterInterface::class)
-            : $this->createEmitterStack();
+            : null;
 
         $app = new Application($router, $container, $finalHandler, $emitter);
 
@@ -173,18 +173,6 @@ class ApplicationFactory
                 $route->setOptions($spec['options']);
             }
         }
-    }
-
-    /**
-     * Create the default emitter stack.
-     *
-     * @return EmitterStack
-     */
-    private function createEmitterStack()
-    {
-        $emitter = new EmitterStack();
-        $emitter->push(new SapiEmitter());
-        return $emitter;
     }
 
     /**
