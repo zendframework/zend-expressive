@@ -136,7 +136,7 @@ namespace Application\Container;
 use Interop\Container\ContainerInterface;
 use Zend\Expressive\Router\FastRoute as FastRouteBridge;
 
-class FastRouteFactory
+class RouterFactory
 {
     /**
      * @param ContainerInterface $container
