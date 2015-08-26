@@ -2,8 +2,8 @@
   "title": "zend-expressive: PSR-7 Middleware Microframework",
   "content": [
     {"Intro": "../README.md"},
-    {"Quick Start": "quick-start.md"},
-    {"Applications": "application.md"},
+    {"Quick Start": "book/quick-start.md"},
+    {"Applications": "book/application.md"},
     "book/container/bookdown.json",
     "book/router/bookdown.json",
     "book/template/bookdown.json",
