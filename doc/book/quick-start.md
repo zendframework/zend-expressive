@@ -28,6 +28,14 @@ $ composer require zendframework/zend-expressive aura/router zendframework/zend-
 > middleware. We suggest Aura.Router in the quick start, but you can also
 > currently choose from FastRoute and the ZF2 MVC router.
 
+> ### Containers
+>
+> We highly recommend using dependency injection containers with Expressive;
+> they allow you to define dependencies for your middleware, as well as to lazy
+> load your middleware only when it needs to be executed. We suggest
+> zend-servicemanager in the quick start, but you can also use any container
+> supporting [container-interop](https://github.com/container-interop/container-interop).
+
 ## 3. Create a web root directory
 
 You'll need a directory from which to serve your application, and for security
