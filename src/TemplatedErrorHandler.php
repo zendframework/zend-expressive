@@ -74,8 +74,8 @@ class TemplatedErrorHandler
      */
     public function __construct(
         Template\TemplateInterface $template = null,
-        $template404 = 'error/404',
-        $templateError = 'error/error',
+        $template404 = 'error::404',
+        $templateError = 'error::error',
         Response $originalResponse = null
     ) {
         $this->template      = $template;
