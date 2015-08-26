@@ -98,7 +98,7 @@ render in order to provide content within the selected layout.
 use Zend\Expressive\Template\ZendView;
 
 // Create the engine instance with a layout name:
-$zendView = new PhpRenderer(null, 'layout');
+$zendView = new ZendView(null, 'layout');
 ```
 
 ### Layout view model passed to constructor
@@ -115,7 +115,7 @@ $layout = new ViewModel([
 $layout->setTemplate('layout');
 
 // Create the engine instance with the layout:
-$zendView = new PhpRenderer(null, $layout);
+$zendView = new ZendView(null, $layout);
 ```
 
 ### Provide a layout name when rendering
