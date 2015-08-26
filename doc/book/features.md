@@ -43,7 +43,7 @@ features it provides include:
   routing library that best fits the project needs. By default, we provide
   wrappers for Aura.Router, FastRoute, and the zend-mvc router.
 
-- **contaienr-interop**
+- **container-interop**
 
   Expressive encourages the use of Dependency Injection, and defines its
   `Application` class to compose a container-interop `ContainerInterface`

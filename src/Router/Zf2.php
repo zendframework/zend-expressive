@@ -170,7 +170,7 @@ class Zf2 implements RouterInterface
     }
 
     /**
-     * Create a succesful RouteResult from the given RouteMatch.
+     * Create a successful RouteResult from the given RouteMatch.
      *
      * @param RouteMatch $match
      * @return RouteResult

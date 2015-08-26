@@ -120,7 +120,7 @@ class TemplatedErrorHandler
      * If a template renderer is present, passes the following to the template
      * specified in the $templateError property:
      *
-     * - error (the error itsel)
+     * - error (the error itself)
      * - uri
      * - status (response status)
      * - reason (reason associated with response status)

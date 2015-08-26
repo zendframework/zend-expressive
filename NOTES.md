@@ -360,7 +360,7 @@ Additionally, it MAY need:
 - Options (any other options/metadata regarding the route to pass on to the
   router)
 
-Finally, by having `route()` reurn the `Route` instance, the user can further
+Finally, by having `route()` return the `Route` instance, the user can further
 customize it. I would argue that *only* options be mutable, however, as the
 combination of path + HTTP method is what determines whether or not routes have
 conflicts.
