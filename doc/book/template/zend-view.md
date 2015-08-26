@@ -59,24 +59,80 @@ $templates = new ZendView($zendView);
 ## Layouts
 
 Unlike the other supported template engines, zend-view does not support layouts
-out-of-the-box.
+out-of-the-box. Expressive abstracts this fact away, providing two facilities
+for doing so:
 
-Layouts are accomplished in one of two ways:
+- You may pass a layout template name or `Zend\View\Model\ModelInterface`
+  instance representing the layout as the second argument to the constructor.
+- You may pass a "layout" parameter during rendering, with a value of either a
+  layout template name or a `Zend\View\Model\ModelInterface`
+  instance representing the layout. Passing a layout this way will override any
+  layout provided to the constructor.
 
-- Multiple rendering passes:
+In each case, the zend-view implementation will do a depth-first, recursive
+render in order to provide content within the selected layout.
 
-    ```php
-    $content = $templates->render('blog/entry', [ 'entry' => $entry ]);
-    $layout  = $templates->render('layout/layout', [ 'content' => $content ]);
-    ```
+### Layout name passed to constructor
 
-- View models.  To accomplish this, you will compose a view model for the
-  content, and pass it as a value to the layout:
+```php
+use Zend\Expressive\Template\ZendView;
 
-    ```php
-    use Zend\View\Model\ViewModel;
-    
-    $viewModel = new ViewModel(['entry' => $entry]);
-    $viewModel->setTemplate('blog/entry');
-    $layout = $templates->render('layout/layout', [ 'content' => $viewModel ]);
-    ```
+// Create the engine instance with a layout name:
+$zendView = new PhpRenderer(null, 'layout');
+```
+
+### Layout view model passed to constructor
+
+```php
+use Zend\Expressive\Template\ZendView;
+use Zend\View\Model\ViewModel;
+
+// Create the layout view model:
+$layout = new ViewModel([
+    'encoding' => 'utf-8',
+    'cssPath'  => '/css/prod/',
+]);
+$layout->setTemplate('layout');
+
+// Create the engine instance with the layout:
+$zendView = new PhpRenderer(null, $layout);
+```
+
+### Provide a layout name when rendering
+
+```php
+$content = $templates->render('blog/entry', [
+    'layout' => 'blog',
+    'entry'  => $entry,
+]);
+```
+
+### Provide a layout view model when rendering
+
+```php
+use Zend\View\Model\ViewModel;
+
+// Create the layout view model:
+$layout = new ViewModel([
+    'encoding' => 'utf-8',
+    'cssPath'  => '/css/blog/',
+]);
+$layout->setTemplate('layout');
+
+$content = $templates->render('blog/entry', [
+    'layout' => $layout,
+    'entry'  => $entry,
+]);
+```
+
+## Recommendations
+
+We recommend the following practices when using the zend-view adapter:
+
+- If using a layout, create a factory to return the layout view model as a
+  service; this allows you to inject it into middleware and add variables to it.
+- While we support passing the layout as a rendering parameter, be aware that if
+  you change engines, this may not be supported.
+- While you can use alternate resolvers, not all of them will work with the
+  `addPath()` implementation. As such, we recommend setting up resolvers and
+  paths only during creation of the template adapter.
