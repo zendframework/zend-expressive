@@ -13,26 +13,26 @@ the name:
 - If you call `route()` with no HTTP methods, the name is the literal path with
   no changes.
 
-  ```php
-  $app->route('/foo', $middleware); // "foo"
-  ```
+```php
+$app->route('/foo', $middleware); // "foo"
+```
 
 - If you call `get()`, `post()`, `put()`, `patch()`, or `delete()`, the name
   will be the literal path, followed by a caret (`^`), followed by the
   uppercase HTTP method name:
 
-  ```php
-  $app->get('/foo', $middleware); // "foo^GET"
-  ```
+```php
+$app->get('/foo', $middleware); // "foo^GET"
+```
 
 - If you call `route()` and specify a list of HTTP methods accepted, the name
   will be the literal path, followed by a caret (`^`), followed by a colon
   (`:`)-separated list of the uppercase HTTP method names, in the order in which
   they were added.
 
-  ```php
-  $app->route('/foo, $middleware', ['GET', 'POST']); // "foo^GET:POST"
-  ```
+```php
+$app->route('/foo, $middleware', ['GET', 'POST']); // "foo^GET:POST"
+```
 
 Clearly, this can become difficult to remember. As such, Expressive offers the
 ability to specify a custom string for the route name as an additional, optional
@@ -58,8 +58,8 @@ $uri = $router->generateUri('foo-item', ['id' => 'bar']); // "/foo/bar"
 
 You can omit the second argument if no substitutions are necessary.
 
-> ### Compose the router
->
-> For this to work, you'll need to compose the router instance in any class that
-> requires the URI generation facility. Inject the
-> `Zend\Expressive\Router\RouterInterface` service in these situations.
+### Compose the router
+
+For this to work, you'll need to compose the router instance in any class that
+requires the URI generation facility. Inject the
+`Zend\Expressive\Router\RouterInterface` service in these situations.

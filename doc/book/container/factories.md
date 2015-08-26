@@ -37,78 +37,78 @@ order to seed the `Application` instance:
 
 - `middleware_pipeline` can be used to seed pre- and/or post-routing middleware:
 
-  ```php
-  'middleware_pipeline' => [
-      // An array of middleware to register prior to registration of the
-      // routing middleware:
-      'pre_routing' => [
-      ],
-      // An array of middleware to register after registration of the
-      // routing middleware:
-      'post_routing' => [
-      ],
+```php
+'middleware_pipeline' => [
+  // An array of middleware to register prior to registration of the
+  // routing middleware:
+  'pre_routing' => [
   ],
-  ```
-
-  Each item of each array must be an array itself, with the following structure:
-
-  ```php
-  [
-      // required:
-      'middleware' => 'Name of middleware service, or a callable',
-      // optional:
-      'path'  => '/path/to/match',
-      'error' => true,
+  // An array of middleware to register after registration of the
+  // routing middleware:
+  'post_routing' => [
   ],
-  ```
+],
+```
 
-  The `middleware` key itself is the middleware to execute, and must be a
-  callable or the name of another defined service. If the `path` key is present,
-  that key will be used to segregate the middleware to a specific matched path
-  (in other words, it will not execute if the path is not matched). If the
-  `error` key is present and boolean `true`, then the middleware will be
-  registered as error middleware. (This is necessary due to the fact that the
-  factory defines a callable wrapper around middleware to enable lazy-loading of
-  middleware.)
+Each item of each array must be an array itself, with the following structure:
+
+```php
+[
+  // required:
+  'middleware' => 'Name of middleware service, or a callable',
+  // optional:
+  'path'  => '/path/to/match',
+  'error' => true,
+],
+```
+
+The `middleware` key itself is the middleware to execute, and must be a
+callable or the name of another defined service. If the `path` key is present,
+that key will be used to segregate the middleware to a specific matched path
+(in other words, it will not execute if the path is not matched). If the
+`error` key is present and boolean `true`, then the middleware will be
+registered as error middleware. (This is necessary due to the fact that the
+factory defines a callable wrapper around middleware to enable lazy-loading of
+middleware.)
 
 - `routes` is used to define routed middleware. The value must be an array,
-  consisting of arrays defining each middleware:
+consisting of arrays defining each middleware:
 
-  ```php
-  'routes' => [
-      [
-          'path' => '/path/to/match',
-          'middleware' => 'Middleware Service Name or Callable',
-          'allowed_methods' => [ 'GET', 'POST', 'PATCH' ],
-          'options' => [
-              'stuff' => 'to',
-              'pass'  => 'to',
-              'the'   => 'underlying router',
-          ],
+```php
+'routes' => [
+  [
+      'path' => '/path/to/match',
+      'middleware' => 'Middleware Service Name or Callable',
+      'allowed_methods' => [ 'GET', 'POST', 'PATCH' ],
+      'options' => [
+          'stuff' => 'to',
+          'pass'  => 'to',
+          'the'   => 'underlying router',
       ],
-      // etc.
   ],
-  ```
+  // etc.
+],
+```
 
-  Each route *requires*:
+Each route *requires*:
 
-  - `path`: the path to match. Format will be based on the router you choose for
-    your project.
+- `path`: the path to match. Format will be based on the router you choose for
+your project.
 
-  - `middleware`: a callable or a service name for the middleware to execute
-    when the route matches.
+- `middleware`: a callable or a service name for the middleware to execute
+when the route matches.
 
-  Optionally, the route definition may provide:
+Optionally, the route definition may provide:
 
-  - `allowed_methods`: an array of allowed HTTP methods. If not provided, the
-    application assumes any method is allowed.
+- `allowed_methods`: an array of allowed HTTP methods. If not provided, the
+application assumes any method is allowed.
 
-  - `name`: if not provided, the path will be used as the route name (and, if
-    specific HTTP methods are allowed, a list of those).
+- `name`: if not provided, the path will be used as the route name (and, if
+specific HTTP methods are allowed, a list of those).
 
-  - `options`: a key/value set of additional options to pass to the underlying
-    router implementation for the given route. (Typical use cases include
-    passing constraints or default values.)
+- `options`: a key/value set of additional options to pass to the underlying
+router implementation for the given route. (Typical use cases include
+passing constraints or default values.)
 
 ## TemplatedErrorHandlerFactory
 

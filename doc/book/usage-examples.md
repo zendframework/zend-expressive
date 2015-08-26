@@ -23,16 +23,16 @@ We assume also that:
 - Your own classes are under `src/` with the top-level namespace `Application`,
   and you have configured [autoloading](https://getcomposer.org/doc/01-basic-usage.md#autoloading) in your `composer.json` for those classes.
 
-> ## Using the built-in web server
->
-> You can use the built-in web server to run the examples. Run:
->
-> ```bash
-> $ php -S 0.0.0.0:8080 -t public
-> ```
->
-> from the application root to start up a web server running on port 8080, and
-> then browse to http://localhost:8080
+## Using the built-in web server
+
+You can use the built-in web server to run the examples. Run:
+
+```bash
+$ php -S 0.0.0.0:8080 -t public
+```
+
+from the application root to start up a web server running on port 8080, and
+then browse to http://localhost:8080
 
 ### Routing
 
@@ -478,46 +478,46 @@ application that match a common path root.
 `error` indicates whether or not the middleware represents error middleware;
 this is done to ensure that lazy-loading of error middleware works as expected.
 
-> #### Lazy-loaded Middleware
->
-> One feature of the `middleware_pipeline` is that any middleware service pulled
-> from the container is actually wrapped in a closure:
->
-> ```php
-> function ($request, $response, $next = null) use ($container, $middleware) {
->     $invokable = $container->get($middleware);
->     if (! is_callable($invokable)) {
->         throw new Exception\InvalidMiddlewareException(sprintf(
->             'Lazy-loaded middleware "%s" is not invokable',
->             $middleware
->         ));
->     }
->     return $invokable($request, $response, $next);
-> };
-> ```
->
-> If the `error` flag is specified and is truthy, the closure looks like this
-> instead, to ensure the middleware is treated by Stratigility as error
-> middleware:
->
-> ```php
-> function ($error, $request, $response, $next) use ($container, $middleware) {
->     $invokable = $container->get($middleware);
->     if (! is_callable($invokable)) {
->         throw new Exception\InvalidMiddlewareException(sprintf(
->             'Lazy-loaded middleware "%s" is not invokable',
->             $middleware
->         ));
->     }
->     return $invokable($error, $request, $response, $next);
-> };
-> ```
->
-> This implements *lazy-loading* for middleware pipeline services, delaying
-> retrieval from the container until the middleware is actually invoked.
->
-> This also means that if the service specified is not valid middleware, you
-> will not find out until the application attempts to invoke it.
+#### Lazy-loaded Middleware
+
+One feature of the `middleware_pipeline` is that any middleware service pulled
+from the container is actually wrapped in a closure:
+
+```php
+function ($request, $response, $next = null) use ($container, $middleware) {
+    $invokable = $container->get($middleware);
+    if (! is_callable($invokable)) {
+        throw new Exception\InvalidMiddlewareException(sprintf(
+            'Lazy-loaded middleware "%s" is not invokable',
+            $middleware
+        ));
+    }
+    return $invokable($request, $response, $next);
+};
+```
+
+If the `error` flag is specified and is truthy, the closure looks like this
+instead, to ensure the middleware is treated by Stratigility as error
+middleware:
+
+```php
+function ($error, $request, $response, $next) use ($container, $middleware) {
+    $invokable = $container->get($middleware);
+    if (! is_callable($invokable)) {
+        throw new Exception\InvalidMiddlewareException(sprintf(
+            'Lazy-loaded middleware "%s" is not invokable',
+            $middleware
+        ));
+    }
+    return $invokable($error, $request, $response, $next);
+};
+```
+
+This implements *lazy-loading* for middleware pipeline services, delaying
+retrieval from the container until the middleware is actually invoked.
+
+This also means that if the service specified is not valid middleware, you
+will not find out until the application attempts to invoke it.
 
 ## Segregating your application to a subpath
 
