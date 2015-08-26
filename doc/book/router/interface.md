@@ -127,10 +127,10 @@ class Route
 }
 ```
 
-Typically, developers will use `Zend\Expressive\Application::route()` to create
-routes, and will not need to interact with `Route` instances. However, that
-method can *also* accept `Route` instances, allowing more flexibility in
-defining and configuring them.
+Typically, developers will use `Zend\Expressive\Application::route()` (or one of
+the HTTP-specific routing methods) to create routes, and will not need to
+interact with `Route` instances. However, that method can *also* accept `Route`
+instances, allowing more flexibility in defining and configuring them.
 
 ## Matching and RouteResults
 

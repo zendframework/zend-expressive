@@ -29,12 +29,28 @@ To use FastRoute, you will first need to install it:
 $ composer require nikic/fast-route
 ```
 
+## Quick Start
+
+At its simplest, you can instantiate a `Zend\Expressive\Router\FastRoute` instance
+with no arguments; it will create the underlying FastRoute objects required
+and compose them for you:
+
+```php
+use Zend\Expressive\Router\FastRoute;
+
+$router = new FastRoute();
+```
+
 ## Programmatic Creation
 
-To handle it programmatically, you will need to setup your `RouteCollector`
-instance and/or optionally callable to return your `RegexBasedAbstract` instance
-manually, inject them in your `Zend\Expressive\Router\FastRoute` instance, and
-inject use that when creating your `Application` instance.
+If you need greater control over the FastRoute setup and configuration, you
+can create the instances necessary and inject them into
+`Zend\Expressive\Router\FastRoute` during instantiation.
+
+To do so, you will need to setup your `RouteCollector` instance and/or
+optionally callable to return your `RegexBasedAbstract` instance manually,
+inject them in your `Zend\Expressive\Router\FastRoute` instance, and inject use
+that when creating your `Application` instance.
 
 ```php
 <?php
@@ -74,7 +90,65 @@ $app = AppFactory::create(null, $router);
 
 [We recommend using an Inversion of Control container](../container/intro.md)
 for your applications; as such, in this section we will demonstrate 
-defining three factories:
+two strategies for creating your FastRoute implementation.
+
+### Basic Router
+
+If you don't need to provide any setup or configuration, you can simply
+instantiate and return an instance of `Zend\Expressive\Router\FastRoute` for the
+service name `Zend\Expressive\Router\RouterInterface`.
+
+A factory would look like this:
+
+```php
+// in src/Application/Container/RouterFactory.php
+namespace Application\Container;
+
+use Interop\Container\ContainerInterface;
+use Zend\Expressive\Router\FastRoute;
+
+class RouterFactory
+{
+    /**
+     * @param ContainerInterface $container
+     * @return FastRoute
+     */
+    public function __invoke(ContainerInterface $container)
+    {
+        return new FastRoute();
+    }
+}
+```
+
+You would register this with zend-servicemanager using:
+
+```php
+$container->setFactory(
+    'Zend\Expressive\Router\RouterInterface',
+    'Application\Container\RouterFactory'
+);
+```
+
+And in Pimple:
+
+```php
+$pimple['Zend\Expressive\Router\RouterInterface'] = new Application\Container\RouterFactory();
+```
+
+For zend-servicemanager, you can omit the factory entirely, and register the
+class as an invokable:
+
+```php
+$container->setInvokableClass(
+    'Zend\Expressive\Router\RouterInterface',
+    'Zend\Expressive\Router\FastRoute'
+);
+```
+
+### Advanced Configuration
+
+If you want to provide custom setup or configuration, you can do so. In this
+example, we will be defining three factories:
 
 - A factory to register as and generate a `FastRoute\RouteCollector` instance.
 - A factory to register as `FastRoute\DispatcherFactory` and return a callable

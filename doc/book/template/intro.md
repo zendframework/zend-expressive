@@ -25,6 +25,6 @@ templating in your middleware.
 
 We currently support:
 
-- [Plates](plates.md): `composer require league/plates`
-- [Twig](twig.md): `composer require twig/twig`
-- [zend-view](zend-view.md): `composer require zendframework/zend-view`
+- [Plates](plates.md)
+- [Twig](twig.md)
+- [zend-view](zend-view.md)

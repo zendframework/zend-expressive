@@ -1,8 +1,8 @@
 # Quick Start
 
-zend-expressive allows you to get started at your own pace. You can start with
+Expressive allows you to get started at your own pace. You can start with
 the simplest example, detailed below, or move on to a more structured,
-configuration-driven approach as detailed in the [use case examples](examples.md).
+configuration-driven approach as detailed in the [use case examples](usage-examples.md).
 
 ## 1. Create a new project directory
 

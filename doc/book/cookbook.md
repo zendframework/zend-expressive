@@ -22,7 +22,10 @@ Let's assume the above represents an API.
 As your application progresses, you may have a mixture of different content, and now want to have
 the above segregated under the path `/api`.
 
-To do that:
+This is essentially the same problem as addressed in the
+["Segregating your application to a subpath"](usage-examples.md#segregating-your-application-to-a-subpath] example.
+
+To accomplish it:
 
 - Create a new application.
 - Pipe the previous application to the new one, under the path `/api`.
@@ -41,6 +44,6 @@ $app->pipe('/api', $api);
 $app->run();
 ```
 
-The above works, because ever `Application` instance is itself middleware, and, more specifically,
+The above works, because every `Application` instance is itself middleware, and, more specifically,
 an instance of [Stratigility's `MiddlewarePipe`](https://github.com/zendframework/zend-stratigility/blob/master/doc/book/middleware.md),
 which provides the ability to compose middleware.

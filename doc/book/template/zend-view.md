@@ -38,7 +38,7 @@ use Zend\View\Renderer\PhpRenderer;
 use Zend\View\Resolver;
 
 // Create the engine instance:
-$zendView = new PhpRenderer();
+$renderer = new PhpRenderer();
 
 // Configure it:
 $resolver = new Resolver\AggregateResolver();
@@ -50,10 +50,10 @@ $resolver->attach(
     (new Resolver\TemplatePathStack())
     ->setPaths(include 'config/template_paths.php')
 );
-$zendView->setResolver($resolver);
+$renderer->setResolver($resolver);
 
 // Inject:
-$templates = new ZendView($zendView);
+$templates = new ZendView($renderer);
 ```
 
 > ### Namespaced path resolving
@@ -64,15 +64,15 @@ $templates = new ZendView($zendView);
 > template according to the namespace, using the `namespace::template` notation
 > required of `TemplateInterface` implementations.
 >
-> The ZendView adapter ensures that:
+> The `ZendView` adapter ensures that:
 >
-> - An AggregateResolver is registered with the renderer. If the registered
->   resolver is not an AggregateResolver, it creates one and adds the original
+> - An `AggregateResolver` is registered with the renderer. If the registered
+>   resolver is not an `AggregateResolver`, it creates one and adds the original
 >   resolver to it.
-> - A NamespacedPathStackResolver is registered with the AggregateResolver, at
+> - A `NamespacedPathStackResolver` is registered with the `AggregateResolver`, at
 >   a low priority (0), ensuring attempts to resolve hit it later.
 > 
-> With resolvers such as the TemplateMapResolver, you can also resolve
+> With resolvers such as the `TemplateMapResolver`, you can also resolve
 > namespaced templates, mapping them directly to the template on the filesystem
 > that matches; adding such a resolver can be a nice performance boost!
 
@@ -98,7 +98,7 @@ render in order to provide content within the selected layout.
 use Zend\Expressive\Template\ZendView;
 
 // Create the engine instance with a layout name:
-$zendView = new PhpRenderer(null, 'layout');
+$templates = new ZendView(null, 'layout');
 ```
 
 ### Layout view model passed to constructor
@@ -115,7 +115,7 @@ $layout = new ViewModel([
 $layout->setTemplate('layout');
 
 // Create the engine instance with the layout:
-$zendView = new PhpRenderer(null, $layout);
+$templates = new ZendView(null, $layout);
 ```
 
 ### Provide a layout name when rendering

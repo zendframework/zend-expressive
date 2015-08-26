@@ -34,49 +34,48 @@ We assume also that:
 > from the application root to start up a web server running on port 8080, and
 > then browse to http://localhost:8080
 
+> ## Setting up autoloading for the Application namespace
+>
+> In your `composer.json` file, place the following:
+>
+> ```javascript
+> "autoload": {
+>     "psr-4": {
+>         "Application\\": "src/"
+>     }
+> },
+> ```
+>
+> Once done, run:
+>
+> ```bash
+> $ composer dump-autoload
+> ```
+
 ### Routing
 
-By default, zend-expressive uses [Aura.Router](https://github.com/auraphp/Aura.Router).
-We also provide implementations that consume [FastRoute](https://github.com/nikic/FastRoute)
-and the [ZF2 MVC router](https://github.com/zendframework/zend-mvc/tree/a22422d1d17f3afa031de2be5453f45109e4b7f4/src/Router),
-and have plans for others.
+As noted in the [Application documentation](application.md#adding-routable-middleware),
+routing is abstracted and can be accomplished by calling any of the following
+methods:
 
-In order to abstract routing, we have created a `RouterInterface`; this defines
-three methods:
+- `route($path, $middleware, array $methods = null, $name = null)` to route to a
+  path and match any HTTP method, multiple HTTP methods, or custom HTTP methods.
+- `get($path, $middleware, $name = null)` to route to a path that will only
+  respond to the GET HTTP method.
+- `post($path, $middleware, $name = null)` to route to a path that will only
+  respond to the POST HTTP method.
+- `put($path, $middleware, $name = null)` to route to a path that will only
+  respond to the PUT HTTP method.
+- `patch($path, $middleware, $name = null)` to route to a path that will only
+  respond to the PATCH HTTP method.
+- `delete($path, $middleware, $name = null)` to route to a path that will only
+  respond to the DELETE HTTP method.
 
-```php
-namespace Zend\Expressive\Router;
+All methods return a `Zend\Expressive\Router\Route` method, which allows you to
+specify additional options to associate with the route (e.g., for specifying
+criteria, default values to match, etc.).
 
-use Psr\Http\Message\ServerRequestInterface;
-
-interface RouterInterface
-{
-    public function addRoute(Route $route);
-    public function match(ServerRequestInterface $request);
-    public function generateUri($routeName, array $substitutions = []);
-}
-```
-
-The `Route` instance is an abstraction that encapsulates the various required
-routing information for any given route, as well as any optional arguments you
-wish to pass on to the underlying routing implementation. A `Route` instance
-requires a path, middleware (as either a callable or a service name), optionally
-the HTTP methods it can respond to (defaulting to any), and optionally a name.
-You can then pass optional arguments via its `setOptions()` method; these should
-be an array of key/value pairs.
-
-Typically, however, you will add routes via the `Application` instance itself.
-This will be done in one of two ways:
-
-- Via a method named after the HTTP method. (We support `get()`, `post()`,
-  `put()`, `patch()`, and `delete()` as method calls.) These methods require the
-  path and middleware as arguments.
-- Via the `route()` method. This method requires the path and middleware as
-  arguments, and optionally allows you to specify a list of HTTP methods
-  (defaulting to any HTTP method if none is provided).
-
-Each of these will return a `Route` instance, allowing you to set options if
-desired.
+As examples:
 
 ```php
 // GET
@@ -99,7 +98,7 @@ $app->put('/post/{id}', 'ReplacePost')
     ]);
 
 // PATCH
-// This example builds on the one above. zend-expressive allows you to specify
+// This example builds on the one above. Expressive allows you to specify
 // the same path for a route matching on a different HTTP method, and
 // corresponding to different middleware.
 $app->patch('/post/{id}', 'UpdatePost')
@@ -149,11 +148,9 @@ $app->route($route);
 
 ## Hello World using a Container
 
-zend-expressive works with
-[container-interop](https://github.com/container-interop/container-interop),
+Expressive works with [container-interop](https://github.com/container-interop/container-interop),
 though it's an optional feature. By default, if you use the `AppFactory`, it
-will use
-[zend-servicemanager](https://github.com/zendframework/zend-servicemanager).
+will use [zend-servicemanager](https://github.com/zendframework/zend-servicemanager).
 
 In the following example, we'll populate the container with our middleware, and
 the application will pull it from there when matched.
@@ -217,7 +214,7 @@ matches a path, it does the following:
   the container. *This is what happens in this example.*
 - Finally, if no container is available, or the service name is not found in the
   container, it checks to see if it's a valid class name; if so, it instantiates
-  and return the class.
+  and returns the class instance.
 
 If you fire up your web server, you'll find that the `/` and `/ping` paths
 continue to work.
@@ -238,7 +235,8 @@ $app->run();
 ```
 
 This is a nice way to encapsulate the application creation. You could then
-potentially move all service configuration to another file!
+potentially move all service configuration to another file! (We already
+[document an ApplicationFactory for exactly this scenario.](container/factories.md#applicationfactory))
 
 ## Hello World using a Configuration-Driven Container
 
@@ -246,14 +244,40 @@ In the above example, we configured our middleware as services, and then passed
 our service container to the application. At the end, we hinted that you could
 potentially define the application itself as a service.
 
-zend-expressive already provides a service factory for the application instance
+Expressive already provides a service factory for the application instance
 to provide fine-grained control over your application. In this example, we'll
 leverage it, defining our routes via configuration.
+
+First, we're going to leverage zend-config to merge configuration files. This is
+important, as it allows us to define local, environment-specific configuration
+in files that we then can exclude from our repository. This practice ensures
+that things like credentials are not accidentally published in a public
+repository, and also provides a mechanism for slip-streaming in
+configuration based on our environment (you might use different settings in
+development than in production, after all!).
+
+First, install zend-config:
+
+```bash
+$ composer install zendframework/zend-config
+```
+
+Now we can start creating our configuration files and container factories.
 
 In `config/config.php`, place the following:
 
 ```php
 <?php
+use Zend\Config\Config;
+
+return Config::fromFiles(
+    glob('config/autoload/{global,local}.php', GLOB_BRACE)
+);
+```
+
+In `config/global.php`, place the following:
+
+```php
 return [
     'routes' => [
         [
@@ -270,7 +294,18 @@ return [
 ];
 ```
 
-In `config/services.php`, place the following:
+In `config/dependencies.php`, place the following:
+
+```php
+<?php
+use Zend\Config\Config;
+
+return Config::fromFiles(
+    glob('config/autoload/dependencies.{global,local}.php', GLOB_BRACE)
+);
+```
+
+In `config/autoload/dependencies.global.php`, place the following:
 
 ```php
 <?php
@@ -286,6 +321,16 @@ return [
         'Zend\Expressive\Application' => 'Zend\Expressive\Container\ApplicationFactory',
     ],
 ];
+```
+
+In `config/services.php`, place the following:
+
+```php
+<?php
+use Zend\ServiceManager\Config;
+use Zend\ServiceManager\ServiceManager;
+
+return new ServiceManager(new Config(include 'config/dependencies.php'));
 ```
 
 In `src/HelloWorld.php`, place the following:
@@ -325,28 +370,31 @@ Finally, in `public/index.php`, place the following:
 
 ```php
 <?php
-use Zend\ServiceManager\Config;
-use Zend\ServiceManager\ServiceManager;
+// Change to the project root, to simplify resolving paths
+chdir(dirname(__DIR__));
 
-require __DIR__ . '/../vendor/autoload.php';
+// Setup autoloading
+require 'vendor/autoload.php';
 
-$container = new ServiceManager(new Config(include __DIR__ . '/../config/services.php'));
-
-$app = $container->get('Zend\Expressive\Application');
+$container = include 'config/services.php';
+$app       = $container->get('Zend\Expressive\Application');
 $app->run();
 ```
 
 Notice that our index file now doesn't have any code related to setting up the
-application any more!
+application any longer! All it does is setup autoloading, retrieve our service
+container, pull the application from it, and run it. Our choices for container,
+router, etc. are all abstracted, and if we change our mind later, this code will
+continue to work.
 
 Firing up the web server, you'll see the same responses as the previous
 examples.
 
 ## Hybrid Container and Programmatic Creation
 
-The above example may look a little daunting at first. By making
-everything configuration-driven, you sometimes lose a sense for how the code all
-fits together.
+The above example may look a little daunting at first. By making everything
+configuration-driven, you sometimes lose a sense for how the code all fits
+together.
 
 Fortunately, you can mix the two. Building on the example above, we'll add a new
 route and middleware. Between pulling the application from the container and
@@ -370,51 +418,6 @@ You should see `IN POST!` for the response!
 
 Using this approach, you can build re-usable applications that are
 container-driven, and add one-off routes and middleware as needed.
-
-## Error Handling
-
-Because zend-expressive is built on top of Stratigility, you can provide error
-handling by providing error middleware to the application, using the `pipe()`
-method.
-
-Error middleware has the following signature:
-
-```php
-function ($error, $request, $response, $next)
-```
-
-Error middleware is executed in the order in which it is piped to the
-application; each can either stop execution by returning a response, or pass
-along to the next by calling `$next()`.
-
-## Middleware that executes on every request
-
-`Zend\Expressive\Application` extends `Zend\Stratigility\MiddlewarePipe`,
-allowing composition of multiple middleware.
-
-It also implements routing middleware (`Application::routeMiddleware()`), which it
-pipes to itself the first time a route is added.
-
-As such, if you want to execute middleware on every request, you have several
-options:
-
-- For middleware you want to match for every request (not just error
-  middleware), pipe it to the application prior to registering any routes.
-- Error middleware should typically be piped *after* registering any routes.
-
-As an example:
-
-```php
-use Zend\Expressive\AppFactory;
-
-$app = AppFactory::create();
-
-$app->pipe($middlewareToExecuteOnEachRequest)
-$app->route(/* ... */);
-$app->pipe($anErrorHandler);
-
-$app->run();
-```
 
 ### Using the container to register middleware
 

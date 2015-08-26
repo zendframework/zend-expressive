@@ -44,11 +44,23 @@ To use Aura.Router, you will first need to install it:
 $ composer require aura/router
 ```
 
+## Quick Start
+
+At its simplest, you can instantiate a `Zend\Expressive\Router\Aura` instance
+with no arguments; it will create the underlying Aura.Router objects required
+and compose them for you:
+
+```php
+use Zend\Expressive\Router\Aura;
+
+$router = new Aura();
+```
+
 ## Programmatic Creation
 
-To handle it programmatically, you will need to setup the Aura.Router instance
-manually, inject it into a `Zend\Expressive\Router\Aura` instance, and inject
-use that when creating your `Application` instance.
+If you need greater control over the Aura.Router setup and configuration, you
+can create the instances necessary and inject them into
+`Zend\Expressive\Router\Aura` during instantiation.
 
 ```php
 <?php
@@ -81,7 +93,65 @@ $app = AppFactory::create(null, $router);
 
 [We recommend using an Inversion of Control container](../container/intro.md)
 for your applications; as such, in this section we will demonstrate 
-defining two factories:
+two strategies for creating your Aura.Router implementation.
+
+### Basic Router
+
+If you don't need to provide any setup or configuration, you can simply
+instantiate and return an instance of `Zend\Expressive\Router\Aura` for the
+service name `Zend\Expressive\Router\RouterInterface`.
+
+A factory would look like this:
+
+```php
+// in src/Application/Container/RouterFactory.php
+namespace Application\Container;
+
+use Interop\Container\ContainerInterface;
+use Zend\Expressive\Router\Aura;
+
+class RouterFactory
+{
+    /**
+     * @param ContainerInterface $container
+     * @return Aura
+     */
+    public function __invoke(ContainerInterface $container)
+    {
+        return new Aura();
+    }
+}
+```
+
+You would register this with zend-servicemanager using:
+
+```php
+$container->setFactory(
+    'Zend\Expressive\Router\RouterInterface',
+    'Application\Container\RouterFactory'
+);
+```
+
+And in Pimple:
+
+```php
+$pimple['Zend\Expressive\Router\RouterInterface'] = new Application\Container\RouterFactory();
+```
+
+For zend-servicemanager, you can omit the factory entirely, and register the
+class as an invokable:
+
+```php
+$container->setInvokableClass(
+    'Zend\Expressive\Router\RouterInterface',
+    'Zend\Expressive\Router\Aura'
+);
+```
+
+### Advanced Configuration
+
+If you want to provide custom setup or configuration, you can do so. In this
+example, we will be defining two factories:
 
 - A factory to register as and generate an `Aura\Router\Router` instance.
 - A factory registered as `Zend\Expressive\Router\RouterInterface`, which

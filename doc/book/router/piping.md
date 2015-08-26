@@ -1,6 +1,6 @@
 # Routing vs Piping
 
-zend-expressive provides two mechanisms for adding middleware to your
+Expressive provides two mechanisms for adding middleware to your
 application:
 
 - piping, which is a foundation feature of the underlying
@@ -31,9 +31,27 @@ This path segregation, however, is limited: it will only match literal paths.
 This is done purposefully, to provide excellent baseline performance, and to
 prevent feature creep in the library.
 
-zend-expressive uses and exposes piping to users, with one addition: middleware
+Expressive uses and exposes piping to users, with one addition: **middleware
 may be specified by service name, and zend-expressive will lazy-load the service
-only when the middleware is invoked.
+only when the middleware is invoked**.
+
+In order to accomplish the lazy-loading, zend-expressive wraps the calls to fetch
+the middleware from the container and to dispatch that middleware inside a
+closure. This poses a problem for error handling middleware, however, as
+zend-stratigility identifies error handling middleware by its arity (number of
+function arguments); as such, zend-expressive defines an additional method for
+piping service-driven error handling middleware, `pipeErrorHandler()`. The
+method has the same signature as `pipe()`:
+
+```php
+// Without a path:
+$app->pipeErrorHandler('error handler service name');
+
+// Specific to a path:
+$app->pipeErrorHandler('/api', 'error handler service name');
+```
+
+This method will return a closure using the error middleware signature.
 
 ## Routing
 
@@ -69,9 +87,9 @@ circumstances:
 
 - It should (potentially) run on every execution. Examples for such usage
   include:
-  - Logging requests
-  - Performing content negotiation
-  - Handling cookies
+    - Logging requests
+    - Performing content negotiation
+    - Handling cookies
 - Error handling. Typically these should be piped after any normal middleware.
 - Application segregation. You can write re-usable middleware, potentially even
   based off of Expressive, that contains its own routing logic, and compose it

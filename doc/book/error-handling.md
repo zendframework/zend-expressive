@@ -1,6 +1,6 @@
 # Error Handling
 
-zend-expressive provides error handling out of the box, via zend-stratigility's [FinalHandler
+Expressive provides error handling out of the box, via zend-stratigility's [FinalHandler
 implementation](https://github.com/zendframework/zend-stratigility/blob/master/doc/book/api.md#finalhandler).
 This pseudo-middleware is executed in the following conditions:
 
@@ -38,7 +38,7 @@ optionally, a `Zend\Expressive\Template\TemplateInterface` instance, and templat
 404 and general error conditions. This makes it a good choice for use in production.
 
 First, of course, you'll need to select a templating system and ensure you have
-the appropriate dependencies installed; see the [templating documentation](../template/intro.md)
+the appropriate dependencies installed; see the [templating documentation](template/intro.md)
 for information on what we support and how to install supported systems.
 
 Once you have selected your templating system, you can setup the templated error
@@ -62,6 +62,9 @@ respectively, rendering them using our Plates template adapter.
 You can also use the `TemplatedErrorHandler` as a substitute for the `FinalHandler`, without using
 templated capabilities, by omitting the `TemplateInterface` instance when instantiating it. In this
 case, the response message bodies will be empty, though the response status will reflect the error.
+
+See the section titled "Container Factories and Configuration", below, for techniques on configuring
+the `TemplatedErrorHandler` as your final handler within a container-based application.
 
 ## Whoops
 
@@ -121,11 +124,17 @@ You can add more handlers if desired.
 Internally, when an exception is discovered, zend-expressive adds some data to the whoops output,
 primarily around the request information (URI, HTTP request method, route match attributes, etc.).
 
+See the next section for techniques on configuring the `WhoopsErrorHandler` as your final handler
+within a container-based application.
+
 ## Container Factories and Configuration
 
 The above may feel like a bit much when creating your application. As such, we provide several
 factories that work with [container-interop](https://github.com/container-interop/container-interop)-compatible
 container implementations to simplify setup.
 
-See the [container factory documentation](../container/factories.md) for
-details.
+In each case, you should register the selected error handler's factory as the service
+`Zend\Expressive\FinalHandler`.
+
+- For the `TemplatedErrorHandler`, use [`Zend\Expressive\Container\TemplatedErrorHandlerFactory`](container/factories.md#templatederrorhandlerfactory).
+- For the `WhoopsErrorHandler`, use [`Zend\Expressive\Container\WhoopsErrorHandlerFactory`](container/factories.md#whoopserrorhandlerfactory).

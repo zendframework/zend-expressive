@@ -1,7 +1,8 @@
 # Containers
 
-zend-expressive promotes and advocates the usage of
+Expressive promotes and advocates the usage of
 [Dependency Injection](http://www.martinfowler.com/articles/injection.html)/[Inversion of Control](https://en.wikipedia.org/wiki/Inversion_of_control)
+(also referred to as DI — or DIC — and IoC, respectively)
 containers when writing your applications. These should be used for the
 following:
 
@@ -21,10 +22,8 @@ examples.
 
 At this time, we document support for the following specific containers:
 
-- [zend-servicemanager](https://github.com/zendframework/zend-servicemanager):
-  `composer require zendframework/zend-servicemanager`
-- [pimple-interop](https://github.com/moufmouf/pimple-interop):
-  `composer require mouf/pimple-interop`
+- [zend-servicemanager](zend-servicemanager.md)
+- [pimple-interop](pimple.md)
 
 > ## Service Names
 >

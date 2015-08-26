@@ -1,6 +1,6 @@
 # Provided Factories
 
-zend-expressive provides several factories compatible with container-interop to
+Expressive provides several factories compatible with container-interop to
 facilitate setting up common dependencies. The following is a list of provided
 containers, what they will create, the suggested service name, and any
 additional dependencies they may require.

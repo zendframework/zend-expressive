@@ -14,8 +14,8 @@ that composes:
 
 You can define the `Application` instance in several ways:
 
-- Direct instantiation (which requires providing several dependencies).
-- The `AppFactory` (which will use sane defaults, but allows injecting alternate
+- Direct instantiation, which requires providing several dependencies.
+- The `AppFactory`, which will use sane defaults, but allows injecting alternate
   container and/or router implementations.
 - Via a dependency injection container; we provide a factory for setting up all
   aspects of the instance via configuration and other defined services.
@@ -50,6 +50,9 @@ public function __construct(
 );
 ```
 
+If no container is provided at instantiation, then all routed and piped
+middleware **must** be provided as callables.
+
 ### AppFactory
 
 `Zend\Expressive\AppFactory` provides a convenience layer for creating an
@@ -63,6 +66,11 @@ AppFactory::create(
     Zend\Expressive\Router\RouterInterface $router = null
 );
 ```
+
+When no container or router are provided, it defaults to:
+
+- zend-servicemanager for the container.
+- Aura.Router for the router.
 
 ### Container factory
 
@@ -114,7 +122,7 @@ Each of the methods `get()`, `post()`, `put()`, `patch()`, and `delete()`
 proxies to `route()` and has the signature:
 
 ```php
-public function route(
+function (
     $pathOrRoute,
     $middleware = null,
     $name = null
@@ -175,11 +183,14 @@ Routing is accomplished via dedicated a dedicated middleware method,
 `Application::routeMiddleware()`. It is an instance method, and can be
 piped/registered with other middleware platforms if desired.
 
-Internally, any time `route()` is called (including via one of the proxy
-methods), or during `__invoke()` (the exposed application middleware), the
-instance will call `pipeRoutingMiddleware()`, which will pipe
-`Application::routeMiddleware` to the middleware pipeline. You can also pipe it
-manually if desired.
+Internally, the first time `route()` is called (including via one of the proxy
+methods), or, if never called, when `__invoke()` (the exposed application
+middleware) is called, the instance will pipe `Application::routeMiddleware` to
+the middleware pipeline. You can also pipe it manually if desired:
+
+```php
+$app->pipeRoutingMiddleware();
+```
 
 ## Retrieving dependencies
 
