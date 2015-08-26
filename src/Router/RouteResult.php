@@ -76,7 +76,7 @@ class RouteResult
     }
 
     /**
-     * Create an instance repesenting a route failure.
+     * Create an instance representing a route failure.
      *
      * @param null|int|array $methods HTTP methods allowed for the current URI, if any
      * @return static
@@ -108,7 +108,7 @@ class RouteResult
     }
 
     /**
-     * Retreive the matched route name, if possible.
+     * Retrieve the matched route name, if possible.
      *
      * If this result represents a failure, return false; otherwise, return the
      * matched route name.
