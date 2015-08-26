@@ -13,12 +13,19 @@ use Zend\View\Model\ModelInterface;
 use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\RendererInterface;
 use Zend\View\Renderer\PhpRenderer;
+use Zend\View\Resolver\AggregateResolver;
 use Zend\View\Resolver\ResolverInterface;
-use Zend\View\Resolver\TemplatePathStack;
 use Zend\Expressive\Exception;
 
 /**
  * Template implementation bridging zendframework/zend-view.
+ *
+ * This implementation provides additional capabilities.
+ *
+ * First, it always ensures the resolver is an AggregateResolver, pushing any
+ * non-Aggregate into a new AggregateResolver instance. Additionally, it always
+ * registers a ZendView\NamespacedPathStackResolver at priority 0 (lower than
+ * default) in the Aggregate to ensure we can add and resolve namespaced paths.
  */
 class ZendView implements TemplateInterface
 {
@@ -40,7 +47,7 @@ class ZendView implements TemplateInterface
     private $renderer;
 
     /**
-     * @var ResolverInterface
+     * @var ZendView\NamespacedPathStackResolver
      */
     private $resolver;
 
@@ -67,9 +74,17 @@ class ZendView implements TemplateInterface
     {
         if (null === $renderer) {
             $renderer = $this->createRenderer();
+            $resolver = $renderer->resolver();
+        } else {
+            $resolver = $renderer->resolver();
+            if (! $resolver instanceof AggregateResolver) {
+                $aggregate = $this->getDefaultResolver();
+                $aggregate->attach($resolver);
+                $resolver = $aggregate;
+            } elseif (! $this->hasNamespacedResolver($resolver)) {
+                $this->injectNamespacedResolver($resolver);
+            }
         }
-        $this->renderer = $renderer;
-        $this->resolver = $renderer->resolver();
 
         if ($layout && is_string($layout)) {
             $model = new ViewModel();
@@ -85,29 +100,9 @@ class ZendView implements TemplateInterface
             ));
         }
 
-        $this->layout = $layout;
-    }
-
-    /**
-     * Returns a PhpRenderer object
-     *
-     * @return PhpRenderer
-     */
-    private function createRenderer()
-    {
-        $render = new PhpRenderer();
-        $render->setResolver($this->getDefaultResolver());
-        return $render;
-    }
-
-    /**
-     * Get the default resolver
-     *
-     * @return TemplatePathStack
-     */
-    private function getDefaultResolver()
-    {
-        return new TemplatePathStack();
+        $this->renderer = $renderer;
+        $this->resolver = $this->getNamespacedResolver($resolver);
+        $this->layout   = $layout;
     }
 
     /**
@@ -143,10 +138,7 @@ class ZendView implements TemplateInterface
      */
     public function addPath($path, $namespace = null)
     {
-        $this->resolver->addPath($path);
-
-        // Normalize the path to be compliant with the TemplatePathStack
-        $this->paths[TemplatePathStack::normalizePath($path)] = $namespace;
+        $this->resolver->addPath($path, $namespace);
     }
 
     /**
@@ -157,10 +149,20 @@ class ZendView implements TemplateInterface
     public function getPaths()
     {
         $paths = [];
-        foreach ($this->resolver->getPaths() as $path) {
-            $namespace = array_key_exists($path, $this->paths) ? $this->paths[$path] : null;
-            $paths[]   = new TemplatePath($path, $namespace);
+
+        foreach ($this->resolver->getPaths() as $namespace => $namespacedPaths) {
+            if ($namespace === ZendView\NamespacedPathStackResolver::DEFAULT_NAMESPACE
+                || empty($namespace)
+                || is_int($namespace)
+            ) {
+                $namespace = null;
+            }
+
+            foreach ($namespacedPaths as $path) {
+                $paths[] = new TemplatePath($path, $namespace);
+            }
         }
+
         return $paths;
     }
 
@@ -245,5 +247,69 @@ class ZendView implements TemplateInterface
         }
 
         return $renderer->render($model);
+    }
+
+    /**
+     * Returns a PhpRenderer object
+     *
+     * @return PhpRenderer
+     */
+    private function createRenderer()
+    {
+        $renderer = new PhpRenderer();
+        $renderer->setResolver($this->getDefaultResolver());
+        return $renderer;
+    }
+
+    /**
+     * Get the default resolver
+     *
+     * @return ZendView\NamespacedPathStackResolver
+     */
+    private function getDefaultResolver()
+    {
+        $resolver = new AggregateResolver();
+        $this->injectNamespacedResolver($resolver);
+        return $resolver;
+    }
+
+    /**
+     * Attaches a new ZendView\NamespacedPathStackResolver to the AggregateResolver
+     *
+     * A priority of 0 is used, to ensure it is the last queried.
+     *
+     * @param AggregateResolver $aggregate
+     */
+    private function injectNamespacedResolver(AggregateResolver $aggregate)
+    {
+        $aggregate->attach(new ZendView\NamespacedPathStackResolver(), 0);
+    }
+
+    /**
+     * @param AggregateResolver $aggregate
+     * @return bool
+     */
+    private function hasNamespacedResolver(AggregateResolver $aggregate)
+    {
+        foreach ($aggregate as $resolver) {
+            if ($resolver instanceof ZendView\NamespacedPathStackResolver) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param AggregateResolver $aggregate
+     * @return null|ZendView\NamespacedPathStackResolver
+     */
+    private function getNamespacedResolver(AggregateResolver $aggregate)
+    {
+        foreach ($aggregate as $resolver) {
+            if ($resolver instanceof ZendView\NamespacedPathStackResolver) {
+                return $resolver;
+            }
+        }
     }
 }
