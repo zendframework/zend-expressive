@@ -37,7 +37,7 @@ use Whoops\Run as Whoops;
  * ]
  * </code>
  *
- * All values are booleans; ommision of any implies boolean false.
+ * All values are booleans; omission of any implies boolean false.
  */
 class WhoopsFactory
 {

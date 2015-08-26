@@ -157,7 +157,7 @@ namespace Zend\Expressive\Router;
 class RouteResult
 {
     /**
-     * Create an instance repesenting a route success.
+     * Create an instance representing a route success.
      *
      * @param string $name Name of matched route.
      * @param callable|string $middleware Middleware associated with the
@@ -168,7 +168,7 @@ class RouteResult
     public static function fromRouteMatch($name, $middleware, array $params);
 
     /**
-     * Create an instance repesenting a route failure.
+     * Create an instance representing a route failure.
      *
      * @param null|int|array $methods HTTP methods allowed for the current URI, if any
      * @return static
@@ -183,7 +183,7 @@ class RouteResult
     public function isSuccess();
 
     /**
-     * Retreive the matched route name, if possible.
+     * Retrieve the matched route name, if possible.
      *
      * If this result represents a failure, return false; otherwise, return the
      * matched route name.
@@ -203,7 +203,7 @@ class RouteResult
     /**
      * Returns the matched params.
      *
-     * Guaranted to return an array, even if it is simply empty.
+     * Guaranteed to return an array, even if it is simply empty.
      *
      * @return array
      */
