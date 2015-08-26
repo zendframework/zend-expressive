@@ -160,4 +160,18 @@ class PlatesTest extends TestCase
         $content = str_replace('<?=$this->e($name)?>', $search, $content);
         $this->assertEquals($content, $result);
     }
+
+    /**
+     * @group namespacing
+     */
+    public function testProperlyResolvesNamespacedTemplate()
+    {
+        $template = new PlatesTemplate();
+        $template->addPath(__DIR__ . '/TestAsset/test', 'test');
+
+        $expected = file_get_contents(__DIR__ . '/TestAsset/test/test.php');
+        $test     = $template->render('test::test');
+
+        $this->assertSame($expected, $test);
+    }
 }

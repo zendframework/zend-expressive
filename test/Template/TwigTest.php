@@ -143,4 +143,32 @@ class TwigTest extends TestCase
         $content = str_replace('{{ name }}', $search, $content);
         $this->assertEquals($content, $result);
     }
+
+    /**
+     * @group namespacing
+     */
+    public function testProperlyResolvesNamespacedTemplate()
+    {
+        $template = new TwigTemplate();
+        $template->addPath(__DIR__ . '/TestAsset/test', 'test');
+
+        $expected = file_get_contents(__DIR__ . '/TestAsset/test/test.html');
+        $test     = $template->render('test::test');
+
+        $this->assertSame($expected, $test);
+    }
+
+    /**
+     * @group namespacing
+     */
+    public function testResolvesNamespacedTemplateWithSuffix()
+    {
+        $template = new TwigTemplate();
+        $template->addPath(__DIR__ . '/TestAsset/test', 'test');
+
+        $expected = file_get_contents(__DIR__ . '/TestAsset/test/test.js');
+        $test     = $template->render('test::test.js');
+
+        $this->assertSame($expected, $test);
+    }
 }

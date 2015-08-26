@@ -224,4 +224,18 @@ class ZendViewTest extends TestCase
         $this->assertContains($content, $result);
         $this->assertContains('<title>ALTERNATE LAYOUT PAGE</title>', $result);
     }
+
+    /**
+     * @group namespacing
+     */
+    public function testProperlyResolvesNamespacedTemplate()
+    {
+        $template = new ZendView();
+        $template->addPath(__DIR__ . '/TestAsset/test', 'test');
+
+        $expected = file_get_contents(__DIR__ . '/TestAsset/test/test.phtml');
+        $test     = $template->render('test::test');
+
+        $this->assertSame($expected, $test);
+    }
 }
