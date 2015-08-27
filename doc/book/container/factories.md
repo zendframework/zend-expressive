@@ -15,19 +15,19 @@ namespace, and define an `__invoke()` method that accepts an
 - **Suggested Name**: `Zend\Expressive\Application`
 - **Requires**: no additional services are required.
 - **Optional**:
-  - `Zend\Expressive\Router\RouterInterface`. When provided, the service will
-    be used to construct the `Application` instance; otherwise, an Aura router
-    implementation will be used.
-  - `Zend\Expressive\FinalHandler`. This is a meta-service, as the only concrete
-    type required is a callable that can be used as a final middleware in the
-    case that the stack is exhausted before execution ends. By default, an
-    instance of `Zend\Stratigility\FinalHandler` will be used.
-  - `Zend\Diactoros\Response\EmitterInterface`. If none is provided, an instance
-    of `Zend\Expressive\Emitter\EmitterStack` composing a
-    `Zend\Diactoros\Response\SapiEmitter` instance will be used.
-  - `config`, an array or `ArrayAccess` instance. This will be used to seed the
-    application instance with pre/post pipeline middleware and/or routed
-    middleware (see more below).
+    - `Zend\Expressive\Router\RouterInterface`. When provided, the service will
+      be used to construct the `Application` instance; otherwise, an Aura router
+      implementation will be used.
+    - `Zend\Expressive\FinalHandler`. This is a meta-service, as the only concrete
+      type required is a callable that can be used as a final middleware in the
+      case that the stack is exhausted before execution ends. By default, an
+      instance of `Zend\Stratigility\FinalHandler` will be used.
+    - `Zend\Diactoros\Response\EmitterInterface`. If none is provided, an instance
+      of `Zend\Expressive\Emitter\EmitterStack` composing a
+      `Zend\Diactoros\Response\SapiEmitter` instance will be used.
+    - `config`, an array or `ArrayAccess` instance. This will be used to seed the
+      application instance with pre/post pipeline middleware and/or routed
+      middleware (see more below).
 
 Additionally, the container instance itself is injected into the `Application`
 instance.
@@ -92,23 +92,23 @@ order to seed the `Application` instance:
 
   Each route *requires*:
 
-  - `path`: the path to match. Format will be based on the router you choose for
-    your project.
-
-  - `middleware`: a callable or a service name for the middleware to execute
-    when the route matches.
+    - `path`: the path to match. Format will be based on the router you choose for
+      your project.
+  
+    - `middleware`: a callable or a service name for the middleware to execute
+      when the route matches.
 
   Optionally, the route definition may provide:
 
-  - `allowed_methods`: an array of allowed HTTP methods. If not provided, the
-    application assumes any method is allowed.
-
-  - `name`: if not provided, the path will be used as the route name (and, if
-    specific HTTP methods are allowed, a list of those).
-
-  - `options`: a key/value set of additional options to pass to the underlying
-    router implementation for the given route. (Typical use cases include
-    passing constraints or default values.)
+    - `allowed_methods`: an array of allowed HTTP methods. If not provided, the
+      application assumes any method is allowed.
+  
+    - `name`: if not provided, the path will be used as the route name (and, if
+      specific HTTP methods are allowed, a list of those).
+  
+    - `options`: a key/value set of additional options to pass to the underlying
+      router implementation for the given route. (Typical use cases include
+      passing constraints or default values.)
 
 ## TemplatedErrorHandlerFactory
 
@@ -116,11 +116,11 @@ order to seed the `Application` instance:
 - **Suggested Name**: `Zend\Expressive\FinalHandler`
 - **Requires**: no additional services are required.
 - **Optional**:
-  - `Zend\Expressive\Template\TemplateInterface`. If not provided, the error
-    handler will not use templated responses.
-  - `config`, an array or `ArrayAccess` instance. This will be used to seed the
-    `TemplatedErrorHandler` instance with template names to use for errors (see
-    more below).
+    - `Zend\Expressive\Template\TemplateInterface`. If not provided, the error
+      handler will not use templated responses.
+    - `config`, an array or `ArrayAccess` instance. This will be used to seed the
+      `TemplatedErrorHandler` instance with template names to use for errors (see
+      more below).
 
 When the `config` service is present, the factory can utilize the
 `zend-expressive` top-level key, with the `error_handler` second-level key, to
@@ -140,14 +140,14 @@ seed the `Templated` instance:
 - **Provides**: `Zend\Expressive\TemplatedErrorHandler`
 - **Suggested Name**: `Zend\Expressive\FinalHandler`
 - **Requires**:
-  - `Zend\Expressive\Whoops`, which should provide a `Whoops\Run` instance.
-  - `Zend\Expressive\WhoopsPageHandler`, which should provide a
-    `Whoops\Handler\PrettyPageHandler` instance.
+    - `Zend\Expressive\Whoops`, which should provide a `Whoops\Run` instance.
+    - `Zend\Expressive\WhoopsPageHandler`, which should provide a
+      `Whoops\Handler\PrettyPageHandler` instance.
 - **Optional**:
-  - `Zend\Expressive\Template\TemplateInterface`. If not provided, the error
-    handler will not use templated responses.
-  - `config`, an array or `ArrayAccess` instance. This will be used to seed the
-    instance with template names to use for errors (see more below).
+    - `Zend\Expressive\Template\TemplateInterface`. If not provided, the error
+      handler will not use templated responses.
+    - `config`, an array or `ArrayAccess` instance. This will be used to seed the
+      instance with template names to use for errors (see more below).
 
 This factory uses `config` in the same way as the
 `TemplatedErrorHandlerFactory`.
@@ -157,11 +157,11 @@ This factory uses `config` in the same way as the
 - **Provides**: `Whoops\Run`
 - **Suggested Name**: `Zend\Expressive\Whoops`
 - **Requires**:
-  - `Zend\Expressive\WhoopsPageHandler`
+    - `Zend\Expressive\WhoopsPageHandler`
 - **Optional**:
-  - `config`, an array or `ArrayAccess` instance. This will be used to seed
-    additional page handlers, specifically the `JsonResponseHandler` (see
-    more below).
+    - `config`, an array or `ArrayAccess` instance. This will be used to seed
+      additional page handlers, specifically the `JsonResponseHandler` (see
+      more below).
 
 This factory creates and configures a `Whoops\Run` instance so that it will work
 properly with `Zend\Expressive\Application`; this includes disabling immediate
@@ -188,10 +188,10 @@ with no `JsonResponseHandler` composed will be created.
 - **Provides**: `Whoops\Handler\PrettyPageHandler`
 - **Suggested Name**: `Zend\Expressive\WhoopsPageHandler`
 - **Optional**:
-  - `config`, an array or `ArrayAccess` instance. This will be used to further
-    configure the `PrettyPageHandler` instance, specifically with editor
-    configuration (for linking files such that they open in the configured
-    editor).
+    - `config`, an array or `ArrayAccess` instance. This will be used to further
+      configure the `PrettyPageHandler` instance, specifically with editor
+      configuration (for linking files such that they open in the configured
+      editor).
 
 It consumes the following `config` structure:
 
