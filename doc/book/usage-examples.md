@@ -268,9 +268,9 @@ In `config/config.php`, place the following:
 
 ```php
 <?php
-use Zend\Config\Config;
+use Zend\Config\Factory as ConfigFactory;
 
-return Config::fromFiles(
+return ConfigFactory::fromFiles(
     glob('config/autoload/{global,local}.php', GLOB_BRACE)
 );
 ```
@@ -298,9 +298,9 @@ In `config/dependencies.php`, place the following:
 
 ```php
 <?php
-use Zend\Config\Config;
+use Zend\Config\Factory as ConfigFactory;
 
-return Config::fromFiles(
+return ConfigFactory::fromFiles(
     glob('config/autoload/dependencies.{global,local}.php', GLOB_BRACE)
 );
 ```
