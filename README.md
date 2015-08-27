@@ -26,7 +26,7 @@ features:
 Install this library using composer:
 
 ```bash
-$ composer require zendframework/zend-expressive:*@dev
+$ composer require zendframework/zend-expressive
 ```
 
 You will also need a router. We currently support:
