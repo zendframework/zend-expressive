@@ -15,8 +15,8 @@ use Prophecy\Argument;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
-use Zend\Expressive\TemplatedErrorHandler;
 use Zend\Expressive\Template\TemplateInterface;
+use Zend\Expressive\TemplatedErrorHandler;
 
 class TemplatedErrorHandlerTest extends TestCase
 {

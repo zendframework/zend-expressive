@@ -10,8 +10,8 @@
 namespace ZendTest\Expressive;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Response;
+use Zend\Diactoros\ServerRequest;
 use Zend\Expressive\Application;
 use Zend\Expressive\Router\RouteResult;
 use Zend\Expressive\Router\RouterInterface;
