@@ -18,7 +18,7 @@ injection container with the following features:
 
 ## Installing Aura.Di
 
-Aura.Di v3 only implement [container-interop](https://github.com/container-interop/container-interop).
+Aura.Di v3 only implements [container-interop](https://github.com/container-interop/container-interop).
 
 ```bash
 $ composer require "aura/di:3.0.*@beta"
