@@ -5,6 +5,6 @@
         {"Container Factories": "factories.md"},
         {"Using zend-servicemanager": "zend-servicemanager.md"},
         {"Using Pimple": "pimple.md"}
+        {"Using Aura.Di": "aura-di.md"}
     ]
 }
-
