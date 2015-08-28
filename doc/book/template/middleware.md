@@ -96,8 +96,8 @@ class EntryMiddleware
 Alternately, you can write to the composed response:
 
 ```php
-$response->getBody()->write($this->templates->render('blog::entry'), [
+$response->getBody()->write($this->templates->render('blog::entry', [
     'entry' => $entry,
-]);
+]));
 return $response;
 ```
