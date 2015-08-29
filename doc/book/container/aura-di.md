@@ -28,15 +28,27 @@ $ composer require "aura/di:3.0.*@beta"
 
 Aura.Di can help you to reorganize your code better with
 [ContainerConfig classes](http://auraphp.com/packages/Aura.Di/config.html) and
-[two step configuration](http://auraphp.com/blog/2014/04/07/two-stage-config/).
-
-The bare minimal code needed to make zend-expressive work is
+[two step configuration](http://auraphp.com/blog/2014/04/07/two-stage-config/)
+in this example, we'll have that in `config/services.php`.
 
 ```php
 <?php
-// PROJECT_PATH/config/Common.php
-// Assuming you have added the autoload path
+use Aura\Di\ContainerBuilder;
 
+$container_builder = new ContainerBuilder();
+
+// use the builder to create and configure a container
+// using an array of ContainerConfig classes
+// make sure the classes can be autoloaded
+return $container_builder->newConfiguredInstance([
+    'Application\_Config\Common',
+]);
+```
+
+The bare minimal `ContainerConfig ` code needed to make zend-expressive work is
+
+```php
+<?php
 namespace Application\_Config;
 
 use Aura\Di\Container;
@@ -98,22 +110,9 @@ class Common extends ContainerConfig
 Your bootstrap (typically `public/index.php`) will then look like this:
 
 ```php
-<?php
-// PROJECT_PATH/public/index.php
-use Aura\Di\ContainerBuilder;
-
 chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
-
-$container_builder = new ContainerBuilder();
-
-// use the builder to create and configure a container
-// using an array of ContainerConfig classes
-$di = $container_builder->newConfiguredInstance([
-    'Application\_Config\Common',
-]);
-
-$app = $di->get('Zend\Expressive\Application');
-
+$container = require 'config/services.php';
+$app = $container->get('Zend\Expressive\Application');
 $app->run();
 ```
