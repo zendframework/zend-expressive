@@ -156,6 +156,17 @@ class Application extends MiddlewarePipe
     }
 
     /**
+     * @param string|Router\Route $path
+     * @param callable|string     $middleware Middleware (or middleware service name) to associate with route.
+     * @param null|string         $name the name of the route
+     * @return Router\Route
+     */
+    public function any($path, $middleware, $name = null)
+    {
+        return $this->route($path, $middleware, $this->httpRouteMethods, $name);
+    }
+
+    /**
      * Overload pipe() operation.
      *
      * Middleware piped may be either callables or service names. Middleware
