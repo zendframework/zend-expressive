@@ -19,7 +19,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 /**
  * Router implementation bridging the Aura.Router.
  */
-class Aura implements RouterInterface
+class AuraRouter implements RouterInterface
 {
     /**
      * Aura router

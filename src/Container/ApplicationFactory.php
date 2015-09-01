@@ -15,7 +15,7 @@ use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Expressive\Application;
 use Zend\Expressive\Emitter\EmitterStack;
 use Zend\Expressive\Exception;
-use Zend\Expressive\Router\Aura as AuraRouter;
+use Zend\Expressive\Router\AuraRouter as AuraRouter;
 use Zend\Expressive\Router\RouterInterface;
 
 /**

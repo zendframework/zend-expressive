@@ -46,27 +46,27 @@ $ composer require aura/router
 
 ## Quick Start
 
-At its simplest, you can instantiate a `Zend\Expressive\Router\Aura` instance
+At its simplest, you can instantiate a `Zend\Expressive\Router\AuraRouter` instance
 with no arguments; it will create the underlying Aura.Router objects required
 and compose them for you:
 
 ```php
-use Zend\Expressive\Router\Aura;
+use Zend\Expressive\Router\AuraRouter;
 
-$router = new Aura();
+$router = new AuraRouter();
 ```
 
 ## Programmatic Creation
 
 If you need greater control over the Aura.Router setup and configuration, you
 can create the instances necessary and inject them into
-`Zend\Expressive\Router\Aura` during instantiation.
+`Zend\Expressive\Router\AuraRouter` during instantiation.
 
 ```php
 <?php
 use Aura\Router\RouterFactory;
 use Zend\Expressive\AppFactory;
-use Zend\Expressive\Router\Aura as AuraBridge;
+use Zend\Expressive\Router\AuraRouter as AuraBridge;
 
 $auraRouter = (new RouterFactory())->newInstance();
 $auraRouter->setSecure(true);
@@ -98,7 +98,7 @@ two strategies for creating your Aura.Router implementation.
 ### Basic Router
 
 If you don't need to provide any setup or configuration, you can simply
-instantiate and return an instance of `Zend\Expressive\Router\Aura` for the
+instantiate and return an instance of `Zend\Expressive\Router\AuraRouter` for the
 service name `Zend\Expressive\Router\RouterInterface`.
 
 A factory would look like this:
@@ -108,17 +108,17 @@ A factory would look like this:
 namespace Application\Container;
 
 use Interop\Container\ContainerInterface;
-use Zend\Expressive\Router\Aura;
+use Zend\Expressive\Router\AuraRouter;
 
 class RouterFactory
 {
     /**
      * @param ContainerInterface $container
-     * @return Aura
+     * @return AuraRouter
      */
     public function __invoke(ContainerInterface $container)
     {
-        return new Aura();
+        return new AuraRouter();
     }
 }
 ```
@@ -144,7 +144,7 @@ class as an invokable:
 ```php
 $container->setInvokableClass(
     'Zend\Expressive\Router\RouterInterface',
-    'Zend\Expressive\Router\Aura'
+    'Zend\Expressive\Router\AuraRouter'
 );
 ```
 
@@ -155,7 +155,7 @@ example, we will be defining two factories:
 
 - A factory to register as and generate an `Aura\Router\Router` instance.
 - A factory registered as `Zend\Expressive\Router\RouterInterface`, which
-  creates and returns a `Zend\Expressive\Router\Aura` instance composing the
+  creates and returns a `Zend\Expressive\Router\AuraRouter` instance composing the
   `Aura\Router\Router` instance.
 
 Sound difficult? It's not; we've essentially done it above already!
@@ -189,7 +189,7 @@ class AuraRouterFactory
 namespace Application\Container;
 
 use Interop\Container\ContainerInterface;
-use Zend\Expressive\Router\Aura as AuraBridge;
+use Zend\Expressive\Router\AuraRouter as AuraBridge;
 
 class RouterFactory
 {

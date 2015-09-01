@@ -16,7 +16,7 @@ use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Expressive\Application;
-use Zend\Expressive\Router\Aura as AuraRouter;
+use Zend\Expressive\Router\AuraRouter as AuraRouter;
 use Zend\Expressive\TemplatedErrorHandler;
 
 class IntegrationTest extends TestCase
