@@ -163,7 +163,7 @@ class Application extends MiddlewarePipe
      */
     public function any($path, $middleware, $name = null)
     {
-        return $this->route($path, $middleware, Router\Route::HTTP_METHOD_ANY, $name);
+        return $this->route($path, $middleware, null, $name);
     }
 
     /**
