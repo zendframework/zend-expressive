@@ -5,7 +5,7 @@ implementation; for HTTP applications, the default used in ZF2 applications is
 `Zend\Mvc\Router\Http\TreeRouteStack`, which can compose a number of different
 routes of differing types in order to perform routing.
 
-The ZF2 bridge we provide, `Zend\Expressive\Router\Zf`, uses the
+The ZF2 bridge we provide, `Zend\Expressive\Router\Zf2Router`, uses the
 `TreeRouteStack`, and injects `Segment` routes to it; these are in turn injected
 with `Method` routes, and a special "method not allowed" route at negative
 priority to enable us to distinguish between failure to match the path and
@@ -16,7 +16,7 @@ If you instantiate it with no arguments, it will create an empty
 
 ```php
 use Zend\Expressive\AppFactory;
-use Zend\Expressive\Router\Zf2 as Zf2Router;
+use Zend\Expressive\Router\Zf2Router;
 
 $app = AppFactory(null, new Zf2Router());
 ```
@@ -52,14 +52,14 @@ $ composer require zendframework/zend-mvc zendframework/zend-psr7bridge
 
 ## Quick Start
 
-At its simplest, you can instantiate a `Zend\Expressive\Router\Zf2` instance
+At its simplest, you can instantiate a `Zend\Expressive\Router\Zf2Router` instance
 with no arguments; it will create the underlying zend-mvc routing objects
 required and compose them for you:
 
 ```php
-use Zend\Expressive\Router\Zf2;
+use Zend\Expressive\Router\Zf2Router;
 
-$router = new Zf2();
+$router = new Zf2Router();
 ```
 
 ## Programmatic Creation
@@ -70,7 +70,7 @@ you can create the instances necessary and inject them into
 
 ```php
 use Zend\Expressive\AppFactory;
-use Zend\Expressive\Router\Zf2 as Zf2Bridge;
+use Zend\Expressive\Router\Zf2Router as Zf2Bridge;
 use Zend\Mvc\Router\Http\TreeRouteStack;
 
 $zf2Router = new TreeRouteStack();
@@ -101,7 +101,7 @@ two strategies for creating your zend-mvc router implementation.
 ### Basic Router
 
 If you don't need to provide any setup or configuration, you can simply
-instantiate and return an instance of `Zend\Expressive\Router\Zf2` for the
+instantiate and return an instance of `Zend\Expressive\Router\Zf2Router` for the
 service name `Zend\Expressive\Router\RouterInterface`.
 
 A factory would look like this:
@@ -111,17 +111,17 @@ A factory would look like this:
 namespace Application\Container;
 
 use Interop\Container\ContainerInterface;
-use Zend\Expressive\Router\Zf2;
+use Zend\Expressive\Router\Zf2Router;
 
 class RouterFactory
 {
     /**
      * @param ContainerInterface $container
-     * @return Zf2
+     * @return Zf2Router
      */
     public function __invoke(ContainerInterface $container)
     {
-        return new Zf2();
+        return new Zf2Router();
     }
 }
 ```
@@ -147,7 +147,7 @@ class as an invokable:
 ```php
 $container->setInvokableClass(
     'Zend\Expressive\Router\RouterInterface',
-    'Zend\Expressive\Router\Zf2'
+    'Zend\Expressive\Router\Zf2Router'
 );
 ```
 
@@ -159,7 +159,7 @@ example, we will be defining two factories:
 - A factory to register as and generate an `Zend\Mvc\Router\Http\TreeRouteStack`
   instance.
 - A factory registered as `Zend\Expressive\Router\RouterInterface`, which
-  creates and returns a `Zend\Expressive\Router\Zf2` instance composing the
+  creates and returns a `Zend\Expressive\Router\Zf2Router` instance composing the
   `Zend\Mvc\Router\Http\TreeRouteStack` instance.
 
 Sound difficult? It's not; we've essentially done it above already!
@@ -191,7 +191,7 @@ class TreeRouteStackFactory
 namespace Application\Container;
 
 use Interop\Container\ContainerInterface;
-use Zend\Expressive\Router\Zf2 as Zf2Bridge;
+use Zend\Expressive\Router\Zf2Router as Zf2Bridge;
 
 class RouterFactory
 {

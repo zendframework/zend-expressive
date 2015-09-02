@@ -11,12 +11,11 @@ namespace ZendTest\Expressive\Router;
 
 use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Argument;
-use ReflectionProperty;
-use Zend\Expressive\Router\Zf2 as Zf2Router;
+use Zend\Expressive\Router\Zf2Router;
 use Zend\Expressive\Router\Route;
 use Zend\Diactoros\ServerRequest;
 
-class Zf2Test extends TestCase
+class Zf2RouterTest extends TestCase
 {
     public function setUp()
     {
