@@ -10,8 +10,8 @@
 namespace Zend\Expressive\Template;
 
 use LogicException;
-use Twig_Loader_Filesystem as TwigFilesystem;
 use Twig_Environment as TwigEnvironment;
+use Twig_Loader_Filesystem as TwigFilesystem;
 
 /**
  * Template implementation bridging league/plates

@@ -10,7 +10,7 @@
 namespace ZendTest\Expressive\Router;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Expressive\Router\AuraRouter as AuraRouter;
+use Zend\Expressive\Router\AuraRouter;
 use Zend\Expressive\Router\Route;
 
 class AuraRouterTest extends TestCase

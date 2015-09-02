@@ -11,8 +11,7 @@ namespace ZendTest\Expressive\Router;
 
 use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Argument;
-use ReflectionProperty;
-use Zend\Expressive\Router\Zf2Router as Zf2Router;
+use Zend\Expressive\Router\Zf2Router;
 use Zend\Expressive\Router\Route;
 use Zend\Diactoros\ServerRequest;
 

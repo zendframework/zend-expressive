@@ -11,7 +11,6 @@ namespace Zend\Expressive\Router;
 
 use Psr\Http\Message\ServerRequestInterface as PsrRequest;
 use Zend\Expressive\Exception;
-use Zend\Mvc\Router\Http\Part as PartRoute;
 use Zend\Mvc\Router\Http\TreeRouteStack;
 use Zend\Mvc\Router\RouteMatch;
 use Zend\Psr7Bridge\Psr7ServerRequest;
