@@ -118,7 +118,7 @@ multiple HTTP request methods.
 
 ### get(), post(), put(), patch(), delete(), any()
 
-Each of the methods `get()`, `post()`, `put()`, `patch()`, `delete()`, `any()`
+Each of the methods `get()`, `post()`, `put()`, `patch()`, `delete()`, and `any()`
 proxies to `route()` and has the signature:
 
 ```php
