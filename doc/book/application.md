@@ -116,9 +116,9 @@ where:
 This method is typically only used if you want a single middleware to handle
 multiple HTTP request methods.
 
-### get(), post(), put(), patch(), delete()
+### get(), post(), put(), patch(), delete(), any()
 
-Each of the methods `get()`, `post()`, `put()`, `patch()`, and `delete()`
+Each of the methods `get()`, `post()`, `put()`, `patch()`, `delete()`, `any()`
 proxies to `route()` and has the signature:
 
 ```php
