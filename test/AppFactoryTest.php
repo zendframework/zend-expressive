@@ -33,7 +33,7 @@ class AppFactoryTest extends TestCase
     {
         $app    = AppFactory::create();
         $router = $this->getRouterFromApplication($app);
-        $this->assertInstanceOf('Zend\Expressive\Router\Aura', $router);
+        $this->assertInstanceOf('Zend\Expressive\Router\AuraRouter', $router);
     }
 
     public function testFactoryUsesZf2ServiceManagerByDefault()

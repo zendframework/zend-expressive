@@ -11,7 +11,6 @@ namespace Zend\Expressive\Router;
 
 use Psr\Http\Message\ServerRequestInterface as PsrRequest;
 use Zend\Expressive\Exception;
-use Zend\Mvc\Router\Http\Part as PartRoute;
 use Zend\Mvc\Router\Http\TreeRouteStack;
 use Zend\Mvc\Router\RouteMatch;
 use Zend\Psr7Bridge\Psr7ServerRequest;
@@ -27,7 +26,7 @@ use Zend\Psr7Bridge\Psr7ServerRequest;
  * matches with this special route, we can send the HTTP allowed methods stored
  * for that path.
  */
-class Zf2 implements RouterInterface
+class Zf2Router implements RouterInterface
 {
     const METHOD_NOT_ALLOWED_ROUTE = 'method_not_allowed';
 

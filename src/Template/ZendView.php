@@ -15,7 +15,6 @@ use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\PhpRenderer;
 use Zend\View\Renderer\RendererInterface;
 use Zend\View\Resolver\AggregateResolver;
-use Zend\View\Resolver\ResolverInterface;
 
 /**
  * Template implementation bridging zendframework/zend-view.

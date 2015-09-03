@@ -19,7 +19,7 @@ use Zend\Expressive\Exception;
 /**
  * Router implementation bridging nikic/fast-route.
  */
-class FastRoute implements RouterInterface
+class FastRouteRouter implements RouterInterface
 {
     /**
      * @var callable A factory callback that can return a dispatcher.
