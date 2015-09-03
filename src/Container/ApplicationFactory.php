@@ -14,6 +14,7 @@ use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Expressive\Application;
 use Zend\Expressive\Exception;
 use Zend\Expressive\Router\AuraRouter;
+use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouterInterface;
 
 /**
@@ -165,11 +166,14 @@ class ApplicationFactory
                 ? $spec['allowed_methods']
                 : null;
             $name    = isset($spec['name']) ? $spec['name'] : null;
-            $route   = $app->route($spec['path'], $spec['middleware'], $methods, $name);
+            $methods = (null === $methods) ? Route::HTTP_METHOD_ANY : $methods;
+            $route   = new Route($spec['path'], $spec['middleware'], $methods, $name);
 
             if (isset($spec['options']) && is_array($spec['options'])) {
                 $route->setOptions($spec['options']);
             }
+
+            $app->route($route);
         }
     }
 

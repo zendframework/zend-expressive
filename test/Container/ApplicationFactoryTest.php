@@ -997,4 +997,75 @@ class ApplicationFactoryTest extends TestCase
         $this->assertInstanceOf(Route::class, $route);
         $this->assertEquals('home', $route->getName());
     }
+
+    public function testCanSpecifyRouteOptionsViaConfiguration()
+    {
+        $router = $this->prophesize('Zend\Expressive\Router\RouterInterface');
+        $emitter = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
+        $finalHandler = function ($req, $res, $err = null) {
+        };
+
+        $expected = [
+            'values' => [
+                'foo' => 'bar'
+            ],
+            'tokens' => [
+                'bar' => 'foo'
+            ]
+        ];
+        $config = [
+            'routes' => [
+                [
+                    'path' => '/',
+                    'middleware' => 'HelloWorld',
+                    'name' => 'home',
+                    'allowed_methods' => ['GET'],
+                    'options' => $expected
+                ],
+            ],
+        ];
+
+        $this->container
+            ->has('Zend\Expressive\Router\RouterInterface')
+            ->willReturn(true);
+        $this->container
+            ->get('Zend\Expressive\Router\RouterInterface')
+            ->will(function () use ($router) {
+                return $router->reveal();
+            });
+
+        $this->container
+            ->has('Zend\Diactoros\Response\EmitterInterface')
+            ->willReturn(true);
+        $this->container
+            ->get('Zend\Diactoros\Response\EmitterInterface')
+            ->will(function () use ($emitter) {
+                return $emitter->reveal();
+            });
+
+        $this->container
+            ->has('Zend\Expressive\FinalHandler')
+            ->willReturn(true);
+        $this->container
+            ->get('Zend\Expressive\FinalHandler')
+            ->willReturn($finalHandler);
+
+        $this->container
+            ->has('config')
+            ->willReturn(true);
+
+        $this->container
+            ->get('config')
+            ->willReturn($config);
+
+        $app = $this->factory->__invoke($this->container->reveal());
+
+        $r = new ReflectionProperty($app, 'routes');
+        $r->setAccessible(true);
+        $routes = $r->getValue($app);
+        $route  = array_shift($routes);
+
+        $this->assertInstanceOf(Route::class, $route);
+        $this->assertEquals($expected, $route->getOptions());
+    }
 }
