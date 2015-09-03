@@ -75,17 +75,7 @@ class ApplicationTest extends TestCase
         $this->assertInstanceOf(Route::class, $route);
         $this->assertEquals('/foo', $route->getPath());
         $this->assertSame($this->noopMiddleware, $route->getMiddleware());
-
-        $reflClass    = new \ReflectionClass($this->getApp());
-        $routeMethods = $reflClass->getProperty('httpRouteMethods');
-        $routeMethods->setAccessible(true);
-        $routeMethods = $routeMethods->getValue($this->getApp());
-
-        foreach ($routeMethods as $method) {
-            $this->assertTrue($route->allowsMethod($method));
-        }
-
-        $this->assertSame($routeMethods, $route->getAllowedMethods());
+        $this->assertSame(Route::HTTP_METHOD_ANY, $route->getAllowedMethods());
     }
 
     /**
