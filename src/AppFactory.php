@@ -48,7 +48,7 @@ final class AppFactory
         Router\RouterInterface $router = null
     ) {
         $container = $container ?: new ServiceManager();
-        $router    = $router    ?: new Router\Aura();
+        $router    = $router    ?: new Router\AuraRouter();
         $emitter   = new Emitter\EmitterStack();
         $emitter->push(new SapiEmitter());
 

@@ -11,10 +11,10 @@ namespace ZendTest\Expressive\Router;
 
 use FastRoute\Dispatcher\GroupCountBased as Dispatcher;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Expressive\Router\FastRoute;
+use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\Route;
 
-class FastRouteTest extends TestCase
+class FastRouteRouterTest extends TestCase
 {
     public function setUp()
     {
@@ -27,7 +27,7 @@ class FastRouteTest extends TestCase
 
     public function getRouter()
     {
-        return new FastRoute(
+        return new FastRouteRouter(
             $this->fastRouter->reveal(),
             $this->dispatchCallback
         );
@@ -35,7 +35,7 @@ class FastRouteTest extends TestCase
 
     public function testWillLazyInstantiateAFastRouteCollectorIfNoneIsProvidedToConstructor()
     {
-        $router = new FastRoute();
+        $router = new FastRouteRouter();
         $this->assertAttributeInstanceOf('FastRoute\RouteCollector', 'router', $router);
     }
 
@@ -169,7 +169,7 @@ class FastRouteTest extends TestCase
      */
     public function testCanGenerateUriFromRoutes()
     {
-        $router = new FastRoute();
+        $router = new FastRouteRouter();
         $route1 = new Route('/foo', 'foo', ['POST'], 'foo-create');
         $route2 = new Route('/foo', 'foo', ['GET'], 'foo-list');
         $route3 = new Route('/foo/{id:\d+}', 'foo', ['GET'], 'foo');

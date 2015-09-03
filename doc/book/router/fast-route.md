@@ -10,9 +10,9 @@ dispatcher to match incoming requests against routes.
 
 If you wish to use a different combination — e.g., to use the Group Position
 Based route matcher — you will need to create your own instances and inject them
-into the `Zend\Expressive\Router\FastRoute` class, at instantiation.
+into the `Zend\Expressive\Router\FastRouteRouter` class, at instantiation.
 
-The `FastRoute` bridge class accepts two arguments at instantiation:
+The `FastRouteRouter` bridge class accepts two arguments at instantiation:
 
 - A `FastRoute\RouteCollector` instance
 - A callable that will return a `FastRoute\Dispatcher\RegexBasedAbstract`
@@ -31,7 +31,7 @@ $ composer require nikic/fast-route
 
 ## Quick Start
 
-At its simplest, you can instantiate a `Zend\Expressive\Router\FastRoute` instance
+At its simplest, you can instantiate a `Zend\Expressive\Router\FastRouteRouter` instance
 with no arguments; it will create the underlying FastRoute objects required
 and compose them for you:
 
@@ -45,11 +45,11 @@ $router = new FastRoute();
 
 If you need greater control over the FastRoute setup and configuration, you
 can create the instances necessary and inject them into
-`Zend\Expressive\Router\FastRoute` during instantiation.
+`Zend\Expressive\Router\FastRouteRouter` during instantiation.
 
 To do so, you will need to setup your `RouteCollector` instance and/or
 optionally callable to return your `RegexBasedAbstract` instance manually,
-inject them in your `Zend\Expressive\Router\FastRoute` instance, and inject use
+inject them in your `Zend\Expressive\Router\FastRouteRouter` instance, and inject use
 that when creating your `Application` instance.
 
 ```php
@@ -60,7 +60,7 @@ use FastRoute\RouteCollector;
 use FastRoute\RouteGenerator;
 use FastRoute\RouteParser\Std as RouteParser;
 use Zend\Expressive\AppFactory;
-use Zend\Expressive\Router\FastRoute as FastRouteBridge;
+use Zend\Expressive\Router\FastRouteRouter as FastRouteBridge;
 
 $fastRoute = new RouteCollector(
     new RouteParser(),
@@ -95,7 +95,7 @@ two strategies for creating your FastRoute implementation.
 ### Basic Router
 
 If you don't need to provide any setup or configuration, you can simply
-instantiate and return an instance of `Zend\Expressive\Router\FastRoute` for the
+instantiate and return an instance of `Zend\Expressive\Router\FastRouteRouter` for the
 service name `Zend\Expressive\Router\RouterInterface`.
 
 A factory would look like this:
@@ -105,17 +105,17 @@ A factory would look like this:
 namespace Application\Container;
 
 use Interop\Container\ContainerInterface;
-use Zend\Expressive\Router\FastRoute;
+use Zend\Expressive\Router\FastRouteRouter;
 
 class RouterFactory
 {
     /**
      * @param ContainerInterface $container
-     * @return FastRoute
+     * @return FastRouteRouter
      */
     public function __invoke(ContainerInterface $container)
     {
-        return new FastRoute();
+        return new FastRouteRouter();
     }
 }
 ```
@@ -141,7 +141,7 @@ class as an invokable:
 ```php
 $container->setInvokableClass(
     'Zend\Expressive\Router\RouterInterface',
-    'Zend\Expressive\Router\FastRoute'
+    'Zend\Expressive\Router\FastRouteRouter'
 );
 ```
 
@@ -154,7 +154,7 @@ example, we will be defining three factories:
 - A factory to register as `FastRoute\DispatcherFactory` and return a callable
   factory that returns a `RegexBasedAbstract` instance.
 - A factory registered as `Zend\Expressive\Router\RouterInterface`, which
-  creates and returns a `Zend\Expressive\Router\FastRoute` instance composing the
+  creates and returns a `Zend\Expressive\Router\FastRouteRouter` instance composing the
   two services.
 
 Sound difficult? It's not; we've essentially done it above already!
@@ -208,7 +208,7 @@ class FastRouteDispatcherFactory
 namespace Application\Container;
 
 use Interop\Container\ContainerInterface;
-use Zend\Expressive\Router\FastRoute as FastRouteBridge;
+use Zend\Expressive\Router\FastRouteRouter as FastRouteBridge;
 
 class RouterFactory
 {
