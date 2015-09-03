@@ -42,7 +42,7 @@ To run tests:
 
   ```console
   $ git clone git@github.com:zendframework/zend-expressive.git
-  $ cd
+  $ cd zend-expressive
   ```
 
 - Install dependencies via composer:
