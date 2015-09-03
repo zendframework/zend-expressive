@@ -275,7 +275,7 @@ return ConfigFactory::fromFiles(
 );
 ```
 
-In `config/global.php`, place the following:
+In `config/autoload/global.php`, place the following:
 
 ```php
 return [
@@ -311,7 +311,7 @@ In `config/autoload/dependencies.global.php`, place the following:
 <?php
 return [
     'services' => [
-        'config' => include __DIR__ . '/config.php',
+        'config' => include __DIR__ . '/../config.php',
     ],
     'invokables' => [
         'Application\HelloWorld' => 'Application\HelloWorld',
