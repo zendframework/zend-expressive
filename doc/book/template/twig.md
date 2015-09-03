@@ -35,12 +35,11 @@ to the `Zend\Expressive\Template\Twig` constructor:
 ```php
 use Twig_Environment;
 use Twig_Loader_Array;
-use TwigTemplate;
 use Zend\Expressive\Template\Twig;
 
 // Create the engine instance:
 $loader = new Twig_Loader_Array(include 'config/templates.php');
-$twig = new TwigTemplate(new Twig_Environment($loader));
+$twig = new Twig_Environment($loader);
 
 // Configure it:
 $twig->addExtension(new CustomExtension());
