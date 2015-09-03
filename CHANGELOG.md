@@ -6,7 +6,10 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#116](https://github.com/zendframework/zend-expressive/pull/116) adds
+  `Application::any()` to complement the various HTTP-specific routing methods;
+  it has the same signature as `get()`, `post()`, `patch()`, et al, but allows
+  any HTTP method.
 
 ### Deprecated
 
