@@ -11,8 +11,8 @@ namespace ZendTest\Expressive;
 
 use PHPUnit_Framework_TestCase as TestCase;
 use ReflectionProperty;
-use Zend\Expressive\Application;
 use Zend\Expressive\AppFactory;
+use Zend\Expressive\Application;
 
 class AppFactoryTest extends TestCase
 {
