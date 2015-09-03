@@ -68,6 +68,26 @@ class ApplicationTest extends TestCase
         $this->assertSame($this->noopMiddleware, $route->getMiddleware());
     }
 
+    public function testAnyRouteMethod()
+    {
+        $this->router->addRoute(Argument::type(Route::class))->shouldBeCalled();
+        $route = $this->getApp()->any('/foo', $this->noopMiddleware);
+        $this->assertInstanceOf(Route::class, $route);
+        $this->assertEquals('/foo', $route->getPath());
+        $this->assertSame($this->noopMiddleware, $route->getMiddleware());
+
+        $reflClass    = new \ReflectionClass($this->getApp());
+        $routeMethods = $reflClass->getProperty('httpRouteMethods');
+        $routeMethods->setAccessible(true);
+        $routeMethods = $routeMethods->getValue($this->getApp());
+
+        foreach ($routeMethods as $method) {
+            $this->assertTrue($route->allowsMethod($method));
+        }
+
+        $this->assertSame($routeMethods, $route->getAllowedMethods());
+    }
+
     /**
      * @dataProvider commonHttpMethods
      */
