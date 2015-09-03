@@ -33,7 +33,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#112](https://github.com/zendframework/zend-expressive/pull/112) adds a
+  chapter to the documentation on using Aura.Di (v3beta) with zend-expressive.
 
 ### Deprecated
 
