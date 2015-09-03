@@ -265,9 +265,9 @@ class RouteMiddlewareTest extends TestCase
     public function routerAdapters()
     {
         return [
-          'aura'       => [ 'Zend\Expressive\Router\Aura' ],
-          'fast-route' => [ 'Zend\Expressive\Router\FastRoute' ],
-          'zf2'        => [ 'Zend\Expressive\Router\Zf2' ],
+          'aura'       => [ 'Zend\Expressive\Router\AuraRouter' ],
+          'fast-route' => [ 'Zend\Expressive\Router\FastRouteRouter' ],
+          'zf2'        => [ 'Zend\Expressive\Router\Zf2Router' ],
         ];
     }
 

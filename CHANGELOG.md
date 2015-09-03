@@ -2,9 +2,34 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 0.1.1 - 2015-09-03
+## 0.2.0 - TBD
 
-Initial tagged release.
+### Added
+
+- [#116](https://github.com/zendframework/zend-expressive/pull/116) adds
+  `Application::any()` to complement the various HTTP-specific routing methods;
+  it has the same signature as `get()`, `post()`, `patch()`, et al, but allows
+  any HTTP method.
+- [#120](https://github.com/zendframework/zend-expressive/pull/120) renames the
+  router classes for easier discoverability, to better reflect their usage, and
+  for better naming consistency. `Aura` becomes `AuraRouter`, `FastRoute`
+  becomes `FastRouteRouter` and `Zf2` becomes `Zf2Router`.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- [#120](https://github.com/zendframework/zend-expressive/pull/120) removes the
+  classes `Zend\Expressive\Router\Aura`, `Zend\Expressive\Router\FastRoute`, and
+  `Zend\Expressive\Router\Zf`, per the "Added" section above.
+
+### Fixed
+
+- Nothing.
+
+## 0.1.1 - 2015-09-03
 
 ### Added
 

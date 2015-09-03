@@ -11,11 +11,9 @@ namespace Zend\Expressive\Container;
 
 use Interop\Container\ContainerInterface;
 use Zend\Diactoros\Response\EmitterInterface;
-use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Expressive\Application;
-use Zend\Expressive\Emitter\EmitterStack;
 use Zend\Expressive\Exception;
-use Zend\Expressive\Router\Aura as AuraRouter;
+use Zend\Expressive\Router\AuraRouter;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouterInterface;
 
