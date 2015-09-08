@@ -77,6 +77,8 @@ class WhoopsErrorHandler extends TemplatedErrorHandler
     {
         $this->prepareWhoopsHandler($request);
 
+        $this->whoops->pushHandler($this->whoopsHandler);
+
         $response
             ->getBody()
             ->write($this->whoops->handleException($exception));
