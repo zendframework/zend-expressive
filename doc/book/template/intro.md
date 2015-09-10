@@ -28,3 +28,6 @@ We currently support:
 - [Plates](plates.md)
 - [Twig](twig.md)
 - [zend-view](zend-view.md)
+
+Each has an associated container factory; details are found in the
+[factories documentation](../container/factories.md).
