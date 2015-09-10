@@ -29,7 +29,7 @@ class FastRouteRouter implements RouterInterface
     /**
      * FastRoute router
      *
-     * @var FastRoute\RouteCollector
+     * @var RouteCollector
      */
     private $router;
 
