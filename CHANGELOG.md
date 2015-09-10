@@ -36,7 +36,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#125](https://github.com/zendframework/zend-expressive/pull/125) fixes the
+  `WhoopsErrorHandler` to ensure it pushes the "pretty page handler" into the
+  Whoops runtime.
 
 ## 0.2.0 - 2015-09-03
 
