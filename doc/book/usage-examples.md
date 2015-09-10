@@ -259,7 +259,7 @@ development than in production, after all!).
 First, install zend-config:
 
 ```bash
-$ composer install zendframework/zend-config
+$ composer require zendframework/zend-config
 ```
 
 Now we can start creating our configuration files and container factories.
