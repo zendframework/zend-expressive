@@ -91,7 +91,7 @@ $container->setFactory(
 // factory:
 $container->setInvokableClass(
     'Zend\Expressive\Router\RouterInterface',
-    'Zend\Expressive\Router\Aura'
+    'Zend\Expressive\Router\AuraRouter'
 );
 
 // Templating
@@ -151,7 +151,7 @@ return [
         'config' => include __DIR__ . '/config.php',
     ],
     'invokables' => [
-        'Zend\Expressive\Router\RouterInterface'     => 'Zend\Expressive\Router\Aura',
+        'Zend\Expressive\Router\RouterInterface'     => 'Zend\Expressive\Router\AuraRouter',
         'Zend\Expressive\Template\TemplateInterface' => 'Zend\Expressive\Template\Plates'
     ],
     'factories' => [
@@ -232,7 +232,7 @@ return [
         'config' => include __DIR__ . '/config.php',
     ],
     'invokables' => [
-        'Zend\Expressive\Router\RouterInterface'     => 'Zend\Expressive\Router\Aura',
+        'Zend\Expressive\Router\RouterInterface'     => 'Zend\Expressive\Router\AuraRouter',
         'Zend\Expressive\Template\TemplateInterface' => 'Zend\Expressive\Template\Plates'
     ],
     'factories' => [
