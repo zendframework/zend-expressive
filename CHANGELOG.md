@@ -2,11 +2,20 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 0.2.2 - TBD
+## 0.3.0 - 2015-09-12
 
 ### Added
 
-- Nothing.
+- [#128](https://github.com/zendframework/zend-expressive/pull/128) adds
+  container factories for each supported template implementation:
+  - `Zend\Expressive\Container\Template\PlatesFactory`
+  - `Zend\Expressive\Container\Template\TwigFactory`
+  - `Zend\Expressive\Container\Template\ZendViewFactory`
+- [#128](https://github.com/zendframework/zend-expressive/pull/128) adds
+  custom `url` and `serverUrl` zend-view helper implementations, to allow
+  integration with any router and with PSR-7 URI instances. The newly
+  added `ZendViewFactory` will inject these into the `HelperPluginManager` by
+  default.
 
 ### Deprecated
 
@@ -18,7 +27,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#128](https://github.com/zendframework/zend-expressive/pull/128) fixes an
+  expectation in the `WhoopsErrorHandler` tests to ensure the tests can run
+  successfully.
 
 ## 0.2.1 - 2015-09-10
 

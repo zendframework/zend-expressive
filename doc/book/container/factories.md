@@ -203,3 +203,107 @@ It consumes the following `config` structure:
 
 The `editor` value must be a known editor name (see the Whoops documentation for
 pre-configured editor types), a callable, or a service name to use.
+
+## PlatesFactory
+
+- **Provides**: `Zend\Expressive\Template\Plates`
+- **FactoryName**: `Zend\Expressive\Container\Template\PlatesFactory`
+- **Suggested Name**: `Zend\Expressive\Template\TemplateInterface`
+- **Requires**: no additional services are required.
+- **Optional**:
+    - `config`, an array or `ArrayAccess` instance. This will be used to further
+      configure the `Plates` instance, specifically with the filename extension
+      to use, and paths to inject.
+
+It consumes the following `config` structure:
+
+```php
+'templates' => [
+    'extension' => 'file extension used by templates; defaults to html',
+    'paths' => [
+        // namespace / path pairs
+        //
+        // Numeric namespaces imply the default/main namespace. Paths may be
+        // strings or arrays of string paths to associate with the namespace.
+    ],
+]
+```
+
+One note: Due to a limitation in the Plates engine, you can only map one path
+per namespace when using Plates.
+
+## TwigFactory
+
+- **Provides**: `Zend\Expressive\Template\Twig`
+- **FactoryName**: `Zend\Expressive\Container\Template\TwigFactory`
+- **Suggested Name**: `Zend\Expressive\Template\TemplateInterface`
+- **Requires**: no additional services are required.
+- **Optional**:
+    - `Zend\Expressive\Router\RouterInterface`; if found, it will be used to
+      seed a `Zend\Expressive\Template\Twig\TwigExtension` instance for purposes
+      of rendering application URLs.
+    - `config`, an array or `ArrayAccess` instance. This will be used to further
+      configure the `Twig` instance, specifically with the filename extension,
+      paths to assets (and default asset version to use), and template paths to
+      inject.
+
+It consumes the following `config` structure:
+
+```php
+'debug' => boolean,
+'templates' => [
+    'cache_dir' => 'path to cached templates',
+    'assets_url' => 'base URL for assets',
+    'assets_version' => 'base version for assets',
+    'extension' => 'file extension used by templates; defaults to html.twig',
+    'paths' => [
+        // namespace / path pairs
+        //
+        // Numeric namespaces imply the default/main namespace. Paths may be
+        // strings or arrays of string paths to associate with the namespace.
+    ],
+]
+```
+
+Whe `debug` is true, it disables caching, enables debug mode, enables strict
+variables, and enables auto reloading. The `assets_*` values are used to seed
+the `TwigExtension` instance (assuming the router was found).
+
+## ZendViewFactory
+
+- **Provides**: `Zend\Expressive\Template\ZendView`
+- **FactoryName**: `Zend\Expressive\Container\Template\ZendViewFactory`
+- **Suggested Name**: `Zend\Expressive\Template\TemplateInterface`
+- **Requires**: no additional services are required.
+    - `Zend\Expressive\Router\RouterInterface`, in order to inject the custom
+      url helper implementation.
+- **Optional**:
+    - `config`, an array or `ArrayAccess` instance. This will be used to further
+      configure the `ZendView` instance, specifically with the layout template
+      name, entries for a `TemplateMapResolver`, and and template paths to
+      inject.
+    - `Zend\View\HelperPluginManager`; if present, will be used to inject the
+      `PhpRenderer` instance.
+
+It consumes the following `config` structure:
+
+```php
+'templates' => [
+    'layout' => 'name of layout view to use, if any',
+    'map'    => [
+        // template => filename pairs
+    ],
+    'paths'  => [
+        // namespace / path pairs
+        //
+        // Numeric namespaces imply the default/main namespace. Paths may be
+        // strings or arrays of string paths to associate with the namespace.
+    ],
+]
+```
+
+When creating the `PhpRenderer` instance, it will inject it with a
+`Zend\View\HelperPluginManager` instance (either pulled from the container, or
+instantiated directly). It injects the helper plugin manager with custom url and
+serverurl helpers, `Zend\Expressive\Template\ZendView\UrlHelper` and
+`Zend\Expressive\Template\ZendView\ServerUrlHelper`, respetively.
