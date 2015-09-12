@@ -68,7 +68,11 @@ class ServerUrlHelper extends AbstractHelper
      */
     private function createUrlFromUri($specification)
     {
-        preg_match('%^(?P<path>[^?#]*)(?:(?:\?(?P<query>[^#]*))?(?:\#(?P<fragment>.*))?)$%', (string) $specification, $matches);
+        preg_match(
+            '%^(?P<path>[^?#]*)(?:(?:\?(?P<query>[^#]*))?(?:\#(?P<fragment>.*))?)$%',
+            (string) $specification,
+            $matches
+        );
         $path     = $matches['path'];
         $query    = isset($matches['query']) ? $matches['query'] : '';
         $fragment = isset($matches['fragment']) ? $matches['fragment'] : '';
