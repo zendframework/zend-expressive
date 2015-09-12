@@ -145,6 +145,28 @@ $content = $templates->render('blog/entry', [
 ]);
 ```
 
+## Helpers
+
+Expressive provides overrides of specific view helpers in order to better
+integrate with PSR-7. These include:
+
+- `Zend\Expressive\Template\ZendView\UrlHelper`. This helper consumes the
+  application's `Zend\Expressive\Router\RouterInterface` instance in order
+  to generate URIs. It's signature is:
+  `url($routeName, array $substitutions = [])`
+- `Zend\Expressive\Template\ZendView\ServerUrlHelper`. This helper consumes the
+  URI from the application's request in order to provide fully qualified URIs.
+  It's signature is: `serverUrl($path = null)`.
+
+  To use this particular helper, you will need to inject it with the request URI
+  somewhere within your application:
+
+  ```php
+  $serverUrlHelper->setUri($request->getUri());
+  ```
+
+  We recommend doing this within a pre-pipeline middleware.
+
 ## Recommendations
 
 We recommend the following practices when using the zend-view adapter:

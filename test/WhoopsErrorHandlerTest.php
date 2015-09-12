@@ -45,11 +45,12 @@ class WhoopsErrorHandlerTest extends TestCase
     {
         $exception = new Exception('Boom!');
 
-        $whoops = $this->getWhoops();
-        $whoops->handleException($exception)->willReturn('Whoops content');
-
         $pageHandler = $this->getPrettyPageHandler();
         $pageHandler->addDataTable('Expressive Application Request', Argument::type('array'))->shouldBeCalled();
+
+        $whoops = $this->getWhoops();
+        $whoops->handleException($exception)->willReturn('Whoops content');
+        $whoops->pushHandler(Argument::type(PrettyPageHandler::class))->shouldBeCalled();
 
         $handler = new WhoopsErrorHandler($whoops->reveal(), $pageHandler->reveal());
 
