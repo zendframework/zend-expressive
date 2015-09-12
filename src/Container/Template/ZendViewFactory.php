@@ -10,12 +10,20 @@
 namespace Zend\Expressive\Container\Template;
 
 use Interop\Container\ContainerInterface;
+use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Template\ZendView;
+use Zend\View\HelperPluginManager;
 use Zend\View\Renderer\PhpRenderer;
 use Zend\View\Resolver;
 
 /**
  * Create and return a ZendView template instance.
+ *
+ * Requires the Zend\Expressive\Router\RouterInterface service (for creating
+ * the UrlHelper instance).
+ *
+ * Optionally requires the Zend\View\HelperPluginManager service; if present,
+ * will use the service to inject the PhpRenderer instance.
  *
  * Optionally uses the service 'config', which should return an array. This
  * factory consumes the following structure:
@@ -34,6 +42,9 @@ use Zend\View\Resolver;
  *     ],
  * ]
  * </code>
+ *
+ * Injects the HelperPluginManager used by the PhpRenderer with zend-expressive
+ * overrides of the url and serverurl helpers.
  */
 class ZendViewFactory
 {
@@ -57,6 +68,9 @@ class ZendViewFactory
         $renderer = new PhpRenderer();
         $renderer->setResolver($resolver);
 
+        // Inject helpers
+        $this->injectHelpers($renderer, $container);
+
         // Inject renderer
         $view = new ZendView($renderer, isset($config['layout']) ? $config['layout'] : null);
 
@@ -70,5 +84,30 @@ class ZendViewFactory
         }
 
         return $view;
+    }
+
+    /**
+     * Inject helpers into the PhpRenderer instance.
+     *
+     * If a HelperPluginManager instance is present in the container, uses that;
+     * otherwise, instantiates one.
+     *
+     * In each case, injects with the custom url/serverurl implementations.
+     *
+     * @param PhpRenderer $renderer
+     * @param ContainerInterface $container
+     */
+    private function injectHelpers(PhpRenderer $renderer, ContainerInterface $container)
+    {
+        $helpers = $container->has(HelperPluginManager::class)
+            ? $container->get(HelperPluginManager::class)
+            : new HelperPluginManager();
+
+        $helpers->setFactory('url', function () use ($container) {
+            return new ZendView\UrlHelper($container->get(RouterInterface::class));
+        });
+        $helpers->setInvokableClass('serverurl', ZendView\ServerUrlHelper::class);
+
+        $renderer->setHelperPluginManager($helpers);
     }
 }
