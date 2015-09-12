@@ -255,7 +255,7 @@ It consumes the following `config` structure:
     'cache_dir' => 'path to cached templates',
     'assets_url' => 'base URL for assets',
     'assets_version' => 'base version for assets',
-    'extension' => 'file extension used by templates; defaults to html',
+    'extension' => 'file extension used by templates; defaults to html.twig',
     'paths' => [
         // namespace / path pairs
         //

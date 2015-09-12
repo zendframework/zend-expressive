@@ -28,7 +28,7 @@ use Zend\Expressive\Template\Twig;
  *     'cache_dir' => 'path to cached templates',
  *     'assets_url' => 'base URL for assets',
  *     'assets_version' => 'base version for assets',
- *     'extension' => 'file extension used by templates; defaults to html',
+ *     'extension' => 'file extension used by templates; defaults to html.twig',
  *     'paths' => [
  *         // namespace / path pairs
  *         //
@@ -74,7 +74,7 @@ class TwigFactory
         }
 
         // Inject environment
-        $twig = new Twig($environment, isset($config['extension']) ? $config['extension'] : 'html');
+        $twig = new Twig($environment, isset($config['extension']) ? $config['extension'] : 'html.twig');
 
         // Add template paths
         $allPaths = isset($config['paths']) && is_array($config['paths']) ? $config['paths'] : [];
