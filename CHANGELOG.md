@@ -2,7 +2,43 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 0.3.0 - TBD
+## 0.4.0 - TBD
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
+## 0.3.1 - TBD
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
+## 0.3.0 - 2015-09-12
 
 ### Added
 
@@ -30,24 +66,6 @@ All notable changes to this project will be documented in this file, in reverse 
 - [#128](https://github.com/zendframework/zend-expressive/pull/128) fixes an
   expectation in the `WhoopsErrorHandler` tests to ensure the tests can run
   successfully.
-
-## 0.2.2 - TBD
-
-### Added
-
-- Nothing.
-
-### Deprecated
-
-- Nothing.
-
-### Removed
-
-- Nothing.
-
-### Fixed
-
-- Nothing.
 
 ## 0.2.1 - 2015-09-10
 
