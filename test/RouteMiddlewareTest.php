@@ -267,7 +267,7 @@ class RouteMiddlewareTest extends TestCase
         return [
           'aura'       => [ 'Zend\Expressive\Router\AuraRouter' ],
           'fast-route' => [ 'Zend\Expressive\Router\FastRouteRouter' ],
-          'zf2'        => [ 'Zend\Expressive\Router\Zf2Router' ],
+          'zf2'        => [ 'Zend\Expressive\Router\ZendRouter' ],
         ];
     }
 
