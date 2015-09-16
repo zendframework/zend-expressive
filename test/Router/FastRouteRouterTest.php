@@ -33,7 +33,7 @@ class FastRouteRouterTest extends TestCase
         );
     }
 
-    public function testGetAuraRouter()
+    public function testGetFastRouteRouterRouter()
     {
         $router = $this->getRouter();
         $this->assertSame($this->fastRouter->reveal(), $router->getRouter());

@@ -27,7 +27,7 @@ class Zf2RouterTest extends TestCase
         return new Zf2Router($this->zf2Router->reveal());
     }
 
-    public function testGetAuraRouter()
+    public function testGetZf2RouterRouter()
     {
         $router = $this->getRouter();
         $this->assertSame($this->zf2Router->reveal(), $router->getRouter());
