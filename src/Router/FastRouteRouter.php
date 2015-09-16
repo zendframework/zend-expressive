@@ -158,6 +158,14 @@ class FastRouteRouter implements RouterInterface
     }
 
     /**
+     * @return RouteCollector
+     */
+    public function getRouter()
+    {
+        return $this->router;
+    }
+
+    /**
      * Retrieve the dispatcher instance.
      *
      * Uses the callable factory in $dispatcherCallback, passing it $data

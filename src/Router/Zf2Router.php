@@ -169,6 +169,14 @@ class Zf2Router implements RouterInterface
     }
 
     /**
+     * @return TreeRouteStack
+     */
+    public function getRouter()
+    {
+        return $this->zf2Router;
+    }
+
+    /**
      * Create a successful RouteResult from the given RouteMatch.
      *
      * @param RouteMatch $match

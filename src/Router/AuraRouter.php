@@ -67,6 +67,14 @@ class AuraRouter implements RouterInterface
     }
 
     /**
+     * @return Router
+     */
+    public function getRouter()
+    {
+        return $this->router;
+    }
+
+    /**
      * Add a route to the underlying router.
      *
      * Adds the route to the Aura.Router, using the path as the name, and a

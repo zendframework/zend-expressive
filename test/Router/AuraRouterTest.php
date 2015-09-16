@@ -26,6 +26,12 @@ class AuraRouterTest extends TestCase
         return new AuraRouter($this->auraRouter->reveal());
     }
 
+    public function testGetAuraRouter()
+    {
+        $router = $this->getRouter();
+        $this->assertSame($this->auraRouter->reveal(), $router->getRouter());
+    }
+
     public function testAddingRouteProxiesToAuraRouter()
     {
         $route = new Route('/foo', 'foo', ['GET']);

@@ -27,6 +27,12 @@ class Zf2RouterTest extends TestCase
         return new Zf2Router($this->zf2Router->reveal());
     }
 
+    public function testGetAuraRouter()
+    {
+        $router = $this->getRouter();
+        $this->assertSame($this->zf2Router->reveal(), $router->getRouter());
+    }
+
     public function testWillLazyInstantiateAZf2TreeRouteStackIfNoneIsProvidedToConstructor()
     {
         $router = new Zf2Router();
