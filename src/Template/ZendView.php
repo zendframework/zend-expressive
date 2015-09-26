@@ -26,7 +26,7 @@ use Zend\View\Resolver\AggregateResolver;
  * registers a ZendView\NamespacedPathStackResolver at priority 0 (lower than
  * default) in the Aggregate to ensure we can add and resolve namespaced paths.
  */
-class ZendView implements TemplateInterface
+class ZendView implements TemplateRendererInterface
 {
     use ArrayParametersTrait;
 
@@ -67,7 +67,7 @@ class ZendView implements TemplateInterface
      *
      * @param null|RendererInterface $renderer
      * @param null|string|ModelInterface $layout
-     * @throws InvalidArgumentException for invalid $layout types
+     * @throws Exception\InvalidArgumentException for invalid $layout types
      */
     public function __construct(RendererInterface $renderer = null, $layout = null)
     {

@@ -5,7 +5,7 @@ provide a default templating engine, as the choice of templating engine is often
 very specific to the project and/or organization.
 
 We do, however, provide abstraction for templating via the interface
-`Zend\Expressive\Template\TemplateInterface`, which allows you to write
+`Zend\Expressive\Template\TemplateRendererInterface`, which allows you to write
 middleware that is engine-agnostic. For Expressive, this means:
 
 - All adapters MUST support template namespacing. Namespaces MUST be referenced

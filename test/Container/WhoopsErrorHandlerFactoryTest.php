@@ -10,15 +10,19 @@
 namespace ZendTest\Expressive\Container;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use Whoops\Handler\JsonResponseHandler;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run as Whoops;
 use Zend\Expressive\Container\WhoopsErrorHandlerFactory;
-use Zend\Expressive\Template\TemplateInterface;
+use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Expressive\WhoopsErrorHandler;
 
 class WhoopsErrorHandlerFactoryTest extends TestCase
 {
+    /**
+     * @var \Interop\Container\ContainerInterface
+     */
+    private $container;
+
     public function setUp()
     {
         $whoops      = $this->prophesize(Whoops::class);
@@ -32,7 +36,7 @@ class WhoopsErrorHandlerFactoryTest extends TestCase
 
     public function testReturnsAWhoopsErrorHandler()
     {
-        $this->container->has(TemplateInterface::class)->willReturn(false);
+        $this->container->has(TemplateRendererInterface::class)->willReturn(false);
         $this->container->has('config')->willReturn(false);
 
         $factory = $this->factory;
@@ -42,15 +46,15 @@ class WhoopsErrorHandlerFactoryTest extends TestCase
 
     public function testWillInjectTemplateIntoErrorHandlerWhenServiceIsPresent()
     {
-        $template = $this->prophesize(TemplateInterface::class);
-        $this->container->has(TemplateInterface::class)->willReturn(true);
-        $this->container->get(TemplateInterface::class)->willReturn($template->reveal());
+        $template = $this->prophesize(TemplateRendererInterface::class);
+        $this->container->has(TemplateRendererInterface::class)->willReturn(true);
+        $this->container->get(TemplateRendererInterface::class)->willReturn($template->reveal());
         $this->container->has('config')->willReturn(false);
 
         $factory = $this->factory;
         $result  = $factory($this->container->reveal());
         $this->assertInstanceOf(WhoopsErrorHandler::class, $result);
-        $this->assertAttributeInstanceOf(TemplateInterface::class, 'template', $result);
+        $this->assertAttributeInstanceOf(TemplateRendererInterface::class, 'template', $result);
     }
 
     public function testWillInjectTemplateNamesFromConfigurationWhenPresent()
@@ -59,7 +63,7 @@ class WhoopsErrorHandlerFactoryTest extends TestCase
             'template_404'   => 'error::404',
             'template_error' => 'error::500',
         ]]];
-        $this->container->has(TemplateInterface::class)->willReturn(false);
+        $this->container->has(TemplateRendererInterface::class)->willReturn(false);
         $this->container->has('config')->willReturn(true);
         $this->container->get('config')->willReturn($config);
 

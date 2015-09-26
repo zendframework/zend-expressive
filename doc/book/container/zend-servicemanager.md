@@ -98,7 +98,7 @@ $container->setInvokableClass(
 // In most cases, you can instantiate the template renderer you want to use
 // without using a factory:
 $container->setInvokableClass(
-    'Zend\Expressive\Template\TemplateInterface',
+    'Zend\Expressive\Template\TemplateRendererInterface',
     'Zend\Expressive\Template\Plates'
 );
 
@@ -152,7 +152,7 @@ return [
     ],
     'invokables' => [
         'Zend\Expressive\Router\RouterInterface'     => 'Zend\Expressive\Router\AuraRouter',
-        'Zend\Expressive\Template\TemplateInterface' => 'Zend\Expressive\Template\Plates'
+        'Zend\Expressive\Template\TemplateRendererInterface' => 'Zend\Expressive\Template\Plates'
     ],
     'factories' => [
         'Zend\Expressive\Application'       => 'Zend\Expressive\Container\ApplicationFactory',
@@ -233,7 +233,7 @@ return [
     ],
     'invokables' => [
         'Zend\Expressive\Router\RouterInterface'     => 'Zend\Expressive\Router\AuraRouter',
-        'Zend\Expressive\Template\TemplateInterface' => 'Zend\Expressive\Template\Plates'
+        'Zend\Expressive\Template\TemplateRendererInterface' => 'Zend\Expressive\Template\Plates'
     ],
     'factories' => [
         'Zend\Expressive\Application'       => 'Zend\Expressive\Container\ApplicationFactory',

@@ -8,7 +8,7 @@ it provides:
 - Template inheritance.
 - Helpers for escaping, and the ability to provide custom helper extensions.
 
-We provide a [TemplateInterface](interface.md) wrapper for Plates via
+We provide a [TemplateRendererInterface](interface.md) wrapper for Plates via
 `Zend\Expressive\Template\Plates`.
 
 ## Installing Plates
@@ -27,7 +27,7 @@ an instance of the Plates engine, which it will then proxy to.
 ```php
 use Zend\Expressive\Template\Plates;
 
-$templates = new Plates();
+$templateRenderer = new Plates();
 ```
 
 Alternately, you can instantiate and configure the engine yourself, and pass it
@@ -45,5 +45,5 @@ $plates->addFolder('error', 'templates/error/');
 $plates->loadExtension(new CustomExtension();
 
 // Inject:
-$templates = new Plates($plates);
+$templateRenderer = new Plates($plates);
 ```

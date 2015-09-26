@@ -11,11 +11,16 @@ namespace ZendTest\Expressive\Container;
 
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Expressive\Container\TemplatedErrorHandlerFactory;
-use Zend\Expressive\Template\TemplateInterface;
+use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Expressive\TemplatedErrorHandler;
 
 class TemplatedErrorHandlerFactoryTest extends TestCase
 {
+    /**
+     * @var \Interop\Container\ContainerInterface
+     */
+    private $container;
+
     public function setUp()
     {
         $this->container = $this->prophesize('Interop\Container\ContainerInterface');
@@ -24,7 +29,7 @@ class TemplatedErrorHandlerFactoryTest extends TestCase
 
     public function testReturnsATemplatedErrorHandler()
     {
-        $this->container->has(TemplateInterface::class)->willReturn(false);
+        $this->container->has(TemplateRendererInterface::class)->willReturn(false);
         $this->container->has('config')->willReturn(false);
 
         $factory = $this->factory;
@@ -34,15 +39,15 @@ class TemplatedErrorHandlerFactoryTest extends TestCase
 
     public function testWillInjectTemplateIntoErrorHandlerWhenServiceIsPresent()
     {
-        $template = $this->prophesize(TemplateInterface::class);
-        $this->container->has(TemplateInterface::class)->willReturn(true);
-        $this->container->get(TemplateInterface::class)->willReturn($template->reveal());
+        $template = $this->prophesize(TemplateRendererInterface::class);
+        $this->container->has(TemplateRendererInterface::class)->willReturn(true);
+        $this->container->get(TemplateRendererInterface::class)->willReturn($template->reveal());
         $this->container->has('config')->willReturn(false);
 
         $factory = $this->factory;
         $result  = $factory($this->container->reveal());
         $this->assertInstanceOf(TemplatedErrorHandler::class, $result);
-        $this->assertAttributeInstanceOf(TemplateInterface::class, 'template', $result);
+        $this->assertAttributeInstanceOf(TemplateRendererInterface::class, 'template', $result);
     }
 
     public function testWillInjectTemplateNamesFromConfigurationWhenPresent()
@@ -51,7 +56,7 @@ class TemplatedErrorHandlerFactoryTest extends TestCase
             'template_404'   => 'error::404',
             'template_error' => 'error::500',
         ]]];
-        $this->container->has(TemplateInterface::class)->willReturn(false);
+        $this->container->has(TemplateRendererInterface::class)->willReturn(false);
         $this->container->has('config')->willReturn(true);
         $this->container->get('config')->willReturn($config);
 

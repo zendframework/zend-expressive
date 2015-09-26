@@ -7,7 +7,7 @@ as a standalone component by SensioLabs. It provides:
 - Template inheritance.
 - Helpers for escaping, and the ability to provide custom helper extensions.
 
-We provide a [TemplateInterface](interface.md) wrapper for Twig via
+We provide a [TemplateRendererInterface](interface.md) wrapper for Twig via
 `Zend\Expressive\Template\Twig`.
 
 ## Installing Twig
@@ -26,7 +26,7 @@ an instance of the Twig engine, which it will then proxy to.
 ```php
 use Zend\Expressive\Template\Twig;
 
-$templates = new Twig();
+$templateRenderer = new Twig();
 ```
 
 Alternately, you can instantiate and configure the engine yourself, and pass it
@@ -46,5 +46,5 @@ $twig->addExtension(new CustomExtension());
 $twig->loadExtension(new CustomExtension();
 
 // Inject:
-$templates = new Twig($twig);
+$templateRenderer = new Twig($twig);
 ```

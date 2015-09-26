@@ -44,9 +44,9 @@ class TemplatedErrorHandler
      * Template renderer to use when rendering error pages; if not provided,
      * only the status will be updated.
      *
-     * @var Template\TemplateInterface
+     * @var Template\TemplateRendererInterface
      */
-    private $template;
+    private $templateRenderer;
 
     /**
      * Name of 404 template to use when creating 404 response content with the
@@ -65,7 +65,7 @@ class TemplatedErrorHandler
     private $templateError;
 
     /**
-     * @param null|Template\TemplateInterface $template Template renderer.
+     * @param null|Template\TemplateRendererInterface $templateRenderer Template renderer.
      * @param null|string $template404 Template to use for 404 responses.
      * @param null|string $templateError Template to use for general errors.
      * @param null|Response $originalResponse Original response (used to
@@ -73,14 +73,14 @@ class TemplatedErrorHandler
      *     execution).
      */
     public function __construct(
-        Template\TemplateInterface $template = null,
+        Template\TemplateRendererInterface $templateRenderer = null,
         $template404 = 'error::404',
         $templateError = 'error::error',
         Response $originalResponse = null
     ) {
-        $this->template      = $template;
-        $this->template404   = $template404;
-        $this->templateError = $templateError;
+        $this->templateRenderer = $templateRenderer;
+        $this->template404      = $template404;
+        $this->templateError    = $templateError;
         if ($originalResponse) {
             $this->setOriginalResponse($originalResponse);
         }
@@ -138,9 +138,9 @@ class TemplatedErrorHandler
      */
     protected function handleError($error, Request $request, Response $response)
     {
-        if ($this->template) {
+        if ($this->templateRenderer) {
             $response->getBody()->write(
-                $this->template->render($this->templateError, [
+                $this->templateRenderer->render($this->templateError, [
                     'uri'      => $request->getUri(),
                     'error'    => $error,
                     'status'   => $response->getStatusCode(),
@@ -252,9 +252,9 @@ class TemplatedErrorHandler
      */
     private function create404(Request $request, Response $response)
     {
-        if ($this->template) {
+        if ($this->templateRenderer) {
             $response->getBody()->write(
-                $this->template->render($this->template404, [ 'uri' => $request->getUri() ])
+                $this->templateRenderer->render($this->template404, [ 'uri' => $request->getUri() ])
             );
         }
         return $response->withStatus(404);

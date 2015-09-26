@@ -116,7 +116,7 @@ order to seed the `Application` instance:
 - **Suggested Name**: `Zend\Expressive\FinalHandler`
 - **Requires**: no additional services are required.
 - **Optional**:
-    - `Zend\Expressive\Template\TemplateInterface`. If not provided, the error
+    - `Zend\Expressive\Template\TemplateRendererInterface`. If not provided, the error
       handler will not use templated responses.
     - `config`, an array or `ArrayAccess` instance. This will be used to seed the
       `TemplatedErrorHandler` instance with template names to use for errors (see
@@ -144,7 +144,7 @@ seed the `Templated` instance:
     - `Zend\Expressive\WhoopsPageHandler`, which should provide a
       `Whoops\Handler\PrettyPageHandler` instance.
 - **Optional**:
-    - `Zend\Expressive\Template\TemplateInterface`. If not provided, the error
+    - `Zend\Expressive\Template\TemplateRendererInterface`. If not provided, the error
       handler will not use templated responses.
     - `config`, an array or `ArrayAccess` instance. This will be used to seed the
       instance with template names to use for errors (see more below).
@@ -208,7 +208,7 @@ pre-configured editor types), a callable, or a service name to use.
 
 - **Provides**: `Zend\Expressive\Template\Plates`
 - **FactoryName**: `Zend\Expressive\Container\Template\PlatesFactory`
-- **Suggested Name**: `Zend\Expressive\Template\TemplateInterface`
+- **Suggested Name**: `Zend\Expressive\Template\TemplateRendererInterface`
 - **Requires**: no additional services are required.
 - **Optional**:
     - `config`, an array or `ArrayAccess` instance. This will be used to further
@@ -236,7 +236,7 @@ per namespace when using Plates.
 
 - **Provides**: `Zend\Expressive\Template\Twig`
 - **FactoryName**: `Zend\Expressive\Container\Template\TwigFactory`
-- **Suggested Name**: `Zend\Expressive\Template\TemplateInterface`
+- **Suggested Name**: `Zend\Expressive\Template\TemplateRendererInterface`
 - **Requires**: no additional services are required.
 - **Optional**:
     - `Zend\Expressive\Router\RouterInterface`; if found, it will be used to
@@ -273,7 +273,7 @@ the `TwigExtension` instance (assuming the router was found).
 
 - **Provides**: `Zend\Expressive\Template\ZendView`
 - **FactoryName**: `Zend\Expressive\Container\Template\ZendViewFactory`
-- **Suggested Name**: `Zend\Expressive\Template\TemplateInterface`
+- **Suggested Name**: `Zend\Expressive\Template\TemplateRendererInterface`
 - **Requires**: no additional services are required.
     - `Zend\Expressive\Router\RouterInterface`, in order to inject the custom
       url helper implementation.

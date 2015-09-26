@@ -15,7 +15,7 @@ use ReflectionProperty;
 /**
  * Template implementation bridging league/plates
  */
-class Plates implements TemplateInterface
+class Plates implements TemplateRendererInterface
 {
     use ArrayParametersTrait;
 

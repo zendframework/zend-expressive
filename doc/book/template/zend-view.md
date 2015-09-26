@@ -7,7 +7,7 @@ provides:
 - Layout facilities.
 - Helpers for escaping, and the ability to provide custom helper extensions.
 
-We provide a [TemplateInterface](interface.md) wrapper for zend-view's
+We provide a [TemplateRendererInterface](interface.md) wrapper for zend-view's
 `PhpRenderer` via `Zend\Expressive\Template\ZendView`.
 
 ## Installing zend-view
@@ -26,7 +26,7 @@ an instance of the `PhpRenderer`, which it will then proxy to.
 ```php
 use Zend\Expressive\Template\ZendView;
 
-$templates = new ZendView();
+$templateRenderer = new ZendView();
 ```
 
 Alternately, you can instantiate and configure the engine yourself, and pass it
@@ -53,7 +53,7 @@ $resolver->attach(
 $renderer->setResolver($resolver);
 
 // Inject:
-$templates = new ZendView($renderer);
+$templateRenderer = new ZendView($renderer);
 ```
 
 > ### Namespaced path resolving
@@ -62,7 +62,7 @@ $templates = new ZendView($renderer);
 > `Zend\Expressive\Template\ZendView\NamespacedPathStackResolver`. This resolver
 > provides the ability to segregate paths by namespace, and later resolve a
 > template according to the namespace, using the `namespace::template` notation
-> required of `TemplateInterface` implementations.
+> required of `TemplateRendererInterface` implementations.
 >
 > The `ZendView` adapter ensures that:
 >
@@ -98,7 +98,7 @@ render in order to provide content within the selected layout.
 use Zend\Expressive\Template\ZendView;
 
 // Create the engine instance with a layout name:
-$templates = new ZendView(null, 'layout');
+$templateRenderer = new ZendView(null, 'layout');
 ```
 
 ### Layout view model passed to constructor
@@ -115,13 +115,13 @@ $layout = new ViewModel([
 $layout->setTemplate('layout');
 
 // Create the engine instance with the layout:
-$templates = new ZendView(null, $layout);
+$templateRenderer = new ZendView(null, $layout);
 ```
 
 ### Provide a layout name when rendering
 
 ```php
-$content = $templates->render('blog/entry', [
+$content = $templateRenderer->render('blog/entry', [
     'layout' => 'blog',
     'entry'  => $entry,
 ]);
@@ -139,7 +139,7 @@ $layout = new ViewModel([
 ]);
 $layout->setTemplate('layout');
 
-$content = $templates->render('blog/entry', [
+$content = $templateRenderer->render('blog/entry', [
     'layout' => $layout,
     'entry'  => $entry,
 ]);

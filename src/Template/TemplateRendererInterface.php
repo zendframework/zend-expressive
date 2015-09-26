@@ -12,7 +12,7 @@ namespace Zend\Expressive\Template;
 /**
  * Interface defining required template capabilities.
  */
-interface TemplateInterface
+interface TemplateRendererInterface
 {
     /**
      * Render a template, optionally with parameters.

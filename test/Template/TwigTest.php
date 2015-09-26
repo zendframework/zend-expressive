@@ -29,31 +29,31 @@ class TwigTest extends TestCase
 
     public function testShouldInjectDefaultLoaderIfProvidedEnvironmentDoesNotComposeOne()
     {
-        $twigEnvironment = new Twig_Environment();
-        $template        = new TwigTemplate($twigEnvironment);
-        $loader          = $twigEnvironment->getLoader();
+        $twigEnvironment  = new Twig_Environment();
+        $templateRenderer = new TwigTemplate($twigEnvironment);
+        $loader           = $twigEnvironment->getLoader();
         $this->assertInstanceOf('Twig_Loader_Filesystem', $loader);
     }
 
     public function testCanPassEngineToConstructor()
     {
-        $template = new TwigTemplate($this->twigEnvironment);
-        $this->assertInstanceOf(TwigTemplate::class, $template);
-        $this->assertEmpty($template->getPaths());
+        $templateRenderer = new TwigTemplate($this->twigEnvironment);
+        $this->assertInstanceOf(TwigTemplate::class, $templateRenderer);
+        $this->assertEmpty($templateRenderer->getPaths());
     }
 
     public function testInstantiatingWithoutEngineLazyLoadsOne()
     {
-        $template = new TwigTemplate();
-        $this->assertInstanceOf(TwigTemplate::class, $template);
-        $this->assertEmpty($template->getPaths());
+        $templateRenderer = new TwigTemplate();
+        $this->assertInstanceOf(TwigTemplate::class, $templateRenderer);
+        $this->assertEmpty($templateRenderer->getPaths());
     }
 
     public function testCanAddPathWithEmptyNamespace()
     {
-        $template = new TwigTemplate();
-        $template->addPath(__DIR__ . '/TestAsset');
-        $paths = $template->getPaths();
+        $templateRenderer = new TwigTemplate();
+        $templateRenderer->addPath(__DIR__ . '/TestAsset');
+        $paths = $templateRenderer->getPaths();
         $this->assertInternalType('array', $paths);
         $this->assertEquals(1, count($paths));
         $this->assertTemplatePath(__DIR__ . '/TestAsset', $paths[0]);
@@ -63,9 +63,9 @@ class TwigTest extends TestCase
 
     public function testCanAddPathWithNamespace()
     {
-        $template = new TwigTemplate();
-        $template->addPath(__DIR__ . '/TestAsset', 'test');
-        $paths = $template->getPaths();
+        $templateRenderer = new TwigTemplate();
+        $templateRenderer->addPath(__DIR__ . '/TestAsset', 'test');
+        $paths = $templateRenderer->getPaths();
         $this->assertInternalType('array', $paths);
         $this->assertEquals(1, count($paths));
         $this->assertTemplatePath(__DIR__ . '/TestAsset', $paths[0]);
@@ -75,10 +75,10 @@ class TwigTest extends TestCase
 
     public function testDelegatesRenderingToUnderlyingImplementation()
     {
-        $template = new TwigTemplate();
-        $template->addPath(__DIR__ . '/TestAsset');
+        $templateRenderer = new TwigTemplate();
+        $templateRenderer->addPath(__DIR__ . '/TestAsset');
         $name = 'Twig';
-        $result = $template->render('twig.html', [ 'name' => $name ]);
+        $result = $templateRenderer->render('twig.html', [ 'name' => $name ]);
         $this->assertContains($name, $result);
         $content = file_get_contents(__DIR__ . '/TestAsset/twig.html');
         $content = str_replace('{{ name }}', $name, $content);
@@ -103,16 +103,16 @@ class TwigTest extends TestCase
      */
     public function testRenderRaisesExceptionForInvalidParameterTypes($params)
     {
-        $template = new TwigTemplate();
+        $templateRenderer = new TwigTemplate();
         $this->setExpectedException(Exception\InvalidArgumentException::class);
-        $template->render('foo', $params);
+        $templateRenderer->render('foo', $params);
     }
 
     public function testCanRenderWithNullParams()
     {
-        $template = new TwigTemplate();
-        $template->addPath(__DIR__ . '/TestAsset');
-        $result = $template->render('twig-null.html', null);
+        $templateRenderer = new TwigTemplate();
+        $templateRenderer->addPath(__DIR__ . '/TestAsset');
+        $result = $templateRenderer->render('twig-null.html', null);
         $content = file_get_contents(__DIR__ . '/TestAsset/twig-null.html');
         $this->assertEquals($content, $result);
     }
@@ -135,9 +135,9 @@ class TwigTest extends TestCase
      */
     public function testCanRenderWithParameterObjects($params, $search)
     {
-        $template = new TwigTemplate();
-        $template->addPath(__DIR__ . '/TestAsset');
-        $result = $template->render('twig.html', $params);
+        $templateRenderer = new TwigTemplate();
+        $templateRenderer->addPath(__DIR__ . '/TestAsset');
+        $result = $templateRenderer->render('twig.html', $params);
         $this->assertContains($search, $result);
         $content = file_get_contents(__DIR__ . '/TestAsset/twig.html');
         $content = str_replace('{{ name }}', $search, $content);
@@ -149,11 +149,11 @@ class TwigTest extends TestCase
      */
     public function testProperlyResolvesNamespacedTemplate()
     {
-        $template = new TwigTemplate();
-        $template->addPath(__DIR__ . '/TestAsset/test', 'test');
+        $templateRenderer = new TwigTemplate();
+        $templateRenderer->addPath(__DIR__ . '/TestAsset/test', 'test');
 
         $expected = file_get_contents(__DIR__ . '/TestAsset/test/test.html');
-        $test     = $template->render('test::test');
+        $test     = $templateRenderer->render('test::test');
 
         $this->assertSame($expected, $test);
     }
@@ -163,11 +163,11 @@ class TwigTest extends TestCase
      */
     public function testResolvesNamespacedTemplateWithSuffix()
     {
-        $template = new TwigTemplate();
-        $template->addPath(__DIR__ . '/TestAsset/test', 'test');
+        $templateRenderer = new TwigTemplate();
+        $templateRenderer->addPath(__DIR__ . '/TestAsset/test', 'test');
 
         $expected = file_get_contents(__DIR__ . '/TestAsset/test/test.js');
-        $test     = $template->render('test::test.js');
+        $test     = $templateRenderer->render('test::test.js');
 
         $this->assertSame($expected, $test);
     }

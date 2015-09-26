@@ -16,7 +16,7 @@ use Twig_Loader_Filesystem as TwigFilesystem;
 /**
  * Template implementation bridging league/plates
  */
-class Twig implements TemplateInterface
+class Twig implements TemplateRendererInterface
 {
     use ArrayParametersTrait;
 
@@ -61,6 +61,7 @@ class Twig implements TemplateInterface
     /**
      * Create a default Twig environment
      *
+     * @param TwigFilesystem $loader
      * @return TwigEnvironment
      */
     private function createTemplate(TwigFilesystem $loader)
