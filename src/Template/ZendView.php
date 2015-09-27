@@ -67,7 +67,7 @@ class ZendView implements TemplateInterface
      *
      * @param null|RendererInterface $renderer
      * @param null|string|ModelInterface $layout
-     * @throws InvalidArgumentException for invalid $layout types
+     * @throws Exception\InvalidArgumentException for invalid $layout types
      */
     public function __construct(RendererInterface $renderer = null, $layout = null)
     {
@@ -91,7 +91,7 @@ class ZendView implements TemplateInterface
             $layout = $model;
         }
 
-        if ($layout && ! $layout instanceof ModelInterface) {
+        if ($layout !== null && ! $layout instanceof ModelInterface) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'Layout must be a string layout template name or a %s instance; received %s',
                 ModelInterface::class,
