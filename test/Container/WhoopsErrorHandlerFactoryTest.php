@@ -54,7 +54,7 @@ class WhoopsErrorHandlerFactoryTest extends TestCase
         $factory = $this->factory;
         $result  = $factory($this->container->reveal());
         $this->assertInstanceOf(WhoopsErrorHandler::class, $result);
-        $this->assertAttributeInstanceOf(TemplateRendererInterface::class, 'template', $result);
+        $this->assertAttributeInstanceOf(TemplateRendererInterface::class, 'renderer', $result);
     }
 
     public function testWillInjectTemplateNamesFromConfigurationWhenPresent()

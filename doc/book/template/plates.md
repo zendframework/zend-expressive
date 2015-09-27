@@ -27,7 +27,7 @@ an instance of the Plates engine, which it will then proxy to.
 ```php
 use Zend\Expressive\Template\Plates;
 
-$templateRenderer = new Plates();
+$renderer = new Plates();
 ```
 
 Alternately, you can instantiate and configure the engine yourself, and pass it
@@ -45,5 +45,5 @@ $plates->addFolder('error', 'templates/error/');
 $plates->loadExtension(new CustomExtension();
 
 // Inject:
-$templateRenderer = new Plates($plates);
+$renderer = new Plates($plates);
 ```

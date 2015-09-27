@@ -71,7 +71,7 @@ more paths to templates; these are then used when resolving a template name to
 the actual template. You may use the `addPath()` method to do so:
 
 ```php
-$templateRenderer->addPath('templates');
+$renderer->addPath('templates');
 ```
 
 Template engines adapted for zend-expressive are also required to allow
@@ -82,7 +82,7 @@ that path if the namespace provided matches the namespace for the path.
 ```php
 // Resolves to a path registered with the namespace "error";
 // this example is specific to the Plates engine.
-$content = $templateRenderer->render('error::404');
+$content = $renderer->render('error::404');
 ```
 
 You can provide a namespace when registering a path via an optional second
@@ -90,7 +90,7 @@ argument:
 
 ```php
 // Registers the "error" namespace to the path "templates/error/"
-$templateRenderer->addPath('templates/error/', 'error');
+$renderer->addPath('templates/error/', 'error');
 ```
 
 ## Rendering
@@ -99,7 +99,7 @@ To render a template, call the `render()` method. This method requires the name
 of a template as the first argument:
 
 ```php
-$content = $templateRenderer->render('foo');
+$content = $renderer->render('foo');
 ```
 
 You can specify a namespaced template using the syntax `namespace::template`;
@@ -111,7 +111,7 @@ template. You may do so by passing either an associative array or an object as
 the second argument to `render()`:
 
 ```php
-$content = $templateRenderer->render('message', [
+$content = $renderer->render('message', [
     'greeting'  => 'Hello',
     'recipient' => 'World',
 ]);

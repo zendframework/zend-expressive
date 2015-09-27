@@ -26,7 +26,7 @@ an instance of the `PhpRenderer`, which it will then proxy to.
 ```php
 use Zend\Expressive\Template\ZendView;
 
-$templateRenderer = new ZendView();
+$renderer = new ZendView();
 ```
 
 Alternately, you can instantiate and configure the engine yourself, and pass it
@@ -53,7 +53,7 @@ $resolver->attach(
 $renderer->setResolver($resolver);
 
 // Inject:
-$templateRenderer = new ZendView($renderer);
+$renderer = new ZendView($renderer);
 ```
 
 > ### Namespaced path resolving
@@ -98,7 +98,7 @@ render in order to provide content within the selected layout.
 use Zend\Expressive\Template\ZendView;
 
 // Create the engine instance with a layout name:
-$templateRenderer = new ZendView(null, 'layout');
+$renderer = new ZendView(null, 'layout');
 ```
 
 ### Layout view model passed to constructor
@@ -115,13 +115,13 @@ $layout = new ViewModel([
 $layout->setTemplate('layout');
 
 // Create the engine instance with the layout:
-$templateRenderer = new ZendView(null, $layout);
+$renderer = new ZendView(null, $layout);
 ```
 
 ### Provide a layout name when rendering
 
 ```php
-$content = $templateRenderer->render('blog/entry', [
+$content = $renderer->render('blog/entry', [
     'layout' => 'blog',
     'entry'  => $entry,
 ]);
@@ -139,7 +139,7 @@ $layout = new ViewModel([
 ]);
 $layout->setTemplate('layout');
 
-$content = $templateRenderer->render('blog/entry', [
+$content = $renderer->render('blog/entry', [
     'layout' => $layout,
     'entry'  => $entry,
 ]);

@@ -26,7 +26,7 @@ an instance of the Twig engine, which it will then proxy to.
 ```php
 use Zend\Expressive\Template\Twig;
 
-$templateRenderer = new Twig();
+$renderer = new Twig();
 ```
 
 Alternately, you can instantiate and configure the engine yourself, and pass it
@@ -46,5 +46,5 @@ $twig->addExtension(new CustomExtension());
 $twig->loadExtension(new CustomExtension();
 
 // Inject:
-$templateRenderer = new Twig($twig);
+$renderer = new Twig($twig);
 ```

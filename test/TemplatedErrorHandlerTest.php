@@ -51,14 +51,14 @@ class TemplatedErrorHandlerTest extends TestCase
     public function testCanBeInstantiatedWithNoArguments()
     {
         $handler = new TemplatedErrorHandler();
-        $this->assertAttributeSame(null, 'template', $handler);
+        $this->assertAttributeSame(null, 'renderer', $handler);
     }
 
     public function testCanBeInstantiatedWithTemplateImplementation()
     {
-        $templateRenderer = $this->getTemplateImplementation()->reveal();
-        $handler = new TemplatedErrorHandler($templateRenderer);
-        $this->assertAttributeSame($templateRenderer, 'templateRenderer', $handler);
+        $renderer = $this->getTemplateImplementation()->reveal();
+        $handler = new TemplatedErrorHandler($renderer);
+        $this->assertAttributeSame($renderer, 'renderer', $handler);
     }
 
     public function testOriginalResponseIsNullByDefault()
@@ -176,8 +176,8 @@ class TemplatedErrorHandlerTest extends TestCase
      */
     public function testInvocationWithoutErrorAndEmptyResponseCanReturnTemplated404Response()
     {
-        $templateRenderer = $this->getTemplateImplementation();
-        $templateRenderer
+        $renderer = $this->getTemplateImplementation();
+        $renderer
             ->render(
                 'error::404',
                 Argument::type('array')
@@ -185,7 +185,7 @@ class TemplatedErrorHandlerTest extends TestCase
             ->willReturn('Templated contents');
 
         $handler = new TemplatedErrorHandler(
-            $templateRenderer->reveal(),
+            $renderer->reveal(),
             'error::404',
             'error::500'
         );
@@ -212,8 +212,8 @@ class TemplatedErrorHandlerTest extends TestCase
      */
     public function testInvocationWithoutErrorAndResponseSameAsOriginalCanReturnTemplated404Response()
     {
-        $templateRenderer = $this->getTemplateImplementation();
-        $templateRenderer
+        $renderer = $this->getTemplateImplementation();
+        $renderer
             ->render(
                 'error::404',
                 Argument::type('array')
@@ -221,7 +221,7 @@ class TemplatedErrorHandlerTest extends TestCase
             ->willReturn('Templated contents');
 
         $handler = new TemplatedErrorHandler(
-            $templateRenderer->reveal(),
+            $renderer->reveal(),
             'error::404',
             'error::500'
         );
@@ -341,8 +341,8 @@ class TemplatedErrorHandlerTest extends TestCase
      */
     public function testNonExceptionErrorReturnsResponseWith500StatusAndTemplateResultsWhenTemplatingInjected()
     {
-        $templateRenderer = $this->getTemplateImplementation();
-        $templateRenderer
+        $renderer = $this->getTemplateImplementation();
+        $renderer
             ->render(
                 'error::500',
                 Argument::type('array')
@@ -350,7 +350,7 @@ class TemplatedErrorHandlerTest extends TestCase
             ->willReturn('Templated contents');
 
         $handler = new TemplatedErrorHandler(
-            $templateRenderer->reveal(),
+            $renderer->reveal(),
             'error::404',
             'error::500'
         );
@@ -379,8 +379,8 @@ class TemplatedErrorHandlerTest extends TestCase
      */
     public function testExceptionErrorReturnsResponseWith500StatusAndTemplateResultsWhenTemplatingInjected()
     {
-        $templateRenderer = $this->getTemplateImplementation();
-        $templateRenderer
+        $renderer = $this->getTemplateImplementation();
+        $renderer
             ->render(
                 'error::500',
                 Argument::type('array')
@@ -388,7 +388,7 @@ class TemplatedErrorHandlerTest extends TestCase
             ->willReturn('Templated contents');
 
         $handler = new TemplatedErrorHandler(
-            $templateRenderer->reveal(),
+            $renderer->reveal(),
             'error::404',
             'error::500'
         );

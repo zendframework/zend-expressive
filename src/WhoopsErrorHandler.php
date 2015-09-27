@@ -44,7 +44,7 @@ class WhoopsErrorHandler extends TemplatedErrorHandler
     /**
      * @param Whoops $whoops
      * @param PrettyPageHandler $whoopsHandler
-     * @param null|Template\TemplateRendererInterface $templateRenderer
+     * @param null|Template\TemplateRendererInterface $renderer
      * @param null|string $template404
      * @param null|string $templateError
      * @param null|Response $originalResponse
@@ -52,14 +52,14 @@ class WhoopsErrorHandler extends TemplatedErrorHandler
     public function __construct(
         Whoops $whoops,
         PrettyPageHandler $whoopsHandler,
-        Template\TemplateRendererInterface $templateRenderer = null,
+        Template\TemplateRendererInterface $renderer = null,
         $template404 = 'error/404',
         $templateError = 'error/error',
         Response $originalResponse = null
     ) {
         $this->whoops        = $whoops;
         $this->whoopsHandler = $whoopsHandler;
-        parent::__construct($templateRenderer, $template404, $templateError, $originalResponse);
+        parent::__construct($renderer, $template404, $templateError, $originalResponse);
     }
 
     /**

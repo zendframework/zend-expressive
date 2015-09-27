@@ -22,11 +22,11 @@ use Zend\Expressive\Template\TemplateRendererInterface;
 
 class EntryMiddleware
 {
-    private $templateRenderer;
+    private $renderer;
 
-    public function __construct(TemplateRendererInterface $templateRenderer)
+    public function __construct(TemplateRendererInterface $renderer)
     {
-        $this->templateRenderer = $templateRenderer;
+        $this->templateRenderer = $renderer;
     }
 
     public function __invoke($request, $response, $next)
@@ -74,11 +74,11 @@ use Zend\Expressive\Template\TemplateRendererInterface;
 
 class EntryMiddleware
 {
-    private $templateRenderer;
+    private $renderer;
 
-    public function __construct(TemplateRendererInterface $templateRenderer)
+    public function __construct(TemplateRendererInterface $renderer)
     {
-        $this->templateRenderer = $templateRenderer;
+        $this->templateRenderer = $renderer;
     }
 
     public function __invoke($request, $response, $next)
