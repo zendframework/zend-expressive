@@ -46,9 +46,9 @@ class WhoopsErrorHandlerFactoryTest extends TestCase
 
     public function testWillInjectTemplateIntoErrorHandlerWhenServiceIsPresent()
     {
-        $template = $this->prophesize(TemplateRendererInterface::class);
+        $renderer = $this->prophesize(TemplateRendererInterface::class);
         $this->container->has(TemplateRendererInterface::class)->willReturn(true);
-        $this->container->get(TemplateRendererInterface::class)->willReturn($template->reveal());
+        $this->container->get(TemplateRendererInterface::class)->willReturn($renderer->reveal());
         $this->container->has('config')->willReturn(false);
 
         $factory = $this->factory;
