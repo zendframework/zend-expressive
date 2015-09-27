@@ -8,7 +8,7 @@ provides:
 - Helpers for escaping, and the ability to provide custom helper extensions.
 
 We provide a [TemplateRendererInterface](interface.md) wrapper for zend-view's
-`PhpRenderer` via `Zend\Expressive\Template\ZendView`.
+`PhpRenderer` via `Zend\Expressive\Template\ZendViewRenderer`.
 
 ## Installing zend-view
 
@@ -20,20 +20,20 @@ $ composer require zendframework/zend-view
 
 ## Using the wrapper
 
-If instantiated without arguments, `Zend\Expressive\Template\ZendView` will create
+If instantiated without arguments, `Zend\Expressive\Template\ZendViewRenderer` will create
 an instance of the `PhpRenderer`, which it will then proxy to.
 
 ```php
-use Zend\Expressive\Template\ZendView;
+use Zend\Expressive\Template\ZendViewRenderer;
 
-$renderer = new ZendView();
+$renderer = new ZendViewRenderer();
 ```
 
 Alternately, you can instantiate and configure the engine yourself, and pass it
-to the `Zend\Expressive\Template\ZendView` constructor:
+to the `Zend\Expressive\Template\ZendViewRenderer` constructor:
 
 ```php
-use Zend\Expressive\Template\ZendView;
+use Zend\Expressive\Template\ZendViewRenderer;
 use Zend\View\Renderer\PhpRenderer;
 use Zend\View\Resolver;
 
@@ -53,7 +53,7 @@ $resolver->attach(
 $renderer->setResolver($resolver);
 
 // Inject:
-$renderer = new ZendView($renderer);
+$renderer = new ZendViewRenderer($renderer);
 ```
 
 > ### Namespaced path resolving
@@ -95,16 +95,16 @@ render in order to provide content within the selected layout.
 ### Layout name passed to constructor
 
 ```php
-use Zend\Expressive\Template\ZendView;
+use Zend\Expressive\Template\ZendViewRenderer;
 
 // Create the engine instance with a layout name:
-$renderer = new ZendView(null, 'layout');
+$renderer = new ZendViewRenderer(null, 'layout');
 ```
 
 ### Layout view model passed to constructor
 
 ```php
-use Zend\Expressive\Template\ZendView;
+use Zend\Expressive\Template\ZendViewRenderer;
 use Zend\View\Model\ViewModel;
 
 // Create the layout view model:
@@ -115,7 +115,7 @@ $layout = new ViewModel([
 $layout->setTemplate('layout');
 
 // Create the engine instance with the layout:
-$renderer = new ZendView(null, $layout);
+$renderer = new ZendViewRenderer(null, $layout);
 ```
 
 ### Provide a layout name when rendering

@@ -204,10 +204,10 @@ It consumes the following `config` structure:
 The `editor` value must be a known editor name (see the Whoops documentation for
 pre-configured editor types), a callable, or a service name to use.
 
-## PlatesFactory
+## PlatesRendererFactory
 
-- **Provides**: `Zend\Expressive\Template\Plates`
-- **FactoryName**: `Zend\Expressive\Container\Template\PlatesFactory`
+- **Provides**: `Zend\Expressive\Template\PlatesRenderer`
+- **FactoryName**: `Zend\Expressive\Container\Template\PlatesRendererFactory`
 - **Suggested Name**: `Zend\Expressive\Template\TemplateRendererInterface`
 - **Requires**: no additional services are required.
 - **Optional**:
@@ -232,10 +232,10 @@ It consumes the following `config` structure:
 One note: Due to a limitation in the Plates engine, you can only map one path
 per namespace when using Plates.
 
-## TwigFactory
+## TwigRendererFactory
 
-- **Provides**: `Zend\Expressive\Template\Twig`
-- **FactoryName**: `Zend\Expressive\Container\Template\TwigFactory`
+- **Provides**: `Zend\Expressive\Template\TwigRenderer`
+- **FactoryName**: `Zend\Expressive\Container\Template\TwigRendererFactory`
 - **Suggested Name**: `Zend\Expressive\Template\TemplateRendererInterface`
 - **Requires**: no additional services are required.
 - **Optional**:
@@ -269,10 +269,10 @@ Whe `debug` is true, it disables caching, enables debug mode, enables strict
 variables, and enables auto reloading. The `assets_*` values are used to seed
 the `TwigExtension` instance (assuming the router was found).
 
-## ZendViewFactory
+## ZendViewRendererFactory
 
-- **Provides**: `Zend\Expressive\Template\ZendView`
-- **FactoryName**: `Zend\Expressive\Container\Template\ZendViewFactory`
+- **Provides**: `Zend\Expressive\Template\ZendViewRenderer`
+- **FactoryName**: `Zend\Expressive\Container\Template\ZendViewRendererFactory`
 - **Suggested Name**: `Zend\Expressive\Template\TemplateRendererInterface`
 - **Requires**: no additional services are required.
     - `Zend\Expressive\Router\RouterInterface`, in order to inject the custom

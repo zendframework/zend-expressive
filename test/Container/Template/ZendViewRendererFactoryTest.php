@@ -12,16 +12,20 @@ namespace ZendTest\Expressive\Container\Template;
 use Interop\Container\ContainerInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use ReflectionProperty;
-use Zend\Expressive\Container\Template\ZendViewFactory;
+use Zend\Expressive\Container\Template\ZendViewRendererFactory;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Template\ZendView;
+use Zend\Expressive\Template\ZendViewRenderer;
 use Zend\View\HelperPluginManager;
 use Zend\View\Model\ModelInterface;
 use Zend\View\Resolver\AggregateResolver;
 use Zend\View\Resolver\TemplateMapResolver;
 
-class ZendViewFactoryTest extends TestCase
+class ZendViewRendererFactoryTest extends TestCase
 {
+    /** @var  ContainerInterface */
+    private $container;
+
     use PathsTrait;
 
     public function setUp()
@@ -29,7 +33,7 @@ class ZendViewFactoryTest extends TestCase
         $this->container = $this->prophesize(ContainerInterface::class);
     }
 
-    public function fetchPhpRenderer(ZendView $view)
+    public function fetchPhpRenderer(ZendViewRenderer $view)
     {
         $r = new ReflectionProperty($view, 'renderer');
         $r->setAccessible(true);
@@ -40,16 +44,16 @@ class ZendViewFactoryTest extends TestCase
     {
         $this->container->has('config')->willReturn(false);
         $this->container->has(HelperPluginManager::class)->willReturn(false);
-        $factory = new ZendViewFactory();
+        $factory = new ZendViewRendererFactory();
         $view    = $factory($this->container->reveal());
-        $this->assertInstanceOf(ZendView::class, $view);
+        $this->assertInstanceOf(ZendViewRenderer::class, $view);
         return $view;
     }
 
     /**
      * @depends testCallingFactoryWithNoConfigReturnsZendViewInstance
      */
-    public function testUnconfiguredZendViewInstanceContainsNoPaths(ZendView $view)
+    public function testUnconfiguredZendViewInstanceContainsNoPaths(ZendViewRenderer $view)
     {
         $paths = $view->getPaths();
         $this->assertInternalType('array', $paths);
@@ -66,7 +70,7 @@ class ZendViewFactoryTest extends TestCase
         $this->container->has('config')->willReturn(true);
         $this->container->get('config')->willReturn($config);
         $this->container->has(HelperPluginManager::class)->willReturn(false);
-        $factory = new ZendViewFactory();
+        $factory = new ZendViewRendererFactory();
         $view = $factory($this->container->reveal());
 
         $r = new ReflectionProperty($view, 'layout');
@@ -86,7 +90,7 @@ class ZendViewFactoryTest extends TestCase
         $this->container->has('config')->willReturn(true);
         $this->container->get('config')->willReturn($config);
         $this->container->has(HelperPluginManager::class)->willReturn(false);
-        $factory = new ZendViewFactory();
+        $factory = new ZendViewRendererFactory();
         $view = $factory($this->container->reveal());
 
         $paths = $view->getPaths();
@@ -119,7 +123,7 @@ class ZendViewFactoryTest extends TestCase
         $this->container->has('config')->willReturn(true);
         $this->container->get('config')->willReturn($config);
         $this->container->has(HelperPluginManager::class)->willReturn(false);
-        $factory = new ZendViewFactory();
+        $factory = new ZendViewRendererFactory();
         $view = $factory($this->container->reveal());
 
         $r = new ReflectionProperty($view, 'renderer');
@@ -147,9 +151,9 @@ class ZendViewFactoryTest extends TestCase
         $this->container->has(HelperPluginManager::class)->willReturn(false);
         $this->container->has(RouterInterface::class)->willReturn(true);
         $this->container->get(RouterInterface::class)->willReturn($router);
-        $factory = new ZendViewFactory();
+        $factory = new ZendViewRendererFactory();
         $view    = $factory($this->container->reveal());
-        $this->assertInstanceOf(ZendView::class, $view);
+        $this->assertInstanceOf(ZendViewRenderer::class, $view);
 
         $renderer = $this->fetchPhpRenderer($view);
         $helpers  = $renderer->getHelperPluginManager();
@@ -170,9 +174,9 @@ class ZendViewFactoryTest extends TestCase
         $helpers = new HelperPluginManager();
         $this->container->has(HelperPluginManager::class)->willReturn(true);
         $this->container->get(HelperPluginManager::class)->willReturn($helpers);
-        $factory = new ZendViewFactory();
+        $factory = new ZendViewRendererFactory();
         $view    = $factory($this->container->reveal());
-        $this->assertInstanceOf(ZendView::class, $view);
+        $this->assertInstanceOf(ZendViewRenderer::class, $view);
 
         $renderer = $this->fetchPhpRenderer($view);
         $this->assertSame($helpers, $renderer->getHelperPluginManager());

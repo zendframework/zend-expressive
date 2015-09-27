@@ -152,7 +152,7 @@ return [
     ],
     'invokables' => [
         'Zend\Expressive\Router\RouterInterface'     => 'Zend\Expressive\Router\AuraRouter',
-        'Zend\Expressive\Template\TemplateRendererInterface' => 'Zend\Expressive\Template\Plates'
+        'Zend\Expressive\Template\TemplateRendererInterface' => 'Zend\Expressive\Template\PlatesRenderer'
     ],
     'factories' => [
         'Zend\Expressive\Application'       => 'Zend\Expressive\Container\ApplicationFactory',
@@ -233,7 +233,7 @@ return [
     ],
     'invokables' => [
         'Zend\Expressive\Router\RouterInterface'     => 'Zend\Expressive\Router\AuraRouter',
-        'Zend\Expressive\Template\TemplateRendererInterface' => 'Zend\Expressive\Template\Plates'
+        'Zend\Expressive\Template\TemplateRendererInterface' => 'Zend\Expressive\Template\PlatesRenderer'
     ],
     'factories' => [
         'Zend\Expressive\Application'       => 'Zend\Expressive\Container\ApplicationFactory',

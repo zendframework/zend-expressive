@@ -12,13 +12,18 @@ namespace ZendTest\Expressive\Template;
 use ArrayObject;
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Expressive\Exception;
-use Zend\Expressive\Template\ZendView;
+use Zend\Expressive\Template\ZendViewRenderer;
 use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\PhpRenderer;
 use Zend\View\Resolver\TemplatePathStack;
 
-class ZendViewTest extends TestCase
+class ZendViewRendererTest extends TestCase
 {
+    /** @var  TemplatePathStack */
+    private $resolver;
+    /** @var  PhpRenderer */
+    private $render;
+
     use TemplatePathAssertionsTrait;
 
     public function setUp()
@@ -30,21 +35,21 @@ class ZendViewTest extends TestCase
 
     public function testCanPassRendererToConstructor()
     {
-        $renderer = new ZendView($this->render);
-        $this->assertInstanceOf(ZendView::class, $renderer);
+        $renderer = new ZendViewRenderer($this->render);
+        $this->assertInstanceOf(ZendViewRenderer::class, $renderer);
         $this->assertAttributeSame($this->render, 'renderer', $renderer);
     }
 
     public function testInstantiatingWithoutEngineLazyLoadsOne()
     {
-        $renderer = new ZendView();
-        $this->assertInstanceOf(ZendView::class, $renderer);
+        $renderer = new ZendViewRenderer();
+        $this->assertInstanceOf(ZendViewRenderer::class, $renderer);
         $this->assertAttributeInstanceOf(PhpRenderer::class, 'renderer', $renderer);
     }
 
     public function testCanAddPathWithEmptyNamespace()
     {
-        $renderer = new ZendView();
+        $renderer = new ZendViewRenderer();
         $renderer->addPath(__DIR__ . '/TestAsset');
         $paths = $renderer->getPaths();
         $this->assertInternalType('array', $paths);
@@ -56,7 +61,7 @@ class ZendViewTest extends TestCase
 
     public function testCanAddPathWithNamespace()
     {
-        $renderer = new ZendView();
+        $renderer = new ZendViewRenderer();
         $renderer->addPath(__DIR__ . '/TestAsset', 'test');
         $paths = $renderer->getPaths();
         $this->assertInternalType('array', $paths);
@@ -68,9 +73,9 @@ class ZendViewTest extends TestCase
 
     public function testDelegatesRenderingToUnderlyingImplementation()
     {
-        $renderer = new ZendView();
+        $renderer = new ZendViewRenderer();
         $renderer->addPath(__DIR__ . '/TestAsset');
-        $name = 'ZendView';
+        $name = 'zendview';
         $result = $renderer->render('zendview', [ 'name' => $name ]);
         $this->assertContains($name, $result);
         $content = file_get_contents(__DIR__ . '/TestAsset/zendview.phtml');
@@ -96,14 +101,14 @@ class ZendViewTest extends TestCase
      */
     public function testRenderRaisesExceptionForInvalidParameterTypes($params)
     {
-        $renderer = new ZendView();
+        $renderer = new ZendViewRenderer();
         $this->setExpectedException(Exception\InvalidArgumentException::class);
         $renderer->render('foo', $params);
     }
 
     public function testCanRenderWithNullParams()
     {
-        $renderer = new ZendView();
+        $renderer = new ZendViewRenderer();
         $renderer->addPath(__DIR__ . '/TestAsset');
         $result = $renderer->render('zendview-null', null);
         $content = file_get_contents(__DIR__ . '/TestAsset/zendview-null.phtml');
@@ -128,7 +133,7 @@ class ZendViewTest extends TestCase
      */
     public function testCanRenderWithParameterObjects($params, $search)
     {
-        $renderer = new ZendView();
+        $renderer = new ZendViewRenderer();
         $renderer->addPath(__DIR__ . '/TestAsset');
         $result = $renderer->render('zendview', $params);
         $this->assertContains($search, $result);
@@ -142,9 +147,9 @@ class ZendViewTest extends TestCase
      */
     public function testWillRenderContentInLayoutPassedToConstructor()
     {
-        $renderer = new ZendView(null, 'zendview-layout');
+        $renderer = new ZendViewRenderer(null, 'zendview-layout');
         $renderer->addPath(__DIR__ . '/TestAsset');
-        $name = 'ZendView';
+        $name = 'zendview';
         $result = $renderer->render('zendview', [ 'name' => $name ]);
         $this->assertContains($name, $result);
         $content = file_get_contents(__DIR__ . '/TestAsset/zendview.phtml');
@@ -158,9 +163,9 @@ class ZendViewTest extends TestCase
      */
     public function testWillRenderContentInLayoutPassedDuringRendering()
     {
-        $renderer = new ZendView(null);
+        $renderer = new ZendViewRenderer(null);
         $renderer->addPath(__DIR__ . '/TestAsset');
-        $name = 'ZendView';
+        $name = 'zendview';
         $result = $renderer->render('zendview', [ 'name' => $name, 'layout' => 'zendview-layout' ]);
         $this->assertContains($name, $result);
         $content = file_get_contents(__DIR__ . '/TestAsset/zendview.phtml');
@@ -175,9 +180,9 @@ class ZendViewTest extends TestCase
      */
     public function testLayoutPassedWhenRenderingOverridesLayoutPassedToConstructor()
     {
-        $renderer = new ZendView(null, 'zendview-layout');
+        $renderer = new ZendViewRenderer(null, 'zendview-layout');
         $renderer->addPath(__DIR__ . '/TestAsset');
-        $name = 'ZendView';
+        $name = 'zendview';
         $result = $renderer->render('zendview', [ 'name' => $name, 'layout' => 'zendview-layout2' ]);
         $this->assertContains($name, $result);
         $content = file_get_contents(__DIR__ . '/TestAsset/zendview.phtml');
@@ -195,9 +200,9 @@ class ZendViewTest extends TestCase
         $layout = new ViewModel();
         $layout->setTemplate('zendview-layout');
 
-        $renderer = new ZendView(null, $layout);
+        $renderer = new ZendViewRenderer(null, $layout);
         $renderer->addPath(__DIR__ . '/TestAsset');
-        $name = 'ZendView';
+        $name = 'zendview';
         $result = $renderer->render('zendview', [ 'name' => $name ]);
         $this->assertContains($name, $result);
         $content = file_get_contents(__DIR__ . '/TestAsset/zendview.phtml');
@@ -214,9 +219,9 @@ class ZendViewTest extends TestCase
         $layout = new ViewModel();
         $layout->setTemplate('zendview-layout2');
 
-        $renderer = new ZendView(null, 'zendview-layout');
+        $renderer = new ZendViewRenderer(null, 'zendview-layout');
         $renderer->addPath(__DIR__ . '/TestAsset');
-        $name = 'ZendView';
+        $name = 'zendview';
         $result = $renderer->render('zendview', [ 'name' => $name, 'layout' => $layout ]);
         $this->assertContains($name, $result);
         $content = file_get_contents(__DIR__ . '/TestAsset/zendview.phtml');
@@ -230,7 +235,7 @@ class ZendViewTest extends TestCase
      */
     public function testProperlyResolvesNamespacedTemplate()
     {
-        $renderer = new ZendView();
+        $renderer = new ZendViewRenderer();
         $renderer->addPath(__DIR__ . '/TestAsset/test', 'test');
 
         $expected = file_get_contents(__DIR__ . '/TestAsset/test/test.phtml');

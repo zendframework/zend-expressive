@@ -14,7 +14,8 @@ use Twig_Environment as TwigEnvironment;
 use Twig_Extension_Debug as TwigExtensionDebug;
 use Twig_Loader_Filesystem as TwigLoader;
 use Zend\Expressive\Router\RouterInterface;
-use Zend\Expressive\Template\Twig;
+use Zend\Expressive\Template\TwigRenderer;
+use Zend\Expressive\Template\Twig\TwigExtension;
 
 /**
  * Create and return a Twig template instance.
@@ -38,11 +39,11 @@ use Zend\Expressive\Template\Twig;
  * ]
  * </code>
  */
-class TwigFactory
+class TwigRendererFactory
 {
     /**
      * @param ContainerInterface $container
-     * @return Twig
+     * @return TwigRenderer
      */
     public function __invoke(ContainerInterface $container)
     {
@@ -62,7 +63,7 @@ class TwigFactory
 
         // Add extensions
         if ($container->has(RouterInterface::class)) {
-            $environment->addExtension(new Twig\TwigExtension(
+            $environment->addExtension(new TwigExtension(
                 $container->get(RouterInterface::class),
                 isset($config['assets_url']) ? $config['assets_url'] : '',
                 isset($config['assets_version']) ? $config['assets_version'] : ''
@@ -74,7 +75,7 @@ class TwigFactory
         }
 
         // Inject environment
-        $twig = new Twig($environment, isset($config['extension']) ? $config['extension'] : 'html.twig');
+        $twig = new TwigRenderer($environment, isset($config['extension']) ? $config['extension'] : 'html.twig');
 
         // Add template paths
         $allPaths = isset($config['paths']) && is_array($config['paths']) ? $config['paths'] : [];
