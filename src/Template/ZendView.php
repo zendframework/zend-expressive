@@ -36,11 +36,6 @@ class ZendView implements TemplateInterface
     private $layout;
 
     /**
-     * Paths and namespaces data store.
-     */
-    private $paths = [];
-
-    /**
      * @var RendererInterface
      */
     private $renderer;
