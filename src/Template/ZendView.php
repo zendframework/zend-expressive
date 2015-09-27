@@ -197,12 +197,6 @@ class ZendView implements TemplateInterface
             }
         }
 
-        if (array_key_exists('layout', $params) && is_string($params['layout']) && $params['layout']) {
-            $layout = new ViewModel();
-            $layout->setTemplate($params['layout']);
-            unset($params['layout']);
-        }
-
         $model = new ViewModel($params);
         $model->setTemplate($name);
 
