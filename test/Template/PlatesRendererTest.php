@@ -184,4 +184,74 @@ class PlatesRendererTest extends TestCase
 
         $this->assertSame($expected, $test);
     }
+
+    public function testAddParameterToOneTemplate()
+    {
+        $template = new PlatesTemplate();
+        $template->addPath(__DIR__ . '/TestAsset');
+        $name = 'Plates';
+        $template->addParameters(['name' => $name], 'plates');
+        $result = $template->render('plates');
+        $content = file_get_contents(__DIR__ . '/TestAsset/plates.php');
+        $content= str_replace('<?=$this->e($name)?>', $name, $content);
+        $this->assertEquals($content, $result);
+
+        // @fixme hack to work around https://github.com/thephpleague/plates/issues/60, remove if ever merged
+        set_error_handler(function ($error, $message) {
+            $this->assertContains('Undefined variable: name', $message);
+            return true;
+        }, E_NOTICE);
+        $template->render('plates-2');
+        restore_error_handler();
+
+        $content= str_replace('<?=$this->e($name)?>', '', $content);
+        $this->assertEquals($content, $result);
+    }
+
+    public function testAddSharedParameters()
+    {
+        $template = new PlatesTemplate();
+        $template->addPath(__DIR__ . '/TestAsset');
+        $name = 'Plates';
+        $template->addParameters(['name' => $name]);
+        $result = $template->render('plates');
+        $content = file_get_contents(__DIR__ . '/TestAsset/plates.php');
+        $content= str_replace('<?=$this->e($name)?>', $name, $content);
+        $this->assertEquals($content, $result);
+        $result = $template->render('plates-2');
+        $content = file_get_contents(__DIR__ . '/TestAsset/plates-2.php');
+        $content= str_replace('<?=$this->e($name)?>', $name, $content);
+        $this->assertEquals($content, $result);
+    }
+
+    public function testOverrideSharedParametersPerTemplate()
+    {
+        $template = new PlatesTemplate();
+        $template->addPath(__DIR__ . '/TestAsset');
+        $name = 'Plates';
+        $name2 = 'Saucers';
+        $template->addParameters(['name' => $name]);
+        $template->addParameters(['name' => $name2], 'plates-2');
+        $result = $template->render('plates');
+        $content = file_get_contents(__DIR__ . '/TestAsset/plates.php');
+        $content= str_replace('<?=$this->e($name)?>', $name, $content);
+        $this->assertEquals($content, $result);
+        $result = $template->render('plates-2');
+        $content = file_get_contents(__DIR__ . '/TestAsset/plates-2.php');
+        $content= str_replace('<?=$this->e($name)?>', $name2, $content);
+        $this->assertEquals($content, $result);
+    }
+
+    public function testOverrideSharedParametersAtRender()
+    {
+        $template = new PlatesTemplate();
+        $template->addPath(__DIR__ . '/TestAsset');
+        $name = 'Plates';
+        $name2 = 'Saucers';
+        $template->addParameters(['name' => $name]);
+        $result = $template->render('plates', ['name' => $name2]);
+        $content = file_get_contents(__DIR__ . '/TestAsset/plates.php');
+        $content= str_replace('<?=$this->e($name)?>', $name2, $content);
+        $this->assertEquals($content, $result);
+    }
 }
