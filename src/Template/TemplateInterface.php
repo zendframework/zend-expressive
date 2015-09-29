@@ -43,4 +43,14 @@ interface TemplateInterface
      * @return TemplatePath[]
      */
     public function getPaths();
+
+    /**
+     * Add parameters to template
+     *
+     * If no template name is given, the parameters will be added to all templates rendered
+     *
+     * @param array|object $params
+     * @param string $name
+     */
+    public function addParameters($params, $name = '');
 }

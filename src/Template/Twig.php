@@ -18,6 +18,7 @@ use Twig_Loader_Filesystem as TwigFilesystem;
  */
 class Twig implements TemplateInterface
 {
+    use AddParametersTrait;
     use ArrayParametersTrait;
 
     /**
@@ -89,7 +90,7 @@ class Twig implements TemplateInterface
     public function render($name, $params = [])
     {
         $name   = $this->normalizeTemplate($name);
-        $params = $this->normalizeParams($params);
+        $params = $this->mergeParams($this->normalizeParams($params), $name);
         return $this->template->render($name, $params);
     }
 

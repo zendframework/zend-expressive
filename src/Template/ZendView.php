@@ -28,6 +28,7 @@ use Zend\View\Resolver\AggregateResolver;
  */
 class ZendView implements TemplateInterface
 {
+    use AddParametersTrait;
     use ArrayParametersTrait;
 
     /**
@@ -123,8 +124,9 @@ class ZendView implements TemplateInterface
      */
     public function render($name, $params = [])
     {
+        $params = $this->mergeParams($this->normalizeParams($params), $name);
         return $this->renderModel(
-            $this->createModel($name, $this->normalizeParams($params)),
+            $this->createModel($name, $params),
             $this->renderer
         );
     }
