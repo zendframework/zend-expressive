@@ -23,7 +23,7 @@ trait AddParametersTrait
      * If no template name is given, the parameters will be added to all templates rendered
      *
      * @param array|object $params
-     * @param string $name
+     * @param string|null $name
      */
     public function addParameters($params, $name = null)
     {
