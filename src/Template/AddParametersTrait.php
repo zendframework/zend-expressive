@@ -43,8 +43,8 @@ trait AddParametersTrait
     protected function mergeParams($params, $name)
     {
         return array_merge(
-            $this->templateParams[''] ?: [],
-            $this->templateParams[$name] ?: [],
+            isset($this->templateParams['']) ? $this->templateParams[''] : [],
+            isset($this->templateParams[$name]) ? $this->templateParams[$name] : [],
             $params
         );
     }
