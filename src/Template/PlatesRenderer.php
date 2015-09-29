@@ -89,6 +89,21 @@ class PlatesRenderer implements TemplateRendererInterface
     }
 
     /**
+     * Add parameters to template
+     *
+     * If no template name is given, the parameters will be added to all templates rendered
+     *
+     * @param array|object $params
+     * @param string $name
+     */
+    public function addParameters($params, $name = '')
+    {
+        $params = $this->normalizeParams($params);
+        $this->template->addData($params, $name);
+    }
+
+
+    /**
      * Create a default Plates engine
      *
      * @params string $path
