@@ -9,7 +9,6 @@
 
 namespace Zend\Expressive\Template;
 
-
 trait AddParametersTrait
 {
     /**
