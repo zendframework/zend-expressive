@@ -96,7 +96,7 @@ class PlatesRenderer implements TemplateRendererInterface
      * @param array|object $params
      * @param string $name
      */
-    public function addParameters($params, $name = '')
+    public function addParameters($params, $name = null)
     {
         $params = $this->normalizeParams($params);
         $this->template->addData($params, $name);

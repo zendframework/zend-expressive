@@ -25,12 +25,14 @@ trait AddParametersTrait
      * @param array|object $params
      * @param string $name
      */
-    public function addParameters($params, $name = '')
+    public function addParameters($params, $name = null)
     {
         if (method_exists($this, 'normalizeParams')) {
             $params = $this->normalizeParams($params);
         }
-        $this->templateParams[$name] = array_merge($this->templateParams[$name] ?: [], $params, $name);
+        $name = (string) $name;
+        $existing = isset($this->templateParams[$name]) ? $this->templateParams[$name] : null;
+        $this->templateParams[$name] = array_merge($existing, $params, $name);
     }
 
     /**
