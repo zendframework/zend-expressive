@@ -58,7 +58,7 @@ root, and we want it to intercept any incoming request; as such, we'll use
 use Zend\Expressive\AppFactory;
 
 chdir(dirname(__DIR__));
-require 'vendor/autoload.php';
+require '../vendor/autoload.php';
 
 $app = AppFactory::create();
 
