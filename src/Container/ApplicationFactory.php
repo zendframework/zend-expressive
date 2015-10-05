@@ -126,8 +126,8 @@ class ApplicationFactory
             ? $container->get(RouterInterface::class)
             : new AuraRouter();
 
-        $finalHandler = $container->has('Zend\Expressive\FinalHandler')
-            ? $container->get('Zend\Expressive\FinalHandler')
+        $finalHandler = $container->has('Zend\Stratigility\FinalHandler')
+            ? $container->get('Zend\Stratigility\FinalHandler')
             : null;
 
         $emitter = $container->has(EmitterInterface::class)
