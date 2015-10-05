@@ -134,7 +134,7 @@ factories that work with [container-interop](https://github.com/container-intero
 container implementations to simplify setup.
 
 In each case, you should register the selected error handler's factory as the service
-`Zend\Expressive\FinalHandler`.
+`Zend\Stratigility\FinalHandler`.
 
 - For the `TemplatedErrorHandler`, use [`Zend\Expressive\Container\TemplatedErrorHandlerFactory`](container/factories.md#templatederrorhandlerfactory).
 - For the `WhoopsErrorHandler`, use [`Zend\Expressive\Container\WhoopsErrorHandlerFactory`](container/factories.md#whoopserrorhandlerfactory).
