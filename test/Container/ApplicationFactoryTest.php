@@ -88,10 +88,10 @@ class ApplicationFactoryTest extends TestCase
             });
 
         $this->container
-            ->has('Zend\Expressive\FinalHandler')
+            ->has('Zend\Stratigility\FinalHandler')
             ->willReturn(true);
         $this->container
-            ->get('Zend\Expressive\FinalHandler')
+            ->get('Zend\Stratigility\FinalHandler')
             ->willReturn($finalHandler);
 
         $this->container
