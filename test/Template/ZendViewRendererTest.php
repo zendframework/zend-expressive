@@ -13,6 +13,7 @@ use ArrayObject;
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Expressive\Exception;
 use Zend\Expressive\Template\ZendViewRenderer;
+use Zend\Expressive\Exception\InvalidArgumentException;
 use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\PhpRenderer;
 use Zend\View\Resolver\TemplatePathStack;
@@ -45,6 +46,12 @@ class ZendViewRendererTest extends TestCase
         $renderer = new ZendViewRenderer();
         $this->assertInstanceOf(ZendViewRenderer::class, $renderer);
         $this->assertAttributeInstanceOf(PhpRenderer::class, 'renderer', $renderer);
+    }
+
+    public function testInstantiatingWithInvalidLayout()
+    {
+        $this->setExpectedException(InvalidArgumentException::class);
+        new ZendView(null, []);
     }
 
     public function testCanAddPathWithEmptyNamespace()
@@ -102,7 +109,7 @@ class ZendViewRendererTest extends TestCase
     public function testRenderRaisesExceptionForInvalidParameterTypes($params)
     {
         $renderer = new ZendViewRenderer();
-        $this->setExpectedException(Exception\InvalidArgumentException::class);
+        $this->setExpectedException(InvalidArgumentException::class);
         $renderer->render('foo', $params);
     }
 
