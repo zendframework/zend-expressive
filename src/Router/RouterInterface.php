@@ -34,6 +34,10 @@ interface RouterInterface
      * Takes the named route and any substitutions, and attempts to generate a
      * URI from it.
      *
+     * The URI generated MUST NOT be escaped. If you wish to escape any part of
+     * the URI, this should be performed afterwards; consider passing the URI
+     * to league/uri to encode it.
+     *
      * @see https://github.com/auraphp/Aura.Router#generating-a-route-path
      * @see http://framework.zend.com/manual/current/en/modules/zend.mvc.routing.html
      * @param string $name

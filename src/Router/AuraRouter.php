@@ -140,7 +140,7 @@ class AuraRouter implements RouterInterface
      */
     public function generateUri($name, array $substitutions = [])
     {
-        return $this->router->generate($name, $substitutions);
+        return $this->router->generateRaw($name, $substitutions);
     }
 
     /**
