@@ -42,7 +42,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
-## 0.3.1 - TBD
+## 0.3.1 - 2015-10-09
 
 ### Added
 
