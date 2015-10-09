@@ -18,7 +18,10 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#140](https://github.com/zendframework/zend-expressive/pull/140) updates the
+  AuraRouter to use the request method from the request object, and inject that
+  under the `REQUEST_METHOD` server parameter key before passing the server
+  parameters for matching. This simplifies testing.
 
 ## 0.3.0 - 2015-09-12
 
