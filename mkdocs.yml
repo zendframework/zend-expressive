@@ -7,7 +7,7 @@ pages:
     - { Applications: application.md }
     - { Containers: [{ Introduction: container/intro.md }, { 'Container Factories': container/factories.md }, { 'Using zend-servicemanager': container/zend-servicemanager.md }, { 'Using Pimple': container/pimple.md }, { 'Using Aura.Di': container/aura-di.md }] }
     - { 'Routing Adapters': [{ Introduction: router/intro.md }, { 'Routing Interface': router/interface.md }, { 'URI Generation': router/uri-generation.md }, { 'Routing vs Piping': router/piping.md }, { 'Using Aura': router/aura.md }, { 'Using FastRoute': router/fast-route.md }, { 'Using the ZF2 Router': router/zf2.md }] }
-    - { Templating: [{ Introduction: template/intro.md }, { 'Template Interface': template/interface.md }, { 'Templated Middleware': template/middleware.md }, { 'Using Plates': template/plates.md }, { 'Using Twig': template/twig.md }, { 'Using zend-view': template/zend-view.md }] }
+    - { Templating: [{ Introduction: template/intro.md }, { 'Template Renderer Interface': template/interface.md }, { 'Templated Middleware': template/middleware.md }, { 'Using Plates': template/plates.md }, { 'Using Twig': template/twig.md }, { 'Using zend-view': template/zend-view.md }] }
     - { 'Error Handling': error-handling.md }
     - { Emitters: emitters.md }
     - { Examples: usage-examples.md }

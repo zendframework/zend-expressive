@@ -46,7 +46,11 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#149](https://github.com/zendframework/zend-expressive/pull/149) adds
+  verbiage to the `RouterInterface::generateUri()` method, specifying that the
+  returned URI **MUST NOT** be escaped. The `AuraRouter` implementation has been
+  updated to internally use `generateRaw()` to follow this guideline, and retain
+  parity with the other existing implementations.
 
 ### Deprecated
 
