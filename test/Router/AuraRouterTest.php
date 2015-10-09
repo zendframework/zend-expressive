@@ -78,9 +78,8 @@ class AuraRouterTest extends TestCase
 
         $request = $this->prophesize('Psr\Http\Message\ServerRequestInterface');
         $request->getUri()->willReturn($uri);
-        $request->getServerParams()->willReturn([
-            'REQUEST_METHOD' => 'GET',
-        ]);
+        $request->getMethod()->willReturn('GET');
+        $request->getServerParams()->willReturn([]);
 
         $auraRoute = new TestAsset\AuraRoute;
         $auraRoute->name = '/foo';
@@ -112,9 +111,8 @@ class AuraRouterTest extends TestCase
 
         $request = $this->prophesize('Psr\Http\Message\ServerRequestInterface');
         $request->getUri()->willReturn($uri);
-        $request->getServerParams()->willReturn([
-            'REQUEST_METHOD' => 'GET',
-        ]);
+        $request->getMethod()->willReturn('GET');
+        $request->getServerParams()->willReturn([]);
 
         $this->auraRouter->match('/foo', ['REQUEST_METHOD' => 'GET'])->willReturn(false);
 
@@ -139,9 +137,8 @@ class AuraRouterTest extends TestCase
 
         $request = $this->prophesize('Psr\Http\Message\ServerRequestInterface');
         $request->getUri()->willReturn($uri);
-        $request->getServerParams()->willReturn([
-            'REQUEST_METHOD' => 'PUT',
-        ]);
+        $request->getMethod()->willReturn('PUT');
+        $request->getServerParams()->willReturn([]);
 
 
         $this->auraRouter->match('/bar', ['REQUEST_METHOD' => 'PUT'])->willReturn(false);
@@ -189,9 +186,8 @@ class AuraRouterTest extends TestCase
 
         $request = $this->prophesize('Psr\Http\Message\ServerRequestInterface');
         $request->getUri()->willReturn($uri);
-        $request->getServerParams()->willReturn([
-            'REQUEST_METHOD' => 'PUT',
-        ]);
+        $request->getMethod()->willReturn('PUT');
+        $request->getServerParams()->willReturn([]);
 
 
         $this->auraRouter->match('/bar', ['REQUEST_METHOD' => 'PUT'])->willReturn(false);
