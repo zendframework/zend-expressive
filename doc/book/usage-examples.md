@@ -533,7 +533,7 @@ In the following example, we'll assume that `$api` and `$blog` are
 `Zend\Stratigility\MiddlewarePipe`.
 
 ```php
-use Zend\Diactoros\Server;
+use Zend\Diactoros\ServerRequestFactory as Server;
 use Zend\Stratigility\MiddlewarePipe;
 
 require __DIR__ . '/../vendor/autoload.php';
