@@ -33,6 +33,12 @@ class FastRouteRouterTest extends TestCase
         );
     }
 
+    public function testGetFastRouteRouterRouter()
+    {
+        $router = $this->getRouter();
+        $this->assertSame($this->fastRouter->reveal(), $router->getRouter());
+    }
+
     public function testWillLazyInstantiateAFastRouteCollectorIfNoneIsProvidedToConstructor()
     {
         $router = new FastRouteRouter();
