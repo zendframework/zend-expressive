@@ -20,7 +20,7 @@ use Zend\Expressive\WhoopsErrorHandler;
  *
  * This factory has optional dependencies on the following services:
  *
- * - 'Zend\Expressive\Template\TemplateInterface', which should return an
+ * - 'Zend\Expressive\Template\TemplateRendererInterface', which should return an
  *   implementation of that interface. If not present, the error handler
  *   will not create templated responses.
  * - 'config' (which should return an array or array-like object with a
@@ -50,8 +50,8 @@ class WhoopsErrorHandlerFactory
 {
     public function __invoke(ContainerInterface $container)
     {
-        $template = $container->has('Zend\Expressive\Template\TemplateInterface')
-            ? $container->get('Zend\Expressive\Template\TemplateInterface')
+        $template = $container->has('Zend\Expressive\Template\TemplateRendererInterface')
+            ? $container->get('Zend\Expressive\Template\TemplateRendererInterface')
             : null;
 
         $config = $container->has('config')

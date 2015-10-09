@@ -49,7 +49,7 @@ $container['Zend\Expressive\Router\RouterInterface'] = function ($container) {
 // Templating
 // In most cases, you can instantiate the template renderer you want to use
 // without using a factory:
-$container['Zend\Expressive\Template\TemplateInterface'] = function ($container) {
+$container['Zend\Expressive\Template\TemplateRendererInterface'] = function ($container) {
     return new Template\Plates();
 };
 

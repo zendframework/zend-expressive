@@ -116,7 +116,7 @@ order to seed the `Application` instance:
 - **Suggested Name**: `Zend\Expressive\FinalHandler`
 - **Requires**: no additional services are required.
 - **Optional**:
-    - `Zend\Expressive\Template\TemplateInterface`. If not provided, the error
+    - `Zend\Expressive\Template\TemplateRendererInterface`. If not provided, the error
       handler will not use templated responses.
     - `config`, an array or `ArrayAccess` instance. This will be used to seed the
       `TemplatedErrorHandler` instance with template names to use for errors (see
@@ -144,7 +144,7 @@ seed the `Templated` instance:
     - `Zend\Expressive\WhoopsPageHandler`, which should provide a
       `Whoops\Handler\PrettyPageHandler` instance.
 - **Optional**:
-    - `Zend\Expressive\Template\TemplateInterface`. If not provided, the error
+    - `Zend\Expressive\Template\TemplateRendererInterface`. If not provided, the error
       handler will not use templated responses.
     - `config`, an array or `ArrayAccess` instance. This will be used to seed the
       instance with template names to use for errors (see more below).
@@ -204,11 +204,11 @@ It consumes the following `config` structure:
 The `editor` value must be a known editor name (see the Whoops documentation for
 pre-configured editor types), a callable, or a service name to use.
 
-## PlatesFactory
+## PlatesRendererFactory
 
-- **Provides**: `Zend\Expressive\Template\Plates`
-- **FactoryName**: `Zend\Expressive\Container\Template\PlatesFactory`
-- **Suggested Name**: `Zend\Expressive\Template\TemplateInterface`
+- **Provides**: `Zend\Expressive\Template\PlatesRenderer`
+- **FactoryName**: `Zend\Expressive\Container\Template\PlatesRendererFactory`
+- **Suggested Name**: `Zend\Expressive\Template\TemplateRendererInterface`
 - **Requires**: no additional services are required.
 - **Optional**:
     - `config`, an array or `ArrayAccess` instance. This will be used to further
@@ -232,11 +232,11 @@ It consumes the following `config` structure:
 One note: Due to a limitation in the Plates engine, you can only map one path
 per namespace when using Plates.
 
-## TwigFactory
+## TwigRendererFactory
 
-- **Provides**: `Zend\Expressive\Template\Twig`
-- **FactoryName**: `Zend\Expressive\Container\Template\TwigFactory`
-- **Suggested Name**: `Zend\Expressive\Template\TemplateInterface`
+- **Provides**: `Zend\Expressive\Template\TwigRenderer`
+- **FactoryName**: `Zend\Expressive\Container\Template\TwigRendererFactory`
+- **Suggested Name**: `Zend\Expressive\Template\TemplateRendererInterface`
 - **Requires**: no additional services are required.
 - **Optional**:
     - `Zend\Expressive\Router\RouterInterface`; if found, it will be used to
@@ -269,11 +269,11 @@ Whe `debug` is true, it disables caching, enables debug mode, enables strict
 variables, and enables auto reloading. The `assets_*` values are used to seed
 the `TwigExtension` instance (assuming the router was found).
 
-## ZendViewFactory
+## ZendViewRendererFactory
 
-- **Provides**: `Zend\Expressive\Template\ZendView`
-- **FactoryName**: `Zend\Expressive\Container\Template\ZendViewFactory`
-- **Suggested Name**: `Zend\Expressive\Template\TemplateInterface`
+- **Provides**: `Zend\Expressive\Template\ZendViewRenderer`
+- **FactoryName**: `Zend\Expressive\Container\Template\ZendViewRendererFactory`
+- **Suggested Name**: `Zend\Expressive\Template\TemplateRendererInterface`
 - **Requires**: no additional services are required.
     - `Zend\Expressive\Router\RouterInterface`, in order to inject the custom
       url helper implementation.

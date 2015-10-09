@@ -3,30 +3,30 @@
 The primary use case for templating is within middleware, to provide templated
 responses. To do this, you will:
 
-- Inject an instance of `Zend\Expressive\Template\TemplateInterface` into your
+- Inject an instance of `Zend\Expressive\Template\TemplateRendererInterface` into your
   middleware.
 - Potentially add paths to the templating instance.
 - Render a template.
 - Add the results of rendering to your response.
 
-## Injecting a TemplateInterface
+## Injecting a TemplateRendererInterface
 
 We encourage the use of dependency injection. As such, we recommend writing your
-middleware to accept the `TemplateInterface` via either the constructor or a
+middleware to accept the `TemplateRendererInterface` via either the constructor or a
 setter. As an example:
 
 ```php
 namespace Acme\Blog;
 
-use Zend\Expressive\Template\TemplateInterface;
+use Zend\Expressive\Template\TemplateRendererInterface;
 
 class EntryMiddleware
 {
-    private $templates;
+    private $renderer;
 
-    public function __construct(TemplateInterface $templates)
+    public function __construct(TemplateRendererInterface $renderer)
     {
-        $this->templates = $templates;
+        $this->templateRenderer = $renderer;
     }
 
     public function __invoke($request, $response, $next)
@@ -49,7 +49,7 @@ class EntryMiddlewareFactory
     public function __invoke(ContainerInterface $container)
     {
         return new EntryMiddleware(
-            $container->get('Zend\Expressive\Template\TemplateInterface')
+            $container->get('Zend\Expressive\Template\TemplateRendererInterface')
         );
     }
 }
@@ -70,22 +70,22 @@ substitutions to pass to it. This will typically look like the following:
 namespace Acme\Blog;
 
 use Zend\Diactoros\Response\HtmlResponse;
-use Zend\Expressive\Template\TemplateInterface;
+use Zend\Expressive\Template\TemplateRendererInterface;
 
 class EntryMiddleware
 {
-    private $templates;
+    private $renderer;
 
-    public function __construct(TemplateInterface $templates)
+    public function __construct(TemplateRendererInterface $renderer)
     {
-        $this->templates = $templates;
+        $this->templateRenderer = $renderer;
     }
 
     public function __invoke($request, $response, $next)
     {
         // do some work...
         return new HtmlResponse(
-            $this->templates->render('blog::entry', [
+            $this->templateRenderer->render('blog::entry', [
                 'entry' => $entry,
             ])
         );
@@ -96,7 +96,7 @@ class EntryMiddleware
 Alternately, you can write to the composed response:
 
 ```php
-$response->getBody()->write($this->templates->render('blog::entry', [
+$response->getBody()->write($this->templateRenderer->render('blog::entry', [
     'entry' => $entry,
 ]));
 return $response;

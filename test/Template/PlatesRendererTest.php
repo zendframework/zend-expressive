@@ -13,11 +13,20 @@ use ArrayObject;
 use League\Plates\Engine;
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Expressive\Exception;
-use Zend\Expressive\Template\Plates as PlatesTemplate;
-use Zend\Expressive\Template\TemplatePath;
+use Zend\Expressive\Template\PlatesRenderer;
 
-class PlatesTest extends TestCase
+class PlatesRendererTest extends TestCase
 {
+    /**
+     * @var Engine
+     */
+    private $platesEngine;
+
+    /**
+     * @var bool
+     */
+    private $error;
+
     use TemplatePathAssertionsTrait;
 
     public function setUp()
@@ -28,37 +37,38 @@ class PlatesTest extends TestCase
 
     public function testCanProvideEngineAtInstantiation()
     {
-        $template = new PlatesTemplate($this->platesEngine);
-        $this->assertInstanceOf(PlatesTemplate::class, $template);
-        $this->assertEmpty($template->getPaths());
+        $renderer = new PlatesRenderer($this->platesEngine);
+        $this->assertInstanceOf(PlatesRenderer::class, $renderer);
+        $this->assertEmpty($renderer->getPaths());
     }
 
     public function testLazyLoadsEngineAtInstantiationIfNoneProvided()
     {
-        $template = new PlatesTemplate();
-        $this->assertInstanceOf(PlatesTemplate::class, $template);
-        $this->assertEmpty($template->getPaths());
+        $renderer = new PlatesRenderer();
+        $this->assertInstanceOf(PlatesRenderer::class, $renderer);
+        $this->assertEmpty($renderer->getPaths());
     }
 
     public function testCanAddPath()
     {
-        $template = new PlatesTemplate();
-        $template->addPath(__DIR__ . '/TestAsset');
-        $paths = $template->getPaths();
+        $renderer = new PlatesRenderer();
+        $renderer->addPath(__DIR__ . '/TestAsset');
+        $paths = $renderer->getPaths();
         $this->assertInternalType('array', $paths);
         $this->assertEquals(1, count($paths));
         $this->assertTemplatePath(__DIR__ . '/TestAsset', $paths[0]);
         $this->assertTemplatePathString(__DIR__ . '/TestAsset', $paths[0]);
         $this->assertEmptyTemplatePathNamespace($paths[0]);
-        return $template;
+        return $renderer;
     }
 
     /**
+     * @param PlatesRenderer $renderer
      * @depends testCanAddPath
      */
-    public function testAddingSecondPathWithoutNamespaceIsANoopAndRaisesWarning($template)
+    public function testAddingSecondPathWithoutNamespaceIsANoopAndRaisesWarning($renderer)
     {
-        $paths = $template->getPaths();
+        $paths = $renderer->getPaths();
         $path  = array_shift($paths);
 
         set_error_handler(function ($error, $message) {
@@ -66,12 +76,12 @@ class PlatesTest extends TestCase
             $this->assertContains('duplicate', $message);
             return true;
         }, E_USER_WARNING);
-        $template->addPath(__DIR__);
+        $renderer->addPath(__DIR__);
         restore_error_handler();
 
         $this->assertTrue($this->error, 'Error handler was not triggered when calling addPath() multiple times');
 
-        $paths = $template->getPaths();
+        $paths = $renderer->getPaths();
         $this->assertInternalType('array', $paths);
         $this->assertEquals(1, count($paths));
         $test = array_shift($paths);
@@ -80,9 +90,9 @@ class PlatesTest extends TestCase
 
     public function testCanAddPathWithNamespace()
     {
-        $template = new PlatesTemplate();
-        $template->addPath(__DIR__ . '/TestAsset', 'test');
-        $paths = $template->getPaths();
+        $renderer = new PlatesRenderer();
+        $renderer->addPath(__DIR__ . '/TestAsset', 'test');
+        $paths = $renderer->getPaths();
         $this->assertInternalType('array', $paths);
         $this->assertEquals(1, count($paths));
         $this->assertTemplatePath(__DIR__ . '/TestAsset', $paths[0]);
@@ -92,10 +102,10 @@ class PlatesTest extends TestCase
 
     public function testDelegatesRenderingToUnderlyingImplementation()
     {
-        $template = new PlatesTemplate();
-        $template->addPath(__DIR__ . '/TestAsset');
+        $renderer = new PlatesRenderer();
+        $renderer->addPath(__DIR__ . '/TestAsset');
         $name = 'Plates';
-        $result = $template->render('plates', [ 'name' => $name ]);
+        $result = $renderer->render('plates', [ 'name' => $name ]);
         $this->assertContains($name, $result);
         $content = file_get_contents(__DIR__ . '/TestAsset/plates.php');
         $content = str_replace('<?=$this->e($name)?>', $name, $content);
@@ -120,16 +130,16 @@ class PlatesTest extends TestCase
      */
     public function testRenderRaisesExceptionForInvalidParameterTypes($params)
     {
-        $template = new PlatesTemplate();
+        $renderer = new PlatesRenderer();
         $this->setExpectedException(Exception\InvalidArgumentException::class);
-        $template->render('foo', $params);
+        $renderer->render('foo', $params);
     }
 
     public function testCanRenderWithNullParams()
     {
-        $template = new PlatesTemplate();
-        $template->addPath(__DIR__ . '/TestAsset');
-        $result = $template->render('plates-null', null);
+        $renderer = new PlatesRenderer();
+        $renderer->addPath(__DIR__ . '/TestAsset');
+        $result = $renderer->render('plates-null', null);
         $content = file_get_contents(__DIR__ . '/TestAsset/plates-null.php');
         $this->assertEquals($content, $result);
     }
@@ -152,9 +162,9 @@ class PlatesTest extends TestCase
      */
     public function testCanRenderWithParameterObjects($params, $search)
     {
-        $template = new PlatesTemplate();
-        $template->addPath(__DIR__ . '/TestAsset');
-        $result = $template->render('plates', $params);
+        $renderer = new PlatesRenderer();
+        $renderer->addPath(__DIR__ . '/TestAsset');
+        $result = $renderer->render('plates', $params);
         $this->assertContains($search, $result);
         $content = file_get_contents(__DIR__ . '/TestAsset/plates.php');
         $content = str_replace('<?=$this->e($name)?>', $search, $content);
@@ -166,11 +176,11 @@ class PlatesTest extends TestCase
      */
     public function testProperlyResolvesNamespacedTemplate()
     {
-        $template = new PlatesTemplate();
-        $template->addPath(__DIR__ . '/TestAsset/test', 'test');
+        $renderer = new PlatesRenderer();
+        $renderer->addPath(__DIR__ . '/TestAsset/test', 'test');
 
         $expected = file_get_contents(__DIR__ . '/TestAsset/test/test.php');
-        $test     = $template->render('test::test');
+        $test     = $renderer->render('test::test');
 
         $this->assertSame($expected, $test);
     }

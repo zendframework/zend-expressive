@@ -1,13 +1,13 @@
 # The Template Interface
 
-Expressive defines `Zend\Expressive\Template\TemplateInterface`, which can be
+Expressive defines `Zend\Expressive\Template\TemplateRendererInterface`, which can be
 injected into middleware in order to create templated response bodies. The
 interface is defined as follows:
 
 ```php
 namespace Zend\Expressive\Template;
 
-interface TemplateInterface
+interface TemplateRendererInterface
 {
     /**
      * Render a template, optionally with parameters.
@@ -59,7 +59,7 @@ interface TemplateInterface
 > rendering. Additionally, we require that engines allow omitting the filename
 > suffix.
 >
-> When using a `TemplateInterface` implementation, feel free to use namespaced
+> When using a `TemplateRendererInterface` implementation, feel free to use namespaced
 > templates, and to omit the filename suffix; this will make your code portable
 > and allow it to use alternate template engines.
 
@@ -71,7 +71,7 @@ more paths to templates; these are then used when resolving a template name to
 the actual template. You may use the `addPath()` method to do so:
 
 ```php
-$template->addPath('templates');
+$renderer->addPath('templates');
 ```
 
 Template engines adapted for zend-expressive are also required to allow
@@ -82,7 +82,7 @@ that path if the namespace provided matches the namespace for the path.
 ```php
 // Resolves to a path registered with the namespace "error";
 // this example is specific to the Plates engine.
-$content = $template->render('error::404');
+$content = $renderer->render('error::404');
 ```
 
 You can provide a namespace when registering a path via an optional second
@@ -90,7 +90,7 @@ argument:
 
 ```php
 // Registers the "error" namespace to the path "templates/error/"
-$template->addPath('templates/error/', 'error');
+$renderer->addPath('templates/error/', 'error');
 ```
 
 ## Rendering
@@ -99,7 +99,7 @@ To render a template, call the `render()` method. This method requires the name
 of a template as the first argument:
 
 ```php
-$content = $template->render('foo');
+$content = $renderer->render('foo');
 ```
 
 You can specify a namespaced template using the syntax `namespace::template`;
@@ -111,7 +111,7 @@ template. You may do so by passing either an associative array or an object as
 the second argument to `render()`:
 
 ```php
-$content = $template->render('message', [
+$content = $renderer->render('message', [
     'greeting'  => 'Hello',
     'recipient' => 'World',
 ]);
