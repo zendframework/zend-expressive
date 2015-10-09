@@ -534,6 +534,7 @@ In the following example, we'll assume that `$api` and `$blog` are
 
 ```php
 use Zend\Diactoros\Server;
+use Zend\Diactoros\ServerRequestFactory;
 use Zend\Stratigility\MiddlewarePipe;
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -542,7 +543,10 @@ $app = new MiddlewarePipe();
 $app->pipe('/blog', $blog);
 $app->pipe('/api', $api);
 
-$server = Server::fromGlobals($app);
+$server = Server::createServerFromRequest(
+    $app,
+    ServerRequestFactory::fromGlobals()
+);
 $server->listen();
 ```
 
