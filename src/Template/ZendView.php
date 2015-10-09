@@ -36,11 +36,6 @@ class ZendView implements TemplateInterface
     private $layout;
 
     /**
-     * Paths and namespaces data store.
-     */
-    private $paths = [];
-
-    /**
      * @var RendererInterface
      */
     private $renderer;
@@ -67,7 +62,7 @@ class ZendView implements TemplateInterface
      *
      * @param null|RendererInterface $renderer
      * @param null|string|ModelInterface $layout
-     * @throws InvalidArgumentException for invalid $layout types
+     * @throws Exception\InvalidArgumentException for invalid $layout types
      */
     public function __construct(RendererInterface $renderer = null, $layout = null)
     {
@@ -91,7 +86,7 @@ class ZendView implements TemplateInterface
             $layout = $model;
         }
 
-        if ($layout && ! $layout instanceof ModelInterface) {
+        if ($layout !== null && ! $layout instanceof ModelInterface) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'Layout must be a string layout template name or a %s instance; received %s',
                 ModelInterface::class,
@@ -195,12 +190,6 @@ class ZendView implements TemplateInterface
                 $layout = $params['layout'];
                 unset($params['layout']);
             }
-        }
-
-        if (array_key_exists('layout', $params) && is_string($params['layout']) && $params['layout']) {
-            $layout = new ViewModel();
-            $layout->setTemplate($params['layout']);
-            unset($params['layout']);
         }
 
         $model = new ViewModel($params);
