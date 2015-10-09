@@ -18,7 +18,7 @@ namespace, and define an `__invoke()` method that accepts an
     - `Zend\Expressive\Router\RouterInterface`. When provided, the service will
       be used to construct the `Application` instance; otherwise, an Aura router
       implementation will be used.
-    - `Zend\Expressive\FinalHandler`. This is a meta-service, as the only concrete
+    - `Zend\Stratigility\FinalHandler`. This is a meta-service, as the only concrete
       type required is a callable that can be used as a final middleware in the
       case that the stack is exhausted before execution ends. By default, an
       instance of `Zend\Stratigility\FinalHandler` will be used.
@@ -113,7 +113,7 @@ order to seed the `Application` instance:
 ## TemplatedErrorHandlerFactory
 
 - **Provides**: `Zend\Expressive\TemplatedErrorHandler`
-- **Suggested Name**: `Zend\Expressive\FinalHandler`
+- **Suggested Name**: `Zend\Stratigility\FinalHandler`
 - **Requires**: no additional services are required.
 - **Optional**:
     - `Zend\Expressive\Template\TemplateInterface`. If not provided, the error
@@ -138,7 +138,7 @@ seed the `Templated` instance:
 ## WhoopsErrorHandlerFactory
 
 - **Provides**: `Zend\Expressive\TemplatedErrorHandler`
-- **Suggested Name**: `Zend\Expressive\FinalHandler`
+- **Suggested Name**: `Zend\Stratigility\FinalHandler`
 - **Requires**:
     - `Zend\Expressive\Whoops`, which should provide a `Whoops\Run` instance.
     - `Zend\Expressive\WhoopsPageHandler`, which should provide a
