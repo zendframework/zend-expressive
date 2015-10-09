@@ -1,4 +1,4 @@
-# The Template Interface
+# The Template Renderer Interface
 
 Expressive defines `Zend\Expressive\Template\TemplateRendererInterface`, which can be
 injected into middleware in order to create templated response bodies. The
