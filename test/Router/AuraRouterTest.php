@@ -200,4 +200,20 @@ class AuraRouterTest extends TestCase
         $this->assertFalse($result->isMethodFailure());
         $this->assertSame([], $result->getAllowedMethods());
     }
+
+    /**
+     * @group 149
+     */
+    public function testGeneratedUriIsNotEncoded()
+    {
+        $router = new AuraRouter();
+        $route  = new Route('/foo/{id}', 'foo', ['GET'], 'foo');
+
+        $router->addRoute($route);
+
+        $this->assertEquals(
+            '/foo/bar is not encoded',
+            $router->generateUri('foo', ['id' => 'bar is not encoded'])
+        );
+    }
 }
