@@ -26,7 +26,7 @@ use Zend\Psr7Bridge\Psr7ServerRequest;
  * matches with this special route, we can send the HTTP allowed methods stored
  * for that path.
  */
-class Zf2Router implements RouterInterface
+class ZendRouter implements RouterInterface
 {
     const METHOD_NOT_ALLOWED_ROUTE = 'method_not_allowed';
 
@@ -47,7 +47,7 @@ class Zf2Router implements RouterInterface
     /**
      * @var TreeRouteStack
      */
-    private $zf2Router;
+    private $zendRouter;
 
     /**
      * Constructor.
@@ -62,7 +62,7 @@ class Zf2Router implements RouterInterface
             $router = $this->createRouter();
         }
 
-        $this->zf2Router = $router;
+        $this->zendRouter = $router;
     }
 
     /**
@@ -82,7 +82,7 @@ class Zf2Router implements RouterInterface
 
         $allowedMethods = $route->getAllowedMethods();
         if (Route::HTTP_METHOD_ANY === $allowedMethods) {
-            $this->zf2Router->addRoute($name, [
+            $this->zendRouter->addRoute($name, [
                 'type'    => 'segment',
                 'options' => $options,
             ]);
@@ -116,7 +116,7 @@ class Zf2Router implements RouterInterface
             unset($spec['child_routes'][self::METHOD_NOT_ALLOWED_ROUTE]);
         }
 
-        $this->zf2Router->addRoute($name, $spec);
+        $this->zendRouter->addRoute($name, $spec);
         $this->allowedMethodsByPath[$path] = $allowedMethods;
         $this->routeNameMap[$name] = sprintf('%s/%s', $name, $httpMethodRouteName);
     }
@@ -129,7 +129,7 @@ class Zf2Router implements RouterInterface
      */
     public function match(PsrRequest $request)
     {
-        $match = $this->zf2Router->match(Psr7ServerRequest::toZend($request, true));
+        $match = $this->zendRouter->match(Psr7ServerRequest::toZend($request, true));
 
         if (null === $match) {
             return RouteResult::fromRouteFailure();
@@ -143,7 +143,7 @@ class Zf2Router implements RouterInterface
      */
     public function generateUri($name, array $substitutions = [])
     {
-        if (! $this->zf2Router->hasRoute($name)) {
+        if (! $this->zendRouter->hasRoute($name)) {
             throw new Exception\RuntimeException(sprintf(
                 'Cannot generate URI based on route "%s"; route not found',
                 $name
@@ -157,7 +157,7 @@ class Zf2Router implements RouterInterface
             'only_return_path' => true,
         ];
 
-        return $this->zf2Router->assemble($substitutions, $options);
+        return $this->zendRouter->assemble($substitutions, $options);
     }
 
     /**
