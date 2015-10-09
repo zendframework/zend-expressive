@@ -122,7 +122,10 @@ class AuraRouter implements RouterInterface
     public function match(Request $request)
     {
         $path   = $request->getUri()->getPath();
+        $method = $request->getMethod();
         $params = $request->getServerParams();
+
+        $params['REQUEST_METHOD'] = $method;
         $route  = $this->router->match($path, $params);
 
         if (false === $route) {
