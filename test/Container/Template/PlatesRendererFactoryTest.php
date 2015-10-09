@@ -12,13 +12,16 @@ namespace ZendTest\Expressive\Container\Template;
 use Interop\Container\ContainerInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use ReflectionProperty;
-use Zend\Expressive\Container\Template\PlatesFactory;
-use Zend\Expressive\Template\Plates;
+use Zend\Expressive\Container\Template\PlatesRendererFactory;
+use Zend\Expressive\Template\PlatesRenderer;
 
-class PlatesFactoryTest extends TestCase
+class PlatesRendererFactoryTest extends TestCase
 {
     use PathsTrait;
 
+    /** @var  ContainerInterface */
+    private $container;
+    /** @var bool */
     public $errorCaught = false;
 
     public function setUp()
@@ -27,7 +30,7 @@ class PlatesFactoryTest extends TestCase
         $this->container = $this->prophesize(ContainerInterface::class);
     }
 
-    public function fetchPlatesEngine(Plates $plates)
+    public function fetchPlatesEngine(PlatesRenderer $plates)
     {
         $r = new ReflectionProperty($plates, 'template');
         $r->setAccessible(true);
@@ -37,16 +40,16 @@ class PlatesFactoryTest extends TestCase
     public function testCallingFactoryWithNoConfigReturnsPlatesInstance()
     {
         $this->container->has('config')->willReturn(false);
-        $factory = new PlatesFactory();
+        $factory = new PlatesRendererFactory();
         $plates = $factory($this->container->reveal());
-        $this->assertInstanceOf(Plates::class, $plates);
+        $this->assertInstanceOf(PlatesRenderer::class, $plates);
         return $plates;
     }
 
     /**
      * @depends testCallingFactoryWithNoConfigReturnsPlatesInstance
      */
-    public function testUnconfiguredPlatesInstanceContainsNoPaths(Plates $plates)
+    public function testUnconfiguredPlatesInstanceContainsNoPaths(PlatesRenderer $plates)
     {
         $paths = $plates->getPaths();
         $this->assertInternalType('array', $paths);
@@ -62,7 +65,7 @@ class PlatesFactoryTest extends TestCase
         ];
         $this->container->has('config')->willReturn(true);
         $this->container->get('config')->willReturn($config);
-        $factory = new PlatesFactory();
+        $factory = new PlatesRendererFactory();
         $plates = $factory($this->container->reveal());
 
         $engine = $this->fetchPlatesEngine($plates);
@@ -84,7 +87,7 @@ class PlatesFactoryTest extends TestCase
         ];
         $this->container->has('config')->willReturn(true);
         $this->container->get('config')->willReturn($config);
-        $factory = new PlatesFactory();
+        $factory = new PlatesRendererFactory();
 
         $reset = set_error_handler(function ($errno, $errstr) {
             $this->errorCaught = true;
@@ -108,7 +111,7 @@ class PlatesFactoryTest extends TestCase
         ];
         $this->container->has('config')->willReturn(true);
         $this->container->get('config')->willReturn($config);
-        $factory = new PlatesFactory();
+        $factory = new PlatesRendererFactory();
 
         $this->setExpectedException('LogicException', 'already being used');
         $plates = $factory($this->container->reveal());
@@ -127,7 +130,7 @@ class PlatesFactoryTest extends TestCase
         ];
         $this->container->has('config')->willReturn(true);
         $this->container->get('config')->willReturn($config);
-        $factory = new PlatesFactory();
+        $factory = new PlatesRendererFactory();
         $plates = $factory($this->container->reveal());
 
         $paths = $plates->getPaths();

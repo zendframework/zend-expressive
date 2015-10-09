@@ -12,12 +12,16 @@ namespace ZendTest\Expressive\Container\Template;
 use Interop\Container\ContainerInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use ReflectionProperty;
-use Zend\Expressive\Container\Template\TwigFactory;
+use Zend\Expressive\Container\Template\TwigRendererFactory;
 use Zend\Expressive\Router\RouterInterface;
-use Zend\Expressive\Template\Twig;
+use Zend\Expressive\Template\TwigRenderer;
+use Zend\Expressive\Template\Twig\TwigExtension;
 
 class TwigFactoryTest extends TestCase
 {
+    /** @var  ContainerInterface */
+    private $container;
+
     use PathsTrait;
 
     public function setUp()
@@ -25,7 +29,7 @@ class TwigFactoryTest extends TestCase
         $this->container = $this->prophesize(ContainerInterface::class);
     }
 
-    public function fetchTwigEnvironment(Twig $twig)
+    public function fetchTwigEnvironment(TwigRenderer $twig)
     {
         $r = new ReflectionProperty($twig, 'template');
         $r->setAccessible(true);
@@ -36,16 +40,16 @@ class TwigFactoryTest extends TestCase
     {
         $this->container->has('config')->willReturn(false);
         $this->container->has(RouterInterface::class)->willReturn(false);
-        $factory = new TwigFactory();
+        $factory = new TwigRendererFactory();
         $twig = $factory($this->container->reveal());
-        $this->assertInstanceOf(Twig::class, $twig);
+        $this->assertInstanceOf(TwigRenderer::class, $twig);
         return $twig;
     }
 
     /**
      * @depends testCallingFactoryWithNoConfigReturnsTwigInstance
      */
-    public function testUnconfiguredTwigInstanceContainsNoPaths(Twig $twig)
+    public function testUnconfiguredTwigInstanceContainsNoPaths(TwigRenderer $twig)
     {
         $paths = $twig->getPaths();
         $this->assertInternalType('array', $paths);
@@ -58,7 +62,7 @@ class TwigFactoryTest extends TestCase
         $this->container->has('config')->willReturn(true);
         $this->container->get('config')->willReturn($config);
         $this->container->has(RouterInterface::class)->willReturn(false);
-        $factory = new TwigFactory();
+        $factory = new TwigRendererFactory();
         $twig = $factory($this->container->reveal());
 
         $environment = $this->fetchTwigEnvironment($twig);
@@ -72,7 +76,7 @@ class TwigFactoryTest extends TestCase
     /**
      * @depends testCallingFactoryWithNoConfigReturnsTwigInstance
      */
-    public function testDebugDisabledSetsUpEnvironmentForProduction(Twig $twig)
+    public function testDebugDisabledSetsUpEnvironmentForProduction(TwigRenderer $twig)
     {
         $environment = $this->fetchTwigEnvironment($twig);
 
@@ -87,7 +91,7 @@ class TwigFactoryTest extends TestCase
         $this->container->has('config')->willReturn(true);
         $this->container->get('config')->willReturn($config);
         $this->container->has(RouterInterface::class)->willReturn(false);
-        $factory = new TwigFactory();
+        $factory = new TwigRendererFactory();
         $twig = $factory($this->container->reveal());
 
         $environment = $this->fetchTwigEnvironment($twig);
@@ -100,7 +104,7 @@ class TwigFactoryTest extends TestCase
         $this->container->has('config')->willReturn(false);
         $this->container->has(RouterInterface::class)->willReturn(true);
         $this->container->get(RouterInterface::class)->willReturn($router);
-        $factory = new TwigFactory();
+        $factory = new TwigRendererFactory();
         $twig = $factory($this->container->reveal());
 
         $environment = $this->fetchTwigEnvironment($twig);
@@ -120,12 +124,12 @@ class TwigFactoryTest extends TestCase
         $this->container->get('config')->willReturn($config);
         $this->container->has(RouterInterface::class)->willReturn(true);
         $this->container->get(RouterInterface::class)->willReturn($router);
-        $factory = new TwigFactory();
+        $factory = new TwigRendererFactory();
         $twig = $factory($this->container->reveal());
 
         $environment = $this->fetchTwigEnvironment($twig);
         $extension = $environment->getExtension('zend-expressive');
-        $this->assertInstanceOf(Twig\TwigExtension::class, $extension);
+        $this->assertInstanceOf(TwigExtension::class, $extension);
         $this->assertAttributeEquals($config['templates']['assets_url'], 'assetsUrl', $extension);
         $this->assertAttributeEquals($config['templates']['assets_version'], 'assetsVersion', $extension);
         $this->assertAttributeSame($router, 'router', $extension);
@@ -141,7 +145,7 @@ class TwigFactoryTest extends TestCase
         $this->container->has('config')->willReturn(true);
         $this->container->get('config')->willReturn($config);
         $this->container->has(RouterInterface::class)->willReturn(false);
-        $factory = new TwigFactory();
+        $factory = new TwigRendererFactory();
         $twig = $factory($this->container->reveal());
 
         $this->assertAttributeSame($config['templates']['extension'], 'suffix', $twig);
@@ -157,7 +161,7 @@ class TwigFactoryTest extends TestCase
         $this->container->has('config')->willReturn(true);
         $this->container->get('config')->willReturn($config);
         $this->container->has(RouterInterface::class)->willReturn(false);
-        $factory = new TwigFactory();
+        $factory = new TwigRendererFactory();
         $twig = $factory($this->container->reveal());
 
         $paths = $twig->getPaths();

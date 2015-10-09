@@ -34,7 +34,7 @@ This workflow stays the same throughout zend-expressive. But sometimes, it's jus
 
 You'll typically want to provide error messages in your site template. To do so, we provide
 `Zend\Expressive\TemplatedErrorHandler`. This class is similar to the `FinalHandler`, but accepts,
-optionally, a `Zend\Expressive\Template\TemplateInterface` instance, and template names to use for
+optionally, a `Zend\Expressive\Template\TemplateRendererInterface` instance, and template names to use for
 404 and general error conditions. This makes it a good choice for use in production.
 
 First, of course, you'll need to select a templating system and ensure you have
@@ -46,7 +46,7 @@ handler.
 
 ```php
 use Zend\Expressive\Application;
-use Zend\Expressive\Template\Plates;
+use Zend\Expressive\Template\PlatesRenderer;
 use Zend\Expressive\TemplatedErrorHandler;
 
 $plates = new Plates();
@@ -60,7 +60,7 @@ The above will use the templates `error::404` and `error::500` for 404 and gener
 respectively, rendering them using our Plates template adapter.
 
 You can also use the `TemplatedErrorHandler` as a substitute for the `FinalHandler`, without using
-templated capabilities, by omitting the `TemplateInterface` instance when instantiating it. In this
+templated capabilities, by omitting the `TemplateRendererInterface` instance when instantiating it. In this
 case, the response message bodies will be empty, though the response status will reflect the error.
 
 See the section titled "Container Factories and Configuration", below, for techniques on configuring
@@ -81,14 +81,14 @@ $ composer require filp/whoops
 ```
 
 Then you will need to provide the error handler a whoops runtime instance, as well as a
-`Whoops\Handler\PrettyPageHandler` instance. You can also optionally provide a `TemplateInterface`
+`Whoops\Handler\PrettyPageHandler` instance. You can also optionally provide a `TemplateRendererInterface`
 instance and template names, just as you would for a `TemplatedErrorHandler`.
 
 ```php
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run as Whoops;
 use Zend\Expressive\Application;
-use Zend\Expressive\Template\Plates;
+use Zend\Expressive\Template\PlatesRenderer;
 use Zend\Expressive\WhoopsErrorHandler;
 
 $handler = new PrettyPageHandler();

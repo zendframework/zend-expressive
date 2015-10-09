@@ -9,6 +9,15 @@ All notable changes to this project will be documented in this file, in reverse 
 - [#132](https://github.com/zendframework/zend-expressive/pull/132) adds
   `Zend\Expressive\Router\ZendRouter`, replacing
   `Zend\Expressive\Router\Zf2Router`.
+- [#139](https://github.com/zendframework/zend-expressive/pull/134) adds:
+  - `Zend\Expressive\Template\TemplateRendererInterface`, replacing
+    `Zend\Expressive\Template\TemplateInterface`.
+  - `Zend\Expressive\Template\PlatesRenderer`, replacing
+    `Zend\Expressive\Template\Plates`.
+  - `Zend\Expressive\Template\TwigRenderer`, replacing
+    `Zend\Expressive\Template\Twig`.
+  - `Zend\Expressive\Template\ZendViewRenderer`, replacing
+    `Zend\Expressive\Template\ZendView`.
 
 ### Deprecated
 
@@ -19,6 +28,15 @@ All notable changes to this project will be documented in this file, in reverse 
 - [#132](https://github.com/zendframework/zend-expressive/pull/132) removes
   `Zend\Expressive\Router\Zf2Router`, renaming it to
   `Zend\Expressive\Router\ZendRouter`.
+- [#139](https://github.com/zendframework/zend-expressive/pull/134) removes:
+  - `Zend\Expressive\Template\TemplateInterface`, renaming it to
+    `Zend\Expressive\Template\TemplateRendererInterface`.
+  - `Zend\Expressive\Template\Plates`, renaming it to
+    `Zend\Expressive\Template\PlatesRenderer`.
+  - `Zend\Expressive\Template\Twig`, renaming it to
+    `Zend\Expressive\Template\TwigRenderer`.
+  - `Zend\Expressive\Template\ZendView`, renaming it to
+    `Zend\Expressive\Template\ZendViewRenderer`.
 
 ### Fixed
 
