@@ -6,7 +6,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#132](https://github.com/zendframework/zend-expressive/pull/132) adds
+  `Zend\Expressive\Router\ZendRouter`, replacing
+  `Zend\Expressive\Router\Zf2Router`.
 
 ### Deprecated
 
@@ -14,7 +16,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Removed
 
-- Nothing.
+- [#132](https://github.com/zendframework/zend-expressive/pull/132) removes
+  `Zend\Expressive\Router\Zf2Router`, renaming it to
+  `Zend\Expressive\Router\ZendRouter`.
 
 ### Fixed
 
