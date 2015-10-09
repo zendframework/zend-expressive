@@ -51,7 +51,7 @@ class ZendViewRendererTest extends TestCase
     public function testInstantiatingWithInvalidLayout()
     {
         $this->setExpectedException(InvalidArgumentException::class);
-        new ZendView(null, []);
+        new ZendViewRenderer(null, []);
     }
 
     public function testCanAddPathWithEmptyNamespace()
