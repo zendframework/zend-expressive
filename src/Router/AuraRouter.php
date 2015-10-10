@@ -18,6 +18,15 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 /**
  * Router implementation bridging the Aura.Router.
+ *
+ * Adds routes to the Aura.Router, using the path as the name, and a
+ * middleware value equivalent to the middleware in the Route instance.
+ *
+ * If HTTP methods are defined (and not the wildcard), they are imploded
+ * with a pipe symbol and added as server REQUEST_METHOD criteria.
+ *
+ * If tokens or values are present in the options array, they are also
+ * added to the router.
  */
 class AuraRouter implements RouterInterface
 {
@@ -34,6 +43,11 @@ class AuraRouter implements RouterInterface
      * @var array
      */
     private $routes = [];
+
+    /**
+     * @var Route[] Routes aggregated to inject.
+     */
+    private $routesToInject = [];
 
     /**
      * Constructor
@@ -54,73 +68,21 @@ class AuraRouter implements RouterInterface
     }
 
     /**
-     * Create a default Aura router instance
-     *
-     * @return Router
-     */
-    private function createRouter()
-    {
-        return new Router(
-            new RouteCollection(new RouteFactory()),
-            new Generator()
-        );
-    }
-
-    /**
-     * Add a route to the underlying router.
-     *
-     * Adds the route to the Aura.Router, using the path as the name, and a
-     * middleware value equivalent to the middleware in the Route instance.
-     *
-     * If HTTP methods are defined (and not the wildcard), they are imploded
-     * with a pipe symbol and added as server REQUEST_METHOD criteria.
-     *
-     * If tokens or values are present in the options array, they are also
-     * added to the router.
-     *
-     * @param Route $route
+     * @inheritDoc
      */
     public function addRoute(Route $route)
     {
-        $path      = $route->getPath();
-        $auraRoute = $this->router->add(
-            $route->getName(),
-            $path,
-            $route->getMiddleware()
-        );
-
-        foreach ($route->getOptions() as $key => $value) {
-            switch ($key) {
-                case 'tokens':
-                    $auraRoute->addTokens($value);
-                    break;
-                case 'values':
-                    $auraRoute->addValues($value);
-                    break;
-            }
-        }
-
-        $allowedMethods = $route->getAllowedMethods();
-        if (Route::HTTP_METHOD_ANY === $allowedMethods) {
-            return;
-        }
-
-        $auraRoute->setServer([
-            'REQUEST_METHOD' => implode('|', $allowedMethods)
-        ]);
-
-        if (array_key_exists($path, $this->routes)) {
-            $allowedMethods = array_merge($this->routes[$path], $allowedMethods);
-        }
-        $this->routes[$path] = $allowedMethods;
+        $this->routesToInject[] = $route;
     }
 
     /**
-     * @param Request $request
-     * @return RouteResult
+     * @inheritDoc
      */
     public function match(Request $request)
     {
+        // Must inject routes prior to matching.
+        $this->injectRoutes();
+
         $path   = $request->getUri()->getPath();
         $method = $request->getMethod();
         $params = $request->getServerParams();
@@ -136,11 +98,26 @@ class AuraRouter implements RouterInterface
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function generateUri($name, array $substitutions = [])
     {
+        // Must inject routes prior to generating URIs.
+        $this->injectRoutes();
         return $this->router->generateRaw($name, $substitutions);
+    }
+
+    /**
+     * Create a default Aura router instance
+     *
+     * @return Router
+     */
+    private function createRouter()
+    {
+        return new Router(
+            new RouteCollection(new RouteFactory()),
+            new Generator()
+        );
     }
 
     /**
@@ -195,5 +172,56 @@ class AuraRouter implements RouterInterface
             $route->params['action'],
             $route->params
         );
+    }
+
+    /**
+     * Loops through any un-injected routes and injects them into the Aura.Router instance.
+     */
+    private function injectRoutes()
+    {
+        foreach ($this->routesToInject as $index => $route) {
+            $this->injectRoute($route);
+            unset($this->routesToInject[$index]);
+        }
+    }
+
+    /**
+     * Inject a route into the underlying Aura.Router instance.
+     *
+     * @param Route $route
+     */
+    private function injectRoute(Route $route)
+    {
+        $path      = $route->getPath();
+        $auraRoute = $this->router->add(
+            $route->getName(),
+            $path,
+            $route->getMiddleware()
+        );
+
+        foreach ($route->getOptions() as $key => $value) {
+            switch ($key) {
+                case 'tokens':
+                    $auraRoute->addTokens($value);
+                    break;
+                case 'values':
+                    $auraRoute->addValues($value);
+                    break;
+            }
+        }
+
+        $allowedMethods = $route->getAllowedMethods();
+        if (Route::HTTP_METHOD_ANY === $allowedMethods) {
+            return;
+        }
+
+        $auraRoute->setServer([
+            'REQUEST_METHOD' => implode('|', $allowedMethods)
+        ]);
+
+        if (array_key_exists($path, $this->routes)) {
+            $allowedMethods = array_merge($this->routes[$path], $allowedMethods);
+        }
+        $this->routes[$path] = $allowedMethods;
     }
 }

@@ -41,6 +41,13 @@ class FastRouteRouter implements RouterInterface
     private $routes;
 
     /**
+     * Routes to inject into the underlying RouteCollector.
+     *
+     * @var Route[]
+     */
+    private $routesToInject = [];
+
+    /**
      * Constructor
      *
      * Accepts optionally a FastRoute RouteCollector and a callable factory
@@ -78,18 +85,7 @@ class FastRouteRouter implements RouterInterface
      */
     public function addRoute(Route $route)
     {
-        $methods = $route->getAllowedMethods();
-
-        if ($methods === Route::HTTP_METHOD_ANY) {
-            $methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS', 'TRACE'];
-        }
-
-        if (empty($methods)) {
-            $methods = ['GET', 'HEAD', 'OPTIONS'];
-        }
-
-        $this->router->addRoute($methods, $route->getPath(), $route->getPath());
-        $this->routes[$route->getName()] = $route;
+        $this->routesToInject[] = $route;
     }
 
     /**
@@ -98,6 +94,9 @@ class FastRouteRouter implements RouterInterface
      */
     public function match(Request $request)
     {
+        // Inject any pending routes
+        $this->injectRoutes();
+
         $path       = $request->getUri()->getPath();
         $method     = $request->getMethod();
         $dispatcher = $this->getDispatcher($this->router->getData());
@@ -129,6 +128,9 @@ class FastRouteRouter implements RouterInterface
      */
     public function generateUri($name, array $substitutions = [])
     {
+        // Inject any pending routes
+        $this->injectRoutes();
+
         if (! array_key_exists($name, $this->routes)) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'Cannot generate URI for route "%s"; route not found',
@@ -236,5 +238,39 @@ class FastRouteRouter implements RouterInterface
             $middleware,
             $result[2]
         );
+    }
+
+    /**
+     * Inject queued Route instances into the underlying router.
+     *
+     * @param Route $route
+     */
+    private function injectRoutes()
+    {
+        foreach ($this->routesToInject as $index => $route) {
+            $this->injectRoute($route);
+            unset($this->routesToInject[$index]);
+        }
+    }
+
+    /**
+     * Inject a Route instance into the underlying router.
+     *
+     * @param Route $route
+     */
+    private function injectRoute(Route $route)
+    {
+        $methods = $route->getAllowedMethods();
+
+        if ($methods === Route::HTTP_METHOD_ANY) {
+            $methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS', 'TRACE'];
+        }
+
+        if (empty($methods)) {
+            $methods = ['GET', 'HEAD', 'OPTIONS'];
+        }
+
+        $this->router->addRoute($methods, $route->getPath(), $route->getPath());
+        $this->routes[$route->getName()] = $route;
     }
 }

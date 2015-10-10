@@ -13,13 +13,17 @@ use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Argument;
 use Zend\Diactoros\ServerRequest;
 use Zend\Expressive\Router\Route;
+use Zend\Expressive\Router\RouteResult;
 use Zend\Expressive\Router\ZendRouter;
+use Zend\Http\Request as ZendRequest;
+use Zend\Mvc\Router\Http\TreeRouteStack;
+use Zend\Mvc\Router\RouteMatch;
 
 class ZendRouterTest extends TestCase
 {
     public function setUp()
     {
-        $this->zendRouter = $this->prophesize('Zend\Mvc\Router\Http\TreeRouteStack');
+        $this->zendRouter = $this->prophesize(TreeRouteStack::class);
     }
 
     public function getRouter()
@@ -30,7 +34,7 @@ class ZendRouterTest extends TestCase
     public function testWillLazyInstantiateAZendTreeRouteStackIfNoneIsProvidedToConstructor()
     {
         $router = new ZendRouter();
-        $this->assertAttributeInstanceOf('Zend\Mvc\Router\Http\TreeRouteStack', 'zendRouter', $router);
+        $this->assertAttributeInstanceOf(TreeRouteStack::class, 'zendRouter', $router);
     }
 
     public function createRequestProphecy()
@@ -51,7 +55,18 @@ class ZendRouterTest extends TestCase
         return $request;
     }
 
-    public function testAddingRouteProxiesToZendRouter()
+    public function testAddingRouteAggregatesInRouter()
+    {
+        $route = new Route('/foo', 'foo', ['GET']);
+        $router = $this->getRouter();
+        $router->addRoute($route);
+        $this->assertAttributeContains($route, 'routesToInject', $router);
+    }
+
+    /**
+     * @depends testAddingRouteAggregatesInRouter
+     */
+    public function testMatchingInjectsRoutesInRouter()
     {
         $route = new Route('/foo', 'foo', ['GET']);
 
@@ -87,6 +102,62 @@ class ZendRouterTest extends TestCase
 
         $router = $this->getRouter();
         $router->addRoute($route);
+
+        $request = $this->createRequestProphecy();
+        $this->zendRouter->match(Argument::type(ZendRequest::class))->willReturn(null);
+
+        $router->match($request->reveal());
+    }
+
+    /**
+     * @depends testAddingRouteAggregatesInRouter
+     */
+    public function testGeneratingUriInjectsRoutesInRouter()
+    {
+        $route = new Route('/foo', 'foo', ['GET']);
+
+        $this->zendRouter->addRoute('/foo^GET', [
+            'type' => 'segment',
+            'options' => [
+                'route' => '/foo',
+            ],
+            'may_terminate' => false,
+            'child_routes' => [
+                'GET' => [
+                    'type' => 'method',
+                    'options' => [
+                        'verb' => 'GET',
+                        'defaults' => [
+                            'middleware' => 'foo',
+                        ],
+                    ],
+                ],
+                ZendRouter::METHOD_NOT_ALLOWED_ROUTE => [
+                    'type'     => 'regex',
+                    'priority' => -1,
+                    'options'  => [
+                        'regex' => '/*$',
+                        'defaults' => [
+                            ZendRouter::METHOD_NOT_ALLOWED_ROUTE => '/foo',
+                        ],
+                        'spec' => '',
+                    ],
+                ],
+            ],
+        ])->shouldBeCalled();
+        $this->zendRouter->hasRoute('foo')->willReturn(true);
+        $this->zendRouter->assemble(
+            [],
+            [
+                'name' => 'foo',
+                'only_return_path' => true,
+            ]
+        )->willReturn('/foo');
+
+        $router = $this->getRouter();
+        $router->addRoute($route);
+
+        $this->assertEquals('/foo', $router->generateUri('foo'));
     }
 
     public function testCanSpecifyRouteOptions()
@@ -137,8 +208,18 @@ class ZendRouterTest extends TestCase
             ],
         ])->shouldBeCalled();
 
+        $this->zendRouter->hasRoute('foo')->willReturn(true);
+        $this->zendRouter->assemble(
+            [],
+            [
+                'name' => 'foo',
+                'only_return_path' => true,
+            ]
+        )->willReturn('/foo');
+
         $router = $this->getRouter();
         $router->addRoute($route);
+        $router->generateUri('foo');
     }
 
     public function routeResults()
@@ -169,7 +250,7 @@ class ZendRouterTest extends TestCase
         $request = new ServerRequest([ 'REQUEST_METHOD' => 'GET' ], [], '/foo', 'GET');
 
         $result = $zendRouter->match($request);
-        $this->assertInstanceOf('Zend\Expressive\Router\RouteResult', $result);
+        $this->assertInstanceOf(RouteResult::class, $result);
         $this->assertEquals('/foo^GET', $result->getMatchedRouteName());
         $this->assertEquals($middleware, $result->getMatchedMiddleware());
     }
@@ -179,21 +260,21 @@ class ZendRouterTest extends TestCase
      */
     public function testSuccessfulMatchIsPossible()
     {
-        $routeMatch = $this->prophesize('Zend\Mvc\Router\RouteMatch');
+        $routeMatch = $this->prophesize(RouteMatch::class);
         $routeMatch->getMatchedRouteName()->willReturn('/foo');
         $routeMatch->getParams()->willReturn([
             'middleware' => 'bar',
         ]);
 
         $this->zendRouter
-            ->match(Argument::type('Zend\Http\PhpEnvironment\Request'))
+            ->match(Argument::type(ZendRequest::class))
             ->willReturn($routeMatch->reveal());
 
         $request = $this->createRequestProphecy();
 
         $router = $this->getRouter();
         $result = $router->match($request->reveal());
-        $this->assertInstanceOf('Zend\Expressive\Router\RouteResult', $result);
+        $this->assertInstanceOf(RouteResult::class, $result);
         $this->assertTrue($result->isSuccess());
         $this->assertEquals('/foo', $result->getMatchedRouteName());
         $this->assertEquals('bar', $result->getMatchedMiddleware());
@@ -205,14 +286,14 @@ class ZendRouterTest extends TestCase
     public function testNonSuccessfulMatchNotDueToHttpMethodsIsPossible()
     {
         $this->zendRouter
-            ->match(Argument::type('Zend\Http\PhpEnvironment\Request'))
+            ->match(Argument::type(ZendRequest::class))
             ->willReturn(null);
 
         $request = $this->createRequestProphecy();
 
         $router = $this->getRouter();
         $result = $router->match($request->reveal());
-        $this->assertInstanceOf('Zend\Expressive\Router\RouteResult', $result);
+        $this->assertInstanceOf(RouteResult::class, $result);
         $this->assertTrue($result->isFailure());
         $this->assertFalse($result->isMethodFailure());
     }
@@ -227,7 +308,7 @@ class ZendRouterTest extends TestCase
         $request = new ServerRequest([ 'REQUEST_METHOD' => 'GET' ], [], '/foo', 'GET');
         $result = $router->match($request);
 
-        $this->assertInstanceOf('Zend\Expressive\Router\RouteResult', $result);
+        $this->assertInstanceOf(RouteResult::class, $result);
         $this->assertTrue($result->isFailure());
         $this->assertTrue($result->isMethodFailure());
         $this->assertEquals(['POST', 'DELETE'], $result->getAllowedMethods());
@@ -243,7 +324,7 @@ class ZendRouterTest extends TestCase
         $request = new ServerRequest([ 'REQUEST_METHOD' => 'GET' ], [], '/foo/1', 'GET');
         $result = $router->match($request);
 
-        $this->assertInstanceOf('Zend\Expressive\Router\RouteResult', $result);
+        $this->assertInstanceOf(RouteResult::class, $result);
         $this->assertTrue($result->isFailure());
         $this->assertTrue($result->isMethodFailure());
         $this->assertEquals(['POST', 'DELETE'], $result->getAllowedMethods());
