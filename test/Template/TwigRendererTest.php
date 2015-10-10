@@ -178,11 +178,11 @@ class TwigRendererTest extends TestCase
 
     public function testAddParameterToOneTemplate()
     {
-        $template = new TwigRenderer();
-        $template->addPath(__DIR__ . '/TestAsset');
+        $renderer = new TwigRenderer();
+        $renderer->addPath(__DIR__ . '/TestAsset');
         $name = 'Twig';
-        $template->addDefaultParam('twig', 'name', $name);
-        $result = $template->render('twig');
+        $renderer->addDefaultParam('twig', 'name', $name);
+        $result = $renderer->render('twig');
 
         $content = file_get_contents(__DIR__ . '/TestAsset/twig.html');
         $content = str_replace('{{ name }}', $name, $content);
@@ -191,16 +191,16 @@ class TwigRendererTest extends TestCase
 
     public function testAddSharedParameters()
     {
-        $template = new TwigRenderer();
-        $template->addPath(__DIR__ . '/TestAsset');
+        $renderer = new TwigRenderer();
+        $renderer->addPath(__DIR__ . '/TestAsset');
         $name = 'Twig';
-        $template->addDefaultParam($template::TEMPLATE_ALL, 'name', $name);
-        $result = $template->render('twig');
+        $renderer->addDefaultParam($renderer::TEMPLATE_ALL, 'name', $name);
+        $result = $renderer->render('twig');
         $content = file_get_contents(__DIR__ . '/TestAsset/twig.html');
         $content = str_replace('{{ name }}', $name, $content);
         $this->assertEquals($content, $result);
 
-        $result = $template->render('twig-2');
+        $result = $renderer->render('twig-2');
         $content = file_get_contents(__DIR__ . '/TestAsset/twig-2.html');
         $content = str_replace('{{ name }}', $name, $content);
         $this->assertEquals($content, $result);
@@ -208,18 +208,18 @@ class TwigRendererTest extends TestCase
 
     public function testOverrideSharedParametersPerTemplate()
     {
-        $template = new TwigRenderer();
-        $template->addPath(__DIR__ . '/TestAsset');
+        $renderer = new TwigRenderer();
+        $renderer->addPath(__DIR__ . '/TestAsset');
         $name = 'Twig';
         $name2 = 'Template';
-        $template->addDefaultParam($template::TEMPLATE_ALL, 'name', $name);
-        $template->addDefaultParam('twig-2', 'name', $name2);
-        $result = $template->render('twig');
+        $renderer->addDefaultParam($renderer::TEMPLATE_ALL, 'name', $name);
+        $renderer->addDefaultParam('twig-2', 'name', $name2);
+        $result = $renderer->render('twig');
         $content = file_get_contents(__DIR__ . '/TestAsset/twig.html');
         $content = str_replace('{{ name }}', $name, $content);
         $this->assertEquals($content, $result);
 
-        $result = $template->render('twig-2');
+        $result = $renderer->render('twig-2');
         $content = file_get_contents(__DIR__ . '/TestAsset/twig-2.html');
         $content = str_replace('{{ name }}', $name2, $content);
         $this->assertEquals($content, $result);
@@ -227,12 +227,12 @@ class TwigRendererTest extends TestCase
 
     public function testOverrideSharedParametersAtRender()
     {
-        $template = new TwigRenderer();
-        $template->addPath(__DIR__ . '/TestAsset');
+        $renderer = new TwigRenderer();
+        $renderer->addPath(__DIR__ . '/TestAsset');
         $name = 'Twig';
         $name2 = 'Template';
-        $template->addDefaultParam($template::TEMPLATE_ALL, 'name', $name);
-        $result = $template->render('twig', ['name' => $name2]);
+        $renderer->addDefaultParam($renderer::TEMPLATE_ALL, 'name', $name);
+        $result = $renderer->render('twig', ['name' => $name2]);
         $content = file_get_contents(__DIR__ . '/TestAsset/twig.html');
         $content = str_replace('{{ name }}', $name2, $content);
         $this->assertEquals($content, $result);
