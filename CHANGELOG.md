@@ -18,6 +18,12 @@ All notable changes to this project will be documented in this file, in reverse 
     `Zend\Expressive\Template\Twig`.
   - `Zend\Expressive\Template\ZendViewRenderer`, replacing
     `Zend\Expressive\Template\ZendView`.
+- [#143](https://github.com/zendframework/zend-expressive/pull/143) adds
+  the method `addDefaultParam($templateName, $param, $value)` to
+  `TemplateRendererInterface`, allowing users to specify global and
+  template-specific default parameters to use when rendering. To implement the
+  feature, the patch also provides `Zend\Expressive\Template\DefaultParamsTrait`
+  to simplify incorporating the feature in implementations.
 
 ### Deprecated
 

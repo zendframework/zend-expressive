@@ -250,4 +250,66 @@ class ZendViewRendererTest extends TestCase
 
         $this->assertSame($expected, $test);
     }
+
+    public function testAddParameterToOneTemplate()
+    {
+        $renderer = new ZendViewRenderer();
+        $renderer->addPath(__DIR__ . '/TestAsset');
+        $name = 'ZendView';
+        $renderer->addDefaultParam('zendview', 'name', $name);
+        $result = $renderer->render('zendview');
+
+        $content = file_get_contents(__DIR__ . '/TestAsset/zendview.phtml');
+        $content = str_replace('<?php echo $name ?>', $name, $content);
+        $this->assertEquals($content, $result);
+    }
+
+    public function testAddSharedParameters()
+    {
+        $renderer = new ZendViewRenderer();
+        $renderer->addPath(__DIR__ . '/TestAsset');
+        $name = 'ZendView';
+        $renderer->addDefaultParam($renderer::TEMPLATE_ALL, 'name', $name);
+        $result = $renderer->render('zendview');
+        $content = file_get_contents(__DIR__ . '/TestAsset/zendview.phtml');
+        $content = str_replace('<?php echo $name ?>', $name, $content);
+        $this->assertEquals($content, $result);
+
+        $result = $renderer->render('zendview-2');
+        $content = file_get_contents(__DIR__ . '/TestAsset/zendview-2.phtml');
+        $content = str_replace('<?php echo $name ?>', $name, $content);
+        $this->assertEquals($content, $result);
+    }
+
+    public function testOverrideSharedParametersPerTemplate()
+    {
+        $renderer = new ZendViewRenderer();
+        $renderer->addPath(__DIR__ . '/TestAsset');
+        $name = 'Zend';
+        $name2 = 'View';
+        $renderer->addDefaultParam($renderer::TEMPLATE_ALL, 'name', $name);
+        $renderer->addDefaultParam('zendview-2', 'name', $name2);
+        $result = $renderer->render('zendview');
+        $content = file_get_contents(__DIR__ . '/TestAsset/zendview.phtml');
+        $content = str_replace('<?php echo $name ?>', $name, $content);
+        $this->assertEquals($content, $result);
+
+        $result = $renderer->render('zendview-2');
+        $content = file_get_contents(__DIR__ . '/TestAsset/zendview-2.phtml');
+        $content = str_replace('<?php echo $name ?>', $name2, $content);
+        $this->assertEquals($content, $result);
+    }
+
+    public function testOverrideSharedParametersAtRender()
+    {
+        $renderer = new ZendViewRenderer();
+        $renderer->addPath(__DIR__ . '/TestAsset');
+        $name = 'Zend';
+        $name2 = 'View';
+        $renderer->addDefaultParam($renderer::TEMPLATE_ALL, 'name', $name);
+        $result = $renderer->render('zendview', ['name' => $name2]);
+        $content = file_get_contents(__DIR__ . '/TestAsset/zendview.phtml');
+        $content = str_replace('<?php echo $name ?>', $name2, $content);
+        $this->assertEquals($content, $result);
+    }
 }

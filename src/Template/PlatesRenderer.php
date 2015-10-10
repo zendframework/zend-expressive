@@ -11,6 +11,7 @@ namespace Zend\Expressive\Template;
 
 use League\Plates\Engine;
 use ReflectionProperty;
+use Zend\Expressive\Exception;
 
 /**
  * Template implementation bridging league/plates
@@ -87,6 +88,39 @@ class PlatesRenderer implements TemplateRendererInterface
         }
         return $paths;
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * Proxies to the Plate Engine's `addData()` method.
+     *
+     * {@inheritDoc}
+     */
+    public function addDefaultParam($templateName, $param, $value)
+    {
+        if (! is_string($templateName) || empty($templateName)) {
+            throw new Exception\InvalidArgumentException(sprintf(
+                '$templateName must be a non-empty string; received %s',
+                (is_object($templateName) ? get_class($templateName) : gettype($templateName))
+            ));
+        }
+
+        if (! is_string($param) || empty($param)) {
+            throw new Exception\InvalidArgumentException(sprintf(
+                '$param must be a non-empty string; received %s',
+                (is_object($param) ? get_class($param) : gettype($param))
+            ));
+        }
+
+        $params = [$param => $value];
+
+        if ($templateName === self::TEMPLATE_ALL) {
+            $templateName = null;
+        }
+
+        $this->template->addData($params, $templateName);
+    }
+
 
     /**
      * Create a default Plates engine

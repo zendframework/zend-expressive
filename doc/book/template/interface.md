@@ -41,6 +41,27 @@ interface TemplateRendererInterface
      * @return TemplatePath[]
      */
     public function getPaths();
+
+    /**
+     * Add a default parameter to use with a template.
+     *
+     * Use this method to provide a default parameter to use when a template is
+     * rendered. The parameter may be overridden by providing it when calling
+     * `render()`, or by calling this method again with a null value.
+     *
+     * The parameter will be specific to the template name provided. To make
+     * the parameter available to any template, pass the TEMPLATE_ALL constant
+     * for the template name.
+     *
+     * If the default parameter existed previously, subsequent invocations with
+     * the same template name and parameter name will overwrite.
+     *
+     * @param string $templateName Name of template to which the param applies;
+     *     use TEMPLATE_ALL to apply to all templates.
+     * @param string $param Param name.
+     * @param mixed $value
+     */
+    public function addDefaultParam($templateName, $param, $value);
 }
 ```
 
@@ -119,3 +140,56 @@ $content = $renderer->render('message', [
 
 It is up to the underlying template engine to determine how to perform the
 injections.
+
+### Default params
+
+The `TemplateRendererInterface` defines the method `addDefaultParam()`. This
+method can be used to specify default parameters to use when rendering a
+template. The signature is:
+
+```php
+public function addDefaultParam($templateName, $param, $value)
+```
+
+If you want a parameter to be used for *every* template, you can specify the
+constant `TemplateRendererInterface::TEMPLATE_ALL` for the `$templateName`
+parameter.
+
+When rendering, parameters are considered in the following order, with later
+items having precedence over earlier ones:
+
+- Default parameters specified for all templates.
+- Default parameters specified for the template specified at rendering.
+- Parameters specified when rendering.
+
+As an example, if we did the following:
+
+```php
+$renderer->addDefaultParam($renderer::TEMPLATE_ALL, 'foo', 'bar');
+$renderer->addDefaultParam($renderer::TEMPLATE_ALL, 'bar', 'baz');
+$renderer->addDefaultParam($renderer::TEMPLATE_ALL, 'baz', 'bat');
+
+$renderer->addDefaultParam('example', 'foo', 'template default foo');
+$renderer->addDefaultParam('example', 'bar', 'template default bar');
+
+$content = $renderer->render('example', [
+    'foo' => 'override',
+]);
+```
+
+Then we can expect the following substitutions will occur when rendering:
+
+- References to the "foo" variable will contain "override".
+- References to the "bar" variable will contain "template default bar".
+- References to the "baz" variable will contain "bat".
+
+> #### Support for default params
+>
+> The support for default params will often be renderer-specific. The reason is
+> because the `render()` signature does not specify a type for `$params`, in
+> order to allow passing alternative arguments such as view models. In such
+> cases, the implementation will indicate its behavior when default parameters
+> are specified, but a given `$params` argument does not support it.
+>
+> At the time of writing, each of the Plates, Twig, and zend-view
+> implementations support the feature.
