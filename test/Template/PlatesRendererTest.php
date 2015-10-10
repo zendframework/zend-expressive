@@ -190,7 +190,7 @@ class PlatesRendererTest extends TestCase
         $renderer = new PlatesRenderer();
         $renderer->addPath(__DIR__ . '/TestAsset');
         $name = 'Plates';
-        $renderer->addParameters(['name' => $name], 'plates');
+        $renderer->addDefaultParam('plates', 'name', $name);
         $result = $renderer->render('plates');
         $content = file_get_contents(__DIR__ . '/TestAsset/plates.php');
         $content= str_replace('<?=$this->e($name)?>', $name, $content);
@@ -213,7 +213,7 @@ class PlatesRendererTest extends TestCase
         $renderer = new PlatesRenderer();
         $renderer->addPath(__DIR__ . '/TestAsset');
         $name = 'Plates';
-        $renderer->addParameters(['name' => $name]);
+        $renderer->addDefaultParam($template::TEMPLATE_ALL, 'name', $name);
         $result = $renderer->render('plates');
         $content = file_get_contents(__DIR__ . '/TestAsset/plates.php');
         $content= str_replace('<?=$this->e($name)?>', $name, $content);
@@ -230,8 +230,8 @@ class PlatesRendererTest extends TestCase
         $renderer->addPath(__DIR__ . '/TestAsset');
         $name = 'Plates';
         $name2 = 'Saucers';
-        $renderer->addParameters(['name' => $name]);
-        $renderer->addParameters(['name' => $name2], 'plates-2');
+        $renderer->addDefaultParam($template::TEMPLATE_ALL, 'name', $name);
+        $renderer->addDefaultParam('plates-2', 'name', $name2);
         $result = $renderer->render('plates');
         $content = file_get_contents(__DIR__ . '/TestAsset/plates.php');
         $content= str_replace('<?=$this->e($name)?>', $name, $content);
@@ -248,7 +248,7 @@ class PlatesRendererTest extends TestCase
         $renderer->addPath(__DIR__ . '/TestAsset');
         $name = 'Plates';
         $name2 = 'Saucers';
-        $renderer->addParameters(['name' => $name]);
+        $renderer->addDefaultParam($template::TEMPLATE_ALL, 'name', $name);
         $result = $renderer->render('plates', ['name' => $name2]);
         $content = file_get_contents(__DIR__ . '/TestAsset/plates.php');
         $content= str_replace('<?=$this->e($name)?>', $name2, $content);

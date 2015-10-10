@@ -11,6 +11,7 @@ namespace Zend\Expressive\Template;
 
 use League\Plates\Engine;
 use ReflectionProperty;
+use Zend\Expressive\Exception;
 
 /**
  * Template implementation bridging league/plates
@@ -89,17 +90,35 @@ class PlatesRenderer implements TemplateRendererInterface
     }
 
     /**
-     * Add parameters to template
+     * {@inheritDoc}
      *
-     * If no template name is given, the parameters will be added to all templates rendered
+     * Proxies to the Plate Engine's `addData()` method.
      *
-     * @param array|object $params
-     * @param string $name
+     * {@inheritDoc}
      */
-    public function addParameters($params, $name = null)
+    public function addDefaultParam($templateName, $param, $value)
     {
-        $params = $this->normalizeParams($params);
-        $this->template->addData($params, $name);
+        if (! is_string($templateName) || empty($templateName)) {
+            throw new Exception\InvalidArgumentException(sprintf(
+                '$templateName must be a non-empty string; received %s',
+                (is_object($templateName) ? get_class($templateName) : gettype($templateName))
+            ));
+        }
+
+        if (! is_string($param) || empty($param)) {
+            throw new Exception\InvalidArgumentException(sprintf(
+                '$param must be a non-empty string; received %s',
+                (is_object($param) ? get_class($param) : gettype($param))
+            ));
+        }
+
+        $params = [$param => $value];
+
+        if ($templateName === self::TEMPLATE_ALL) {
+            $templateName = null;
+        }
+
+        $this->template->addData($params, $templateName);
     }
 
 
