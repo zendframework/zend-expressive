@@ -203,7 +203,7 @@ class ApplicationFactoryTest extends TestCase
         $app = $this->factory->__invoke($this->container->reveal());
         $this->assertInstanceOf('Zend\Expressive\Application', $app);
         $router = $this->getRouterFromApplication($app);
-        $this->assertInstanceOf('Zend\Expressive\Router\AuraRouter', $router);
+        $this->assertInstanceOf('Zend\Expressive\Router\FastRouteRouter', $router);
         $this->assertSame($this->container->reveal(), $app->getContainer());
         $this->assertInstanceOf('Zend\Expressive\Emitter\EmitterStack', $app->getEmitter());
         $this->assertCount(1, $app->getEmitter());

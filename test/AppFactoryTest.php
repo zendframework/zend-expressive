@@ -29,11 +29,11 @@ class AppFactoryTest extends TestCase
         $this->assertInstanceOf('Zend\Expressive\Application', $app);
     }
 
-    public function testFactoryUsesAuraRouterByDefault()
+    public function testFactoryUsesFastRouteByDefault()
     {
         $app    = AppFactory::create();
         $router = $this->getRouterFromApplication($app);
-        $this->assertInstanceOf('Zend\Expressive\Router\AuraRouter', $router);
+        $this->assertInstanceOf('Zend\Expressive\Router\FastRouteRouter', $router);
     }
 
     public function testFactoryUsesZf2ServiceManagerByDefault()
