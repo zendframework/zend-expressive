@@ -213,7 +213,7 @@ class PlatesRendererTest extends TestCase
         $renderer = new PlatesRenderer();
         $renderer->addPath(__DIR__ . '/TestAsset');
         $name = 'Plates';
-        $renderer->addDefaultParam($template::TEMPLATE_ALL, 'name', $name);
+        $renderer->addDefaultParam($renderer::TEMPLATE_ALL, 'name', $name);
         $result = $renderer->render('plates');
         $content = file_get_contents(__DIR__ . '/TestAsset/plates.php');
         $content= str_replace('<?=$this->e($name)?>', $name, $content);
@@ -230,7 +230,7 @@ class PlatesRendererTest extends TestCase
         $renderer->addPath(__DIR__ . '/TestAsset');
         $name = 'Plates';
         $name2 = 'Saucers';
-        $renderer->addDefaultParam($template::TEMPLATE_ALL, 'name', $name);
+        $renderer->addDefaultParam($renderer::TEMPLATE_ALL, 'name', $name);
         $renderer->addDefaultParam('plates-2', 'name', $name2);
         $result = $renderer->render('plates');
         $content = file_get_contents(__DIR__ . '/TestAsset/plates.php');
@@ -248,7 +248,7 @@ class PlatesRendererTest extends TestCase
         $renderer->addPath(__DIR__ . '/TestAsset');
         $name = 'Plates';
         $name2 = 'Saucers';
-        $renderer->addDefaultParam($template::TEMPLATE_ALL, 'name', $name);
+        $renderer->addDefaultParam($renderer::TEMPLATE_ALL, 'name', $name);
         $result = $renderer->render('plates', ['name' => $name2]);
         $content = file_get_contents(__DIR__ . '/TestAsset/plates.php');
         $content= str_replace('<?=$this->e($name)?>', $name2, $content);
