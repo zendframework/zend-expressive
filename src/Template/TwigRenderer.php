@@ -16,9 +16,10 @@ use Twig_Loader_Filesystem as TwigFilesystem;
 /**
  * Template implementation bridging league/plates
  */
-class Twig implements TemplateInterface
+class TwigRenderer implements TemplateRendererInterface
 {
     use ArrayParametersTrait;
+    use DefaultParamsTrait;
 
     /**
      * @var string
@@ -61,6 +62,7 @@ class Twig implements TemplateInterface
     /**
      * Create a default Twig environment
      *
+     * @param TwigFilesystem $loader
      * @return TwigEnvironment
      */
     private function createTemplate(TwigFilesystem $loader)
@@ -88,8 +90,14 @@ class Twig implements TemplateInterface
      */
     public function render($name, $params = [])
     {
+        // Merge parameters based on requested template name
+        $params = $this->mergeParams($name, $this->normalizeParams($params));
+
         $name   = $this->normalizeTemplate($name);
-        $params = $this->normalizeParams($params);
+
+        // Merge parameters based on normalized template name
+        $params = $this->mergeParams($name, $params);
+
         return $this->template->render($name, $params);
     }
 

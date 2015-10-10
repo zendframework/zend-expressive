@@ -18,11 +18,27 @@ use Zend\Expressive\Exception;
 interface RouterInterface
 {
     /**
+     * Add a route.
+     *
+     * This method adds a route against which the underlying implementation may
+     * match. Implementations MUST aggregate route instances, but MUST NOT use
+     * the details to inject the underlying router until `match()` and/or
+     * `generateUri()` is called.  This is required to allow consumers to
+     * modify route instances before matching (e.g., to provide route options,
+     * inject a name, etc.).
+     *
      * @param Route $route
      */
     public function addRoute(Route $route);
 
     /**
+     * Match a request against the known routes.
+     *
+     * Implementations will aggregate required information from the provided
+     * request instance, and pass them to the underlying router implementation;
+     * when done, they will then marshal a `RouteResult` instance indicating
+     * the results of the matching operation and return it to the caller.
+     *
      * @param  Request $request
      * @return RouteResult
      */
@@ -33,6 +49,10 @@ interface RouterInterface
      *
      * Takes the named route and any substitutions, and attempts to generate a
      * URI from it.
+     *
+     * The URI generated MUST NOT be escaped. If you wish to escape any part of
+     * the URI, this should be performed afterwards; consider passing the URI
+     * to league/uri to encode it.
      *
      * @see https://github.com/auraphp/Aura.Router#generating-a-route-path
      * @see http://framework.zend.com/manual/current/en/modules/zend.mvc.routing.html

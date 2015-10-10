@@ -25,6 +25,13 @@ the name:
   $app->get('/foo', $middleware); // "foo^GET"
   ```
 
+  Alternately, these methods return a `Route` instance, and you can set the
+  name on it:
+
+  ```php
+  $app->get('/foo', $middleware)->setName('foo'); // "foo"
+  ```
+
 - If you call `route()` and specify a list of HTTP methods accepted, the name
   will be the literal path, followed by a caret (`^`), followed by a colon
   (`:`)-separated list of the uppercase HTTP method names, in the order in which
@@ -32,6 +39,14 @@ the name:
 
   ```php
   $app->route('/foo, $middleware', ['GET', 'POST']); // "foo^GET:POST"
+  ```
+
+  Like the HTTP-specific methods, `route()` also returns a `Route` instance,
+  and you can set the name on it:
+
+  ```php
+  $route = $app->route('/foo, $middleware', ['GET', 'POST']); // "foo^GET:POST"
+  $route->setName('foo'); // "foo"
   ```
 
 Clearly, this can become difficult to remember. As such, Expressive offers the
@@ -42,6 +57,15 @@ argument to any of the above:
 $app->route('/foo', $middleware, 'foo'); // 'foo'
 $app->get('/foo/:id', $middleware, 'foo-item'); // 'foo-item'
 $app->route('/foo', $middleware, ['GET', 'POST'], 'foo-collection'); // 'foo-collection'
+```
+
+As noted above, these methods also return `Route` instances, allowing you to
+set the name after-the-fact; this is particularly useful with the `route()`
+method, where you may want to omit the HTTP methods if any HTTP method is
+allowed:
+
+```php
+$app->route('/foo', $middleware)->setName('foo'); // 'foo'
 ```
 
 We recommend that if you plan on generating URIs for given routes, you provide a

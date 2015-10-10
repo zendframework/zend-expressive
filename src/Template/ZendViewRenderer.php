@@ -26,9 +26,10 @@ use Zend\View\Resolver\AggregateResolver;
  * registers a ZendView\NamespacedPathStackResolver at priority 0 (lower than
  * default) in the Aggregate to ensure we can add and resolve namespaced paths.
  */
-class ZendView implements TemplateInterface
+class ZendViewRenderer implements TemplateRendererInterface
 {
     use ArrayParametersTrait;
+    use DefaultParamsTrait;
 
     /**
      * @var ViewModel
@@ -118,8 +119,9 @@ class ZendView implements TemplateInterface
      */
     public function render($name, $params = [])
     {
+        $params = $this->mergeParams($name, $this->normalizeParams($params));
         return $this->renderModel(
-            $this->createModel($name, $this->normalizeParams($params)),
+            $this->createModel($name, $params),
             $this->renderer
         );
     }

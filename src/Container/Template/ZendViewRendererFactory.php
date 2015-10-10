@@ -12,6 +12,7 @@ namespace Zend\Expressive\Container\Template;
 use Interop\Container\ContainerInterface;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Template\ZendView;
+use Zend\Expressive\Template\ZendViewRenderer;
 use Zend\View\HelperPluginManager;
 use Zend\View\Renderer\PhpRenderer;
 use Zend\View\Resolver;
@@ -46,11 +47,11 @@ use Zend\View\Resolver;
  * Injects the HelperPluginManager used by the PhpRenderer with zend-expressive
  * overrides of the url and serverurl helpers.
  */
-class ZendViewFactory
+class ZendViewRendererFactory
 {
     /**
      * @param ContainerInterface $container
-     * @returns ZendView
+     * @returns ZendViewRenderer
      */
     public function __invoke(ContainerInterface $container)
     {
@@ -72,7 +73,7 @@ class ZendViewFactory
         $this->injectHelpers($renderer, $container);
 
         // Inject renderer
-        $view = new ZendView($renderer, isset($config['layout']) ? $config['layout'] : null);
+        $view = new ZendViewRenderer($renderer, isset($config['layout']) ? $config['layout'] : null);
 
         // Add template paths
         $allPaths = isset($config['paths']) && is_array($config['paths']) ? $config['paths'] : [];

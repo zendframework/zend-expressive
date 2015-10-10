@@ -11,7 +11,7 @@ namespace Zend\Expressive\Container\Template;
 
 use Interop\Container\ContainerInterface;
 use League\Plates\Engine as PlatesEngine;
-use Zend\Expressive\Template\Plates;
+use Zend\Expressive\Template\PlatesRenderer;
 
 /**
  * Create and return a Plates template instance.
@@ -31,11 +31,11 @@ use Zend\Expressive\Template\Plates;
  * ]
  * </code>
  */
-class PlatesFactory
+class PlatesRendererFactory
 {
     /**
      * @param ContainerInterface $container
-     * @return Plates
+     * @return PlatesRenderer
      */
     public function __invoke(ContainerInterface $container)
     {
@@ -51,7 +51,7 @@ class PlatesFactory
         }
 
         // Inject engine
-        $plates = new Plates($engine);
+        $plates = new PlatesRenderer($engine);
 
         // Add template paths
         $allPaths = isset($config['paths']) && is_array($config['paths']) ? $config['paths'] : [];

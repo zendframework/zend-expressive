@@ -2,11 +2,71 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 0.4.0 - TBD
+
+### Added
+
+- [#132](https://github.com/zendframework/zend-expressive/pull/132) adds
+  `Zend\Expressive\Router\ZendRouter`, replacing
+  `Zend\Expressive\Router\Zf2Router`.
+- [#139](https://github.com/zendframework/zend-expressive/pull/139) adds:
+  - `Zend\Expressive\Template\TemplateRendererInterface`, replacing
+    `Zend\Expressive\Template\TemplateInterface`.
+  - `Zend\Expressive\Template\PlatesRenderer`, replacing
+    `Zend\Expressive\Template\Plates`.
+  - `Zend\Expressive\Template\TwigRenderer`, replacing
+    `Zend\Expressive\Template\Twig`.
+  - `Zend\Expressive\Template\ZendViewRenderer`, replacing
+    `Zend\Expressive\Template\ZendView`.
+- [#143](https://github.com/zendframework/zend-expressive/pull/143) adds
+  the method `addDefaultParam($templateName, $param, $value)` to
+  `TemplateRendererInterface`, allowing users to specify global and
+  template-specific default parameters to use when rendering. To implement the
+  feature, the patch also provides `Zend\Expressive\Template\DefaultParamsTrait`
+  to simplify incorporating the feature in implementations.
+- [#133](https://github.com/zendframework/zend-expressive/pull/133) adds a
+  stipulation to `Zend\Expressive\Router\RouterInterface` that `addRoute()`
+  should *aggregate* `Route` instances only, and delay injection until `match()`
+  and/or `generateUri()` are called; all shipped routers now follow this. This
+  allows manipulating `Route` instances before calling `match()` or
+  `generateUri()` — for instance, to inject options or a name.
+- [#133](https://github.com/zendframework/zend-expressive/pull/133) re-instates
+  the `Route::setName()` method, as the changes to lazy-inject routes means that
+  setting names and options after adding them to the application now works
+  again.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- [#132](https://github.com/zendframework/zend-expressive/pull/132) removes
+  `Zend\Expressive\Router\Zf2Router`, renaming it to
+  `Zend\Expressive\Router\ZendRouter`.
+- [#139](https://github.com/zendframework/zend-expressive/pull/139) removes:
+  - `Zend\Expressive\Template\TemplateInterface`, renaming it to
+    `Zend\Expressive\Template\TemplateRendererInterface`.
+  - `Zend\Expressive\Template\Plates`, renaming it to
+    `Zend\Expressive\Template\PlatesRenderer`.
+  - `Zend\Expressive\Template\Twig`, renaming it to
+    `Zend\Expressive\Template\TwigRenderer`.
+  - `Zend\Expressive\Template\ZendView`, renaming it to
+    `Zend\Expressive\Template\ZendViewRenderer`.
+
+### Fixed
+
+- Nothing.
+
 ## 0.3.1 - 2015-10-09
 
 ### Added
 
-- Nothing.
+- [#149](https://github.com/zendframework/zend-expressive/pull/149) adds
+  verbiage to the `RouterInterface::generateUri()` method, specifying that the
+  returned URI **MUST NOT** be escaped. The `AuraRouter` implementation has been
+  updated to internally use `generateRaw()` to follow this guideline, and retain
+  parity with the other existing implementations.
 
 ### Deprecated
 

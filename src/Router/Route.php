@@ -103,6 +103,16 @@ class Route
     }
 
     /**
+     * Set the route name.
+     *
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = (string) $name;
+    }
+
+    /**
      * @return string
      */
     public function getName()

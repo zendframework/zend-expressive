@@ -2,7 +2,7 @@
     "title": "Templating",
     "content": [
         {"Introduction": "intro.md"},
-        {"Template Interface": "interface.md"},
+        {"Template Renderer Interface": "interface.md"},
         {"Templated Middleware": "middleware.md"},
         {"Using Plates": "plates.md"},
         {"Using Twig": "twig.md"},

@@ -26,7 +26,7 @@ use Zend\Psr7Bridge\Psr7ServerRequest;
  * matches with this special route, we can send the HTTP allowed methods stored
  * for that path.
  */
-class Zf2Router implements RouterInterface
+class ZendRouter implements RouterInterface
 {
     const METHOD_NOT_ALLOWED_ROUTE = 'method_not_allowed';
 
@@ -45,9 +45,16 @@ class Zf2Router implements RouterInterface
     private $routeNameMap = [];
 
     /**
+     * Routes aggregated to inject.
+     *
+     * @var Route[]
+     */
+    private $routesToInject = [];
+
+    /**
      * @var TreeRouteStack
      */
-    private $zf2Router;
+    private $zendRouter;
 
     /**
      * Constructor.
@@ -62,74 +69,26 @@ class Zf2Router implements RouterInterface
             $router = $this->createRouter();
         }
 
-        $this->zf2Router = $router;
+        $this->zendRouter = $router;
     }
 
     /**
-     * @param Route $route
+     * @inheritDoc
      */
     public function addRoute(Route $route)
     {
-        $name    = $route->getName();
-        $path    = $route->getPath();
-        $options = $route->getOptions();
-        $options = array_replace_recursive($options, [
-            'route'    => $path,
-            'defaults' => [
-                'middleware' => $route->getMiddleware(),
-            ],
-        ]);
-
-        $allowedMethods = $route->getAllowedMethods();
-        if (Route::HTTP_METHOD_ANY === $allowedMethods) {
-            $this->zf2Router->addRoute($name, [
-                'type'    => 'segment',
-                'options' => $options,
-            ]);
-            $this->routeNameMap[$name] = $name;
-            return;
-        }
-
-        // Remove the middleware from the segment route in favor of method route
-        unset($options['defaults']['middleware']);
-        if (empty($options['defaults'])) {
-            unset($options['defaults']);
-        }
-
-        $httpMethodRouteName   = implode(':', $allowedMethods);
-        $httpMethodRoute       = $this->createHttpMethodRoute($route);
-        $methodNotAllowedRoute = $this->createMethodNotAllowedRoute($path);
-
-        $spec = [
-            'type'          => 'segment',
-            'options'       => $options,
-            'may_terminate' => false,
-            'child_routes'  => [
-                $httpMethodRouteName           => $httpMethodRoute,
-                self::METHOD_NOT_ALLOWED_ROUTE => $methodNotAllowedRoute,
-            ]
-        ];
-
-        if (array_key_exists($path, $this->allowedMethodsByPath)) {
-            $allowedMethods = array_merge($this->allowedMethodsByPath[$path], $allowedMethods);
-            // Remove the method not allowed route as it is already present for the path
-            unset($spec['child_routes'][self::METHOD_NOT_ALLOWED_ROUTE]);
-        }
-
-        $this->zf2Router->addRoute($name, $spec);
-        $this->allowedMethodsByPath[$path] = $allowedMethods;
-        $this->routeNameMap[$name] = sprintf('%s/%s', $name, $httpMethodRouteName);
+        $this->routesToInject[] = $route;
     }
 
     /**
-     * Attempt to match an incoming request to a registered route.
-     *
-     * @param PsrRequest $request
-     * @return RouteResult
+     * @inheritDoc
      */
     public function match(PsrRequest $request)
     {
-        $match = $this->zf2Router->match(Psr7ServerRequest::toZend($request, true));
+        // Must inject routes prior to matching.
+        $this->injectRoutes();
+
+        $match = $this->zendRouter->match(Psr7ServerRequest::toZend($request, true));
 
         if (null === $match) {
             return RouteResult::fromRouteFailure();
@@ -143,7 +102,10 @@ class Zf2Router implements RouterInterface
      */
     public function generateUri($name, array $substitutions = [])
     {
-        if (! $this->zf2Router->hasRoute($name)) {
+        // Must inject routes prior to generating URIs.
+        $this->injectRoutes();
+
+        if (! $this->zendRouter->hasRoute($name)) {
             throw new Exception\RuntimeException(sprintf(
                 'Cannot generate URI based on route "%s"; route not found',
                 $name
@@ -157,7 +119,7 @@ class Zf2Router implements RouterInterface
             'only_return_path' => true,
         ];
 
-        return $this->zf2Router->assemble($substitutions, $options);
+        return $this->zendRouter->assemble($substitutions, $options);
     }
 
     /**
@@ -256,5 +218,74 @@ class Zf2Router implements RouterInterface
 
         // Otherwise, just use the name.
         return $name;
+    }
+
+    /**
+     * Inject any unprocessed routes into the underlying router implementation.
+     */
+    private function injectRoutes()
+    {
+        foreach ($this->routesToInject as $index => $route) {
+            $this->injectRoute($route);
+            unset($this->routesToInject[$index]);
+        }
+    }
+
+    /**
+     * Inject route into the underlying router implemetation.
+     *
+     * @param Route $route
+     */
+    private function injectRoute(Route $route)
+    {
+        $name    = $route->getName();
+        $path    = $route->getPath();
+        $options = $route->getOptions();
+        $options = array_replace_recursive($options, [
+            'route'    => $path,
+            'defaults' => [
+                'middleware' => $route->getMiddleware(),
+            ],
+        ]);
+
+        $allowedMethods = $route->getAllowedMethods();
+        if (Route::HTTP_METHOD_ANY === $allowedMethods) {
+            $this->zendRouter->addRoute($name, [
+                'type'    => 'segment',
+                'options' => $options,
+            ]);
+            $this->routeNameMap[$name] = $name;
+            return;
+        }
+
+        // Remove the middleware from the segment route in favor of method route
+        unset($options['defaults']['middleware']);
+        if (empty($options['defaults'])) {
+            unset($options['defaults']);
+        }
+
+        $httpMethodRouteName   = implode(':', $allowedMethods);
+        $httpMethodRoute       = $this->createHttpMethodRoute($route);
+        $methodNotAllowedRoute = $this->createMethodNotAllowedRoute($path);
+
+        $spec = [
+            'type'          => 'segment',
+            'options'       => $options,
+            'may_terminate' => false,
+            'child_routes'  => [
+                $httpMethodRouteName           => $httpMethodRoute,
+                self::METHOD_NOT_ALLOWED_ROUTE => $methodNotAllowedRoute,
+            ]
+        ];
+
+        if (array_key_exists($path, $this->allowedMethodsByPath)) {
+            $allowedMethods = array_merge($this->allowedMethodsByPath[$path], $allowedMethods);
+            // Remove the method not allowed route as it is already present for the path
+            unset($spec['child_routes'][self::METHOD_NOT_ALLOWED_ROUTE]);
+        }
+
+        $this->zendRouter->addRoute($name, $spec);
+        $this->allowedMethodsByPath[$path] = $allowedMethods;
+        $this->routeNameMap[$name] = sprintf('%s/%s', $name, $httpMethodRouteName);
     }
 }

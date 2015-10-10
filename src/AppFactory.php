@@ -20,8 +20,8 @@ use Zend\ServiceManager\ServiceManager;
  * programmatic vs service-driven environment.
  *
  * The Application instance returned is guaranteed to have a router, a
- * container, and an emitter stack; by default, the Aura router and the ZF2
- * ServiceManager are used.
+ * container, and an emitter stack; by default, the FastRoute router and the
+ * ZF2 ServiceManager are used.
  */
 final class AppFactory
 {
@@ -29,8 +29,8 @@ final class AppFactory
      * Create and return an Application instance.
      *
      * Will inject the instance with the container and/or router when provided;
-     * otherwise, it will use a ZF2 ServiceManager instance and the Aura router
-     * bridge.
+     * otherwise, it will use a ZF2 ServiceManager instance and the FastRoute
+     * router bridge.
      *
      * The factory also injects the Application with an Emitter\EmitterStack that
      * composes a SapiEmitter at the bottom of the stack (i.e., will execute last
@@ -40,7 +40,7 @@ final class AppFactory
      *     fetch middleware defined as services; defaults to a ServiceManager
      *     instance
      * @param null|Router\RouterInterface $router Router implementation to use;
-     *     defaults to the Aura router bridge.
+     *     defaults to the FastRoute router bridge.
      * @return Application
      */
     public static function create(
@@ -48,7 +48,7 @@ final class AppFactory
         Router\RouterInterface $router = null
     ) {
         $container = $container ?: new ServiceManager();
-        $router    = $router    ?: new Router\AuraRouter();
+        $router    = $router    ?: new Router\FastRouteRouter();
         $emitter   = new Emitter\EmitterStack();
         $emitter->push(new SapiEmitter());
 
