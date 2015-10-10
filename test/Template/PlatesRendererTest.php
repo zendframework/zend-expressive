@@ -187,11 +187,11 @@ class PlatesRendererTest extends TestCase
 
     public function testAddParameterToOneTemplate()
     {
-        $template = new PlatesTemplate();
-        $template->addPath(__DIR__ . '/TestAsset');
+        $renderer = new PlatesRenderer();
+        $renderer->addPath(__DIR__ . '/TestAsset');
         $name = 'Plates';
-        $template->addParameters(['name' => $name], 'plates');
-        $result = $template->render('plates');
+        $renderer->addParameters(['name' => $name], 'plates');
+        $result = $renderer->render('plates');
         $content = file_get_contents(__DIR__ . '/TestAsset/plates.php');
         $content= str_replace('<?=$this->e($name)?>', $name, $content);
         $this->assertEquals($content, $result);
@@ -201,7 +201,7 @@ class PlatesRendererTest extends TestCase
             $this->assertContains('Undefined variable: name', $message);
             return true;
         }, E_NOTICE);
-        $template->render('plates-2');
+        $renderer->render('plates-2');
         restore_error_handler();
 
         $content= str_replace('<?=$this->e($name)?>', '', $content);
@@ -210,15 +210,15 @@ class PlatesRendererTest extends TestCase
 
     public function testAddSharedParameters()
     {
-        $template = new PlatesTemplate();
-        $template->addPath(__DIR__ . '/TestAsset');
+        $renderer = new PlatesRenderer();
+        $renderer->addPath(__DIR__ . '/TestAsset');
         $name = 'Plates';
-        $template->addParameters(['name' => $name]);
-        $result = $template->render('plates');
+        $renderer->addParameters(['name' => $name]);
+        $result = $renderer->render('plates');
         $content = file_get_contents(__DIR__ . '/TestAsset/plates.php');
         $content= str_replace('<?=$this->e($name)?>', $name, $content);
         $this->assertEquals($content, $result);
-        $result = $template->render('plates-2');
+        $result = $renderer->render('plates-2');
         $content = file_get_contents(__DIR__ . '/TestAsset/plates-2.php');
         $content= str_replace('<?=$this->e($name)?>', $name, $content);
         $this->assertEquals($content, $result);
@@ -226,17 +226,17 @@ class PlatesRendererTest extends TestCase
 
     public function testOverrideSharedParametersPerTemplate()
     {
-        $template = new PlatesTemplate();
-        $template->addPath(__DIR__ . '/TestAsset');
+        $renderer = new PlatesRenderer();
+        $renderer->addPath(__DIR__ . '/TestAsset');
         $name = 'Plates';
         $name2 = 'Saucers';
-        $template->addParameters(['name' => $name]);
-        $template->addParameters(['name' => $name2], 'plates-2');
-        $result = $template->render('plates');
+        $renderer->addParameters(['name' => $name]);
+        $renderer->addParameters(['name' => $name2], 'plates-2');
+        $result = $renderer->render('plates');
         $content = file_get_contents(__DIR__ . '/TestAsset/plates.php');
         $content= str_replace('<?=$this->e($name)?>', $name, $content);
         $this->assertEquals($content, $result);
-        $result = $template->render('plates-2');
+        $result = $renderer->render('plates-2');
         $content = file_get_contents(__DIR__ . '/TestAsset/plates-2.php');
         $content= str_replace('<?=$this->e($name)?>', $name2, $content);
         $this->assertEquals($content, $result);
@@ -244,12 +244,12 @@ class PlatesRendererTest extends TestCase
 
     public function testOverrideSharedParametersAtRender()
     {
-        $template = new PlatesTemplate();
-        $template->addPath(__DIR__ . '/TestAsset');
+        $renderer = new PlatesRenderer();
+        $renderer->addPath(__DIR__ . '/TestAsset');
         $name = 'Plates';
         $name2 = 'Saucers';
-        $template->addParameters(['name' => $name]);
-        $result = $template->render('plates', ['name' => $name2]);
+        $renderer->addParameters(['name' => $name]);
+        $result = $renderer->render('plates', ['name' => $name2]);
         $content = file_get_contents(__DIR__ . '/TestAsset/plates.php');
         $content= str_replace('<?=$this->e($name)?>', $name2, $content);
         $this->assertEquals($content, $result);
