@@ -10,16 +10,20 @@
 namespace ZendTest\Expressive\Router;
 
 use FastRoute\Dispatcher\GroupCountBased as Dispatcher;
+use FastRoute\RouteCollector;
 use PHPUnit_Framework_TestCase as TestCase;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UriInterface;
 use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\Route;
+use Zend\Expressive\Router\RouteResult;
 
 class FastRouteRouterTest extends TestCase
 {
     public function setUp()
     {
-        $this->fastRouter = $this->prophesize('FastRoute\RouteCollector');
-        $this->dispatcher = $this->prophesize('FastRoute\Dispatcher\GroupCountBased');
+        $this->fastRouter = $this->prophesize(RouteCollector::class);
+        $this->dispatcher = $this->prophesize(Dispatcher::class);
         $this->dispatchCallback = function ($data) {
             return $this->dispatcher->reveal();
         };
@@ -36,16 +40,56 @@ class FastRouteRouterTest extends TestCase
     public function testWillLazyInstantiateAFastRouteCollectorIfNoneIsProvidedToConstructor()
     {
         $router = new FastRouteRouter();
-        $this->assertAttributeInstanceOf('FastRoute\RouteCollector', 'router', $router);
+        $this->assertAttributeInstanceOf(RouteCollector::class, 'router', $router);
     }
 
-    public function testAddRouteProxiesToFastRouteAddRouteMethod()
+    public function testAddingRouteAggregatesRoute()
     {
         $route = new Route('/foo', 'foo', ['GET']);
+        $router = $this->getRouter();
+        $router->addRoute($route);
+        $this->assertAttributeContains($route, 'routesToInject', $router);
+    }
+
+    /**
+     * @depends testAddingRouteAggregatesRoute
+     */
+    public function testMatchingInjectsRouteIntoFastRoute()
+    {
+        $route = new Route('/foo', 'foo', ['GET']);
+        $this->fastRouter->addRoute(['GET'], '/foo', '/foo')->shouldBeCalled();
+        $this->fastRouter->getData()->shouldBeCalled();
+        $this->dispatcher->dispatch('GET', '/foo')->willReturn([
+            Dispatcher::NOT_FOUND,
+        ]);
+
+        $router = $this->getRouter();
+        $router->addRoute($route);
+
+        $uri = $this->prophesize(UriInterface::class);
+        $uri->getPath()->willReturn('/foo');
+
+        $request = $this->prophesize(ServerRequestInterface::class);
+        $request->getUri()->will(function () use ($uri) {
+            return $uri->reveal();
+        });
+        $request->getMethod()->willReturn('GET');
+
+        $router->match($request->reveal());
+    }
+
+    /**
+     * @depends testAddingRouteAggregatesRoute
+     */
+    public function testGeneratingUriInjectsRouteIntoFastRoute()
+    {
+        $route = new Route('/foo', 'foo', ['GET'], 'foo');
         $this->fastRouter->addRoute(['GET'], '/foo', '/foo')->shouldBeCalled();
 
         $router = $this->getRouter();
         $router->addRoute($route);
+
+        $this->assertEquals('/foo', $router->generateUri('foo'));
     }
 
     public function testIfRouteSpecifiesAnyHttpMethodFastRouteIsPassedHardCodedListOfMethods()
@@ -64,6 +108,9 @@ class FastRouteRouterTest extends TestCase
 
         $router = $this->getRouter();
         $router->addRoute($route);
+
+        // routes are not injected until match or generateUri
+        $router->generateUri($route->getName());
     }
 
     public function testIfRouteSpecifiesNoHttpMethodsFastRouteIsPassedHardCodedListOfMethods()
@@ -77,16 +124,19 @@ class FastRouteRouterTest extends TestCase
 
         $router = $this->getRouter();
         $router->addRoute($route);
+
+        // routes are not injected until match or generateUri
+        $router->generateUri($route->getName());
     }
 
     public function testMatchingRouteShouldReturnSuccessfulRouteResult()
     {
         $route = new Route('/foo', 'foo', ['GET']);
 
-        $uri     = $this->prophesize('Psr\Http\Message\UriInterface');
+        $uri     = $this->prophesize(UriInterface::class);
         $uri->getPath()->willReturn('/foo');
 
-        $request = $this->prophesize('Psr\Http\Message\ServerRequestInterface');
+        $request = $this->prophesize(ServerRequestInterface::class);
         $request->getUri()->willReturn($uri);
         $request->getMethod()->willReturn('GET');
 
@@ -102,7 +152,7 @@ class FastRouteRouterTest extends TestCase
         $router = $this->getRouter();
         $router->addRoute($route); // Must add, so we can determine middleware later
         $result = $router->match($request->reveal());
-        $this->assertInstanceOf('Zend\Expressive\Router\RouteResult', $result);
+        $this->assertInstanceOf(RouteResult::class, $result);
         $this->assertTrue($result->isSuccess());
         $this->assertEquals('/foo', $result->getMatchedRouteName());
         $this->assertEquals('foo', $result->getMatchedMiddleware());
@@ -113,10 +163,10 @@ class FastRouteRouterTest extends TestCase
     {
         $route = new Route('/foo', 'foo', ['POST']);
 
-        $uri     = $this->prophesize('Psr\Http\Message\UriInterface');
+        $uri     = $this->prophesize(UriInterface::class);
         $uri->getPath()->willReturn('/foo');
 
-        $request = $this->prophesize('Psr\Http\Message\ServerRequestInterface');
+        $request = $this->prophesize(ServerRequestInterface::class);
         $request->getUri()->willReturn($uri);
         $request->getMethod()->willReturn('GET');
 
@@ -131,7 +181,7 @@ class FastRouteRouterTest extends TestCase
         $router = $this->getRouter();
         $router->addRoute($route); // Must add, so we can determine middleware later
         $result = $router->match($request->reveal());
-        $this->assertInstanceOf('Zend\Expressive\Router\RouteResult', $result);
+        $this->assertInstanceOf(RouteResult::class, $result);
         $this->assertTrue($result->isFailure());
         $this->assertTrue($result->isMethodFailure());
         $this->assertSame(['POST'], $result->getAllowedMethods());
@@ -141,10 +191,10 @@ class FastRouteRouterTest extends TestCase
     {
         $route = new Route('/foo', 'foo', ['GET']);
 
-        $uri     = $this->prophesize('Psr\Http\Message\UriInterface');
+        $uri     = $this->prophesize(UriInterface::class);
         $uri->getPath()->willReturn('/bar');
 
-        $request = $this->prophesize('Psr\Http\Message\ServerRequestInterface');
+        $request = $this->prophesize(ServerRequestInterface::class);
         $request->getUri()->willReturn($uri);
         $request->getMethod()->willReturn('GET');
 
@@ -158,7 +208,7 @@ class FastRouteRouterTest extends TestCase
         $router = $this->getRouter();
         $router->addRoute($route); // Must add, so we can determine middleware later
         $result = $router->match($request->reveal());
-        $this->assertInstanceOf('Zend\Expressive\Router\RouteResult', $result);
+        $this->assertInstanceOf(RouteResult::class, $result);
         $this->assertTrue($result->isFailure());
         $this->assertFalse($result->isMethodFailure());
         $this->assertSame([], $result->getAllowedMethods());

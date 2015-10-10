@@ -13,7 +13,7 @@ use Interop\Container\ContainerInterface;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Expressive\Application;
 use Zend\Expressive\Exception;
-use Zend\Expressive\Router\AuraRouter;
+use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouterInterface;
 
@@ -22,8 +22,8 @@ use Zend\Expressive\Router\RouterInterface;
  *
  * This factory uses the following services, if available:
  *
- * - 'Zend\Expressive\Router\RouterInterface'. If missing, an Aura router bridge
- *   will be instantiated and used.
+ * - 'Zend\Expressive\Router\RouterInterface'. If missing, a FastRoute router
+ *   bridge will be instantiated and used.
  * - 'Zend\Expressive\FinalHandler'. The service should be a callable to use as
  *   the final handler when the middleware pipeline is exhausted.
  * - 'Zend\Diactoros\Response\EmitterInterface'. If missing, an EmitterStack is
@@ -124,7 +124,7 @@ class ApplicationFactory
     {
         $router = $container->has(RouterInterface::class)
             ? $container->get(RouterInterface::class)
-            : new AuraRouter();
+            : new FastRouteRouter();
 
         $finalHandler = $container->has('Zend\Expressive\FinalHandler')
             ? $container->get('Zend\Expressive\FinalHandler')

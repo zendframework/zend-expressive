@@ -9,7 +9,7 @@ All notable changes to this project will be documented in this file, in reverse 
 - [#132](https://github.com/zendframework/zend-expressive/pull/132) adds
   `Zend\Expressive\Router\ZendRouter`, replacing
   `Zend\Expressive\Router\Zf2Router`.
-- [#139](https://github.com/zendframework/zend-expressive/pull/134) adds:
+- [#139](https://github.com/zendframework/zend-expressive/pull/139) adds:
   - `Zend\Expressive\Template\TemplateRendererInterface`, replacing
     `Zend\Expressive\Template\TemplateInterface`.
   - `Zend\Expressive\Template\PlatesRenderer`, replacing
@@ -24,6 +24,16 @@ All notable changes to this project will be documented in this file, in reverse 
   template-specific default parameters to use when rendering. To implement the
   feature, the patch also provides `Zend\Expressive\Template\DefaultParamsTrait`
   to simplify incorporating the feature in implementations.
+- [#133](https://github.com/zendframework/zend-expressive/pull/133) adds a
+  stipulation to `Zend\Expressive\Router\RouterInterface` that `addRoute()`
+  should *aggregate* `Route` instances only, and delay injection until `match()`
+  and/or `generateUri()` are called; all shipped routers now follow this. This
+  allows manipulating `Route` instances before calling `match()` or
+  `generateUri()` — for instance, to inject options or a name.
+- [#133](https://github.com/zendframework/zend-expressive/pull/133) re-instates
+  the `Route::setName()` method, as the changes to lazy-inject routes means that
+  setting names and options after adding them to the application now works
+  again.
 
 ### Deprecated
 
@@ -34,7 +44,7 @@ All notable changes to this project will be documented in this file, in reverse 
 - [#132](https://github.com/zendframework/zend-expressive/pull/132) removes
   `Zend\Expressive\Router\Zf2Router`, renaming it to
   `Zend\Expressive\Router\ZendRouter`.
-- [#139](https://github.com/zendframework/zend-expressive/pull/134) removes:
+- [#139](https://github.com/zendframework/zend-expressive/pull/139) removes:
   - `Zend\Expressive\Template\TemplateInterface`, renaming it to
     `Zend\Expressive\Template\TemplateRendererInterface`.
   - `Zend\Expressive\Template\Plates`, renaming it to
