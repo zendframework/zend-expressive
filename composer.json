@@ -9,6 +9,12 @@
         "psr",
         "psr-7"
     ],
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.4-dev",
+            "dev-develop": "0.5-dev"
+        }
+    },
     "require": {
         "php": ">=5.5",
         "container-interop/container-interop": "^1.1",
