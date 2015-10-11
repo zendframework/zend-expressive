@@ -46,7 +46,7 @@ handler.
 
 ```php
 use Zend\Expressive\Application;
-use Zend\Expressive\Template\PlatesRenderer;
+use Zend\Expressive\Plates\PlatesRenderer;
 use Zend\Expressive\TemplatedErrorHandler;
 
 $plates = new Plates();
@@ -88,7 +88,7 @@ instance and template names, just as you would for a `TemplatedErrorHandler`.
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run as Whoops;
 use Zend\Expressive\Application;
-use Zend\Expressive\Template\PlatesRenderer;
+use Zend\Expressive\Plates\PlatesRenderer;
 use Zend\Expressive\WhoopsErrorHandler;
 
 $handler = new PrettyPageHandler();

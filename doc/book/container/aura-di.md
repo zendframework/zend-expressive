@@ -56,10 +56,11 @@ use Aura\Router\Router;
 use Zend\Escaper\Escaper;
 use Zend\Expressive\Application;
 use Zend\Expressive\Container;
+use Zend\Expressive\Plates\PlatesRenderer;
 use Zend\Expressive\Router\AuraRouter;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouterInterface;
-use Zend\Expressive\Template;
+use Zend\Expressive\Template\TemplateRendererInterface;
 
 class Common extends ContainerConfig
 {
@@ -80,7 +81,7 @@ class Common extends ContainerConfig
         // Templating
         // In most cases, you can instantiate the template renderer you want to use
         // without using a factory:
-        $di->set(Template\TemplateRendererInterface::class, $di->lazyNew(Template\Plates::class));
+        $di->set(TemplateRendererInterface::class, $di->lazyNew(PlatesRenderer::class));
 
         // These next two can be added in any environment; they won't be used unless
         // you add the WhoopsErrorHandler as the FinalHandler implementation:

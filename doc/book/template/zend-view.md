@@ -8,32 +8,32 @@ provides:
 - Helpers for escaping, and the ability to provide custom helper extensions.
 
 We provide a [TemplateRendererInterface](interface.md) wrapper for zend-view's
-`PhpRenderer` via `Zend\Expressive\Template\ZendViewRenderer`.
+`PhpRenderer` via `Zend\Expressive\ZendView\ZendViewRenderer`.
 
 ## Installing zend-view
 
-To use the zend-view wrapper, you must first install zend-view
+To use the zend-view wrapper, you must first install the zend-view integration:
 
 ```bash
-$ composer require zendframework/zend-view
+$ composer require zendframework/zend-expressive-zendviewrenderer
 ```
 
 ## Using the wrapper
 
-If instantiated without arguments, `Zend\Expressive\Template\ZendViewRenderer` will create
+If instantiated without arguments, `Zend\Expressive\ZendView\ZendViewRenderer` will create
 an instance of the `PhpRenderer`, which it will then proxy to.
 
 ```php
-use Zend\Expressive\Template\ZendViewRenderer;
+use Zend\Expressive\ZendView\ZendViewRenderer;
 
 $renderer = new ZendViewRenderer();
 ```
 
 Alternately, you can instantiate and configure the engine yourself, and pass it
-to the `Zend\Expressive\Template\ZendViewRenderer` constructor:
+to the `Zend\Expressive\ZendView\ZendViewRenderer` constructor:
 
 ```php
-use Zend\Expressive\Template\ZendViewRenderer;
+use Zend\Expressive\ZendView\ZendViewRenderer;
 use Zend\View\Renderer\PhpRenderer;
 use Zend\View\Resolver;
 
@@ -59,7 +59,7 @@ $renderer = new ZendViewRenderer($renderer);
 > ### Namespaced path resolving
 >
 > Expressive defines a custom zend-view resolver,
-> `Zend\Expressive\Template\ZendView\NamespacedPathStackResolver`. This resolver
+> `Zend\Expressive\ZendView\NamespacedPathStackResolver`. This resolver
 > provides the ability to segregate paths by namespace, and later resolve a
 > template according to the namespace, using the `namespace::template` notation
 > required of `TemplateRendererInterface` implementations.
@@ -95,7 +95,7 @@ render in order to provide content within the selected layout.
 ### Layout name passed to constructor
 
 ```php
-use Zend\Expressive\Template\ZendViewRenderer;
+use Zend\Expressive\ZendView\ZendViewRenderer;
 
 // Create the engine instance with a layout name:
 $renderer = new ZendViewRenderer(null, 'layout');
@@ -104,7 +104,7 @@ $renderer = new ZendViewRenderer(null, 'layout');
 ### Layout view model passed to constructor
 
 ```php
-use Zend\Expressive\Template\ZendViewRenderer;
+use Zend\Expressive\ZendView\ZendViewRenderer;
 use Zend\View\Model\ViewModel;
 
 // Create the layout view model:
@@ -150,11 +150,11 @@ $content = $renderer->render('blog/entry', [
 Expressive provides overrides of specific view helpers in order to better
 integrate with PSR-7. These include:
 
-- `Zend\Expressive\Template\ZendView\UrlHelper`. This helper consumes the
+- `Zend\Expressive\ZendView\UrlHelper`. This helper consumes the
   application's `Zend\Expressive\Router\RouterInterface` instance in order
   to generate URIs. It's signature is:
   `url($routeName, array $substitutions = [])`
-- `Zend\Expressive\Template\ZendView\ServerUrlHelper`. This helper consumes the
+- `Zend\Expressive\ZendView\ServerUrlHelper`. This helper consumes the
   URI from the application's request in order to provide fully qualified URIs.
   It's signature is: `serverUrl($path = null)`.
 

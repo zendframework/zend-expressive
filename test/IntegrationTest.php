@@ -16,7 +16,7 @@ use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\ServerRequest;
 use Zend\Expressive\Application;
-use Zend\Expressive\Router\AuraRouter as AuraRouter;
+use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\TemplatedErrorHandler;
 
 class IntegrationTest extends TestCase
@@ -45,7 +45,7 @@ class IntegrationTest extends TestCase
 
     public function testDefaultFinalHandlerCanEmitA404WhenNoMiddlewareMatches()
     {
-        $app      = new Application(new AuraRouter(), null, null, $this->getEmitter());
+        $app      = new Application(new FastRouteRouter(), null, null, $this->getEmitter());
         $request  = new ServerRequest([], [], 'https://example.com/foo', 'GET');
         $response = new Response();
 
@@ -57,7 +57,7 @@ class IntegrationTest extends TestCase
     public function testInjectedFinalHandlerCanEmitA404WhenNoMiddlewareMatches()
     {
         $finalHandler = new TemplatedErrorHandler();
-        $app          = new Application(new AuraRouter(), null, $finalHandler, $this->getEmitter());
+        $app          = new Application(new FastRouteRouter(), null, $finalHandler, $this->getEmitter());
         $request      = new ServerRequest([], [], 'https://example.com/foo', 'GET');
         $response     = new Response();
 

@@ -40,14 +40,10 @@ instance.
 
 ## Installing the ZF2 Router
 
-To use the ZF2 router, you will need to install two dependencies,
-`zendframework/zend-mvc`, and `zendframework/zend-psr7bridge`; the latter is
-used to convert the PSR-7 `ServerRequestInterface` request instances used by
-zend-expressive into zend-http equivalents to pass to the `TreeRouteStack`. You
-can add these via Composer by executing the following in your project root:
+To use the ZF2 router, you will need to install the zend-mvc router integration:
 
 ```bash
-$ composer require zendframework/zend-mvc zendframework/zend-psr7bridge
+$ composer require zendframework/zend-expressive-zendrouter
 ```
 
 ## Quick Start
