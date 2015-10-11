@@ -30,8 +30,9 @@ this example, we'll have that in `config/services.php`.
 ```php
 use Interop\Container\Pimple\PimpleInterop as Pimple;
 use Zend\Expressive\Container;
+use Zend\Expressive\Plates\PlatesRenderer;
 use Zend\Expressive\Router;
-use Zend\Expressive\Template;
+use Zend\Expressive\Template\TemplateRendererInterface;
 
 $container = new Pimple();
 
@@ -49,8 +50,8 @@ $container['Zend\Expressive\Router\RouterInterface'] = function ($container) {
 // Templating
 // In most cases, you can instantiate the template renderer you want to use
 // without using a factory:
-$container['Zend\Expressive\Template\TemplateRendererInterface'] = function ($container) {
-    return new Template\Plates();
+$container[TemplateRendererInterface::class] = function ($container) {
+    return new PlatesRenderer();
 };
 
 // These next two can be added in any environment; they won't be used unless

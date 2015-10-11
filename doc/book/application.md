@@ -70,7 +70,7 @@ AppFactory::create(
 When no container or router are provided, it defaults to:
 
 - zend-servicemanager for the container.
-- Aura.Router for the router.
+- FastRoute for the router.
 
 ### Container factory
 

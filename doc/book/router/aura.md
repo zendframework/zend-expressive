@@ -38,10 +38,10 @@ instance.
 
 ## Installing Aura.Router
 
-To use Aura.Router, you will first need to install it:
+To use Aura.Router, you will first need to install the Aura.Router integration:
 
 ```bash
-$ composer require aura/router
+$ composer require zendframework/zend-expressive-aurarouter
 ```
 
 ## Quick Start
