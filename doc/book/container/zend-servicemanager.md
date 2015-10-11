@@ -99,7 +99,7 @@ $container->setInvokableClass(
 // without using a factory:
 $container->setInvokableClass(
     'Zend\Expressive\Template\TemplateRendererInterface',
-    'Zend\Expressive\Template\Plates'
+    'Zend\Expressive\Plates\PlatesRenderer'
 );
 
 // These next two can be added in any environment; they won't be used unless
@@ -152,7 +152,7 @@ return [
     ],
     'invokables' => [
         'Zend\Expressive\Router\RouterInterface'     => 'Zend\Expressive\Router\AuraRouter',
-        'Zend\Expressive\Template\TemplateRendererInterface' => 'Zend\Expressive\Template\PlatesRenderer'
+        'Zend\Expressive\Template\TemplateRendererInterface' => 'Zend\Expressive\Plates\PlatesRenderer'
     ],
     'factories' => [
         'Zend\Expressive\Application'       => 'Zend\Expressive\Container\ApplicationFactory',
@@ -233,7 +233,7 @@ return [
     ],
     'invokables' => [
         'Zend\Expressive\Router\RouterInterface'     => 'Zend\Expressive\Router\AuraRouter',
-        'Zend\Expressive\Template\TemplateRendererInterface' => 'Zend\Expressive\Template\PlatesRenderer'
+        'Zend\Expressive\Template\TemplateRendererInterface' => 'Zend\Expressive\Plates\PlatesRenderer'
     ],
     'factories' => [
         'Zend\Expressive\Application'       => 'Zend\Expressive\Container\ApplicationFactory',

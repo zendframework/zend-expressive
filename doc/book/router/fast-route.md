@@ -23,10 +23,10 @@ conjunction with your container instance.
 
 ## Installing FastRoute
 
-To use FastRoute, you will first need to install it:
+To use FastRoute, you will first need to install the FastRoute integration:
 
 ```bash
-$ composer require nikic/fast-route
+$ composer require zendframework/zend-expressive-fastroute
 ```
 
 ## Quick Start

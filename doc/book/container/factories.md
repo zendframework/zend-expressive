@@ -207,7 +207,7 @@ pre-configured editor types), a callable, or a service name to use.
 ## PlatesRendererFactory
 
 - **Provides**: `Zend\Expressive\Template\PlatesRenderer`
-- **FactoryName**: `Zend\Expressive\Container\Template\PlatesRendererFactory`
+- **FactoryName**: `Zend\Expressive\Plates\PlatesRendererFactory`
 - **Suggested Name**: `Zend\Expressive\Template\TemplateRendererInterface`
 - **Requires**: no additional services are required.
 - **Optional**:
@@ -235,12 +235,12 @@ per namespace when using Plates.
 ## TwigRendererFactory
 
 - **Provides**: `Zend\Expressive\Template\TwigRenderer`
-- **FactoryName**: `Zend\Expressive\Container\Template\TwigRendererFactory`
+- **FactoryName**: `Zend\Expressive\Twig\TwigRendererFactory`
 - **Suggested Name**: `Zend\Expressive\Template\TemplateRendererInterface`
 - **Requires**: no additional services are required.
 - **Optional**:
     - `Zend\Expressive\Router\RouterInterface`; if found, it will be used to
-      seed a `Zend\Expressive\Template\Twig\TwigExtension` instance for purposes
+      seed a `Zend\Expressive\Twig\TwigExtension` instance for purposes
       of rendering application URLs.
     - `config`, an array or `ArrayAccess` instance. This will be used to further
       configure the `Twig` instance, specifically with the filename extension,
@@ -272,7 +272,7 @@ the `TwigExtension` instance (assuming the router was found).
 ## ZendViewRendererFactory
 
 - **Provides**: `Zend\Expressive\Template\ZendViewRenderer`
-- **FactoryName**: `Zend\Expressive\Container\Template\ZendViewRendererFactory`
+- **FactoryName**: `Zend\Expressive\ZendView\ZendViewRendererFactory`
 - **Suggested Name**: `Zend\Expressive\Template\TemplateRendererInterface`
 - **Requires**: no additional services are required.
     - `Zend\Expressive\Router\RouterInterface`, in order to inject the custom
@@ -305,5 +305,5 @@ It consumes the following `config` structure:
 When creating the `PhpRenderer` instance, it will inject it with a
 `Zend\View\HelperPluginManager` instance (either pulled from the container, or
 instantiated directly). It injects the helper plugin manager with custom url and
-serverurl helpers, `Zend\Expressive\Template\ZendView\UrlHelper` and
-`Zend\Expressive\Template\ZendView\ServerUrlHelper`, respetively.
+serverurl helpers, `Zend\Expressive\ZendView\UrlHelper` and
+`Zend\Expressive\ZendView\ServerUrlHelper`, respetively.

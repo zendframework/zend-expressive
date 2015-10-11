@@ -14,7 +14,23 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Removed
 
-- Nothing.
+- [#131](https://github.com/zendframework/zend-expressive/pull/131) modifies the
+  repository to remove the concrete router and template renderer
+  implementations, along with any related factories; these are now in their own
+  packages. The classes removed include:
+  - `Zend\Expressive\Container\Template\PlatesRendererFactory`
+  - `Zend\Expressive\Container\Template\TwigRendererFactory`
+  - `Zend\Expressive\Container\Template\ZendViewRendererFactory`
+  - `Zend\Expressive\Router\AuraRouter`
+  - `Zend\Expressive\Router\FastRouteRouter`
+  - `Zend\Expressive\Router\ZendRouter`
+  - `Zend\Expressive\Template\PlatesRenderer`
+  - `Zend\Expressive\Template\TwigRenderer`
+  - `Zend\Expressive\Template\Twig\TwigExtension`
+  - `Zend\Expressive\Template\ZendViewRenderer`
+  - `Zend\Expressive\Template\ZendView\NamespacedPathStackResolver`
+  - `Zend\Expressive\Template\ZendView\ServerUrlHelper`
+  - `Zend\Expressive\Template\ZendView\UrlHelper`
 
 ### Fixed
 
