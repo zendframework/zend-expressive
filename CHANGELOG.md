@@ -18,7 +18,10 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#156](https://github.com/zendframework/zend-expressive/pull/156) updates how
+  the routing middleware pulls middleware from the container; in order to work
+  with zend-servicemanager v3 and allow `has()` queries to query abstract
+  factories, a second, boolean argument is now passed.
 
 ## 0.5.0 - 2015-10-10
 

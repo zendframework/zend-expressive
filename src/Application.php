@@ -201,10 +201,14 @@ class Application extends MiddlewarePipe
     {
         // Lazy-load middleware from the container when possible
         $container = $this->container;
-        if (null === $middleware && is_string($path) && $container && $container->has($path)) {
+        if (null === $middleware && is_string($path) && $container && $container->has($path, true)) {
             $middleware = $this->marshalLazyMiddlewareService($path, $container);
             $path       = '/';
-        } elseif (is_string($middleware) && ! is_callable($middleware) && $container && $container->has($middleware)) {
+        } elseif (is_string($middleware)
+            && ! is_callable($middleware)
+            && $container
+            && $container->has($middleware, true)
+        ) {
             $middleware = $this->marshalLazyMiddlewareService($middleware, $container);
         } elseif (null === $middleware && is_callable($path)) {
             $middleware = $path;
@@ -259,10 +263,14 @@ class Application extends MiddlewarePipe
     {
         // Lazy-load middleware from the container
         $container = $this->container;
-        if (null === $middleware && is_string($path) && $container && $container->has($path)) {
+        if (null === $middleware && is_string($path) && $container && $container->has($path, true)) {
             $middleware = $this->marshalLazyErrorMiddlewareService($path, $container);
             $path       = '/';
-        } elseif (is_string($middleware) && ! is_callable($middleware) && $container && $container->has($middleware)) {
+        } elseif (is_string($middleware)
+            && ! is_callable($middleware)
+            && $container
+            && $container->has($middleware, true)
+        ) {
             $middleware = $this->marshalLazyErrorMiddlewareService($middleware, $container);
         } elseif (null === $middleware && is_callable($path)) {
             $middleware = $path;
@@ -532,7 +540,7 @@ class Application extends MiddlewarePipe
     private function marshalMiddlewareFromContainer($middleware)
     {
         $container = $this->container;
-        if (! $container || ! $container->has($middleware)) {
+        if (! $container || ! $container->has($middleware, true)) {
             return $middleware;
         }
 
