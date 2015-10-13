@@ -19,7 +19,7 @@ If you haven't already, [install Composer](https://getcomposer.org). Once you
 have, we can install Expressive, along with a router and a container:
 
 ```bash
-$ composer require zendframework/zend-expressive aura/router zendframework/zend-servicemanager
+$ composer require zendframework/zend-expressive zendframework/zend-expressive-fastroute zendframework/zend-servicemanager
 ```
 
 > ### Routers
