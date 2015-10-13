@@ -218,7 +218,7 @@ class RouteMiddlewareTest extends TestCase
 
         $this->router->match($request)->willReturn($result);
 
-        $this->container->has('TestAsset\Middleware')->willReturn(true);
+        $this->container->has('TestAsset\Middleware', true)->willReturn(true);
         $this->container->get('TestAsset\Middleware')->willReturn($middleware);
 
         $app = $this->getApplication();
@@ -246,7 +246,7 @@ class RouteMiddlewareTest extends TestCase
 
         $this->router->match($request)->willReturn($result);
 
-        $this->container->has('TestAsset\Middleware')->willReturn(true);
+        $this->container->has('TestAsset\Middleware', true)->willReturn(true);
         $this->container->get('TestAsset\Middleware')->willThrow(new TestAsset\ContainerException());
 
         $app = $this->getApplication();

@@ -445,7 +445,7 @@ class ApplicationFactoryTest extends TestCase
             ->willReturn($config);
 
         $this->container
-            ->has('Middleware')
+            ->has('Middleware', true)
             ->willReturn(true);
 
         $this->container
@@ -548,7 +548,7 @@ class ApplicationFactoryTest extends TestCase
             ->willReturn($config);
 
         $this->container
-            ->has('/')
+            ->has('/', true)
             ->willReturn(false);
 
         $this->setExpectedException('InvalidArgumentException');
@@ -608,7 +608,7 @@ class ApplicationFactoryTest extends TestCase
             ->willReturn($config);
 
         $this->container
-            ->has('Middleware')
+            ->has('Middleware', true)
             ->willReturn(false);
 
         $this->setExpectedException('InvalidArgumentException');
@@ -670,7 +670,7 @@ class ApplicationFactoryTest extends TestCase
             ->willReturn($config);
 
         $this->container
-            ->has('Middleware')
+            ->has('Middleware', true)
             ->willReturn(true);
 
         $this->container
@@ -827,7 +827,7 @@ class ApplicationFactoryTest extends TestCase
             ->willReturn($config);
 
         $this->container
-            ->has('Middleware')
+            ->has('Middleware', true)
             ->willReturn(true);
 
         $this->container
