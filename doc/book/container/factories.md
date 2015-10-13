@@ -16,7 +16,7 @@ namespace, and define an `__invoke()` method that accepts an
 - **Requires**: no additional services are required.
 - **Optional**:
     - `Zend\Expressive\Router\RouterInterface`. When provided, the service will
-      be used to construct the `Application` instance; otherwise, an Aura router
+      be used to construct the `Application` instance; otherwise, an FastRoute router
       implementation will be used.
     - `Zend\Expressive\FinalHandler`. This is a meta-service, as the only concrete
       type required is a callable that can be used as a final middleware in the
