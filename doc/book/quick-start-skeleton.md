@@ -43,7 +43,7 @@ http://localhost:8080/ to see if your application responds correctly!
 ## Next Steps
 
 The skeleton makes the assumption that you will be writing your middleware as
-objects, and using configuration to map routes to middleware. It also provides a
+classes, and using configuration to map routes to middleware. It also provides a
 default structure for templates, if you choose to use them. Let's see how you
 can create first vanilla middleware, and then templated middleware.
 
@@ -62,9 +62,12 @@ Let's create a "Hello" action. Place the following in
 <?php
 namespace App\Action;
 
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
 class HelloAction
 {
-    public function __invoke($request, $response, callable $next)
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
     {
         $query  = $request->getQueryParams();
         $target = isset($query['target']) ? $query['target'] : 'World';
@@ -150,6 +153,8 @@ Replace your `src/Action/HelloAction.php` file with the following contents:
 <?php
 namespace App\Action;
 
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
@@ -162,7 +167,7 @@ class HelloAction
         $this->renderer = $renderer;
     }
 
-    public function __invoke($request, $response, callable $next)
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
     {
         $query  = $request->getQueryParams();
         $target = isset($query['target']) ? $query['target'] : 'World';
