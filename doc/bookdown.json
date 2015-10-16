@@ -3,7 +3,8 @@
   "content": [
     {"Intro": "../README.md"},
     {"Overview and Features": "book/features.md"},
-    {"Quick Start": "book/quick-start.md"},
+    {"Quick Start: Skeleton + Installer": "book/quick-start-skeleton.md"},
+    {"Quick Start: Standalone": "book/quick-start.md"},
     {"Applications": "book/application.md"},
     "book/container/bookdown.json",
     "book/router/bookdown.json",
