@@ -4,8 +4,6 @@
 
 *Begin developing PSR-7 middleware applications in minutes!*
 
-**Note: This project is a work in progress. Don't use it in production!**
-
 zend-expressive builds on [zend-stratigility](https://github.com/zendframework/zend-stratigility)
 to provide a minimalist PSR-7 middleware framework for PHP, with the following
 features:
@@ -23,17 +21,50 @@ features:
 
 ## Installation
 
-Install this library using composer:
+We provide two ways to install Expressive, both using
+[Composer](https://getcomposer.org): via our
+[skeleton project and installer](https://github.com/zendframework/zend-expressive-skeleton],
+or manually.
+
+### Using the skeleton + installer
+
+The simplest way to install and get started is using the skeleton project, which
+includes installer scripts for choosing a router, dependency injection
+container, and optionally a template renderer and/or error handler. The skeleton
+also provides configuration for officially supported dependencies.
+
+To use the skeleton, use Composer's `create-project` command:
+
+```bash
+$ composer create-project zendframework/zend-expressive-skeleton <project dir>
+```
+
+This will prompt you through choosing your dependencies, and then create and
+install the project in the `<project dir>` (omitting the `<project dir>` will
+create and install in a `zend-expressive-skeleton/` directory).
+
+### Manual Composer installation
+
+You can install Expressive standalone using Composer:
 
 ```bash
 $ composer require zendframework/zend-expressive
 ```
 
-You will also need a router. We currently support:
+However, at this point, Expressive is not usable, as you need to supply
+minimally:
 
-- [Aura.Router](https://github.com/auraphp/Aura.Router): `composer require aura/router`
-- [FastRoute](https://github.com/nikic/FastRoute): `composer require nikic/fast-route`
-- [ZF2 MVC Router](https://github.com/zendframework/zend-mvc): `composer require zendframework/zend-mvc`
+- a router.
+- a dependency injection container.
+
+We currently support and provide the following routing integrations:
+
+- [Aura.Router](https://github.com/auraphp/Aura.Router):
+  `composer require zendframework/zend-expressive-aurarouter`
+- [FastRoute](https://github.com/nikic/FastRoute):
+  `composer require zendframework/zend-expressive-fastroute`
+- [ZF2 MVC Router](https://github.com/zendframework/zend-mvc):
+  `composer require zendframework/zend-expressive-zendrouter`
 
 We recommend using a dependency injection container, and typehint against
 [container-interop](https://github.com/container-interop/container-interop). We
@@ -43,6 +74,12 @@ can recommend the following implementations:
   `composer require zendframework/zend-servicemanager`
 - [pimple-interop](https://github.com/moufmouf/pimple-interop):
   `composer require mouf/pimple-interop`
+- [Aura.Di](https://github.com/auraphp/Aura.Di):
+  `composer require aura/di:3.0.*@beta`
+
+Additionally, you may optionally want to install a template renderer
+implementation, and/or an error handling integration. These are covered in the
+documentation.
 
 ## Documentation
 
