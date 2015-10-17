@@ -20,11 +20,14 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
-## 0.5.2 - TBD
+## 0.5.2 - 2015-10-17
 
 ### Added
 
-- Nothing.
+- [#158](https://github.com/zendframework/zend-expressive/pull/158) documents
+  getting started via the [installer + skeleton](https://github.com/zendframework/zend-expressive-skeleton),
+  and also documents "next steps" in terms of creating and wiring middleware
+  when using the skeleton.
 
 ### Deprecated
 

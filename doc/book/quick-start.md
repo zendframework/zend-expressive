@@ -1,4 +1,4 @@
-# Quick Start
+# Quick Start: Standalone Usage
 
 Expressive allows you to get started at your own pace. You can start with
 the simplest example, detailed below, or move on to a more structured,
