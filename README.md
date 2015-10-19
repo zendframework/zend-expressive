@@ -23,7 +23,7 @@ features:
 
 We provide two ways to install Expressive, both using
 [Composer](https://getcomposer.org): via our
-[skeleton project and installer](https://github.com/zendframework/zend-expressive-skeleton],
+[skeleton project and installer](https://github.com/zendframework/zend-expressive-skeleton),
 or manually.
 
 ### Using the skeleton + installer
