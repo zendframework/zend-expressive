@@ -6,28 +6,28 @@ configuration is to provide default specifications:
 
 - A regular expression that applies the same for a given routing match:
 
-  ```php
-  // Parameters named "id" will only match digits by default:
-  $router->addTokens([
-    'id' => '\d+',
-  ]);
-  ```
+```php
+// Parameters named "id" will only match digits by default:
+$router->addTokens([
+'id' => '\d+',
+]);
+```
 
 - A default parameter and/or its default value to always provide:
 
-  ```php
-  // mediatype defaults to "application/xhtml+xml" and will be available in all
-  // requests:
-  $router->addValues([
-    'mediatype' => 'application/xhtml+xml',
-  ]);
-  ```
+```php
+// mediatype defaults to "application/xhtml+xml" and will be available in all
+// requests:
+$router->addValues([
+'mediatype' => 'application/xhtml+xml',
+]);
+```
 
 - Only match if secure (i.e., under HTTPS):
 
-  ```php
-  $router->setSecure(true);
-  ```
+```php
+$router->setSecure(true);
+```
 
 In order to specify these, you need access to the underlying Aura.Router
 instance, however, and the `RouterInterface` does not provide an accessor!
@@ -92,7 +92,7 @@ $app = AppFactory::create(null, $router);
 ## Factory-Driven Creation
 
 [We recommend using an Inversion of Control container](../container/intro.md)
-for your applications; as such, in this section we will demonstrate 
+for your applications; as such, in this section we will demonstrate
 two strategies for creating your Aura.Router implementation.
 
 ### Basic Router
