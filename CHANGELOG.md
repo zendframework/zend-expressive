@@ -21,6 +21,10 @@ All notable changes to this project will be documented in this file, in reverse 
 - [#160](https://github.com/zendframework/zend-expressive/pull/160) updates
   `EmitterStack` to throw a component-specific `InvalidArgumentException`
   instead of the generic SPL version.
+- [#163](https://github.com/zendframework/zend-expressive/pull/163) change the
+  documentation on wiring middleware factories to put them in the `dependencies`
+  section of `routes.global.php`; this keeps the routing and middleware
+  configuration in the same file.
 
 ## 0.5.2 - 2015-10-17
 
