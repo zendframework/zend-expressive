@@ -13,6 +13,7 @@ use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use SplStack;
 use Zend\Diactoros\Response\EmitterInterface;
+use Zend\Expressive\Exception;
 
 /**
  * Provides an EmitterInterface implementation that acts as a stack of Emitters.
@@ -96,7 +97,7 @@ class EmitterStack extends SplStack implements EmitterInterface
     private function validateEmitter($emitter)
     {
         if (! $emitter instanceof EmitterInterface) {
-            throw new InvalidArgumentException(sprintf(
+            throw new Exception\InvalidArgumentException(sprintf(
                 '%s expects an EmitterInterface implementation',
                 __CLASS__
             ));
