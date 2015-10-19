@@ -71,7 +71,7 @@ $renderer = new ZendViewRenderer($renderer);
 >   resolver to it.
 > - A `NamespacedPathStackResolver` is registered with the `AggregateResolver`, at
 >   a low priority (0), ensuring attempts to resolve hit it later.
-> 
+>
 > With resolvers such as the `TemplateMapResolver`, you can also resolve
 > namespaced templates, mapping them directly to the template on the filesystem
 > that matches; adding such a resolver can be a nice performance boost!
@@ -161,9 +161,9 @@ integrate with PSR-7. These include:
   To use this particular helper, you will need to inject it with the request URI
   somewhere within your application:
 
-  ```php
-  $serverUrlHelper->setUri($request->getUri());
-  ```
+```php
+$serverUrlHelper->setUri($request->getUri());
+```
 
   We recommend doing this within a pre-pipeline middleware.
 

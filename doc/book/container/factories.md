@@ -37,18 +37,18 @@ order to seed the `Application` instance:
 
 - `middleware_pipeline` can be used to seed pre- and/or post-routing middleware:
 
-  ```php
-  'middleware_pipeline' => [
-      // An array of middleware to register prior to registration of the
-      // routing middleware:
-      'pre_routing' => [
-      ],
-      // An array of middleware to register after registration of the
-      // routing middleware:
-      'post_routing' => [
-      ],
+```php
+'middleware_pipeline' => [
+  // An array of middleware to register prior to registration of the
+  // routing middleware:
+  'pre_routing' => [
   ],
-  ```
+  // An array of middleware to register after registration of the
+  // routing middleware:
+  'post_routing' => [
+  ],
+],
+```
 
   Each item of each array must be an array itself, with the following structure:
 
@@ -74,27 +74,27 @@ order to seed the `Application` instance:
 - `routes` is used to define routed middleware. The value must be an array,
   consisting of arrays defining each middleware:
 
-  ```php
-  'routes' => [
-      [
-          'path' => '/path/to/match',
-          'middleware' => 'Middleware Service Name or Callable',
-          'allowed_methods' => [ 'GET', 'POST', 'PATCH' ],
-          'options' => [
-              'stuff' => 'to',
-              'pass'  => 'to',
-              'the'   => 'underlying router',
-          ],
+```php
+'routes' => [
+  [
+      'path' => '/path/to/match',
+      'middleware' => 'Middleware Service Name or Callable',
+      'allowed_methods' => [ 'GET', 'POST', 'PATCH' ],
+      'options' => [
+          'stuff' => 'to',
+          'pass'  => 'to',
+          'the'   => 'underlying router',
       ],
-      // etc.
   ],
-  ```
+  // etc.
+],
+```
 
   Each route *requires*:
 
     - `path`: the path to match. Format will be based on the router you choose for
       your project.
-  
+
     - `middleware`: a callable or a service name for the middleware to execute
       when the route matches.
 
@@ -102,10 +102,10 @@ order to seed the `Application` instance:
 
     - `allowed_methods`: an array of allowed HTTP methods. If not provided, the
       application assumes any method is allowed.
-  
+
     - `name`: if not provided, the path will be used as the route name (and, if
       specific HTTP methods are allowed, a list of those).
-  
+
     - `options`: a key/value set of additional options to pass to the underlying
       router implementation for the given route. (Typical use cases include
       passing constraints or default values.)
