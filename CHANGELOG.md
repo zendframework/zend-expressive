@@ -18,7 +18,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#160](https://github.com/zendframework/zend-expressive/pull/160) updates
+  `EmitterStack` to throw a component-specific `InvalidArgumentException`
+  instead of the generic SPL version.
 
 ## 0.5.2 - 2015-10-17
 
