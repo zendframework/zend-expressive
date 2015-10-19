@@ -217,7 +217,7 @@ class HelloActionFactory
 ```
 
 With that in place, we'll now update our configuration. Open the file
-`config/autoload/dependencies.global.php`; it should have a structure similar to
+`config/autoload/routes.global.php`; it should have a structure similar to
 the following:
 
 ```php
@@ -226,9 +226,9 @@ return [
         'invokables' => [
             /* ... */
         ],
-        'factories' => [
-            /* ... */
-        ],
+    ],
+    'routes' => [
+        /* ... */
     ],
 ];
 ```
@@ -244,6 +244,9 @@ return [
             /* ... */
             App\Action\HelloAction::class => App\Action\HelloActionFactory::class,
         ],
+    ],
+    'routes' => [
+        /* ... */
     ],
 ];
 ```
