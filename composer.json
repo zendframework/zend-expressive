@@ -11,8 +11,8 @@
     ],
     "extra": {
         "branch-alias": {
-            "dev-master": "0.5-dev",
-            "dev-develop": "0.6-dev"
+            "dev-master": "1.0-dev",
+            "dev-develop": "1.1-dev"
         }
     },
     "require": {
@@ -27,9 +27,9 @@
         "filp/whoops": "^1.1",
         "phpunit/phpunit": "^4.7",
         "squizlabs/php_codesniffer": "^2.3",
-        "zendframework/zend-expressive-aurarouter": "^0.1",
-        "zendframework/zend-expressive-fastroute": "^0.1",
-        "zendframework/zend-expressive-zendrouter": "^0.1",
+        "zendframework/zend-expressive-aurarouter": "~1.0-dev",
+        "zendframework/zend-expressive-fastroute": "~1.0-dev",
+        "zendframework/zend-expressive-zendrouter": "~1.0-dev",
         "zendframework/zend-servicemanager": "^2.6"
     },
     "autoload": {
