@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 1.0.0rc2 - 2015-10-20
+
+Second release candidate.
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Updated branch aliases: dev-master => 1.0-dev, dev-develop => 1.1-dev.
+- Point dev dependencies on sub-components to `~1.0-dev`.
+
 ## 1.0.0rc1 - 2015-10-19
 
 First release candidate.
