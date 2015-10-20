@@ -36,7 +36,7 @@ also provides configuration for officially supported dependencies.
 To use the skeleton, use Composer's `create-project` command:
 
 ```bash
-$ composer create-project zendframework/zend-expressive-skeleton <project dir>
+$ composer create-project -s rc zendframework/zend-expressive-skeleton <project dir>
 ```
 
 This will prompt you through choosing your dependencies, and then create and
