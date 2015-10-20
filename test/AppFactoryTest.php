@@ -14,6 +14,9 @@ use ReflectionProperty;
 use Zend\Expressive\AppFactory;
 use Zend\Expressive\Application;
 
+/**
+ * @covers Zend\Expressive\AppFactory
+ */
 class AppFactoryTest extends TestCase
 {
     public function getRouterFromApplication(Application $app)

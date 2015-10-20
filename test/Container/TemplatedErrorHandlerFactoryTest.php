@@ -14,6 +14,9 @@ use Zend\Expressive\Container\TemplatedErrorHandlerFactory;
 use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Expressive\TemplatedErrorHandler;
 
+/**
+ * @covers Zend\Expressive\Container\TemplatedErrorHandlerFactory
+ */
 class TemplatedErrorHandlerFactoryTest extends TestCase
 {
     /**

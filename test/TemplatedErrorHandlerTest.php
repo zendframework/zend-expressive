@@ -18,6 +18,9 @@ use Psr\Http\Message\StreamInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Expressive\TemplatedErrorHandler;
 
+/**
+ * @covers Zend\Expressive\TemplatedErrorHandler
+ */
 class TemplatedErrorHandlerTest extends TestCase
 {
     public function getTemplateImplementation()
