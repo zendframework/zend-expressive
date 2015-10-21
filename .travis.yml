@@ -27,7 +27,7 @@ before_install:
   - if [[ $EXECUTE_DOC_CHECK == 'true' ]]; then composer require --dev --no-update phly/bookdown2mkdocs ; fi
 
 install:
-  - COMPOSER_ROOT_VERSION=0.4.1 travis_retry composer install --no-interaction --ignore-platform-reqs --prefer-source
+  - COMPOSER_ROOT_VERSION=dev-master travis_retry composer install --no-interaction --ignore-platform-reqs --prefer-source
   - composer info -i
 
 before_script:
