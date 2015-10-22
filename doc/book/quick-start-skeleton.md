@@ -77,7 +77,7 @@ class HelloAction
     {
         $query  = $request->getQueryParams();
         $target = isset($query['target']) ? $query['target'] : 'World';
-        $target = htmlspecialchars($target, ENT_HTML5, UTF-8);
+        $target = htmlspecialchars($target, ENT_HTML5, 'UTF-8');
 
         $response->getBody()->write(sprintf(
             '<h1>Hello, %s!</h1>',
