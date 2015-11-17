@@ -16,6 +16,9 @@ use Whoops\Handler\PrettyPageHandler;
 use Zend\Expressive\Container\Exception\InvalidServiceException;
 use Zend\Expressive\Container\WhoopsPageHandlerFactory;
 
+/**
+ * @covers Zend\Expressive\Container\WhoopsPageHandlerFactory
+ */
 class WhoopsPageHandlerFactoryTest extends TestCase
 {
     public function setUp()

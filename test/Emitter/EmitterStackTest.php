@@ -13,6 +13,9 @@ use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Argument;
 use Zend\Expressive\Emitter\EmitterStack;
 
+/**
+ * @covers Zend\Expressive\Emitter\EmitterStack
+ */
 class EmitterStackTest extends TestCase
 {
     public function setUp()

@@ -16,6 +16,9 @@ use Zend\Expressive\Application;
 use Zend\Expressive\Container\ApplicationFactory;
 use Zend\Expressive\Router\Route;
 
+/**
+ * @covers Zend\Expressive\Container\ApplicationFactory
+ */
 class ApplicationFactoryTest extends TestCase
 {
     public function setUp()

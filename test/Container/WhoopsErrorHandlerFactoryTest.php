@@ -16,6 +16,9 @@ use Zend\Expressive\Container\WhoopsErrorHandlerFactory;
 use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Expressive\WhoopsErrorHandler;
 
+/**
+ * @covers Zend\Expressive\Container\WhoopsErrorHandlerFactory
+ */
 class WhoopsErrorHandlerFactoryTest extends TestCase
 {
     /**

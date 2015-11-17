@@ -12,6 +12,9 @@ namespace ZendTest\Expressive\Template;
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Expressive\Template\TemplatePath;
 
+/**
+ * @covers Zend\Expressive\Template\TemplatePath
+ */
 class TemplatePathTest extends TestCase
 {
     use TemplatePathAssertionsTrait;

@@ -17,6 +17,9 @@ use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run as Whoops;
 use Zend\Expressive\Container\WhoopsFactory;
 
+/**
+ * @covers Zend\Expressive\Container\WhoopsFactory
+ */
 class WhoopsFactoryTest extends TestCase
 {
     public function setUp()
