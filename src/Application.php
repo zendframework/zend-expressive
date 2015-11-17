@@ -64,6 +64,11 @@ class Application extends MiddlewarePipe
     private $routeMiddlewareIsRegistered = false;
 
     /**
+     * @var Router\RouterFactoryInterface
+     */
+    private $routerFactory;
+
+    /**
      * @var Router\RouterInterface
      */
     private $router;
@@ -81,7 +86,7 @@ class Application extends MiddlewarePipe
      * Calls on the parent constructor, and then uses the provided arguments
      * to set internal properties.
      *
-     * @param Router\RouterInterface $router
+     * @param Router\RouterFactoryInterface $routerFactory
      * @param null|ContainerInterface $container IoC container from which to pull services, if any.
      * @param null|callable $finalHandler Final handler to use when $out is not
      *     provided on invocation.
@@ -89,16 +94,16 @@ class Application extends MiddlewarePipe
      *     invoked.
      */
     public function __construct(
-        Router\RouterInterface $router,
+        Router\RouterFactoryInterface $routerFactory,
         ContainerInterface $container = null,
         callable $finalHandler = null,
         EmitterInterface $emitter = null
     ) {
         parent::__construct();
-        $this->router       = $router;
-        $this->container    = $container;
-        $this->finalHandler = $finalHandler;
-        $this->emitter      = $emitter;
+        $this->routerFactory = $routerFactory;
+        $this->container     = $container;
+        $this->finalHandler  = $finalHandler;
+        $this->emitter       = $emitter;
     }
 
     /**
@@ -314,6 +319,10 @@ class Application extends MiddlewarePipe
      */
     public function routeMiddleware(ServerRequestInterface $request, ResponseInterface $response, callable $next)
     {
+        if (null === $this->router) {
+            $this->router = $this->routerFactory->buildRouter();
+        }
+
         $result = $this->router->match($request);
 
         if ($result->isFailure()) {
@@ -383,6 +392,10 @@ class Application extends MiddlewarePipe
      */
     public function route($path, $middleware = null, array $methods = null, $name = null)
     {
+        if (null !== $this->router) {
+            // @todo should we throw an DomainException here, as routes cannot be added after the router was created?
+        }
+
         if (! $path instanceof Router\Route && null === $middleware) {
             throw new Exception\InvalidArgumentException(sprintf(
                 '%s expects either a route argument, or a combination of a path and middleware arguments',
@@ -405,7 +418,7 @@ class Application extends MiddlewarePipe
         }
 
         $this->routes[] = $route;
-        $this->router->addRoute($route);
+        $this->routerFactory->addRoute($route);
         $this->pipeRoutingMiddleware();
 
         return $route;
