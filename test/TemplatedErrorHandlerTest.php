@@ -18,6 +18,9 @@ use Psr\Http\Message\StreamInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Expressive\TemplatedErrorHandler;
 
+/**
+ * @covers Zend\Expressive\TemplatedErrorHandler
+ */
 class TemplatedErrorHandlerTest extends TestCase
 {
     public function getTemplateImplementation()
@@ -282,9 +285,17 @@ class TemplatedErrorHandlerTest extends TestCase
 
     public function validHttpErrorStatusCodes()
     {
-        for ($i = 400; $i < 600; $i += 1) {
-            yield [$i];
-        }
+        return [
+            // Lower boundary
+            // 399 is invalid
+            '400' => [400],
+            '401' => [401],
+
+            // Upper boundary
+            '598' => [598],
+            '599' => [599],
+            // 600 is valid
+        ];
     }
 
     /**
@@ -307,13 +318,15 @@ class TemplatedErrorHandlerTest extends TestCase
 
     public function invalidHttpErrorStatusCodes()
     {
-        for ($i = 0; $i < 400; $i += 1) {
-            yield [$i];
-        }
+        return [
+            // Lower boundary
+            '399' => [399],
+            // 400 is valid
 
-        for ($i = 600; $i < 700; $i += 1) {
-            yield [$i];
-        }
+            // Upper boundary
+            // 599 is valid
+            '600' => [600],
+        ];
     }
 
     /**

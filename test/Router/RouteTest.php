@@ -12,6 +12,9 @@ namespace ZendTest\Expressive\Router;
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Expressive\Router\Route;
 
+/**
+ * @covers Zend\Expressive\Router\Route
+ */
 class RouteTest extends TestCase
 {
     public function setUp()

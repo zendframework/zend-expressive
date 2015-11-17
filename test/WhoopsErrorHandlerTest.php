@@ -19,6 +19,9 @@ use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run as Whoops;
 use Zend\Expressive\WhoopsErrorHandler;
 
+/**
+ * @covers Zend\Expressive\WhoopsErrorHandler
+ */
 class WhoopsErrorHandlerTest extends TestCase
 {
     public function getWhoops()

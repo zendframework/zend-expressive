@@ -21,6 +21,9 @@ use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouteResult;
 use Zend\Stratigility\Route as StratigilityRoute;
 
+/**
+ * @covers Zend\Expressive\Application
+ */
 class ApplicationTest extends TestCase
 {
     public function setUp()
