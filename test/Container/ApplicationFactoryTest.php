@@ -604,25 +604,44 @@ class ApplicationFactoryTest extends TestCase
         $this->factory->__invoke($this->container->reveal());
     }
 
-    public function testExceptionIsRaisedInCaseOfInvalidRouteOptionsConfiguration()
+    public function testCanPipeRouteSpecificMiddlewareViaConfiguration()
     {
+        $expected = [
+            'values' => [
+                'foo' => 'bar'
+            ],
+            'tokens' => [
+                'bar' => 'foo'
+            ]
+        ];
+
         $config = [
             'routes' => [
                 [
                     'path' => '/',
-                    'middleware' => 'HelloWorld',
-                    'options' => 'invalid',
+                    'middleware' => [
+                        'Hello',
+                        function () { return 'World'; }
+                    ],
+                    'name' => 'home',
+                    'allowed_methods' => ['GET'],
+                    'options' => $expected
                 ],
             ],
         ];
 
         $this->injectServiceInContainer($this->container, 'config', $config);
+        $this->injectServiceInContainer($this->container, 'Hello', function() {});
 
-        $this->setExpectedException(
-            InvalidArgumentException::class,
-            'options must be an array; received "string"'
-        );
-        $this->factory->__invoke($this->container->reveal());
+        $app = $this->factory->__invoke($this->container->reveal());
+
+        $r = new ReflectionProperty($app, 'routes');
+        $r->setAccessible(true);
+        $routes = $r->getValue($app);
+        $route  = array_shift($routes);
+
+        $this->assertInstanceOf(Route::class, $route);
+        $this->assertEquals($expected, $route->getOptions());
     }
 
     public function testExceptionIsRaisedInCaseOfInvalidPreRoutingMiddlewarePipeline()

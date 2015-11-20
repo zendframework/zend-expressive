@@ -17,6 +17,7 @@ use Zend\Expressive\Container\Exception\InvalidArgumentException as ContainerInv
 use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouterInterface;
+use Zend\Stratigility\MiddlewarePipe;
 
 /**
  * Factory to use with an IoC container in order to return an Application instance.
@@ -175,8 +176,20 @@ class ApplicationFactory
             } else {
                 $methods = Route::HTTP_METHOD_ANY;
             }
-            $name    = isset($spec['name']) ? $spec['name'] : null;
-            $route   = new Route($spec['path'], $spec['middleware'], $methods, $name);
+
+            $name = isset($spec['name']) ? $spec['name'] : null;
+
+            if (is_array($spec['middleware'])) {
+                $middlewarePipe = new MiddlewarePipe();
+
+                foreach ($spec['middleware'] as $middleware) {
+                    $middlewarePipe->pipe(is_callable($middleware) ? $middleware : $container->get($middleware));
+                }
+
+                $spec['middleware'] = $middlewarePipe;
+            }
+
+            $route = new Route($spec['path'], $spec['middleware'], $methods, $name);
 
             if (isset($spec['options'])) {
                 $options = $spec['options'];
