@@ -20,6 +20,27 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
+## 1.0.0rc3 - TBD
+
+Third release candidate.
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#187](https://github.com/zendframework/zend-expressive/pull/187)
+  Inject the route result as an attribute
+
 ## 1.0.0rc2 - 2015-10-20
 
 Second release candidate.

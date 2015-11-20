@@ -325,6 +325,8 @@ class Application extends MiddlewarePipe
             return $next($request, $response);
         }
 
+        // Inject the actual route result, as well as individual matched parameters.
+        $request = $request->withAttribute(Router\RouteResult::class, $result);
         foreach ($result->getMatchedParams() as $param => $value) {
             $request = $request->withAttribute($param, $value);
         }
