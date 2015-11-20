@@ -179,7 +179,7 @@ class ApplicationFactory
 
             $name = isset($spec['name']) ? $spec['name'] : null;
 
-            if (is_array($spec['middleware'])) {
+            if (!is_callable($spec['middleware']) && is_array($spec['middleware'])) {
                 $middlewarePipe = new MiddlewarePipe();
 
                 foreach ($spec['middleware'] as $middleware) {

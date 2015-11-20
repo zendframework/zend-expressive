@@ -104,13 +104,25 @@ class ApplicationFactoryTest extends TestCase
         $this->assertSame($this->finalHandler, $app->getFinalHandler());
     }
 
-    public function testFactorySetsUpRoutesFromConfig()
+    public function callableMiddlewares()
+    {
+        return [
+           ['HelloWorld'],
+           [function () {}],
+           [[\ZendTest\Expressive\TestAsset\InvokableMiddleware::class, 'staticallyCallableMiddleware']],
+        ];
+    }
+
+    /**
+     * @dataProvider callableMiddlewares
+     */
+    public function testFactorySetsUpRoutesFromConfig($middleware)
     {
         $config = [
             'routes' => [
                 [
                     'path' => '/',
-                    'middleware' => 'HelloWorld',
+                    'middleware' => $middleware,
                     'allowed_methods' => [ 'GET' ],
                 ],
                 [
