@@ -108,7 +108,10 @@ class ApplicationFactoryTest extends TestCase
     {
         return [
            ['HelloWorld'],
-           [function () {}],
+           [
+                function () {
+                }
+           ],
            [[\ZendTest\Expressive\TestAsset\InvokableMiddleware::class, 'staticallyCallableMiddleware']],
         ];
     }
@@ -633,7 +636,9 @@ class ApplicationFactoryTest extends TestCase
                     'path' => '/',
                     'middleware' => [
                         'Hello',
-                        function () { return 'World'; }
+                        function () {
+                            return 'World';
+                        }
                     ],
                     'name' => 'home',
                     'allowed_methods' => ['GET'],
