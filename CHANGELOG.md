@@ -8,7 +8,8 @@ Third release candidate.
 
 ### Added
 
-- Nothing.
+- [#185](https://github.com/zendframework/zend-expressive/pull/185)
+  Support casting zend-view models to arrays
 
 ### Deprecated
 
