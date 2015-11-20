@@ -529,4 +529,35 @@ class RouteMiddlewareTest extends TestCase
         $this->assertInstanceOf(Response::class, $result);
         $this->assertNotEquals(405, $result->getStatusCode());
     }
+
+    /**
+     * @group 186
+     */
+    public function testInjectsRouteResultAsAttribute()
+    {
+        $matches    = ['id' => 'IDENTIFIER'];
+        $triggered  = false;
+        $middleware = function ($request, $response, $next) use ($matches, &$triggered) {
+            $routeResult = $request->getAttribute(RouteResult::class, false);
+            $this->assertInstanceOf(RouteResult::class, $routeResult);
+            $this->assertTrue($routeResult->isSuccess());
+            $this->assertSame($matches, $routeResult->getMatchedParams());
+            $triggered = true;
+            return $response;
+        };
+        $next = function ($request, $response, $err = null) {
+            $this->fail('Should not hit next');
+        };
+
+        $request  = new ServerRequest();
+        $response = new Response();
+        $result   = RouteResult::fromRouteMatch('resource', $middleware, $matches);
+
+        $this->router->match($request)->willReturn($result);
+
+        $app  = $this->getApplication();
+        $test = $app->routeMiddleware($request, $response, $next);
+        $this->assertSame($response, $test);
+        $this->assertTrue($triggered);
+    }
 }
