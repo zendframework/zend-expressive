@@ -17,6 +17,16 @@ trait ArrayParametersTrait
     /**
      * Cast params to an array, if possible.
      *
+     * Casts the provided $params argument to an array, using the following rules:
+     *
+     * - null values result in an empty array
+     * - array values are returned verbatim
+     * - zend-view view models return the result of getVariables()
+     * - Traversables are cast using iterator_to_array
+     * - objects that are not zend-view view models nor traversables are cast
+     *   using PHP's type casting
+     * - scalar values result in an exception
+     *
      * @param mixed $params
      * @return array
      * @throws Exception\InvalidArgumentException for non-array, non-object parameters.
@@ -29,6 +39,12 @@ trait ArrayParametersTrait
 
         if (is_array($params)) {
             return $params;
+        }
+
+        // Special case for zendframework/zend-view view models.
+        // Not using typehinting, so as not to require zend-view as a dependency.
+        if (is_object($params) && method_exists($params, 'getVariables')) {
+            return $params->getVariables();
         }
 
         if ($params instanceof Traversable) {
