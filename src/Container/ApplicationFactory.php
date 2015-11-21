@@ -146,7 +146,7 @@ class ApplicationFactory
 
     /**
      * Sets provided PHP settings, if any.
-     * 
+     *
      * @param ContainerInterface $container
      */
     private function setPhpSettings(ContainerInterface $container)
