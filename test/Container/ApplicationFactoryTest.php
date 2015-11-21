@@ -65,6 +65,60 @@ class ApplicationFactoryTest extends TestCase
         return $r->getValue($app);
     }
 
+    public function testFactorySetsPhpSettingsFromConfig()
+    {
+        $this->container
+            ->has('Zend\Expressive\Router\RouterInterface')
+            ->willReturn(false);
+        $this->container
+            ->get('Zend\Expressive\Router\RouterInterface')
+            ->shouldNotBeCalled();
+
+        $this->container
+            ->has('Zend\Diactoros\Response\EmitterInterface')
+            ->willReturn(false);
+        $this->container
+            ->get('Zend\Diactoros\Response\EmitterInterface')
+            ->shouldNotBeCalled();
+
+        $this->container
+            ->has('Zend\Expressive\FinalHandler')
+            ->willReturn(false);
+        $this->container
+            ->get('Zend\Expressive\FinalHandler')
+            ->shouldNotBeCalled();
+
+        $config = [
+            'php_settings' => [
+                'display_errors' => 1,
+                'date.timezone' => 'Europe/Belgrade',
+            ],
+        ];
+
+        $currentPhpSettings = [];
+        foreach ($config['php_settings'] as $name => $value) {
+            $currentPhpSettings[$name] = ini_get($name);
+        }
+
+        $this->container
+            ->has('config')
+            ->willReturn(true);
+
+        $this->container
+            ->get('config')
+            ->willReturn($config);
+
+        $this->factory->__invoke($this->container->reveal());
+
+        foreach ($config['php_settings'] as $name => $value) {
+            $this->assertEquals($value, ini_get($name));
+        }
+
+        foreach ($currentPhpSettings as $name => $value) {
+            ini_set($name, $value);
+        }
+    }
+
     public function testFactoryWillPullAllReplaceableDependenciesFromContainerWhenPresent()
     {
         $router       = $this->prophesize('Zend\Expressive\Router\RouterInterface');

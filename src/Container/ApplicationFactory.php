@@ -136,11 +136,30 @@ class ApplicationFactory
 
         $app = new Application($router, $container, $finalHandler, $emitter);
 
+        $this->setPhpSettings($container);
         $this->injectPreMiddleware($app, $container);
         $this->injectRoutes($app, $container);
         $this->injectPostMiddleware($app, $container);
 
         return $app;
+    }
+
+    /**
+     * Sets provided PHP settings, if any.
+     * 
+     * @param ContainerInterface $container
+     */
+    private function setPhpSettings(ContainerInterface $container)
+    {
+        $config = $container->has('config') ? $container->get('config') : [];
+
+        if (!isset($config['php_settings']) || !is_array($config['php_settings'])) {
+            return;
+        }
+
+        foreach ($config['php_settings'] as $name => $value) {
+            ini_set($name, $value);
+        }
     }
 
     /**
