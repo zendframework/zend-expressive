@@ -13,6 +13,7 @@ use Interop\Container\ContainerInterface;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Expressive\Application;
 use Zend\Expressive\Exception;
+use Zend\Expressive\Container\Exception\PhpSettingsFailureException;
 use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouterInterface;
@@ -148,17 +149,23 @@ class ApplicationFactory
      * Sets provided PHP settings, if any.
      *
      * @param ContainerInterface $container
+     * @throws Exception\InvalidArgumentException for invalid PHP settings.
+     * @throws PhpSettingsFailureException if setting of PHP configuration fails.
      */
     private function setPhpSettings(ContainerInterface $container)
     {
         $config = $container->has('config') ? $container->get('config') : [];
 
-        if (!isset($config['php_settings']) || !is_array($config['php_settings'])) {
-            return;
-        }
+        if (isset($config['php_settings'])) {
+            if (!is_array($config['php_settings'])) {
+                throw new Exception\InvalidArgumentException('Invalid PHP settings configuration; must be an array');
+            }
 
-        foreach ($config['php_settings'] as $name => $value) {
-            ini_set($name, $value);
+            foreach ($config['php_settings'] as $name => $value) {
+                if (false === ini_set($name, $value)) {
+                    throw PhpSettingsFailureException::forOption($name, $value);
+                }
+            }
         }
     }
 

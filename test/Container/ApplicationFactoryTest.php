@@ -27,6 +27,68 @@ class ApplicationFactoryTest extends TestCase
         $this->factory   = new ApplicationFactory();
     }
 
+    protected function getContainer($config = null, $router = null, $finalHandler = null, $emitter = null)
+    {
+        if (null !== $config) {
+            $this->container
+                ->has('config')
+                ->willReturn(true);
+
+            $this->container
+                ->get('config')
+                ->willReturn($config);
+        } else {
+            $this->container
+                ->has('config')
+                ->willReturn(false);
+        }
+
+        if (null !== $router) {
+            $this->container
+                ->has('Zend\Expressive\Router\RouterInterface')
+                ->willReturn(true);
+            $this->container
+                ->get('Zend\Expressive\Router\RouterInterface')
+                ->will(function () use ($router) {
+                    return $router->reveal();
+                });
+        } else {
+            $this->container
+                ->has('Zend\Expressive\Router\RouterInterface')
+                ->willReturn(false);
+        }
+
+        if (null !== $finalHandler) {
+            $this->container
+                ->has('Zend\Expressive\FinalHandler')
+                ->willReturn(true);
+            $this->container
+                ->get('Zend\Expressive\FinalHandler')
+                ->willReturn($finalHandler);
+        } else {
+            $this->container
+                ->has('Zend\Expressive\FinalHandler')
+                ->willReturn(false);
+        }
+
+        if (null !== $emitter) {
+            $this->container
+                ->has('Zend\Diactoros\Response\EmitterInterface')
+                ->willReturn(true);
+            $this->container
+                ->get('Zend\Diactoros\Response\EmitterInterface')
+                ->will(function () use ($emitter) {
+                    return $emitter->reveal();
+                });
+        } else {
+            $this->container
+                ->has('Zend\Diactoros\Response\EmitterInterface')
+                ->willReturn(false);
+        }
+
+        return $this->container;
+    }
+
     public function assertRoute($spec, array $routes)
     {
         $this->assertTrue(array_reduce($routes, function ($found, $route) use ($spec) {
@@ -65,29 +127,32 @@ class ApplicationFactoryTest extends TestCase
         return $r->getValue($app);
     }
 
+    /**
+     * @expectedException \Zend\Expressive\Exception\InvalidArgumentException
+     */
+    public function testInvalidPhpSettingsRaisesException()
+    {
+        $config = ['php_settings' => 'invalid'];
+
+        $this->factory->__invoke($this->getContainer($config)->reveal());
+    }
+
+    /**
+     * @expectedException \Zend\Expressive\Container\Exception\PhpSettingsFailureException
+     */
+    public function testWhenSettingPhpConfigurationFailsExceptionIsRaised()
+    {
+        $config = [
+            'php_settings' => [
+                'invalid_option' => 1,
+            ],
+        ];
+
+        $this->factory->__invoke($this->getContainer($config)->reveal());
+    }
+
     public function testFactorySetsPhpSettingsFromConfig()
     {
-        $this->container
-            ->has('Zend\Expressive\Router\RouterInterface')
-            ->willReturn(false);
-        $this->container
-            ->get('Zend\Expressive\Router\RouterInterface')
-            ->shouldNotBeCalled();
-
-        $this->container
-            ->has('Zend\Diactoros\Response\EmitterInterface')
-            ->willReturn(false);
-        $this->container
-            ->get('Zend\Diactoros\Response\EmitterInterface')
-            ->shouldNotBeCalled();
-
-        $this->container
-            ->has('Zend\Expressive\FinalHandler')
-            ->willReturn(false);
-        $this->container
-            ->get('Zend\Expressive\FinalHandler')
-            ->shouldNotBeCalled();
-
         $config = [
             'php_settings' => [
                 'display_errors' => 1,
@@ -95,27 +160,11 @@ class ApplicationFactoryTest extends TestCase
             ],
         ];
 
-        $currentPhpSettings = [];
-        foreach ($config['php_settings'] as $name => $value) {
-            $currentPhpSettings[$name] = ini_get($name);
-        }
-
-        $this->container
-            ->has('config')
-            ->willReturn(true);
-
-        $this->container
-            ->get('config')
-            ->willReturn($config);
-
-        $this->factory->__invoke($this->container->reveal());
+        $this->factory->__invoke($this->getContainer($config)->reveal());
 
         foreach ($config['php_settings'] as $name => $value) {
             $this->assertEquals($value, ini_get($name));
-        }
-
-        foreach ($currentPhpSettings as $name => $value) {
-            ini_set($name, $value);
+            ini_restore($name);
         }
     }
 
