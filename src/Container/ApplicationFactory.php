@@ -159,7 +159,7 @@ class ApplicationFactory
         if (!isset($config['php_settings'])) {
             return;
         }
-        
+
         if (!is_array($config['php_settings'])) {
             throw new Exception\InvalidArgumentException('Invalid PHP settings configuration; must be an array');
         }
