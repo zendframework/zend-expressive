@@ -160,11 +160,13 @@ class ApplicationFactoryTest extends TestCase
             ],
         ];
 
+        $this->iniSet('display_errors', 0);
+        $this->iniSet('date.timezone', 'UTC');
+
         $this->factory->__invoke($this->getContainer($config)->reveal());
 
         foreach ($config['php_settings'] as $name => $value) {
             $this->assertEquals($value, ini_get($name));
-            ini_restore($name);
         }
     }
 
