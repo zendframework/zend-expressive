@@ -156,15 +156,17 @@ class ApplicationFactory
     {
         $config = $container->has('config') ? $container->get('config') : [];
 
-        if (isset($config['php_settings'])) {
-            if (!is_array($config['php_settings'])) {
-                throw new Exception\InvalidArgumentException('Invalid PHP settings configuration; must be an array');
-            }
+        if (!isset($config['php_settings'])) {
+            return;
+        }
+        
+        if (!is_array($config['php_settings'])) {
+            throw new Exception\InvalidArgumentException('Invalid PHP settings configuration; must be an array');
+        }
 
-            foreach ($config['php_settings'] as $name => $value) {
-                if (false === ini_set($name, $value)) {
-                    throw PhpSettingsFailureException::forOption($name, $value);
-                }
+        foreach ($config['php_settings'] as $name => $value) {
+            if (false === ini_set($name, $value)) {
+                throw PhpSettingsFailureException::forOption($name, $value);
             }
         }
     }
