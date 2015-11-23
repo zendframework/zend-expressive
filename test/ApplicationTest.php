@@ -418,7 +418,7 @@ class ApplicationTest extends TestCase
         };
 
         $container = $this->prophesize(ContainerInterface::class);
-        $container->has('foo', true)->willReturn(true);
+        $container->has('foo')->willReturn(true);
         $container->get('foo')->willReturn($middleware);
 
         $app = new Application($this->router->reveal(), $container->reveal());
@@ -445,7 +445,7 @@ class ApplicationTest extends TestCase
         };
 
         $container = $this->prophesize(ContainerInterface::class);
-        $container->has('foo', true)->willReturn(true);
+        $container->has('foo')->willReturn(true);
         $container->get('foo')->willReturn($middleware);
 
         $app = new Application($this->router->reveal(), $container->reveal());
@@ -472,7 +472,7 @@ class ApplicationTest extends TestCase
         };
 
         $container = $this->prophesize(ContainerInterface::class);
-        $container->has('foo', true)->willReturn(true);
+        $container->has('foo')->willReturn(true);
         $container->get('foo')->willReturn($middleware);
 
         $app = new Application($this->router->reveal(), $container->reveal());
@@ -499,7 +499,7 @@ class ApplicationTest extends TestCase
         };
 
         $container = $this->prophesize(ContainerInterface::class);
-        $container->has('foo', true)->willReturn(true);
+        $container->has('foo')->willReturn(true);
         $container->get('foo')->willReturn($middleware);
 
         $app = new Application($this->router->reveal(), $container->reveal());
