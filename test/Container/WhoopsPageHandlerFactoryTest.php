@@ -10,26 +10,32 @@
 namespace ZendTest\Expressive\Container;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use ReflectionFunction;
 use ReflectionProperty;
 use Whoops\Handler\PrettyPageHandler;
 use Zend\Expressive\Container\Exception\InvalidServiceException;
 use Zend\Expressive\Container\WhoopsPageHandlerFactory;
+use ZendTest\Expressive\ContainerTrait;
 
 /**
  * @covers Zend\Expressive\Container\WhoopsPageHandlerFactory
  */
 class WhoopsPageHandlerFactoryTest extends TestCase
 {
+    use ContainerTrait;
+
+    /** @var ObjectProphecy */
+    protected $container;
+
     public function setUp()
     {
-        $this->container = $this->prophesize('Interop\Container\ContainerInterface');
+        $this->container = $this->mockContainerInterface();
         $this->factory   = new WhoopsPageHandlerFactory();
     }
 
     public function testReturnsAPrettyPageHandler()
     {
-        $this->container->has('config')->willReturn(false);
         $factory = $this->factory;
 
         $result = $factory($this->container->reveal());
@@ -39,9 +45,7 @@ class WhoopsPageHandlerFactoryTest extends TestCase
     public function testWillInjectStringEditor()
     {
         $config = ['whoops' => ['editor' => 'emacs']];
-        $this->container->has('config')->willReturn(true);
-        $this->container->get('config')->willReturn($config);
-        $this->container->has('emacs')->willReturn(false);
+        $this->injectServiceInContainer($this->container, 'config', $config);
 
         $factory = $this->factory;
         $result = $factory($this->container->reveal());
@@ -53,8 +57,7 @@ class WhoopsPageHandlerFactoryTest extends TestCase
     {
         $config = ['whoops' => ['editor' => function () {
         }]];
-        $this->container->has('config')->willReturn(true);
-        $this->container->get('config')->willReturn($config);
+        $this->injectServiceInContainer($this->container, 'config', $config);
         $factory = $this->factory;
 
         $result = $factory($this->container->reveal());
@@ -67,10 +70,8 @@ class WhoopsPageHandlerFactoryTest extends TestCase
         $config = ['whoops' => ['editor' => 'custom']];
         $editor = function () {
         };
-        $this->container->has('config')->willReturn(true);
-        $this->container->get('config')->willReturn($config);
-        $this->container->has('custom')->willReturn(true);
-        $this->container->get('custom')->willReturn($editor);
+        $this->injectServiceInContainer($this->container, 'config', $config);
+        $this->injectServiceInContainer($this->container, 'custom', $editor);
 
         $factory = $this->factory;
         $result = $factory($this->container->reveal());
@@ -98,8 +99,7 @@ class WhoopsPageHandlerFactoryTest extends TestCase
     public function testInvalidEditorWillRaiseException($editor)
     {
         $config = ['whoops' => ['editor' => $editor]];
-        $this->container->has('config')->willReturn(true);
-        $this->container->get('config')->willReturn($config);
+        $this->injectServiceInContainer($this->container, 'config', $config);
 
         $factory = $this->factory;
 

@@ -9,7 +9,6 @@
 
 namespace ZendTest\Expressive;
 
-use Interop\Container\ContainerInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Argument;
 use ReflectionProperty;
@@ -26,6 +25,8 @@ use Zend\Stratigility\Route as StratigilityRoute;
  */
 class ApplicationTest extends TestCase
 {
+    use ContainerTrait;
+
     public function setUp()
     {
         $this->noopMiddleware = function ($req, $res, $next) {
@@ -377,9 +378,8 @@ class ApplicationTest extends TestCase
 
         $this->router->match($request)->willReturn(RouteResult::fromRouteMatch('foo', 'foo', []));
 
-        $container = $this->prophesize(ContainerInterface::class);
-        $container->has('foo')->willReturn(true);
-        $container->get('foo')->willReturn($middleware);
+        $container = $this->mockContainerInterface();
+        $this->injectServiceInContainer($container, 'foo', $middleware);
 
         $app = new Application($this->router->reveal(), $container->reveal());
 
@@ -417,9 +417,8 @@ class ApplicationTest extends TestCase
             return 'invoked';
         };
 
-        $container = $this->prophesize(ContainerInterface::class);
-        $container->has('foo')->willReturn(true);
-        $container->get('foo')->willReturn($middleware);
+        $container = $this->mockContainerInterface();
+        $this->injectServiceInContainer($container, 'foo', $middleware);
 
         $app = new Application($this->router->reveal(), $container->reveal());
         $app->pipe('foo');
@@ -444,9 +443,8 @@ class ApplicationTest extends TestCase
             return 'invoked';
         };
 
-        $container = $this->prophesize(ContainerInterface::class);
-        $container->has('foo')->willReturn(true);
-        $container->get('foo')->willReturn($middleware);
+        $container = $this->mockContainerInterface();
+        $this->injectServiceInContainer($container, 'foo', $middleware);
 
         $app = new Application($this->router->reveal(), $container->reveal());
         $app->pipeErrorHandler('foo');
@@ -471,9 +469,8 @@ class ApplicationTest extends TestCase
             return 'invoked';
         };
 
-        $container = $this->prophesize(ContainerInterface::class);
-        $container->has('foo')->willReturn(true);
-        $container->get('foo')->willReturn($middleware);
+        $container = $this->mockContainerInterface();
+        $this->injectServiceInContainer($container, 'foo', $middleware);
 
         $app = new Application($this->router->reveal(), $container->reveal());
         $app->pipe('/foo', 'foo');
@@ -498,9 +495,8 @@ class ApplicationTest extends TestCase
             return 'invoked';
         };
 
-        $container = $this->prophesize(ContainerInterface::class);
-        $container->has('foo')->willReturn(true);
-        $container->get('foo')->willReturn($middleware);
+        $container = $this->mockContainerInterface();
+        $this->injectServiceInContainer($container, 'foo', $middleware);
 
         $app = new Application($this->router->reveal(), $container->reveal());
         $app->pipeErrorHandler('/foo', 'foo');

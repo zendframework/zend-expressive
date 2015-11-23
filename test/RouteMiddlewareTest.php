@@ -10,6 +10,7 @@
 namespace ZendTest\Expressive;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequest;
 use Zend\Expressive\Application;
@@ -18,10 +19,15 @@ use Zend\Expressive\Router\RouterInterface;
 
 class RouteMiddlewareTest extends TestCase
 {
+    use ContainerTrait;
+
+    /** @var ObjectProphecy */
+    protected $container;
+
     public function setUp()
     {
         $this->router    = $this->prophesize('Zend\Expressive\Router\RouterInterface');
-        $this->container = $this->prophesize('Interop\Container\ContainerInterface');
+        $this->container = $this->mockContainerInterface();
     }
 
     public function getApplication()
@@ -218,8 +224,7 @@ class RouteMiddlewareTest extends TestCase
 
         $this->router->match($request)->willReturn($result);
 
-        $this->container->has('TestAsset\Middleware')->willReturn(true);
-        $this->container->get('TestAsset\Middleware')->willReturn($middleware);
+        $this->injectServiceInContainer($this->container, 'TestAsset\Middleware', $middleware);
 
         $app = $this->getApplication();
 

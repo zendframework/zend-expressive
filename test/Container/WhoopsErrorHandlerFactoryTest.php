@@ -10,38 +10,37 @@
 namespace ZendTest\Expressive\Container;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run as Whoops;
 use Zend\Expressive\Container\WhoopsErrorHandlerFactory;
 use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Expressive\WhoopsErrorHandler;
+use ZendTest\Expressive\ContainerTrait;
 
 /**
  * @covers Zend\Expressive\Container\WhoopsErrorHandlerFactory
  */
 class WhoopsErrorHandlerFactoryTest extends TestCase
 {
-    /**
-     * @var \Interop\Container\ContainerInterface
-     */
-    private $container;
+    use ContainerTrait;
+
+    /** @var ObjectProphecy */
+    protected $container;
 
     public function setUp()
     {
         $whoops      = $this->prophesize(Whoops::class);
         $pageHandler = $this->prophesize(PrettyPageHandler::class);
-        $this->container = $this->prophesize('Interop\Container\ContainerInterface');
-        $this->container->get('Zend\Expressive\WhoopsPageHandler')->willReturn($pageHandler->reveal());
-        $this->container->get('Zend\Expressive\Whoops')->willReturn($whoops->reveal());
+        $this->container = $this->mockContainerInterface();
+        $this->injectServiceInContainer($this->container, 'Zend\Expressive\WhoopsPageHandler', $pageHandler->reveal());
+        $this->injectServiceInContainer($this->container, 'Zend\Expressive\Whoops', $whoops->reveal());
 
         $this->factory   = new WhoopsErrorHandlerFactory();
     }
 
     public function testReturnsAWhoopsErrorHandler()
     {
-        $this->container->has(TemplateRendererInterface::class)->willReturn(false);
-        $this->container->has('config')->willReturn(false);
-
         $factory = $this->factory;
         $result  = $factory($this->container->reveal());
         $this->assertInstanceOf(WhoopsErrorHandler::class, $result);
@@ -50,9 +49,7 @@ class WhoopsErrorHandlerFactoryTest extends TestCase
     public function testWillInjectTemplateIntoErrorHandlerWhenServiceIsPresent()
     {
         $renderer = $this->prophesize(TemplateRendererInterface::class);
-        $this->container->has(TemplateRendererInterface::class)->willReturn(true);
-        $this->container->get(TemplateRendererInterface::class)->willReturn($renderer->reveal());
-        $this->container->has('config')->willReturn(false);
+        $this->injectServiceInContainer($this->container, TemplateRendererInterface::class, $renderer->reveal());
 
         $factory = $this->factory;
         $result  = $factory($this->container->reveal());
@@ -66,9 +63,7 @@ class WhoopsErrorHandlerFactoryTest extends TestCase
             'template_404'   => 'error::404',
             'template_error' => 'error::500',
         ]]];
-        $this->container->has(TemplateRendererInterface::class)->willReturn(false);
-        $this->container->has('config')->willReturn(true);
-        $this->container->get('config')->willReturn($config);
+        $this->injectServiceInContainer($this->container, 'config', $config);
 
         $factory = $this->factory;
         $result  = $factory($this->container->reveal());
