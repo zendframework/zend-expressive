@@ -16,10 +16,12 @@ use ReflectionProperty;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Expressive\Application;
 use Zend\Expressive\Container\ApplicationFactory;
+use Zend\Expressive\FinalHandler;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouterInterface;
 use ZendTest\Expressive\ContainerTrait;
 use Zend\Expressive\Container\Exception\InvalidArgumentException;
+use ZendTest\Expressive\TestAsset\InvokableMiddleware;
 
 /**
  * @covers Zend\Expressive\Container\ApplicationFactory
@@ -112,7 +114,7 @@ class ApplicationFactoryTest extends TestCase
                 function () {
                 }
            ],
-           [[\ZendTest\Expressive\TestAsset\InvokableMiddleware::class, 'staticallyCallableMiddleware']],
+           [[InvokableMiddleware::class, 'staticallyCallableMiddleware']],
         ];
     }
 
