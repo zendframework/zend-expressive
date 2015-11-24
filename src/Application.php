@@ -201,13 +201,13 @@ class Application extends MiddlewarePipe
     {
         // Lazy-load middleware from the container when possible
         $container = $this->container;
-        if (null === $middleware && is_string($path) && $container && $container->has($path, true)) {
+        if (null === $middleware && is_string($path) && $container && $container->has($path)) {
             $middleware = $this->marshalLazyMiddlewareService($path, $container);
             $path       = '/';
         } elseif (is_string($middleware)
             && ! is_callable($middleware)
             && $container
-            && $container->has($middleware, true)
+            && $container->has($middleware)
         ) {
             $middleware = $this->marshalLazyMiddlewareService($middleware, $container);
         } elseif (null === $middleware && is_callable($path)) {
@@ -263,13 +263,13 @@ class Application extends MiddlewarePipe
     {
         // Lazy-load middleware from the container
         $container = $this->container;
-        if (null === $middleware && is_string($path) && $container && $container->has($path, true)) {
+        if (null === $middleware && is_string($path) && $container && $container->has($path)) {
             $middleware = $this->marshalLazyErrorMiddlewareService($path, $container);
             $path       = '/';
         } elseif (is_string($middleware)
             && ! is_callable($middleware)
             && $container
-            && $container->has($middleware, true)
+            && $container->has($middleware)
         ) {
             $middleware = $this->marshalLazyErrorMiddlewareService($middleware, $container);
         } elseif (null === $middleware && is_callable($path)) {
@@ -542,7 +542,7 @@ class Application extends MiddlewarePipe
     private function marshalMiddlewareFromContainer($middleware)
     {
         $container = $this->container;
-        if (! $container || ! $container->has($middleware, true)) {
+        if (! $container || ! $container->has($middleware)) {
             return $middleware;
         }
 
