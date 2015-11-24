@@ -41,6 +41,11 @@ Third release candidate.
 
 - [#187](https://github.com/zendframework/zend-expressive/pull/187)
   Inject the route result as an attribute
+- [#197](https://github.com/zendframework/zend-expressive/pull/197) updates the
+  `Zend\Expressive\Container\ApplicationFactory` to raise exceptions in cases
+  where received configuration is unusable, instead of silently ignoring it.
+  This is a small backwards compatibility break, but is done to eliminate
+  difficult to identify issues due to bad configuration.
 
 ## 1.0.0rc2 - 2015-10-20
 

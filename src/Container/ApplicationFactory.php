@@ -13,6 +13,7 @@ use Interop\Container\ContainerInterface;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Expressive\Application;
 use Zend\Expressive\Exception;
+use Zend\Expressive\Container\Exception\InvalidArgumentException as ContainerInvalidArgumentException;
 use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouterInterface;
@@ -152,6 +153,7 @@ class ApplicationFactory
     private function injectRoutes(Application $app, ContainerInterface $container)
     {
         $config = $container->has('config') ? $container->get('config') : [];
+
         if (! isset($config['routes'])) {
             $app->pipeRoutingMiddleware();
             return;
@@ -162,15 +164,30 @@ class ApplicationFactory
                 continue;
             }
 
-            $methods = (isset($spec['allowed_methods']) && is_array($spec['allowed_methods']))
-                ? $spec['allowed_methods']
-                : null;
+            if (isset($spec['allowed_methods'])) {
+                $methods = $spec['allowed_methods'];
+                if (! is_array($methods)) {
+                    throw new ContainerInvalidArgumentException(sprintf(
+                        'Allowed HTTP methods for a route must be in form of an array; received "%s"',
+                        gettype($methods)
+                    ));
+                }
+            } else {
+                $methods = Route::HTTP_METHOD_ANY;
+            }
             $name    = isset($spec['name']) ? $spec['name'] : null;
-            $methods = (null === $methods) ? Route::HTTP_METHOD_ANY : $methods;
             $route   = new Route($spec['path'], $spec['middleware'], $methods, $name);
 
-            if (isset($spec['options']) && is_array($spec['options'])) {
-                $route->setOptions($spec['options']);
+            if (isset($spec['options'])) {
+                $options = $spec['options'];
+                if (! is_array($options)) {
+                    throw new ContainerInvalidArgumentException(sprintf(
+                        'Route options must be an array; received "%s"',
+                        gettype($options)
+                    ));
+                }
+
+                $route->setOptions($options);
             }
 
             $app->route($route);
@@ -212,14 +229,26 @@ class ApplicationFactory
      */
     private function injectPreMiddleware(Application $app, ContainerInterface $container)
     {
-        $config = $container->has('config') ? $container->get('config') : [];
-        if (! isset($config['middleware_pipeline']['pre_routing']) ||
-            ! is_array($config['middleware_pipeline']['pre_routing'])
-        ) {
+        if (!$container->has('config')) {
             return;
         }
 
-        $this->injectMiddleware($config['middleware_pipeline']['pre_routing'], $app, $container);
+        $config = $container->get('config');
+
+        if (! isset($config['middleware_pipeline']['pre_routing'])) {
+            return;
+        }
+
+        $middlewareCollection = $config['middleware_pipeline']['pre_routing'];
+
+        if (! is_array($middlewareCollection)) {
+            throw new ContainerInvalidArgumentException(sprintf(
+                'Pre-routing middleware collection must be an array; received "%s"',
+                gettype($middlewareCollection)
+            ));
+        }
+
+        $this->injectMiddleware($middlewareCollection, $app, $container);
     }
 
     /**
@@ -233,13 +262,25 @@ class ApplicationFactory
      */
     private function injectPostMiddleware(Application $app, ContainerInterface $container)
     {
-        $config = $container->has('config') ? $container->get('config') : [];
-        if (! isset($config['middleware_pipeline']['post_routing']) ||
-            ! is_array($config['middleware_pipeline']['post_routing'])
-        ) {
+        if (!$container->has('config')) {
             return;
         }
 
-        $this->injectMiddleware($config['middleware_pipeline']['post_routing'], $app, $container);
+        $config = $container->get('config');
+
+        if (! isset($config['middleware_pipeline']['post_routing'])) {
+            return;
+        }
+
+        $middlewareCollection = $config['middleware_pipeline']['post_routing'];
+
+        if (! is_array($middlewareCollection)) {
+            throw new ContainerInvalidArgumentException(sprintf(
+                'Post-routing middleware collection must be an array; received "%s"',
+                gettype($middlewareCollection)
+            ));
+        }
+
+        $this->injectMiddleware($middlewareCollection, $app, $container);
     }
 }
