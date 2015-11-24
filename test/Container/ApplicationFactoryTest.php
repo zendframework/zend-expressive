@@ -10,21 +10,48 @@
 namespace ZendTest\Expressive\Container;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use ReflectionFunction;
 use ReflectionProperty;
+use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Expressive\Application;
 use Zend\Expressive\Container\ApplicationFactory;
 use Zend\Expressive\Router\Route;
+use Zend\Expressive\Router\RouterInterface;
+use ZendTest\Expressive\ContainerTrait;
 
 /**
  * @covers Zend\Expressive\Container\ApplicationFactory
  */
 class ApplicationFactoryTest extends TestCase
 {
+    use ContainerTrait;
+
+    /** @var ObjectProphecy */
+    protected $container;
+
+    /** @var ObjectProphecy */
+    protected $emitter;
+
+    /** @var ObjectProphecy */
+    protected $finalHandler;
+
+    /** @var ObjectProphecy */
+    protected $router;
+
     public function setUp()
     {
-        $this->container = $this->prophesize('Interop\Container\ContainerInterface');
+        $this->container = $this->mockContainerInterface();
         $this->factory   = new ApplicationFactory();
+
+        $this->router = $this->prophesize(RouterInterface::class);
+        $this->emitter = $this->prophesize(EmitterInterface::class);
+        $this->finalHandler = function ($req, $res, $err = null) {
+        };
+
+        $this->injectServiceInContainer($this->container, RouterInterface::class, $this->router->reveal());
+        $this->injectServiceInContainer($this->container, EmitterInterface::class, $this->emitter->reveal());
+        $this->injectServiceInContainer($this->container, 'Zend\Expressive\FinalHandler', $this->finalHandler);
     }
 
     public function assertRoute($spec, array $routes)
@@ -67,56 +94,17 @@ class ApplicationFactoryTest extends TestCase
 
     public function testFactoryWillPullAllReplaceableDependenciesFromContainerWhenPresent()
     {
-        $router       = $this->prophesize('Zend\Expressive\Router\RouterInterface');
-        $emitter      = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
-        $finalHandler = function ($req, $res, $err = null) {
-        };
-
-        $this->container
-            ->has('Zend\Expressive\Router\RouterInterface')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Expressive\Router\RouterInterface')
-            ->will(function () use ($router) {
-                return $router->reveal();
-            });
-
-        $this->container
-            ->has('Zend\Diactoros\Response\EmitterInterface')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Diactoros\Response\EmitterInterface')
-            ->will(function () use ($emitter) {
-                return $emitter->reveal();
-            });
-
-        $this->container
-            ->has('Zend\Expressive\FinalHandler')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Expressive\FinalHandler')
-            ->willReturn($finalHandler);
-
-        $this->container
-            ->has('config')
-            ->willReturn(false);
-
         $app = $this->factory->__invoke($this->container->reveal());
         $this->assertInstanceOf('Zend\Expressive\Application', $app);
         $test = $this->getRouterFromApplication($app);
-        $this->assertSame($router->reveal(), $test);
+        $this->assertSame($this->router->reveal(), $test);
         $this->assertSame($this->container->reveal(), $app->getContainer());
-        $this->assertSame($emitter->reveal(), $app->getEmitter());
-        $this->assertSame($finalHandler, $app->getFinalHandler());
+        $this->assertSame($this->emitter->reveal(), $app->getEmitter());
+        $this->assertSame($this->finalHandler, $app->getFinalHandler());
     }
 
     public function testFactorySetsUpRoutesFromConfig()
     {
-        $router = $this->prophesize('Zend\Expressive\Router\RouterInterface');
-        $emitter = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
-        $finalHandler = function ($req, $res, $err = null) {
-        };
-
         $config = [
             'routes' => [
                 [
@@ -132,38 +120,7 @@ class ApplicationFactoryTest extends TestCase
             ],
         ];
 
-        $this->container
-            ->has('Zend\Expressive\Router\RouterInterface')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Expressive\Router\RouterInterface')
-            ->will(function () use ($router) {
-                return $router->reveal();
-            });
-
-        $this->container
-            ->has('Zend\Diactoros\Response\EmitterInterface')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Diactoros\Response\EmitterInterface')
-            ->will(function () use ($emitter) {
-                return $emitter->reveal();
-            });
-
-        $this->container
-            ->has('Zend\Expressive\FinalHandler')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Expressive\FinalHandler')
-            ->willReturn($finalHandler);
-
-        $this->container
-            ->has('config')
-            ->willReturn(true);
-
-        $this->container
-            ->get('config')
-            ->willReturn($config);
+        $this->injectServiceInContainer($this->container, 'config', $config);
 
         $app = $this->factory->__invoke($this->container->reveal());
 
@@ -178,36 +135,14 @@ class ApplicationFactoryTest extends TestCase
 
     public function testWillUseSaneDefaultsForOptionalServices()
     {
-        $this->container
-            ->has('Zend\Expressive\Router\RouterInterface')
-            ->willReturn(false);
-        $this->container
-            ->get('Zend\Expressive\Router\RouterInterface')
-            ->shouldNotBeCalled();
+        $container = $this->mockContainerInterface();
+        $factory = new ApplicationFactory();
 
-        $this->container
-            ->has('Zend\Diactoros\Response\EmitterInterface')
-            ->willReturn(false);
-        $this->container
-            ->get('Zend\Diactoros\Response\EmitterInterface')
-            ->shouldNotBeCalled();
-
-        $this->container
-            ->has('Zend\Expressive\FinalHandler')
-            ->willReturn(false);
-        $this->container
-            ->get('Zend\Expressive\FinalHandler')
-            ->shouldNotBeCalled();
-
-        $this->container
-            ->has('config')
-            ->willReturn(false);
-
-        $app = $this->factory->__invoke($this->container->reveal());
+        $app = $factory->__invoke($container->reveal());
         $this->assertInstanceOf('Zend\Expressive\Application', $app);
         $router = $this->getRouterFromApplication($app);
         $this->assertInstanceOf('Zend\Expressive\Router\FastRouteRouter', $router);
-        $this->assertSame($this->container->reveal(), $app->getContainer());
+        $this->assertSame($container->reveal(), $app->getContainer());
         $this->assertInstanceOf('Zend\Expressive\Emitter\EmitterStack', $app->getEmitter());
         $this->assertCount(1, $app->getEmitter());
         $this->assertInstanceOf('Zend\Diactoros\Response\SapiEmitter', $app->getEmitter()->pop());
@@ -219,11 +154,6 @@ class ApplicationFactoryTest extends TestCase
      */
     public function testCanPipeMiddlewareProvidedDuringConfigurationPriorToSettingRoutes()
     {
-        $router = $this->prophesize('Zend\Expressive\Router\RouterInterface');
-        $emitter = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
-        $finalHandler = function ($req, $res, $err = null) {
-        };
-
         $middleware = function ($req, $res, $next = null) {
         };
 
@@ -244,38 +174,7 @@ class ApplicationFactoryTest extends TestCase
             ],
         ];
 
-        $this->container
-            ->has('Zend\Expressive\Router\RouterInterface')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Expressive\Router\RouterInterface')
-            ->will(function () use ($router) {
-                return $router->reveal();
-            });
-
-        $this->container
-            ->has('Zend\Diactoros\Response\EmitterInterface')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Diactoros\Response\EmitterInterface')
-            ->will(function () use ($emitter) {
-                return $emitter->reveal();
-            });
-
-        $this->container
-            ->has('Zend\Expressive\FinalHandler')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Expressive\FinalHandler')
-            ->willReturn($finalHandler);
-
-        $this->container
-            ->has('config')
-            ->willReturn(true);
-
-        $this->container
-            ->get('config')
-            ->willReturn($config);
+        $this->injectServiceInContainer($this->container, 'config', $config);
 
         $app = $this->factory->__invoke($this->container->reveal());
 
@@ -306,11 +205,6 @@ class ApplicationFactoryTest extends TestCase
      */
     public function testCanPipeMiddlewareProvidedDuringConfigurationAfterSettingRoutes()
     {
-        $router = $this->prophesize('Zend\Expressive\Router\RouterInterface');
-        $emitter = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
-        $finalHandler = function ($req, $res, $err = null) {
-        };
-
         $middleware = function ($req, $res, $next = null) {
             return true;
         };
@@ -332,38 +226,7 @@ class ApplicationFactoryTest extends TestCase
             ],
         ];
 
-        $this->container
-            ->has('Zend\Expressive\Router\RouterInterface')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Expressive\Router\RouterInterface')
-            ->will(function () use ($router) {
-                return $router->reveal();
-            });
-
-        $this->container
-            ->has('Zend\Diactoros\Response\EmitterInterface')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Diactoros\Response\EmitterInterface')
-            ->will(function () use ($emitter) {
-                return $emitter->reveal();
-            });
-
-        $this->container
-            ->has('Zend\Expressive\FinalHandler')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Expressive\FinalHandler')
-            ->willReturn($finalHandler);
-
-        $this->container
-            ->has('config')
-            ->willReturn(true);
-
-        $this->container
-            ->get('config')
-            ->willReturn($config);
+        $this->injectServiceInContainer($this->container, 'config', $config);
 
         $app = $this->factory->__invoke($this->container->reveal());
 
@@ -396,11 +259,6 @@ class ApplicationFactoryTest extends TestCase
      */
     public function testPipedMiddlewareAsServiceNamesAreReturnedAsClosuresThatPullFromContainer()
     {
-        $router = $this->prophesize('Zend\Expressive\Router\RouterInterface');
-        $emitter = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
-        $finalHandler = function ($req, $res, $err = null) {
-        };
-
         $middleware = function ($req, $res, $next = null) {
             return true;
         };
@@ -414,46 +272,8 @@ class ApplicationFactoryTest extends TestCase
             ],
         ];
 
-        $this->container
-            ->has('Zend\Expressive\Router\RouterInterface')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Expressive\Router\RouterInterface')
-            ->will(function () use ($router) {
-                return $router->reveal();
-            });
-
-        $this->container
-            ->has('Zend\Diactoros\Response\EmitterInterface')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Diactoros\Response\EmitterInterface')
-            ->will(function () use ($emitter) {
-                return $emitter->reveal();
-            });
-
-        $this->container
-            ->has('Zend\Expressive\FinalHandler')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Expressive\FinalHandler')
-            ->willReturn($finalHandler);
-
-        $this->container
-            ->has('config')
-            ->willReturn(true);
-
-        $this->container
-            ->get('config')
-            ->willReturn($config);
-
-        $this->container
-            ->has('Middleware', true)
-            ->willReturn(true);
-
-        $this->container
-            ->get('Middleware')
-            ->willReturn($middleware);
+        $this->injectServiceInContainer($this->container, 'config', $config);
+        $this->injectServiceInContainer($this->container, 'Middleware', $middleware);
 
         $app = $this->factory->__invoke($this->container->reveal());
 
@@ -503,11 +323,6 @@ class ApplicationFactoryTest extends TestCase
      */
     public function testRaisesExceptionForNonCallableNonServiceMiddleware($middleware)
     {
-        $router = $this->prophesize('Zend\Expressive\Router\RouterInterface');
-        $emitter = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
-        $finalHandler = function ($req, $res, $err = null) {
-        };
-
         $config = [
             'middleware_pipeline' => [
                 'post_routing' => [
@@ -517,42 +332,7 @@ class ApplicationFactoryTest extends TestCase
             ],
         ];
 
-        $this->container
-            ->has('Zend\Expressive\Router\RouterInterface')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Expressive\Router\RouterInterface')
-            ->will(function () use ($router) {
-                return $router->reveal();
-            });
-
-        $this->container
-            ->has('Zend\Diactoros\Response\EmitterInterface')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Diactoros\Response\EmitterInterface')
-            ->will(function () use ($emitter) {
-                return $emitter->reveal();
-            });
-
-        $this->container
-            ->has('Zend\Expressive\FinalHandler')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Expressive\FinalHandler')
-            ->willReturn($finalHandler);
-
-        $this->container
-            ->has('config')
-            ->willReturn(true);
-
-        $this->container
-            ->get('config')
-            ->willReturn($config);
-
-        $this->container
-            ->has('/', true)
-            ->willReturn(false);
+        $this->injectServiceInContainer($this->container, 'config', $config);
 
         $this->setExpectedException('InvalidArgumentException');
         $app = $this->factory->__invoke($this->container->reveal());
@@ -563,11 +343,6 @@ class ApplicationFactoryTest extends TestCase
      */
     public function testRaisesExceptionForPipedMiddlewareServiceNamesNotFoundInContainer()
     {
-        $router = $this->prophesize('Zend\Expressive\Router\RouterInterface');
-        $emitter = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
-        $finalHandler = function ($req, $res, $err = null) {
-        };
-
         $config = [
             'middleware_pipeline' => [
                 'post_routing' => [
@@ -577,42 +352,7 @@ class ApplicationFactoryTest extends TestCase
             ],
         ];
 
-        $this->container
-            ->has('Zend\Expressive\Router\RouterInterface')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Expressive\Router\RouterInterface')
-            ->will(function () use ($router) {
-                return $router->reveal();
-            });
-
-        $this->container
-            ->has('Zend\Diactoros\Response\EmitterInterface')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Diactoros\Response\EmitterInterface')
-            ->will(function () use ($emitter) {
-                return $emitter->reveal();
-            });
-
-        $this->container
-            ->has('Zend\Expressive\FinalHandler')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Expressive\FinalHandler')
-            ->willReturn($finalHandler);
-
-        $this->container
-            ->has('config')
-            ->willReturn(true);
-
-        $this->container
-            ->get('config')
-            ->willReturn($config);
-
-        $this->container
-            ->has('Middleware', true)
-            ->willReturn(false);
+        $this->injectServiceInContainer($this->container, 'config', $config);
 
         $this->setExpectedException('InvalidArgumentException');
         $app = $this->factory->__invoke($this->container->reveal());
@@ -623,11 +363,6 @@ class ApplicationFactoryTest extends TestCase
      */
     public function testRaisesExceptionOnInvocationOfUninvokableServiceSpecifiedMiddlewarePulledFromContainer()
     {
-        $router = $this->prophesize('Zend\Expressive\Router\RouterInterface');
-        $emitter = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
-        $finalHandler = function ($req, $res, $err = null) {
-        };
-
         $middleware = (object) [];
 
         $config = [
@@ -639,46 +374,8 @@ class ApplicationFactoryTest extends TestCase
             ],
         ];
 
-        $this->container
-            ->has('Zend\Expressive\Router\RouterInterface')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Expressive\Router\RouterInterface')
-            ->will(function () use ($router) {
-                return $router->reveal();
-            });
-
-        $this->container
-            ->has('Zend\Diactoros\Response\EmitterInterface')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Diactoros\Response\EmitterInterface')
-            ->will(function () use ($emitter) {
-                return $emitter->reveal();
-            });
-
-        $this->container
-            ->has('Zend\Expressive\FinalHandler')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Expressive\FinalHandler')
-            ->willReturn($finalHandler);
-
-        $this->container
-            ->has('config')
-            ->willReturn(true);
-
-        $this->container
-            ->get('config')
-            ->willReturn($config);
-
-        $this->container
-            ->has('Middleware', true)
-            ->willReturn(true);
-
-        $this->container
-            ->get('Middleware')
-            ->willReturn($middleware);
+        $this->injectServiceInContainer($this->container, 'config', $config);
+        $this->injectServiceInContainer($this->container, 'Middleware', $middleware);
 
         $app = $this->factory->__invoke($this->container->reveal());
 
@@ -716,11 +413,6 @@ class ApplicationFactoryTest extends TestCase
 
     public function testCanSpecifyRouteViaConfigurationWithNoMethods()
     {
-        $router = $this->prophesize('Zend\Expressive\Router\RouterInterface');
-        $emitter = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
-        $finalHandler = function ($req, $res, $err = null) {
-        };
-
         $config = [
             'routes' => [
                 [
@@ -730,38 +422,7 @@ class ApplicationFactoryTest extends TestCase
             ],
         ];
 
-        $this->container
-            ->has('Zend\Expressive\Router\RouterInterface')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Expressive\Router\RouterInterface')
-            ->will(function () use ($router) {
-                return $router->reveal();
-            });
-
-        $this->container
-            ->has('Zend\Diactoros\Response\EmitterInterface')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Diactoros\Response\EmitterInterface')
-            ->will(function () use ($emitter) {
-                return $emitter->reveal();
-            });
-
-        $this->container
-            ->has('Zend\Expressive\FinalHandler')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Expressive\FinalHandler')
-            ->willReturn($finalHandler);
-
-        $this->container
-            ->has('config')
-            ->willReturn(true);
-
-        $this->container
-            ->get('config')
-            ->willReturn($config);
+        $this->injectServiceInContainer($this->container, 'config', $config);
 
         $app = $this->factory->__invoke($this->container->reveal());
 
@@ -779,11 +440,6 @@ class ApplicationFactoryTest extends TestCase
      */
     public function testCanMarkPipedMiddlewareServiceAsErrorMiddleware()
     {
-        $router = $this->prophesize('Zend\Expressive\Router\RouterInterface');
-        $emitter = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
-        $finalHandler = function ($req, $res, $err = null) {
-        };
-
         $middleware = function ($err, $req, $res, $next) {
             return true;
         };
@@ -796,46 +452,8 @@ class ApplicationFactoryTest extends TestCase
             ],
         ];
 
-        $this->container
-            ->has('Zend\Expressive\Router\RouterInterface')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Expressive\Router\RouterInterface')
-            ->will(function () use ($router) {
-                return $router->reveal();
-            });
-
-        $this->container
-            ->has('Zend\Diactoros\Response\EmitterInterface')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Diactoros\Response\EmitterInterface')
-            ->will(function () use ($emitter) {
-                return $emitter->reveal();
-            });
-
-        $this->container
-            ->has('Zend\Expressive\FinalHandler')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Expressive\FinalHandler')
-            ->willReturn($finalHandler);
-
-        $this->container
-            ->has('config')
-            ->willReturn(true);
-
-        $this->container
-            ->get('config')
-            ->willReturn($config);
-
-        $this->container
-            ->has('Middleware', true)
-            ->willReturn(true);
-
-        $this->container
-            ->get('Middleware')
-            ->willReturn($middleware);
+        $this->injectServiceInContainer($this->container, 'config', $config);
+        $this->injectServiceInContainer($this->container, 'Middleware', $middleware);
 
         $app = $this->factory->__invoke($this->container->reveal());
 
@@ -865,11 +483,6 @@ class ApplicationFactoryTest extends TestCase
      */
     public function testWillPipeRoutingMiddlewareEvenIfNoRoutesAreRegistered()
     {
-        $router  = $this->prophesize('Zend\Expressive\Router\RouterInterface');
-        $emitter = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
-        $finalHandler = function ($req, $res, $err = null) {
-        };
-
         $middleware = function ($req, $res, $next = null) {
         };
 
@@ -883,38 +496,7 @@ class ApplicationFactoryTest extends TestCase
             ],
         ];
 
-        $this->container
-            ->has('Zend\Expressive\Router\RouterInterface')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Expressive\Router\RouterInterface')
-            ->will(function () use ($router) {
-                return $router->reveal();
-            });
-
-        $this->container
-            ->has('Zend\Diactoros\Response\EmitterInterface')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Diactoros\Response\EmitterInterface')
-            ->will(function () use ($emitter) {
-                return $emitter->reveal();
-            });
-
-        $this->container
-            ->has('Zend\Expressive\FinalHandler')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Expressive\FinalHandler')
-            ->willReturn($finalHandler);
-
-        $this->container
-            ->has('config')
-            ->willReturn(true);
-
-        $this->container
-            ->get('config')
-            ->willReturn($config);
+        $this->injectServiceInContainer($this->container, 'config', $config);
 
         $app = $this->factory->__invoke($this->container->reveal());
 
@@ -942,11 +524,6 @@ class ApplicationFactoryTest extends TestCase
 
     public function testCanSpecifyRouteNamesViaConfiguration()
     {
-        $router = $this->prophesize('Zend\Expressive\Router\RouterInterface');
-        $emitter = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
-        $finalHandler = function ($req, $res, $err = null) {
-        };
-
         $config = [
             'routes' => [
                 [
@@ -957,38 +534,7 @@ class ApplicationFactoryTest extends TestCase
             ],
         ];
 
-        $this->container
-            ->has('Zend\Expressive\Router\RouterInterface')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Expressive\Router\RouterInterface')
-            ->will(function () use ($router) {
-                return $router->reveal();
-            });
-
-        $this->container
-            ->has('Zend\Diactoros\Response\EmitterInterface')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Diactoros\Response\EmitterInterface')
-            ->will(function () use ($emitter) {
-                return $emitter->reveal();
-            });
-
-        $this->container
-            ->has('Zend\Expressive\FinalHandler')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Expressive\FinalHandler')
-            ->willReturn($finalHandler);
-
-        $this->container
-            ->has('config')
-            ->willReturn(true);
-
-        $this->container
-            ->get('config')
-            ->willReturn($config);
+        $this->injectServiceInContainer($this->container, 'config', $config);
 
         $app = $this->factory->__invoke($this->container->reveal());
 
@@ -1003,11 +549,6 @@ class ApplicationFactoryTest extends TestCase
 
     public function testCanSpecifyRouteOptionsViaConfiguration()
     {
-        $router = $this->prophesize('Zend\Expressive\Router\RouterInterface');
-        $emitter = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
-        $finalHandler = function ($req, $res, $err = null) {
-        };
-
         $expected = [
             'values' => [
                 'foo' => 'bar'
@@ -1028,38 +569,7 @@ class ApplicationFactoryTest extends TestCase
             ],
         ];
 
-        $this->container
-            ->has('Zend\Expressive\Router\RouterInterface')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Expressive\Router\RouterInterface')
-            ->will(function () use ($router) {
-                return $router->reveal();
-            });
-
-        $this->container
-            ->has('Zend\Diactoros\Response\EmitterInterface')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Diactoros\Response\EmitterInterface')
-            ->will(function () use ($emitter) {
-                return $emitter->reveal();
-            });
-
-        $this->container
-            ->has('Zend\Expressive\FinalHandler')
-            ->willReturn(true);
-        $this->container
-            ->get('Zend\Expressive\FinalHandler')
-            ->willReturn($finalHandler);
-
-        $this->container
-            ->has('config')
-            ->willReturn(true);
-
-        $this->container
-            ->get('config')
-            ->willReturn($config);
+        $this->injectServiceInContainer($this->container, 'config', $config);
 
         $app = $this->factory->__invoke($this->container->reveal());
 
