@@ -623,7 +623,7 @@ class ApplicationFactoryTest extends TestCase
 
     public function testCanPipeRouteSpecificMiddlewareViaConfiguration()
     {
-        $expected = [
+        $expectedRouteOptions = [
             'values' => [
                 'foo' => 'bar'
             ],
@@ -644,7 +644,7 @@ class ApplicationFactoryTest extends TestCase
                     ],
                     'name' => 'home',
                     'allowed_methods' => ['GET'],
-                    'options' => $expected
+                    'options' => $expectedRouteOptions
                 ],
             ],
         ];
@@ -660,7 +660,7 @@ class ApplicationFactoryTest extends TestCase
         $route  = array_shift($routes);
 
         $this->assertInstanceOf(Route::class, $route);
-        $this->assertEquals($expected, $route->getOptions());
+        $this->assertEquals($expectedRouteOptions, $route->getOptions());
     }
 
     public function testExceptionIsRaisedInCaseOfInvalidPreRoutingMiddlewarePipeline()
