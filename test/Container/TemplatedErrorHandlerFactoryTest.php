@@ -10,31 +10,30 @@
 namespace ZendTest\Expressive\Container;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Zend\Expressive\Container\TemplatedErrorHandlerFactory;
 use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Expressive\TemplatedErrorHandler;
+use ZendTest\Expressive\ContainerTrait;
 
 /**
  * @covers Zend\Expressive\Container\TemplatedErrorHandlerFactory
  */
 class TemplatedErrorHandlerFactoryTest extends TestCase
 {
-    /**
-     * @var \Interop\Container\ContainerInterface
-     */
-    private $container;
+    use ContainerTrait;
+
+    /** @var ObjectProphecy */
+    protected $container;
 
     public function setUp()
     {
-        $this->container = $this->prophesize('Interop\Container\ContainerInterface');
+        $this->container = $this->mockContainerInterface();
         $this->factory   = new TemplatedErrorHandlerFactory();
     }
 
     public function testReturnsATemplatedErrorHandler()
     {
-        $this->container->has(TemplateRendererInterface::class)->willReturn(false);
-        $this->container->has('config')->willReturn(false);
-
         $factory = $this->factory;
         $result  = $factory($this->container->reveal());
         $this->assertInstanceOf(TemplatedErrorHandler::class, $result);
@@ -43,9 +42,7 @@ class TemplatedErrorHandlerFactoryTest extends TestCase
     public function testWillInjectTemplateIntoErrorHandlerWhenServiceIsPresent()
     {
         $renderer = $this->prophesize(TemplateRendererInterface::class);
-        $this->container->has(TemplateRendererInterface::class)->willReturn(true);
-        $this->container->get(TemplateRendererInterface::class)->willReturn($renderer->reveal());
-        $this->container->has('config')->willReturn(false);
+        $this->injectServiceInContainer($this->container, TemplateRendererInterface::class, $renderer->reveal());
 
         $factory = $this->factory;
         $result  = $factory($this->container->reveal());
@@ -59,9 +56,7 @@ class TemplatedErrorHandlerFactoryTest extends TestCase
             'template_404'   => 'error::404',
             'template_error' => 'error::500',
         ]]];
-        $this->container->has(TemplateRendererInterface::class)->willReturn(false);
-        $this->container->has('config')->willReturn(true);
-        $this->container->get('config')->willReturn($config);
+        $this->injectServiceInContainer($this->container, 'config', $config);
 
         $factory = $this->factory;
         $result  = $factory($this->container->reveal());

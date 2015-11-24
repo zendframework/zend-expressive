@@ -10,23 +10,30 @@
 namespace ZendTest\Expressive\Container;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use ReflectionFunction;
 use ReflectionProperty;
 use Whoops\Handler\JsonResponseHandler;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run as Whoops;
 use Zend\Expressive\Container\WhoopsFactory;
+use ZendTest\Expressive\ContainerTrait;
 
 /**
  * @covers Zend\Expressive\Container\WhoopsFactory
  */
 class WhoopsFactoryTest extends TestCase
 {
+    use ContainerTrait;
+
+    /** @var ObjectProphecy */
+    protected $container;
+
     public function setUp()
     {
         $pageHandler = $this->prophesize(PrettyPageHandler::class);
-        $this->container = $this->prophesize('Interop\Container\ContainerInterface');
-        $this->container->get('Zend\Expressive\WhoopsPageHandler')->willReturn($pageHandler->reveal());
+        $this->container = $this->mockContainerInterface();
+        $this->injectServiceInContainer($this->container, 'Zend\Expressive\WhoopsPageHandler', $pageHandler->reveal());
 
         $this->factory   = new WhoopsFactory();
     }
@@ -51,7 +58,6 @@ class WhoopsFactoryTest extends TestCase
 
     public function testReturnsAWhoopsRuntimeWithPageHandlerComposed()
     {
-        $this->container->has('config')->willReturn(false);
         $factory = $this->factory;
         $result  = $factory($this->container->reveal());
         $this->assertInstanceOf(Whoops::class, $result);
@@ -61,8 +67,7 @@ class WhoopsFactoryTest extends TestCase
     public function testWillInjectJsonResponseHandlerIfConfigurationExpectsIt()
     {
         $config = ['whoops' => ['json_exceptions' => ['display' => true]]];
-        $this->container->has('config')->willReturn(true);
-        $this->container->get('config')->willReturn($config);
+        $this->injectServiceInContainer($this->container, 'config', $config);
 
         $factory = $this->factory;
         $result  = $factory($this->container->reveal());
@@ -81,8 +86,7 @@ class WhoopsFactoryTest extends TestCase
             'show_trace' => true,
             'ajax_only'  => true,
         ]]];
-        $this->container->has('config')->willReturn(true);
-        $this->container->get('config')->willReturn($config);
+        $this->injectServiceInContainer($this->container, 'config', $config);
 
         $factory = $this->factory;
         $whoops  = $factory($this->container->reveal());
