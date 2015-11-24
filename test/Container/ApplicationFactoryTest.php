@@ -19,6 +19,7 @@ use Zend\Expressive\Container\ApplicationFactory;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouterInterface;
 use ZendTest\Expressive\ContainerTrait;
+use Zend\Expressive\Container\Exception\InvalidArgumentException;
 
 /**
  * @covers Zend\Expressive\Container\ApplicationFactory
@@ -580,5 +581,81 @@ class ApplicationFactoryTest extends TestCase
 
         $this->assertInstanceOf(Route::class, $route);
         $this->assertEquals($expected, $route->getOptions());
+    }
+
+    public function testExceptionIsRaisedInCaseOfInvalidRouteMethodsConfiguration()
+    {
+        $config = [
+            'routes' => [
+                [
+                    'path' => '/',
+                    'middleware' => 'HelloWorld',
+                    'allowed_methods' => 'invalid',
+                ],
+            ],
+        ];
+
+        $this->injectServiceInContainer($this->container, 'config', $config);
+
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'route must be in form of an array; received "string"'
+        );
+        $this->factory->__invoke($this->container->reveal());
+    }
+
+    public function testExceptionIsRaisedInCaseOfInvalidRouteOptionsConfiguration()
+    {
+        $config = [
+            'routes' => [
+                [
+                    'path' => '/',
+                    'middleware' => 'HelloWorld',
+                    'options' => 'invalid',
+                ],
+            ],
+        ];
+
+        $this->injectServiceInContainer($this->container, 'config', $config);
+
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'options must be an array; received "string"'
+        );
+        $this->factory->__invoke($this->container->reveal());
+    }
+
+    public function testExceptionIsRaisedInCaseOfInvalidPreRoutingMiddlewarePipeline()
+    {
+        $config = [
+            'middleware_pipeline' => [
+                'pre_routing' => 'invalid',
+            ],
+        ];
+
+        $this->injectServiceInContainer($this->container, 'config', $config);
+
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'Pre-routing middleware collection must be an array; received "string"'
+        );
+        $this->factory->__invoke($this->container->reveal());
+    }
+
+    public function testExceptionIsRaisedInCaseOfInvalidPostRoutingMiddlewarePipeline()
+    {
+        $config = [
+            'middleware_pipeline' => [
+                'post_routing' => 'invalid',
+            ],
+        ];
+
+        $this->injectServiceInContainer($this->container, 'config', $config);
+
+        $this->setExpectedException(
+            InvalidArgumentException::class,
+            'Post-routing middleware collection must be an array; received "string"'
+        );
+        $this->factory->__invoke($this->container->reveal());
     }
 }
