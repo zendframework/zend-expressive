@@ -179,16 +179,6 @@ class ApplicationFactory
 
             $name = isset($spec['name']) ? $spec['name'] : null;
 
-            if (!is_callable($spec['middleware']) && is_array($spec['middleware'])) {
-                $middlewarePipe = new MiddlewarePipe();
-
-                foreach ($spec['middleware'] as $middleware) {
-                    $middlewarePipe->pipe(is_callable($middleware) ? $middleware : $container->get($middleware));
-                }
-
-                $spec['middleware'] = $middlewarePipe;
-            }
-
             $route = new Route($spec['path'], $spec['middleware'], $methods, $name);
 
             if (isset($spec['options'])) {
