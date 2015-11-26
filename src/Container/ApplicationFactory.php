@@ -212,12 +212,17 @@ class ApplicationFactory
                 continue;
             }
 
-            $path       = isset($spec['path']) ? $spec['path'] : '/';
-            $middleware = $spec['middleware'];
-            $error      = array_key_exists('error', $spec) ? (bool) $spec['error'] : false;
-            $pipe       = $error ? 'pipeErrorHandler' : 'pipe';
+            $path  = isset($spec['path']) ? $spec['path'] : '/';
+            $error = array_key_exists('error', $spec) ? (bool) $spec['error'] : false;
+            $pipe  = $error ? 'pipeErrorHandler' : 'pipe';
 
-            $app->{$pipe}($path, $middleware);
+            if (is_array($spec['middleware'])) {
+                foreach ($spec['middleware'] as $middleware) {
+                    $app->{$pipe}($path, $middleware);
+                }
+            } else {
+                $app->{$pipe}($path, $spec['middleware']);
+            }
         }
     }
 

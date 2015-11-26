@@ -359,6 +359,58 @@ class ApplicationFactoryTest extends TestCase
     /**
      * @group piping
      */
+    public function testCanPipePreRoutingMiddlewareAsArray()
+    {
+        $config = [
+            'middleware_pipeline' => [
+                'pre_routing' => [
+                    [
+                        'middleware' => [
+                            'Hello',
+                            function () {
+                            },
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->injectServiceInContainer($this->container, 'config', $config);
+        $this->injectServiceInContainer($this->container, 'Hello', function () {
+        });
+
+        $this->factory->__invoke($this->container->reveal());
+    }
+
+    /**
+     * @group piping
+     */
+    public function testCanPipePostRoutingMiddlewareAsArray()
+    {
+        $config = [
+            'middleware_pipeline' => [
+                'post_routing' => [
+                    [
+                        'middleware' => [
+                            'Hello',
+                            function () {
+                            },
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->injectServiceInContainer($this->container, 'config', $config);
+        $this->injectServiceInContainer($this->container, 'Hello', function () {
+        });
+
+        $this->factory->__invoke($this->container->reveal());
+    }
+
+    /**
+     * @group piping
+     */
     public function testRaisesExceptionForPipedMiddlewareServiceNamesNotFoundInContainer()
     {
         $config = [
