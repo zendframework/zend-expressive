@@ -563,14 +563,14 @@ class Application extends MiddlewarePipe
 
         if (is_callable($callable)) {
             return $callable;
-        } else {
-            throw new Exception\InvalidMiddlewareException(
-                sprintf(
-                    'Unable to resolve middleware "%s" to a callable',
-                    $middleware
-                )
-            );
         }
+
+        throw new Exception\InvalidMiddlewareException(
+            sprintf(
+                'Unable to resolve middleware "%s" to a callable',
+                $middleware
+            )
+        );
     }
 
     /**
