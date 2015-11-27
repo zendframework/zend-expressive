@@ -176,10 +176,8 @@ class ApplicationFactory
             } else {
                 $methods = Route::HTTP_METHOD_ANY;
             }
-
-            $name = isset($spec['name']) ? $spec['name'] : null;
-
-            $route = new Route($spec['path'], $spec['middleware'], $methods, $name);
+            $name    = isset($spec['name']) ? $spec['name'] : null;
+            $route   = new Route($spec['path'], $spec['middleware'], $methods, $name);
 
             if (isset($spec['options'])) {
                 $options = $spec['options'];
