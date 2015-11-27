@@ -352,7 +352,7 @@ class Application extends MiddlewarePipe
                 );
             }
 
-            return $middlewarePipe;
+            return $middlewarePipe($request, $response, $next);
         }
 
         if (!is_string($middleware)) {
