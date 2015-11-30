@@ -4,6 +4,7 @@
         {"Introduction": "intro.md"},
         {"Routing Interface": "interface.md"},
         {"URI Generation": "uri-generation.md"},
+        {"Route Result Observers": "result-observers.md"},
         {"Routing vs Piping": "piping.md"},
         {"Using Aura": "aura.md"},
         {"Using FastRoute": "fast-route.md"},
