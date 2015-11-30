@@ -28,6 +28,13 @@ Third release candidate.
 
 - [#185](https://github.com/zendframework/zend-expressive/pull/185)
   Support casting zend-view models to arrays
+- [#192](https://github.com/zendframework/zend-expressive/pull/192) adds support
+  for specifying arrays of middleware both when routing and when creating
+  pipeline middleware. This feature is opt-in and backwards compatible; simply
+  specify an array value that does not resolve as a callable. Values in the
+  array **must** be callables, service names resolving to callable middleware,
+  or fully qualified class names that can be instantiated without arguments, and
+  which result in invokable middleware.
 
 ### Deprecated
 

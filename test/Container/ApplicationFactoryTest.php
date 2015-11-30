@@ -16,10 +16,12 @@ use ReflectionProperty;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Expressive\Application;
 use Zend\Expressive\Container\ApplicationFactory;
+use Zend\Expressive\FinalHandler;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouterInterface;
 use ZendTest\Expressive\ContainerTrait;
 use Zend\Expressive\Container\Exception\InvalidArgumentException;
+use ZendTest\Expressive\TestAsset\InvokableMiddleware;
 
 /**
  * @covers Zend\Expressive\Container\ApplicationFactory
@@ -104,13 +106,28 @@ class ApplicationFactoryTest extends TestCase
         $this->assertSame($this->finalHandler, $app->getFinalHandler());
     }
 
-    public function testFactorySetsUpRoutesFromConfig()
+    public function callableMiddlewares()
+    {
+        return [
+           ['HelloWorld'],
+           [
+                function () {
+                }
+           ],
+           [[InvokableMiddleware::class, 'staticallyCallableMiddleware']],
+        ];
+    }
+
+    /**
+     * @dataProvider callableMiddlewares
+     */
+    public function testFactorySetsUpRoutesFromConfig($middleware)
     {
         $config = [
             'routes' => [
                 [
                     'path' => '/',
-                    'middleware' => 'HelloWorld',
+                    'middleware' => $middleware,
                     'allowed_methods' => [ 'GET' ],
                 ],
                 [
@@ -337,6 +354,58 @@ class ApplicationFactoryTest extends TestCase
 
         $this->setExpectedException('InvalidArgumentException');
         $app = $this->factory->__invoke($this->container->reveal());
+    }
+
+    /**
+     * @group piping
+     */
+    public function testCanPipePreRoutingMiddlewareAsArray()
+    {
+        $config = [
+            'middleware_pipeline' => [
+                'pre_routing' => [
+                    [
+                        'middleware' => [
+                            'Hello',
+                            function () {
+                            },
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->injectServiceInContainer($this->container, 'config', $config);
+        $this->injectServiceInContainer($this->container, 'Hello', function () {
+        });
+
+        $this->factory->__invoke($this->container->reveal());
+    }
+
+    /**
+     * @group piping
+     */
+    public function testCanPipePostRoutingMiddlewareAsArray()
+    {
+        $config = [
+            'middleware_pipeline' => [
+                'post_routing' => [
+                    [
+                        'middleware' => [
+                            'Hello',
+                            function () {
+                            },
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->injectServiceInContainer($this->container, 'config', $config);
+        $this->injectServiceInContainer($this->container, 'Hello', function () {
+        });
+
+        $this->factory->__invoke($this->container->reveal());
     }
 
     /**
