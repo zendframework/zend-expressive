@@ -10,11 +10,13 @@
 namespace ZendTest\Expressive;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequest;
 use Zend\Expressive\Application;
 use Zend\Expressive\Router\RouteResult;
+use Zend\Expressive\Router\RouteResultObserverInterface;
 use Zend\Expressive\Router\RouterInterface;
 
 class RouteMiddlewareTest extends TestCase
@@ -564,5 +566,109 @@ class RouteMiddlewareTest extends TestCase
         $test = $app->routeMiddleware($request, $response, $next);
         $this->assertSame($response, $test);
         $this->assertTrue($triggered);
+    }
+
+    public function testMiddlewareTriggersObserversWithSuccessfulRouteResult()
+    {
+        $matches    = ['id' => 'IDENTIFIER'];
+        $triggered  = false;
+        $middleware = function ($request, $response, $next) {
+            return $response;
+        };
+        $next = function ($request, $response, $err = null) {
+            $this->fail('Should not hit next');
+        };
+
+        $request  = new ServerRequest();
+        $response = new Response();
+        $result   = RouteResult::fromRouteMatch('resource', $middleware, $matches);
+
+        $routeResultObserver = $this->prophesize(RouteResultObserverInterface::class);
+        $routeResultObserver->update($result)->shouldBeCalled();
+        $this->router->match($request)->willReturn($result);
+
+        $app  = $this->getApplication();
+
+        $app->attachRouteResultObserver($routeResultObserver->reveal());
+
+        $test = $app->routeMiddleware($request, $response, $next);
+        $this->assertSame($response, $test);
+    }
+
+    public function testMiddlewareTriggersObserversWithFailedRouteResult()
+    {
+        $request  = new ServerRequest();
+        $response = new Response();
+        $result   = RouteResult::fromRouteFailure(['GET', 'POST']);
+
+        $routeResultObserver = $this->prophesize(RouteResultObserverInterface::class);
+        $routeResultObserver->update($result)->shouldBeCalled();
+        $this->router->match($request)->willReturn($result);
+
+        $next = function ($request, $response, $error = false) {
+            $this->assertEquals(405, $error);
+            $this->assertEquals(405, $response->getStatusCode());
+            return $response;
+        };
+
+        $app  = $this->getApplication();
+        $app->attachRouteResultObserver($routeResultObserver->reveal());
+
+        $test = $app->routeMiddleware($request, $response, $next);
+        $this->assertEquals(405, $test->getStatusCode());
+    }
+
+    public function testCanDetachRouteResultObservers()
+    {
+        $routeResultObserver = $this->prophesize(RouteResultObserverInterface::class);
+        $routeResultObserver->update(Argument::any())->shouldNotBeCalled();
+
+        $app = $this->getApplication();
+        $app->attachRouteResultObserver($routeResultObserver->reveal());
+
+        $app->detachRouteResultObserver($routeResultObserver->reveal());
+        $this->assertAttributeNotContains($routeResultObserver->reveal(), 'routeResultObservers', $app);
+    }
+
+    public function testDetachedRouteResultObserverIsNotTriggered()
+    {
+        $matches    = ['id' => 'IDENTIFIER'];
+        $triggered  = false;
+        $middleware = function ($request, $response, $next) {
+            return $response;
+        };
+        $next = function ($request, $response, $err = null) {
+            $this->fail('Should not hit next');
+        };
+
+        $request  = new ServerRequest();
+        $response = new Response();
+        $result   = RouteResult::fromRouteMatch('resource', $middleware, $matches);
+
+        $routeResultObserver = $this->prophesize(RouteResultObserverInterface::class);
+        $routeResultObserver->update($result)->shouldNotBeCalled();
+        $this->router->match($request)->willReturn($result);
+
+        $app  = $this->getApplication();
+
+        $app->attachRouteResultObserver($routeResultObserver->reveal());
+        $this->assertAttributeContains($routeResultObserver->reveal(), 'routeResultObservers', $app);
+        $app->detachRouteResultObserver($routeResultObserver->reveal());
+        $this->assertAttributeNotContains($routeResultObserver->reveal(), 'routeResultObservers', $app);
+
+        $test = $app->routeMiddleware($request, $response, $next);
+        $this->assertSame($response, $test);
+    }
+
+    public function testDetachingUnrecognizedRouteResultObserverDoesNothing()
+    {
+        $routeResultObserver = $this->prophesize(RouteResultObserverInterface::class);
+        $routeResultObserver->update(Argument::any())->shouldNotBeCalled();
+
+        $app = $this->getApplication();
+        $this->assertAttributeNotContains($routeResultObserver->reveal(), 'routeResultObservers', $app);
+
+        $app->detachRouteResultObserver($routeResultObserver->reveal());
+        $this->assertAttributeNotContains($routeResultObserver->reveal(), 'routeResultObservers', $app);
     }
 }

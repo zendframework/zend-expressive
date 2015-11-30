@@ -69,6 +69,13 @@ class Application extends MiddlewarePipe
     private $router;
 
     /**
+     * Observers to trigger once we have a route result.
+     *
+     * @var Router\RouteResultObserverInterface[]
+     */
+    private $routeResultObservers = [];
+
+    /**
      * List of all routes registered directly with the application.
      *
      * @var Router\Route[]
@@ -164,6 +171,29 @@ class Application extends MiddlewarePipe
     public function any($path, $middleware, $name = null)
     {
         return $this->route($path, $middleware, null, $name);
+    }
+
+    /**
+     * Attach a route result observer.
+     *
+     * @param Router\RouteResultObserverInterface $observer
+     */
+    public function attachRouteResultObserver(Router\RouteResultObserverInterface $observer)
+    {
+        $this->routeResultObservers[] = $observer;
+    }
+
+    /**
+     * Detach a route result observer.
+     *
+     * @param Router\RouteResultObserverInterface $observer
+     */
+    public function detachRouteResultObserver(Router\RouteResultObserverInterface $observer)
+    {
+        if (false === ($index = array_search($observer, $this->routeResultObservers, true))) {
+            return;
+        }
+        unset($this->routeResultObservers[$index]);
     }
 
     /**
@@ -315,6 +345,7 @@ class Application extends MiddlewarePipe
     public function routeMiddleware(ServerRequestInterface $request, ResponseInterface $response, callable $next)
     {
         $result = $this->router->match($request);
+        $this->notifyRouteResultObservers($result);
 
         if ($result->isFailure()) {
             if ($result->isMethodFailure()) {
@@ -660,5 +691,17 @@ class Application extends MiddlewarePipe
             }
             return $invokable($error, $request, $response, $next);
         };
+    }
+
+    /**
+     * Notify all route result observers with the given route result.
+     *
+     * @param Router\RouteResult
+     */
+    private function notifyRouteResultObservers(Router\RouteResult $result)
+    {
+        foreach ($this->routeResultObservers as $observer) {
+            $observer->update($result);
+        }
     }
 }
