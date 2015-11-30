@@ -71,7 +71,7 @@ class Route
             throw new Exception\InvalidArgumentException('Invalid path; must be a string');
         }
 
-        if (! is_callable($middleware) && ! is_string($middleware)) {
+        if (! is_callable($middleware) && ! is_string($middleware) && ! is_array($middleware)) {
             throw new Exception\InvalidArgumentException('Invalid middleware; must be callable or a service name');
         }
 
@@ -121,7 +121,7 @@ class Route
     }
 
     /**
-     * @return string|callable
+     * @return string|callable|array
      */
     public function getMiddleware()
     {

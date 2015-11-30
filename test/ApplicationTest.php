@@ -12,13 +12,16 @@ namespace ZendTest\Expressive;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Argument;
 use ReflectionProperty;
+use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Diactoros\ServerRequest as Request;
+use Zend\Diactoros\ServerRequest;
 use Zend\Expressive\Application;
 use Zend\Expressive\Emitter\EmitterStack;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouteResult;
 use Zend\Stratigility\Route as StratigilityRoute;
+use ZendTest\Expressive\TestAsset\InvokableMiddleware;
 
 /**
  * @covers Zend\Expressive\Application
@@ -226,6 +229,51 @@ class ApplicationTest extends TestCase
 
         $routeMiddleware = [$app, 'routeMiddleware'];
         $this->assertSame($routeMiddleware, $test);
+    }
+
+    public function testRouteMiddlewareCanRouteArrayOfMiddlewareAsMiddlewarePipe()
+    {
+        $middleware = [
+            function () {
+            },
+            'FooBar',
+            [InvokableMiddleware::class, 'staticallyCallableMiddleware'],
+            InvokableMiddleware::class,
+        ];
+
+        $request = new ServerRequest([], [], '/', 'GET');
+        $routeResult = RouteResult::fromRouteMatch(__METHOD__, $middleware, []);
+        $this->router->match($request)->willReturn($routeResult);
+
+        $container = $this->mockContainerInterface();
+        $this->injectServiceInContainer($container, 'FooBar', function () {
+        });
+
+        $app = new Application($this->router->reveal(), $container->reveal());
+        $app->routeMiddleware($request, new Response(), function () {
+        });
+    }
+
+    public function uncallableMiddleware()
+    {
+        return [
+            ['foo'],
+            [['foo']]
+        ];
+    }
+
+    /**
+     * @dataProvider uncallableMiddleware
+     * @expectedException \Zend\Expressive\Exception\InvalidMiddlewareException
+     */
+    public function testThrowsExceptionWhenRoutingUncallableMiddleware($middleware)
+    {
+        $request = new ServerRequest([], [], '/', 'GET');
+        $routeResult = RouteResult::fromRouteMatch(__METHOD__, $middleware, []);
+        $this->router->match($request)->willReturn($routeResult);
+
+        $this->getApp()->routeMiddleware($request, new Response(), function () {
+        });
     }
 
     public function testCannotPipeRouteMiddlewareMoreThanOnce()

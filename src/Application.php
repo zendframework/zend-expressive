@@ -343,7 +343,19 @@ class Application extends MiddlewarePipe
             return $middleware($request, $response, $next);
         }
 
-        if (! is_string($middleware)) {
+        if (is_array($middleware)) {
+            $middlewarePipe = new MiddlewarePipe();
+
+            foreach ($middleware as $middlewareItem) {
+                $middlewarePipe->pipe(
+                    is_callable($middlewareItem) ? $middlewareItem : $this->marshalMiddleware($middlewareItem)
+                );
+            }
+
+            return $middlewarePipe($request, $response, $next);
+        }
+
+        if (!is_string($middleware)) {
             throw new Exception\InvalidMiddlewareException(
                 'The middleware specified is not callable'
             );
@@ -377,7 +389,7 @@ class Application extends MiddlewarePipe
      * pipeline.
      *
      * @param string|Router\Route $path
-     * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
+     * @param callable|string|array $middleware Middleware (or middleware service name) to associate with route.
      * @param null|array $methods HTTP method to accept; null indicates any.
      * @param null|string $name the name of the route
      * @return Router\Route
@@ -529,6 +541,36 @@ class Application extends MiddlewarePipe
                 'Duplicate route detected; same name or path, and one or more HTTP methods intersect'
             );
         }
+    }
+
+    /**
+     * Attempts to retrieve middleware from the container, or instantiate it directly.
+     *
+     * @param string $middleware
+     *
+     * @return array
+     * @throws Exception\InvalidMiddlewareException If unable to obtain callable middleware
+     */
+    private function marshalMiddleware($middleware)
+    {
+        $callable = $this->marshalMiddlewareFromContainer($middleware);
+
+        if (is_callable($callable)) {
+            return $callable;
+        }
+
+        $callable = $this->marshalInvokableMiddleware($middleware);
+
+        if (is_callable($callable)) {
+            return $callable;
+        }
+
+        throw new Exception\InvalidMiddlewareException(
+            sprintf(
+                'Unable to resolve middleware "%s" to a callable',
+                $middleware
+            )
+        );
     }
 
     /**
