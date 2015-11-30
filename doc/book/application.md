@@ -106,7 +106,12 @@ where:
 - `$pathOrRoute` may be either a string path to match, or a
   `Zend\Expressive\Router\Route` instance.
 - `$middleware` **must** be present if `$pathOrRoute` is a string path, and
-  **must** be a callable or a service name that resolves to valid middleware.
+  **must** be:
+  - a callable;
+  - a service name that resolves to valid middleware in the container;
+  - a fully qualified class name of a constructor-less class;
+  - an array of any of the above; these will be composed in order into a
+    `Zend\Stratigility\MiddlewarePipe` instance.
 - `$methods` must be an array of HTTP methods valid for the given path and
   middleware. If null, it assumes any method is valid.
 - `$name` is the optional name for the route, and is used when generating a URI
@@ -152,8 +157,12 @@ where:
   callable middleware, or the service name for a middleware to fetch from the
   composed container.
 - `$middleware` is required if `$pathOrMiddleware` is a string URI path. It can
-  be either a callable, or the service name for a middleware to fetch from the
-  composed container.
+  be one of:
+  - a callable;
+  - a service name that resolves to valid middleware in the container;
+  - a fully qualified class name of a constructor-less class;
+  - an array of any of the above; these will be composed in order into a
+    `Zend\Stratigility\MiddlewarePipe` instance.
 
 Unlike `Zend\Stratigility\MiddlewarePipe`, `Application::pipe()` *allows
 fetching middleware by service name*. This facility allows lazy-loading of

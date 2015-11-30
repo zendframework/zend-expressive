@@ -127,7 +127,7 @@ class RouteResult
     /**
      * Retrieve the matched middleware, if possible.
      *
-     * @return false|callable|string Returns false if the result represents a
+     * @return false|callable|string|array Returns false if the result represents a
      *     failure; otherwise, a callable or a string service name.
      */
     public function getMatchedMiddleware()

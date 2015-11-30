@@ -339,31 +339,12 @@ class Application extends MiddlewarePipe
             ));
         }
 
-        if (is_callable($middleware)) {
-            return $middleware($request, $response, $next);
+        if (is_array($middleware) && ! is_callable($middleware)) {
+            $middlewarePipe = $this->marshalMiddlewarePipe($middleware);
+            return $middlewarePipe($request, $response, $next);
         }
 
-        if (! is_string($middleware)) {
-            throw new Exception\InvalidMiddlewareException(
-                'The middleware specified is not callable'
-            );
-        }
-
-        // try to get the action name from the container (if exists)
-        $callable = $this->marshalMiddlewareFromContainer($middleware);
-        if (is_callable($callable)) {
-            return $callable($request, $response, $next);
-        }
-
-        // try to instantiate the middleware directly, if possible
-        $callable = $this->marshalInvokableMiddleware($middleware);
-        if (! is_callable($callable)) {
-            throw new Exception\InvalidMiddlewareException(sprintf(
-                'Unable to resolve middleware "%s" to a callable',
-                $middleware
-            ));
-        }
-
+        $callable = $this->marshalMiddleware($middleware);
         return $callable($request, $response, $next);
     }
 
@@ -377,7 +358,7 @@ class Application extends MiddlewarePipe
      * pipeline.
      *
      * @param string|Router\Route $path
-     * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
+     * @param callable|string|array $middleware Middleware (or middleware service name) to associate with route.
      * @param null|array $methods HTTP method to accept; null indicates any.
      * @param null|string $name the name of the route
      * @return Router\Route
@@ -529,6 +510,77 @@ class Application extends MiddlewarePipe
                 'Duplicate route detected; same name or path, and one or more HTTP methods intersect'
             );
         }
+    }
+
+    /**
+     * Attempts to retrieve middleware from the container, or instantiate it directly.
+     *
+     * @param string $middleware
+     *
+     * @return array
+     * @throws Exception\InvalidMiddlewareException If unable to obtain callable middleware
+     */
+    private function marshalMiddleware($middleware)
+    {
+        if (is_callable($middleware)) {
+            return $middleware;
+        }
+
+        if (! is_string($middleware)) {
+            throw new Exception\InvalidMiddlewareException(
+                'The middleware specified is not callable'
+            );
+        }
+
+        // try to get the action name from the container (if exists)
+        $callable = $this->marshalMiddlewareFromContainer($middleware);
+
+        if (is_callable($callable)) {
+            return $callable;
+        }
+
+        // try to instantiate the middleware directly, if possible
+        $callable = $this->marshalInvokableMiddleware($middleware);
+
+        if (is_callable($callable)) {
+            return $callable;
+        }
+
+        throw new Exception\InvalidMiddlewareException(
+            sprintf(
+                'Unable to resolve middleware "%s" to a callable',
+                $middleware
+            )
+        );
+    }
+
+    /**
+     * Marshal a middleware pipe from an array of middleware.
+     *
+     * Each item in the array can be one of the following:
+     *
+     * - A callable middleware
+     * - A string service name of middleware to retrieve from the container
+     * - A string class name of a constructor-less middleware class to
+     *   instantiate
+     *
+     * As each middleware is verified, it is piped to the middleware pipe.
+     *
+     * @param array $middlewares
+     * @return MiddlewarePipe
+     * @throws Exception\InvalidMiddlewareException for any invalid middleware items.
+     */
+    private function marshalMiddlewarePipe(array $middlewares)
+    {
+        $middlewarePipe = new MiddlewarePipe();
+
+        foreach ($middlewares as $middleware) {
+            $middlewarePipe->pipe(
+                $this->marshalMiddleware($middleware)
+            );
+        }
+
+        return $middlewarePipe;
     }
 
     /**
