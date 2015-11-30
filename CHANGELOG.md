@@ -35,6 +35,15 @@ Third release candidate.
   array **must** be callables, service names resolving to callable middleware,
   or fully qualified class names that can be instantiated without arguments, and
   which result in invokable middleware.
+- [#200](https://github.com/zendframework/zend-expressive/pull/200) adds a new
+  interface, `Zend\Expressive\Router\RouteResultObserverInterface`.
+  `Zend\Expressive\Application` now also defines two methods,
+  `attachRouteResultObserver()` and `detachRouteResultObserver()`, which accept
+  instances of the interface. During `routeMiddleware()`, all observers are
+  updated immediately following the call to `RouterInterface::match()` with the
+  `RouteResult` instance. This feature enables the ability to notify objects of
+  the calculated `RouteResult` without needing to inject middleware into the
+  system.
 
 ### Deprecated
 
