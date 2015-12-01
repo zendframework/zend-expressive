@@ -157,7 +157,7 @@ class ApplicationTest extends TestCase
     public function testCallingRouteWithAnInvalidPathTypeRaisesAnException($path)
     {
         $app = $this->getApp();
-        $this->setExpectedException('Zend\Expressive\Exception\InvalidArgumentException');
+        $this->setExpectedException('Zend\Expressive\Router\Exception\InvalidArgumentException');
         $app->route($path, 'middleware');
     }
 
