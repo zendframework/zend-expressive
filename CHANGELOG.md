@@ -44,6 +44,8 @@ Third release candidate.
   `RouteResult` instance. This feature enables the ability to notify objects of
   the calculated `RouteResult` without needing to inject middleware into the
   system.
+- [#81](https://github.com/zendframework/zend-expressive/pull/81) adds a
+  cookbook entry for creating 404 handlers.
 
 ### Deprecated
 
