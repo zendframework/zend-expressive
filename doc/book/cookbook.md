@@ -235,28 +235,94 @@ return [
 
 ## How can I set custom 404 page handling?
 
-We can set custom 404 page handling instead of [using the final handler](http://zend-expressive.readthedocs.org/en/latest/error-handling/) for logging or other purpose with create new middleware that we want to intercept if no other middleware has executed, and is indicate a "not found" situation.
+In some cases, you may want to handle 404 errors separately from the
+[final handler](../error-handling.md). This can be done by registering
+middleware that operates late &mdash; specifically, after the routing
+middleware. Such middleware will be executed if no other middleware has
+executed, and/or when all other middleware calls `return $next()`
+without returning a response. Such situations typically mean that no middleware
+was able to complete the request.
 
-Let's create a `NotFound` middleware:
+Your 404 handler can take one of two approaches:
+
+- It can set the response status and call `$next()` with an error condition. In
+  such a case, the final handler *will* likely be executed, but will have an
+  explicit 404 status to work with.
+- It can create and return a 404 response itself.
+
+### Calling next with an error condition
+
+In the first approach, the `NotFound` middleware can be as simple as this:
 
 ```php
 namespace Application;
-
-use Zend\Expressive\Template\TemplateInterface;
 
 class NotFound
 {
     public function __invoke($req, $res, $next)
     {
-        // other things can be done here, for eg: logging
+        // Other things can be done here; e.g., logging
         return $next($req, $res->withStatus(404), 'Page Not Found');
     }
 }
 ```
 
-> We can register the `Application\NotFound` instance as a service in [service container](https://github.com/zendframework/zend-expressive/blob/master/doc/book/container/intro.md).
+This example uses the third, optional argument to `$next()`, which is an error
+condition. Internally, the final handler will typically see this, and return an
+error page of some sort. Since we set the response status, and it's an error
+status code, that status code will be used in the generated response.
 
-Now, we can configure the `middleware_pipeline` under `post_routing`:
+The `TemplatedErrorHandler` will use the error template in this particular case,
+so you will likely need to make some accommodations for 404 responses in that
+template if you choose this approach.
+
+### 404 Middleware
+
+In the second approach, the `NotFound` middleware will return a full response.
+In our example here, we will render a specific template, and use this to seed
+and return a response.
+
+```php
+namespace Application;
+
+use Zend\Expressive\Template\TemplateRendererInterface;
+
+class NotFound
+{
+    private $renderer;
+
+    public function __construct(TemplateRendererInterface $renderer)
+    {
+        $this->renderer = $renderer;
+    }
+
+    public function __invoke($req, $res, $next)
+    {
+        // other things can be done here; e.g., logging
+        // Now set the response status and write to the body
+        $response = $res->withStatus(404);
+        $response->getBody()->write($this->renderer->render('error::not-found'));
+        return $response;
+    }
+}
+```
+
+This approach allows you to have an application-specific workflow for 404 errors
+that does not rely on the final handler.
+
+### Registering custom 404 handlers
+
+We can register either `Application\NotFound` class above as service in the
+[service container](../container/intro.md). In the case of the second approach,
+you would also need to provide a factory for creating the middleware (to ensure
+you inject the template renderer).
+
+From there, you still need to register the middleware. This middleware is not
+routed, and thus needs to be piped to the application instance. You can do this
+via either configuration, or manually.
+
+To do this via configuration, add an entry under the `post_routing` key of the
+`middleware_pipeline` configuration:
 
 ```php
 'middleware_pipeline' => [
@@ -274,9 +340,23 @@ Now, we can configure the `middleware_pipeline` under `post_routing`:
 ],
 ```
 
-The other thing that we can do is programmatically pipe in `public/index.php`:
+The above example assumes you are using the `ApplicationFactory` and/or the
+Expressive skeleton to manage your application instantiation and configuration.
+
+To manually add the middleware, you will need to pipe it to the application
+instance:
 
 ```php
-$app->pipe($services->get('Application\NotFound'));
-$app->run();
+$app->pipe($container->get('Application\NotFound'));
 ```
+
+This must be done *after*:
+
+- calling `$app->pipeRoutingMiddleware()`, **OR**
+- calling any method that injects routed middleware (`get()`, `post()`,
+  `route()`, etc.), **OR**
+- pulling the `Application` instance from the service container (assuming you
+  used the `ApplicationFactory`).
+
+This is to ensure that the `NotFound` middleware executes *after* any routed
+middleware, as you only want it to execute if no routed middleware was selected.
