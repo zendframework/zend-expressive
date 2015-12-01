@@ -9,8 +9,6 @@
 
 namespace Zend\Expressive\Router;
 
-use Zend\Expressive\Exception;
-
 /**
  * Value object representing a single route.
  *
