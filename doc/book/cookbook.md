@@ -228,7 +228,55 @@ return [
                     'ValidationMiddleware',
                 ],
             ],
-        ], 
+        ],
     ],
 ];
+```
+
+## How can I set custom 404 page handling?
+
+We can set custom 404 page handling instead of [using the final handler](http://zend-expressive.readthedocs.org/en/latest/error-handling/) for logging or other purpose with create new middleware that we want to intercept if no other middleware has executed, and is indicate a "not found" situation.
+
+Let's create a `NotFound` middleware:
+
+```php
+namespace Application;
+
+use Zend\Expressive\Template\TemplateInterface;
+
+class NotFound
+{
+    public function __invoke($req, $res, $next)
+    {
+        // other things can be done here, for eg: logging
+        return $next($req, $res->withStatus(404), 'Page Not Found');
+    }
+}
+```
+
+> We can register the `Application\NotFound` instance as a service in [service container](https://github.com/zendframework/zend-expressive/blob/master/doc/book/container/intro.md).
+
+Now, we can configure the `middleware_pipeline` under `post_routing`:
+
+```php
+'middleware_pipeline' => [
+    'pre_routing' => [
+        [
+            //...
+        ],
+
+    ],
+    'post_routing' => [
+        [
+            'middleware' => 'Application\NotFound',
+        ],
+    ],
+],
+```
+
+The other thing that we can do is programmatically pipe in `public/index.php`:
+
+```php
+$app->pipe($services->get('Application\NotFound'));
+$app->run();
 ```
