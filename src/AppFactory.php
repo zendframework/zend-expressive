@@ -39,20 +39,20 @@ final class AppFactory
      * @param null|ContainerInterface $container IoC container from which to
      *     fetch middleware defined as services; defaults to a ServiceManager
      *     instance
-     * @param null|Router\RouterInterface $router Router implementation to use;
+     * @param null|Router\RouterFactoryInterface $routerFactory Router factory implementation to use;
      *     defaults to the FastRoute router bridge.
      * @return Application
      */
     public static function create(
         ContainerInterface $container = null,
-        Router\RouterInterface $router = null
+        Router\RouterFactoryInterface $routerFactory = null
     ) {
-        $container = $container ?: new ServiceManager();
-        $router    = $router    ?: new Router\FastRouteRouter();
-        $emitter   = new Emitter\EmitterStack();
+        $container     = $container ?: new ServiceManager();
+        $routerFactory = $routerFactory ?: new Router\FastRouteRouterFactory();
+        $emitter       = new Emitter\EmitterStack();
         $emitter->push(new SapiEmitter());
 
-        return new Application($router, $container, null, $emitter);
+        return new Application($routerFactory, $container, null, $emitter);
     }
 
     /**
