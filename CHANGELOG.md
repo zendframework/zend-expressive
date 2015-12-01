@@ -46,6 +46,10 @@ Third release candidate.
   where received configuration is unusable, instead of silently ignoring it.
   This is a small backwards compatibility break, but is done to eliminate
   difficult to identify issues due to bad configuration.
+- [#202](https://github.com/zendframework/zend-expressive/pull/202) clarifies
+  that `RouterInterface` implements **MUST** throw a `RuntimeException` if
+  `addRoute()` is called after either `match()` or `generateUri()` have been
+  called.
 
 ## 1.0.0rc2 - 2015-10-20
 

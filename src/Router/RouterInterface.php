@@ -10,6 +10,7 @@
 namespace Zend\Expressive\Router;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
+use RuntimeException;
 use Zend\Expressive\Exception;
 
 /**
@@ -27,7 +28,13 @@ interface RouterInterface
      * modify route instances before matching (e.g., to provide route options,
      * inject a name, etc.).
      *
+     * The method MUST raise a RuntimeException if called after either `match()`
+     * or `generateUri()` have already been called, to ensure integrity of the
+     * router between invocations of either of those methods.
+     *
      * @param Route $route
+     * @throws RuntimeException when called after match() or generateUri() have
+     *     been called.
      */
     public function addRoute(Route $route);
 
