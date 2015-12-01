@@ -48,7 +48,6 @@ The above works, because every `Application` instance is itself middleware, and,
 an instance of [Stratigility's `MiddlewarePipe`](https://github.com/zendframework/zend-stratigility/blob/master/doc/book/middleware.md),
 which provides the ability to compose middleware.
 
-<<<<<<< HEAD
 ## How can I specify a route-specific middleware pipeline?
 
 Sometimes you may want to use a middleware pipeline only if a particular route
@@ -234,10 +233,7 @@ return [
 ];
 ```
 
-## How can I set 404 page?
-=======
 ## How can I set custom 404 page handling?
->>>>>>> wording current 404 for custom
 
 We can set custom 404 page handling instead of [using the final handler](http://zend-expressive.readthedocs.org/en/latest/error-handling/) for logging or other purpose with create new middleware that we want to intercept if no other middleware has executed, and is indicate a "not found" situation.
 
