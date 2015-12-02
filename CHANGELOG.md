@@ -9,7 +9,7 @@ Third release candidate.
 ### Added
 
 - [#185](https://github.com/zendframework/zend-expressive/pull/185)
-  Support casting zend-view models to arrays
+  Support casting zend-view models to arrays.
 - [#192](https://github.com/zendframework/zend-expressive/pull/192) adds support
   for specifying arrays of middleware both when routing and when creating
   pipeline middleware. This feature is opt-in and backwards compatible; simply
@@ -18,14 +18,14 @@ Third release candidate.
   or fully qualified class names that can be instantiated without arguments, and
   which result in invokable middleware.
 - [#200](https://github.com/zendframework/zend-expressive/pull/200) adds a new
-  interface, `Zend\Expressive\Router\RouteResultObserverInterface`.
-  `Zend\Expressive\Application` now also defines two methods,
-  `attachRouteResultObserver()` and `detachRouteResultObserver()`, which accept
-  instances of the interface. During `routeMiddleware()`, all observers are
-  updated immediately following the call to `RouterInterface::match()` with the
-  `RouteResult` instance. This feature enables the ability to notify objects of
-  the calculated `RouteResult` without needing to inject middleware into the
-  system.
+  interface, `Zend\Expressive\Router\RouteResultObserverInterface` (since moved
+  to the zend-expressive-router package). `Zend\Expressive\Application` now
+  also defines two methods, `attachRouteResultObserver()` and
+  `detachRouteResultObserver()`, which accept instances of the interface. During
+  `routeMiddleware()`, all observers are updated immediately following the call
+  to `RouterInterface::match()` with the `RouteResult` instance. This feature
+  enables the ability to notify objects of the calculated `RouteResult` without
+  needing to inject middleware into the system.
 - [#81](https://github.com/zendframework/zend-expressive/pull/81) adds a
   cookbook entry for creating 404 handlers.
 
@@ -35,7 +35,12 @@ Third release candidate.
 
 ### Removed
 
-- Nothing.
+- [#204](https://github.com/zendframework/zend-expressive/pull/204) removes the
+  `Router` and `Template` components, as they are now shipped with the following
+  packages, respectively:
+  - [zendframework/zend-expressive-router](https://github.com/zendframework/zend-expressive-router)
+  - [zendframework/zend-expressive-template](https://github.com/zendframework/zend-expressive-template)
+  This package has been updated to depend on each of them.
 
 ### Fixed
 
