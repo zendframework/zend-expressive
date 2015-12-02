@@ -10,7 +10,6 @@
 namespace Zend\Expressive\Template;
 
 use Traversable;
-use Zend\Expressive\Exception;
 
 trait ArrayParametersTrait
 {

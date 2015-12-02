@@ -9,7 +9,7 @@ namespace ZendTest\Expressive\Template;
 use ArrayIterator;
 use PHPUnit_Framework_TestCase as TestCase;
 use stdClass;
-use Zend\Expressive\Exception\InvalidArgumentException;
+use Zend\Expressive\Template\Exception\InvalidArgumentException;
 
 class ArrayParametersTraitTest extends TestCase
 {
