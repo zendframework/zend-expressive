@@ -17,15 +17,16 @@ Third release candidate.
   array **must** be callables, service names resolving to callable middleware,
   or fully qualified class names that can be instantiated without arguments, and
   which result in invokable middleware.
-- [#200](https://github.com/zendframework/zend-expressive/pull/200) adds a new
-  interface, `Zend\Expressive\Router\RouteResultObserverInterface` (since moved
-  to the zend-expressive-router package). `Zend\Expressive\Application` now
-  also defines two methods, `attachRouteResultObserver()` and
-  `detachRouteResultObserver()`, which accept instances of the interface. During
-  `routeMiddleware()`, all observers are updated immediately following the call
-  to `RouterInterface::match()` with the `RouteResult` instance. This feature
-  enables the ability to notify objects of the calculated `RouteResult` without
-  needing to inject middleware into the system.
+- [#200](https://github.com/zendframework/zend-expressive/pull/200) and
+  [#206](https://github.com/zendframework/zend-expressive/pull/206) add a new
+  interface, `Zend\Expressive\RouteResultObserverInterface`.
+  `Zend\Expressive\Application` now also defines two methods,
+  `attachRouteResultObserver()` and `detachRouteResultObserver()`, which accept
+  instances of the interface. During `routeMiddleware()`, all observers are
+  updated immediately following the call to `RouterInterface::match()` with the
+  `RouteResult` instance. This feature enables the ability to notify objects of
+  the calculated `RouteResult` without needing to inject middleware into the
+  system.
 - [#81](https://github.com/zendframework/zend-expressive/pull/81) adds a
   cookbook entry for creating 404 handlers.
 
