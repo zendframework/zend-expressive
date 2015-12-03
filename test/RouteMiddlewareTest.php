@@ -16,7 +16,7 @@ use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequest;
 use Zend\Expressive\Application;
 use Zend\Expressive\Router\RouteResult;
-use Zend\Expressive\Router\RouteResultObserverInterface;
+use Zend\Expressive\RouteResultObserverInterface;
 use Zend\Expressive\Router\RouterInterface;
 
 class RouteMiddlewareTest extends TestCase
