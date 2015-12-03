@@ -21,7 +21,9 @@ you to notify such utilities of the results of matching.
 Route result observers must implement the `RouteResultObserverInterface`:
 
 ```php
-namespace Zend\Expressive\Router;
+namespace Zend\Expressive;
+
+use Zend\Expressive\Router\RouteResult;
 
 interface RouteResultObserverInterface
 {
@@ -59,7 +61,7 @@ when invoked, generate a URI.
 ```php
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Router\RouteResult;
-use Zend\Expressive\Router\RouteResultObserverInterface;
+use Zend\Expressive\RouteResultObserverInterface;
 
 class UriGenerator implements RouteResultObserverInterface
 {
