@@ -176,9 +176,9 @@ class Application extends MiddlewarePipe
     /**
      * Attach a route result observer.
      *
-     * @param Router\RouteResultObserverInterface $observer
+     * @param RouteResultObserverInterface $observer
      */
-    public function attachRouteResultObserver(Router\RouteResultObserverInterface $observer)
+    public function attachRouteResultObserver(RouteResultObserverInterface $observer)
     {
         $this->routeResultObservers[] = $observer;
     }
@@ -186,9 +186,9 @@ class Application extends MiddlewarePipe
     /**
      * Detach a route result observer.
      *
-     * @param Router\RouteResultObserverInterface $observer
+     * @param RouteResultObserverInterface $observer
      */
-    public function detachRouteResultObserver(Router\RouteResultObserverInterface $observer)
+    public function detachRouteResultObserver(RouteResultObserverInterface $observer)
     {
         if (false === ($index = array_search($observer, $this->routeResultObservers, true))) {
             return;
