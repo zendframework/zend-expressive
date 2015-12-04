@@ -126,7 +126,7 @@ class UriGeneratorFactory
 Attaching the observer to the application can happen in one of two ways:
 
 - Via modification of the bootstrap script.
-- Via container-specific "extension" or "delegation" features.
+- By updating the factory to register the observer with the application.
 
 ### Modifying the bootstrap script
 
@@ -147,72 +147,40 @@ $app->attachRouteResultObserver($container->get(UriGenerator::class));
 $app->run();
 ```
 
-### Container-specific Delegation
+### Via the observer factory
 
-Pimple offers a feature called "extension" to allow modification of a service
-after creation, and zend-servicemanager provides a [delegator factories](http://framework.zend.com/manual/current/en/modules/zend.service-manager.delegator-factories.html)
-feature for a similar purpose.
+This approach requires a slight change to the factory to:
 
-Both examples below assume you are using the Expressive skeleton to generate
-your initial project; if not, read the examples, and adapt them to your own
-configuration and container initialization strategy.
-
-To make use of this in Pimple, you would modify the `config/container.php` file
-to add the following just prior to returning the container instance:
+- Check for a `Zend\Expressive\Application` service; and, if found,
+- Attach the observer to it.
 
 ```php
-$container->extend('Zend\Expressive\Application', function ($app, $container) {
-    $app->attachRouteResultObserver($container->get(UriGenerator::class));
-    return $app;
-});
-```
+use Container\Interop\ContainerInterface;
+use Zend\Expressive\Application;
+use Zend\Expressive\Router\RouterInterface;
 
-For zend-servicemanager, you will do two things:
-
-- Create a delegator factory
-- Add the delegator factory to your configuration
-
-The delegator factory will look like this:
-
-```php
-use Zend\ServiceManager\DelegatorFactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
-
-class UriGeneratorDelegatorFactory
+class UriGeneratorFactory
 {
-    public function createDelegatorWithName(
-        ServiceLocatorInterface $container,
-        $name,
-        $requestedName,
-        $callback
-    ) {
-        $app = $callback();
-        $app->attachRouteResultObserver($container->get(UriGenerator::class));
-        return $app;
+    public function __invoke(ContainerInterface $container)
+    {
+        $generator = new UriGenerator($container->get(RouterInterface::class));
+
+        if ($container->has(Application::class)) {
+            $container
+                ->get(Application::class)
+                ->attachRouteResultObserver($generator);
+        }
+
+        return $generator;
     }
 }
 ```
 
-From here, you can register the delegator factory in any configuration file
-where you're specifying application dependencies; we recommend a
-`config/autoload/dependencies.global.php` file for this.
-
-```php
-use Zend\Expressive\Application;
-
-return [
-    'dependencies' => [
-        'factories' => [
-            UriGenerator::class => UriGeneratorFactory::class,
-        ],
-        'delegator_factories' => [
-            Application::class => [
-                UriGeneratorDelegatorFactory::class,
-            ],
-        ],
-    ],
-];
-```
-
-Note: You may see code like the above already, for either example, depending on
-the selections you made when creating your project!
+> Note: Helpers included!
+>
+> You do not need to create the above URI generator for your code; this
+> functionality is already present in the [zendframework/zend-expressive-helpers](https://github.com/zendframework/zend-expressive-helpers)
+> package, and, if you started with the Expressive skeleton, may already
+> be installed by default!
+>
+> See the [helpers documentation](../helpers/intro.md) for more information.
