@@ -29,6 +29,9 @@ Third release candidate.
   system.
 - [#81](https://github.com/zendframework/zend-expressive/pull/81) adds a
   cookbook entry for creating 404 handlers.
+- [#210](https://github.com/zendframework/zend-expressive/pull/210) adds a
+  documentation section on the new [zendframework/zend-expressive-helpers](https://github.com/zendframework/zend-expressive-helpers)
+  utilities.
 
 ### Deprecated
 
