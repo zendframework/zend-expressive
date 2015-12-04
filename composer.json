@@ -22,7 +22,6 @@
         "zendframework/zend-diactoros": "^1.1",
         "zendframework/zend-expressive-router": "^1.0",
         "zendframework/zend-expressive-template": "^1.0.1",
-        "zendframework/zend-stdlib": "^2.7",
         "zendframework/zend-stratigility": "^1.1"
     },
     "require-dev": {
