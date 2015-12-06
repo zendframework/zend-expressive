@@ -21,7 +21,7 @@ you to notify such utilities of the results of matching.
 Route result observers must implement the `RouteResultObserverInterface`:
 
 ```php
-namespace Zend\Expressive;
+namespace Zend\Expressive\Router;
 
 use Zend\Expressive\Router\RouteResult;
 
@@ -52,6 +52,16 @@ You can detach an existing observer as well, by passing its instance to the
 $app->detachRouteResultObserver($observer);
 ```
 
+> ### RouteResultSubjectInterface
+>
+> `Zend\Expressive\Application` implements `Zend\Expressive\Router\RouteResultSubjectInterface`,
+> which defines methods for attaching and detaching route result observers, as
+> well as a method for notifying observers. Typically you'll only see the
+> `Application` class as an implementation of the interface, but you can always
+> create your own implementations as well if desired &mdash; for instance, if
+> you are implementing your own middleware runtime using the various interfaces
+> Expressive provides.
+
 ## Example
 
 For this example, we'll build a simple URI generator. It will compose a
@@ -61,7 +71,7 @@ when invoked, generate a URI.
 ```php
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Router\RouteResult;
-use Zend\Expressive\RouteResultObserverInterface;
+use Zend\Expressive\ROuter\RouteResultObserverInterface;
 
 class UriGenerator implements RouteResultObserverInterface
 {
