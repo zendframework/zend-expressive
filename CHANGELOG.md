@@ -17,16 +17,21 @@ Third release candidate.
   array **must** be callables, service names resolving to callable middleware,
   or fully qualified class names that can be instantiated without arguments, and
   which result in invokable middleware.
-- [#200](https://github.com/zendframework/zend-expressive/pull/200) and
-  [#206](https://github.com/zendframework/zend-expressive/pull/206) add a new
-  interface, `Zend\Expressive\RouteResultObserverInterface`.
-  `Zend\Expressive\Application` now also defines two methods,
-  `attachRouteResultObserver()` and `detachRouteResultObserver()`, which accept
-  instances of the interface. During `routeMiddleware()`, all observers are
-  updated immediately following the call to `RouterInterface::match()` with the
-  `RouteResult` instance. This feature enables the ability to notify objects of
-  the calculated `RouteResult` without needing to inject middleware into the
-  system.
+- [#200](https://github.com/zendframework/zend-expressive/pull/200),
+  [#206](https://github.com/zendframework/zend-expressive/pull/206), and
+  [#211](https://github.com/zendframework/zend-expressive/pull/211) add
+  functionality for observing computed `RouteResult`s.
+  `Zend\Expressive\Application` now implements
+  `Zend\Expressive\Router\RouteResultSubjectInterface`, which allows attaching
+  `Zend\Expressive\RouteResultObserverInterface` implementations and notifying
+  them of computed `RouteResult` instances. The following methods are now
+  available on the `Application` instance:
+  - `attachRouteResultObserver(Router\RouteResultObserverInterface $observer)`
+  - `detachRouteResultObserver(Router\RouteResultObserverInterface $observer)`
+  - `notifyRouteResultObservers(RouteResult $result)`; `Application` calls this
+    internally within `routeMiddleware`.
+  This feature enables the ability to notify objects of the calculated
+  `RouteResult` without needing to inject middleware into the system.
 - [#81](https://github.com/zendframework/zend-expressive/pull/81) adds a
   cookbook entry for creating 404 handlers.
 - [#210](https://github.com/zendframework/zend-expressive/pull/210) adds a
