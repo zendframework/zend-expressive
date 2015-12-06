@@ -29,7 +29,7 @@ use Zend\Stratigility\MiddlewarePipe;
  * @method Router\Route patch($path, $middleware, $name = null)
  * @method Router\Route delete($path, $middleware, $name = null)
  */
-class Application extends MiddlewarePipe
+class Application extends MiddlewarePipe implements Router\RouteResultSubjectInterface
 {
     /**
      * @var null|ContainerInterface
@@ -176,9 +176,9 @@ class Application extends MiddlewarePipe
     /**
      * Attach a route result observer.
      *
-     * @param RouteResultObserverInterface $observer
+     * @param Router\RouteResultObserverInterface $observer
      */
-    public function attachRouteResultObserver(RouteResultObserverInterface $observer)
+    public function attachRouteResultObserver(Router\RouteResultObserverInterface $observer)
     {
         $this->routeResultObservers[] = $observer;
     }
@@ -186,14 +186,26 @@ class Application extends MiddlewarePipe
     /**
      * Detach a route result observer.
      *
-     * @param RouteResultObserverInterface $observer
+     * @param Router\RouteResultObserverInterface $observer
      */
-    public function detachRouteResultObserver(RouteResultObserverInterface $observer)
+    public function detachRouteResultObserver(Router\RouteResultObserverInterface $observer)
     {
         if (false === ($index = array_search($observer, $this->routeResultObservers, true))) {
             return;
         }
         unset($this->routeResultObservers[$index]);
+    }
+
+    /**
+     * Notify all route result observers with the given route result.
+     *
+     * @param Router\RouteResult
+     */
+    public function notifyRouteResultObservers(Router\RouteResult $result)
+    {
+        foreach ($this->routeResultObservers as $observer) {
+            $observer->update($result);
+        }
     }
 
     /**
@@ -691,17 +703,5 @@ class Application extends MiddlewarePipe
             }
             return $invokable($error, $request, $response, $next);
         };
-    }
-
-    /**
-     * Notify all route result observers with the given route result.
-     *
-     * @param Router\RouteResult
-     */
-    private function notifyRouteResultObservers(Router\RouteResult $result)
-    {
-        foreach ($this->routeResultObservers as $observer) {
-            $observer->update($result);
-        }
     }
 }
