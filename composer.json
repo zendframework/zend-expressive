@@ -16,7 +16,7 @@
         }
     },
     "require": {
-        "php": ">=5.5",
+        "php": "^5.5 || ^7.0",
         "container-interop/container-interop": "^1.1",
         "psr/http-message": "^1.0",
         "zendframework/zend-diactoros": "^1.1",
@@ -28,9 +28,9 @@
         "filp/whoops": "^1.1",
         "phpunit/phpunit": "^4.7",
         "squizlabs/php_codesniffer": "^2.3",
-        "zendframework/zend-expressive-aurarouter": "~1.0-dev",
-        "zendframework/zend-expressive-fastroute": "~1.0-dev",
-        "zendframework/zend-expressive-zendrouter": "~1.0-dev",
+        "zendframework/zend-expressive-aurarouter": "^1.0",
+        "zendframework/zend-expressive-fastroute": "^1.0",
+        "zendframework/zend-expressive-zendrouter": "^1.0",
         "zendframework/zend-servicemanager": "^2.6"
     },
     "autoload": {
@@ -45,14 +45,25 @@
     },
     "suggest": {
         "filp/whoops": "^1.1 to use the Whoops error handler",
-        "zendframework/zend-expressive-aurarouter": "^0.1 to use the Aura.Router routing adapter",
-        "zendframework/zend-expressive-fastroute": "^0.1 to use the FastRoute routing adapter",
-        "zendframework/zend-expressive-zendrouter": "^0.1 to use the zend-mvc routing adapter",
-        "zendframework/zend-expressive-platesrenderer": "^0.1 to use the Plates template renderer",
-        "zendframework/zend-expressive-twigrenderer": "^0.1 to use the Twig template renderer",
-        "zendframework/zend-expressive-zendviewrenderer": "^0.1 to use the zend-view PhpRenderer template renderer",
+        "zendframework/zend-expressive-aurarouter": "^1.0 to use the Aura.Router routing adapter",
+        "zendframework/zend-expressive-fastroute": "^1.0 to use the FastRoute routing adapter",
+        "zendframework/zend-expressive-zendrouter": "^1.0 to use the zend-mvc routing adapter",
+        "zendframework/zend-expressive-platesrenderer": "^1.0 to use the Plates template renderer",
+        "zendframework/zend-expressive-twigrenderer": "^1.0 to use the Twig template renderer",
+        "zendframework/zend-expressive-zendviewrenderer": "^1.0 to use the zend-view PhpRenderer template renderer",
         "aura/di": "3.0.*@beta to make use of Aura.Di dependency injection container",
         "mouf/pimple-interop": "^1.0 to use Pimple for dependency injection",
         "zendframework/zend-servicemanager": "^2.5 to use zend-servicemanager for dependency injection"
+    },
+    "scripts": {
+        "check": [
+            "@cs",
+            "@test"
+        ],
+        "coveralls": "coveralls",
+        "cs": "phpcs",
+        "cs-fix": "phpcbf",
+        "test": "phpunit",
+        "test-coverage": "phpunit --coverage-clover clover.xml"
     }
 }
