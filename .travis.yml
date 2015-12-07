@@ -36,13 +36,13 @@ before_script:
   - if [[ $EXECUTE_DOC_CHECK == 'true' ]]; then cp mkdocs.yml mkdocs.yml.orig ; fi
 
 script:
-  - if [[ $EXECUTE_TEST_COVERALLS == 'true' ]]; then ./vendor/bin/phpunit --coverage-clover clover.xml ; fi
-  - if [[ $EXECUTE_TEST_COVERALLS != 'true' ]]; then ./vendor/bin/phpunit ; fi
-  - if [[ $EXECUTE_CS_CHECK == 'true' ]]; then ./vendor/bin/phpcs ; fi
+  - if [[ $EXECUTE_TEST_COVERALLS == 'true' ]]; then composer test-coverage ; fi
+  - if [[ $EXECUTE_TEST_COVERALLS != 'true' ]]; then composer test ; fi
+  - if [[ $EXECUTE_CS_CHECK == 'true' ]]; then composer cs ; fi
   - if [[ $EXECUTE_DOC_CHECK == 'true' ]]; then make mkdocs ; diff mkdocs.yml mkdocs.yml.orig ; return $? ; fi
 
 after_script:
-  - if [[ $EXECUTE_TEST_COVERALLS == 'true' ]]; then ./vendor/bin/coveralls ; fi
+  - if [[ $EXECUTE_TEST_COVERALLS == 'true' ]]; then composer coveralls ; fi
 
 notifications:
   email: true
