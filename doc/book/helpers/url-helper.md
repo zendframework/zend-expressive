@@ -57,7 +57,21 @@ Each method will raise an exception if:
 In order to use the helper, you will need to instantiate it with the current
 `RouterInterface`. The factory `Zend\Expressive\Helper\UrlHelperFactory` has
 been provided for this purpose, and can be used trivially with most
-dependency injection containers implementing container-interop:
+dependency injection containers implementing container-interop. Additionally,
+it is most useful when injected with the current results of routing, and as
+such should be registered as a route result observer with the application. The
+following steps should be followed to register and configure the helper:
+
+- Register the `UrlHelper` as a service in your container, using the provided
+  factory.
+- Register the `UrlHelperMiddleware` as a service in your container, using the
+  provided factory.
+- Register the `UrlHelperMiddleware` as pre_routing pipeline middleware.
+
+### Registering the helper service
+
+The following examples demonstrate programmatic registration of the `UrlHelper`
+service in your selected dependency injection container.
 
 ```php
 use Zend\Expressive\Helper\UrlHelper;
@@ -91,15 +105,55 @@ return ['dependencies' => [
 ]]
 ```
 
-> ## Factory requires RouterInterface
+> #### UrlHelperFactory requires RouterInterface
 >
 > The factory requires that a service named `Zend\Expressive\Router\RouterInterface` is present,
 > and will raise an exception if the service is not found.
 
-> ## Skeleton configures helpers
+### Registering the pipeline middleware
+
+To register the `UrlHelperMiddleware` as pre-routing pipeline middleware:
+
+```php
+use Zend\Expressive\Helper\UrlHelperMiddleware;
+
+// Do this early, before piping other middleware or routes:
+$app->pipe(UrlHelperMiddleware::class);
+
+// Or use configuration:
+// [
+//     'middleware_pipeline' => [
+//         'pre_routing' => [
+//             ['middleware' => UrlHelperMiddleware::class],
+//         ],
+//     ],
+// ]
+```
+
+The following dependency configuration will work for all three when using the
+Expressive skeleton:
+
+```php
+return [
+    'dependencies' => [
+        'factories' => [
+            UrlHelper::class => UrlHelperFactory::class,
+            UrlHelperMiddleware::class => UrlHelperMiddlewareFactory::class,
+        ],
+    ],
+    'middleware_pipeline' => [
+        'pre_routing' => [
+            ['middleware' => UrlHelperMiddleware::class],
+        ],
+    ],
+]
+```
+
+> #### Skeleton configures helpers
 >
 > If you started your project using the Expressive skeleton package, the
-> `UrlHelper` factory is already registered for you.
+> `UrlHelper` and `UrlHelperMiddleware` factories are already registered for
+> you, as is the `UrlHelperMiddleware` pre_routing pipeline middleware.
 
 ## Using the helper in middleware
 
