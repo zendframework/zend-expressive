@@ -117,7 +117,7 @@ return [
 ]
 ```
 
-> ## Skeleton configures helpers
+> ### Skeleton configures helpers
 >
 > If you started your project using the Expressive skeleton package, the
 > `ServerUrlHelper` and `ServerUrlMiddleware` factories are already registered
