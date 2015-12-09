@@ -413,10 +413,10 @@ class HelperPluginManagerFactory
 
         // Add zend-form view helper configuration:
         $formConfig = new FormHelperConfig();
-        $manager->configureServiceManager($manager);
+        $formConfig->configureServiceManager($manager);
 
-        return $manager;                                                                                                                                                                                                                                                        
-    }   
+        return $manager;
+    }
 }
 ```
 
