@@ -62,7 +62,7 @@ namespace for you, and suggests placing middleware under the namespace
 `App\Action`.
 
 Let's create a "Hello" action. Place the following in
-`src/Action/HelloAction.php`:
+`src/App/Action/HelloAction.php`:
 
 ```php
 <?php
@@ -153,7 +153,7 @@ Now that we have a template, we need to:
 - Inject a renderer into our action class.
 - Use the renderer to render the contents.
 
-Replace your `src/Action/HelloAction.php` file with the following contents:
+Replace your `src/App/Action/HelloAction.php` file with the following contents:
 
 ```php
 <?php
@@ -201,7 +201,7 @@ For the next part of the example, we'll be creating and wiring a factory for
 creating the `HelloAction` instance; the example assumes you used the default
 selection for a dependency injection container, Zend ServiceManager.
 
-Let's create a factory. Create the file `src/Action/HelloActionFactory.php` with
+Let's create a factory. Create the file `src/App/Action/HelloActionFactory.php` with
 the following contents:
 
 ```php
