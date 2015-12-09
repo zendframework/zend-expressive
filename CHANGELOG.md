@@ -44,6 +44,9 @@ Fourth release candidate.
   "Hello World Using a Configuration-Driven Container" usage case to use
   zend-stdlib's `Glob::glob()` instead of the `glob()` native function, to
   ensure the documented solution is portable across platforms.
+- [#223](https://github.com/zendframework/zend-expressive/pull/223) updates the
+  documentation to refer to the `composer serve` command where relevant, and
+  also details how to create the command for standalone users.
 
 ## 1.0.0rc3 - 2015-12-07
 

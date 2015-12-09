@@ -40,7 +40,7 @@ server](http://php.net/manual/en/features.commandline.webserver.php).
 From the project root directory, execute the following:
 
 ```bash
-$ php -S 0.0.0.0:8080 -t public/
+$ composer serve
 ```
 
 This starts up a web server on localhost port 8080; browse to
