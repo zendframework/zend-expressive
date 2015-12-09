@@ -13,7 +13,7 @@
     "book/helpers/bookdown.json",
     {"Emitters": "book/emitters.md"},
     {"Examples": "book/usage-examples.md"},
-    {"Cookbook": "book/cookbook.md"}
+    "book/cookbook/bookdown.json"
   ],
   "target": "./html"
 }
