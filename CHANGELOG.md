@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 1.0.0rc4 - TBD
+
+Fourth release candidate.
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#219](https://github.com/zendframework/zend-expressive/pull/219) updates the
+  "Hello World Using a Configuration-Driven Container" usage case to use
+  zend-stdlib's `Glob::glob()` instead of the `glob()` native function, to
+  ensure the documented solution is portable across platforms.
+
 ## 1.0.0rc3 - 2015-12-07
 
 Third release candidate.
