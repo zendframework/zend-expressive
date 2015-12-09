@@ -256,10 +256,10 @@ repository, and also provides a mechanism for slip-streaming in
 configuration based on our environment (you might use different settings in
 development than in production, after all!).
 
-First, install zend-config:
+First, install zend-config and zend-stdlib:
 
 ```bash
-$ composer require zendframework/zend-config
+$ composer require zendframework/zend-config zendframework/zend-stdlib
 ```
 
 Now we can start creating our configuration files and container factories.
@@ -269,10 +269,13 @@ In `config/config.php`, place the following:
 ```php
 <?php
 use Zend\Config\Factory as ConfigFactory;
+use Zend\Stdlib\Glob;
 
-return ConfigFactory::fromFiles(
-    glob('config/autoload/{global,local}.php', GLOB_BRACE)
-);
+$files = Glob::glob('config/autoload/{{,*.}global,{,*.}local}.php', Glob::GLOB_BRACE);
+if (0 === count($files)) {
+    return [];
+}
+return ConfigFactory::fromFiles($files);
 ```
 
 In `config/autoload/global.php`, place the following:
@@ -299,9 +302,10 @@ In `config/dependencies.php`, place the following:
 ```php
 <?php
 use Zend\Config\Factory as ConfigFactory;
+use Zend\Stdlib\Glob;
 
 return ConfigFactory::fromFiles(
-    glob('config/autoload/dependencies.{global,local}.php', GLOB_BRACE)
+    Glob::glob('config/autoload/dependencies.{global,local}.php', Glob::GLOB_BRACE)
 );
 ```
 
