@@ -29,6 +29,8 @@ Fourth release candidate.
 - [#223](https://github.com/zendframework/zend-expressive/pull/223) updates the
   documentation to refer to the `composer serve` command where relevant, and
   also details how to create the command for standalone users.
+- [#221](https://github.com/zendframework/zend-expressive/pull/221) splits the
+  various cookbook entries into separate files, so each is self-contained.
 
 ## 1.0.0rc3 - 2015-12-07
 
