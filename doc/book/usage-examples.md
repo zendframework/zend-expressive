@@ -32,7 +32,12 @@ We assume also that:
 > ```
 >
 > from the application root to start up a web server running on port 8080, and
-> then browse to http://localhost:8080
+> then browse to http://localhost:8080/. If you used the Expressive installer,
+> the following is equivalent:
+>
+> ```bash
+> $ composer serve
+> ```
 
 > ## Setting up autoloading for the Application namespace
 >
