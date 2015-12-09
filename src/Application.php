@@ -560,7 +560,7 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
      *
      * @param string $middleware
      *
-     * @return array
+     * @return callable
      * @throws Exception\InvalidMiddlewareException If unable to obtain callable middleware
      */
     private function marshalMiddleware($middleware)
