@@ -286,6 +286,7 @@ return ConfigFactory::fromFiles($files);
 In `config/autoload/global.php`, place the following:
 
 ```php
+<?php
 return [
     'routes' => [
         [
@@ -434,6 +435,7 @@ If you use a container to fetch your application instance, you have an
 additional option for specifying middleware for the pipeline: configuration:
 
 ```php
+<?php
 return [
     'routes' => [
         [
