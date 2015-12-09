@@ -26,7 +26,9 @@ Fourth release candidate.
 
 ### Added
 
-- Nothing.
+- [#217](https://github.com/zendframework/zend-expressive/pull/217) adds a
+  cookbook entry to the documentation detailing how to configure zend-view
+  helpers from other components, as well as how to add custom view helpers.
 
 ### Deprecated
 
