@@ -80,7 +80,7 @@ called, and then operate on the generated instance, either modifying or
 replacing it. We'll demonstrate this for zend-servicemanager and Pimple; at the
 time of writing, we're unaware of a mechanism for doing so in Aura.Di.
 
-#### zend-servicemanager
+### zend-servicemanager
 
 You'll first need to create a delegator factory:
 
