@@ -378,12 +378,61 @@ If you installed Expressive via the skeleton, the service
 plugin manager injected into the `PhpRenderer` instance. As such, you only need
 to configure this. The question is: where?
 
-You have a two options:
+You have three options:
 
+- Replace the `HelperPluginManager` factory with your own; or
 - Add a delegator factory to or extend the `HelperPluginManager` service to
   inject the additional helper configuration; or
 - Add pre_routing pipeline middleware that composes the `HelperPluginManager`
   and configures it.
+
+### Replacing the HelperPluginManager factory
+
+The zend-view integration provides `Zend\Expressive\ZendView\HelperPluginManagerFactory`,
+and the Expressive skeleton registers it be default. The simplest solution for
+adding other helpers is to replace it with your own. In your own factory, you
+will *also* configure the plugin manager with the configuration from the
+zend-form component (or whichever other components you wish to use).
+
+```php
+namespace Your\Application;
+
+use Interop\Container\ContainerInterface;
+use Zend\Form\View\HelperConfig as FormHelperConfig;
+use Zend\ServiceManager\Config;
+use Zend\View\HelperPluginManager;
+
+class HelperPluginManagerFactory
+{
+    public function __invoke(ContainerInterface $container)
+    {   
+        $config = $container->has('config') ? $container->get('config') : []; 
+        $config = isset($config['view_helpers']) ? $config['view_helpers'] : []; 
+        $manager = new HelperPluginManager(new Config($config));
+        $manager->setServiceLocator($container);
+
+        // Add zend-form view helper configuration:
+        $formConfig = new FormHelperConfig();
+        $manager->configureServiceManager($manager);
+
+        return $manager;                                                                                                                                                                                                                                                        
+    }   
+}
+```
+
+In your `config/autoload/templates.global.php` file, change the line that reads:
+
+```php
+Zend\View\HelperPluginManager::class => Zend\Expressive\ZendView\HelperPluginManagerFactory::class,
+```
+
+to instead read as:
+
+```php
+Zend\View\HelperPluginManager::class => Your\Application\HelperPluginManagerFactory::class,
+```
+
+This approach will work for any of the various containers supported.
 
 ### Delegator factories/service extension
 
