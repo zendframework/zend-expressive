@@ -49,6 +49,9 @@ Fourth release candidate.
   also details how to create the command for standalone users.
 - [#221](https://github.com/zendframework/zend-expressive/pull/221) splits the
   various cookbook entries into separate files, so each is self-contained.
+- [#224](https://github.com/zendframework/zend-expressive/pull/224) adds opening
+  `<?php` tags to two configuration file examples, in order to prevent
+  copy-paste errors.
 
 ## 1.0.0rc3 - 2015-12-07
 
