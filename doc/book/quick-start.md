@@ -91,6 +91,23 @@ $ php -S 0.0.0.0:8080 -t public/
 This starts up a web server on localhost port 8080; browse to
 http://localhost:8080/ to see if your application responds correctly!
 
+> ### Tip: Serve via Composer
+>
+> To simplify starting up a local web server, try adding the following to your
+> `composer.json`:
+>
+> ```json
+> "scripts": {
+>     "server": "php -S 0.0.0.0:8080 -t public/
+> }
+> ```
+>
+> Once you've added that, you can fire up the web server using:
+>
+> ```bash
+> $ composer serve
+> ```
+
 ## Next steps
 
 At this point, you have a working zend-expressive application, that responds to
