@@ -5,6 +5,7 @@
         {"Route-specific middleware pipelines": "route-specific-pipeline.md"},
         {"Setting custom 404 page handling": "custom-404-page-handling.md"},
         {"Registering custom view helpers when using zend-view": "using-custom-view-helpers.md"},
-        {"Using zend-form view helpers": "using-zend-form-view-helpers.md"}
+        {"Using zend-form view helpers": "using-zend-form-view-helpers.md"},
+        {"Setting up locale depending on routing parameter": "setting-locale-depending-routing-parameter.md"}
     ]
 }
