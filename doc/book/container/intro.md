@@ -23,7 +23,7 @@ examples.
 At this time, we document support for the following specific containers:
 
 - [zend-servicemanager](zend-servicemanager.md)
-- [pimple-interop](pimple.md)
+- [pimple3-containerinterop](pimple.md)
 - [aura.di](aura-di.md)
 
 > ## Service Names
