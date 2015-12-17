@@ -107,7 +107,7 @@ class Common extends ContainerConfig
         $router->addRoute(new Route('/hello/{name}', function ($request, $response, $next) {
             $escaper = new Escaper();
             $name = $request->getAttribute('name', 'World');
-            $response->write('Hello ' . $escaper->escapeHtml($name));
+            $response->getBody()->write('Hello ' . $escaper->escapeHtml($name));
             return $response;
         }, Route::HTTP_METHOD_ANY, 'hello'));
         */

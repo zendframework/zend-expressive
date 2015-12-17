@@ -63,7 +63,7 @@ require 'vendor/autoload.php';
 $app = AppFactory::create();
 
 $app->get('/', function ($request, $response, $next) {
-    $response->write('Hello, world!');
+    $response->getBody()->write('Hello, world!');
     return $response;
 });
 
