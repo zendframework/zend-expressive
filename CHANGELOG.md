@@ -23,6 +23,10 @@ Fifth release candidate.
 - [#234](https://github.com/zendframework/zend-expressive/pull/234) fixes the
   inheritance tree for `Zend\Expressive\Exception\RuntimeException` to inherit
   from `RuntimeException` and not `InvalidArgumentException`.
+- [#237](https://github.com/zendframework/zend-expressive/pull/237) updates the
+  Pimple documentation to recommend `xtreamwayz/pimple-container-interop`
+  instead of `mouf/pimple-interop`, as the latter consumed Pimple v1, instead of
+  the current stable v3.
 
 ## 1.0.0rc4 - 2015-12-09
 
