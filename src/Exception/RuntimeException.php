@@ -9,7 +9,7 @@
 
 namespace Zend\Expressive\Exception;
 
-class RuntimeException extends \InvalidArgumentException implements
+class RuntimeException extends \RuntimeException implements
     ExceptionInterface
 {
 }
