@@ -27,7 +27,9 @@ Fifth release candidate.
 
 ### Added
 
-- Nothing.
+- [#233](https://github.com/zendframework/zend-expressive/pull/233) adds a
+  documentation page detailing projects using and tutorials written on
+  Expressive.
 
 ### Deprecated
 
