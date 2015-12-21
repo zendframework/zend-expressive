@@ -52,7 +52,7 @@
         "zendframework/zend-expressive-twigrenderer": "^1.0 to use the Twig template renderer",
         "zendframework/zend-expressive-zendviewrenderer": "^1.0 to use the zend-view PhpRenderer template renderer",
         "aura/di": "3.0.*@beta to make use of Aura.Di dependency injection container",
-        "mouf/pimple-interop": "^1.0 to use Pimple for dependency injection",
+        "xtreamwayz/pimple-container-interop": "^1.0 to use Pimple for dependency injection",
         "zendframework/zend-servicemanager": "^2.5 to use zend-servicemanager for dependency injection"
     },
     "scripts": {

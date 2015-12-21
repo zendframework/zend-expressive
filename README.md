@@ -72,8 +72,8 @@ can recommend the following implementations:
 
 - [zend-servicemanager](https://github.com/zendframework/zend-servicemanager):
   `composer require zendframework/zend-servicemanager`
-- [pimple-interop](https://github.com/moufmouf/pimple-interop):
-  `composer require mouf/pimple-interop`
+- [pimple-container-interop](https://github.com/xtreamwayz/pimple-container-interop):
+  `composer require xtreamwayz/pimple-container-interop`
 - [Aura.Di](https://github.com/auraphp/Aura.Di):
   `composer require aura/di:3.0.*@beta`
 
