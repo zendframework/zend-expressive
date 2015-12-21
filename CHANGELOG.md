@@ -2,6 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+<<<<<<< HEAD
 ## 1.1.0 - TBD
 
 ### Added
@@ -19,6 +20,28 @@ All notable changes to this project will be documented in this file, in reverse 
 ### Fixed
 
 - Nothing.
+
+## 1.0.0rc5 - TBD
+
+Fifth release candidate.
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#234](https://github.com/zendframework/zend-expressive/pull/234) fixes the
+  inheritance tree for `Zend\Expressive\Exception\RuntimeException` to inherit
+  from `RuntimeException` and not `InvalidArgumentException`.
 
 ## 1.0.0rc4 - 2015-12-09
 
