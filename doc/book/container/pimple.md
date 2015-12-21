@@ -14,11 +14,11 @@ Pimple only supports programmatic creation at this time.
 
 Pimple does not currently (as of v3) implement
 [container-interop](https://github.com/container-interop/container-interop); as
-such, you need to install the `mouf/pimple-interop` project, which provides a
+such, you need to install the `samburns/pimple3-containerinterop` project, which provides a
 container-interop wrapper around Pimple:
 
 ```bash
-$ composer require mouf/pimple-interop
+$ composer require samburns/pimple3-containerinterop
 ```
 
 ## Configuring Pimple
@@ -28,7 +28,7 @@ recommend doing this in a dedicated script that returns the Pimple instance; in
 this example, we'll have that in `config/services.php`.
 
 ```php
-use Interop\Container\Pimple\PimpleInterop as Pimple;
+use SamBurns\Pimple3ContainerInterop\ServiceContainer as Pimple;
 use Zend\Expressive\Container;
 use Zend\Expressive\Plates\PlatesRenderer;
 use Zend\Expressive\Router;
