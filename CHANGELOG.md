@@ -35,6 +35,8 @@ Fifth release candidate.
   a subdirectory of your web root.
 - [#239](https://github.com/zendframework/zend-expressive/pull/239) adds a
   cookbook recipe detailing how to create modular Expressive applications.
+- [#243](https://github.com/zendframework/zend-expressive/pull/243) adds a
+  chapter to the helpers section detailing the new `BodyParseMiddleware`.
 
 ### Deprecated
 
