@@ -6,6 +6,7 @@
         {"Setting custom 404 page handling": "custom-404-page-handling.md"},
         {"Registering custom view helpers when using zend-view": "using-custom-view-helpers.md"},
         {"Using zend-form view helpers": "using-zend-form-view-helpers.md"},
-        {"Using Expressive from a subdirectory": "using-a-base-path.md"}
+        {"Using Expressive from a subdirectory": "using-a-base-path.md"},
+        {"Building modular applications": "modular-layout.md"}
     ]
 }
