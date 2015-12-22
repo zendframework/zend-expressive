@@ -3,6 +3,7 @@
     "content": [
         {"Introduction": "intro.md"},
         {"UrlHelper": "url-helper.md"},
-        {"ServerUrlHelper": "server-url-helper.md"}
+        {"ServerUrlHelper": "server-url-helper.md"},
+        {"Body Parsing Middleware": "body-parse.md"}
     ]
 }
