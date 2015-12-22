@@ -143,11 +143,21 @@ return [
         ],
         'aliases' => [
             // alias default UrlHelper with Blast\BaseUrl alternative
-            Zend\Expressive\Helper\UrlHelper::class => Blast\BaseUrl\UrlHelper::class,
+            Helper\UrlHelper::class => Blast\BaseUrl\UrlHelper::class,
             /* ... */
         ],
     ],
 ];
+```
+
+Additionally, remove the following from the same file:
+
+```php
+        'factories' => [
+            // Remove the following line only:
+            Helper\UrlHelper::class => Helper\UrlHelperFactory::class,
+            /* ... */
+        ],
 ```
 
 Finally, if you're using zend-view, you can register a new "basePath" helper in
