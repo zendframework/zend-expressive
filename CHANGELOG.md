@@ -30,6 +30,9 @@ Fifth release candidate.
 - [#233](https://github.com/zendframework/zend-expressive/pull/233) adds a
   documentation page detailing projects using and tutorials written on
   Expressive.
+- [#238](https://github.com/zendframework/zend-expressive/pull/238) adds a
+  cookbook recipe detailing how to handle serving an Expressive application from
+  a subdirectory of your web root.
 
 ### Deprecated
 
