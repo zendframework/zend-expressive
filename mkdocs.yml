@@ -13,7 +13,8 @@ pages:
     - { Helpers: [{ Introduction: helpers/intro.md }, { UrlHelper: helpers/url-helper.md }, { ServerUrlHelper: helpers/server-url-helper.md }] }
     - { Emitters: emitters.md }
     - { Examples: usage-examples.md }
-    - { Cookbook: [{ 'Prepending a common path to all routes': cookbook/common-prefix-for-routes.md }, { 'Route-specific middleware pipelines': cookbook/route-specific-pipeline.md }, { 'Setting custom 404 page handling': cookbook/custom-404-page-handling.md }, { 'Registering custom view helpers when using zend-view': cookbook/using-custom-view-helpers.md }, { 'Using zend-form view helpers': cookbook/using-zend-form-view-helpers.md }] }
+    - { Cookbook: [{ 'Prepending a common path to all routes': cookbook/common-prefix-for-routes.md }, { 'Route-specific middleware pipelines': cookbook/route-specific-pipeline.md }, { 'Setting custom 404 page handling': cookbook/custom-404-page-handling.md }, { 'Registering custom view helpers when using zend-view': cookbook/using-custom-view-helpers.md }, { 'Using zend-form view helpers': cookbook/using-zend-form-view-helpers.md }, { 'Using Expressive from a subdirectory': cookbook/using-a-base-path.md }] }
+    - { 'Expressive Projects': expressive-projects.md }
 site_name: zend-expressive
 site_description: 'zend-expressive: PSR-7 Middleware Microframework'
 repo_url: 'https://github.com/zendframework/zend-expressive'
