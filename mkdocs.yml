@@ -10,7 +10,7 @@ pages:
     - { 'Routing Adapters': [{ Introduction: router/intro.md }, { 'Routing Interface': router/interface.md }, { 'URI Generation': router/uri-generation.md }, { 'Route Result Observers': router/result-observers.md }, { 'Routing vs Piping': router/piping.md }, { 'Using Aura': router/aura.md }, { 'Using FastRoute': router/fast-route.md }, { 'Using the ZF2 Router': router/zf2.md }] }
     - { Templating: [{ Introduction: template/intro.md }, { 'Template Renderer Interface': template/interface.md }, { 'Templated Middleware': template/middleware.md }, { 'Using Plates': template/plates.md }, { 'Using Twig': template/twig.md }, { 'Using zend-view': template/zend-view.md }] }
     - { 'Error Handling': error-handling.md }
-    - { Helpers: [{ Introduction: helpers/intro.md }, { UrlHelper: helpers/url-helper.md }, { ServerUrlHelper: helpers/server-url-helper.md }] }
+    - { Helpers: [{ Introduction: helpers/intro.md }, { UrlHelper: helpers/url-helper.md }, { ServerUrlHelper: helpers/server-url-helper.md }, { 'Body Parsing Middleware': helpers/body-parse.md }] }
     - { Emitters: emitters.md }
     - { Examples: usage-examples.md }
     - { Cookbook: [{ 'Prepending a common path to all routes': cookbook/common-prefix-for-routes.md }, { 'Route-specific middleware pipelines': cookbook/route-specific-pipeline.md }, { 'Setting custom 404 page handling': cookbook/custom-404-page-handling.md }, { 'Registering custom view helpers when using zend-view': cookbook/using-custom-view-helpers.md }, { 'Using zend-form view helpers': cookbook/using-zend-form-view-helpers.md }, { 'Using Expressive from a subdirectory': cookbook/using-a-base-path.md }, { 'Building modular applications': cookbook/modular-layout.md }] }
