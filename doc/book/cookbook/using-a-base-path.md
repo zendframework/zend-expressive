@@ -168,7 +168,7 @@ return [
     /* ... */
     'view_helpers' => [
         'factories' => [
-            'basePath' => Blast\Baseurl\BasePathViewHelperFactory::class,
+            'basePath' => Blast\BaseUrl\BasePathViewHelperFactory::class,
             /* ... */
         ],
         /* ... */
