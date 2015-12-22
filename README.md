@@ -83,7 +83,7 @@ documentation.
 
 ## Documentation
 
-Documentation is [in the doc tree](doc/), and can be compiled using [bookdown](http://bookdown.io):
+Documentation is [in the doc tree](https://github.com/zendframework/zend-expressive/tree/master/doc/), and can be compiled using [bookdown](http://bookdown.io):
 
 ```bash
 $ bookdown doc/bookdown.json
@@ -100,6 +100,6 @@ http://zend-expressive.rtfd.org.
 
 ## Architecture
 
-Architectural notes are in [NOTES.md](NOTES.md).
+Architectural notes are in [NOTES.md](https://github.com/zendframework/zend-expressive/blob/master/NOTES.md).
 
 Please see the tests for full information on capabilities.
