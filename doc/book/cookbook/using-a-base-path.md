@@ -107,7 +107,7 @@ return [
     ],
     'middleware_pipeline' => [
         'pre_routing' => [
-            [ 'middleware' => [ BaseUrlMiddleware::class ] ],
+            [ 'middleware' => [ Blast\BaseUrl\BaseUrlMiddleware::class ] ],
             /* ... */
         ],
         /* ... */
