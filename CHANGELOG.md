@@ -33,6 +33,8 @@ Fifth release candidate.
 - [#238](https://github.com/zendframework/zend-expressive/pull/238) adds a
   cookbook recipe detailing how to handle serving an Expressive application from
   a subdirectory of your web root.
+- [#239](https://github.com/zendframework/zend-expressive/pull/239) adds a
+  cookbook recipe detailing how to create modular Expressive applications.
 
 ### Deprecated
 
