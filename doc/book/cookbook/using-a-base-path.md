@@ -179,6 +179,8 @@ return [
 Usage of the `BasePath` helper is as follows:
 
 ```php
+// where $basePathHelper is an instance of Blast\BaseUrl\BasePathHelper
+// as pulled from your container:
 echo $basePathHelper('/icons/favicon.ico');
 
 // or, from zend-view's PhpRenderer:
