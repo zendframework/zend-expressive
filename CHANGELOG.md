@@ -2,7 +2,6 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-<<<<<<< HEAD
 ## 1.1.0 - TBD
 
 ### Added
@@ -21,7 +20,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
-## 1.0.0rc5 - TBD
+## 1.0.0rc5 - 2015-12-22
 
 Fifth release candidate.
 
