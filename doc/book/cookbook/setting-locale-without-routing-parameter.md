@@ -1,7 +1,7 @@
 # How can I setup the locale without an additional parameter?
 
-It is a common task to have an localized web application where the setting of
-the locale (and therefor the language) depends on the routing. In this recipe 
+It is a common task to have a localized web application where the setting of
+the locale (and therefore the language) depends on the routing. In this recipe 
 we will automatically add the language to the route without changing all of 
 the existing routes.
 
