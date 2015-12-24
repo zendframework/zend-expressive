@@ -35,7 +35,7 @@ class ApplicationTest extends TestCase
         $this->noopMiddleware = function ($req, $res, $next) {
         };
 
-        $this->router = $this->prophesize('Zend\Expressive\Router\RouterInterface');
+        $this->router = $this->prophesize(\Zend\Expressive\Router\RouterInterface::class);
     }
 
     public function getApp()
@@ -57,13 +57,13 @@ class ApplicationTest extends TestCase
     public function testConstructorAcceptsRouterAsAnArgument()
     {
         $app = $this->getApp();
-        $this->assertInstanceOf('Zend\Expressive\Application', $app);
+        $this->assertInstanceOf(\Zend\Expressive\Application::class, $app);
     }
 
     public function testApplicationIsAMiddlewarePipe()
     {
         $app = $this->getApp();
-        $this->assertInstanceOf('Zend\Stratigility\MiddlewarePipe', $app);
+        $this->assertInstanceOf(\Zend\Stratigility\MiddlewarePipe::class, $app);
     }
 
     public function testRouteMethodReturnsRouteInstance()
@@ -124,7 +124,7 @@ class ApplicationTest extends TestCase
         $this->router->addRoute(Argument::type(Route::class))->shouldBeCalledTimes(1);
         $app = $this->getApp();
         $route = $app->route('/foo', $this->noopMiddleware);
-        $this->setExpectedException('DomainException');
+        $this->setExpectedException(\DomainException::class);
         $app->route('/foo', function ($req, $res, $next) {
         });
     }
@@ -132,7 +132,7 @@ class ApplicationTest extends TestCase
     public function testCallingRouteWithOnlyAPathRaisesAnException()
     {
         $app = $this->getApp();
-        $this->setExpectedException('Zend\Expressive\Exception\InvalidArgumentException');
+        $this->setExpectedException(\Zend\Expressive\Exception\InvalidArgumentException::class);
         $app->route('/path');
     }
 
@@ -157,7 +157,7 @@ class ApplicationTest extends TestCase
     public function testCallingRouteWithAnInvalidPathTypeRaisesAnException($path)
     {
         $app = $this->getApp();
-        $this->setExpectedException('Zend\Expressive\Router\Exception\InvalidArgumentException');
+        $this->setExpectedException(\Zend\Expressive\Router\Exception\InvalidArgumentException::class);
         $app->route($path, 'middleware');
     }
 
@@ -195,7 +195,7 @@ class ApplicationTest extends TestCase
         $app   = $this->getApp();
         $route = $app->get('/foo', $this->noopMiddleware);
 
-        $this->setExpectedException('DomainException');
+        $this->setExpectedException(\DomainException::class);
         $test = $app->get('/foo', function ($req, $res, $next) {
         });
     }
@@ -224,7 +224,7 @@ class ApplicationTest extends TestCase
 
         $this->assertCount(1, $pipeline);
         $route = $pipeline->dequeue();
-        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertInstanceOf(\Zend\Stratigility\Route::class, $route);
         $test  = $route->handler;
 
         $routeMiddleware = [$app, 'routeMiddleware'];
@@ -290,7 +290,7 @@ class ApplicationTest extends TestCase
 
         $this->assertCount(1, $pipeline);
         $route = $pipeline->dequeue();
-        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertInstanceOf(\Zend\Stratigility\Route::class, $route);
         $test  = $route->handler;
 
         $this->assertSame($routeMiddleware, $test);
@@ -310,7 +310,7 @@ class ApplicationTest extends TestCase
         $routeResult = RouteResult::fromRouteFailure();
         $this->router->match()->willReturn($routeResult);
 
-        $finalResponse = $this->prophesize('Psr\Http\Message\ResponseInterface')->reveal();
+        $finalResponse = $this->prophesize(\Psr\Http\Message\ResponseInterface::class)->reveal();
         $finalHandler = function ($req, $res, $err = null) use ($finalResponse) {
             return $finalResponse;
         };
@@ -318,7 +318,7 @@ class ApplicationTest extends TestCase
         $app = new Application($this->router->reveal(), null, $finalHandler);
 
         $request  = new Request([], [], 'http://example.com/');
-        $response = $this->prophesize('Psr\Http\Message\ResponseInterface');
+        $response = $this->prophesize(\Psr\Http\Message\ResponseInterface::class);
 
         $test = $app($request, $response->reveal());
         $this->assertSame($finalResponse, $test);
@@ -337,7 +337,7 @@ class ApplicationTest extends TestCase
 
     public function testAllowsInjectingEmitterAtInstantiation()
     {
-        $emitter = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
+        $emitter = $this->prophesize(\Zend\Diactoros\Response\EmitterInterface::class);
         $app     = new Application(
             $this->router->reveal(),
             null,
@@ -353,20 +353,20 @@ class ApplicationTest extends TestCase
         $routeResult = RouteResult::fromRouteFailure();
         $this->router->match()->willReturn($routeResult);
 
-        $finalResponse = $this->prophesize('Psr\Http\Message\ResponseInterface')->reveal();
+        $finalResponse = $this->prophesize(\Psr\Http\Message\ResponseInterface::class)->reveal();
         $finalHandler = function ($req, $res, $err = null) use ($finalResponse) {
             return $finalResponse;
         };
 
-        $emitter = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
+        $emitter = $this->prophesize(\Zend\Diactoros\Response\EmitterInterface::class);
         $emitter->emit(
-            Argument::type('Psr\Http\Message\ResponseInterface')
+            Argument::type(\Psr\Http\Message\ResponseInterface::class)
         )->shouldBeCalled();
 
         $app = new Application($this->router->reveal(), null, $finalHandler, $emitter->reveal());
 
         $request  = new Request([], [], 'http://example.com/');
-        $response = $this->prophesize('Psr\Http\Message\ResponseInterface');
+        $response = $this->prophesize(\Psr\Http\Message\ResponseInterface::class);
 
         $app->run($request, $response->reveal());
     }
@@ -374,21 +374,21 @@ class ApplicationTest extends TestCase
     public function testCallingGetContainerWhenNoContainerComposedWillRaiseException()
     {
         $app = new Application($this->router->reveal());
-        $this->setExpectedException('RuntimeException');
+        $this->setExpectedException(\RuntimeException::class);
         $app->getContainer();
     }
 
     public function testUnsupportedMethodCall()
     {
         $app = $this->getApp();
-        $this->setExpectedException('BadMethodCallException');
+        $this->setExpectedException(\BadMethodCallException::class);
         $app->foo();
     }
 
     public function testCallMethodWithCountOfArgsNotEqualsWith2()
     {
         $app = $this->getApp();
-        $this->setExpectedException('BadMethodCallException');
+        $this->setExpectedException(\BadMethodCallException::class);
         $app->post('/foo');
     }
 
@@ -407,7 +407,7 @@ class ApplicationTest extends TestCase
         $this->assertCount(1, $pipeline);
 
         $route = $pipeline->dequeue();
-        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertInstanceOf(\Zend\Stratigility\Route::class, $route);
         $this->assertSame([$app, 'routeMiddleware'], $route->handler);
         $this->assertEquals('/', $route->path);
     }
@@ -418,7 +418,7 @@ class ApplicationTest extends TestCase
     public function testInvocationWillPipeRoutingMiddlewareIfNotAlreadyPiped()
     {
         $request  = new Request([], [], 'http://example.com/');
-        $response = $this->prophesize('Psr\Http\Message\ResponseInterface');
+        $response = $this->prophesize(\Psr\Http\Message\ResponseInterface::class);
 
         $middleware = function ($req, $res, $next = null) {
             return $res;
@@ -431,7 +431,7 @@ class ApplicationTest extends TestCase
 
         $app = new Application($this->router->reveal(), $container->reveal());
 
-        $pipeline = $this->prophesize('SplQueue');
+        $pipeline = $this->prophesize(\SplQueue::class);
 
         // Test that the route middleware is enqueued
         $pipeline->enqueue(Argument::that(function ($route) use ($app) {
@@ -476,7 +476,7 @@ class ApplicationTest extends TestCase
         $pipeline = $r->getValue($app);
 
         $route = $pipeline->dequeue();
-        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertInstanceOf(\Zend\Stratigility\Route::class, $route);
         $handler = $route->handler;
 
         $this->assertEquals('invoked', $handler('foo', 'bar'));
@@ -502,7 +502,7 @@ class ApplicationTest extends TestCase
         $pipeline = $r->getValue($app);
 
         $route = $pipeline->dequeue();
-        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertInstanceOf(\Zend\Stratigility\Route::class, $route);
         $handler = $route->handler;
 
         $this->assertEquals('invoked', $handler('foo', 'bar', 'baz', 'bat'));
@@ -528,7 +528,7 @@ class ApplicationTest extends TestCase
         $pipeline = $r->getValue($app);
 
         $route = $pipeline->dequeue();
-        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertInstanceOf(\Zend\Stratigility\Route::class, $route);
         $handler = $route->handler;
 
         $this->assertEquals('invoked', $handler('foo', 'bar'));
@@ -554,7 +554,7 @@ class ApplicationTest extends TestCase
         $pipeline = $r->getValue($app);
 
         $route = $pipeline->dequeue();
-        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertInstanceOf(\Zend\Stratigility\Route::class, $route);
         $handler = $route->handler;
 
         $this->assertEquals('invoked', $handler('foo', 'bar', 'baz', 'bat'));
