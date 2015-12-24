@@ -97,7 +97,7 @@ class ApplicationFactoryTest extends TestCase
     public function testFactoryWillPullAllReplaceableDependenciesFromContainerWhenPresent()
     {
         $app = $this->factory->__invoke($this->container->reveal());
-        $this->assertInstanceOf(\Zend\Expressive\Application::class, $app);
+        $this->assertInstanceOf(Application::class, $app);
         $test = $this->getRouterFromApplication($app);
         $this->assertSame($this->router->reveal(), $test);
         $this->assertSame($this->container->reveal(), $app->getContainer());
@@ -156,7 +156,7 @@ class ApplicationFactoryTest extends TestCase
         $factory = new ApplicationFactory();
 
         $app = $factory->__invoke($container->reveal());
-        $this->assertInstanceOf(\Zend\Expressive\Application::class, $app);
+        $this->assertInstanceOf(Application::class, $app);
         $router = $this->getRouterFromApplication($app);
         $this->assertInstanceOf(\Zend\Expressive\Router\FastRouteRouter::class, $router);
         $this->assertSame($container->reveal(), $app->getContainer());

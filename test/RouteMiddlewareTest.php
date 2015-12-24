@@ -28,7 +28,7 @@ class RouteMiddlewareTest extends TestCase
 
     public function setUp()
     {
-        $this->router    = $this->prophesize(\Zend\Expressive\Router\RouterInterface::class);
+        $this->router    = $this->prophesize(RouterInterface::class);
         $this->container = $this->mockContainerInterface();
     }
 

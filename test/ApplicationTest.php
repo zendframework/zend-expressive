@@ -57,7 +57,7 @@ class ApplicationTest extends TestCase
     public function testConstructorAcceptsRouterAsAnArgument()
     {
         $app = $this->getApp();
-        $this->assertInstanceOf(\Zend\Expressive\Application::class, $app);
+        $this->assertInstanceOf(Application::class, $app);
     }
 
     public function testApplicationIsAMiddlewarePipe()

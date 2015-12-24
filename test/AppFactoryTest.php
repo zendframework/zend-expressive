@@ -29,7 +29,7 @@ class AppFactoryTest extends TestCase
     public function testFactoryReturnsApplicationInstance()
     {
         $app = AppFactory::create();
-        $this->assertInstanceOf(\Zend\Expressive\Application::class, $app);
+        $this->assertInstanceOf(Application::class, $app);
     }
 
     public function testFactoryUsesFastRouteByDefault()
