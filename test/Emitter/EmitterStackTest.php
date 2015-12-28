@@ -94,7 +94,7 @@ class EmitterStackTest extends TestCase
         $second = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
         $this->emitter->push($first->reveal());
         $this->emitter->unshift($second->reveal());
-        $this->assertSame($second->reveal(), $this->emitter->pop());
+        $this->assertSame($first->reveal(), $this->emitter->pop());
     }
 
     public function testEmitLoopsThroughEmittersUntilOneReturnsNonFalseValue()
