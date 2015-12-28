@@ -9,6 +9,7 @@
 
 namespace ZendTest\Expressive;
 
+use Interop\Container\ContainerInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Argument;
 use ReflectionProperty;
@@ -18,6 +19,7 @@ use Zend\Diactoros\ServerRequest as Request;
 use Zend\Diactoros\ServerRequest;
 use Zend\Expressive\Application;
 use Zend\Expressive\Emitter\EmitterStack;
+use Zend\Expressive\Exception\InvalidMiddlewareException;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouteResult;
 use Zend\Stratigility\Route as StratigilityRoute;
@@ -121,9 +123,10 @@ class ApplicationTest extends TestCase
 
     public function testCallingRouteWithExistingPathAndOmittingMethodsArgumentRaisesException()
     {
-        $this->router->addRoute(Argument::type(Route::class))->shouldBeCalledTimes(1);
+        $this->router->addRoute(Argument::type(Route::class))->shouldBeCalledTimes(2);
         $app = $this->getApp();
-        $route = $app->route('/foo', $this->noopMiddleware);
+        $app->route('/foo', $this->noopMiddleware);
+        $app->route('/bar', $this->noopMiddleware);
         $this->setExpectedException('DomainException');
         $app->route('/foo', function ($req, $res, $next) {
         });
@@ -371,6 +374,13 @@ class ApplicationTest extends TestCase
         $app->run($request, $response->reveal());
     }
 
+    public function testCallingGetContainerReturnsComposedInstance()
+    {
+        $container = $this->prophesize(ContainerInterface::class);
+        $app = new Application($this->router->reveal(), $container->reveal());
+        $this->assertSame($container->reveal(), $app->getContainer());
+    }
+
     public function testCallingGetContainerWhenNoContainerComposedWillRaiseException()
     {
         $app = new Application($this->router->reveal());
@@ -537,6 +547,31 @@ class ApplicationTest extends TestCase
     /**
      * @group lazy-piping
      */
+    public function testPipingNotInvokableMiddlewareRisesException()
+    {
+        $middleware = 'not callable';
+
+        $container = $this->mockContainerInterface();
+        $this->injectServiceInContainer($container, 'foo', $middleware);
+
+        $app = new Application($this->router->reveal(), $container->reveal());
+        $app->pipe('/foo', 'foo');
+
+        $r = new ReflectionProperty($app, 'pipeline');
+        $r->setAccessible(true);
+        $pipeline = $r->getValue($app);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $handler = $route->handler;
+
+        $this->setExpectedException(InvalidMiddlewareException::class);
+        $handler('foo', 'bar');
+    }
+
+    /**
+     * @group lazy-piping
+     */
     public function testAllowsPipingErrorMiddlewareAsServiceNameWithPath()
     {
         $middleware = function ($error, $req, $res, $next) {
@@ -558,5 +593,50 @@ class ApplicationTest extends TestCase
         $handler = $route->handler;
 
         $this->assertEquals('invoked', $handler('foo', 'bar', 'baz', 'bat'));
+    }
+
+    public function testAllowsPipingErrorMiddlewareWithoutPath()
+    {
+        $middleware = function ($error, $req, $res, $next) {
+            return 'invoked';
+        };
+
+        $container = $this->mockContainerInterface();
+        $this->injectServiceInContainer($container, 'foo', $middleware);
+
+        $app = new Application($this->router->reveal(), $container->reveal());
+        $app->pipeErrorHandler($middleware);
+
+        $r = new ReflectionProperty($app, 'pipeline');
+        $r->setAccessible(true);
+        $pipeline = $r->getValue($app);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $handler = $route->handler;
+
+        $this->assertEquals('invoked', $handler('foo', 'bar', 'baz', 'bat'));
+    }
+
+    public function testPipingNotInvokableErrorMiddlewareRisesException()
+    {
+        $middleware = 'not callable';
+
+        $container = $this->mockContainerInterface();
+        $this->injectServiceInContainer($container, 'foo', $middleware);
+
+        $app = new Application($this->router->reveal(), $container->reveal());
+        $app->pipeErrorHandler('/foo', 'foo');
+
+        $r = new ReflectionProperty($app, 'pipeline');
+        $r->setAccessible(true);
+        $pipeline = $r->getValue($app);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $handler = $route->handler;
+
+        $this->setExpectedException(InvalidMiddlewareException::class);
+        $handler('foo', 'bar', 'baz', 'bat');
     }
 }
