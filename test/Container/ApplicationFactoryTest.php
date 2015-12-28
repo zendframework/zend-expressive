@@ -151,6 +151,29 @@ class ApplicationFactoryTest extends TestCase
         }
     }
 
+    public function testNoRoutesAreAddedIfSpecDoesNotProvidePathOrMiddleware()
+    {
+        $config = [
+            'routes' => [
+                [
+                    'allowed_methods' => [ 'GET' ],
+                ],
+                [
+                    'allowed_methods' => [ 'POST' ],
+                ],
+            ],
+        ];
+
+        $this->injectServiceInContainer($this->container, 'config', $config);
+
+        $app = $this->factory->__invoke($this->container->reveal());
+
+        $r = new ReflectionProperty($app, 'routes');
+        $r->setAccessible(true);
+        $routes = $r->getValue($app);
+        $this->assertEquals(0, count($routes));
+    }
+
     public function testWillUseSaneDefaultsForOptionalServices()
     {
         $container = $this->mockContainerInterface();
@@ -317,6 +340,36 @@ class ApplicationFactoryTest extends TestCase
         $this->assertInstanceOf('Closure', $route->handler);
         $this->assertTrue(call_user_func($route->handler, 'req', 'res'));
         $this->assertEquals('/foo', $route->path);
+    }
+
+    /**
+     * @group piping
+     */
+    public function testMiddlewareIsNotAddedIfSpecIsInvalid()
+    {
+        $config = [
+            'middleware_pipeline' => [
+                'post_routing' => [
+                    [ 'foo' => 'bar' ],
+                    [ 'path' => '/foo' ],
+                ],
+            ],
+        ];
+
+        $this->injectServiceInContainer($this->container, 'config', $config);
+
+        $app = $this->factory->__invoke($this->container->reveal());
+
+        $r = new ReflectionProperty($app, 'pipeline');
+        $r->setAccessible(true);
+        $pipeline = $r->getValue($app);
+
+        // only routeMiddleware should be added by default
+        $this->assertCount(1, $pipeline);
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertSame([$app, 'routeMiddleware'], $route->handler);
+        $this->assertEquals('/', $route->path);
     }
 
     public function uncallableMiddleware()
