@@ -18,6 +18,9 @@ use Zend\Expressive\Emitter\EmitterStack;
  */
 class EmitterStackTest extends TestCase
 {
+    /** @var EmitterStack */
+    private $emitter;
+
     public function setUp()
     {
         $this->emitter = new EmitterStack();
@@ -74,6 +77,24 @@ class EmitterStackTest extends TestCase
     {
         $this->setExpectedException('InvalidArgumentException');
         $this->emitter->offsetSet(0, $value);
+    }
+
+    public function testOffsetSetReplacesExistingValue()
+    {
+        $first = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
+        $replacement = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
+        $this->emitter->push($first->reveal());
+        $this->emitter->offsetSet(0, $replacement->reveal());
+        $this->assertSame($replacement->reveal(), $this->emitter->pop());
+    }
+
+    public function testUnshiftAddsNewEmitter()
+    {
+        $first = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
+        $second = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
+        $this->emitter->push($first->reveal());
+        $this->emitter->unshift($second->reveal());
+        $this->assertSame($second->reveal(), $this->emitter->pop());
     }
 
     public function testEmitLoopsThroughEmittersUntilOneReturnsNonFalseValue()
