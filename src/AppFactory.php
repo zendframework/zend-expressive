@@ -57,6 +57,7 @@ final class AppFactory
 
     /**
      * Do not allow instantiation.
+     * @codeCoverageIgnore
      */
     private function __construct()
     {

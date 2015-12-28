@@ -10,6 +10,7 @@
 namespace ZendTest\Expressive;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use ReflectionClass;
 use ReflectionProperty;
 use Zend\Expressive\AppFactory;
 use Zend\Expressive\Application;
@@ -70,5 +71,15 @@ class AppFactoryTest extends TestCase
         $app    = AppFactory::create(null, $router->reveal());
         $test   = $this->getRouterFromApplication($app);
         $this->assertSame($router->reveal(), $test);
+    }
+
+    /**
+     * @see http://stackoverflow.com/questions/4753811/php-unit-tests-is-it-possible-to-test-for-a-fatal-error
+     */
+    public function testCannotInstantiateExternally()
+    {
+        $reflection = new ReflectionClass('Zend\Expressive\AppFactory');
+        $constructor = $reflection->getConstructor();
+        $this->assertFalse($constructor->isPublic());
     }
 }
