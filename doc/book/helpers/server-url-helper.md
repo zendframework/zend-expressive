@@ -61,9 +61,9 @@ $services->setInvokableClass(ServerUrlHelper::class, ServerUrlHelper::class);
 $services->setFactory(ServerUrlMiddleware::class, ServerUrlMiddlewareFactory::class);
 
 // Pimple:
-$pimple[ServerUrlHelper::class] = $pimple->share(function ($container) {
+$pimple[ServerUrlHelper::class] = function ($container) {
     return new ServerUrlHelper();
-});
+};
 $pimple[ServerUrlMiddleware::class] = $pimple->share(function ($container) {
     $factory = new ServerUrlMiddlewareFactory();
     return $factory($container);
