@@ -11,6 +11,7 @@ namespace ZendTest\Expressive\Emitter;
 
 use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Argument;
+use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Expressive\Emitter\EmitterStack;
 
 /**
@@ -81,8 +82,8 @@ class EmitterStackTest extends TestCase
 
     public function testOffsetSetReplacesExistingValue()
     {
-        $first = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
-        $replacement = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
+        $first = $this->prophesize(EmitterInterface::class);
+        $replacement = $this->prophesize(EmitterInterface::class);
         $this->emitter->push($first->reveal());
         $this->emitter->offsetSet(0, $replacement->reveal());
         $this->assertSame($replacement->reveal(), $this->emitter->pop());
@@ -90,8 +91,8 @@ class EmitterStackTest extends TestCase
 
     public function testUnshiftAddsNewEmitter()
     {
-        $first = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
-        $second = $this->prophesize('Zend\Diactoros\Response\EmitterInterface');
+        $first = $this->prophesize(EmitterInterface::class);
+        $second = $this->prophesize(EmitterInterface::class);
         $this->emitter->push($first->reveal());
         $this->emitter->unshift($second->reveal());
         $this->assertSame($first->reveal(), $this->emitter->pop());

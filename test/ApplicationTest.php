@@ -562,7 +562,7 @@ class ApplicationTest extends TestCase
         $pipeline = $r->getValue($app);
 
         $route = $pipeline->dequeue();
-        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertInstanceOf(StratigilityRoute::class, $route);
         $handler = $route->handler;
 
         $this->setExpectedException(InvalidMiddlewareException::class);
@@ -612,7 +612,7 @@ class ApplicationTest extends TestCase
         $pipeline = $r->getValue($app);
 
         $route = $pipeline->dequeue();
-        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertInstanceOf(StratigilityRoute::class, $route);
         $handler = $route->handler;
 
         $this->assertEquals('invoked', $handler('foo', 'bar', 'baz', 'bat'));
@@ -633,7 +633,7 @@ class ApplicationTest extends TestCase
         $pipeline = $r->getValue($app);
 
         $route = $pipeline->dequeue();
-        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertInstanceOf(StratigilityRoute::class, $route);
         $handler = $route->handler;
 
         $this->setExpectedException(InvalidMiddlewareException::class);

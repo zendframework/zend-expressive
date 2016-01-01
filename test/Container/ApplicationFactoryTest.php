@@ -19,6 +19,7 @@ use Zend\Expressive\Container\ApplicationFactory;
 use Zend\Expressive\FinalHandler;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouterInterface;
+use Zend\Stratigility\Route as StratigilityRoute;
 use ZendTest\Expressive\ContainerTrait;
 use Zend\Expressive\Container\Exception\InvalidArgumentException;
 use ZendTest\Expressive\TestAsset\InvokableMiddleware;
@@ -367,7 +368,7 @@ class ApplicationFactoryTest extends TestCase
         // only routeMiddleware should be added by default
         $this->assertCount(1, $pipeline);
         $route = $pipeline->dequeue();
-        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertInstanceOf(StratigilityRoute::class, $route);
         $this->assertSame([$app, 'routeMiddleware'], $route->handler);
         $this->assertEquals('/', $route->path);
     }

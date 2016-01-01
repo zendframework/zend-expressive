@@ -78,7 +78,7 @@ class AppFactoryTest extends TestCase
      */
     public function testCannotInstantiateExternally()
     {
-        $reflection = new ReflectionClass('Zend\Expressive\AppFactory');
+        $reflection = new ReflectionClass(AppFactory::class);
         $constructor = $reflection->getConstructor();
         $this->assertFalse($constructor->isPublic());
     }
