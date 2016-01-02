@@ -49,7 +49,8 @@ class FinalHandlerFactoryTest extends PHPUnit_Framework_TestCase
         $result = $this->factory->__invoke($this->container->reveal());
 
         $this->assertInstanceOf(FinalHandler::class, $result);
-        $response = $result->__invoke($this->prophesize(ServerRequestInterface::class)->reveal(), new Response(), new Exception('boofoo'));
+        $request = $this->prophesize(ServerRequestInterface::class)->reveal();
+        $response = $result->__invoke($request, new Response(), new Exception('boofoo'));
 
         $this->assertNotContains('boofoo', (string) $response->getBody());
     }
@@ -67,7 +68,8 @@ class FinalHandlerFactoryTest extends PHPUnit_Framework_TestCase
         $result = $this->factory->__invoke($this->container->reveal());
 
         $this->assertInstanceOf(FinalHandler::class, $result);
-        $response = $result->__invoke($this->prophesize(ServerRequestInterface::class)->reveal(), new Response(), new Exception('boofoo'));
+        $request = $this->prophesize(ServerRequestInterface::class)->reveal();
+        $response = $result->__invoke($request, new Response(), new Exception('boofoo'));
 
         $this->assertContains('boofoo', (string) $response->getBody());
     }
