@@ -15,8 +15,18 @@ the language as an attribute.
 ```php
 namespace Application\I18n;
 
+use Locale;
+use Zend\Expressive\Helper\UrlHelper;
+
 class SetLanguageMiddleware
 {
+    private $helper;
+    
+    public function __construct(UrlHelper $helper)
+    {
+        $this->helper = $helper;
+    }
+    
     public function __invoke($request, $response, callable $next)
     {
     
@@ -31,16 +41,38 @@ class SetLanguageMiddleware
         
         $lang = $matches['lang'];
         Locale::setDefault($lang);
+        $this->helper->setBasePath($lang);
         
-        $path = substr($path, 3);
-        $request = $request
-            ->withUri($uri->withPath($path))
-            ->withAttribute('lang', $lang);
-            
-        return $next($request, $response);
+        return $next(
+            $request->withUri(
+                $uri->withPath(substr($path, 3))
+            ),
+            $response
+        );
     }
 }
 ```
+
+Then you will need a factory for the `SetLanguageMiddleware` to inject the
+`UrlHelper` instance.
+
+```php
+namespace Application\I18n;
+
+use Interop\Container\ContainerInterface;
+use Zend\Expressive\Helper\UrlHelper;
+
+class SetLanguageMiddlewareFactory
+{
+    public function __invoke(ContainerInterface $container)
+    {
+        $urlHelper = $container->get(UrlHelper::class);
+
+        return new SetLanguageMiddleware($urlHelper);
+    }
+}
+```
+
 
 Afterwards you need to configure the `SetLanguageMiddleware` in your 
 `/config/autoload/middleware-pipeline.global.php` file so that it is executed 
@@ -49,14 +81,10 @@ on every request.
 ```php
 return [
     'dependencies' => [
-        'invokables' => [
-            /* ... */
-            
+        'factories' => [
             Application\I18n\SetLanguageMiddleware::class =>
-                Application\I18n\SetLanguageMiddleware::class,
+                Application\I18n\SetLanguageMiddlewareFactory::class,
         ],
-
-        /* ... */
     ]
 
     'middleware_pipeline' => [
@@ -78,85 +106,77 @@ return [
 
 ## Url generation in the view ##
 
-The primary problem with it will be URI generation, as the router will be 
-generating URIs without the language prefix, which will require a custom URI 
-helper. However, this could even be something as simple as:
+Since the `UrlHelper` has the language set as a base path you don't need 
+to worry about generating URLs within your view. Just use the helper to 
+generate an URL and it will do the rest.
 
 ```php
-namespace Application\View\Helper;
-
-use Locale;
-use Zend\Expressive\ZendView\UrlHelper;
-
-class LocalizedUrlHelper extends UrlHelper
-{
-    public function __invoke($route = null, $params = [])
-    {
-        return sprintf(
-            '/%s%s', 
-            Locale::getDefault(), 
-            parent::__invoke($route, $params)
-        );
-    }
-}
-```
-
-You will also need a factory for the new url helper:
-
-```php
-namespace Application\View\Helper;
-
-use Interop\Container\ContainerInterface;
-
-class LocalizedUrlHelperFactory extends UrlHelper
-{
-    public function __invoke(ContainerInterface $container)
-    {
-        return new LocalizedUrlHelper($container->get(RouterInterface::class));
-    }
-}
-```
-
-You can easily configure the extended url helper by changing its configuration 
-within the `/config/autoload/dependencies.global.php` file.
-
-```php
-return [
-    'dependencies' => [
-        'invokables' => [
-            /* ... */
-            
-            Zend\Expressive\Helper\UrlHelper::class =>
-                Application\View\Helper\LocalizedUrlHelperFactory::class,
-        ],
-
-        /* ... */
-    ]
-];
+<?php echo $this->url('your-route') ?>
 ```
 
 ## Redirecting within your middleware ##
 
 If you want to add the language parameter when creating URIs within your 
-action middleware you just need to do the following:
-
+action middleware you just need to inject the `UrlHelper` into your 
+middleware and use it for URL generation:
 
 ```php
-public function __invoke(
-    ServerRequestInterface $request,
-    ResponseInterface $response,
-    callable $next = null
-) {
-    /* ... */
-    
-    $routeParams = [
-        'id'   => $id,
-        'lang' => $request->getAttribute('lang'),
-    ];
-    
-    return new RedirectResponse(
-        $this->router->generateUri('article.show', $routeParams)
-    );
+namespace Application\Action;
+
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Response\RedirectResponse;
+use Zend\Expressive\Helper\UrlHelper;
+
+class RedirectAction
+{
+    private $helper;
+        
+    public function __construct(UrlHelper $helper)
+    {
+        $this->helper = $helper;
+    }
+        
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface      $response
+     * @param callable|null          $next
+     *
+     * @return RedirectResponse
+     */
+    public function __invoke(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        callable $next = null
+    ) {
+        $routeParams = [ /* ... */ ];
+
+        return new RedirectResponse(
+            $this->helper->generate('your-route', $routeParams)
+        );
+    }
 }
 ```
 
+Of course you will need a factory as well to inject the `UrlHelper` into
+the `RedirectAction` middleware:
+
+Then you will need a factory for the `SetLanguageMiddleware` to inject the
+`UrlHelper` instance.
+
+```php
+namespace Application\Action;
+
+use Interop\Container\ContainerInterface;
+use Zend\Expressive\Helper\UrlHelper;
+
+class SetLanguageMiddlewareFactory
+{
+    public function __invoke(ContainerInterface $container)
+    {
+        $urlHelper = $container->get(UrlHelper::class);
+
+        return new RedirectAction($urlHelper);
+    }
+}
+```
