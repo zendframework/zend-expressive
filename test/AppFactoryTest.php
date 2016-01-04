@@ -9,10 +9,16 @@
 
 namespace ZendTest\Expressive;
 
+use Interop\Container\ContainerInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use ReflectionProperty;
+use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Expressive\AppFactory;
 use Zend\Expressive\Application;
+use Zend\Expressive\Emitter\EmitterStack;
+use Zend\Expressive\Router\FastRouteRouter;
+use Zend\Expressive\Router\RouterInterface;
+use Zend\ServiceManager\ServiceManager;
 
 /**
  * @covers Zend\Expressive\AppFactory
@@ -36,29 +42,29 @@ class AppFactoryTest extends TestCase
     {
         $app    = AppFactory::create();
         $router = $this->getRouterFromApplication($app);
-        $this->assertInstanceOf(\Zend\Expressive\Router\FastRouteRouter::class, $router);
+        $this->assertInstanceOf(FastRouteRouter::class, $router);
     }
 
     public function testFactoryUsesZf2ServiceManagerByDefault()
     {
         $app        = AppFactory::create();
         $container  = $app->getContainer();
-        $this->assertInstanceOf(\Zend\ServiceManager\ServiceManager::class, $container);
+        $this->assertInstanceOf(ServiceManager::class, $container);
     }
 
     public function testFactoryUsesEmitterStackWithSapiEmitterComposedByDefault()
     {
         $app     = AppFactory::create();
         $emitter = $app->getEmitter();
-        $this->assertInstanceOf(\Zend\Expressive\Emitter\EmitterStack::class, $emitter);
+        $this->assertInstanceOf(EmitterStack::class, $emitter);
 
         $this->assertCount(1, $emitter);
-        $this->assertInstanceOf(\Zend\Diactoros\Response\SapiEmitter::class, $emitter->pop());
+        $this->assertInstanceOf(SapiEmitter::class, $emitter->pop());
     }
 
     public function testFactoryAllowsPassingContainerToUse()
     {
-        $container = $this->prophesize(\Interop\Container\ContainerInterface::class);
+        $container = $this->prophesize(ContainerInterface::class);
         $app       = AppFactory::create($container->reveal());
         $test      = $app->getContainer();
         $this->assertSame($container->reveal(), $test);
@@ -66,7 +72,7 @@ class AppFactoryTest extends TestCase
 
     public function testFactoryAllowsPassingRouterToUse()
     {
-        $router = $this->prophesize(\Zend\Expressive\Router\RouterInterface::class);
+        $router = $this->prophesize(RouterInterface::class);
         $app    = AppFactory::create(null, $router->reveal());
         $test   = $this->getRouterFromApplication($app);
         $this->assertSame($router->reveal(), $test);

@@ -9,8 +9,12 @@
 
 namespace ZendTest\Expressive\Emitter;
 
+use InvalidArgumentException;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Argument;
+use Psr\Http\Message\ResponseInterface;
+use SplStack;
+use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Expressive\Emitter\EmitterStack;
 
 /**
@@ -25,12 +29,12 @@ class EmitterStackTest extends TestCase
 
     public function testIsAnSplStack()
     {
-        $this->assertInstanceOf(\SplStack::class, $this->emitter);
+        $this->assertInstanceOf(SplStack::class, $this->emitter);
     }
 
     public function testIsAnEmitterImplementation()
     {
-        $this->assertInstanceOf(\Zend\Diactoros\Response\EmitterInterface::class, $this->emitter);
+        $this->assertInstanceOf(EmitterInterface::class, $this->emitter);
     }
 
     public function nonEmitterValues()
@@ -44,7 +48,7 @@ class EmitterStackTest extends TestCase
             'zero-float' => [0.0],
             'float'      => [1.1],
             'string'     => ['emitter'],
-            'array'      => [[$this->prophesize(\Zend\Diactoros\Response\EmitterInterface::class)->reveal()]],
+            'array'      => [[$this->prophesize(EmitterInterface::class)->reveal()]],
             'object'     => [(object)[]],
         ];
     }
@@ -54,7 +58,7 @@ class EmitterStackTest extends TestCase
      */
     public function testCannotPushNonEmitterToStack($value)
     {
-        $this->setExpectedException(\InvalidArgumentException::class);
+        $this->setExpectedException(InvalidArgumentException::class);
         $this->emitter->push($value);
     }
 
@@ -63,7 +67,7 @@ class EmitterStackTest extends TestCase
      */
     public function testCannotUnshiftNonEmitterToStack($value)
     {
-        $this->setExpectedException(\InvalidArgumentException::class);
+        $this->setExpectedException(InvalidArgumentException::class);
         $this->emitter->unshift($value);
     }
 
@@ -72,28 +76,28 @@ class EmitterStackTest extends TestCase
      */
     public function testCannotSetNonEmitterToSpecificIndex($value)
     {
-        $this->setExpectedException(\InvalidArgumentException::class);
+        $this->setExpectedException(InvalidArgumentException::class);
         $this->emitter->offsetSet(0, $value);
     }
 
     public function testEmitLoopsThroughEmittersUntilOneReturnsNonFalseValue()
     {
-        $first = $this->prophesize(\Zend\Diactoros\Response\EmitterInterface::class);
+        $first = $this->prophesize(EmitterInterface::class);
         $first->emit()->shouldNotBeCalled();
 
-        $second = $this->prophesize(\Zend\Diactoros\Response\EmitterInterface::class);
-        $second->emit(Argument::type(\Psr\Http\Message\ResponseInterface::class))
+        $second = $this->prophesize(EmitterInterface::class);
+        $second->emit(Argument::type(ResponseInterface::class))
             ->willReturn(null);
 
-        $third = $this->prophesize(\Zend\Diactoros\Response\EmitterInterface::class);
-        $third->emit(Argument::type(\Psr\Http\Message\ResponseInterface::class))
+        $third = $this->prophesize(EmitterInterface::class);
+        $third->emit(Argument::type(ResponseInterface::class))
             ->willReturn(false);
 
         $this->emitter->push($first->reveal());
         $this->emitter->push($second->reveal());
         $this->emitter->push($third->reveal());
 
-        $response = $this->prophesize(\Psr\Http\Message\ResponseInterface::class);
+        $response = $this->prophesize(ResponseInterface::class);
 
         $this->assertNull($this->emitter->emit($response->reveal()));
     }

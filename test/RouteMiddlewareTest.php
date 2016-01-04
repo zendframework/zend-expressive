@@ -12,12 +12,17 @@ namespace ZendTest\Expressive;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Http\Message\ResponseInterface;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequest;
 use Zend\Expressive\Application;
+use Zend\Expressive\Exception\InvalidMiddlewareException;
+use Zend\Expressive\Router\AuraRouter;
+use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\RouteResult;
 use Zend\Expressive\Router\RouteResultObserverInterface;
 use Zend\Expressive\Router\RouterInterface;
+use Zend\Expressive\Router\ZendRouter;
 
 class RouteMiddlewareTest extends TestCase
 {
@@ -56,7 +61,7 @@ class RouteMiddlewareTest extends TestCase
 
         $app  = $this->getApplication();
         $test = $app->routeMiddleware($request, $response, $next);
-        $this->assertInstanceOf(\Psr\Http\Message\ResponseInterface::class, $test);
+        $this->assertInstanceOf(ResponseInterface::class, $test);
         $this->assertEquals(405, $test->getStatusCode());
         $allow = $test->getHeaderLine('Allow');
         $this->assertContains('GET', $allow);
@@ -131,7 +136,7 @@ class RouteMiddlewareTest extends TestCase
         };
 
         $app = $this->getApplication();
-        $this->setExpectedException(\Zend\Expressive\Exception\InvalidMiddlewareException::class, 'does not have');
+        $this->setExpectedException(InvalidMiddlewareException::class, 'does not have');
         $app->routeMiddleware($request, $response, $next);
     }
 
@@ -155,7 +160,7 @@ class RouteMiddlewareTest extends TestCase
         };
 
         $app = $this->getApplication();
-        $this->setExpectedException(\Zend\Expressive\Exception\InvalidMiddlewareException::class, 'callable');
+        $this->setExpectedException(InvalidMiddlewareException::class, 'callable');
         $app->routeMiddleware($request, $response, $next);
     }
 
@@ -181,7 +186,7 @@ class RouteMiddlewareTest extends TestCase
             $this->fail('Should not enter $next');
         };
 
-        $this->setExpectedException(\Zend\Expressive\Exception\InvalidMiddlewareException::class, 'callable');
+        $this->setExpectedException(InvalidMiddlewareException::class, 'callable');
         $app->routeMiddleware($request, $response, $next);
     }
 
@@ -205,7 +210,7 @@ class RouteMiddlewareTest extends TestCase
         };
 
         $test = $app->routeMiddleware($request, $response, $next);
-        $this->assertInstanceOf(\Psr\Http\Message\ResponseInterface::class, $test);
+        $this->assertInstanceOf(ResponseInterface::class, $test);
         $this->assertTrue($test->hasHeader('X-Invoked'));
         $this->assertEquals(__NAMESPACE__ . '\TestAsset\InvokableMiddleware', $test->getHeaderLine('X-Invoked'));
     }
@@ -235,7 +240,7 @@ class RouteMiddlewareTest extends TestCase
         };
 
         $test = $app->routeMiddleware($request, $response, $next);
-        $this->assertInstanceOf(\Psr\Http\Message\ResponseInterface::class, $test);
+        $this->assertInstanceOf(ResponseInterface::class, $test);
         $this->assertTrue($test->hasHeader('X-Middleware'));
         $this->assertEquals('Invoked', $test->getHeaderLine('X-Middleware'));
     }
@@ -262,7 +267,7 @@ class RouteMiddlewareTest extends TestCase
             $this->fail('Should not enter $next');
         };
 
-        $this->setExpectedException(\Zend\Expressive\Exception\InvalidMiddlewareException::class, 'retrieve');
+        $this->setExpectedException(InvalidMiddlewareException::class, 'retrieve');
         $app->routeMiddleware($request, $response, $next);
     }
 
@@ -272,9 +277,9 @@ class RouteMiddlewareTest extends TestCase
     public function routerAdapters()
     {
         return [
-          'aura'       => [ \Zend\Expressive\Router\AuraRouter::class ],
-          'fast-route' => [ \Zend\Expressive\Router\FastRouteRouter::class ],
-          'zf2'        => [ \Zend\Expressive\Router\ZendRouter::class ],
+          'aura'       => [ AuraRouter::class ],
+          'fast-route' => [ FastRouteRouter::class ],
+          'zf2'        => [ ZendRouter::class ],
         ];
     }
 
