@@ -32,6 +32,10 @@ First stable release.
 - [#227](https://github.com/zendframework/zend-expressive/pull/227) adds
   a section on creating localized routes, and setting the application locale
   based on the matched route.
+- [#244](https://github.com/zendframework/zend-expressive/pull/244) adds
+  a recipe on using middleware to detect localized URIs (vs using a routing
+  parameter), setting the application locale based on the match detected,
+  and setting the `UrlHelper` base path with the same match.
 
 ### Deprecated
 
