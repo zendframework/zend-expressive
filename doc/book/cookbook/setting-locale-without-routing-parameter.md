@@ -1,16 +1,29 @@
-# How can I setup the locale without an additional parameter?
+# How can I setup the locale without routing parameters?
 
-It is a common task to have a localized web application where the setting of
-the locale (and therefore the language) depends on the routing. In this recipe 
-we will automatically add the language to the route without changing all of 
-the existing routes.
+Localized web applications often set the locale (and therefor the language)
+based on a routing parameter, the session, or a specialized sub-domain.
+In this recipe we will concentrate on introspecting the URI path via middleware,
+which allows you to have a global mechanism for detecting the locale without
+requiring any changes to existing routes.
 
-## Setup a middleware to extract the language from the URI ##
+> ## Distinguishing between routes that require localization
+>
+> If your application has a mixture of routes that require localization, and
+> those that do not, the solution in this recipe may lead to multiple URIs
+> that resolve to the identical action, which may be undesirable. In such
+> cases, you may want to prefix the specific routes that require localization
+> with a required routing parameter; this approach is described in the
+> ["Setting a locale based on a routing parameter" recipe](setting-locale-depending-routing-parameter.md).
 
-First, we need to setup a middleware that extracts the language param directly
-from the request URI. If if doesn't find any it sets a default. If it does
-it uses the language to setup the locale. It also amends the request to add
-the language as an attribute. 
+## Setup a middleware to extract the language from the URI
+
+First, we need to setup middleware that extracts the language param directly
+from the request URI's path. If if doesn't find one, it sets a default.
+
+If it does find one, it uses the language to setup the locale. It also:
+
+- amends the request with a truncated path (removing the language segment).
+- adds the langauge segment as the base path of the `UrlHelper`.
 
 ```php
 namespace Application\I18n;
@@ -66,24 +79,25 @@ class SetLanguageMiddlewareFactory
 {
     public function __invoke(ContainerInterface $container)
     {
-        $urlHelper = $container->get(UrlHelper::class);
-
-        return new SetLanguageMiddleware($urlHelper);
+        return new SetLanguageMiddleware(
+            $container->get(UrlHelper::class)
+        );
     }
 }
 ```
 
-
-Afterwards you need to configure the `SetLanguageMiddleware` in your 
+Afterwards, you need to configure the `SetLanguageMiddleware` in your 
 `/config/autoload/middleware-pipeline.global.php` file so that it is executed 
 on every request.
 
 ```php
 return [
     'dependencies' => [
+        /* ... */
         'factories' => [
             Application\I18n\SetLanguageMiddleware::class =>
                 Application\I18n\SetLanguageMiddlewareFactory::class,
+            /* ... */
         ],
     ]
 
@@ -92,32 +106,38 @@ return [
             [
                 'middleware' => [
                     Application\I18n\SetLanguageMiddleware::class,
-                    
                     /* ... */
                 ],
+                /* ... */
             ],
         ],
 
         'post_routing' => [
+            /* ... */
         ],
     ],
 ];
 ```
 
-## Url generation in the view ##
+## Url generation in the view
 
-Since the `UrlHelper` has the language set as a base path you don't need 
+Since the `UrlHelper` has the language set as a base path, you don't need 
 to worry about generating URLs within your view. Just use the helper to 
-generate an URL and it will do the rest.
+generate a URL and it will do the rest.
 
 ```php
 <?php echo $this->url('your-route') ?>
 ```
 
-## Redirecting within your middleware ##
+> ### Helpers differ between template renderers
+>
+> The above example is specific to zend-view; syntax will differ for
+> Twig and Plates.
+
+## Redirecting within your middleware
 
 If you want to add the language parameter when creating URIs within your 
-action middleware you just need to inject the `UrlHelper` into your 
+action middleware, you just need to inject the `UrlHelper` into your 
 middleware and use it for URL generation:
 
 ```php
@@ -158,11 +178,9 @@ class RedirectAction
 }
 ```
 
-Of course you will need a factory as well to inject the `UrlHelper` into
-the `RedirectAction` middleware:
-
-Then you will need a factory for the `SetLanguageMiddleware` to inject the
-`UrlHelper` instance.
+Injecting the `UrlHelper` into your middleware will also require that the
+middleware have a factory that manages the injection. As an example, the
+following would work for the above middleware:
 
 ```php
 namespace Application\Action;
@@ -170,13 +188,13 @@ namespace Application\Action;
 use Interop\Container\ContainerInterface;
 use Zend\Expressive\Helper\UrlHelper;
 
-class SetLanguageMiddlewareFactory
+class RedirectActionFactory
 {
     public function __invoke(ContainerInterface $container)
     {
-        $urlHelper = $container->get(UrlHelper::class);
-
-        return new RedirectAction($urlHelper);
+        return new RedirectAction(
+            $container->get(UrlHelper::class)
+        );
     }
 }
 ```
