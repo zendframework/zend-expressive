@@ -81,10 +81,10 @@ use Zend\Expressive\Helper\UrlHelperFactory;
 $services->setFactory(UrlHelper::class, UrlHelperFactory::class);
 
 // Pimple:
-$pimple[UrlHelper::class] = $pimple->share(function ($container) {
+$pimple[UrlHelper::class] = function ($container) {
     $factory = new UrlHelperFactory();
     return $factory($container);
-});
+};
 
 // Aura.Di:
 $container->set(UrlHelperFactory::class, $container->lazyNew(UrlHelperFactory::class));
