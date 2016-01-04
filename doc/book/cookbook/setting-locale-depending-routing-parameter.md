@@ -1,15 +1,16 @@
 # How can I setup the locale depending on a routing parameter?
 
-It is a common task to have an localized web application where the setting of
-the locale (and therefor the language) depends on the routing. There are other 
-ways of setting a language like using the session or a specialized sub-domain.
-In this recipe we will concentrate on using the a routing parameter.
+Localized web applications often set the locale (and therefor the language)
+based on a routing parameter, the session, or a specialized sub-domain.
+In this recipe we will concentrate on using a routing parameter.
 
-## Setting up the route ##
+## Setting up the route
 
 If you want to set the locale depending on an routing parameter, you first have
-to add a language parameter to your routes. In this example we use the `lang` 
-parameter which should consist of two small letters,
+to add a language parameter to each route that requires localization.
+
+In this example we use the `lang` parameter, which should consist of two
+lowercase alphabetical characters:
 
 ```php
 return [
@@ -52,15 +53,15 @@ return [
 ];
 ```
 
-## Create a route result observer class for localization ##
+## Create a route result observer class for localization
 
-To make sure that you can setup the locale after the routing has been processed
-you need to implement a localization observer based which implements the 
+To make sure that you can setup the locale after the routing has been processed,
+you need to implement a localization observer which implements the 
 `RouteResultObserverInterface`. All classes that implement this interface and
-that are attached to the `Zend\Expressive` application instance get called 
+that are attached to the `Zend\Expressive\Application` instance get called 
 whenever the `RouteResult` has changed.
 
-Such a `LocalizationObserver` class could look similar to this.
+Such a `LocalizationObserver` class could look similar to this:
 
 ```php
 namespace Application\I18n;
@@ -79,11 +80,8 @@ class LocalizationObserver implements RouteResultObserverInterface
 
         $matchedParams = $result->getMatchedParams();
 
-        if (isset($matchedParams['lang'])) {
-            Locale::setDefault($matchedParams['lang']);
-        } else {
-            Locale::setDefault('de_DE');
-        }
+        $lang = isset($matchedParams['lang']) ? $matchedParams['lang'] : 'de_DE';
+        Locale::setDefault($matchedParams['lang']);
     }
 }
 ```
@@ -106,12 +104,12 @@ return [
 ];
 ```
 
-## Attach the localization observer to the application ##
+## Attach the localization observer to the application
 
 There are five approaches you can take to attach the `LocalizationObserver` to 
 the application instance, each with pros and cons:
 
-### Bootstrap script ###
+### Bootstrap script
 
 Modify the bootstrap script `/public/index.php` to attach the observer:
 
@@ -130,7 +128,7 @@ $app->run();
 This is likely the simplest way, but means that there may be a growing 
 amount of code in that file.
 
-### Observer factory ###
+### Observer factory
 
 Alternately, in the factory for your observer, have it self-attach to the 
 application instance:
@@ -156,7 +154,7 @@ There are two things to be careful of with this approach:
 If you can prevent circular dependencies, and ensure that the factory is invoked 
 early enough, then this is a great, portable way to accomplish it.
 
-### Delegator factory ###
+### Delegator factory
 
 If you're using zend-servicemanager, you can use a delegator factory on the 
 Application service to pull and register the observer:
@@ -188,7 +186,7 @@ class ApplicationObserverDelegatorFactory implements DelegatorFactoryInterface
 }
 ```
 
-Then register it as a delegator factory in config/autoload/dependencies.global.php:
+Then register it as a delegator factory in `config/autoload/dependencies.global.php`:
 
 ```php
 return [
@@ -219,7 +217,7 @@ $pimple->extend(Application::class, function ($app, $container) {
 and there are ways to accomplish it in Aura.Di as well — but they're all 
 different, making the approach non-portable.
 
-### Extend the Application factory ###
+### Extend the Application factory
 
 Alternately, extend the Application factory:
 
@@ -235,13 +233,13 @@ class MyApplicationFactory extends ApplicationFactory
 }
 ```
 
-Then alter the line in config/autoload/dependencies.global.php that registers 
-the Application factory to point at your own factory.
+Then alter the line in `config/autoload/dependencies.global.php` that registers 
+the `Application` factory to point at your own factory.
 
 This approach will work across all container types, and is essentially a 
 portable way of doing delegator factories.
 
-### Use middleware ###
+### Use middleware
 
 Alternately, use `pre_routing` middleware to accomplish the task; the middleware 
 will get both the observer and application as dependencies, and simply register 
@@ -269,8 +267,8 @@ class LocalizationObserverMiddleware
 }
 ```
 
-The factory would inject the observer and application instances; I'm sure you 
-can figure that part out on your own.
+The factory would inject the observer and application instances; we leave this
+as an exercise to the reader.
 
 In your `config/autoload/middleware-pipeline.global.php`, you'd do the following:
 
@@ -299,5 +297,3 @@ This approach is also portable, but, as you can see, requires more setup (a
 middleware class + factory + factory registration + middleware registration). 
 On the flip side, it's portable between applications, which could be something 
 to consider if you were to make the functionality into a discrete package.
-
-(This is the approach we took for the ServerUrl and Url helpers.)
