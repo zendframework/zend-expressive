@@ -9,18 +9,24 @@
 
 namespace ZendTest\Expressive\Container;
 
+use Closure;
+use InvalidArgumentException;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use ReflectionFunction;
 use ReflectionProperty;
 use Zend\Diactoros\Response\EmitterInterface;
+use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Expressive\Application;
 use Zend\Expressive\Container\ApplicationFactory;
-use Zend\Expressive\FinalHandler;
+use Zend\Expressive\Container\Exception as ContainerException;
+use Zend\Expressive\Emitter\EmitterStack;
+use Zend\Expressive\Exception\InvalidMiddlewareException;
+use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouterInterface;
+use Zend\Stratigility\Route as StratigilityRoute;
 use ZendTest\Expressive\ContainerTrait;
-use Zend\Expressive\Container\Exception\InvalidArgumentException;
 use ZendTest\Expressive\TestAsset\InvokableMiddleware;
 
 /**
@@ -98,7 +104,7 @@ class ApplicationFactoryTest extends TestCase
     public function testFactoryWillPullAllReplaceableDependenciesFromContainerWhenPresent()
     {
         $app = $this->factory->__invoke($this->container->reveal());
-        $this->assertInstanceOf('Zend\Expressive\Application', $app);
+        $this->assertInstanceOf(Application::class, $app);
         $test = $this->getRouterFromApplication($app);
         $this->assertSame($this->router->reveal(), $test);
         $this->assertSame($this->container->reveal(), $app->getContainer());
@@ -157,13 +163,13 @@ class ApplicationFactoryTest extends TestCase
         $factory = new ApplicationFactory();
 
         $app = $factory->__invoke($container->reveal());
-        $this->assertInstanceOf('Zend\Expressive\Application', $app);
+        $this->assertInstanceOf(Application::class, $app);
         $router = $this->getRouterFromApplication($app);
-        $this->assertInstanceOf('Zend\Expressive\Router\FastRouteRouter', $router);
+        $this->assertInstanceOf(FastRouteRouter::class, $router);
         $this->assertSame($container->reveal(), $app->getContainer());
-        $this->assertInstanceOf('Zend\Expressive\Emitter\EmitterStack', $app->getEmitter());
+        $this->assertInstanceOf(EmitterStack::class, $app->getEmitter());
         $this->assertCount(1, $app->getEmitter());
-        $this->assertInstanceOf('Zend\Diactoros\Response\SapiEmitter', $app->getEmitter()->pop());
+        $this->assertInstanceOf(SapiEmitter::class, $app->getEmitter()->pop());
         $this->assertNull($app->getFinalHandler());
     }
 
@@ -203,17 +209,17 @@ class ApplicationFactoryTest extends TestCase
         $this->assertCount(3, $pipeline);
 
         $route = $pipeline->dequeue();
-        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertInstanceOf(StratigilityRoute::class, $route);
         $this->assertSame($middleware, $route->handler);
         $this->assertEquals('/', $route->path);
 
         $route = $pipeline->dequeue();
-        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertInstanceOf(StratigilityRoute::class, $route);
         $this->assertSame($middleware, $route->handler);
         $this->assertEquals('/foo', $route->path);
 
         $route = $pipeline->dequeue();
-        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertInstanceOf(StratigilityRoute::class, $route);
         $this->assertSame([$app, 'routeMiddleware'], $route->handler);
         $this->assertEquals('/', $route->path);
     }
@@ -255,19 +261,19 @@ class ApplicationFactoryTest extends TestCase
         $this->assertCount(3, $pipeline);
 
         $route = $pipeline->dequeue();
-        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertInstanceOf(StratigilityRoute::class, $route);
         $this->assertSame([$app, 'routeMiddleware'], $route->handler);
         $this->assertEquals('/', $route->path);
 
         $route = $pipeline->dequeue();
-        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
-        $this->assertInstanceOf('Closure', $route->handler);
+        $this->assertInstanceOf(StratigilityRoute::class, $route);
+        $this->assertInstanceOf(Closure::class, $route->handler);
         $this->assertTrue(call_user_func($route->handler, 'req', 'res'));
         $this->assertEquals('/', $route->path);
 
         $route = $pipeline->dequeue();
-        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
-        $this->assertInstanceOf('Closure', $route->handler);
+        $this->assertInstanceOf(StratigilityRoute::class, $route);
+        $this->assertInstanceOf(Closure::class, $route->handler);
         $this->assertTrue(call_user_func($route->handler, 'req', 'res'));
         $this->assertEquals('/foo', $route->path);
     }
@@ -302,19 +308,19 @@ class ApplicationFactoryTest extends TestCase
         $this->assertCount(3, $pipeline);
 
         $route = $pipeline->dequeue();
-        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertInstanceOf(StratigilityRoute::class, $route);
         $this->assertSame([$app, 'routeMiddleware'], $route->handler);
         $this->assertEquals('/', $route->path);
 
         $route = $pipeline->dequeue();
-        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
-        $this->assertInstanceOf('Closure', $route->handler);
+        $this->assertInstanceOf(StratigilityRoute::class, $route);
+        $this->assertInstanceOf(Closure::class, $route->handler);
         $this->assertTrue(call_user_func($route->handler, 'req', 'res'));
         $this->assertEquals('/', $route->path);
 
         $route = $pipeline->dequeue();
-        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
-        $this->assertInstanceOf('Closure', $route->handler);
+        $this->assertInstanceOf(StratigilityRoute::class, $route);
+        $this->assertInstanceOf(Closure::class, $route->handler);
         $this->assertTrue(call_user_func($route->handler, 'req', 'res'));
         $this->assertEquals('/foo', $route->path);
     }
@@ -352,7 +358,7 @@ class ApplicationFactoryTest extends TestCase
 
         $this->injectServiceInContainer($this->container, 'config', $config);
 
-        $this->setExpectedException('InvalidArgumentException');
+        $this->setExpectedException(InvalidArgumentException::class);
         $app = $this->factory->__invoke($this->container->reveal());
     }
 
@@ -424,7 +430,7 @@ class ApplicationFactoryTest extends TestCase
 
         $this->injectServiceInContainer($this->container, 'config', $config);
 
-        $this->setExpectedException('InvalidArgumentException');
+        $this->setExpectedException(InvalidArgumentException::class);
         $app = $this->factory->__invoke($this->container->reveal());
     }
 
@@ -456,18 +462,18 @@ class ApplicationFactoryTest extends TestCase
         $this->assertCount(3, $pipeline);
 
         $routing = $pipeline->dequeue();
-        $this->assertInstanceOf('Zend\Stratigility\Route', $routing);
+        $this->assertInstanceOf(StratigilityRoute::class, $routing);
         $this->assertSame([$app, 'routeMiddleware'], $routing->handler);
         $this->assertEquals('/', $routing->path);
 
         $first = $pipeline->dequeue();
-        $this->assertInstanceOf('Zend\Stratigility\Route', $first);
-        $this->assertInstanceOf('Closure', $first->handler);
+        $this->assertInstanceOf(StratigilityRoute::class, $first);
+        $this->assertInstanceOf(Closure::class, $first->handler);
         $this->assertEquals('/', $first->path);
 
         $second = $pipeline->dequeue();
-        $this->assertInstanceOf('Zend\Stratigility\Route', $second);
-        $this->assertInstanceOf('Closure', $second->handler);
+        $this->assertInstanceOf(StratigilityRoute::class, $second);
+        $this->assertInstanceOf(Closure::class, $second->handler);
         $this->assertEquals('/foo', $second->path);
 
         foreach (['first' => $first->handler, 'second' => $second->handler] as $index => $handler) {
@@ -475,7 +481,7 @@ class ApplicationFactoryTest extends TestCase
                 $handler('req', 'res');
                 $this->fail(sprintf('%s handler succeed, but should have raised an exception', $index));
             } catch (\Exception $e) {
-                $this->assertInstanceOf('Zend\Expressive\Exception\InvalidMiddlewareException', $e);
+                $this->assertInstanceOf(InvalidMiddlewareException::class, $e);
                 $this->assertContains('Lazy-loaded', $e->getMessage());
             }
         }
@@ -534,14 +540,14 @@ class ApplicationFactoryTest extends TestCase
         $this->assertCount(2, $pipeline);
 
         $route = $pipeline->dequeue();
-        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertInstanceOf(StratigilityRoute::class, $route);
         $this->assertEquals('/', $route->path);
         $this->assertSame([$app, 'routeMiddleware'], $route->handler);
 
         $route = $pipeline->dequeue();
-        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertInstanceOf(StratigilityRoute::class, $route);
         $this->assertEquals('/', $route->path);
-        $this->assertInstanceOf('Closure', $route->handler);
+        $this->assertInstanceOf(Closure::class, $route->handler);
 
         $r = new ReflectionFunction($route->handler);
         $this->assertEquals(4, $r->getNumberOfRequiredParameters());
@@ -577,17 +583,17 @@ class ApplicationFactoryTest extends TestCase
         $this->assertCount(3, $pipeline);
 
         $route = $pipeline->dequeue();
-        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertInstanceOf(StratigilityRoute::class, $route);
         $this->assertSame($middleware, $route->handler);
         $this->assertEquals('/', $route->path);
 
         $route = $pipeline->dequeue();
-        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertInstanceOf(StratigilityRoute::class, $route);
         $this->assertSame($middleware, $route->handler);
         $this->assertEquals('/foo', $route->path);
 
         $route = $pipeline->dequeue();
-        $this->assertInstanceOf('Zend\Stratigility\Route', $route);
+        $this->assertInstanceOf(StratigilityRoute::class, $route);
         $this->assertSame([$app, 'routeMiddleware'], $route->handler);
         $this->assertEquals('/', $route->path);
     }
@@ -667,7 +673,7 @@ class ApplicationFactoryTest extends TestCase
         $this->injectServiceInContainer($this->container, 'config', $config);
 
         $this->setExpectedException(
-            InvalidArgumentException::class,
+            ContainerException\InvalidArgumentException::class,
             'route must be in form of an array; received "string"'
         );
         $this->factory->__invoke($this->container->reveal());
@@ -688,7 +694,7 @@ class ApplicationFactoryTest extends TestCase
         $this->injectServiceInContainer($this->container, 'config', $config);
 
         $this->setExpectedException(
-            InvalidArgumentException::class,
+            ContainerException\InvalidArgumentException::class,
             'options must be an array; received "string"'
         );
         $this->factory->__invoke($this->container->reveal());
@@ -705,7 +711,7 @@ class ApplicationFactoryTest extends TestCase
         $this->injectServiceInContainer($this->container, 'config', $config);
 
         $this->setExpectedException(
-            InvalidArgumentException::class,
+            ContainerException\InvalidArgumentException::class,
             'Pre-routing middleware collection must be an array; received "string"'
         );
         $this->factory->__invoke($this->container->reveal());
@@ -722,7 +728,7 @@ class ApplicationFactoryTest extends TestCase
         $this->injectServiceInContainer($this->container, 'config', $config);
 
         $this->setExpectedException(
-            InvalidArgumentException::class,
+            ContainerException\InvalidArgumentException::class,
             'Post-routing middleware collection must be an array; received "string"'
         );
         $this->factory->__invoke($this->container->reveal());
