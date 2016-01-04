@@ -29,6 +29,9 @@ First stable release.
 - [#255](https://github.com/zendframework/zend-expressive/pull/255) adds
   documentation for the base path functionality provided by the `UrlHelper`
   class of zend-expressive-helpers.
+- [#227](https://github.com/zendframework/zend-expressive/pull/227) adds
+  a section on creating localized routes, and setting the application locale
+  based on the matched route.
 
 ### Deprecated
 

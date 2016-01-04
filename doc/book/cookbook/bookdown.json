@@ -7,6 +7,7 @@
         {"Registering custom view helpers when using zend-view": "using-custom-view-helpers.md"},
         {"Using zend-form view helpers": "using-zend-form-view-helpers.md"},
         {"Using Expressive from a subdirectory": "using-a-base-path.md"},
-        {"Building modular applications": "modular-layout.md"}
+        {"Building modular applications": "modular-layout.md"},
+        {"Setting up locale depending on routing parameter": "setting-locale-depending-routing-parameter.md"}
     ]
 }
