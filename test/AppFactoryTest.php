@@ -29,36 +29,36 @@ class AppFactoryTest extends TestCase
     public function testFactoryReturnsApplicationInstance()
     {
         $app = AppFactory::create();
-        $this->assertInstanceOf('Zend\Expressive\Application', $app);
+        $this->assertInstanceOf(Application::class, $app);
     }
 
     public function testFactoryUsesFastRouteByDefault()
     {
         $app    = AppFactory::create();
         $router = $this->getRouterFromApplication($app);
-        $this->assertInstanceOf('Zend\Expressive\Router\FastRouteRouter', $router);
+        $this->assertInstanceOf(\Zend\Expressive\Router\FastRouteRouter::class, $router);
     }
 
     public function testFactoryUsesZf2ServiceManagerByDefault()
     {
         $app        = AppFactory::create();
         $container  = $app->getContainer();
-        $this->assertInstanceOf('Zend\ServiceManager\ServiceManager', $container);
+        $this->assertInstanceOf(\Zend\ServiceManager\ServiceManager::class, $container);
     }
 
     public function testFactoryUsesEmitterStackWithSapiEmitterComposedByDefault()
     {
         $app     = AppFactory::create();
         $emitter = $app->getEmitter();
-        $this->assertInstanceOf('Zend\Expressive\Emitter\EmitterStack', $emitter);
+        $this->assertInstanceOf(\Zend\Expressive\Emitter\EmitterStack::class, $emitter);
 
         $this->assertCount(1, $emitter);
-        $this->assertInstanceOf('Zend\Diactoros\Response\SapiEmitter', $emitter->pop());
+        $this->assertInstanceOf(\Zend\Diactoros\Response\SapiEmitter::class, $emitter->pop());
     }
 
     public function testFactoryAllowsPassingContainerToUse()
     {
-        $container = $this->prophesize('Interop\Container\ContainerInterface');
+        $container = $this->prophesize(\Interop\Container\ContainerInterface::class);
         $app       = AppFactory::create($container->reveal());
         $test      = $app->getContainer();
         $this->assertSame($container->reveal(), $test);
@@ -66,7 +66,7 @@ class AppFactoryTest extends TestCase
 
     public function testFactoryAllowsPassingRouterToUse()
     {
-        $router = $this->prophesize('Zend\Expressive\Router\RouterInterface');
+        $router = $this->prophesize(\Zend\Expressive\Router\RouterInterface::class);
         $app    = AppFactory::create(null, $router->reveal());
         $test   = $this->getRouterFromApplication($app);
         $this->assertSame($router->reveal(), $test);
