@@ -1,6 +1,6 @@
-# BodyParse Middleware
+# Body Parsing Middleware
 
-`Zend\Expressive\Helper\BodyParse\BodyParseMiddleware` provides generic PSR-7
+`Zend\Expressive\Helper\BodyParams\BodyParamsMiddleware` provides generic PSR-7
 middleware for parsing the request body into parameters, and returning a new
 request instance that composes them. The subcomponent provides a strategy
 pattern around matching the request `Content-Type`, and then parsing it, giving
@@ -156,7 +156,7 @@ return [
         ],
         'factories' => [
             // Add this line:
-            Helper\BodyParams\BodyParamsMiddleware::class => MyCustomBodyParamsStrategy::class,
+            Helper\BodyParams\BodyParamsMiddleware::class => MyCustomBodyParamsStrategyFactory::class,
             /* ... */
         ],
     ],
