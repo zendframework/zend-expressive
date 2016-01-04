@@ -33,10 +33,7 @@ interface TemplateRendererInterface
     public function addPath($path, $namespace = null);
 
     /**
-     * Add a template path to the engine.
-     *
-     * Adds a template path, with optional namespace the templates in that path
-     * provide.
+     * Retrieve configured paths from the engine.
      *
      * @return TemplatePath[]
      */
