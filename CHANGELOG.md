@@ -20,6 +20,28 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
+## 1.0.0 - TBD
+
+First stable release.
+
+### Added
+
+- [#255](https://github.com/zendframework/zend-expressive/pull/255) adds
+  documentation for the base path functionality provided by the `UrlHelper`
+  class of zend-expressive-helpers.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 1.0.0rc5 - 2015-12-22
 
 Fifth release candidate.
