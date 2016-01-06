@@ -36,6 +36,8 @@ First stable release.
   a recipe on using middleware to detect localized URIs (vs using a routing
   parameter), setting the application locale based on the match detected,
   and setting the `UrlHelper` base path with the same match.
+- [#260](https://github.com/zendframework/zend-expressive/pull/260) adds
+  a recipe on how to add debug toolbars to your Expressive applications.
 
 ### Deprecated
 
