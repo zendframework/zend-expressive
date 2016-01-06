@@ -9,6 +9,7 @@
         {"Using Expressive from a subdirectory": "using-a-base-path.md"},
         {"Building modular applications": "modular-layout.md"},
         {"Setting a locale based on a routing parameter": "setting-locale-depending-routing-parameter.md"},
-        {"Setting a locale without a routing parameter": "setting-locale-without-routing-parameter.md"}
+        {"Setting a locale without a routing parameter": "setting-locale-without-routing-parameter.md"},
+        {"Enabling debug toolbars": "debug-toolbars.md"}
     ]
 }
