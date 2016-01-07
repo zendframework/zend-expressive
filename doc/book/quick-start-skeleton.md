@@ -16,7 +16,7 @@ $ composer create-project -s rc zendframework/zend-expressive-skeleton expressiv
 
 > ### Stability
 >
-> The Expressive installer is currenly in release candidate status. For Composer
+> The Expressive installer is currently in release candidate status. For Composer
 > to recognize the version as installable, you must pass the `-s rc` flag,
 > indicating it should use packages of RC stability.
 

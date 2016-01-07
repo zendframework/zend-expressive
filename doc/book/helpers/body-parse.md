@@ -4,7 +4,7 @@
 middleware for parsing the request body into parameters, and returning a new
 request instance that composes them. The subcomponent provides a strategy
 pattern around matching the request `Content-Type`, and then parsing it, giving
-you a flexibile approach that can grow with your accepted content types.
+you a flexible approach that can grow with your accepted content types.
 
 By default, this middleware will detect the following content types:
 
