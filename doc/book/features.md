@@ -64,3 +64,136 @@ features it provides include:
   handling via Stratigility's own `FinalHandler` implementation, as well as
   more advanced error handling via two specialized error handlers: a templated
   error handler for production, and a Whoops-based error handler for development.
+
+## Flow Overview
+
+Below is a diagram detailing the workflow used by Expressive.
+
+```
+              Request                    Response
+                 +                        ^     ^
+                 |                        |     |
++-------------+--------------------------------------+
+|             |  |        pre_routing     |     |   +----->+
+| Application +--------------------------------------|     |
+|             |  |        (run always)    |     |   +------+
+|             +--------------------------------------|     |
+|             |  |         pipeline       |     |   +------+
+|             +--------------------------------------|     |
+|             |  |        middleware      |     |   +------+
+|             +--------------------------------------+     |
+|             |  |                        |     |    |     |
+|             |  v                        |     |    |     |
+|             |                           |     |    |     |
+|             |           Routing         |     |    |     |
+|             |                           |     |    |     v
+|             |          Middleware       |     |    |     |
+|             |                           |     |    |     |
+|             |                           |     |    |     |
+|             |        +                  |     |    |     |
+|             |        |                  |     |    |     |
+|             |        |                  |     |    |     |
+|             |        |                  |     |   +------+
+|             |      +-------------------------------+     |
+|             |      | |                  |     |    |     |
+|             |      | v     Routed       +     |    |     v
+|             |      |                          |    |     |
+|             |      |     Middleware           |    |     |
+|             |      |                          |    |     |
+|             |      |                          |   +------+
+|             +------+-------------------------------|     |
+|             |          post_routing           |  |<------+
+|             +--------------------------------------+
+|             |        (error handling)         |  | |
+|             +--------------------------------------+
+|             |           pipeline              |  | |
+|             +--------------------------------------+
+|             |          middleware             +  v |
++-------------+---------------------------------+----+
+```
+
+The `Application` acts as an "onion"; in the diagram above, the top is the
+outer-most layer of the onion, while the bottom is the inner-most.
+
+The `Application` dispatches each middleware. Each middleware accepts a
+*request*, a *response*, and the *next* middleware to dispatch. Internally,
+it's actually receiving the middleware stack itself, which knows which
+middleware to invoke next.
+
+Any given middleware can return a *response*, at which point execution winds
+its way back out the onion. Additionally, any given middleware can indicate an
+error occurred, at which point it can call on the next *error handling
+middleware*. These act like regular middleware, but accept an additional error
+argument to act on.
+
+> ### Pipelines
+> 
+> The terminology "pipeline" is often used to describe the onion. One way of
+> looking at the "onion" is as a *queue*, which is first-in-first-out (FIFO) in
+> operation. This means that the first middleware on the queue is executed first,
+> and this invokes the next, and so on (and hence the "next" terminology). When
+> looked at from this perspective:
+> 
+> - In most cases, the entire queue *will not* be traversed.
+> - The inner-most layer of the onion represents the last item in the queue.
+> - Responses are returned back *through* the pipeline, in reverse order of
+>   traversal.
+
+The `Application` allows for "pre routing" middleware, routing middleware (and
+the routed middleware it dispatches), and "post routing" middleware.
+
+Routing within Expressive consists of decomposing the request to match it to
+middleware that can handle that given request. This typically consists of a
+combination of matching the requested URI path along with allowed HTTP methods:
+
+- map a GET request to the path `/api/ping` to the `PingMiddleware`
+- map a POST request to the path `/contact/process` to the `HandleContactMiddleware`
+- etc.
+
+The majority of your application will consist of routing rules that map to
+routed middleware.
+
+"Pre routing" middleware is middleware that you wish to execute for every
+request. These might include:
+
+- authentication
+- parsing of request body parameters
+- addition of debugging tools
+- etc.
+
+Such middleware may decide that a request is invalid, and return a response;
+doing so means no further middleware will be executed! This is an important
+feature of middleware architectures, as it allows you to define
+application-specific workflows optimized for performance, security, etc.
+
+"Post routing" middleware will execute in one of two conditions:
+
+- routing failed
+- routed middleware called on the next middleware instead of returning a response.
+
+As such, the largest use case for post routing middleware is for error handling.
+One possibility is for [providing custom 404 handling](cookbook/custom-404-page-handling.md),
+or handling application-specific error conditions (such as authentication or
+authorization failures).
+
+Another possibility is to provide post-processing on the response before
+returning it. However, this is typically better handled via pre-routing
+middleware, by capturing the response before returning it:
+
+```php
+function ($request, $response, $next)
+{
+    $response = $next($request, $response);
+    return $response->withHeader('X-Clacks-Overhead', 'GNU Terry Pratchett');
+}
+```
+
+The main points to remember are:
+
+- The application is a queue, and operates in FIFO order.
+- Each middleware can choose whether to return a response, which will cause
+  the queue to unwind, or to traverse to the next middleware.
+- Most of the time, you will be defining *routed middleware*, and the routing
+  rules that map to them.
+- *You* get to control the workflow of your application by deciding the order in
+  which middleware is queued.
