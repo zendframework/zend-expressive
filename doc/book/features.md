@@ -69,48 +69,7 @@ features it provides include:
 
 Below is a diagram detailing the workflow used by Expressive.
 
-```
-              Request                    Response
-                 +                        ^     ^
-                 |                        |     |
-+-------------+--------------------------------------+
-|             |  |        pre_routing     |     |   +----->+
-| Application +--------------------------------------|     |
-|             |  |        (run always)    |     |   +------+
-|             +--------------------------------------|     |
-|             |  |         pipeline       |     |   +------+
-|             +--------------------------------------|     |
-|             |  |        middleware      |     |   +------+
-|             +--------------------------------------+     |
-|             |  |                        |     |    |     |
-|             |  v                        |     |    |     |
-|             |                           |     |    |     |
-|             |           Routing         |     |    |     |
-|             |                           |     |    |     v
-|             |          Middleware       |     |    |     |
-|             |                           |     |    |     |
-|             |                           |     |    |     |
-|             |        +                  |     |    |     |
-|             |        |                  |     |    |     |
-|             |        |                  |     |    |     |
-|             |        |                  |     |   +------+
-|             |      +-------------------------------+     |
-|             |      | |                  |     |    |     |
-|             |      | v     Routed       +     |    |     v
-|             |      |                          |    |     |
-|             |      |     Middleware           |    |     |
-|             |      |                          |    |     |
-|             |      |                          |   +------+
-|             +------+-------------------------------|     |
-|             |          post_routing           |  |<------+
-|             +--------------------------------------+
-|             |        (error handling)         |  | |
-|             +--------------------------------------+
-|             |           pipeline              |  | |
-|             +--------------------------------------+
-|             |          middleware             +  v |
-+-------------+---------------------------------+----+
-```
+![Expressive Architectural Flow](images/architecture.png)
 
 The `Application` acts as an "onion"; in the diagram above, the top is the
 outer-most layer of the onion, while the bottom is the inner-most.
