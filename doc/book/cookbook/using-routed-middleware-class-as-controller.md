@@ -1,89 +1,92 @@
-# Using Routed Middleware Class as Controller
+# Handling multiple routes in a single class
 
-If you are familiar with frameworks with provide controller with multi actions functionality, like in Zend Framework 1 and 2, you may want to apply it when you use Expressive as well. Usually, we need to define 1 routed middleware, 1 __invoke() with 3 parameters ( request, response, next ). If we need another specifics usage, we can create another routed middleware classes, for example on `album` crud, we need following middleware classes:
+Typically, in Expressive, we would define one middleware class per route. For a
+standard CRUD-style application, however, this leads to multiple related
+classes:
 
 - AlbumPageIndex
 - AlbumPageEdit
 - AlbumPageAdd
 
-What if we want to use only one middleware class which facilitate 3 pages above? We can with make request attribute with 'action' key via route config, and validate it in `__invoke()` method with ReflectionMethod.
+If you are familiar with frameworks that provide controllers capable of handling
+multiple "actions", such as those found in Zend Framework 1 and 2, Symfony,
+CodeIgniter, CakePHP, and other popular frameworks, you may want to apply a
+similar pattern when using Expressive.
 
-Let say, we have the following route config:
+In other words, what if we want to use only one middleware class to facilitate
+all three of the above?
+
+In the following example, we'll use an `action` routing parameter which our
+middleware class will use in order to determine which internal method to invoke.
+
+Consider the following route configuration:
 
 ```php
-// ...
+return [
+    /* ... */
     'routes' => [
+        /* ... */
         [
             'name' => 'album',
-            'path' => '/album[/:action][/:id]',
+            'path' => '/album[/{action:add|edit}[/{id}]]',
             'middleware' => Album\Action\AlbumPage::class,
             'allowed_methods' => ['GET'],
         ],
+        /* ... */
     ],
-// ...
+];
 ```
+The above defines a route that will match any of the following:
 
-To avoid repetitive code for modifying `__invoke()` method, we can create an AbstractPage, like the following:
+- `/album`
+- `/album/add`
+- `/album/edit/3`
 
-```php
-namespace App\Action;
+The `action` attribute can thus be one of `add` or `edit`, and we can optionally
+also receive an `id` attribute (in the latter example, it would be `3`).
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use ReflectionMethod;
-
-abstract class AbstractPage
-{
-    public function __invoke($request, $response, callable $next = null)
-    {
-        $action = $request->getAttribute('action', 'index') . 'Action';
-
-        if (method_exists($this, $action)) {
-            $r = new ReflectionMethod($this, $action);
-            $args = $r->getParameters();
-
-            if (count($args) === 3
-                && $args[0]->getType() == ServerRequestInterface::class
-                && $args[1]->getType() == ResponseInterface::class
-                && $args[2]->isCallable()
-                && $args[2]->allowsNull()
-            ) {
-                return $this->$action($request, $response, $next);
-            }
-        }
-
-        return $next($request, $response->withStatus(404), 'Page Not Found');
-    }
-}
-```
-
-> ### Note: For ReflectionMethod::getType() in PHP < 7
+> ## Routing definitions may vary
 >
-> You may need to use Zend\Code\Reflection\MethodReflection as the method getType() is not defined yet, by requiring via composer:
-> ```
-> composer require zendframework/zend-code:~2.5
-```
->
+> Depending on the router you chose when starting your project, your routing
+> definition may differ. The above example uses the default `FastRoute`
+> implementation.
 
-In above abstract class with modified `__invoke()` method, we check if the action attribute, which default is 'index' if not provided, have 'Action' suffix, and the the method is exists within the middleware class with 3 parameters with parameters with parameter 1 as ServerRequestInterface, parameter 2 as ResponseInterface, and parameter 3 is a callable and allows null, otherwise, it will response 404 page.
-
-So, what we need to do in out routed middleware class is extends the AbstractPage we created:
+We might then implement `Album\Action\AlbumPage` as follows:
 
 ```php
 namespace Album\Action;
 
-use App\Action\AbstractPage;
-use Zend\Diactoros\Response\HtmlResponse;
-use Zend\Expressive\Template;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Response\HtmlResponse;
+use Zend\Expressive\Template\TemplateRendererInterface;
 
-class AlbumPage extends AbstractPage
+class AlbumPage
 {
-    protected $template;    
-    // you need to inject via factory
-    public function __construct(Template\TemplateRendererInterface $template)
-    { $this->template = $template; }
+    private $template;    
+
+    public function __construct(TemplateRendererInterface $template)
+    {
+        $this->template = $template;
+    }
+
+    public function __invoke(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        callable $next = null
+    ) {
+        switch ($request->getAttribute('action', 'index')) {
+            case 'index':
+                return $this->indexAction($request, $response, $next);
+            case 'add':
+                return $this->addAction($request, $response, $next);
+            case 'edit':
+                return $this->editAction($request, $response, $next);
+            default:
+                // Invalid; thus, a 404!
+                return $response->withStatus(404);
+        }
+    }
 
     public function indexAction(
         ServerRequestInterface $request,
@@ -106,8 +109,8 @@ class AlbumPage extends AbstractPage
         ResponseInterface $response,
         callable $next = null
     ) {
-        $id = $request->getAttribute('id');
-        if ($id === null) {
+        $id = $request->getAttribute('id', false);
+        if (! $id) {
             throw new \InvalidArgumentException('id parameter must be provided');
         }
 
@@ -118,4 +121,134 @@ class AlbumPage extends AbstractPage
 }
 ```
 
-The rest is just create the view.
+This allows us to have the same dependencies for a set of related actions, and,
+if desired, even have common internal methods each can utilize.
+
+This approach is reasonable, but requires that I create a similar `__invoke()`
+implementation every time I want to accomplish a similar workflow. Let's create
+a generic implementation, via an `AbstractPage` class:
+
+```php
+namespace App\Action;
+
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
+abstract class AbstractPage
+{
+    public function __invoke(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        callable $next = null
+    ) {
+        $action = $request->getAttribute('action', 'index') . 'Action';
+
+        if (! method_exists($this, $action)) {
+            return $response->withStatus(404);
+        }
+
+        return $this->$action($request, $response, $next);
+    }
+}
+```
+
+The above abstract class pulls the `action` attribute on invocation, and
+concatenates it with the word `Action`. It then uses this value to determine if
+a corresponding method exists in the current class, and, if so, calls it with
+the arguments it received; otherwise, it returns a 404 response.
+
+> ## Invoking the error stack
+>
+> Instead of returning a 404 response, you could also invoke `$next()` with an
+> error:
+>
+> ```php
+> return $next($request, $response, new NotFoundError());
+> ```
+>
+> This will then invoke the first error handler middleware capable of handling
+> the error.
+
+Our original `AlbumPage` implementation could then be modified to extend
+`AbstractPage`:
+
+```php
+namespace Album\Action;
+
+use App\Action\AbstractPage;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Response\HtmlResponse;
+use Zend\Expressive\Template\TemplateRendererInterface;
+
+class AlbumPage extends AbstractPage
+{
+    private $template;    
+
+    public function __construct(TemplateRendererInterface $template)
+    {
+        $this->template = $template;
+    }
+
+    public function indexAction( /* ... */ ) { /* ... */ }
+    public function addAction( /* ... */ ) { /* ... */ }
+    public function editAction( /* ... */ ) { /* ... */ }
+}
+```
+
+> ## Or use a trait
+>
+> As an alternative to an abstract class, you could define the `__invoke()`
+> logic in a trait, which you then compose into your middleware:
+>
+> ```php
+> namespace App\Action;
+>
+> use Psr\Http\Message\ResponseInterface;
+> use Psr\Http\Message\ServerRequestInterface;
+>
+> trait ActionBasedInvocation
+> {
+>     public function __invoke(
+>         ServerRequestInterface $request,
+>         ResponseInterface $response,
+>         callable $next = null
+>     ) {
+>         $action = $request->getAttribute('action', 'index') . 'Action';
+> 
+>         if (! method_exists($this, $action)) {
+>             return $response->withStatus(404);
+>         }
+> 
+>         return $this->$action($request, $response, $next);
+>     }
+> }
+> ```
+>
+> You would then compose it into a class as follows:
+>
+> ```php
+> namespace Album\Action;
+> 
+> use App\Action\ActionBasedInvocation;
+> use Psr\Http\Message\ResponseInterface;
+> use Psr\Http\Message\ServerRequestInterface;
+> use Zend\Diactoros\Response\HtmlResponse;
+> use Zend\Expressive\Template\TemplateRendererInterface;
+> 
+> class AlbumPage extends AbstractPage
+> {
+>     use ActionBasedInvocation;
+>
+>     private $template;    
+> 
+>     public function __construct(TemplateRendererInterface $template)
+>     {
+>         $this->template = $template;
+>     }
+> 
+>     public function indexAction( /* ... */ ) { /* ... */ }
+>     public function addAction( /* ... */ ) { /* ... */ }
+>     public function editAction( /* ... */ ) { /* ... */ }
+> }
+> ```

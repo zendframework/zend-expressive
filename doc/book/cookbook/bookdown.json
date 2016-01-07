@@ -11,6 +11,6 @@
         {"Setting a locale based on a routing parameter": "setting-locale-depending-routing-parameter.md"},
         {"Setting a locale without a routing parameter": "setting-locale-without-routing-parameter.md"},
         {"Enabling debug toolbars": "debug-toolbars.md"},
-        {"Using Routed Middleware Class as Controller": "using-routed-middleware-class-as-controller.md"}
+        {"Handling multiple routes in a single class": "using-routed-middleware-class-as-controller.md"}
     ]
 }
