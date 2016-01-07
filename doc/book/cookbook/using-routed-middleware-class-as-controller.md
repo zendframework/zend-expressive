@@ -59,7 +59,10 @@ abstract class AbstractPage
 
 > ### Note: For ReflectionMethod::getType() in PHP < 7
 >
-> You may need to use Zend\Code\Reflection\MethodReflection as the method getType() is not defined yet.
+> You may need to use Zend\Code\Reflection\MethodReflection as the method getType() is not defined yet, by requiring via composer:
+> ```
+> composer require zendframework/zend-code:~2.5
+```
 >
 
 In above abstract class with modified `__invoke()` method, we check if the action attribute, which default is 'index' if not provided, have 'Action' suffix, and the the method is exists within the middleware class with 3 parameters with parameters with parameter 1 as ServerRequestInterface, parameter 2 as ResponseInterface, and parameter 3 is a callable and allows null, otherwise, it will response 404 page.
