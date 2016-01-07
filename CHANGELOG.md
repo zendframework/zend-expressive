@@ -31,7 +31,8 @@ First stable release.
 
 ### Fixed
 
-- Nothing.
+- [#263](https://github.com/zendframework/zend-expressive/pull/263) typo
+  fixes in documentation
 
 ## 1.0.0rc5 - 2015-12-22
 
