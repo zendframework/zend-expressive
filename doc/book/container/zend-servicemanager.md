@@ -13,7 +13,7 @@ Zend Framework. It features:
   workflow (aka *delegator factories*).
 - interface injection (via *initializers*).
 
-zend-servicemanager may either be created and populated programattically, or via
+zend-servicemanager may either be created and populated programmatically, or via
 configuration. Configuration uses the following structure:
 
 ```php
