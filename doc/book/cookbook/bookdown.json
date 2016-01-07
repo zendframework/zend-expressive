@@ -10,6 +10,7 @@
         {"Building modular applications": "modular-layout.md"},
         {"Setting a locale based on a routing parameter": "setting-locale-depending-routing-parameter.md"},
         {"Setting a locale without a routing parameter": "setting-locale-without-routing-parameter.md"},
-        {"Enabling debug toolbars": "debug-toolbars.md"}
+        {"Enabling debug toolbars": "debug-toolbars.md"},
+        {"Handling multiple routes in a single class": "using-routed-middleware-class-as-controller.md"}
     ]
 }

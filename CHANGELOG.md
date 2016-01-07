@@ -22,6 +22,8 @@ First stable release.
   a recipe on how to add debug toolbars to your Expressive applications.
 - [#261](https://github.com/zendframework/zend-expressive/pull/261) adds
   a flow/architectural diagram to the "features" chapter.
+- [#262](https://github.com/zendframework/zend-expressive/pull/262) adds
+  a recipe demonstrating creating classes that can intercept multiple routes.
 
 ### Deprecated
 
