@@ -20,6 +20,8 @@ First stable release.
   and setting the `UrlHelper` base path with the same match.
 - [#260](https://github.com/zendframework/zend-expressive/pull/260) adds
   a recipe on how to add debug toolbars to your Expressive applications.
+- [#261](https://github.com/zendframework/zend-expressive/pull/261) adds
+  a flow/architectural diagram to the "features" chapter.
 
 ### Deprecated
 
