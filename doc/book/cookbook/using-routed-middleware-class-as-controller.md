@@ -69,7 +69,7 @@ In above abstract class with modified `__invoke()` method, we check if the actio
 
 So, what we need to do in out routed middleware class is extends the AbstractPage we created:
 
-```
+```php
 namespace Album\Action;
 
 use App\Action\AbstractPage;
