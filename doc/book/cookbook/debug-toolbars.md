@@ -47,65 +47,37 @@ a [post detailing these steps](https://blog.bitexpert.de/blog/using-prophiler-wi
 > &mdash; and not in production, where you likely do not want to expose such
 > information!
 
-## php-middleware/phpdebugbar
+## php-middleware/php-debug-bar
 
-[php-middleware/phpdebugbar](https://github.com/php-middleware/phpdebugbar)
+[php-middleware/php-debug-bar](https://github.com/php-middleware/phpdebugbar)
 provides a PSR-7 middleware wrapper around [maximebf/debugbar](https://github.com/maximebf/debugbar),
 a popular framework-agnostic debug bar for PHP projects.
 
 First, install the middleware in your application:
 
 ```bash
-$ composer require php-middleware/phpdebugbar
+$ composer require php-middleware/php-debug-bar
 ```
 
-DebugBar ships with a number of fonts, CSS files, and JavaScript assets that it
-uses. These will need to be copied into your web root:
-
-```bash
-$ cp -a vendor/maximebf/debugbar/src/DebugBar/Resources public/phpdebugbar
-```
-
-(The above creates a new directory, `public/phpdebugbar/`, containing all of the
-assets from the DebugBar package.)
-
-Next, you'll need to create a factory. As an example, you could write the
-following class (in `src/App/PhpDebugBarMiddlewareFactory.php`):
-
-```php
-<?php
-namespace App;
-
-use DebugBar\StandardDebugBar;
-use PhpMiddleware\PhpDebugBar\PhpDebugBarMiddleware;
-
-class PhpDebugBarMiddlewareFactory
-{
-    public function __invoke($container)
-    {
-        $debugbar = new StandardDebugBar();
-        $renderer = $debugbar->getJavascriptRenderer('/phpdebugbar');
-        return new PhpDebugBarMiddleware($renderer);
-    }
-}
-```
-
-Finally, you will need to notify the application of this factory, and add the
-middleware to your middleware pipeline. Create and edit the file
+This package provides a factory for creating the middleware, so we only need to
+wire it into our middleware pipeline.  Create and edit the file
 `config/autoload/middleware-pipeline.local.php` to read as follows:
 
 ```php
+use PhpMiddleware\PhpDebugBar\PhpDebugBarMiddleware;
+use PhpMiddleware\PhpDebugBar\PhpDebugBarMiddlewareFactory;
+
 return [
     'dependencies' => [
         'factories' => [
-            PhpMiddleware\PhpDebugBar\PhpDebugBarMiddleware::class => App\PhpDebugBarMiddlewareFactory::class,
+            PhpDebugBarMiddleware::class => PhpDebugBarMiddlewareFactory::class,
         ],
     ],
     'middleware_pipeline' => [
         'pre_routing' => [
             [
                 'middleware' => [
-                    PhpMiddleware\PhpDebugBar\PhpDebugBarMiddleware::class,
+                    PhpDebugBarMiddleware::class,
                 ],
             ],
         ],
