@@ -47,16 +47,16 @@ a [post detailing these steps](https://blog.bitexpert.de/blog/using-prophiler-wi
 > &mdash; and not in production, where you likely do not want to expose such
 > information!
 
-## php-middleware/phpdebugbar
+## php-middleware/php-debug-bar
 
-[php-middleware/phpdebugbar](https://github.com/php-middleware/phpdebugbar)
+[php-middleware/php-debug-bar](https://github.com/php-middleware/phpdebugbar)
 provides a PSR-7 middleware wrapper around [maximebf/debugbar](https://github.com/maximebf/debugbar),
 a popular framework-agnostic debug bar for PHP projects.
 
 First, install the middleware in your application:
 
 ```bash
-$ composer require php-middleware/phpdebugbar
+$ composer require php-middleware/php-debug-bar
 ```
 
 DebugBar ships with a number of fonts, CSS files, and JavaScript assets that it
