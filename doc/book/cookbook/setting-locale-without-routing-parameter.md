@@ -23,7 +23,7 @@ from the request URI's path. If if doesn't find one, it sets a default.
 If it does find one, it uses the language to setup the locale. It also:
 
 - amends the request with a truncated path (removing the language segment).
-- adds the langauge segment as the base path of the `UrlHelper`.
+- adds the language segment as the base path of the `UrlHelper`.
 
 ```php
 namespace Application\I18n;
