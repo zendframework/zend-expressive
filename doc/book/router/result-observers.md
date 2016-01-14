@@ -71,7 +71,7 @@ when invoked, generate a URI.
 ```php
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Router\RouteResult;
-use Zend\Expressive\ROuter\RouteResultObserverInterface;
+use Zend\Expressive\Router\RouteResultObserverInterface;
 
 class UriGenerator implements RouteResultObserverInterface
 {
