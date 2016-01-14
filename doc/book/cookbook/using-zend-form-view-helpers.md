@@ -20,8 +20,8 @@ You have three options:
 - Replace the `HelperPluginManager` factory with your own; or
 - Add a delegator factory to or extend the `HelperPluginManager` service to
   inject the additional helper configuration; or
-- Add pre_routing pipeline middleware that composes the `HelperPluginManager`
-  and configures it.
+- Add pipeline middleware that composes the `HelperPluginManager` and configures
+  it.
 
 ## Replacing the HelperPluginManager factory
 
@@ -161,7 +161,7 @@ $container[HelperPluginManager::class] = $container->extend(
 
 ## Pipeline middleware
 
-Another option is to use pre_routing pipeline middleware. This approach will
+Another option is to use pipeline middleware. This approach will
 require that the middleware execute on every request, which introduces (very
 slight) performance overhead. However, it's a portable method that works
 regardless of the container implementation you choose.
@@ -224,13 +224,10 @@ return [
         /* ... */
     ],
     'middleware_pipeline' => [
-        'pre_routing' => [
-            ['middleware' => Your\Application\FormHelpersMiddleware::class],
-            /* ... */
-        ],
-        'post_routing' => [
-            /* ... */
-        ],
+        ['middleware' => Your\Application\FormHelpersMiddleware::class],
+        /* ... */
+        Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+        /* ... */
     ],
 ];
 ```

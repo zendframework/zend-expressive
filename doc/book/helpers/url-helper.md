@@ -66,7 +66,8 @@ following steps should be followed to register and configure the helper:
   factory.
 - Register the `UrlHelperMiddleware` as a service in your container, using the
   provided factory.
-- Register the `UrlHelperMiddleware` as pre_routing pipeline middleware.
+- Register the `UrlHelperMiddleware` as pipeline middleware, early in the
+  pipeline.
 
 ### Registering the helper service
 
@@ -123,9 +124,10 @@ $app->pipe(UrlHelperMiddleware::class);
 // Or use configuration:
 // [
 //     'middleware_pipeline' => [
-//         'pre_routing' => [
-//             ['middleware' => UrlHelperMiddleware::class],
-//         ],
+//         ['middleware' => UrlHelperMiddleware::class],
+//         /* ... */
+//         Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+//         /* ... */
 //     ],
 // ]
 ```
@@ -142,9 +144,8 @@ return [
         ],
     ],
     'middleware_pipeline' => [
-        'pre_routing' => [
-            ['middleware' => UrlHelperMiddleware::class],
-        ],
+        ['middleware' => UrlHelperMiddleware::class],
+        Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
     ],
 ]
 ```
@@ -153,7 +154,7 @@ return [
 >
 > If you started your project using the Expressive skeleton package, the
 > `UrlHelper` and `UrlHelperMiddleware` factories are already registered for
-> you, as is the `UrlHelperMiddleware` pre_routing pipeline middleware.
+> you, as is the `UrlHelperMiddleware` pipeline middleware.
 
 ## Using the helper in middleware
 

@@ -86,22 +86,17 @@ From there, you still need to register the middleware. This middleware is not
 routed, and thus needs to be piped to the application instance. You can do this
 via either configuration, or manually.
 
-To do this via configuration, add an entry under the `post_routing` key of the
-`middleware_pipeline` configuration:
+To do this via configuration, add an entry under the `middleware_pipeline`
+configuration, after the routing middleware:
 
 ```php
 'middleware_pipeline' => [
-    'pre_routing' => [
-        [
-            //...
-        ],
-
+    /* ... */
+    Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+    [
+        'middleware' => 'Application\NotFound',
     ],
-    'post_routing' => [
-        [
-            'middleware' => 'Application\NotFound',
-        ],
-    ],
+    /* ... */
 ],
 ```
 

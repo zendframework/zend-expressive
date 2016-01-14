@@ -39,18 +39,15 @@ order to seed the `Application` instance:
 
   ```php
   'middleware_pipeline' => [
-      // An array of middleware to register prior to registration of the
-      // routing middleware:
-      'pre_routing' => [
-      ],
-      // An array of middleware to register after registration of the
-      // routing middleware:
-      'post_routing' => [
-      ],
+      // An array of middleware to register.
+      [ /* ... */ ],
+      Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+      [ /* ... */ ],
   ],
   ```
 
-  Each item of each array must be an array itself, with the following structure:
+  Each item of the array, other than the entry for routing middleware, must be
+  an array itself, with the following structure:
 
   ```php
   [

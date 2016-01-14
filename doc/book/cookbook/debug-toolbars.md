@@ -74,11 +74,9 @@ return [
         ],
     ],
     'middleware_pipeline' => [
-        'pre_routing' => [
-            [
-                'middleware' => [
-                    PhpDebugBarMiddleware::class,
-                ],
+        [
+            'middleware' => [
+                PhpDebugBarMiddleware::class,
             ],
         ],
     ],

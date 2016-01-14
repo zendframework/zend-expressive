@@ -433,50 +433,6 @@ class ApplicationTest extends TestCase
     }
 
     /**
-     * @group 64
-     */
-    public function testInvocationWillPipeRoutingMiddlewareIfNotAlreadyPiped()
-    {
-        $request  = new Request([], [], 'http://example.com/');
-        $response = $this->prophesize(ResponseInterface::class);
-
-        $middleware = function ($req, $res, $next = null) {
-            return $res;
-        };
-
-        $this->router->match($request)->willReturn(RouteResult::fromRouteMatch('foo', 'foo', []));
-
-        $container = $this->mockContainerInterface();
-        $this->injectServiceInContainer($container, 'foo', $middleware);
-
-        $app = new Application($this->router->reveal(), $container->reveal());
-
-        $pipeline = $this->prophesize(SplQueue::class);
-
-        // Test that the route middleware is enqueued
-        $pipeline->enqueue(Argument::that(function ($route) use ($app) {
-            if (! $route instanceof StratigilityRoute) {
-                return false;
-            }
-
-            if ($route->path !== '/') {
-                return false;
-            }
-
-            return ($route->handler === [$app, 'routeMiddleware']);
-        }))->shouldBeCalled();
-
-        // Prevent dequeueing
-        $pipeline->isEmpty()->willReturn(true);
-
-        $r = new ReflectionProperty($app, 'pipeline');
-        $r->setAccessible(true);
-        $r->setValue($app, $pipeline->reveal());
-
-        $app($request, $response->reveal(), $middleware);
-    }
-
-    /**
      * @group lazy-piping
      */
     public function testPipingAllowsPassingMiddlewareServiceNameAsSoleArgument()

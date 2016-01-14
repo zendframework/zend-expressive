@@ -245,32 +245,6 @@ class RouteMiddlewareTest extends TestCase
         $this->assertEquals('Invoked', $test->getHeaderLine('X-Middleware'));
     }
 
-    public function testRoutingSuccessResultingInContainerExceptionReRaisesException()
-    {
-        $request    = new ServerRequest();
-        $response   = new Response();
-
-        $result   = RouteResult::fromRouteMatch(
-            '/foo',
-            'TestAsset\Middleware',
-            []
-        );
-
-        $this->router->match($request)->willReturn($result);
-
-        $this->container->has('TestAsset\Middleware')->willReturn(true);
-        $this->container->get('TestAsset\Middleware')->willThrow(new TestAsset\ContainerException());
-
-        $app = $this->getApplication();
-
-        $next = function ($request, $response) {
-            $this->fail('Should not enter $next');
-        };
-
-        $this->setExpectedException(InvalidMiddlewareException::class, 'retrieve');
-        $app->routeMiddleware($request, $response, $next);
-    }
-
     /**
      * Get the router adapters to test
      */

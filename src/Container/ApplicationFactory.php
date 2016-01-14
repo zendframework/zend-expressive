@@ -113,6 +113,8 @@ use Zend\Stratigility\MiddlewarePipe;
  */
 class ApplicationFactory
 {
+    const ROUTING_MIDDLEWARE = 'EXPRESSIVE_ROUTING_MIDDLEWARE';
+
     /**
      * Create and return an Application instance.
      *
@@ -138,29 +140,147 @@ class ApplicationFactory
 
         $app = new Application($router, $container, $finalHandler, $emitter);
 
-        $this->injectPreMiddleware($app, $container);
-        $this->injectRoutes($app, $container);
-        $this->injectPostMiddleware($app, $container);
+        $this->injectRoutesAndPipeline($app, $container);
 
         return $app;
     }
 
     /**
-     * Inject routes from configuration, if any.
+     * Injects routes and the middleware pipeline into the application.
      *
      * @param Application $app
      * @param ContainerInterface $container
      */
-    private function injectRoutes(Application $app, ContainerInterface $container)
+    private function injectRoutesAndPipeline(Application $app, ContainerInterface $container)
     {
-        $config = $container->has('config') ? $container->get('config') : [];
+        // This is set to true by default; injectPipeline() will set it to false if
+        // it injects pipeline middleware, but not the routing middleware - which
+        // is the only situation where we may have a problem.
+        $routingMiddlewareInjected = true;
 
-        if (! isset($config['routes'])) {
-            $app->pipeRoutingMiddleware();
-            return;
+        $config = $container->has('config') ? $container->get('config') : [];
+        if (isset($config['middleware_pipeline']) && is_array($config['middleware_pipeline'])) {
+            $routingMiddlewareInjected = $this->injectPipeline($config['middleware_pipeline'], $app);
         }
 
-        foreach ($config['routes'] as $spec) {
+        if (isset($config['routes']) && is_array($config['routes'])) {
+            if (count($config['routes']) > 0 && ! $routingMiddlewareInjected) {
+                throw new ContainerInvalidArgumentException(
+                    'A middleware pipeline was defined that does not include the routing middleware, '
+                    . 'but routes are also defined; please add the routing middleware to your '
+                    . 'middleware pipeline'
+                );
+            }
+            $this->injectRoutes($config['routes'], $app);
+        }
+    }
+
+    /**
+     * Inject the middleware pipeline
+     *
+     * This method injects the middleware pipeline.
+     *
+     * If the pre-RC6 pre_/post_routing keys exist, it raises a deprecation
+     * notice, and then builds the pipeline based on that configuration
+     * (though it will raise an exception if other keys are *also* present).
+     *
+     * Otherwise, it passes the pipeline on to `injectMiddleware()`,
+     * returning a boolean value based on whether or not the routing
+     * middleware was injected.
+     *
+     * @deprecated This method will be removed in v1.1.
+     * @param array $pipeline
+     * @param Application $app
+     * @return bool
+     */
+    private function injectPipeline(array $pipeline, Application $app)
+    {
+        $deprecatedKeys = $this->getDeprecatedKeys(array_keys($pipeline));
+        if (! empty($deprecatedKeys)) {
+            $this->handleDeprecatedPipeline($deprecatedKeys, $pipeline, $app);
+            return true;
+        }
+
+        return $this->injectMiddleware($pipeline, $app);
+    }
+
+    /**
+     * Retrieve a list of deprecated keys from the pipeline, if any.
+     *
+     * @deprecated This method will be removed in v1.1.
+     * @param array $pipelineKeys
+     * @return array
+     */
+    private function getDeprecatedKeys(array $pipelineKeys)
+    {
+        return array_intersect(['pre_routing', 'post_routing'], $pipelineKeys);
+    }
+
+    /**
+     * Handle deprecated pre_/post_routing configuration.
+     *
+     * @deprecated This method will be removed in v1.1.
+     * @param array $deprecatedKeys The list of deprecated keys present in the
+     *     pipeline
+     * @param array $pipeline
+     * @param Application $app
+     * @return void
+     * @throws ContainerInvalidArgumentException if $pipeline contains more than
+     *     just pre_ and/or post_routing keys.
+     * @throws ContainerInvalidArgumentException if the pre_routing configuration,
+     *     if present, is not an array
+     * @throws ContainerInvalidArgumentException if the post_routing configuration,
+     *     if present, is not an array
+     */
+    private function handleDeprecatedPipeline(array $deprecatedKeys, array $pipeline, Application $app)
+    {
+        if (count($deprecatedKeys) < count($pipeline)) {
+            throw new ContainerInvalidArgumentException(
+                'middleware_pipeline cannot contain a mix of middleware AND pre_/post_routing keys; '
+                . 'please update your configuration to define middleware_pipeline as a single pipeline; '
+                . 'see http://zend-expressive.rtfd.org/en/latest/migration/rc-to-v1/'
+            );
+        }
+
+        trigger_error(
+            'pre_routing and post_routing configuration is deprecated; '
+            . 'update your configuration to define the middleware_pipeline as a single pipeline; '
+            . 'see http://zend-expressive.rtfd.org/en/latest/migration/rc-to-v1/',
+            E_USER_DEPRECATED
+        );
+
+        if (isset($pipeline['pre_routing'])) {
+            if (! is_array($pipeline['pre_routing'])) {
+                throw new ContainerInvalidArgumentException(sprintf(
+                    'Pre-routing middleware collection must be an array; received "%s"',
+                    gettype($pipeline['pre_routing'])
+                ));
+            }
+            $this->injectMiddleware($pipeline['pre_routing'], $app);
+        }
+
+        $app->pipeRoutingMiddleware();
+        
+        if (isset($pipeline['post_routing'])) {
+            if (! is_array($pipeline['post_routing'])) {
+                throw new ContainerInvalidArgumentException(sprintf(
+                    'Post-routing middleware collection must be an array; received "%s"',
+                    gettype($pipeline['post_routing'])
+                ));
+            }
+            $this->injectMiddleware($pipeline['post_routing'], $app);
+        }
+    }
+
+    /**
+     * Inject routes from configuration, if any.
+     *
+     * @param array $routes Route definitions
+     * @param Application $app
+     */
+    private function injectRoutes(array $routes, Application $app)
+    {
+        foreach ($routes as $spec) {
             if (! isset($spec['path']) || ! isset($spec['middleware'])) {
                 continue;
             }
@@ -200,13 +320,28 @@ class ApplicationFactory
      *
      * @param array $collection
      * @param Application $app
-     * @param ContainerInterface $container
+     * @return int Count of middleware injected at the top-level
      * @throws Exception\InvalidMiddlewareException for invalid middleware.
      */
-    private function injectMiddleware(array $collection, Application $app, ContainerInterface $container)
+    private function injectMiddleware(array $collection, Application $app)
     {
+        // Return true if the collection is empty, as that means no middleware
+        // was injected, and adding routes will not lead to an error condition.
+        if (empty($collection)) {
+            return true;
+        }
+
+        $routingMiddlewareInjected = false;
+        $isRoutingMiddleware = function ($middleware) use ($app) {
+            return ([$app, 'routeMiddleware'] === $middleware);
+        };
+
         foreach ($collection as $spec) {
-            if (! array_key_exists('middleware', $spec)) {
+            if ($spec === self::ROUTING_MIDDLEWARE) {
+                $spec = ['middleware' => [$app, 'routeMiddleware']];
+            }
+
+            if (! is_array($spec) || ! array_key_exists('middleware', $spec)) {
                 continue;
             }
 
@@ -214,79 +349,16 @@ class ApplicationFactory
             $error = array_key_exists('error', $spec) ? (bool) $spec['error'] : false;
             $pipe  = $error ? 'pipeErrorHandler' : 'pipe';
 
-            if (is_array($spec['middleware'])) {
+            $app->{$pipe}($path, $spec['middleware']);
+            $routingMiddlewareInjected = $routingMiddlewareInjected || $isRoutingMiddleware($spec['middleware']);
+
+            // If it is an array of middleware, check if any were the routing middleware
+            if (is_array($spec['middleware']) && $pipe === 'pipe') {
                 foreach ($spec['middleware'] as $middleware) {
-                    $app->{$pipe}($path, $middleware);
+                    $routingMiddlewareInjected = $routingMiddlewareInjected || $isRoutingMiddleware($middleware);
                 }
-            } else {
-                $app->{$pipe}($path, $spec['middleware']);
             }
         }
-    }
-
-    /**
-     * Inject middleware to pipe before the routing middleware.
-     *
-     * Pre-routing middleware is specified as the configuration subkey
-     * middleware_pipeline.pre_routing.
-     *
-     * @param Application $app
-     * @param ContainerInterface $container
-     */
-    private function injectPreMiddleware(Application $app, ContainerInterface $container)
-    {
-        if (!$container->has('config')) {
-            return;
-        }
-
-        $config = $container->get('config');
-
-        if (! isset($config['middleware_pipeline']['pre_routing'])) {
-            return;
-        }
-
-        $middlewareCollection = $config['middleware_pipeline']['pre_routing'];
-
-        if (! is_array($middlewareCollection)) {
-            throw new ContainerInvalidArgumentException(sprintf(
-                'Pre-routing middleware collection must be an array; received "%s"',
-                gettype($middlewareCollection)
-            ));
-        }
-
-        $this->injectMiddleware($middlewareCollection, $app, $container);
-    }
-
-    /**
-     * Inject middleware to pipe after the routing middleware.
-     *
-     * Post-routing middleware is specified as the configuration subkey
-     * middleware_pipeline.post_routing.
-     *
-     * @param Application $app
-     * @param ContainerInterface $container
-     */
-    private function injectPostMiddleware(Application $app, ContainerInterface $container)
-    {
-        if (!$container->has('config')) {
-            return;
-        }
-
-        $config = $container->get('config');
-
-        if (! isset($config['middleware_pipeline']['post_routing'])) {
-            return;
-        }
-
-        $middlewareCollection = $config['middleware_pipeline']['post_routing'];
-
-        if (! is_array($middlewareCollection)) {
-            throw new ContainerInvalidArgumentException(sprintf(
-                'Post-routing middleware collection must be an array; received "%s"',
-                gettype($middlewareCollection)
-            ));
-        }
-
-        $this->injectMiddleware($middlewareCollection, $app, $container);
+        return $routingMiddlewareInjected;
     }
 }

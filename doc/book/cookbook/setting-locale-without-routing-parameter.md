@@ -102,19 +102,16 @@ return [
     ]
 
     'middleware_pipeline' => [
-        'pre_routing' => [
-            [
-                'middleware' => [
-                    Application\I18n\SetLanguageMiddleware::class,
-                    /* ... */
-                ],
+        [
+            'middleware' => [
+                Application\I18n\SetLanguageMiddleware::class,
                 /* ... */
             ],
         ],
 
-        'post_routing' => [
-            /* ... */
-        ],
+        Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+
+        /* ... */
     ],
 ];
 ```

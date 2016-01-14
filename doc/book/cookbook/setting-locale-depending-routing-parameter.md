@@ -287,7 +287,8 @@ portable way of doing delegator factories.
 
 ### Use middleware
 
-Alternately, use `pre_routing` middleware to accomplish the task; the middleware 
+Alternately, use the middleware pipeline to accomplish the task. Register the
+middleware early in the pipeline (before the routing middleware); the middleware 
 will get both the observer and application as dependencies, and simply register 
 the observer with the application:
 
@@ -328,13 +329,10 @@ return [
         /* ... */
     ],
     'middleware_pipeline' => [
-        'pre_routing' => [
-            [ 'middleware' => LocalizationObserverMiddleware::class ],
-            /* ... */
-        ],
-        'post_routing' => [
-            /* ... */
-        ],
+        [ 'middleware' => LocalizationObserverMiddleware::class ],
+        /* ... */
+        Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+        /* ... */
     ],
 ];
 ```

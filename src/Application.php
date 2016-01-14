@@ -120,7 +120,6 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $out = null)
     {
-        $this->pipeRoutingMiddleware();
         $out = $out ?: $this->getFinalHandler($response);
         return parent::__invoke($request, $response, $out);
     }
@@ -232,29 +231,27 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
      * the upshot is that you will not be notified if the service is invalid to
      * use as middleware until runtime.
      *
-     * Additionally, ensures that the route middleware is only ever registered
+     * Middleware may also be passed as an array; each item in the array must
+     * resolve to middleware eventually (i.e., callable or service name).
+     *
+     * Finally, ensures that the route middleware is only ever registered
      * once.
      *
-     * @param string|callable $path Either a URI path prefix, or middleware.
-     * @param null|string|callable $middleware Middleware
+     * @param string|array|callable $path Either a URI path prefix, or middleware.
+     * @param null|string|array|callable $middleware Middleware
      * @return self
      */
     public function pipe($path, $middleware = null)
     {
-        // Lazy-load middleware from the container when possible
-        $container = $this->container;
-        if (null === $middleware && is_string($path) && $container && $container->has($path)) {
-            $middleware = $this->marshalLazyMiddlewareService($path, $container);
-            $path       = '/';
-        } elseif (is_string($middleware)
-            && ! is_callable($middleware)
-            && $container
-            && $container->has($middleware)
+        if (null === $middleware) {
+            $middleware = $this->prepareMiddleware($path);
+            $path = '/';
+        }
+
+        if (! is_callable($middleware)
+            && (is_string($middleware) || is_array($middleware))
         ) {
-            $middleware = $this->marshalLazyMiddlewareService($middleware, $container);
-        } elseif (null === $middleware && is_callable($path)) {
-            $middleware = $path;
-            $path       = '/';
+            $middleware = $this->prepareMiddleware($middleware);
         }
 
         if ($middleware === [$this, 'routeMiddleware'] && $this->routeMiddlewareIsRegistered) {
@@ -303,20 +300,15 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
      */
     public function pipeErrorHandler($path, $middleware = null)
     {
-        // Lazy-load middleware from the container
-        $container = $this->container;
-        if (null === $middleware && is_string($path) && $container && $container->has($path)) {
-            $middleware = $this->marshalLazyErrorMiddlewareService($path, $container);
-            $path       = '/';
-        } elseif (is_string($middleware)
-            && ! is_callable($middleware)
-            && $container
-            && $container->has($middleware)
+        if (null === $middleware) {
+            $middleware = $this->prepareMiddleware($path, $forError = true);
+            $path = '/';
+        }
+
+        if (! is_callable($middleware)
+            && (is_string($middleware) || is_array($middleware))
         ) {
-            $middleware = $this->marshalLazyErrorMiddlewareService($middleware, $container);
-        } elseif (null === $middleware && is_callable($path)) {
-            $middleware = $path;
-            $path       = '/';
+            $middleware = $this->prepareMiddleware($middleware, $forError = true);
         }
 
         $this->pipe($path, $middleware);
@@ -382,13 +374,8 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
             ));
         }
 
-        if (is_array($middleware) && ! is_callable($middleware)) {
-            $middlewarePipe = $this->marshalMiddlewarePipe($middleware);
-            return $middlewarePipe($request, $response, $next);
-        }
-
-        $callable = $this->marshalMiddleware($middleware);
-        return $callable($request, $response, $next);
+        $middleware = $this->prepareMiddleware($middleware);
+        return $middleware($request, $response, $next);
     }
 
     /**
@@ -556,45 +543,54 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
     }
 
     /**
-     * Attempts to retrieve middleware from the container, or instantiate it directly.
+     * Prepare middleware for piping.
      *
-     * @param string $middleware
+     * Performs a number of checks on $middleware to prepare it for piping
+     * to the application:
      *
+     * - If it's callable, it's returned immediately.
+     * - If it's a non-callable array, it's passed to marshalMiddlewarePipe().
+     * - If it's a string service name, it's passed to marshalLazyMiddlewareService().
+     * - If it's a string class name, it's passed to marshalInvokableMiddleware().
+     * - If no callable is created, an exception is thrown.
+     *
+     * @param mixed $middleware
      * @return callable
-     * @throws Exception\InvalidMiddlewareException If unable to obtain callable middleware
+     * @throws Exception\InvalidMiddlewareException
      */
-    private function marshalMiddleware($middleware)
+    private function prepareMiddleware($middleware, $forError = false)
     {
         if (is_callable($middleware)) {
             return $middleware;
         }
 
-        if (! is_string($middleware)) {
+        if (is_array($middleware)) {
+            return $this->marshalMiddlewarePipe($middleware, $forError);
+        }
+
+        $container = $this->container;
+        if (is_string($middleware) && $container && $container->has($middleware)) {
+            $method = $forError ? 'marshalLazyErrorMiddlewareService' : 'marshalLazyMiddlewareService';
+            return $this->{$method}($middleware, $container);
+        }
+
+        $callable = $middleware;
+        if (is_string($middleware)) {
+            $callable = $this->marshalInvokableMiddleware($middleware);
+        }
+
+        if (! is_callable($callable)) {
             throw new Exception\InvalidMiddlewareException(
-                'The middleware specified is not callable'
+                sprintf(
+                    'Unable to resolve middleware "%s" to a callable',
+                    (is_object($middleware)
+                    ? get_class($middleware) . "[Object]"
+                    : gettype($middleware) . '[Scalar]')
+                )
             );
         }
 
-        // try to get the action name from the container (if exists)
-        $callable = $this->marshalMiddlewareFromContainer($middleware);
-
-        if (is_callable($callable)) {
-            return $callable;
-        }
-
-        // try to instantiate the middleware directly, if possible
-        $callable = $this->marshalInvokableMiddleware($middleware);
-
-        if (is_callable($callable)) {
-            return $callable;
-        }
-
-        throw new Exception\InvalidMiddlewareException(
-            sprintf(
-                'Unable to resolve middleware "%s" to a callable',
-                $middleware
-            )
-        );
+        return $callable;
     }
 
     /**
@@ -613,42 +609,17 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
      * @return MiddlewarePipe
      * @throws Exception\InvalidMiddlewareException for any invalid middleware items.
      */
-    private function marshalMiddlewarePipe(array $middlewares)
+    private function marshalMiddlewarePipe(array $middlewares, $forError = false)
     {
         $middlewarePipe = new MiddlewarePipe();
 
         foreach ($middlewares as $middleware) {
             $middlewarePipe->pipe(
-                $this->marshalMiddleware($middleware)
+                $this->prepareMiddleware($middleware, $forError)
             );
         }
 
         return $middlewarePipe;
-    }
-
-    /**
-     * Attempt to retrieve the given middleware from the container.
-     *
-     * @param string $middleware
-     * @return string|callable Returns $middleware intact on failure, and the
-     *     middleware instance on success.
-     * @throws Exception\InvalidArgumentException if a container exception occurs.
-     */
-    private function marshalMiddlewareFromContainer($middleware)
-    {
-        $container = $this->container;
-        if (! $container || ! $container->has($middleware)) {
-            return $middleware;
-        }
-
-        try {
-            return $container->get($middleware);
-        } catch (ContainerException $e) {
-            throw new Exception\InvalidMiddlewareException(sprintf(
-                'Unable to retrieve middleware "%s" from the container',
-                $middleware
-            ), $e->getCode(), $e);
-        }
     }
 
     /**

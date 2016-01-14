@@ -451,26 +451,16 @@ return [
         // etc.
     ],
     'middleware_pipeline' => [
-        'pre_routing' => [
-            // See specification below
-        ],
-        'post_routing' => [
-            // See specification below
-        ],
+        // See specification below
     ],
 ];
 ```
 
-The key to note is `middleware_pipeline`, which can have two subkeys,
-`pre_routing` and `post_routing`. Each accepts an array of middlewares to
-register in the pipeline; they will each be `pipe()`'d to the Application in the
-order specified. Those specified `pre_routing` will be registered before any
-routes, and thus before the routing middleware, while those specified
-`post_routing` will be `pipe()`'d afterwards (again, also in the order
-specified).
+The key to note is `middleware_pipeline`, which is an array of middlewares to
+register in the pipeline; each will each be `pipe()`'d to the Application in the
+order specified.
 
-Each middleware specified in either `pre_routing` or `post_routing` must be in
-the following form:
+Each middleware specified must be in the following form:
 
 ```php
 [
@@ -482,8 +472,40 @@ the following form:
 ]
 ```
 
-Middleware may be any callable, `Zend\Stratigility\MiddlewareInterface`
-implementation, or a service name that resolves to one of the two.
+There is one exception to the above rule: to specify the *routing* middleware
+that Expressive provides, use the value
+`Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE`; this will be
+caught by the factory and expanded:
+
+```php
+return [
+    'middleware_pipeline' => [
+        [ /* ... */ ],
+        Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+        [ /* ... */ ],
+    ],
+];
+```
+
+> #### Place routing middleware correctly
+>
+> If you are defining routes *and* defining other middleware for the pipeline,
+> you **must** add the routing middleware. When you do so, make sure you put
+> it at the appropriate location in the pipeline.
+>
+> Typically, you will place any middleware you want to execute on all requests
+> prior to the routing middleware. This includes utilities for bootstrapping
+> the application (such as injection of the `UrlHelper` or `ServerUrlHelper`),
+> utilities for injecting common response headers (such as CORS support), etc.
+>
+> Place *error* middleware *after* the routing middleware. This is middleware
+> that should only execute if routing fails or routed middleware cannot complete
+> the response.
+
+Middleware items may be any callable, `Zend\Stratigility\MiddlewareInterface`
+implementation, or a service name that resolves to one of the two. Additionally,
+you can specify an array of such values; these will be composed in a single
+`Zend\Stratigility\MiddlewarePipe` instance, allowing layering of middleware.
 
 The path, if specified, can only be a literal path to match, and is typically
 used for segregating middleware applications or applying rules to subsets of an

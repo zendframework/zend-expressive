@@ -47,7 +47,8 @@ As such, you will need to:
 
 - Register the `ServerUrlHelper` as a service in your container.
 - Register the `ServerUrlMiddleware` as a service in your container.
-- Register the `ServerUrlMiddleware` as pre_routing pipeline middleware.
+- Register the `ServerUrlMiddleware` as pipeline middleware, early in the
+  pipeline.
 
 The following examples demonstrate registering the services.
 
@@ -89,9 +90,10 @@ $app->pipe(ServerUrlMiddleware::class);
 // Or use configuration:
 // [
 //     'middleware_pipeline' => [
-//         'pre_routing' => [
-//             ['middleware' => ServerUrlMiddleware::class],
-//         ],
+//         ['middleware' => ServerUrlMiddleware::class],
+//         /* ... */
+//         Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+//         /* ... */
 //     ],
 // ]
 ```
@@ -110,18 +112,17 @@ return [
         ],
     ],
     'middleware_pipeline' => [
-        'pre_routing' => [
-            ['middleware' => ServerUrlMiddleware::class],
-        ],
+        ['middleware' => ServerUrlMiddleware::class],
+        Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
     ],
-]
+];
 ```
 
 > ### Skeleton configures helpers
 >
 > If you started your project using the Expressive skeleton package, the
 > `ServerUrlHelper` and `ServerUrlMiddleware` factories are already registered
-> for you, as is the `ServerUrlMiddleware` pre_routing pipeline middleware.
+> for you, as is the `ServerUrlMiddleware` pipeline middleware.
 
 ## Using the helper in middleware
 
