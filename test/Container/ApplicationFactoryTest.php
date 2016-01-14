@@ -238,7 +238,7 @@ class ApplicationFactoryTest extends TestCase
         $r->setAccessible(true);
         $pipeline = $r->getValue($app);
 
-        $this->assertCount(3, $pipeline);
+        $this->assertCount(4, $pipeline);
 
         $route = $pipeline->dequeue();
         $this->assertInstanceOf(StratigilityRoute::class, $route);
@@ -253,6 +253,11 @@ class ApplicationFactoryTest extends TestCase
         $route = $pipeline->dequeue();
         $this->assertInstanceOf(StratigilityRoute::class, $route);
         $this->assertSame([$app, 'routeMiddleware'], $route->handler);
+        $this->assertEquals('/', $route->path);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf(StratigilityRoute::class, $route);
+        $this->assertSame([$app, 'dispatchMiddleware'], $route->handler);
         $this->assertEquals('/', $route->path);
     }
 
@@ -298,11 +303,16 @@ class ApplicationFactoryTest extends TestCase
         $r->setAccessible(true);
         $pipeline = $r->getValue($app);
 
-        $this->assertCount(3, $pipeline);
+        $this->assertCount(4, $pipeline);
 
         $route = $pipeline->dequeue();
         $this->assertInstanceOf(StratigilityRoute::class, $route);
         $this->assertSame([$app, 'routeMiddleware'], $route->handler);
+        $this->assertEquals('/', $route->path);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf(StratigilityRoute::class, $route);
+        $this->assertSame([$app, 'dispatchMiddleware'], $route->handler);
         $this->assertEquals('/', $route->path);
 
         $route = $pipeline->dequeue();
@@ -649,7 +659,7 @@ class ApplicationFactoryTest extends TestCase
         $r->setAccessible(true);
         $pipeline = $r->getValue($app);
 
-        $this->assertCount(3, $pipeline);
+        $this->assertCount(4, $pipeline);
 
         $route = $pipeline->dequeue();
         $this->assertInstanceOf(StratigilityRoute::class, $route);
@@ -664,6 +674,11 @@ class ApplicationFactoryTest extends TestCase
         $route = $pipeline->dequeue();
         $this->assertInstanceOf(StratigilityRoute::class, $route);
         $this->assertSame([$app, 'routeMiddleware'], $route->handler);
+        $this->assertEquals('/', $route->path);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf(StratigilityRoute::class, $route);
+        $this->assertSame([$app, 'dispatchMiddleware'], $route->handler);
         $this->assertEquals('/', $route->path);
     }
 
@@ -862,6 +877,13 @@ class ApplicationFactoryTest extends TestCase
             'Route middleware was registered when it should not have been'
         );
 
+        $this->assertAttributeSame(
+            false,
+            'dispatchMiddlewareIsRegistered',
+            $app,
+            'Dispatch middleware was registered when it should not have been'
+        );
+
         $r = new ReflectionProperty($app, 'pipeline');
         $r->setAccessible(true);
         $pipeline = $r->getValue($app);
@@ -968,30 +990,6 @@ class ApplicationFactoryTest extends TestCase
         $this->assertTrue($triggered, 'Deprecation notice was not triggered!');
     }
 
-    public function testRaisesExceptionIfRoutesAreDefinedPipelineIsPopulatedAndPipelineDoesNotProvideRoutingMiddleware()
-    {
-        // @codingStandardsIgnoreStart
-        $middleware = function ($request, $response, $next) {};
-        // @codingStandardsIgnoreEnd
-
-        $config = [
-            'middleware_pipeline' => [
-                clone $middleware,
-            ],
-            'routes' => [
-                [
-                    'path' => '/',
-                    'middleware' => clone $middleware,
-                    'allowed_methods' => [ 'GET' ],
-                ],
-            ],
-        ];
-        $this->injectServiceInContainer($this->container, 'config', $config);
-
-        $this->setExpectedException(InvalidArgumentException::class, 'routing middleware');
-        $this->factory->__invoke($this->container->reveal());
-    }
-
     public function configWithRoutesButNoPipeline()
     {
         // @codingStandardsIgnoreStart
@@ -1016,20 +1014,26 @@ class ApplicationFactoryTest extends TestCase
     /**
      * @dataProvider configWithRoutesButNoPipeline
      */
-    public function testProvidingRoutesAndNoPipelineImplicitlyRegistersRoutingMiddleware($config)
+    public function testProvidingRoutesAndNoPipelineImplicitlyRegistersRoutingAndDispatchMiddleware($config)
     {
         $this->injectServiceInContainer($this->container, 'config', $config);
         $app = $this->factory->__invoke($this->container->reveal());
         $this->assertAttributeSame(true, 'routeMiddlewareIsRegistered', $app);
+        $this->assertAttributeSame(true, 'dispatchMiddlewareIsRegistered', $app);
 
         $r = new ReflectionProperty($app, 'pipeline');
         $r->setAccessible(true);
         $pipeline = $r->getValue($app);
 
-        $this->assertCount(1, $pipeline, 'Did not get expected pipeline count!');
+        $this->assertCount(2, $pipeline, 'Did not get expected pipeline count!');
+
         $test = $pipeline->dequeue();
         $this->assertEquals('/', $test->path);
         $this->assertSame([$app, 'routeMiddleware'], $test->handler);
+
+        $test = $pipeline->dequeue();
+        $this->assertEquals('/', $test->path);
+        $this->assertSame([$app, 'dispatchMiddleware'], $test->handler);
     }
 
     public function testPipelineContainingRoutingMiddlewareConstantPipesRoutingMiddleware()
@@ -1043,5 +1047,18 @@ class ApplicationFactoryTest extends TestCase
 
         $app = $this->factory->__invoke($this->container->reveal());
         $this->assertAttributeSame(true, 'routeMiddlewareIsRegistered', $app);
+    }
+
+    public function testPipelineContainingDispatchMiddlewareConstantPipesDispatchMiddleware()
+    {
+        $config = [
+            'middleware_pipeline' => [
+                ApplicationFactory::DISPATCH_MIDDLEWARE,
+            ],
+        ];
+        $this->injectServiceInContainer($this->container, 'config', $config);
+
+        $app = $this->factory->__invoke($this->container->reveal());
+        $this->assertAttributeSame(true, 'dispatchMiddlewareIsRegistered', $app);
     }
 }

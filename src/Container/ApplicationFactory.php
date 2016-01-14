@@ -72,20 +72,17 @@ use Zend\Stratigility\MiddlewarePipe;
  * <code>
  * return [
  *     'middleware_pipeline' => [
- *         // An array of middleware to register prior to registration of the
- *         // routing middleware:
- *         'pre_routing' => [
- *         ],
- *         // An array of middleware to register after registration of the
- *         // routing middleware:
- *         'post_routing' => [
- *         ],
+ *         // An array of middleware to register with the pipeline.
+ *         // entries to register prior to routing/dispatching...
+ *         Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+ *         Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+ *         // entries to register after routing/dispatching...
  *     ],
  * ];
  * </code>
  *
- * Each item in either the `pre_routing` or `post_routing` array must be an
- * array with the following specification:
+ * Each item in the middleware_pipeline array (with the exception of the routing
+ * and dispatch middleware entries) must be of the following specification:
  *
  * <code>
  * [
@@ -104,8 +101,7 @@ use Zend\Stratigility\MiddlewarePipe;
  * indicating the middleware is standard middleware.
  *
  * Middleware are pipe()'d to the application instance in the order in which
- * they appear. "pre_routing" middleware will execute before the application's
- * routing middleware, while "post_routing" middleware will execute afterwards.
+ * they appear.
  *
  * Middleware piped may be either callables or service names. If you specify
  * the middleware's `error` flag as `true`, the middleware will be piped using
@@ -113,6 +109,7 @@ use Zend\Stratigility\MiddlewarePipe;
  */
 class ApplicationFactory
 {
+    const DISPATCH_MIDDLEWARE = 'EXPRESSIVE_DISPATCH_MIDDLEWARE';
     const ROUTING_MIDDLEWARE = 'EXPRESSIVE_ROUTING_MIDDLEWARE';
 
     /**
@@ -153,25 +150,20 @@ class ApplicationFactory
      */
     private function injectRoutesAndPipeline(Application $app, ContainerInterface $container)
     {
-        // This is set to true by default; injectPipeline() will set it to false if
-        // it injects pipeline middleware, but not the routing middleware - which
-        // is the only situation where we may have a problem.
-        $routingMiddlewareInjected = true;
-
         $config = $container->has('config') ? $container->get('config') : [];
+        $pipelineCreated = false;
+
         if (isset($config['middleware_pipeline']) && is_array($config['middleware_pipeline'])) {
-            $routingMiddlewareInjected = $this->injectPipeline($config['middleware_pipeline'], $app);
+            $pipelineCreated = $this->injectPipeline($config['middleware_pipeline'], $app);
         }
 
         if (isset($config['routes']) && is_array($config['routes'])) {
-            if (count($config['routes']) > 0 && ! $routingMiddlewareInjected) {
-                throw new ContainerInvalidArgumentException(
-                    'A middleware pipeline was defined that does not include the routing middleware, '
-                    . 'but routes are also defined; please add the routing middleware to your '
-                    . 'middleware pipeline'
-                );
-            }
             $this->injectRoutes($config['routes'], $app);
+
+            if (! $pipelineCreated) {
+                $app->pipeRoutingMiddleware();
+                $app->pipeDispatchMiddleware();
+            }
         }
     }
 
@@ -185,7 +177,7 @@ class ApplicationFactory
      * (though it will raise an exception if other keys are *also* present).
      *
      * Otherwise, it passes the pipeline on to `injectMiddleware()`,
-     * returning a boolean value based on whether or not the routing
+     * returning a boolean value based on whether or not any
      * middleware was injected.
      *
      * @deprecated This method will be removed in v1.1.
@@ -260,6 +252,7 @@ class ApplicationFactory
         }
 
         $app->pipeRoutingMiddleware();
+        $app->pipeDispatchMiddleware();
 
         if (isset($pipeline['post_routing'])) {
             if (! is_array($pipeline['post_routing'])) {
@@ -320,25 +313,19 @@ class ApplicationFactory
      *
      * @param array $collection
      * @param Application $app
-     * @return int Count of middleware injected at the top-level
+     * @return bool Flag indicating whether or not any middleware was injected.
      * @throws Exception\InvalidMiddlewareException for invalid middleware.
      */
     private function injectMiddleware(array $collection, Application $app)
     {
-        // Return true if the collection is empty, as that means no middleware
-        // was injected, and adding routes will not lead to an error condition.
-        if (empty($collection)) {
-            return true;
-        }
-
-        $routingMiddlewareInjected = false;
-        $isRoutingMiddleware = function ($middleware) use ($app) {
-            return ([$app, 'routeMiddleware'] === $middleware);
-        };
-
+        $injections = false;
         foreach ($collection as $spec) {
             if ($spec === self::ROUTING_MIDDLEWARE) {
                 $spec = ['middleware' => [$app, 'routeMiddleware']];
+            }
+
+            if ($spec === self::DISPATCH_MIDDLEWARE) {
+                $spec = ['middleware' => [$app, 'dispatchMiddleware']];
             }
 
             if (! is_array($spec) || ! array_key_exists('middleware', $spec)) {
@@ -350,15 +337,8 @@ class ApplicationFactory
             $pipe  = $error ? 'pipeErrorHandler' : 'pipe';
 
             $app->{$pipe}($path, $spec['middleware']);
-            $routingMiddlewareInjected = $routingMiddlewareInjected || $isRoutingMiddleware($spec['middleware']);
-
-            // If it is an array of middleware, check if any were the routing middleware
-            if (is_array($spec['middleware']) && $pipe === 'pipe') {
-                foreach ($spec['middleware'] as $middleware) {
-                    $routingMiddlewareInjected = $routingMiddlewareInjected || $isRoutingMiddleware($middleware);
-                }
-            }
+            $injections = true;
         }
-        return $routingMiddlewareInjected;
+        return $injections;
     }
 }

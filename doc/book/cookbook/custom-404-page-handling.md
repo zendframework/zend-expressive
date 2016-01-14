@@ -112,9 +112,7 @@ $app->pipe($container->get('Application\NotFound'));
 
 This must be done *after*:
 
-- calling `$app->pipeRoutingMiddleware()`, **OR**
-- calling any method that injects routed middleware (`get()`, `post()`,
-  `route()`, etc.), **OR**
+- calling `$app->pipeDispatchMiddleware()`, **OR**
 - pulling the `Application` instance from the service container (assuming you
   used the `ApplicationFactory`).
 

@@ -186,20 +186,23 @@ function ($error, ServerRequestInterface $request, ResponseInterface $response, 
 
 Read the section on [piping vs routing](router/piping.md) for more information.
 
-### Registering routing middleware
+### Registering routing and dispatch middleware
 
-Routing is accomplished via dedicated a dedicated middleware method, 
-`Application::routeMiddleware()`. It is an instance method, and can be
-piped/registered with other middleware platforms if desired.
+Routing is accomplished via dedicated a dedicated middleware method,
+`Application::routeMiddleware()`; similarly, dispatching of routed middleware
+has a corresponding instance middleware method, `Application::dispatchMiddleware()`.
+Each can be piped/registered with other middleware platforms if desired.
 
-Internally, the first time `route()` is called (including via one of the proxy
-methods), or, if never called, when `__invoke()` (the exposed application
-middleware) is called, the instance will pipe `Application::routeMiddleware` to
-the middleware pipeline. You can also pipe it manually if desired:
+These methods **MUST** be piped to the application so that the application will
+route and dispatch routed middleware. This is done using the following methods:
 
 ```php
 $app->pipeRoutingMiddleware();
+$app->pipeDispatchMiddleware();
 ```
+
+See the section on [piping](router/piping.md) to see how you can register
+non-routed middleware and create layered middleware applications.
 
 ## Retrieving dependencies
 

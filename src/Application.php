@@ -39,6 +39,12 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
     private $container;
 
     /**
+     * @var bool Flag indicating whether or not the dispatch middleware is
+     *     registered in the middleware pipeline.
+     */
+    private $dispatchMiddlewareIsRegistered = false;
+
+    /**
      * @var EmitterInterface
      */
     private $emitter;
@@ -260,10 +266,18 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
             return $this;
         }
 
+        if ($middleware === [$this, 'dispatchMiddleware'] && $this->dispatchMiddlewareIsRegistered) {
+            return $this;
+        }
+
         parent::pipe($path, $middleware);
 
         if ($middleware === [$this, 'routeMiddleware']) {
             $this->routeMiddlewareIsRegistered = true;
+        }
+
+        if ($middleware === [$this, 'dispatchMiddleware']) {
+            $this->dispatchMiddlewareIsRegistered = true;
         }
 
         return $this;
@@ -330,10 +344,27 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
     }
 
     /**
+     * Register the dispatch middleware in the middleware pipeline.
+     */
+    public function pipeDispatchMiddleware()
+    {
+        if ($this->dispatchMiddlewareIsRegistered) {
+            return;
+        }
+        $this->pipe([$this, 'dispatchMiddleware']);
+    }
+
+    /**
      * Middleware that routes the incoming request and delegates to the matched middleware.
      *
-     * Uses the router to route the incoming request, dispatching matched
-     * middleware on a request success condition.
+     * Uses the router to route the incoming request, injecting the request
+     * with:
+     *
+     * - the route result object (under a key named for the RouteResult class)
+     * - attributes for each matched routing parameter
+     *
+     * On completion, it calls on the next middleware (typically the
+     * `dispatchMiddleware()`).
      *
      * If routing fails, `$next()` is called; if routing fails due to HTTP
      * method negotiation, the response is set to a 405, injected with an
@@ -344,9 +375,6 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
      * @param  ResponseInterface $response
      * @param  callable $next
      * @return ResponseInterface
-     * @throws Exception\InvalidArgumentException if the route result does not contain middleware
-     * @throws Exception\InvalidArgumentException if unable to retrieve middleware from the container
-     * @throws Exception\InvalidArgumentException if unable to resolve middleware to a callable
      */
     public function routeMiddleware(ServerRequestInterface $request, ResponseInterface $response, callable $next)
     {
@@ -368,11 +396,40 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
             $request = $request->withAttribute($param, $value);
         }
 
-        $middleware = $result->getMatchedMiddleware();
+        return $next($request, $response);
+    }
+
+    /**
+     * Dispatch the middleware matched by routing.
+     *
+     * If the request does not have the route result, calls on the next
+     * middleware.
+     *
+     * Next, it checks if the route result has matched middleware; if not, it
+     * raises an exception.
+     *
+     * Finally, it attempts to marshal the middleware, and dispatches it when
+     * complete, return the response.
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param callable $next
+     * @returns ResponseInterface
+     * @throws Exception\InvalidMiddlewareException if no middleware is present
+     *     to dispatch in the route result.
+     */
+    public function dispatchMiddleware(ServerRequestInterface $request, ResponseInterface $response, callable $next)
+    {
+        $routeResult = $request->getAttribute(Router\RouteResult::class, false);
+        if (! $routeResult) {
+            return $next($request, $response);
+        }
+
+        $middleware = $routeResult->getMatchedMiddleware();
         if (! $middleware) {
             throw new Exception\InvalidMiddlewareException(sprintf(
                 'The route %s does not have a middleware to dispatch',
-                $result->getMatchedRouteName()
+                $routeResult->getMatchedRouteName()
             ));
         }
 
@@ -421,7 +478,6 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
 
         $this->routes[] = $route;
         $this->router->addRoute($route);
-        $this->pipeRoutingMiddleware();
 
         return $route;
     }

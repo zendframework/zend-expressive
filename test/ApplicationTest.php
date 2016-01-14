@@ -213,7 +213,7 @@ class ApplicationTest extends TestCase
         });
     }
 
-    public function testRouteMiddlewareIsNotPipedAtInstantation()
+    public function testRouteAndDispatchMiddlewareAreNotPipedAtInstantation()
     {
         $app = $this->getApp();
 
@@ -224,27 +224,7 @@ class ApplicationTest extends TestCase
         $this->assertCount(0, $pipeline);
     }
 
-    public function testRouteMiddlewareIsPipedAtFirstCallToRoute()
-    {
-        $this->router->addRoute(Argument::type(Route::class))->shouldBeCalled();
-
-        $app = $this->getApp();
-        $app->route('/foo', 'bar');
-
-        $r = new ReflectionProperty($app, 'pipeline');
-        $r->setAccessible(true);
-        $pipeline = $r->getValue($app);
-
-        $this->assertCount(1, $pipeline);
-        $route = $pipeline->dequeue();
-        $this->assertInstanceOf(StratigilityRoute::class, $route);
-        $test  = $route->handler;
-
-        $routeMiddleware = [$app, 'routeMiddleware'];
-        $this->assertSame($routeMiddleware, $test);
-    }
-
-    public function testRouteMiddlewareCanRouteArrayOfMiddlewareAsMiddlewarePipe()
+    public function testDispatchMiddlewareCanDispatchArrayOfMiddlewareAsMiddlewarePipe()
     {
         $middleware = [
             function () {
@@ -256,14 +236,14 @@ class ApplicationTest extends TestCase
 
         $request = new ServerRequest([], [], '/', 'GET');
         $routeResult = RouteResult::fromRouteMatch(__METHOD__, $middleware, []);
-        $this->router->match($request)->willReturn($routeResult);
+        $request = $request->withAttribute(RouteResult::class, $routeResult);
 
         $container = $this->mockContainerInterface();
         $this->injectServiceInContainer($container, 'FooBar', function () {
         });
 
         $app = new Application($this->router->reveal(), $container->reveal());
-        $app->routeMiddleware($request, new Response(), function () {
+        $app->dispatchMiddleware($request, new Response(), function () {
         });
     }
 
@@ -279,13 +259,13 @@ class ApplicationTest extends TestCase
      * @dataProvider uncallableMiddleware
      * @expectedException \Zend\Expressive\Exception\InvalidMiddlewareException
      */
-    public function testThrowsExceptionWhenRoutingUncallableMiddleware($middleware)
+    public function testThrowsExceptionWhenDispatchingUncallableMiddleware($middleware)
     {
         $request = new ServerRequest([], [], '/', 'GET');
         $routeResult = RouteResult::fromRouteMatch(__METHOD__, $middleware, []);
-        $this->router->match($request)->willReturn($routeResult);
+        $request = $request->withAttribute(RouteResult::class, $routeResult);
 
-        $this->getApp()->routeMiddleware($request, new Response(), function () {
+        $this->getApp()->dispatchMiddleware($request, new Response(), function () {
         });
     }
 
@@ -307,6 +287,26 @@ class ApplicationTest extends TestCase
         $test  = $route->handler;
 
         $this->assertSame($routeMiddleware, $test);
+    }
+
+    public function testCannotPipeDispatchMiddlewareMoreThanOnce()
+    {
+        $app             = $this->getApp();
+        $dispatchMiddleware = [$app, 'dispatchMiddleware'];
+
+        $app->pipe($dispatchMiddleware);
+        $app->pipe($dispatchMiddleware);
+
+        $r = new ReflectionProperty($app, 'pipeline');
+        $r->setAccessible(true);
+        $pipeline = $r->getValue($app);
+
+        $this->assertCount(1, $pipeline);
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf(StratigilityRoute::class, $route);
+        $test  = $route->handler;
+
+        $this->assertSame($dispatchMiddleware, $test);
     }
 
     public function testCanInjectFinalHandlerViaConstructor()
@@ -429,6 +429,23 @@ class ApplicationTest extends TestCase
         $route = $pipeline->dequeue();
         $this->assertInstanceOf(StratigilityRoute::class, $route);
         $this->assertSame([$app, 'routeMiddleware'], $route->handler);
+        $this->assertEquals('/', $route->path);
+    }
+
+    public function testCanTriggerPipingOfDispatchMiddleware()
+    {
+        $app = $this->getApp();
+        $app->pipeDispatchMiddleware();
+
+        $r = new ReflectionProperty($app, 'pipeline');
+        $r->setAccessible(true);
+        $pipeline = $r->getValue($app);
+
+        $this->assertCount(1, $pipeline);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf(StratigilityRoute::class, $route);
+        $this->assertSame([$app, 'dispatchMiddleware'], $route->handler);
         $this->assertEquals('/', $route->path);
     }
 
