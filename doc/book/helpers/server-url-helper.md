@@ -47,8 +47,8 @@ As such, you will need to:
 
 - Register the `ServerUrlHelper` as a service in your container.
 - Register the `ServerUrlMiddleware` as a service in your container.
-- Register the `ServerUrlMiddleware` as pipeline middleware, early in the
-  pipeline.
+- Register the `ServerUrlMiddleware` as pipeline middleware, immediately
+  following the routing middleware.
 
 The following examples demonstrate registering the services.
 
@@ -79,20 +79,22 @@ $container->set(
 );
 ```
 
-To register the `ServerUrlMiddleware` as pre-routing pipeline middleware:
+To register the `ServerUrlMiddleware` as pipeline middleware following the
+routing middleware:
 
 ```php
 use Zend\Expressive\Helper\ServerUrlMiddleware;
 
-// Do this early, before piping other middleware or routes:
+// Programmatically:
+$app->pipeRoutingMiddleware();
 $app->pipe(ServerUrlMiddleware::class);
 
 // Or use configuration:
 // [
 //     'middleware_pipeline' => [
-//         ['middleware' => ServerUrlMiddleware::class],
 //         /* ... */
 //         Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+//         ['middleware' => ServerUrlMiddleware::class],
 //         /* ... */
 //     ],
 // ]
@@ -112,8 +114,8 @@ return [
         ],
     ],
     'middleware_pipeline' => [
-        ['middleware' => ServerUrlMiddleware::class],
         Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+        ['middleware' => ServerUrlMiddleware::class],
     ],
 ];
 ```

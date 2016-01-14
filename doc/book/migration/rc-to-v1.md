@@ -8,6 +8,8 @@ RC6 introduced changes to the following:
   middleware.
 - The above change also suggested an alternative to the middleware pipeline
   configuration that simplifies it.
+- Route result observers are deprecated, and no longer triggered for routing
+  failures.
 
 ## Routing and Dispatch middleware
 
@@ -222,7 +224,136 @@ To update an existing application:
 Once you have made the above changes, you should no longer receive deprecation
 notices when running your application.
 
+## Route result observer deprecation
+
+As of RC6, the following changes have occurred with regards to route result
+observers:
+
+- They are deprecated for usage with `Zend\Expressive\Application`, and that
+  class will not be a route result subject starting in 1.1. You will need to
+  start migrating to alternative solutions.
+- The functionality for notifying observers has been moved from the routing
+  middleware into a dedicated `Application::routeResultObserverMiddleware()`
+  method. This middleware must be piped separately to the middleware pipeline
+  for it to trigger.
+
+### Impact
+
+If you are using any route result observers, you will need to ensure your
+application notifies them, and you will want to migrate to alternative solutions
+to ensure your functionality continues to work.
+
+To ensure your observers are triggered, you will need to adapt your application,
+based on how you create your instance.
+
+If you are *not* using the `ApplicationFactory`, you will need to pipe the
+`routeResultObserverMiddleware` to your application, between the routing and
+dispatch middleware:
+
+```php
+$app->pipeRoutingMiddleware();
+$app->pipeRouteResultObserverMiddleware();
+$app->pipeDispatchMiddleware();
+```
+
+If you are using the `ApplicationFactory`, you may need to update your
+configuration to allow injecting the route result observer middleware. If you
+have *not* updated your configuration to remove the `pre_routing` and/or
+`post_routing` keys, the middleware *will* be registered for you. If you have,
+however, you will need to register it following the routing middleware:
+
+```php
+[
+    'middleware_pipeline' => [
+        /* ... */
+        Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+        Zend\Expressive\Container\ApplicationFactory::ROUTE_RESULT_OBSERVER_MIDDLEWARE,
+        Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+        /* ... */
+    ],
+]
+```
+
+To make your observers forwards-compatible requires two changes:
+
+- Rewriting your observer as middleware.
+- Registering your observer as middleware following the routing middleware.
+
+If your observer looked like the following:
+
+```php
+use Zend\Expressive\Router\RouteResult;
+use Zend\Expressive\Router\RouteResultObserverInterface;
+
+class MyObserver implements RouteResultObserverInterface
+{
+    private $logger;
+
+    public function __construct(Logger $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    public function update(RouteResult $result)
+    {
+        $this->logger->log($result);
+    }
+}
+```
+
+You could rewrite it as follows:
+
+```php
+use Zend\Expressive\Router\RouteResult;
+
+class MyObserver
+{
+    private $logger;
+
+    public function __construct(Logger $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    public function __invoke($request, $response, $next)
+    {
+        $result = $request->getAttribute(RouteResult::class, false);
+        if (! $result) {
+            return $next($request, $response);
+        }
+
+        $this->logger->log($result);
+        return $next($request, $response);
+    }
+}
+```
+
+You would then register it following the routing middleware. If you are building
+your application programmatically, you would do this as follows:
+
+```php
+$app->pipeRoutingMiddleware();
+$app->pipe(MyObserver::class);
+$app->pipeDispatchMiddleware();
+```
+
+If you are using the `ApplicationFactory`, alter your configuration:
+
+```php
+[
+    'middleware_pipeline' => [
+        /* ... */
+        Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+        ['middleware' => MyObserver::class],
+        Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+        /* ... */
+    ],
+]
+```
+
 ## Timeline for migration
 
-Support for the `pre_routing` and `post_routing` configuration will be removed
-with the 1.1.0 release.
+The following features will be removed in version 1.1.0:
+
+- Support for the `pre_routing` and `post_routing` configuration.
+- Support for route result observers.

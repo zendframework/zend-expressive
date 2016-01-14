@@ -2,9 +2,9 @@
 
 `Zend\Expressive\Helper\UrlHelper` provides the ability to generate a URI path
 based on a given route defined in the `Zend\Expressive\Router\RouterInterface`.
-If registered as a route result observer, and the route being used was also
-the one matched during routing, you can provide a subset of routing
-parameters, and any not provided will be pulled from those matched.
+If injected with a route result, and the route being used was also the one
+matched during routing, you can provide a subset of routing parameters, and any
+not provided will be pulled from those matched.
 
 ## Usage
 
@@ -58,16 +58,16 @@ In order to use the helper, you will need to instantiate it with the current
 `RouterInterface`. The factory `Zend\Expressive\Helper\UrlHelperFactory` has
 been provided for this purpose, and can be used trivially with most
 dependency injection containers implementing container-interop. Additionally,
-it is most useful when injected with the current results of routing, and as
-such should be registered as a route result observer with the application. The
-following steps should be followed to register and configure the helper:
+it is most useful when injected with the current results of routing, which
+requires registering middleware with the application that can inject the route
+result. The following steps should be followed to register and configure the helper:
 
 - Register the `UrlHelper` as a service in your container, using the provided
   factory.
 - Register the `UrlHelperMiddleware` as a service in your container, using the
   provided factory.
-- Register the `UrlHelperMiddleware` as pipeline middleware, early in the
-  pipeline.
+- Register the `UrlHelperMiddleware` as pipeline middleware, immediately
+  following the routing middleware.
 
 ### Registering the helper service
 
@@ -113,20 +113,22 @@ return ['dependencies' => [
 
 ### Registering the pipeline middleware
 
-To register the `UrlHelperMiddleware` as pre-routing pipeline middleware:
+To register the `UrlHelperMiddleware` as pipeline middleware following the
+routing middleware:
 
 ```php
 use Zend\Expressive\Helper\UrlHelperMiddleware;
 
-// Do this early, before piping other middleware or routes:
+// Programmatically:
+$app->pipeRoutingMiddleware();
 $app->pipe(UrlHelperMiddleware::class);
 
 // Or use configuration:
 // [
 //     'middleware_pipeline' => [
-//         ['middleware' => UrlHelperMiddleware::class],
 //         /* ... */
 //         Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+//         ['middleware' => UrlHelperMiddleware::class],
 //         /* ... */
 //     ],
 // ]

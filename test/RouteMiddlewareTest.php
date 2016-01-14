@@ -603,32 +603,15 @@ class RouteMiddlewareTest extends TestCase
         $app->attachRouteResultObserver($routeResultObserver->reveal());
 
         $test = $app->routeMiddleware($request, $response, function ($request, $response) use ($app, $next) {
-            return $app->dispatchMiddleware($request, $response, $next);
+            return $app->routeResultObserverMiddleware(
+                $request,
+                $response,
+                function ($request, $response) use ($app, $next) {
+                    return $app->dispatchMiddleware($request, $response, $next);
+                }
+            );
         });
         $this->assertSame($response, $test);
-    }
-
-    public function testMiddlewareTriggersObserversWithFailedRouteResult()
-    {
-        $request  = new ServerRequest();
-        $response = new Response();
-        $result   = RouteResult::fromRouteFailure(['GET', 'POST']);
-
-        $routeResultObserver = $this->prophesize(RouteResultObserverInterface::class);
-        $routeResultObserver->update($result)->shouldBeCalled();
-        $this->router->match($request)->willReturn($result);
-
-        $next = function ($request, $response, $error = false) {
-            $this->assertEquals(405, $error);
-            $this->assertEquals(405, $response->getStatusCode());
-            return $response;
-        };
-
-        $app  = $this->getApplication();
-        $app->attachRouteResultObserver($routeResultObserver->reveal());
-
-        $test = $app->routeMiddleware($request, $response, $next);
-        $this->assertEquals(405, $test->getStatusCode());
     }
 
     public function testCanDetachRouteResultObservers()
@@ -670,7 +653,13 @@ class RouteMiddlewareTest extends TestCase
         $this->assertAttributeNotContains($routeResultObserver->reveal(), 'routeResultObservers', $app);
 
         $test = $app->routeMiddleware($request, $response, function ($request, $response) use ($app, $next) {
-            return $app->dispatchMiddleware($request, $response, $next);
+            return $app->routeResultObserverMiddleware(
+                $request,
+                $response,
+                function ($request, $response) use ($app, $next) {
+                    return $app->dispatchMiddleware($request, $response, $next);
+                }
+            );
         });
         $this->assertSame($response, $test);
     }

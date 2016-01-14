@@ -113,6 +113,11 @@ class ApplicationFactory
     const ROUTING_MIDDLEWARE = 'EXPRESSIVE_ROUTING_MIDDLEWARE';
 
     /**
+     * @deprecated This constant will be removed in v1.1.
+     */
+    const ROUTE_RESULT_OBSERVER_MIDDLEWARE = 'EXPRESSIVE_ROUTE_RESULT_OBSERVER_MIDDLEWARE';
+
+    /**
      * Create and return an Application instance.
      *
      * See the class level docblock for information on what services this
@@ -252,6 +257,7 @@ class ApplicationFactory
         }
 
         $app->pipeRoutingMiddleware();
+        $app->pipeRouteResultObserverMiddleware();
         $app->pipeDispatchMiddleware();
 
         if (isset($pipeline['post_routing'])) {
@@ -311,6 +317,7 @@ class ApplicationFactory
     /**
      * Given a collection of middleware specifications, pipe them to the application.
      *
+     * @todo Remove ROUTE_RESULT_OBSERVER_MIDDLEWARE detection for 1.1
      * @param array $collection
      * @param Application $app
      * @return bool Flag indicating whether or not any middleware was injected.
@@ -326,6 +333,13 @@ class ApplicationFactory
 
             if ($spec === self::DISPATCH_MIDDLEWARE) {
                 $spec = ['middleware' => [$app, 'dispatchMiddleware']];
+            }
+
+            if ($spec === self::ROUTE_RESULT_OBSERVER_MIDDLEWARE) {
+                $spec = ['middleware' => [$app, 'routeResultObserverMiddleware']];
+                $r = new \ReflectionProperty($app, 'routeResultObserverMiddlewareIsRegistered');
+                $r->setAccessible(true);
+                $r->setValue($app, true);
             }
 
             if (! is_array($spec) || ! array_key_exists('middleware', $spec)) {

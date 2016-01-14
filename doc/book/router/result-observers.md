@@ -1,5 +1,12 @@
 # Route Result Observers
 
+> ## DEPRECATED!
+>
+> The route result observers feature existed prior to the stable 1.0 release,
+> but was deprecated with 1.0.0RC6. Please do not use this feature; instead,
+> you can inject middleware between the routing and dispatch middleware that can
+> act on the matched route result.
+
 Occasionally, you may have need of the `RouteResult` within other application
 code. As a primary example, a URI generator may want this information to allow
 creating "self" URIs, or to allow presenting a subset of parameters to generate

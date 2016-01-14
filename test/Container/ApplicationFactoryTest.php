@@ -238,7 +238,7 @@ class ApplicationFactoryTest extends TestCase
         $r->setAccessible(true);
         $pipeline = $r->getValue($app);
 
-        $this->assertCount(4, $pipeline);
+        $this->assertCount(5, $pipeline);
 
         $route = $pipeline->dequeue();
         $this->assertInstanceOf(StratigilityRoute::class, $route);
@@ -253,6 +253,11 @@ class ApplicationFactoryTest extends TestCase
         $route = $pipeline->dequeue();
         $this->assertInstanceOf(StratigilityRoute::class, $route);
         $this->assertSame([$app, 'routeMiddleware'], $route->handler);
+        $this->assertEquals('/', $route->path);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf(StratigilityRoute::class, $route);
+        $this->assertSame([$app, 'routeResultObserverMiddleware'], $route->handler);
         $this->assertEquals('/', $route->path);
 
         $route = $pipeline->dequeue();
@@ -303,11 +308,16 @@ class ApplicationFactoryTest extends TestCase
         $r->setAccessible(true);
         $pipeline = $r->getValue($app);
 
-        $this->assertCount(4, $pipeline);
+        $this->assertCount(5, $pipeline);
 
         $route = $pipeline->dequeue();
         $this->assertInstanceOf(StratigilityRoute::class, $route);
         $this->assertSame([$app, 'routeMiddleware'], $route->handler);
+        $this->assertEquals('/', $route->path);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf(StratigilityRoute::class, $route);
+        $this->assertSame([$app, 'routeResultObserverMiddleware'], $route->handler);
         $this->assertEquals('/', $route->path);
 
         $route = $pipeline->dequeue();
@@ -659,7 +669,7 @@ class ApplicationFactoryTest extends TestCase
         $r->setAccessible(true);
         $pipeline = $r->getValue($app);
 
-        $this->assertCount(4, $pipeline);
+        $this->assertCount(5, $pipeline);
 
         $route = $pipeline->dequeue();
         $this->assertInstanceOf(StratigilityRoute::class, $route);
@@ -674,6 +684,11 @@ class ApplicationFactoryTest extends TestCase
         $route = $pipeline->dequeue();
         $this->assertInstanceOf(StratigilityRoute::class, $route);
         $this->assertSame([$app, 'routeMiddleware'], $route->handler);
+        $this->assertEquals('/', $route->path);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf(StratigilityRoute::class, $route);
+        $this->assertSame([$app, 'routeResultObserverMiddleware'], $route->handler);
         $this->assertEquals('/', $route->path);
 
         $route = $pipeline->dequeue();
@@ -1060,5 +1075,43 @@ class ApplicationFactoryTest extends TestCase
 
         $app = $this->factory->__invoke($this->container->reveal());
         $this->assertAttributeSame(true, 'dispatchMiddlewareIsRegistered', $app);
+    }
+
+    /**
+     * @deprecated This test can be removed for 1.1
+     */
+    public function testPipelineContainingRouteResultObserverMiddlewareConstantPipesRelatedMiddleware()
+    {
+        $config = [
+            'middleware_pipeline' => [
+                ApplicationFactory::ROUTE_RESULT_OBSERVER_MIDDLEWARE,
+            ],
+        ];
+        $this->injectServiceInContainer($this->container, 'config', $config);
+
+        $app = $this->factory->__invoke($this->container->reveal());
+        $this->assertAttributeSame(true, 'routeResultObserverMiddlewareIsRegistered', $app);
+    }
+
+    /**
+     * @dataProvider middlewarePipelinesWithPreOrPostRouting
+     * @deprecated This test can be removed for 1.1
+     */
+    public function testUsageOfDeprecatedConfigurationRegistersRouteResultObserverMiddleware($config)
+    {
+        $config = ['middleware_pipeline' => $config];
+        $this->injectServiceInContainer($this->container, 'config', $config);
+
+        // @codingStandardsIgnoreStart
+        set_error_handler(function ($errno, $errmsg) use (&$triggered) {
+            $this->assertContains('routing', $errmsg);
+            $triggered = true;
+        }, E_USER_DEPRECATED);
+        // @codingStandardsIgnoreEnd
+
+        $app = $this->factory->__invoke($this->container->reveal());
+        restore_error_handler();
+
+        $this->assertAttributeSame(true, 'routeResultObserverMiddlewareIsRegistered', $app);
     }
 }
