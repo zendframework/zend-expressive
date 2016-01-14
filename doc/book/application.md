@@ -188,7 +188,7 @@ Read the section on [piping vs routing](router/piping.md) for more information.
 
 ### Registering routing and dispatch middleware
 
-Routing is accomplished via dedicated a dedicated middleware method,
+Routing is accomplished via a dedicated middleware method,
 `Application::routeMiddleware()`; similarly, dispatching of routed middleware
 has a corresponding instance middleware method, `Application::dispatchMiddleware()`.
 Each can be piped/registered with other middleware platforms if desired.

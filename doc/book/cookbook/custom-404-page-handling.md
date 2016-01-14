@@ -87,12 +87,12 @@ routed, and thus needs to be piped to the application instance. You can do this
 via either configuration, or manually.
 
 To do this via configuration, add an entry under the `middleware_pipeline`
-configuration, after the routing middleware:
+configuration, after the dispatch middleware:
 
 ```php
 'middleware_pipeline' => [
     /* ... */
-    Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+    Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
     [
         'middleware' => 'Application\NotFound',
     ],

@@ -42,12 +42,13 @@ order to seed the `Application` instance:
       // An array of middleware to register.
       [ /* ... */ ],
       Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+      Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
       [ /* ... */ ],
   ],
   ```
 
-  Each item of the array, other than the entry for routing middleware, must be
-  an array itself, with the following structure:
+  Each item of the array, other than the entries for routing and dispatch
+  middleware, must be an array itself, with the following structure:
 
   ```php
   [
