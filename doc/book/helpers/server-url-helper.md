@@ -64,10 +64,10 @@ $services->setFactory(ServerUrlMiddleware::class, ServerUrlMiddlewareFactory::cl
 $pimple[ServerUrlHelper::class] = function ($container) {
     return new ServerUrlHelper();
 };
-$pimple[ServerUrlMiddleware::class] = $pimple->share(function ($container) {
+$pimple[ServerUrlMiddleware::class] = function ($container) {
     $factory = new ServerUrlMiddlewareFactory();
     return $factory($container);
-});
+};
 
 // Aura.Di:
 $container->set(ServerUrlHelper::class, $container->lazyNew(ServerUrlHelper::class));
