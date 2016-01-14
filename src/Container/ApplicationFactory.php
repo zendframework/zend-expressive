@@ -260,7 +260,7 @@ class ApplicationFactory
         }
 
         $app->pipeRoutingMiddleware();
-        
+
         if (isset($pipeline['post_routing'])) {
             if (! is_array($pipeline['post_routing'])) {
                 throw new ContainerInvalidArgumentException(sprintf(
