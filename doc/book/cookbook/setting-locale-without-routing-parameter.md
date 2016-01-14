@@ -42,7 +42,6 @@ class SetLanguageMiddleware
     
     public function __invoke($request, $response, callable $next)
     {
-    
         $uri = $request->getUri();
         
         $path = $uri->getPath();
