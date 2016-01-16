@@ -86,13 +86,14 @@ routing middleware:
 use Zend\Expressive\Helper\ServerUrlMiddleware;
 
 // Programmatically:
-$app->pipeRoutingMiddleware();
 $app->pipe(ServerUrlMiddleware::class);
+$app->pipeRoutingMiddleware();
+$app->pipeDispatchMiddleware();
 
 // Or use configuration:
 // [
 //     'middleware_pipeline' => [
-//         ['middleware' => ServerUrlMiddleware::class],
+//         ['middleware' => ServerUrlMiddleware::class, 'priority' => PHP_INT_MAX],
 //         /* ... */
 //     ],
 // ]
@@ -112,7 +113,7 @@ return [
         ],
     ],
     'middleware_pipeline' => [
-        ['middleware' => ServerUrlMiddleware::class],
+        ['middleware' => ServerUrlMiddleware::class, 'priority' => PHP_INT_MAX],
         /* ... */
     ],
 ];
