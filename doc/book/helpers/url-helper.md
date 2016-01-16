@@ -122,6 +122,7 @@ use Zend\Expressive\Helper\UrlHelperMiddleware;
 // Programmatically:
 $app->pipeRoutingMiddleware();
 $app->pipe(UrlHelperMiddleware::class);
+$app->pipeDispatchMiddleware();
 
 // Or use configuration:
 // [
@@ -129,6 +130,7 @@ $app->pipe(UrlHelperMiddleware::class);
 //         /* ... */
 //         Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
 //         ['middleware' => UrlHelperMiddleware::class],
+//         Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
 //         /* ... */
 //     ],
 // ]

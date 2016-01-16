@@ -146,8 +146,22 @@ return [
             //],
         ],
     ],
-]
+];
 ```
+
+The following changes have been made:
+
+- The concept of `pre_routing` and `post_routing` have been deprecated, and will
+  be removed starting with the 1.1 version. A single middleware pipeline is now
+  provided, though *any individual specification can also specify an array of
+  middleware*.
+- **The routing and dispatch middleware must now be added to your configuration
+  for them to be added to your application.**
+- Middleware specifications can now optionally provide a `priority` key, with 1
+  being the default. High integer priority indicates earlier execution, while
+  low/negative integer priority indicates later execution. Items with the same
+  priority are executed in the order they are registered. Priority is now how
+  you can indicate the order in which middleware should execute.
 
 ### Impact
 
@@ -227,14 +241,21 @@ return [
 
         // Place error handling middleware after the routing and dispatch
         // middleware, with negative priority.
+        // [
+        //     'middleware' => [
+        //     ],
+        //     'priority' => -1000,
+        // ],
     ],
-]
+];
 ```
 
 To update an existing application:
 
 - Promote all `pre_routing` middleware up a level, and remove the `pre_routing`
-  key. Provide a `priority` value greater than 1.
+  key. Provide a `priority` value greater than 1. We recommend having a single
+  middleware specification with an array of middleware that represents the "pre
+  routing" middleware.
 - Add the entries for `Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE`
   and `Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE`
   immediately following any `pre_routing` middleware, and before any
@@ -243,10 +264,77 @@ To update an existing application:
   `post_routing` key. Provide a `priority` value less than 1 or negative.
 - **If you have `middleware_pipeline` specifications in multiple files**, you
   will need to specify `priority` keys for all middleware in order to guarantee
-  order after merging.
+  order after merging. We recommend having a single middleware specification
+  with an array of middleware that represents the "post routing" middleware.
 
-Once you have made the above changes, you should no longer receive deprecation
-notices when running your application.
+As an example, consider the following application configuration:
+
+```php
+return [
+    'middleware_pipeline' => [
+        'pre_routing' => [
+            [
+                'middleware' => [
+                    Zend\Expressive\Helper\ServerUrlMiddleware::class,
+                    Zend\Expressive\Helper\UrlHelperMiddleware::class,
+                ],
+            ],
+            [ 'middleware' => DebugToolbarMiddleware::class ],
+            [
+                'middleware' => ApiMiddleware::class,
+                'path' => '/api,
+            ],
+        ],
+
+        'post_routing' => [
+            ['middleware' => NotFoundMiddleware::class, 'error' => true],
+        ],
+    ],
+];
+```
+
+This would be rewritten to the following to work with RC6 and later:
+
+```php
+return [
+    'middleware_pipeline' => [
+        [
+            'middleware' => [
+                Zend\Expressive\Helper\ServerUrlMiddleware::class,
+                DebugToolbarMiddleware::class,
+            ],
+            'priority' => PHP_INT_MAX,
+        ],
+        [
+            'middleware' => ApiMiddleware::class,
+            'path' => '/api,
+            'priority' => 100,
+        ],
+
+        [
+            'middleware' => [
+                Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+                Zend\Expressive\Helper\UrlHelperMiddleware::class,
+                Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+            ],
+            'priority' => 1,
+        ],
+
+        [
+            'middleware' => [
+                NotFoundMiddleware::class,
+            ],
+            'error' => true,
+            'priority' => -1000,
+        ],
+    ],
+]
+```
+
+Note in the above example the various groupings. By grouping middleware by
+priority, you can simplify adding new middleware, particularly if you know it
+should execute before routing, or as error middleware, or between routing and
+dispatch.
 
 ## Route result observer deprecation
 
