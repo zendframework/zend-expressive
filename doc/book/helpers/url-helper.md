@@ -140,11 +140,14 @@ $app->pipeDispatchMiddleware();
 // [
 //     'middleware_pipeline' => [
 //         /* ... */
-//         ['middleware' => [
-//             Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
-//             UrlHelperMiddleware::class
-//             Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
-//         ]],
+//         [
+//             'middleware' => [
+//                 Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+//                 UrlHelperMiddleware::class
+//                 Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+//             ],
+//             'priority' => 1,
+//         ],
 //         /* ... */
 //     ],
 // ]
@@ -167,7 +170,27 @@ return [
         ['middleware' => UrlHelperMiddleware::class],
         Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
     ],
-]
+];
+
+// OR:
+return [
+    'dependencies' => [
+        'factories' => [
+            UrlHelper::class => UrlHelperFactory::class,
+            UrlHelperMiddleware::class => UrlHelperMiddlewareFactory::class,
+        ],
+    ],
+    'middleware_pipeline' => [
+        [
+            'middleware' => [
+                Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+                UrlHelperMiddleware::class,
+                Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+            ],
+            'priority' => 1,
+        ],
+    ],
+];
 ```
 
 > #### Skeleton configures helpers
