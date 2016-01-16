@@ -15,6 +15,7 @@ use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use ReflectionFunction;
 use ReflectionProperty;
+use SplQueue;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Expressive\Application;
@@ -392,13 +393,8 @@ class ApplicationFactoryTest extends TestCase
 
         $this->injectServiceInContainer($this->container, 'config', $config);
 
+        $this->setExpectedException(ContainerException\InvalidArgumentException::class, 'pipeline');
         $app = $this->factory->__invoke($this->container->reveal());
-
-        $r = new ReflectionProperty($app, 'pipeline');
-        $r->setAccessible(true);
-        $pipeline = $r->getValue($app);
-
-        $this->assertCount(0, $pipeline);
     }
 
     public function uncallableMiddleware()
@@ -1113,5 +1109,148 @@ class ApplicationFactoryTest extends TestCase
         restore_error_handler();
 
         $this->assertAttributeSame(true, 'routeResultObserverMiddlewareIsRegistered', $app);
+    }
+
+    public function testFactoryHonorsPriorityOrderWhenAttachingMiddleware()
+    {
+        // @codingStandardsIgnoreStart
+        $middleware = function ($request, $response, $next) {};
+        // @codingStandardsIgnoreEnd
+
+        $pipeline1 = [ [ 'middleware' => clone $middleware, 'priority' => 1 ] ];
+        $pipeline2 = [ [ 'middleware' => clone $middleware, 'priority' => 100 ] ];
+        $pipeline3 = [ [ 'middleware' => clone $middleware, 'priority' => -100 ] ];
+
+        $pipeline = array_merge($pipeline3, $pipeline1, $pipeline2);
+        $config = [ 'middleware_pipeline' => $pipeline ];
+        $this->injectServiceInContainer($this->container, 'config', $config);
+
+        $app = $this->factory->__invoke($this->container->reveal());
+
+        $r = new ReflectionProperty($app, 'pipeline');
+        $r->setAccessible(true);
+        $pipeline = $r->getValue($app);
+
+        $this->assertSame($pipeline2[0]['middleware'], $pipeline->dequeue()->handler);
+        $this->assertSame($pipeline1[0]['middleware'], $pipeline->dequeue()->handler);
+        $this->assertSame($pipeline3[0]['middleware'], $pipeline->dequeue()->handler);
+    }
+
+    public function testMiddlewareWithoutPriorityIsGivenDefaultPriorityAndRegisteredInOrderReceived()
+    {
+        // @codingStandardsIgnoreStart
+        $middleware = function ($request, $response, $next) {};
+        // @codingStandardsIgnoreEnd
+
+        $pipeline1 = [ [ 'middleware' => clone $middleware ] ];
+        $pipeline2 = [ [ 'middleware' => clone $middleware ] ];
+        $pipeline3 = [ [ 'middleware' => clone $middleware ] ];
+
+        $pipeline = array_merge($pipeline3, $pipeline1, $pipeline2);
+        $config = [ 'middleware_pipeline' => $pipeline ];
+        $this->injectServiceInContainer($this->container, 'config', $config);
+
+        $app = $this->factory->__invoke($this->container->reveal());
+
+        $r = new ReflectionProperty($app, 'pipeline');
+        $r->setAccessible(true);
+        $pipeline = $r->getValue($app);
+
+        $this->assertSame($pipeline3[0]['middleware'], $pipeline->dequeue()->handler);
+        $this->assertSame($pipeline1[0]['middleware'], $pipeline->dequeue()->handler);
+        $this->assertSame($pipeline2[0]['middleware'], $pipeline->dequeue()->handler);
+    }
+
+    public function testRoutingAndDispatchMiddlewareUseDefaultPriority()
+    {
+        // @codingStandardsIgnoreStart
+        $middleware = function ($request, $response, $next) {};
+        // @codingStandardsIgnoreEnd
+
+        $pipeline = [
+            [ 'middleware' => clone $middleware, 'priority' => -100 ],
+            ApplicationFactory::ROUTING_MIDDLEWARE,
+            [ 'middleware' => clone $middleware, 'priority' => 1 ],
+            [ 'middleware' => clone $middleware ],
+            ApplicationFactory::DISPATCH_MIDDLEWARE,
+            [ 'middleware' => clone $middleware, 'priority' => 100 ],
+        ];
+
+        $config = [ 'middleware_pipeline' => $pipeline ];
+        $this->injectServiceInContainer($this->container, 'config', $config);
+
+        $app = $this->factory->__invoke($this->container->reveal());
+
+        $r = new ReflectionProperty($app, 'pipeline');
+        $r->setAccessible(true);
+        $test = $r->getValue($app);
+
+        $this->assertSame($pipeline[5]['middleware'], $test->dequeue()->handler);
+        $this->assertSame([ $app, 'routeMiddleware' ], $test->dequeue()->handler);
+        $this->assertSame($pipeline[2]['middleware'], $test->dequeue()->handler);
+        $this->assertSame($pipeline[3]['middleware'], $test->dequeue()->handler);
+        $this->assertSame([ $app, 'dispatchMiddleware' ], $test->dequeue()->handler);
+        $this->assertSame($pipeline[0]['middleware'], $test->dequeue()->handler);
+    }
+
+    public function specMiddlewareContainingRoutingAndOrDispatchMiddleware()
+    {
+        // @codingStandardsIgnoreStart
+        return [
+            'routing-only'              => [[['middleware' => [ApplicationFactory::ROUTING_MIDDLEWARE]]]],
+            'dispatch-only'             => [[['middleware' => [ApplicationFactory::DISPATCH_MIDDLEWARE]]]],
+            'both-routing-and-dispatch' => [[['middleware' => [ApplicationFactory::ROUTING_MIDDLEWARE, ApplicationFactory::DISPATCH_MIDDLEWARE]]]],
+        ];
+        // @codingStandardsIgnoreEnd
+    }
+
+    /**
+     * @dataProvider specMiddlewareContainingRoutingAndOrDispatchMiddleware
+     */
+    public function testRoutingAndDispatchMiddlewareCanBeComposedWithinArrayStandardSpecification($pipeline)
+    {
+        $expected = $pipeline[0]['middleware'];
+        $config = [ 'middleware_pipeline' => $pipeline ];
+        $this->injectServiceInContainer($this->container, 'config', $config);
+
+        $app = $this->factory->__invoke($this->container->reveal());
+
+        $r = new ReflectionProperty($app, 'pipeline');
+        $r->setAccessible(true);
+        $appPipeline = $r->getValue($app);
+
+        $this->assertEquals(1, count($appPipeline));
+
+        $innerMiddleware = $appPipeline->dequeue()->handler;
+        $this->assertInstanceOf(MiddlewarePipe::class, $innerMiddleware);
+
+        $r = new ReflectionProperty($innerMiddleware, 'pipeline');
+        $r->setAccessible(true);
+        $innerPipeline = $r->getValue($innerMiddleware);
+        $this->assertInstanceOf(SplQueue::class, $innerPipeline);
+
+        $this->assertEquals(
+            count($expected),
+            $innerPipeline->count(),
+            sprintf('Expected %d items in pipeline; received %d', count($expected), $innerPipeline->count())
+        );
+
+        foreach ($innerPipeline as $index => $route) {
+            $innerPipeline[$index] = $route->handler;
+        }
+
+        foreach ($expected as $type) {
+            switch ($type) {
+                case ApplicationFactory::ROUTING_MIDDLEWARE:
+                    $middleware = [$app, 'routeMiddleware'];
+                    break;
+                case ApplicationFactory::DISPATCH_MIDDLEWARE:
+                    $middleware = [$app, 'dispatchMiddleware'];
+                    break;
+                default:
+                    $this->fail('Unexpected value in pipeline passed from data provider');
+            }
+            $this->assertContains($middleware, $innerPipeline);
+        }
     }
 }

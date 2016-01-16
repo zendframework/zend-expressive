@@ -92,8 +92,6 @@ $app->pipe(ServerUrlMiddleware::class);
 // Or use configuration:
 // [
 //     'middleware_pipeline' => [
-//         /* ... */
-//         Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
 //         ['middleware' => ServerUrlMiddleware::class],
 //         /* ... */
 //     ],
@@ -114,8 +112,8 @@ return [
         ],
     ],
     'middleware_pipeline' => [
-        Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
         ['middleware' => ServerUrlMiddleware::class],
+        /* ... */
     ],
 ];
 ```

@@ -147,8 +147,14 @@ return [
     ],
     'middleware_pipeline' => [
         /* ... */
-        Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
-        [ 'middleware' => LocalizationObserver::class ],
+        [
+            'middleware' => [
+                Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+                [ 'middleware' => LocalizationObserver::class ],
+                Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+            ],
+            'priority' => 1,
+        ],
         /* ... */
     ],
 ];

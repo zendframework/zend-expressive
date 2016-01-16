@@ -57,6 +57,7 @@ order to seed the `Application` instance:
       // optional:
       'path'  => '/path/to/match',
       'error' => true,
+      'priority' => 1, // Integer
   ],
   ```
 
@@ -67,7 +68,12 @@ order to seed the `Application` instance:
   `error` key is present and boolean `true`, then the middleware will be
   registered as error middleware. (This is necessary due to the fact that the
   factory defines a callable wrapper around middleware to enable lazy-loading of
-  middleware.)
+  middleware.) The `priority` defaults to 1, and follows the semantics of
+  [SplPriorityQueue](http://php.net/SplPriorityQueue): higher integer values
+  indicate higher priority (will execute earlier), while lower/negative integer
+  values indicate lower priority (will execute last). Default priority is 1; use
+  granular priority values to specify the order in which middleware should be
+  piped to the application.
 
 - `routes` is used to define routed middleware. The value must be an array,
   consisting of arrays defining each middleware:

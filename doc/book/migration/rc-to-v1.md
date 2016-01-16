@@ -10,6 +10,10 @@ RC6 introduced changes to the following:
   configuration that simplifies it.
 - Route result observers are deprecated, and no longer triggered for routing
   failures.
+- Middleware configuration specifications now accept a `priority` key to
+  guarantee the order of items. If you have defined your middleware pipeline in
+  multiple files that are then merged, you will need to defined these keys to
+  ensure order.
 
 ## Routing and Dispatch middleware
 
@@ -153,7 +157,8 @@ to follow the guidelines created with RC6.
 
 RC6 and later change the configuration to remove the `pre_routing` and
 `post_routing` keys. However, individual items within the array retain the same
-format as middleware inside those keys, namely:
+format as middleware inside those keys, with the addition of a new key,
+`priority`:
 
 ```php
 [
@@ -162,8 +167,15 @@ format as middleware inside those keys, namely:
     // Optional:
     //    'path'  => '/path/to/match',
     //    'error' => true,
+    //    'priority' => 1, // integer
 ]
 ```
+
+The `priority` key is used to determine the order in which middleware is piped
+to the application. Higher integer values are piped earlier, while
+lower/negative integer values are piped later; middleware with the same priority
+are piped in the order in which they are discovered in the pipeline. The default
+priority used is 1.
 
 Additionally, the routing and dispatch middleware now become items in the array;
 they (or equivalent entries for your own implementations) must be present in
@@ -194,18 +206,27 @@ return [
         [
             'middleware' => [
                 Helper\ServerUrlMiddleware::class,
-                Helper\UrlHelperMiddleware::class,
             ],
+            'priority' => PHP_INT_MAX,
         ],
 
-        // The following is an entry for the routing middleware:
-        Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+        // The following is an entry for:
+        // - routing middleware
+        // - middleware that reacts to the routing results
+        // - dispatch middleware
+        [
+            'middleware' => [
+                Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+                Helper\UrlHelperMiddleware::class,
+                Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+            ],
+            'priority' => 1,
+        ]
 
         // The following is an entry for the dispatch middleware:
-        Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
 
         // Place error handling middleware after the routing and dispatch
-        // middleware.
+        // middleware, with negative priority.
     ],
 ]
 ```
@@ -213,13 +234,16 @@ return [
 To update an existing application:
 
 - Promote all `pre_routing` middleware up a level, and remove the `pre_routing`
-  key.
+  key. Provide a `priority` value greater than 1.
 - Add the entries for `Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE`
   and `Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE`
   immediately following any `pre_routing` middleware, and before any
-  `post_routing` middleware.
+  `post_routing` middleware; we recommend grouping it per the above example.
 - Promote all `post_routing` middleware up a level, and remove the
-  `post_routing` key.
+  `post_routing` key. Provide a `priority` value less than 1 or negative.
+- **If you have `middleware_pipeline` specifications in multiple files**, you
+  will need to specify `priority` keys for all middleware in order to guarantee
+  order after merging.
 
 Once you have made the above changes, you should no longer receive deprecation
 notices when running your application.
@@ -266,9 +290,14 @@ however, you will need to register it following the routing middleware:
 [
     'middleware_pipeline' => [
         /* ... */
-        Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
-        Zend\Expressive\Container\ApplicationFactory::ROUTE_RESULT_OBSERVER_MIDDLEWARE,
-        Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+        [
+            'middleware' => [
+                Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+                Zend\Expressive\Container\ApplicationFactory::ROUTE_RESULT_OBSERVER_MIDDLEWARE,
+                Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+            ],
+            'priority' => 1,
+        ],
         /* ... */
     ],
 ]
@@ -343,9 +372,14 @@ If you are using the `ApplicationFactory`, alter your configuration:
 [
     'middleware_pipeline' => [
         /* ... */
-        Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
-        ['middleware' => MyObserver::class],
-        Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+        [
+            'middleware' => [
+                Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+                ['middleware' => MyObserver::class],
+                Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+            ],
+            'priority' => 1,
+        ],
         /* ... */
     ],
 ]

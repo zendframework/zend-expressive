@@ -176,6 +176,7 @@ return [
                 'BodyParsingMiddleware',
                 'ValidationMiddleware',
             ],
+            'priority' => 100,
         ],
     ],
 ];

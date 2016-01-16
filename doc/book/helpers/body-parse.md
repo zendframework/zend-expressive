@@ -43,7 +43,7 @@ return [
         ],
     ],
     'middleware_pipeline' => [
-        [ 'middleware' => Helper\BodyParams\BodyParamsMiddleware::class ],
+        [ 'middleware' => Helper\BodyParams\BodyParamsMiddleware::class, 'priority' => 100],
         /* ... */
         Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
         /* ... */

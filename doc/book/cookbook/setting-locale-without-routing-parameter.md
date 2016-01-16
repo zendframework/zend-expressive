@@ -107,6 +107,7 @@ return [
                 Application\I18n\SetLanguageMiddleware::class,
                 /* ... */
             ],
+            'priority' => 1000,
         ],
 
         Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,

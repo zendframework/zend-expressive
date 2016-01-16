@@ -78,6 +78,7 @@ return [
             'middleware' => [
                 PhpDebugBarMiddleware::class,
             ],
+            'priority' => 1000,
         ],
     ],
 ];

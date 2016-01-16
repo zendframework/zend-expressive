@@ -106,7 +106,7 @@ return [
         /* ... */
     ],
     'middleware_pipeline' => [
-        [ 'middleware' => [ Blast\BaseUrl\BaseUrlMiddleware::class ] ],
+        [ 'middleware' => [ Blast\BaseUrl\BaseUrlMiddleware::class ], 'priority' => 1000 ],
         /* ... */
         Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
         /* ... */

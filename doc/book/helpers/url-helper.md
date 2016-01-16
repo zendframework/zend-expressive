@@ -132,6 +132,21 @@ $app->pipe(UrlHelperMiddleware::class);
 //         /* ... */
 //     ],
 // ]
+//
+// Alternately, create a nested middleware pipeline for the routing, UrlHelper,
+// and dispatch middleware:
+// [
+//     'middleware_pipeline' => [
+//         /* ... */
+//         ['middleware' => [
+//             Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+//             UrlHelperMiddleware::class
+//             Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+//         ]],
+//         /* ... */
+//     ],
+// ]
+
 ```
 
 The following dependency configuration will work for all three when using the
@@ -146,8 +161,9 @@ return [
         ],
     ],
     'middleware_pipeline' => [
-        ['middleware' => UrlHelperMiddleware::class],
         Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+        ['middleware' => UrlHelperMiddleware::class],
+        Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
     ],
 ]
 ```

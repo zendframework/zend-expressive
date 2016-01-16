@@ -224,7 +224,7 @@ return [
         /* ... */
     ],
     'middleware_pipeline' => [
-        ['middleware' => Your\Application\FormHelpersMiddleware::class],
+        ['middleware' => Your\Application\FormHelpersMiddleware::class, 'priority' => 1000],
         /* ... */
         Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
         /* ... */

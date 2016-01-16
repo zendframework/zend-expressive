@@ -10,6 +10,7 @@
 namespace Zend\Expressive\Container;
 
 use Interop\Container\ContainerInterface;
+use SplPriorityQueue;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Expressive\Application;
 use Zend\Expressive\Exception;
@@ -317,7 +318,6 @@ class ApplicationFactory
     /**
      * Given a collection of middleware specifications, pipe them to the application.
      *
-     * @todo Remove ROUTE_RESULT_OBSERVER_MIDDLEWARE detection for 1.1
      * @param array $collection
      * @param Application $app
      * @return bool Flag indicating whether or not any middleware was injected.
@@ -325,34 +325,143 @@ class ApplicationFactory
      */
     private function injectMiddleware(array $collection, Application $app)
     {
-        $injections = false;
-        foreach ($collection as $spec) {
-            if ($spec === self::ROUTING_MIDDLEWARE) {
-                $spec = ['middleware' => [$app, 'routeMiddleware']];
-            }
+        // Create a priority queue from the specifications
+        $queue = array_reduce(
+            array_map($this->createCollectionMapper($app), $collection),
+            $this->createPriorityQueueReducer(),
+            new SplPriorityQueue()
+        );
 
-            if ($spec === self::DISPATCH_MIDDLEWARE) {
-                $spec = ['middleware' => [$app, 'dispatchMiddleware']];
-            }
+        $injections = count($queue) > 0;
 
-            if ($spec === self::ROUTE_RESULT_OBSERVER_MIDDLEWARE) {
-                $spec = ['middleware' => [$app, 'routeResultObserverMiddleware']];
-                $r = new \ReflectionProperty($app, 'routeResultObserverMiddlewareIsRegistered');
-                $r->setAccessible(true);
-                $r->setValue($app, true);
-            }
-
-            if (! is_array($spec) || ! array_key_exists('middleware', $spec)) {
-                continue;
-            }
-
+        foreach ($queue as $spec) {
             $path  = isset($spec['path']) ? $spec['path'] : '/';
             $error = array_key_exists('error', $spec) ? (bool) $spec['error'] : false;
             $pipe  = $error ? 'pipeErrorHandler' : 'pipe';
 
             $app->{$pipe}($path, $spec['middleware']);
-            $injections = true;
         }
+
         return $injections;
+    }
+
+    /**
+     * Create and return the pipeline map callback.
+     *
+     * The returned callback has the signature:
+     *
+     * <code>
+     * function ($item) : callable|string
+     * </code>
+     *
+     * It is suitable for mapping pipeline middleware representing the application
+     * routing o dispatching middleware to a callable; if the provided item does not
+     * match either, the item is returned verbatim.
+     *
+     * @todo Remove ROUTE_RESULT_OBSERVER_MIDDLEWARE detection for 1.1
+     * @param Application $app
+     * @return callable
+     */
+    private function createPipelineMapper(Application $app)
+    {
+        return function ($item) use ($app) {
+            if ($item === self::ROUTING_MIDDLEWARE) {
+                return [$app, 'routeMiddleware'];
+            }
+
+            if ($item === self::DISPATCH_MIDDLEWARE) {
+                return [$app, 'dispatchMiddleware'];
+            }
+
+            if ($item === self::ROUTE_RESULT_OBSERVER_MIDDLEWARE) {
+                $r = new \ReflectionProperty($app, 'routeResultObserverMiddlewareIsRegistered');
+                $r->setAccessible(true);
+                $r->setValue($app, true);
+                return [$app, 'routeResultObserverMiddleware'];
+            }
+
+            return $item;
+        };
+    }
+
+    /**
+     * Create the collection mapping function.
+     *
+     * Returns a callable with the following signature:
+     *
+     * <code>
+     * function (array|string $item) : array
+     * </code>
+     *
+     * When it encounters one of the self::*_MIDDLEWARE constants, it passes
+     * the value to the `createPipelineMapper()` callback to create a spec
+     * that uses the return value as pipeline middleware.
+     *
+     * If the 'middleware' value is an array, it uses the `createPipelineMapper()`
+     * callback as an array mapper in order to ensure the self::*_MIDDLEWARE
+     * are injected correctly.
+     *
+     * If the 'middleware' value is missing, or not viable as middleware, it
+     * raises an exception, to ensure the pipeline is built correctly.
+     *
+     * @param Application $app
+     * @return callable
+     */
+    private function createCollectionMapper(Application $app)
+    {
+        $pipelineMap = $this->createPipelineMapper($app);
+        $appMiddlewares = [
+            self::ROUTING_MIDDLEWARE,
+            self::DISPATCH_MIDDLEWARE,
+            self::ROUTE_RESULT_OBSERVER_MIDDLEWARE
+        ];
+
+        return function ($item) use ($app, $pipelineMap, $appMiddlewares) {
+            if (in_array($item, $appMiddlewares, true)) {
+                return ['middleware' => $pipelineMap($item)];
+            }
+
+            if (! is_array($item) || ! array_key_exists('middleware', $item)) {
+                throw new ContainerInvalidArgumentException(sprintf(
+                    'Invalid pipeline specification received; must be an array containing a middleware '
+                    . 'key, or one of the ApplicationFactory::*_MIDDLEWARE constants; received %s',
+                    (is_object($item) ? get_class($item) : gettype($item))
+                ));
+            }
+
+            if (! is_callable($item['middleware']) && is_array($item['middleware'])) {
+                $item['middleware'] = array_map($pipelineMap, $item['middleware']);
+            }
+
+            return $item;
+        };
+    }
+
+    /**
+     * Create reducer function that will reduce an array to a priority queue.
+     *
+     * Creates and returns a function with the signature:
+     *
+     * <code>
+     * function (SplQueue $queue, array $item) : SplQueue
+     * </code>
+     *
+     * The function is useful to reduce an array of pipeline middleware to a
+     * priority queue.
+     *
+     * @return callable
+     */
+    private function createPriorityQueueReducer()
+    {
+        // $serial is used to ensure that items of the same priority are enqueued
+        // in the order in which they are inserted.
+        $serial = PHP_INT_MAX;
+        return function ($queue, $item) use (&$serial) {
+            $priority = isset($item['priority']) && is_int($item['priority'])
+                ? $item['priority']
+                : 1;
+            $queue->insert($item, [$priority, $serial--]);
+            return $queue;
+        };
     }
 }

@@ -95,6 +95,7 @@ configuration, after the dispatch middleware:
     Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
     [
         'middleware' => 'Application\NotFound',
+        'priority' => -1,
     ],
     /* ... */
 ],
