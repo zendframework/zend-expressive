@@ -473,7 +473,7 @@ If you are using the `ApplicationFactory`, alter your configuration:
         'routing' => [
             'middleware' => [
                 Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
-                ['middleware' => MyObserver::class],
+                MyObserver::class,
                 Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
             ],
             'priority' => 1,
