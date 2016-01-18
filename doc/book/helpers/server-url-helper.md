@@ -47,8 +47,8 @@ As such, you will need to:
 
 - Register the `ServerUrlHelper` as a service in your container.
 - Register the `ServerUrlMiddleware` as a service in your container.
-- Register the `ServerUrlMiddleware` as pipeline middleware, immediately
-  following the routing middleware.
+- Register the `ServerUrlMiddleware` as pipeline middleware, anytime
+  before the routing middleware.
 
 The following examples demonstrate registering the services.
 
@@ -79,7 +79,7 @@ $container->set(
 );
 ```
 
-To register the `ServerUrlMiddleware` as pipeline middleware following the
+To register the `ServerUrlMiddleware` as pipeline middleware anytime before the
 routing middleware:
 
 ```php
