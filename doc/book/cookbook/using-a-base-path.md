@@ -37,8 +37,8 @@ RewriteRule (.*) ./public/$1
 The above step ensures that clients can hit the website. Now we need to ensure
 that the application can route to middleware!
 
-To do this, we will add pre_routing pipeline middleware to intercept the
-request, and rewrite the URL accordingly.
+To do this, we will add pipeline middleware to intercept the request, and
+rewrite the URL accordingly.
 
 At the time of writing, we have two suggestions:
 
@@ -106,9 +106,15 @@ return [
         /* ... */
     ],
     'middleware_pipeline' => [
-        'pre_routing' => [
-            [ 'middleware' => [ Blast\BaseUrl\BaseUrlMiddleware::class ] ],
-            /* ... */
+        [ 'middleware' => [ Blast\BaseUrl\BaseUrlMiddleware::class ], 'priority' => 1000 ],
+        /* ... */
+        'routing' => [
+            'middleware' => [
+                Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+                Zend\Expressive\Helper\UrlHelperMiddleware::class,
+                Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+            ],
+            'priority' => 1,
         ],
         /* ... */
     ],

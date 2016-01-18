@@ -26,7 +26,7 @@ $app->pipe(BodyParamsMiddleware::class);
 $app->run();
 ```
 
-or as `pre_routing` pipeline middleware:
+or as pipeline middleware:
 
 ```php
 // config/autoload/middleware-pipeline.global.php
@@ -43,13 +43,17 @@ return [
         ],
     ],
     'middleware_pipeline' => [
-        'pre_routing' => [
-            [ 'middleware' => Helper\BodyParams\BodyParamsMiddleware::class ],
-            /* ... */
+        [ 'middleware' => Helper\BodyParams\BodyParamsMiddleware::class, 'priority' => 100],
+        /* ... */
+        'routing' => [
+            'middleware' => [
+                Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+                Helper\UrlHelperMiddleware::class,
+                Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+            ],
+            'priority' => 1,
         ],
-        'post_routing' => [
-            /* ... */
-        ],
+        /* ... */
     ],
 ];
 ```

@@ -98,8 +98,20 @@ argument to act on.
 > - Responses are returned back *through* the pipeline, in reverse order of
 >   traversal.
 
-The `Application` allows for "pre routing" middleware, routing middleware (and
-the routed middleware it dispatches), and "post routing" middleware.
+The `Application` allows arbitrary middleware to be injected, with each being
+executed in the order in which they are attached; returning a response from
+middleware prevents any middleware attached later from executing.
+
+You can attach middleware manually, in which case the pipeline is executed in
+the order of attachment, or use configuration. When you use configuration, you
+will specify a priority integer to dictate the order in which middleware should
+be attached.  Middleware specifying high integer prioritiess are attached (and
+thus executed) earlier, while those specifying lower and/or negative integers
+are attached later. The default priority is 1.
+
+Expressive provides a default implementation of "routing" and "dispatch"
+middleware, which you either attach to the middleware pipeline manually, or via
+configuration.
 
 Routing within Expressive consists of decomposing the request to match it to
 middleware that can handle that given request. This typically consists of a
@@ -109,15 +121,22 @@ combination of matching the requested URI path along with allowed HTTP methods:
 - map a POST request to the path `/contact/process` to the `HandleContactMiddleware`
 - etc.
 
+Dispatching is simply the act of calling the middleware mapped by routing. The
+two events are modeled as separate middleware to allow you to act on the results
+of routing before attempting to dispatch the mapped middleware; this can be
+useful for implementing route-based authentication or validation.
+
 The majority of your application will consist of routing rules that map to
 routed middleware.
 
-"Pre routing" middleware is middleware that you wish to execute for every
-request. These might include:
+Middleware piped to the application earlier than routing should be middleware
+that you wish to execute for every request. These might include:
 
-- authentication
+- bootstrapping
 - parsing of request body parameters
 - addition of debugging tools
+- embedded Expressive applications that you want to match at a given literal
+  path
 - etc.
 
 Such middleware may decide that a request is invalid, and return a response;
@@ -125,19 +144,20 @@ doing so means no further middleware will be executed! This is an important
 feature of middleware architectures, as it allows you to define
 application-specific workflows optimized for performance, security, etc.
 
-"Post routing" middleware will execute in one of two conditions:
+Middleware piped to the application after the routing and dispatch middleware
+will execute in one of two conditions:
 
 - routing failed
 - routed middleware called on the next middleware instead of returning a response.
 
-As such, the largest use case for post routing middleware is for error handling.
+As such, the largest use case for such middleware is for error handling.
 One possibility is for [providing custom 404 handling](cookbook/custom-404-page-handling.md),
 or handling application-specific error conditions (such as authentication or
 authorization failures).
 
 Another possibility is to provide post-processing on the response before
-returning it. However, this is typically better handled via pre-routing
-middleware, by capturing the response before returning it:
+returning it. However, this is typically better handled via middleware piped
+early, by capturing the response before returning it:
 
 ```php
 function ($request, $response, $next)

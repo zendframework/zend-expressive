@@ -160,24 +160,23 @@ When either of these approaches are used, the individual middleware listed
 This approach is essentially equivalent to creating a factory that returns a
 middleware pipeline.
 
-## What about pre/post pipeline middleware?
+## What about pipeline middleware configuration?
 
-What if you want to do this with pre- or post-pipeline middleware? The answer is
-that the syntax is exactly the same!
+What if you want to do this with your pipeline middleware configuration? The
+answer is that the syntax is exactly the same!
 
 ```php
 return [
     'middleware_pipeline' => [
-        'pre_routing' => [
-            [
-                'path' => '/api',
-                'middleware' => [
-                    'AuthenticationMiddleware',
-                    'AuthorizationMiddleware',
-                    'BodyParsingMiddleware',
-                    'ValidationMiddleware',
-                ],
+        'api' => [
+            'path' => '/api',
+            'middleware' => [
+                'AuthenticationMiddleware',
+                'AuthorizationMiddleware',
+                'BodyParsingMiddleware',
+                'ValidationMiddleware',
             ],
+            'priority' => 100,
         ],
     ],
 ];

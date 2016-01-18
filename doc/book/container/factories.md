@@ -35,22 +35,20 @@ instance.
 When the `config` service is present, the factory can utilize several keys in
 order to seed the `Application` instance:
 
-- `middleware_pipeline` can be used to seed pre- and/or post-routing middleware:
+- `middleware_pipeline` can be used to seed the middleware pipeline:
 
   ```php
   'middleware_pipeline' => [
-      // An array of middleware to register prior to registration of the
-      // routing middleware:
-      'pre_routing' => [
-      ],
-      // An array of middleware to register after registration of the
-      // routing middleware:
-      'post_routing' => [
-      ],
+      // An array of middleware to register.
+      [ /* ... */ ],
+      Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+      Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+      [ /* ... */ ],
   ],
   ```
 
-  Each item of each array must be an array itself, with the following structure:
+  Each item of the array, other than the entries for routing and dispatch
+  middleware, must be an array itself, with the following structure:
 
   ```php
   [
@@ -59,6 +57,7 @@ order to seed the `Application` instance:
       // optional:
       'path'  => '/path/to/match',
       'error' => true,
+      'priority' => 1, // Integer
   ],
   ```
 
@@ -69,7 +68,16 @@ order to seed the `Application` instance:
   `error` key is present and boolean `true`, then the middleware will be
   registered as error middleware. (This is necessary due to the fact that the
   factory defines a callable wrapper around middleware to enable lazy-loading of
-  middleware.)
+  middleware.) The `priority` defaults to 1, and follows the semantics of
+  [SplPriorityQueue](http://php.net/SplPriorityQueue): higher integer values
+  indicate higher priority (will execute earlier), while lower/negative integer
+  values indicate lower priority (will execute last). Default priority is 1; use
+  granular priority values to specify the order in which middleware should be
+  piped to the application.
+
+  You *can* specify keys for each middleware specification. These will be
+  ignored by the factory, but can be useful when merging several configurations
+  into one for the application.
 
 - `routes` is used to define routed middleware. The value must be an array,
   consisting of arrays defining each middleware:

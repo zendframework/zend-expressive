@@ -15,15 +15,15 @@ requiring any changes to existing routes.
 > with a required routing parameter; this approach is described in the
 > ["Setting a locale based on a routing parameter" recipe](setting-locale-depending-routing-parameter.md).
 
-## Setup a middleware to extract the language from the URI
+## Setup a middleware to extract the locale from the URI
 
-First, we need to setup middleware that extracts the language param directly
+First, we need to setup middleware that extracts the locale param directly
 from the request URI's path. If if doesn't find one, it sets a default.
 
-If it does find one, it uses the language to setup the locale. It also:
+If it does find one, it uses the value to setup the locale. It also:
 
-- amends the request with a truncated path (removing the language segment).
-- adds the langauge segment as the base path of the `UrlHelper`.
+- amends the request with a truncated path (removing the locale segment).
+- adds the locale segment as the base path of the `UrlHelper`.
 
 ```php
 namespace Application\I18n;
@@ -31,7 +31,7 @@ namespace Application\I18n;
 use Locale;
 use Zend\Expressive\Helper\UrlHelper;
 
-class SetLanguageMiddleware
+class SetLocaleMiddleware
 {
     private $helper;
     
@@ -47,14 +47,14 @@ class SetLanguageMiddleware
         
         $path = $uri->getPath();
         
-        if (! preg_match('#^/(?P<lang>[a-z]{2})/#', $path, $matches) {
+        if (! preg_match('#^/(?P<locale>[a-z]{2})/#', $path, $matches) {
             Locale::setDefault('de_DE');
             return $next($request, $response);
         }
         
-        $lang = $matches['lang'];
-        Locale::setDefault($lang);
-        $this->helper->setBasePath($lang);
+        $locale = $matches['locale'];
+        Locale::setDefault($locale);
+        $this->helper->setBasePath($locale);
         
         return $next(
             $request->withUri(
@@ -66,7 +66,7 @@ class SetLanguageMiddleware
 }
 ```
 
-Then you will need a factory for the `SetLanguageMiddleware` to inject the
+Then you will need a factory for the `SetLocaleMiddleware` to inject the
 `UrlHelper` instance.
 
 ```php
@@ -75,18 +75,18 @@ namespace Application\I18n;
 use Interop\Container\ContainerInterface;
 use Zend\Expressive\Helper\UrlHelper;
 
-class SetLanguageMiddlewareFactory
+class SetLocaleMiddlewareFactory
 {
     public function __invoke(ContainerInterface $container)
     {
-        return new SetLanguageMiddleware(
+        return new SetLocaleMiddleware(
             $container->get(UrlHelper::class)
         );
     }
 }
 ```
 
-Afterwards, you need to configure the `SetLanguageMiddleware` in your 
+Afterwards, you need to configure the `SetLocaleMiddleware` in your 
 `/config/autoload/middleware-pipeline.global.php` file so that it is executed 
 on every request.
 
@@ -95,33 +95,40 @@ return [
     'dependencies' => [
         /* ... */
         'factories' => [
-            Application\I18n\SetLanguageMiddleware::class =>
-                Application\I18n\SetLanguageMiddlewareFactory::class,
+            Application\I18n\SetLocaleMiddleware::class =>
+                Application\I18n\SetLocaleMiddlewareFactory::class,
             /* ... */
         ],
     ]
 
     'middleware_pipeline' => [
-        'pre_routing' => [
-            [
-                'middleware' => [
-                    Application\I18n\SetLanguageMiddleware::class,
-                    /* ... */
-                ],
+        [
+            'middleware' => [
+                Application\I18n\SetLocaleMiddleware::class,
                 /* ... */
             ],
+            'priority' => 1000,
         ],
 
-        'post_routing' => [
-            /* ... */
+        /* ... */
+
+        'routing' => [
+            'middleware' => [
+                Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+                Zend\Expressive\Helper\UrlHelperMiddleware::class,
+                Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+            ],
+            'priority' => 1,
         ],
+
+        /* ... */
     ],
 ];
 ```
 
 ## Url generation in the view
 
-Since the `UrlHelper` has the language set as a base path, you don't need 
+Since the `UrlHelper` has the locale set as a base path, you don't need 
 to worry about generating URLs within your view. Just use the helper to 
 generate a URL and it will do the rest.
 
@@ -136,7 +143,7 @@ generate a URL and it will do the rest.
 
 ## Redirecting within your middleware
 
-If you want to add the language parameter when creating URIs within your 
+If you want to add the locale parameter when creating URIs within your 
 action middleware, you just need to inject the `UrlHelper` into your 
 middleware and use it for URL generation:
 

@@ -89,7 +89,7 @@ class RouteMiddlewareTest extends TestCase
         $this->assertTrue($called);
     }
 
-    public function testRoutingSuccessResolvingToCallableMiddlewareInvokesIt()
+    public function testRoutingSuccessResolvingToCallableMiddlewareCanBeDispatched()
     {
         $request  = new ServerRequest();
         $response = new Response();
@@ -99,37 +99,39 @@ class RouteMiddlewareTest extends TestCase
             return $finalResponse;
         };
 
-        $result   = RouteResult::fromRouteMatch(
+        $result = RouteResult::fromRouteMatch(
             '/foo',
             $middleware,
             []
         );
 
         $this->router->match($request)->willReturn($result);
+        $request = $request->withAttribute(RouteResult::class, $result);
 
         $next = function ($request, $response) {
             $this->fail('Should not enter $next');
         };
 
-        $app  = $this->getApplication();
-        $test = $app->routeMiddleware($request, $response, $next);
+        $app = $this->getApplication();
+        $test = $app->dispatchMiddleware($request, $response, $next);
         $this->assertSame($finalResponse, $test);
     }
 
-    public function testRoutingSuccessWithoutMiddlewareRaisesException()
+    public function testRoutingSuccessWithoutMiddlewareRaisesExceptionInDispatch()
     {
         $request  = new ServerRequest();
         $response = new Response();
 
         $middleware = (object) [];
 
-        $result   = RouteResult::fromRouteMatch(
+        $result = RouteResult::fromRouteMatch(
             '/foo',
             false,
             []
         );
 
         $this->router->match($request)->willReturn($result);
+        $request = $request->withAttribute(RouteResult::class, $result);
 
         $next = function ($request, $response) {
             $this->fail('Should not enter $next');
@@ -137,23 +139,24 @@ class RouteMiddlewareTest extends TestCase
 
         $app = $this->getApplication();
         $this->setExpectedException(InvalidMiddlewareException::class, 'does not have');
-        $app->routeMiddleware($request, $response, $next);
+        $app->dispatchMiddleware($request, $response, $next);
     }
 
-    public function testRoutingSuccessResolvingToNonCallableNonStringMiddlewareRaisesException()
+    public function testRoutingSuccessResolvingToNonCallableNonStringMiddlewareRaisesExceptionAtDispatch()
     {
         $request  = new ServerRequest();
         $response = new Response();
 
         $middleware = (object) [];
 
-        $result   = RouteResult::fromRouteMatch(
+        $result = RouteResult::fromRouteMatch(
             '/foo',
             $middleware,
             []
         );
 
         $this->router->match($request)->willReturn($result);
+        $request = $request->withAttribute(RouteResult::class, $result);
 
         $next = function ($request, $response) {
             $this->fail('Should not enter $next');
@@ -161,23 +164,24 @@ class RouteMiddlewareTest extends TestCase
 
         $app = $this->getApplication();
         $this->setExpectedException(InvalidMiddlewareException::class, 'callable');
-        $app->routeMiddleware($request, $response, $next);
+        $app->dispatchMiddleware($request, $response, $next);
     }
 
-    public function testRoutingSuccessResolvingToUninvokableMiddlewareRaisesException()
+    public function testRoutingSuccessResolvingToUninvokableMiddlewareRaisesExceptionAtDispatch()
     {
         $request  = new ServerRequest();
         $response = new Response();
 
         $middleware = (object) [];
 
-        $result   = RouteResult::fromRouteMatch(
+        $result = RouteResult::fromRouteMatch(
             '/foo',
             'not a class',
             []
         );
 
         $this->router->match($request)->willReturn($result);
+        $request = $request->withAttribute(RouteResult::class, $result);
 
         // No container for this one, to ensure we marshal only a potential object instance.
         $app = new Application($this->router->reveal());
@@ -187,10 +191,10 @@ class RouteMiddlewareTest extends TestCase
         };
 
         $this->setExpectedException(InvalidMiddlewareException::class, 'callable');
-        $app->routeMiddleware($request, $response, $next);
+        $app->dispatchMiddleware($request, $response, $next);
     }
 
-    public function testRoutingSuccessResolvingToInvokableMiddlewareCallsIt()
+    public function testRoutingSuccessResolvingToInvokableMiddlewareCallsItAtDispatch()
     {
         $request  = new ServerRequest();
         $response = new Response();
@@ -201,6 +205,7 @@ class RouteMiddlewareTest extends TestCase
         );
 
         $this->router->match($request)->willReturn($result);
+        $request = $request->withAttribute(RouteResult::class, $result);
 
         // No container for this one, to ensure we marshal only a potential object instance.
         $app = new Application($this->router->reveal());
@@ -209,13 +214,13 @@ class RouteMiddlewareTest extends TestCase
             $this->fail('Should not enter $next');
         };
 
-        $test = $app->routeMiddleware($request, $response, $next);
+        $test = $app->dispatchMiddleware($request, $response, $next);
         $this->assertInstanceOf(ResponseInterface::class, $test);
         $this->assertTrue($test->hasHeader('X-Invoked'));
         $this->assertEquals(__NAMESPACE__ . '\TestAsset\InvokableMiddleware', $test->getHeaderLine('X-Invoked'));
     }
 
-    public function testRoutingSuccessResolvingToContainerMiddlewareCallsIt()
+    public function testRoutingSuccessResolvingToContainerMiddlewareCallsItAtDispatch()
     {
         $request    = new ServerRequest();
         $response   = new Response();
@@ -223,13 +228,14 @@ class RouteMiddlewareTest extends TestCase
             return $res->withHeader('X-Middleware', 'Invoked');
         };
 
-        $result   = RouteResult::fromRouteMatch(
+        $result = RouteResult::fromRouteMatch(
             '/foo',
             'TestAsset\Middleware',
             []
         );
 
         $this->router->match($request)->willReturn($result);
+        $request = $request->withAttribute(RouteResult::class, $result);
 
         $this->injectServiceInContainer($this->container, 'TestAsset\Middleware', $middleware);
 
@@ -239,36 +245,10 @@ class RouteMiddlewareTest extends TestCase
             $this->fail('Should not enter $next');
         };
 
-        $test = $app->routeMiddleware($request, $response, $next);
+        $test = $app->dispatchMiddleware($request, $response, $next);
         $this->assertInstanceOf(ResponseInterface::class, $test);
         $this->assertTrue($test->hasHeader('X-Middleware'));
         $this->assertEquals('Invoked', $test->getHeaderLine('X-Middleware'));
-    }
-
-    public function testRoutingSuccessResultingInContainerExceptionReRaisesException()
-    {
-        $request    = new ServerRequest();
-        $response   = new Response();
-
-        $result   = RouteResult::fromRouteMatch(
-            '/foo',
-            'TestAsset\Middleware',
-            []
-        );
-
-        $this->router->match($request)->willReturn($result);
-
-        $this->container->has('TestAsset\Middleware')->willReturn(true);
-        $this->container->get('TestAsset\Middleware')->willThrow(new TestAsset\ContainerException());
-
-        $app = $this->getApplication();
-
-        $next = function ($request, $response) {
-            $this->fail('Should not enter $next');
-        };
-
-        $this->setExpectedException(InvalidMiddlewareException::class, 'retrieve');
-        $app->routeMiddleware($request, $response, $next);
     }
 
     /**
@@ -364,13 +344,17 @@ class RouteMiddlewareTest extends TestCase
 
         $request  = new ServerRequest([ 'REQUEST_METHOD' => 'GET' ], [], '/foo', 'GET');
         $response = new Response();
-        $result   = $app->routeMiddleware($request, $response, $next);
+        $result   = $app->routeMiddleware($request, $response, function ($request, $response) use ($app, $next) {
+            return $app->dispatchMiddleware($request, $response, $next);
+        });
 
         $this->assertEquals('Middleware GET', (string) $result->getBody());
 
         $request  = new ServerRequest([ 'REQUEST_METHOD' => 'POST' ], [], '/foo', 'POST');
         $response = new Response();
-        $result   = $app->routeMiddleware($request, $response, $next);
+        $result   = $app->routeMiddleware($request, $response, function ($request, $response) use ($app, $next) {
+            return $app->dispatchMiddleware($request, $response, $next);
+        });
 
         $this->assertEquals('Middleware POST', (string) $result->getBody());
     }
@@ -389,13 +373,17 @@ class RouteMiddlewareTest extends TestCase
 
         $request  = new ServerRequest([ 'REQUEST_METHOD' => 'GET' ], [], '/foo', 'GET');
         $response = new Response();
-        $result   = $app->routeMiddleware($request, $response, $next);
+        $result   = $app->routeMiddleware($request, $response, function ($request, $response) use ($app, $next) {
+            return $app->dispatchMiddleware($request, $response, $next);
+        });
 
         $this->assertEquals('Middleware GET', (string) $result->getBody());
 
         $request  = new ServerRequest([ 'REQUEST_METHOD' => 'POST' ], [], '/foo', 'POST');
         $response = new Response();
-        $result   = $app->routeMiddleware($request, $response, $next);
+        $result   = $app->routeMiddleware($request, $response, function ($request, $response) use ($app, $next) {
+            return $app->dispatchMiddleware($request, $response, $next);
+        });
 
         $this->assertEquals('Middleware POST', (string) $result->getBody());
     }
@@ -414,13 +402,17 @@ class RouteMiddlewareTest extends TestCase
 
         $request  = new ServerRequest([ 'REQUEST_METHOD' => 'GET' ], [], '/foo', 'GET');
         $response = new Response();
-        $result   = $app->routeMiddleware($request, $response, $next);
+        $result   = $app->routeMiddleware($request, $response, function ($request, $response) use ($app, $next) {
+            return $app->dispatchMiddleware($request, $response, $next);
+        });
 
         $this->assertEquals('Middleware GET', (string) $result->getBody());
 
         $request  = new ServerRequest([ 'REQUEST_METHOD' => 'POST' ], [], '/foo', 'POST');
         $response = new Response();
-        $result   = $app->routeMiddleware($request, $response, $next);
+        $result   = $app->routeMiddleware($request, $response, function ($request, $response) use ($app, $next) {
+            return $app->dispatchMiddleware($request, $response, $next);
+        });
 
         $this->assertEquals('Middleware POST', (string) $result->getBody());
     }
@@ -438,13 +430,17 @@ class RouteMiddlewareTest extends TestCase
 
         $request  = new ServerRequest([ 'REQUEST_METHOD' => 'GET' ], [], '/foo', 'GET');
         $response = new Response();
-        $result   = $app->routeMiddleware($request, $response, $next);
+        $result   = $app->routeMiddleware($request, $response, function ($request, $response) use ($app, $next) {
+            return $app->dispatchMiddleware($request, $response, $next);
+        });
 
         $this->assertEquals('Middleware GET', (string) $result->getBody());
 
         $request  = new ServerRequest([ 'REQUEST_METHOD' => 'POST' ], [], '/foo', 'POST');
         $response = new Response();
-        $result   = $app->routeMiddleware($request, $response, $next);
+        $result   = $app->routeMiddleware($request, $response, function ($request, $response) use ($app, $next) {
+            return $app->dispatchMiddleware($request, $response, $next);
+        });
 
         $this->assertEquals('Middleware POST', (string) $result->getBody());
     }
@@ -471,17 +467,23 @@ class RouteMiddlewareTest extends TestCase
 
         $request  = new ServerRequest([ 'REQUEST_METHOD' => 'GET' ], [], '/foo', 'GET');
         $response = new Response();
-        $result   = $app->routeMiddleware($request, $response, $next);
+        $result   = $app->routeMiddleware($request, $response, function ($request, $response) use ($app, $next) {
+            return $app->dispatchMiddleware($request, $response, $next);
+        });
         $this->assertEquals('Middleware GET, POST', (string) $result->getBody());
 
         $request  = new ServerRequest([ 'REQUEST_METHOD' => 'POST' ], [], '/foo', 'POST');
         $response = new Response();
-        $result   = $app->routeMiddleware($request, $response, $next);
+        $result   = $app->routeMiddleware($request, $response, function ($request, $response) use ($app, $next) {
+            return $app->dispatchMiddleware($request, $response, $next);
+        });
         $this->assertEquals('Middleware GET, POST', (string) $result->getBody());
 
         $request  = new ServerRequest([ 'REQUEST_METHOD' => 'DELETE' ], [], '/foo', 'DELETE');
         $response = new Response();
-        $result   = $app->routeMiddleware($request, $response, $next);
+        $result   = $app->routeMiddleware($request, $response, function ($request, $response) use ($app, $next) {
+            return $app->dispatchMiddleware($request, $response, $next);
+        });
         $this->assertEquals('Middleware DELETE', (string) $result->getBody());
     }
 
@@ -514,7 +516,9 @@ class RouteMiddlewareTest extends TestCase
 
         $request  = new ServerRequest([ 'REQUEST_METHOD' => $method ], [], '/foo', $method);
         $response = new Response();
-        $result   = $app->routeMiddleware($request, $response, $next);
+        $result   = $app->routeMiddleware($request, $response, function ($request, $response) use ($app, $next) {
+            return $app->dispatchMiddleware($request, $response, $next);
+        });
         $this->assertEquals('Middleware', (string) $result->getBody());
     }
 
@@ -568,7 +572,9 @@ class RouteMiddlewareTest extends TestCase
         $this->router->match($request)->willReturn($result);
 
         $app  = $this->getApplication();
-        $test = $app->routeMiddleware($request, $response, $next);
+        $test = $app->routeMiddleware($request, $response, function ($request, $response) use ($app, $next) {
+            return $app->dispatchMiddleware($request, $response, $next);
+        });
         $this->assertSame($response, $test);
         $this->assertTrue($triggered);
     }
@@ -596,31 +602,16 @@ class RouteMiddlewareTest extends TestCase
 
         $app->attachRouteResultObserver($routeResultObserver->reveal());
 
-        $test = $app->routeMiddleware($request, $response, $next);
+        $test = $app->routeMiddleware($request, $response, function ($request, $response) use ($app, $next) {
+            return $app->routeResultObserverMiddleware(
+                $request,
+                $response,
+                function ($request, $response) use ($app, $next) {
+                    return $app->dispatchMiddleware($request, $response, $next);
+                }
+            );
+        });
         $this->assertSame($response, $test);
-    }
-
-    public function testMiddlewareTriggersObserversWithFailedRouteResult()
-    {
-        $request  = new ServerRequest();
-        $response = new Response();
-        $result   = RouteResult::fromRouteFailure(['GET', 'POST']);
-
-        $routeResultObserver = $this->prophesize(RouteResultObserverInterface::class);
-        $routeResultObserver->update($result)->shouldBeCalled();
-        $this->router->match($request)->willReturn($result);
-
-        $next = function ($request, $response, $error = false) {
-            $this->assertEquals(405, $error);
-            $this->assertEquals(405, $response->getStatusCode());
-            return $response;
-        };
-
-        $app  = $this->getApplication();
-        $app->attachRouteResultObserver($routeResultObserver->reveal());
-
-        $test = $app->routeMiddleware($request, $response, $next);
-        $this->assertEquals(405, $test->getStatusCode());
     }
 
     public function testCanDetachRouteResultObservers()
@@ -661,7 +652,15 @@ class RouteMiddlewareTest extends TestCase
         $app->detachRouteResultObserver($routeResultObserver->reveal());
         $this->assertAttributeNotContains($routeResultObserver->reveal(), 'routeResultObservers', $app);
 
-        $test = $app->routeMiddleware($request, $response, $next);
+        $test = $app->routeMiddleware($request, $response, function ($request, $response) use ($app, $next) {
+            return $app->routeResultObserverMiddleware(
+                $request,
+                $response,
+                function ($request, $response) use ($app, $next) {
+                    return $app->dispatchMiddleware($request, $response, $next);
+                }
+            );
+        });
         $this->assertSame($response, $test);
     }
 
