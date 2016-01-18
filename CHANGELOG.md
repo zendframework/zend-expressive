@@ -20,6 +20,26 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
+## 1.0.0 - TBD
+
+Initial stable release.
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 1.0.0rc6 - 2016-01-18
 
 Sixth release candidate.
