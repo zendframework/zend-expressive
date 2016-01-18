@@ -23,6 +23,8 @@ use Zend\Stratigility\MiddlewarePipe;
 /**
  * Middleware application providing routing based on paths and HTTP methods.
  *
+ * @todo For 1.1, remove the RouteResultSubjectInterface implementation, and
+ *     all deprecated properties and methods.
  * @method Router\Route get($path, $middleware, $name = null)
  * @method Router\Route post($path, $middleware, $name = null)
  * @method Router\Route put($path, $middleware, $name = null)
@@ -31,10 +33,18 @@ use Zend\Stratigility\MiddlewarePipe;
  */
 class Application extends MiddlewarePipe implements Router\RouteResultSubjectInterface
 {
+    use MarshalMiddlewareTrait;
+
     /**
      * @var null|ContainerInterface
      */
     private $container;
+
+    /**
+     * @var bool Flag indicating whether or not the dispatch middleware is
+     *     registered in the middleware pipeline.
+     */
+    private $dispatchMiddlewareIsRegistered = false;
 
     /**
      * @var EmitterInterface
@@ -67,6 +77,13 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
      * @var Router\RouterInterface
      */
     private $router;
+
+    /**
+     * @deprecated This property will be removed in v1.1.
+     * @var bool Flag indicating whether or not the route result observer
+     *     middleware is registered in the middleware pipeline.
+     */
+    private $routeResultObserverMiddlewareIsRegistered = false;
 
     /**
      * Observers to trigger once we have a route result.
@@ -120,7 +137,6 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $out = null)
     {
-        $this->pipeRoutingMiddleware();
         $out = $out ?: $this->getFinalHandler($response);
         return parent::__invoke($request, $response, $out);
     }
@@ -176,6 +192,7 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
     /**
      * Attach a route result observer.
      *
+     * @deprecated This method will be removed in v1.1.
      * @param Router\RouteResultObserverInterface $observer
      */
     public function attachRouteResultObserver(Router\RouteResultObserverInterface $observer)
@@ -186,6 +203,7 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
     /**
      * Detach a route result observer.
      *
+     * @deprecated This method will be removed in v1.1.
      * @param Router\RouteResultObserverInterface $observer
      */
     public function detachRouteResultObserver(Router\RouteResultObserverInterface $observer)
@@ -199,6 +217,7 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
     /**
      * Notify all route result observers with the given route result.
      *
+     * @deprecated This method will be removed in v1.1.
      * @param Router\RouteResult
      */
     public function notifyRouteResultObservers(Router\RouteResult $result)
@@ -232,32 +251,34 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
      * the upshot is that you will not be notified if the service is invalid to
      * use as middleware until runtime.
      *
-     * Additionally, ensures that the route middleware is only ever registered
+     * Middleware may also be passed as an array; each item in the array must
+     * resolve to middleware eventually (i.e., callable or service name).
+     *
+     * Finally, ensures that the route middleware is only ever registered
      * once.
      *
-     * @param string|callable $path Either a URI path prefix, or middleware.
-     * @param null|string|callable $middleware Middleware
+     * @param string|array|callable $path Either a URI path prefix, or middleware.
+     * @param null|string|array|callable $middleware Middleware
      * @return self
      */
     public function pipe($path, $middleware = null)
     {
-        // Lazy-load middleware from the container when possible
-        $container = $this->container;
-        if (null === $middleware && is_string($path) && $container && $container->has($path)) {
-            $middleware = $this->marshalLazyMiddlewareService($path, $container);
-            $path       = '/';
-        } elseif (is_string($middleware)
-            && ! is_callable($middleware)
-            && $container
-            && $container->has($middleware)
+        if (null === $middleware) {
+            $middleware = $this->prepareMiddleware($path, $this->container);
+            $path = '/';
+        }
+
+        if (! is_callable($middleware)
+            && (is_string($middleware) || is_array($middleware))
         ) {
-            $middleware = $this->marshalLazyMiddlewareService($middleware, $container);
-        } elseif (null === $middleware && is_callable($path)) {
-            $middleware = $path;
-            $path       = '/';
+            $middleware = $this->prepareMiddleware($middleware, $this->container);
         }
 
         if ($middleware === [$this, 'routeMiddleware'] && $this->routeMiddlewareIsRegistered) {
+            return $this;
+        }
+
+        if ($middleware === [$this, 'dispatchMiddleware'] && $this->dispatchMiddlewareIsRegistered) {
             return $this;
         }
 
@@ -265,6 +286,10 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
 
         if ($middleware === [$this, 'routeMiddleware']) {
             $this->routeMiddlewareIsRegistered = true;
+        }
+
+        if ($middleware === [$this, 'dispatchMiddleware']) {
+            $this->dispatchMiddlewareIsRegistered = true;
         }
 
         return $this;
@@ -303,20 +328,15 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
      */
     public function pipeErrorHandler($path, $middleware = null)
     {
-        // Lazy-load middleware from the container
-        $container = $this->container;
-        if (null === $middleware && is_string($path) && $container && $container->has($path)) {
-            $middleware = $this->marshalLazyErrorMiddlewareService($path, $container);
-            $path       = '/';
-        } elseif (is_string($middleware)
-            && ! is_callable($middleware)
-            && $container
-            && $container->has($middleware)
+        if (null === $middleware) {
+            $middleware = $this->prepareMiddleware($path, $this->container, $forError = true);
+            $path = '/';
+        }
+
+        if (! is_callable($middleware)
+            && (is_string($middleware) || is_array($middleware))
         ) {
-            $middleware = $this->marshalLazyErrorMiddlewareService($middleware, $container);
-        } elseif (null === $middleware && is_callable($path)) {
-            $middleware = $path;
-            $path       = '/';
+            $middleware = $this->prepareMiddleware($middleware, $this->container, $forError = true);
         }
 
         $this->pipe($path, $middleware);
@@ -336,10 +356,41 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
     }
 
     /**
+     * Register the dispatch middleware in the middleware pipeline.
+     */
+    public function pipeDispatchMiddleware()
+    {
+        if ($this->dispatchMiddlewareIsRegistered) {
+            return;
+        }
+        $this->pipe([$this, 'dispatchMiddleware']);
+    }
+
+    /**
+     * Register the route result observer middleware in the middleware pipeline.
+     *
+     * @deprecated This method will be removed in v1.1.
+     */
+    public function pipeRouteResultObserverMiddleware()
+    {
+        if ($this->routeResultObserverMiddlewareIsRegistered) {
+            return;
+        }
+        $this->pipe([$this, 'routeResultObserverMiddleware']);
+        $this->routeResultObserverMiddlewareIsRegistered = true;
+    }
+
+    /**
      * Middleware that routes the incoming request and delegates to the matched middleware.
      *
-     * Uses the router to route the incoming request, dispatching matched
-     * middleware on a request success condition.
+     * Uses the router to route the incoming request, injecting the request
+     * with:
+     *
+     * - the route result object (under a key named for the RouteResult class)
+     * - attributes for each matched routing parameter
+     *
+     * On completion, it calls on the next middleware (typically the
+     * `dispatchMiddleware()`).
      *
      * If routing fails, `$next()` is called; if routing fails due to HTTP
      * method negotiation, the response is set to a 405, injected with an
@@ -350,14 +401,10 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
      * @param  ResponseInterface $response
      * @param  callable $next
      * @return ResponseInterface
-     * @throws Exception\InvalidArgumentException if the route result does not contain middleware
-     * @throws Exception\InvalidArgumentException if unable to retrieve middleware from the container
-     * @throws Exception\InvalidArgumentException if unable to resolve middleware to a callable
      */
     public function routeMiddleware(ServerRequestInterface $request, ResponseInterface $response, callable $next)
     {
         $result = $this->router->match($request);
-        $this->notifyRouteResultObservers($result);
 
         if ($result->isFailure()) {
             if ($result->isMethodFailure()) {
@@ -374,21 +421,75 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
             $request = $request->withAttribute($param, $value);
         }
 
-        $middleware = $result->getMatchedMiddleware();
+        return $next($request, $response);
+    }
+
+    /**
+     * Dispatch the middleware matched by routing.
+     *
+     * If the request does not have the route result, calls on the next
+     * middleware.
+     *
+     * Next, it checks if the route result has matched middleware; if not, it
+     * raises an exception.
+     *
+     * Finally, it attempts to marshal the middleware, and dispatches it when
+     * complete, return the response.
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param callable $next
+     * @returns ResponseInterface
+     * @throws Exception\InvalidMiddlewareException if no middleware is present
+     *     to dispatch in the route result.
+     */
+    public function dispatchMiddleware(ServerRequestInterface $request, ResponseInterface $response, callable $next)
+    {
+        $routeResult = $request->getAttribute(Router\RouteResult::class, false);
+        if (! $routeResult) {
+            return $next($request, $response);
+        }
+
+        $middleware = $routeResult->getMatchedMiddleware();
         if (! $middleware) {
             throw new Exception\InvalidMiddlewareException(sprintf(
                 'The route %s does not have a middleware to dispatch',
-                $result->getMatchedRouteName()
+                $routeResult->getMatchedRouteName()
             ));
         }
 
-        if (is_array($middleware) && ! is_callable($middleware)) {
-            $middlewarePipe = $this->marshalMiddlewarePipe($middleware);
-            return $middlewarePipe($request, $response, $next);
+        $middleware = $this->prepareMiddleware($middleware, $this->container);
+        return $middleware($request, $response, $next);
+    }
+
+    /**
+     * Middleware for notifying route result observers.
+     *
+     * If the request has a route result, calls notifyRouteResultObservers().
+     *
+     * This middleware should be injected between the routing and dispatch
+     * middleware when creating your middleware pipeline.
+     *
+     * If you are using this, rewrite your observers as middleware that
+     * pulls the route result from the request instead.
+     *
+     * @deprecated This method will be removed in v1.1.
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param callable $next
+     * @returns ResponseInterface
+     */
+    public function routeResultObserverMiddleware(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        callable $next
+    ) {
+        $result = $request->getAttribute(Router\RouteResult::class, false);
+        if ($result) {
+            $this->notifyRouteResultObservers($result);
         }
 
-        $callable = $this->marshalMiddleware($middleware);
-        return $callable($request, $response, $next);
+        return $next($request, $response);
     }
 
     /**
@@ -432,7 +533,6 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
 
         $this->routes[] = $route;
         $this->router->addRoute($route);
-        $this->pipeRoutingMiddleware();
 
         return $route;
     }
@@ -553,155 +653,5 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
                 'Duplicate route detected; same name or path, and one or more HTTP methods intersect'
             );
         }
-    }
-
-    /**
-     * Attempts to retrieve middleware from the container, or instantiate it directly.
-     *
-     * @param string $middleware
-     *
-     * @return callable
-     * @throws Exception\InvalidMiddlewareException If unable to obtain callable middleware
-     */
-    private function marshalMiddleware($middleware)
-    {
-        if (is_callable($middleware)) {
-            return $middleware;
-        }
-
-        if (! is_string($middleware)) {
-            throw new Exception\InvalidMiddlewareException(
-                'The middleware specified is not callable'
-            );
-        }
-
-        // try to get the action name from the container (if exists)
-        $callable = $this->marshalMiddlewareFromContainer($middleware);
-
-        if (is_callable($callable)) {
-            return $callable;
-        }
-
-        // try to instantiate the middleware directly, if possible
-        $callable = $this->marshalInvokableMiddleware($middleware);
-
-        if (is_callable($callable)) {
-            return $callable;
-        }
-
-        throw new Exception\InvalidMiddlewareException(
-            sprintf(
-                'Unable to resolve middleware "%s" to a callable',
-                $middleware
-            )
-        );
-    }
-
-    /**
-     * Marshal a middleware pipe from an array of middleware.
-     *
-     * Each item in the array can be one of the following:
-     *
-     * - A callable middleware
-     * - A string service name of middleware to retrieve from the container
-     * - A string class name of a constructor-less middleware class to
-     *   instantiate
-     *
-     * As each middleware is verified, it is piped to the middleware pipe.
-     *
-     * @param array $middlewares
-     * @return MiddlewarePipe
-     * @throws Exception\InvalidMiddlewareException for any invalid middleware items.
-     */
-    private function marshalMiddlewarePipe(array $middlewares)
-    {
-        $middlewarePipe = new MiddlewarePipe();
-
-        foreach ($middlewares as $middleware) {
-            $middlewarePipe->pipe(
-                $this->marshalMiddleware($middleware)
-            );
-        }
-
-        return $middlewarePipe;
-    }
-
-    /**
-     * Attempt to retrieve the given middleware from the container.
-     *
-     * @param string $middleware
-     * @return string|callable Returns $middleware intact on failure, and the
-     *     middleware instance on success.
-     * @throws Exception\InvalidArgumentException if a container exception occurs.
-     */
-    private function marshalMiddlewareFromContainer($middleware)
-    {
-        $container = $this->container;
-        if (! $container || ! $container->has($middleware)) {
-            return $middleware;
-        }
-
-        try {
-            return $container->get($middleware);
-        } catch (ContainerException $e) {
-            throw new Exception\InvalidMiddlewareException(sprintf(
-                'Unable to retrieve middleware "%s" from the container',
-                $middleware
-            ), $e->getCode(), $e);
-        }
-    }
-
-    /**
-     * Attempt to instantiate the given middleware.
-     *
-     * @param string $middleware
-     * @return string|callable Returns $middleware intact on failure, and the
-     *     middleware instance on success.
-     */
-    private function marshalInvokableMiddleware($middleware)
-    {
-        if (! class_exists($middleware)) {
-            return $middleware;
-        }
-
-        return new $middleware();
-    }
-
-    /**
-     * @param string $middleware
-     * @param ContainerInterface $container
-     * @return callable
-     */
-    private function marshalLazyMiddlewareService($middleware, ContainerInterface $container)
-    {
-        return function ($request, $response, $next = null) use ($container, $middleware) {
-            $invokable = $container->get($middleware);
-            if (! is_callable($invokable)) {
-                throw new Exception\InvalidMiddlewareException(sprintf(
-                    'Lazy-loaded middleware "%s" is not invokable',
-                    $middleware
-                ));
-            }
-            return $invokable($request, $response, $next);
-        };
-    }
-
-    /**
-     * @param string $middleware
-     * @param ContainerInterface $container
-     * @return callable
-     */
-    private function marshalLazyErrorMiddlewareService($middleware, ContainerInterface $container)
-    {
-        return function ($error, $request, $response, $next) use ($container, $middleware) {
-            $invokable = $container->get($middleware);
-            if (! is_callable($invokable)) {
-                throw new Exception\InvalidMiddlewareException(sprintf(
-                    'Lazy-loaded middleware "%s" is not invokable',
-                    $middleware
-                ));
-            }
-            return $invokable($error, $request, $response, $next);
-        };
     }
 }

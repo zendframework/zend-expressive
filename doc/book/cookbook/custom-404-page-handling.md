@@ -86,22 +86,25 @@ From there, you still need to register the middleware. This middleware is not
 routed, and thus needs to be piped to the application instance. You can do this
 via either configuration, or manually.
 
-To do this via configuration, add an entry under the `post_routing` key of the
-`middleware_pipeline` configuration:
+To do this via configuration, add an entry under the `middleware_pipeline`
+configuration, after the dispatch middleware:
 
 ```php
 'middleware_pipeline' => [
-    'pre_routing' => [
-        [
-            //...
+    /* ... */
+    'routing' => [
+        'middleware' => [
+            Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+            Zend\Expressive\Helper\UrlHelperMiddleware::class,
+            Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
         ],
-
+        'priority' => 1,
     ],
-    'post_routing' => [
-        [
-            'middleware' => 'Application\NotFound',
-        ],
+    [
+        'middleware' => 'Application\NotFound',
+        'priority' => -1,
     ],
+    /* ... */
 ],
 ```
 
@@ -117,9 +120,7 @@ $app->pipe($container->get('Application\NotFound'));
 
 This must be done *after*:
 
-- calling `$app->pipeRoutingMiddleware()`, **OR**
-- calling any method that injects routed middleware (`get()`, `post()`,
-  `route()`, etc.), **OR**
+- calling `$app->pipeDispatchMiddleware()`, **OR**
 - pulling the `Application` instance from the service container (assuming you
   used the `ApplicationFactory`).
 

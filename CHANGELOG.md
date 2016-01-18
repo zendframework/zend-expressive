@@ -20,9 +20,32 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
-## 1.0.0 - TBD
+## 1.0.0rc6 - TBD
 
-First stable release.
+Sixth release candidate.
+
+This release contains backwards compatibility breaks with previous release
+candidates. All previous functionality should continue to work, but will
+emit `E_USER_DEPRECATED` notices prompting you to update your application.
+In particular:
+
+- The routing middleware has been split into two separate middleware
+  implementations, one for routing, another for dispatching. This eliminates the
+  need for the route result observer system, as middleware can now be placed
+  *between* routing and dispatching — an approach that provides for greater
+  flexibility with regards to providing route-based functionality.
+- As a result of the above, `Zend\Expressive\Application` no longer implements
+  `Zend\Expressive\Router\RouteResultSubjectInterface`, though it retains the
+  methods associated (each emits a deprecation notice).
+- Configuration for `Zend\Expressive\Container\ApplicationFactory` was modified
+  to implement the `middleware_pipeline` as a single queue, instead of
+  segregating it between `pre_routing` and `post_routing`. Each item in the
+  queue follows the original middleware specification from those keys, with one
+  addition: a `priority` key can be used to allow you to granularly shape the
+  execution order of the middleware pipeline.
+
+A [migration guide](http://zend-expressive.rtfd.org/en/latest/migration/rc-to-v1/)
+was written to help developers migrate to RC6 from earlier versions.
 
 ### Added
 
@@ -42,14 +65,44 @@ First stable release.
   a flow/architectural diagram to the "features" chapter.
 - [#262](https://github.com/zendframework/zend-expressive/pull/262) adds
   a recipe demonstrating creating classes that can intercept multiple routes.
+- [#270](https://github.com/zendframework/zend-expressive/pull/270) adds
+  new methods to `Zend\Expressive\Application`:
+  - `dispatchMiddleware()` is new middleware for dispatching the middleware
+    matched by routing (this functionality was split from `routeMiddleware()`).
+  - `routeResultObserverMiddleware()` is new middleware for notifying route
+    result observers, and exists only to aid migration functionality; it is
+    marked deprecated!
+  - `pipeDispatchMiddleware()` will pipe the dispatch middleware to the
+    `Application` instance.
+  - `pipeRouteResultObserverMiddleware()` will pipe the route result observer
+    middleware to the `Application` instance; like
+    `routeResultObserverMiddleware()`, the method only exists for aiding
+    migration, and is marked deprecated.
+- [#270](https://github.com/zendframework/zend-expressive/pull/270) adds
+  `Zend\Expressive\MarshalMiddlewareTrait`, which is composed by
+  `Zend\Expressive\Application`; it provides methods for marshaling
+  middleware based on service names or arrays of services.
 
 ### Deprecated
 
-- Nothing.
+- [#270](https://github.com/zendframework/zend-expressive/pull/270) deprecates
+  the following methods in `Zend\Expressive\Application`, all of which will
+  be removed in version 1.1:
+  - `attachRouteResultObserver()`
+  - `detachRouteResultObserver()`
+  - `notifyRouteResultObservers()`
+  - `pipeRouteResultObserverMiddleware()`
+  - `routeResultObserverMiddleware()`
 
 ### Removed
 
-- Nothing.
+- [#270](https://github.com/zendframework/zend-expressive/pull/270) removes the
+  `Zend\Expressive\Router\RouteResultSubjectInterface` implementation from
+  `Zend\Expressive\Application`.
+- [#270](https://github.com/zendframework/zend-expressive/pull/270) eliminates
+  the `pre_routing`/`post_routing` terminology from the `middleware_pipeline`,
+  in favor of individually specified `priority` values in middleware
+  specifications.
 
 ### Fixed
 

@@ -14,7 +14,8 @@
     {"Emitters": "book/emitters.md"},
     {"Examples": "book/usage-examples.md"},
     "book/cookbook/bookdown.json",
-    {"Expressive Projects": "book/expressive-projects.md"}
+    {"Expressive Projects": "book/expressive-projects.md"},
+    "book/migration/bookdown.json"
   ],
   "target": "./html"
 }

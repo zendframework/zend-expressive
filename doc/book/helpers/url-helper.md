@@ -2,9 +2,9 @@
 
 `Zend\Expressive\Helper\UrlHelper` provides the ability to generate a URI path
 based on a given route defined in the `Zend\Expressive\Router\RouterInterface`.
-If registered as a route result observer, and the route being used was also
-the one matched during routing, you can provide a subset of routing
-parameters, and any not provided will be pulled from those matched.
+If injected with a route result, and the route being used was also the one
+matched during routing, you can provide a subset of routing parameters, and any
+not provided will be pulled from those matched.
 
 ## Usage
 
@@ -58,15 +58,16 @@ In order to use the helper, you will need to instantiate it with the current
 `RouterInterface`. The factory `Zend\Expressive\Helper\UrlHelperFactory` has
 been provided for this purpose, and can be used trivially with most
 dependency injection containers implementing container-interop. Additionally,
-it is most useful when injected with the current results of routing, and as
-such should be registered as a route result observer with the application. The
-following steps should be followed to register and configure the helper:
+it is most useful when injected with the current results of routing, which
+requires registering middleware with the application that can inject the route
+result. The following steps should be followed to register and configure the helper:
 
 - Register the `UrlHelper` as a service in your container, using the provided
   factory.
 - Register the `UrlHelperMiddleware` as a service in your container, using the
   provided factory.
-- Register the `UrlHelperMiddleware` as pre_routing pipeline middleware.
+- Register the `UrlHelperMiddleware` as pipeline middleware, immediately
+  following the routing middleware.
 
 ### Registering the helper service
 
@@ -112,22 +113,45 @@ return ['dependencies' => [
 
 ### Registering the pipeline middleware
 
-To register the `UrlHelperMiddleware` as pre-routing pipeline middleware:
+To register the `UrlHelperMiddleware` as pipeline middleware following the
+routing middleware:
 
 ```php
 use Zend\Expressive\Helper\UrlHelperMiddleware;
 
-// Do this early, before piping other middleware or routes:
+// Programmatically:
+$app->pipeRoutingMiddleware();
 $app->pipe(UrlHelperMiddleware::class);
+$app->pipeDispatchMiddleware();
 
 // Or use configuration:
 // [
 //     'middleware_pipeline' => [
-//         'pre_routing' => [
-//             ['middleware' => UrlHelperMiddleware::class],
-//         ],
+//         /* ... */
+//         Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+//         ['middleware' => UrlHelperMiddleware::class],
+//         Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+//         /* ... */
 //     ],
 // ]
+//
+// Alternately, create a nested middleware pipeline for the routing, UrlHelper,
+// and dispatch middleware:
+// [
+//     'middleware_pipeline' => [
+//         /* ... */
+//         'routing' => [
+//             'middleware' => [
+//                 Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+//                 UrlHelperMiddleware::class
+//                 Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+//             ],
+//             'priority' => 1,
+//         ],
+//         /* ... */
+//     ],
+// ]
+
 ```
 
 The following dependency configuration will work for all three when using the
@@ -142,18 +166,38 @@ return [
         ],
     ],
     'middleware_pipeline' => [
-        'pre_routing' => [
-            ['middleware' => UrlHelperMiddleware::class],
+        Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+        ['middleware' => UrlHelperMiddleware::class],
+        Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+    ],
+];
+
+// OR:
+return [
+    'dependencies' => [
+        'factories' => [
+            UrlHelper::class => UrlHelperFactory::class,
+            UrlHelperMiddleware::class => UrlHelperMiddlewareFactory::class,
         ],
     ],
-]
+    'middleware_pipeline' => [
+        'routing' => [
+            'middleware' => [
+                Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+                UrlHelperMiddleware::class,
+                Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+            ],
+            'priority' => 1,
+        ],
+    ],
+];
 ```
 
 > #### Skeleton configures helpers
 >
 > If you started your project using the Expressive skeleton package, the
 > `UrlHelper` and `UrlHelperMiddleware` factories are already registered for
-> you, as is the `UrlHelperMiddleware` pre_routing pipeline middleware.
+> you, as is the `UrlHelperMiddleware` pipeline middleware.
 
 ## Using the helper in middleware
 

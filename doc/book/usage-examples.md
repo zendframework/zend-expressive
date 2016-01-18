@@ -451,26 +451,16 @@ return [
         // etc.
     ],
     'middleware_pipeline' => [
-        'pre_routing' => [
-            // See specification below
-        ],
-        'post_routing' => [
-            // See specification below
-        ],
+        // See specification below
     ],
 ];
 ```
 
-The key to note is `middleware_pipeline`, which can have two subkeys,
-`pre_routing` and `post_routing`. Each accepts an array of middlewares to
-register in the pipeline; they will each be `pipe()`'d to the Application in the
-order specified. Those specified `pre_routing` will be registered before any
-routes, and thus before the routing middleware, while those specified
-`post_routing` will be `pipe()`'d afterwards (again, also in the order
-specified).
+The key to note is `middleware_pipeline`, which is an array of middlewares to
+register in the pipeline; each will each be `pipe()`'d to the Application in the
+order specified.
 
-Each middleware specified in either `pre_routing` or `post_routing` must be in
-the following form:
+Each middleware specified must be in the following form:
 
 ```php
 [
@@ -479,11 +469,97 @@ the following form:
     // optional:
     'path'  => '/path/to/match',
     'error' => true,
+    'priority' => 1, // Integer
 ]
 ```
 
-Middleware may be any callable, `Zend\Stratigility\MiddlewareInterface`
-implementation, or a service name that resolves to one of the two.
+Priority should be an integer, and follows the semantics of
+[SplPriorityQueue](http://php.net/SplPriorityQueue): higher numbers indicate
+higher priority (top of the queue; executed earliest), while lower numbers
+indicated lower priority (bottom of the queue, executed last); *negative values
+are low priority*. Items of the same priority are executed in the order in which
+they are attached.
+
+The default priority is 1, and this priority is used by the routing and dispatch
+middleware. To indicate that middleware should execute *before* these, use a
+priority higher than 1. For error middleware, use a priority less than 1.
+
+The above specification can be used for all middleware, with one exception:
+registration of the *routing* and/or *dispatch* middleware that Expressive
+provides. In these cases, use the following constants, which will be caught by
+the factory and expanded:
+
+- `Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE` for the
+  routing middleware; this should always come before the dispatch middleware.
+- `Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE` for the
+  dispatch middleware.
+
+As an example:
+
+```php
+return [
+    'middleware_pipeline' => [
+        [ /* ... */ ],
+        Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+        Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+        [ /* ... */ ],
+    ],
+];
+```
+
+> #### Place routing middleware correctly
+>
+> If you are defining routes *and* defining other middleware for the pipeline,
+> you **must** add the routing middleware. When you do so, make sure you put
+> it at the appropriate location in the pipeline.
+>
+> Typically, you will place any middleware you want to execute on all requests
+> prior to the routing middleware. This includes utilities for bootstrapping
+> the application (such as injection of the `ServerUrlHelper`),
+> utilities for injecting common response headers (such as CORS support), etc.
+> Make sure these middleware specifications include the `priority` key, and that
+> the value of this key is greater than 1.
+>
+> Place *error* middleware *after* the routing middleware. This is middleware
+> that should only execute if routing fails or routed middleware cannot complete
+> the response. These specifications should also include the `priority` key, and
+> the value of that key for such middleware should be less than 1 or negative.
+>
+> Use priority to shape the specific workflow you want for your middleware.
+
+Middleware items may be any callable, `Zend\Stratigility\MiddlewareInterface`
+implementation, or a service name that resolves to one of the two. Additionally,
+you can specify an array of such values; these will be composed in a single
+`Zend\Stratigility\MiddlewarePipe` instance, allowing layering of middleware.
+In fact, you can specify the various `ApplicationFactory::*_MIDDLEWARE`
+constants in such arrays as well:
+
+```php
+return [
+    'middleware_pipeline' => [
+        [ /* ... */ ],
+        'routing' => [
+            'middleware' => [
+                Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+                /* ... middleware that introspects routing results ... */
+                Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+            ],
+            'priority' => 1,
+        ],
+        [ /* ... */ ],
+    ],
+];
+```
+
+> #### Pipeline keys are ignored
+>
+> Keys in a `middleware_pipeline` specification are ignored. However, they can
+> be useful when merging several configurations; if multiple configuration files
+> specify the same key, then those entries will be merged. Be aware, however,
+> that the `middleware` entry for each, since it is an indexed array, will
+> merge arrays by appending; in other words, order will not be guaranteed within
+> that array after merging. If order is critical, define a middleware spec with
+> `priority` keys.
 
 The path, if specified, can only be a literal path to match, and is typically
 used for segregating middleware applications or applying rules to subsets of an
