@@ -140,7 +140,7 @@ $app->pipeDispatchMiddleware();
 // [
 //     'middleware_pipeline' => [
 //         /* ... */
-//         [
+//         'routing' => [
 //             'middleware' => [
 //                 Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
 //                 UrlHelperMiddleware::class
@@ -181,7 +181,7 @@ return [
         ],
     ],
     'middleware_pipeline' => [
-        [
+        'routing' => [
             'middleware' => [
                 Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
                 UrlHelperMiddleware::class,

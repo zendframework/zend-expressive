@@ -92,7 +92,14 @@ configuration, after the dispatch middleware:
 ```php
 'middleware_pipeline' => [
     /* ... */
-    Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+    'routing' => [
+        'middleware' => [
+            Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+            Zend\Expressive\Helper\UrlHelperMiddleware::class,
+            Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+        ],
+        'priority' => 1,
+    ],
     [
         'middleware' => 'Application\NotFound',
         'priority' => -1,

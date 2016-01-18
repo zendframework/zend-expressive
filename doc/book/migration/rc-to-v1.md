@@ -298,20 +298,20 @@ This would be rewritten to the following to work with RC6 and later:
 ```php
 return [
     'middleware_pipeline' => [
-        [
+        'always' => [
             'middleware' => [
                 Zend\Expressive\Helper\ServerUrlMiddleware::class,
                 DebugToolbarMiddleware::class,
             ],
             'priority' => PHP_INT_MAX,
         ],
-        [
+        'api' => [
             'middleware' => ApiMiddleware::class,
             'path' => '/api,
             'priority' => 100,
         ],
 
-        [
+        'routing' => [
             'middleware' => [
                 Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
                 Zend\Expressive\Helper\UrlHelperMiddleware::class,
@@ -320,7 +320,7 @@ return [
             'priority' => 1,
         ],
 
-        [
+        'error' => [
             'middleware' => [
                 NotFoundMiddleware::class,
             ],
@@ -335,6 +335,16 @@ Note in the above example the various groupings. By grouping middleware by
 priority, you can simplify adding new middleware, particularly if you know it
 should execute before routing, or as error middleware, or between routing and
 dispatch.
+
+> #### Keys are ignored
+>
+> The above example provides keys for each middleware specification. The factory
+> will ignore these, but they can be useful for cases when you might want to
+> specify configuration in multiple files, and merge specific entries together.
+> Be aware, however, that the `middleware` key itself is an indexed array;
+> items will be appended based on the order in which configuration files are
+> merged. If order of these is important, create separate specifications with
+> relevant `priority` values.
 
 ## Route result observer deprecation
 
@@ -378,7 +388,7 @@ however, you will need to register it following the routing middleware:
 [
     'middleware_pipeline' => [
         /* ... */
-        [
+        'routing' => [
             'middleware' => [
                 Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
                 Zend\Expressive\Container\ApplicationFactory::ROUTE_RESULT_OBSERVER_MIDDLEWARE,
@@ -460,7 +470,7 @@ If you are using the `ApplicationFactory`, alter your configuration:
 [
     'middleware_pipeline' => [
         /* ... */
-        [
+        'routing' => [
             'middleware' => [
                 Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
                 ['middleware' => MyObserver::class],

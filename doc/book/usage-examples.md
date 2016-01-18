@@ -538,7 +538,7 @@ constants in such arrays as well:
 return [
     'middleware_pipeline' => [
         [ /* ... */ ],
-        [
+        'routing' => [
             'middleware' => [
                 Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
                 /* ... middleware that introspects routing results ... */
@@ -550,6 +550,16 @@ return [
     ],
 ];
 ```
+
+> #### Pipeline keys are ignored
+>
+> Keys in a `middleware_pipeline` specification are ignored. However, they can
+> be useful when merging several configurations; if multiple configuration files
+> specify the same key, then those entries will be merged. Be aware, however,
+> that the `middleware` entry for each, since it is an indexed array, will
+> merge arrays by appending; in other words, order will not be guaranteed within
+> that array after merging. If order is critical, define a middleware spec with
+> `priority` keys.
 
 The path, if specified, can only be a literal path to match, and is typically
 used for segregating middleware applications or applying rules to subsets of an

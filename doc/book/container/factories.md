@@ -35,7 +35,7 @@ instance.
 When the `config` service is present, the factory can utilize several keys in
 order to seed the `Application` instance:
 
-- `middleware_pipeline` can be used to seed pre- and/or post-routing middleware:
+- `middleware_pipeline` can be used to seed the middleware pipeline:
 
   ```php
   'middleware_pipeline' => [
@@ -74,6 +74,10 @@ order to seed the `Application` instance:
   values indicate lower priority (will execute last). Default priority is 1; use
   granular priority values to specify the order in which middleware should be
   piped to the application.
+
+  You *can* specify keys for each middleware specification. These will be
+  ignored by the factory, but can be useful when merging several configurations
+  into one for the application.
 
 - `routes` is used to define routed middleware. The value must be an array,
   consisting of arrays defining each middleware:

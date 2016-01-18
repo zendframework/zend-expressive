@@ -168,7 +168,7 @@ answer is that the syntax is exactly the same!
 ```php
 return [
     'middleware_pipeline' => [
-        [
+        'api' => [
             'path' => '/api',
             'middleware' => [
                 'AuthenticationMiddleware',

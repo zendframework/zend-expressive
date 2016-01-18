@@ -226,7 +226,14 @@ return [
     'middleware_pipeline' => [
         ['middleware' => Your\Application\FormHelpersMiddleware::class, 'priority' => 1000],
         /* ... */
-        Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+        'routing' => [
+            'middleware' => [
+                Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+                Zend\Expressive\Helper\UrlHelperMiddleware::class,
+                Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+            ],
+            'priority' => 1,
+        ],
         /* ... */
     ],
 ];

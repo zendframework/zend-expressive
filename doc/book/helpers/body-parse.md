@@ -45,7 +45,14 @@ return [
     'middleware_pipeline' => [
         [ 'middleware' => Helper\BodyParams\BodyParamsMiddleware::class, 'priority' => 100],
         /* ... */
-        Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+        'routing' => [
+            'middleware' => [
+                Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+                Helper\UrlHelperMiddleware::class,
+                Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+            ],
+            'priority' => 1,
+        ],
         /* ... */
     ],
 ];
