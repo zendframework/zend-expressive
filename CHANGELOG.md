@@ -38,7 +38,9 @@ Initial stable release.
 
 ### Fixed
 
-- Nothing.
+- [#268](https://github.com/zendframework/zend-expressive/pull/268) fixes the
+  Pimple example within the `ServerUrlHelper` chapter of the documentation to
+  use the Pimple v3 API instead of the v1 API.
 
 ## 1.0.0rc6 - 2016-01-18
 
