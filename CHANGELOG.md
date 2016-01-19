@@ -8,7 +8,11 @@ Initial stable release.
 
 ### Added
 
-- Nothing.
+- [#274](https://github.com/zendframework/zend-expressive/pull/274) adds the
+  `--no-dev` flag to the `composer create-project` invocation examples. Not
+  using this flag installs the development requirements listed before the
+  installer script updates the `composer.json`, which leads to unnecessary
+  dependencies.
 
 ### Deprecated
 
