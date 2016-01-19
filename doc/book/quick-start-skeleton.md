@@ -11,7 +11,7 @@ renderer, and error handler from the outset.
 First, we'll create a new project, using Composer's `create-project` command:
 
 ```bash
-$ composer create-project --no-dev -s rc zendframework/zend-expressive-skeleton expressive
+$ composer create-project -s rc zendframework/zend-expressive-skeleton expressive
 ```
 
 > ### Stability
@@ -19,12 +19,6 @@ $ composer create-project --no-dev -s rc zendframework/zend-expressive-skeleton 
 > The Expressive installer is currently in release candidate status. For Composer
 > to recognize the version as installable, you must pass the `-s rc` flag,
 > indicating it should use packages of RC stability.
-
-> ### Development requirements
->
-> If you wish to use the development requirements as defined in the skeleton
-> (specifically, PHPUnit and PHP_CodeSniffer), you will need to run a
-> `composer update` after installation.
 
 This will prompt you to choose:
 
