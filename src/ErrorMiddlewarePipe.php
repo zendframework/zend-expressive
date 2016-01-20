@@ -11,6 +11,7 @@ namespace Zend\Expressive;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use ReflectionProperty;
 use Zend\Stratigility\FinalHandler;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\Stratigility\Next;
@@ -81,7 +82,7 @@ class ErrorMiddlewarePipe
     private function getInternalPipeline()
     {
         $r = new ReflectionProperty($this->pipeline, 'pipeline');
-        $r->setAccessible();
+        $r->setAccessible(true);
         return $r->getValue($this->pipeline);
     }
 }
