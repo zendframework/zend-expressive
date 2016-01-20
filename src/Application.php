@@ -339,7 +339,7 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
             $middleware = $this->prepareMiddleware($middleware, $this->container, $forError = true);
         }
 
-        $this->pipe($path, $middleware);
+        parent::pipe($path, $middleware);
 
         return $this;
     }
