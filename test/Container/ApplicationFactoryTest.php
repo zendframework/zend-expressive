@@ -23,6 +23,7 @@ use Zend\Expressive\Application;
 use Zend\Expressive\Container\ApplicationFactory;
 use Zend\Expressive\Container\Exception as ContainerException;
 use Zend\Expressive\Emitter\EmitterStack;
+use Zend\Expressive\ErrorMiddlewarePipe;
 use Zend\Expressive\Exception\InvalidMiddlewareException;
 use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\Route;
@@ -1280,14 +1281,16 @@ class ApplicationFactoryTest extends TestCase
 
         $nestedPipeline = $pipeline->dequeue()->handler;
 
-        $this->assertInstanceOf(MiddlewarePipe::class, $nestedPipeline);
-        $r = new ReflectionMethod($nestedPipeline, '__invoke');
-        $this->assertEquals(4, $r->getNumberOfParameters(), 'Error pipeline is not error middleware');
+        $this->assertInstanceOf(ErrorMiddlewarePipe::class, $nestedPipeline);
 
         $r = new ReflectionProperty($nestedPipeline, 'pipeline');
         $r->setAccessible(true);
-        $pipeline = $r->getValue($nestedPipeline);
-        $middleware = $pipeline->dequeue()->handler;
+        $internalPipeline = $r->getValue($nestedPipeline);
+        $this->assertInstanceOf(MiddlewarePipe::class, $internalPipeline);
+
+        $r = new ReflectionProperty($internalPipeline, 'pipeline');
+        $r->setAccessible(true);
+        $middleware = $r->getValue($internalPipeline)->dequeue()->handler;
 
         $this->assertInstanceOf(Closure::class, $middleware);
         $r = new ReflectionFunction($middleware);
