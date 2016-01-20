@@ -62,7 +62,7 @@ class ErrorMiddlewarePipe
      * @param callable $out
      * @return Response
      */
-    public function __invoke($error, Request $request, Response $response, callable $out = null)
+    public function __invoke($error, Request $request, Response $response, callable $out)
     {
         // Decorate instances with Stratigility decorators; required to work
         // with Next implementation.
