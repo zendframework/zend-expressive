@@ -14,6 +14,7 @@ use InvalidArgumentException;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use ReflectionFunction;
+use ReflectionMethod;
 use ReflectionProperty;
 use SplQueue;
 use Zend\Diactoros\Response\EmitterInterface;
@@ -22,10 +23,12 @@ use Zend\Expressive\Application;
 use Zend\Expressive\Container\ApplicationFactory;
 use Zend\Expressive\Container\Exception as ContainerException;
 use Zend\Expressive\Emitter\EmitterStack;
+use Zend\Expressive\ErrorMiddlewarePipe;
 use Zend\Expressive\Exception\InvalidMiddlewareException;
 use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouterInterface;
+use Zend\Stratigility\ErrorMiddlewareInterface;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\Stratigility\Route as StratigilityRoute;
 use ZendTest\Expressive\ContainerTrait;
@@ -1252,5 +1255,46 @@ class ApplicationFactoryTest extends TestCase
             }
             $this->assertContains($middleware, $innerPipeline);
         }
+    }
+
+    public function testProperlyRegistersNestedErrorMiddlewareAsLazyErrorMiddleware()
+    {
+        $config = ['middleware_pipeline' => [
+            'error' => [
+                'middleware' => [
+                    'FooError',
+                ],
+                'error' => true,
+                'priority' => -10000,
+            ],
+        ]];
+
+        $this->injectServiceInContainer($this->container, 'config', $config);
+        $fooError = $this->prophesize(ErrorMiddlewareInterface::class)->reveal();
+        $this->injectServiceInContainer($this->container, 'FooError', $fooError);
+
+        $app = $this->factory->__invoke($this->container->reveal());
+
+        $r = new ReflectionProperty($app, 'pipeline');
+        $r->setAccessible(true);
+        $pipeline = $r->getValue($app);
+
+        $nestedPipeline = $pipeline->dequeue()->handler;
+
+        $this->assertInstanceOf(ErrorMiddlewarePipe::class, $nestedPipeline);
+
+        $r = new ReflectionProperty($nestedPipeline, 'pipeline');
+        $r->setAccessible(true);
+        $internalPipeline = $r->getValue($nestedPipeline);
+        $this->assertInstanceOf(MiddlewarePipe::class, $internalPipeline);
+
+        $r = new ReflectionProperty($internalPipeline, 'pipeline');
+        $r->setAccessible(true);
+        $middleware = $r->getValue($internalPipeline)->dequeue()->handler;
+
+        $this->assertInstanceOf(Closure::class, $middleware);
+        $r = new ReflectionFunction($middleware);
+        $this->assertTrue($r->isClosure(), 'Configured middleware is not the expected lazy-middleware closure');
+        $this->assertEquals(4, $r->getNumberOfParameters(), 'Configured middleware is not error middleware');
     }
 }
