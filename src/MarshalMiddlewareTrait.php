@@ -87,7 +87,8 @@ trait MarshalMiddlewareTrait
      * @param null|ContainerInterface $container
      * @param bool $forError Whether or not the middleware pipe generated is
      *     intended to be populated with error middleware; defaults to false.
-     * @return MiddlewarePipe When $forError is true, returns an ErrorMiddlewarePipe.
+     * @return MiddlewarePipe|ErrorMiddlewarePipe When $forError is true,
+     *     returns an ErrorMiddlewarePipe.
      * @throws Exception\InvalidMiddlewareException for any invalid middleware items.
      */
     private function marshalMiddlewarePipe(array $middlewares, ContainerInterface $container = null, $forError = false)
