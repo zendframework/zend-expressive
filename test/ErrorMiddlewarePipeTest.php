@@ -14,6 +14,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\UriInterface as Uri;
 use Zend\Expressive\ErrorMiddlewarePipe;
+use Zend\Stratigility\Http\Response as StratigilityResponse;
 use Zend\Stratigility\MiddlewarePipe;
 
 class ErrorMiddlewarePipeTest extends TestCase
@@ -56,6 +57,12 @@ class ErrorMiddlewarePipeTest extends TestCase
         $uri->getPath()->willReturn('/');
         $request = $this->prophesize(Request::class);
         $request->getUri()->willReturn($uri->reveal());
+
+        // The following is required due to Stratigility decorating requests:
+        $request->withAttribute('originalUri', $uri->reveal())->will(function () use ($request) {
+            return $request->reveal();
+        });
+
         $response = $this->prophesize(Response::class);
 
         $final = function ($request, $response, $err = null) {
@@ -63,7 +70,8 @@ class ErrorMiddlewarePipeTest extends TestCase
         };
 
         $result = $this->errorPipe->__invoke($error, $request->reveal(), $response->reveal(), $final);
-        $this->assertSame($response->reveal(), $result);
+        $this->assertInstanceOf(StratigilityResponse::class, $result);
+        $this->assertSame($response->reveal(), $result->getOriginalResponse());
         $this->assertTrue($triggered->first);
         $this->assertFalse($triggered->second);
         $this->assertTrue($triggered->third);

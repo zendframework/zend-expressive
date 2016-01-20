@@ -11,6 +11,7 @@ namespace Zend\Expressive;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use ReflectionMethod;
 use ReflectionProperty;
 use Zend\Stratigility\FinalHandler;
 use Zend\Stratigility\MiddlewarePipe;
@@ -63,6 +64,11 @@ class ErrorMiddlewarePipe
      */
     public function __invoke($error, Request $request, Response $response, callable $out = null)
     {
+        // Decorate instances with Stratigility decorators; required to work
+        // with Next implementation.
+        $request = $this->decorateRequest($request);
+        $response = $this->decorateResponse($response);
+
         $pipeline = $this->getInternalPipeline();
         $done = $out ?: new FinalHandler([], $response);
         $next = new Next($pipeline, $done);
@@ -84,5 +90,35 @@ class ErrorMiddlewarePipe
         $r = new ReflectionProperty($this->pipeline, 'pipeline');
         $r->setAccessible(true);
         return $r->getValue($this->pipeline);
+    }
+
+    /**
+     * Decorate the request with the Stratigility decorator.
+     *
+     * Proxies to the composed MiddlewarePipe's equivalent method.
+     *
+     * @param Request $request
+     * @return \Zend\Stratigility\Http\Request
+     */
+    private function decorateRequest(Request $request)
+    {
+        $r = new ReflectionMethod($this->pipeline, 'decorateRequest');
+        $r->setAccessible(true);
+        return $r->invoke($this->pipeline, $request);
+    }
+
+    /**
+     * Decorate the response with the Stratigility decorator.
+     *
+     * Proxies to the composed MiddlewarePipe's equivalent method.
+     *
+     * @param Response $response
+     * @return \Zend\Stratigility\Http\Response
+     */
+    private function decorateResponse(Response $response)
+    {
+        $r = new ReflectionMethod($this->pipeline, 'decorateResponse');
+        $r->setAccessible(true);
+        return $r->invoke($this->pipeline, $response);
     }
 }
