@@ -20,17 +20,16 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
-## 1.0.0 - TBD
+## 1.0.0rc7 - TBD
 
-Initial stable release.
+Seventh release candidate.
 
 ### Added
 
-- [#274](https://github.com/zendframework/zend-expressive/pull/274) adds the
-  `--no-dev` flag to the `composer create-project` invocation examples. Not
-  using this flag installs the development requirements listed before the
-  installer script updates the `composer.json`, which leads to unnecessary
-  dependencies.
+- [#277](https://github.com/zendframework/zend-expressive/pull/277) adds a new
+  class, `Zend\Expressive\ErrorMiddlewarePipe`. It composes a
+  `Zend\Stratigility\MiddlewarePipe`, but implements the error middleware
+  signature via its own `__invoke()` method.
 
 ### Deprecated
 
@@ -42,14 +41,10 @@ Initial stable release.
 
 ### Fixed
 
-- [#268](https://github.com/zendframework/zend-expressive/pull/268) fixes the
-  Pimple example within the `ServerUrlHelper` chapter of the documentation to
-  use the Pimple v3 API instead of the v1 API.
-- [#273](https://github.com/zendframework/zend-expressive/pull/273) fixes the
-  verbiage used in the `ServerUrlHelper` documentation regarding when to
-  register the `ServerUrlMiddleware`; though the examples were correct, the
-  verbiage was indicating the middleware should be piped following routing,
-  rather than before.
+- [#277](https://github.com/zendframework/zend-expressive/pull/277) updates the
+  `MarshalMiddlewareTrait` to create and return an `ErrorMiddlewarePipe` when
+  the `$forError` argument provided indicates error middleware is expected.
+  This fix allows defining arrays of error middleware via configuration.
 
 ## 1.0.0rc6 - 2016-01-18
 
