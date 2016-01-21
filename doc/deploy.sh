@@ -17,9 +17,6 @@ set -o errexit -o nounset
 # Get curent commit revision
 rev=$(git rev-parse --short HEAD)
 
-# Path to bookdown
-BOOKDOWN=${HOME}/.composer/vendor/bin/bookdown
-
 # Get documentation templates and assets
 (
     cd doc
@@ -40,7 +37,7 @@ mkdir -p doc/html
 )
 
 # Build the documentation
-$BOOKDOWN doc/bookdown.json --template=doc/assets/doc/templates/main.php
+mkdocs build
 
 # Commit and push the documentation to gh-pages
 (

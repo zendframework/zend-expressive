@@ -1,5 +1,6 @@
 docs_dir: doc/book
 site_dir: doc/html
+theme: readable
 pages:
     - index.md
     - { 'Overview and Features': features.md }
@@ -20,3 +21,5 @@ site_name: zend-expressive
 site_description: 'zend-expressive: PSR-7 Middleware Microframework'
 repo_url: 'https://github.com/zendframework/zend-expressive'
 copyright: 'Copyright (c) 2016 <a href="http://www.zend.com/">Zend Technologies USA Inc.</a>'
+markdown_extensions:
+    - pymdownx.superfences
