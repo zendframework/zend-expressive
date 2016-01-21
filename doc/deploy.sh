@@ -18,14 +18,18 @@ set -o errexit -o nounset
 rev=$(git rev-parse --short HEAD)
 
 # Get documentation templates and assets
-(
-    cd doc
-    git clone git://github.com/zendframework/documentation assets
-)
+wget https://github.com/chrissimpkins/cinder/releases/download/v0.9.3/cinder.zip
+unzip -d cinder cinder.zip
 
-mkdir -p doc/html
+# Update the mkdocs.yml
+echo "markdown_extensions:" >> mkdocs.yml
+echo "    - markdown.extensions.codehilite:" >> mkdocs.yml
+echo "        use_pygments: False" >> mkdocs.yml
+echo "    - pymdownx.superfences" >> mkdocs.yml
+echo "theme_dir: cinder" >> mkdocs.yml
 
 # Initialize gh-pages checkout
+mkdir -p doc/html
 (
     cd doc/html
     git init
@@ -37,7 +41,7 @@ mkdir -p doc/html
 )
 
 # Build the documentation
-mkdocs build
+mkdocs build --clean
 
 # Commit and push the documentation to gh-pages
 (
