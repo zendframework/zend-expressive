@@ -7,6 +7,13 @@ cache:
     - $HOME/.composer/cache
     - vendor
 
+env:
+  global:
+    - GH_USER_NAME: Matthew Weier O'Phinney
+    - GH_USER_EMAIL: matthew@weierophinney.net
+    - GH_REF: github.com/zendframework/zend-expressive.git
+    - secure: tH8+yLKQtFQlZ01FEALMyCNoGPTD6gkaFK4qO7G5eKM70jbFMmmXaHPRiKMyay6s13pEpjzyu8oU4xbyJuE7fI6agK83J970+zk48Zhdbv51GDkQI9zhs8CPGVuBZMbXG9irxBnqHzui1RnnUF1mRTjIreecs60w9eXrg8ziKgtlkUwtjbU4CtB8SGxG2Smo17g3n7uoBJqw/BfazBCvDIEBi3+P7v0vvxiI7l3u2A+N3dv2JKU4dxWvfyuWq3afw8rPRMHS0hBRPXDIMHNAfDOCCqgx9bmtgdlx9dZhCNBWkTznP+1FuFs53G2ATRHc6wnB/4/1H6BX33iDM3laMnbdVOKKh4Cn5DANdaMOSovjjF99lQXTvbznT37lz9V6xA9req1485puWDZbI3Fu5iAvQKfO6qjQNvZKytPSCNNt5DwBOkn4dTzubW9YHgLATNQbaMkgSDtMGPfiplUqZPV78/cs76ZjnFGHYYlrOVBXvr0xKynt+Zt2Kr/C9T6mV+idrrLPX7m9KrLyt9fGqCtAQu/G8MHKLlZSgZfTOY3sLRBSpIBYwqwhDwd9AD5OmTwY+98YpuCv334aqE+Wxggg3k3NrMrGZgJkvdR+d/Qbl4HS/sDqVAPaNaN/63nFd3d7WRQKp9bA276js9nXqVb0tgxsjlh3HpFTEiSLQF4=
+
 matrix:
   fast_finish: true
   include:
@@ -17,8 +24,9 @@ matrix:
     - php: 5.6
       env:
         - EXECUTE_TEST_COVERALLS=true
+        - DEPLOY_DOCS=true
     - php: 7
-    - php: hhvm 
+    - php: hhvm
   allow_failures:
     - php: hhvm
 
@@ -43,6 +51,11 @@ script:
 
 after_script:
   - if [[ $EXECUTE_TEST_COVERALLS == 'true' ]]; then composer coveralls ; fi
+
+after_success:
+  - if [[ $DEPLOY_DOCS == 'true' && $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST == 'false' ]]; then composer global require bookdown/bookdown ; fi
+  - if [[ $DEPLOY_DOCS == 'true' && $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST == 'false' ]]; then composer global league/commonmark ; fi
+  - if [[ $DEPLOY_DOCS == 'true' && $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST == 'false' ]]; then ./doc/deploy.sh ; fi
 
 notifications:
   email: true
