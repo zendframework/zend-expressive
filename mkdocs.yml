@@ -54,7 +54,7 @@ pages:
         - 'Expressive Projects': reference/expressive-projects.md
         - Migration:
             - 'From RC5 and Earlier': reference/migration/rc-to-v1.md
-site_name: zend-expressive
+site_name: Expressive
 site_description: 'zend-expressive: PSR-7 Middleware Microframework'
 repo_url: 'https://github.com/zendframework/zend-expressive'
 copyright: 'Copyright (c) 2016 <a href="http://www.zend.com/">Zend Technologies USA Inc.</a>'
