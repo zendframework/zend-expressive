@@ -38,11 +38,6 @@ pages:
             - ServerUrlHelper: features/helpers/server-url-helper.md
             - 'Body Parsing Middleware': features/helpers/body-parse.md
         - Emitters: features/emitters.md
-    - Reference:
-        - Examples: reference/usage-examples.md
-        - 'Expressive Projects': reference/expressive-projects.md
-        - Migration:
-            - 'From RC5 and Earlier': reference/migration/rc-to-v1.md
     - Cookbook:
         - 'Prepending a common path to all routes': cookbook/common-prefix-for-routes.md
         - 'Route-specific middleware pipelines': cookbook/route-specific-pipeline.md
@@ -55,6 +50,11 @@ pages:
         - 'Setting a locale without a routing parameter': cookbook/setting-locale-without-routing-parameter.md
         - 'Enabling debug toolbars': cookbook/debug-toolbars.md
         - 'Handling multiple routes in a single class': cookbook/using-routed-middleware-class-as-controller.md
+    - Reference:
+        - Examples: reference/usage-examples.md
+        - 'Expressive Projects': reference/expressive-projects.md
+        - Migration:
+            - 'From RC5 and Earlier': reference/migration/rc-to-v1.md
 site_name: zend-expressive
 site_description: 'zend-expressive: PSR-7 Middleware Microframework'
 repo_url: 'https://github.com/zendframework/zend-expressive'
