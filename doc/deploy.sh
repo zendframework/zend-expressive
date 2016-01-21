@@ -18,15 +18,19 @@ set -o errexit -o nounset
 rev=$(git rev-parse --short HEAD)
 
 # Get documentation templates and assets
-wget https://github.com/chrissimpkins/cinder/releases/download/v0.9.3/cinder.zip
-unzip -d cinder cinder.zip
+wget -O zf-mkdoc-theme.tgz https://github.com/weierophinney/zf-mkdoc-theme/archive/0.1.0.tar.gz
+mkdir zf-mkdoc-theme
+(
+    cd zf-mkdoc-theme
+    tar xzf ../zf-mkdoc-theme.tgz --strip-components=1
+)
 
 # Update the mkdocs.yml
 echo "markdown_extensions:" >> mkdocs.yml
 echo "    - markdown.extensions.codehilite:" >> mkdocs.yml
 echo "        use_pygments: False" >> mkdocs.yml
 echo "    - pymdownx.superfences" >> mkdocs.yml
-echo "theme_dir: cinder" >> mkdocs.yml
+echo "theme_dir: zf-mkdoc-theme" >> mkdocs.yml
 
 # Initialize gh-pages checkout
 mkdir -p doc/html
