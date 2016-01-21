@@ -20,7 +20,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
-## 1.0.0rc7 - TBD
+## 1.0.0rc7 - 2016-01-21
 
 Seventh release candidate.
 
