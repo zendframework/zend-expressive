@@ -1,7 +1,7 @@
 # How can I set custom 404 page handling?
 
 In some cases, you may want to handle 404 errors separately from the
-[final handler](../../features/error-handling.md). This can be done by registering
+[final handler](../features/error-handling.md). This can be done by registering
 middleware that operates late &mdash; specifically, after the routing
 middleware. Such middleware will be executed if no other middleware has
 executed, and/or when all other middleware calls `return $next()`
@@ -78,7 +78,7 @@ that does not rely on the final handler.
 ## Registering custom 404 handlers
 
 We can register either `Application\NotFound` class above as service in the
-[service container](../../features/container/intro.md). In the case of the second approach,
+[service container](../features/container/intro.md). In the case of the second approach,
 you would also need to provide a factory for creating the middleware (to ensure
 you inject the template renderer).
 
