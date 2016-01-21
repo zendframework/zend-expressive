@@ -83,20 +83,14 @@ documentation.
 
 ## Documentation
 
-Documentation is [in the doc tree](doc/), and can be compiled using [bookdown](http://bookdown.io):
+Documentation is [in the doc tree](doc/book/), and can be compiled using [mkdocs](http://www.mkdocs.org):
 
 ```bash
-$ bookdown doc/bookdown.json
-$ php -S 0.0.0.0:8080 -t doc/html/ # then browse to http://localhost:8080/
+$ mkdocs build
 ```
 
-> ### Bookdown
->
-> You can install bookdown globally using `composer global require bookdown/bookdown`. If you do
-> this, make sure that `$HOME/.composer/vendor/bin` is on your `$PATH`.
-
 Additionally, public-facing, browseable documentation is available at
-http://zend-expressive.rtfd.org.
+https://zendframework.github.io/zend-expressive/
 
 ## Architecture
 
