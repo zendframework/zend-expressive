@@ -1,0 +1,7 @@
+{
+    "title": "Quick Start",
+    "content": [
+        {"Standalone": "standalone.md"},
+        {"Using the Skeleton Installer": "skeleton.md"}
+    ]
+}
