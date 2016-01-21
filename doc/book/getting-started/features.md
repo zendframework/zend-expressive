@@ -69,7 +69,7 @@ features it provides include:
 
 Below is a diagram detailing the workflow used by Expressive.
 
-![Expressive Architectural Flow](images/architecture.png)
+![Expressive Architectural Flow](../images/architecture.png)
 
 The `Application` acts as an "onion"; in the diagram above, the top is the
 outer-most layer of the onion, while the bottom is the inner-most.
@@ -151,7 +151,7 @@ will execute in one of two conditions:
 - routed middleware called on the next middleware instead of returning a response.
 
 As such, the largest use case for such middleware is for error handling.
-One possibility is for [providing custom 404 handling](cookbook/custom-404-page-handling.md),
+One possibility is for [providing custom 404 handling](../reference/cookbook/custom-404-page-handling.md),
 or handling application-specific error conditions (such as authentication or
 authorization failures).
 

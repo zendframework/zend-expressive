@@ -18,7 +18,7 @@ In all examples, the assumption is the following directory structure:
 
 We assume also that:
 
-- You have installed zend-expressive per the [installation instructions](index.md#installation).
+- You have installed zend-expressive per the [installation instructions](../index.md#installation).
 - `public/` will be the document root of your application.
 - Your own classes are under `src/` with the top-level namespace `Application`,
   and you have configured [autoloading](https://getcomposer.org/doc/01-basic-usage.md#autoloading) in your `composer.json` for those classes.
@@ -59,7 +59,7 @@ We assume also that:
 
 ### Routing
 
-As noted in the [Application documentation](application.md#adding-routable-middleware),
+As noted in the [Application documentation](../features/application.md#adding-routable-middleware),
 routing is abstracted and can be accomplished by calling any of the following
 methods:
 
@@ -241,7 +241,7 @@ $app->run();
 
 This is a nice way to encapsulate the application creation. You could then
 potentially move all service configuration to another file! (We already
-[document an ApplicationFactory for exactly this scenario.](container/factories.md#applicationfactory))
+[document an ApplicationFactory for exactly this scenario.](../features/container/factories.md#applicationfactory))
 
 ## Hello World using a Configuration-Driven Container
 

@@ -271,7 +271,7 @@ Congratulations! You've now created your application, and started writing
 middleware! It's time to start learning about the rest of the features of
 Expressive:
 
-- [Containers](../container/intro.md)
-- [Routing](../router/intro.md)
-- [Templating](../template/intro.md)
-- [Error Handling](../error-handling.md)
+- [Containers](../features/container/intro.md)
+- [Routing](../features/router/intro.md)
+- [Templating](../features/template/intro.md)
+- [Error Handling](../features/error-handling.md)
