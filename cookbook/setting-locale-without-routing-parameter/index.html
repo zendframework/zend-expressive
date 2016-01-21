@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">   
+    <link rel="shortcut icon" href="../../img/favicon.ico">
+
+    <title>Setting a locale without a routing parameter - Expressive</title>
+
+    <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.018/css/hack.min.css">
+    <link href='//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic&subset=latin-ext,latin' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin' rel='stylesheet' type='text/css'>
+    <link href="../../css/base.css" rel="stylesheet">
+    <link href="../../css/cinder.css" rel="stylesheet">
+    <link href="../../css/prism-zf.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js"></script>
+    <script>
+    WebFont.load({
+        google: {
+            families: ['Open Sans', 'PT Sans']
+        }
+    });
+    </script>
+
+    
+</head>
+
+<body>
+
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+            <a class="navbar-brand" href="../..">Expressive</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="../..">Home</a>
+                    </li>
+                
+                
+                
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Getting Started <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../getting-started/features/">Overview and Features</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../getting-started/standalone/">Quick Start: Standalone</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../getting-started/skeleton/">Quick Start: Skeleton Installer</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Features <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../features/application/">Applications</a>
+</li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Containers</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../features/container/intro/">Introduction</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../features/container/factories/">Container Factories</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../features/container/zend-servicemanager/">Using zend-servicemanager</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../features/container/pimple/">Using Pimple</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../features/container/aura-di/">Using Aura.Di</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Routing Adapters</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../features/router/intro/">Introduction</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../features/router/interface/">Routing Interface</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../features/router/uri-generation/">URI Generation</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../features/router/result-observers/">Route Result Observers</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../features/router/piping/">Routing vs Piping</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../features/router/aura/">Using Aura</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../features/router/fast-route/">Using FastRoute</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../features/router/zf2/">Using the ZF2 Router</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Templating</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../features/template/intro/">Introduction</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../features/template/interface/">Template Renderer Interface</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../features/template/middleware/">Templated Middleware</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../features/template/plates/">Using Plates</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../features/template/twig/">Using Twig</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../features/template/zend-view/">Using zend-view</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
+<li >
+    <a href="../../features/error-handling/">Error Handling</a>
+</li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Helpers</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../features/helpers/intro/">Introduction</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../features/helpers/url-helper/">UrlHelper</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../features/helpers/server-url-helper/">ServerUrlHelper</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../features/helpers/body-parse/">Body Parsing Middleware</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
+<li >
+    <a href="../../features/emitters/">Emitters</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cookbook <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../common-prefix-for-routes/">Prepending a common path to all routes</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../route-specific-pipeline/">Route-specific middleware pipelines</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../custom-404-page-handling/">Setting custom 404 page handling</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../using-custom-view-helpers/">Registering custom view helpers when using zend-view</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../using-zend-form-view-helpers/">Using zend-form view helpers</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../using-a-base-path/">Using Expressive from a subdirectory</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../modular-layout/">Building modular applications</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../setting-locale-depending-routing-parameter/">Setting a locale based on a routing parameter</a>
+</li>
+
+                        
+                            
+<li class="active">
+    <a href="./">Setting a locale without a routing parameter</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../debug-toolbars/">Enabling debug toolbars</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../using-routed-middleware-class-as-controller/">Handling multiple routes in a single class</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reference <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../reference/usage-examples/">Examples</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../reference/expressive-projects/">Expressive Projects</a>
+</li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Migration</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../reference/migration/rc-to-v1/">From RC5 and Earlier</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                </ul>
+            
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                
+                    <li >
+                        <a rel="next" href="../setting-locale-depending-routing-parameter/">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../debug-toolbars/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a href="https://github.com/zendframework/zend-expressive">
+                            
+                                <i class="fa fa-github"></i>
+                            
+                            GitHub
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+    <div class="container">
+        
+        <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#how-can-i-setup-the-locale-without-routing-parameters">How can I setup the locale without routing parameters?</a></li>
+        
+            <li><a href="#distinguishing-between-routes-that-require-localization">Distinguishing between routes that require localization</a></li>
+        
+            <li><a href="#setup-a-middleware-to-extract-the-locale-from-the-uri">Setup a middleware to extract the locale from the URI</a></li>
+        
+            <li><a href="#url-generation-in-the-view">Url generation in the view</a></li>
+        
+            <li><a href="#redirecting-within-your-middleware">Redirecting within your middleware</a></li>
+        
+    
+    </ul>
+</div></div>
+        <div class="col-md-9" role="main">
+
+<h1 id="how-can-i-setup-the-locale-without-routing-parameters">How can I setup the locale without routing parameters?</h1>
+<p>Localized web applications often set the locale (and therefor the language)
+based on a routing parameter, the session, or a specialized sub-domain.
+In this recipe we will concentrate on introspecting the URI path via middleware,
+which allows you to have a global mechanism for detecting the locale without
+requiring any changes to existing routes.</p>
+<blockquote>
+<h2 id="distinguishing-between-routes-that-require-localization">Distinguishing between routes that require localization</h2>
+<p>If your application has a mixture of routes that require localization, and
+those that do not, the solution in this recipe may lead to multiple URIs
+that resolve to the identical action, which may be undesirable. In such
+cases, you may want to prefix the specific routes that require localization
+with a required routing parameter; this approach is described in the
+<a href="../setting-locale-depending-routing-parameter/">"Setting a locale based on a routing parameter" recipe</a>.</p>
+</blockquote>
+<h2 id="setup-a-middleware-to-extract-the-locale-from-the-uri">Setup a middleware to extract the locale from the URI</h2>
+<p>First, we need to setup middleware that extracts the locale param directly
+from the request URI's path. If if doesn't find one, it sets a default.</p>
+<p>If it does find one, it uses the value to setup the locale. It also:</p>
+<ul>
+<li>amends the request with a truncated path (removing the locale segment).</li>
+<li>adds the locale segment as the base path of the <code>UrlHelper</code>.</li>
+</ul>
+<pre class="codehilite"><code class="language-php">namespace Application\I18n;
+
+use Locale;
+use Zend\Expressive\Helper\UrlHelper;
+
+class SetLocaleMiddleware
+{
+    private $helper;
+
+    public function __construct(UrlHelper $helper)
+    {
+        $this-&gt;helper = $helper;
+    }
+
+    public function __invoke($request, $response, callable $next)
+    {
+        $uri = $request-&gt;getUri();
+
+        $path = $uri-&gt;getPath();
+
+        if (! preg_match('#^/(?P&lt;locale&gt;[a-z]{2})/#', $path, $matches) {
+            Locale::setDefault('de_DE');
+            return $next($request, $response);
+        }
+
+        $locale = $matches['locale'];
+        Locale::setDefault($locale);
+        $this-&gt;helper-&gt;setBasePath($locale);
+
+        return $next(
+            $request-&gt;withUri(
+                $uri-&gt;withPath(substr($path, 3))
+            ),
+            $response
+        );
+    }
+}</code></pre>
+
+
+<p>Then you will need a factory for the <code>SetLocaleMiddleware</code> to inject the
+<code>UrlHelper</code> instance.</p>
+<pre class="codehilite"><code class="language-php">namespace Application\I18n;
+
+use Interop\Container\ContainerInterface;
+use Zend\Expressive\Helper\UrlHelper;
+
+class SetLocaleMiddlewareFactory
+{
+    public function __invoke(ContainerInterface $container)
+    {
+        return new SetLocaleMiddleware(
+            $container-&gt;get(UrlHelper::class)
+        );
+    }
+}</code></pre>
+
+
+<p>Afterwards, you need to configure the <code>SetLocaleMiddleware</code> in your 
+<code>/config/autoload/middleware-pipeline.global.php</code> file so that it is executed 
+on every request.</p>
+<pre class="codehilite"><code class="language-php">return [
+    'dependencies' =&gt; [
+        /* ... */
+        'factories' =&gt; [
+            Application\I18n\SetLocaleMiddleware::class =&gt;
+                Application\I18n\SetLocaleMiddlewareFactory::class,
+            /* ... */
+        ],
+    ]
+
+    'middleware_pipeline' =&gt; [
+        [
+            'middleware' =&gt; [
+                Application\I18n\SetLocaleMiddleware::class,
+                /* ... */
+            ],
+            'priority' =&gt; 1000,
+        ],
+
+        /* ... */
+
+        'routing' =&gt; [
+            'middleware' =&gt; [
+                Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+                Zend\Expressive\Helper\UrlHelperMiddleware::class,
+                Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+            ],
+            'priority' =&gt; 1,
+        ],
+
+        /* ... */
+    ],
+];</code></pre>
+
+
+<h2 id="url-generation-in-the-view">Url generation in the view</h2>
+<p>Since the <code>UrlHelper</code> has the locale set as a base path, you don't need 
+to worry about generating URLs within your view. Just use the helper to 
+generate a URL and it will do the rest.</p>
+<pre class="codehilite"><code class="language-php">&lt;?php echo $this-&gt;url('your-route') ?&gt;</code></pre>
+
+
+<blockquote>
+<h3 id="helpers-differ-between-template-renderers">Helpers differ between template renderers</h3>
+<p>The above example is specific to zend-view; syntax will differ for
+Twig and Plates.</p>
+</blockquote>
+<h2 id="redirecting-within-your-middleware">Redirecting within your middleware</h2>
+<p>If you want to add the locale parameter when creating URIs within your 
+action middleware, you just need to inject the <code>UrlHelper</code> into your 
+middleware and use it for URL generation:</p>
+<pre class="codehilite"><code class="language-php">namespace Application\Action;
+
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Response\RedirectResponse;
+use Zend\Expressive\Helper\UrlHelper;
+
+class RedirectAction
+{
+    private $helper;
+
+    public function __construct(UrlHelper $helper)
+    {
+        $this-&gt;helper = $helper;
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface      $response
+     * @param callable|null          $next
+     *
+     * @return RedirectResponse
+     */
+    public function __invoke(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        callable $next = null
+    ) {
+        $routeParams = [ /* ... */ ];
+
+        return new RedirectResponse(
+            $this-&gt;helper-&gt;generate('your-route', $routeParams)
+        );
+    }
+}</code></pre>
+
+
+<p>Injecting the <code>UrlHelper</code> into your middleware will also require that the
+middleware have a factory that manages the injection. As an example, the
+following would work for the above middleware:</p>
+<pre class="codehilite"><code class="language-php">namespace Application\Action;
+
+use Interop\Container\ContainerInterface;
+use Zend\Expressive\Helper\UrlHelper;
+
+class RedirectActionFactory
+{
+    public function __invoke(ContainerInterface $container)
+    {
+        return new RedirectAction(
+            $container-&gt;get(UrlHelper::class)
+        );
+    }
+}</code></pre></div>
+        
+    </div>
+
+    <footer class="col-md-12 text-center">
+        <hr>
+        <p>
+        <small>Copyright (c) 2016 <a href="http://www.zend.com/">Zend Technologies USA Inc.</a><br></small>
+        </p>
+        <p><small><a href="http://framework.zend.com">Learn more about Zend Framework</a></small></p>
+    </footer>
+
+    <script src="../../js/jquery-1.10.2.min.js"></script>
+    <script src="../../js/bootstrap-3.0.3.min.js"></script>
+    <script src="../../js/prism-zf.js"></script>
+
+    <script data-main="../../mkdocs/js/search.js" src="../../mkdocs/js/require.js"></script>
+    <script src="../../js/base.js"></script>
+
+    <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        From here you can search these documents. Enter your search terms below.
+                    </p>
+                    <form role="form">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                        </div>
+                    </form>
+                    <div id="mkdocs-search-results"></div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </body>
+
+</html>

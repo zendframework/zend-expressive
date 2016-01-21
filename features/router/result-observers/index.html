@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">   
+    <link rel="shortcut icon" href="../../../img/favicon.ico">
+
+    <title>Route Result Observers - Expressive</title>
+
+    <link href="../../../css/bootstrap-custom.min.css" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.018/css/hack.min.css">
+    <link href='//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic&subset=latin-ext,latin' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin' rel='stylesheet' type='text/css'>
+    <link href="../../../css/base.css" rel="stylesheet">
+    <link href="../../../css/cinder.css" rel="stylesheet">
+    <link href="../../../css/prism-zf.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js"></script>
+    <script>
+    WebFont.load({
+        google: {
+            families: ['Open Sans', 'PT Sans']
+        }
+    });
+    </script>
+
+    
+</head>
+
+<body>
+
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+            <a class="navbar-brand" href="../../..">Expressive</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="../../..">Home</a>
+                    </li>
+                
+                
+                
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Getting Started <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../../getting-started/features/">Overview and Features</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../getting-started/standalone/">Quick Start: Standalone</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../getting-started/skeleton/">Quick Start: Skeleton Installer</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Features <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../application/">Applications</a>
+</li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Containers</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../container/intro/">Introduction</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../container/factories/">Container Factories</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../container/zend-servicemanager/">Using zend-servicemanager</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../container/pimple/">Using Pimple</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../container/aura-di/">Using Aura.Di</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Routing Adapters</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../intro/">Introduction</a>
+</li>
+
+        
+            
+<li >
+    <a href="../interface/">Routing Interface</a>
+</li>
+
+        
+            
+<li >
+    <a href="../uri-generation/">URI Generation</a>
+</li>
+
+        
+            
+<li class="active">
+    <a href="./">Route Result Observers</a>
+</li>
+
+        
+            
+<li >
+    <a href="../piping/">Routing vs Piping</a>
+</li>
+
+        
+            
+<li >
+    <a href="../aura/">Using Aura</a>
+</li>
+
+        
+            
+<li >
+    <a href="../fast-route/">Using FastRoute</a>
+</li>
+
+        
+            
+<li >
+    <a href="../zf2/">Using the ZF2 Router</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Templating</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../template/intro/">Introduction</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../template/interface/">Template Renderer Interface</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../template/middleware/">Templated Middleware</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../template/plates/">Using Plates</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../template/twig/">Using Twig</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../template/zend-view/">Using zend-view</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
+<li >
+    <a href="../../error-handling/">Error Handling</a>
+</li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Helpers</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../helpers/intro/">Introduction</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../helpers/url-helper/">UrlHelper</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../helpers/server-url-helper/">ServerUrlHelper</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../helpers/body-parse/">Body Parsing Middleware</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
+<li >
+    <a href="../../emitters/">Emitters</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cookbook <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../../cookbook/common-prefix-for-routes/">Prepending a common path to all routes</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/route-specific-pipeline/">Route-specific middleware pipelines</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/custom-404-page-handling/">Setting custom 404 page handling</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/using-custom-view-helpers/">Registering custom view helpers when using zend-view</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/using-zend-form-view-helpers/">Using zend-form view helpers</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/using-a-base-path/">Using Expressive from a subdirectory</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/modular-layout/">Building modular applications</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/setting-locale-depending-routing-parameter/">Setting a locale based on a routing parameter</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/setting-locale-without-routing-parameter/">Setting a locale without a routing parameter</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/debug-toolbars/">Enabling debug toolbars</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/using-routed-middleware-class-as-controller/">Handling multiple routes in a single class</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reference <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../../reference/usage-examples/">Examples</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../reference/expressive-projects/">Expressive Projects</a>
+</li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Migration</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../../reference/migration/rc-to-v1/">From RC5 and Earlier</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                </ul>
+            
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                
+                    <li >
+                        <a rel="next" href="../uri-generation/">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../piping/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a href="https://github.com/zendframework/zend-expressive">
+                            
+                                <i class="fa fa-github"></i>
+                            
+                            GitHub
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+    <div class="container">
+        
+        <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#route-result-observers">Route Result Observers</a></li>
+        
+            <li><a href="#deprecated">DEPRECATED!</a></li>
+        
+            <li><a href="#routeresultobserverinterface">RouteResultObserverInterface</a></li>
+        
+            <li><a href="#example">Example</a></li>
+        
+    
+    </ul>
+</div></div>
+        <div class="col-md-9" role="main">
+
+<h1 id="route-result-observers">Route Result Observers</h1>
+<blockquote>
+<h2 id="deprecated">DEPRECATED!</h2>
+<p>The route result observers feature existed prior to the stable 1.0 release,
+but was deprecated with 1.0.0RC6. Please do not use this feature; instead,
+you can inject middleware between the routing and dispatch middleware that can
+act on the matched route result.</p>
+</blockquote>
+<p>Occasionally, you may have need of the <code>RouteResult</code> within other application
+code. As a primary example, a URI generator may want this information to allow
+creating "self" URIs, or to allow presenting a subset of parameters to generate
+a URI.</p>
+<p>Consider this URI:</p>
+<pre class="codehilite"><code class="language-php">'/api/v{version:\d+}/post/{post_id:\d+}/comment/{comment_id:\d+}'</code></pre>
+
+
+<p>If you wanted to generate URIs to a list of related comments, you may not want
+to pass the <code>$version</code> and <code>$post_id</code> parameters each and every time, but
+instead just the <code>$comment_id</code>. As such, <em>route result observers</em> exist to allow
+you to notify such utilities of the results of matching.</p>
+<h2 id="routeresultobserverinterface">RouteResultObserverInterface</h2>
+<p>Route result observers must implement the <code>RouteResultObserverInterface</code>:</p>
+<pre class="codehilite"><code class="language-php">namespace Zend\Expressive\Router;
+
+use Zend\Expressive\Router\RouteResult;
+
+interface RouteResultObserverInterface
+{
+    /**
+     * Observe a route result.
+     *
+     * @param RouteResult $result
+     */
+    public function update(RouteResult $result);
+}</code></pre>
+
+
+<p>These can then be attached to the <code>Application</code> instance:</p>
+<pre class="codehilite"><code class="language-php">$app-&gt;attachRouteResultObserver($observer);</code></pre>
+
+
+<p>As noted, the observer receives the <code>RouteResult</code> from attempting to match a
+route.</p>
+<p>You can detach an existing observer as well, by passing its instance to the
+<code>detachRouteResultObserver()</code> method:</p>
+<pre class="codehilite"><code class="language-php">$app-&gt;detachRouteResultObserver($observer);</code></pre>
+
+
+<blockquote>
+<h3 id="routeresultsubjectinterface">RouteResultSubjectInterface</h3>
+<p><code>Zend\Expressive\Application</code> implements <code>Zend\Expressive\Router\RouteResultSubjectInterface</code>,
+which defines methods for attaching and detaching route result observers, as
+well as a method for notifying observers. Typically you'll only see the
+<code>Application</code> class as an implementation of the interface, but you can always
+create your own implementations as well if desired &mdash; for instance, if
+you are implementing your own middleware runtime using the various interfaces
+Expressive provides.</p>
+</blockquote>
+<h2 id="example">Example</h2>
+<p>For this example, we'll build a simple URI generator. It will compose a
+<code>RouterInterface</code> implementation, implement <code>RouteResultObserverInterface</code>, and,
+when invoked, generate a URI.</p>
+<pre class="codehilite"><code class="language-php">use Zend\Expressive\Router\RouterInterface;
+use Zend\Expressive\Router\RouteResult;
+use Zend\Expressive\Router\RouteResultObserverInterface;
+
+class UriGenerator implements RouteResultObserverInterface
+{
+    private $defaults = [];
+
+    private $routeName;
+
+    private $router;
+
+    public function __construct(RouterInterface $router)
+    {
+        $this-&gt;router = $router;
+    }
+
+    public function update(RouteResult $result)
+    {
+        if ($result-&gt;isFailure()) {
+            return;
+        }
+
+        $this-&gt;routeName = $result-&gt;getMatchedRouteName();
+        $this-&gt;defaults  = $result-&gt;getMatchedParams();
+    }
+
+    public function __invoke($route = null, array $params = [])
+    {
+        if (! $route &amp;&amp; ! $this-&gt;routeName) {
+            throw new InvalidArgumentException('Missing route, and no route was matched to use as a default!');
+        }
+
+        $route = $route ?: $this-&gt;routeName;
+
+        if ($route === $this-&gt;routeName) {
+            $params = array_merge($this-&gt;defaults, $params);
+        }
+
+        return $this-&gt;router-&gt;generateUri($route, $params);
+    }
+}</code></pre>
+
+
+<p>Now that we've defined the <code>UriGenerator</code>, we need:</p>
+<ul>
+<li>a factory for creating it</li>
+<li>a way to attach it to the application</li>
+</ul>
+<p>First, the factory, which is essentially a one-liner wrapped in a class:</p>
+<pre class="codehilite"><code class="language-php">use Container\Interop\ContainerInterface;
+use Zend\Expressive\Router\RouterInterface;
+
+class UriGeneratorFactory
+{
+    public function __invoke(ContainerInterface $container)
+    {
+        return new UriGenerator($container-&gt;get(RouterInterface::class));
+    }
+}</code></pre>
+
+
+<p>Attaching the observer to the application can happen in one of two ways:</p>
+<ul>
+<li>Via modification of the bootstrap script.</li>
+<li>By updating the factory to register the observer with the application.</li>
+</ul>
+<h3 id="modifying-the-bootstrap-script">Modifying the bootstrap script</h3>
+<p>If you choose this method, you will modify your <code>public/index.php</code> script (or
+whatever script you've defined as the application gateway.) The following
+assumes you're using the <code>public/index.php</code> generated for you when using the
+Expressive skeleton.</p>
+<p>In this case, you would attach any observers between the line where you fetch
+the application from the container, and the line when you run it.</p>
+<pre class="codehilite"><code class="language-php">$app = $container-&gt;get('Zend\Expressive\Application');
+
+// Attach observers
+$app-&gt;attachRouteResultObserver($container-&gt;get(UriGenerator::class));
+
+$app-&gt;run();</code></pre>
+
+
+<h3 id="via-the-observer-factory">Via the observer factory</h3>
+<p>This approach requires a slight change to the factory to:</p>
+<ul>
+<li>Check for a <code>Zend\Expressive\Application</code> service; and, if found,</li>
+<li>Attach the observer to it.</li>
+</ul>
+<pre class="codehilite"><code class="language-php">use Container\Interop\ContainerInterface;
+use Zend\Expressive\Application;
+use Zend\Expressive\Router\RouterInterface;
+
+class UriGeneratorFactory
+{
+    public function __invoke(ContainerInterface $container)
+    {
+        $generator = new UriGenerator($container-&gt;get(RouterInterface::class));
+
+        if ($container-&gt;has(Application::class)) {
+            $container
+                -&gt;get(Application::class)
+                -&gt;attachRouteResultObserver($generator);
+        }
+
+        return $generator;
+    }
+}</code></pre>
+
+
+<blockquote>
+<p>Note: Helpers included!</p>
+<p>You do not need to create the above URI generator for your code; this
+functionality is already present in the <a href="https://github.com/zendframework/zend-expressive-helpers">zendframework/zend-expressive-helpers</a>
+package, and, if you started with the Expressive skeleton, may already
+be installed by default!</p>
+<p>See the <a href="../../helpers/intro/">helpers documentation</a> for more information.</p>
+</blockquote></div>
+        
+    </div>
+
+    <footer class="col-md-12 text-center">
+        <hr>
+        <p>
+        <small>Copyright (c) 2016 <a href="http://www.zend.com/">Zend Technologies USA Inc.</a><br></small>
+        </p>
+        <p><small><a href="http://framework.zend.com">Learn more about Zend Framework</a></small></p>
+    </footer>
+
+    <script src="../../../js/jquery-1.10.2.min.js"></script>
+    <script src="../../../js/bootstrap-3.0.3.min.js"></script>
+    <script src="../../../js/prism-zf.js"></script>
+
+    <script data-main="../../../mkdocs/js/search.js" src="../../../mkdocs/js/require.js"></script>
+    <script src="../../../js/base.js"></script>
+
+    <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        From here you can search these documents. Enter your search terms below.
+                    </p>
+                    <form role="form">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                        </div>
+                    </form>
+                    <div id="mkdocs-search-results"></div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </body>
+
+</html>

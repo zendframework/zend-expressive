@@ -37,7 +37,7 @@
     
 </head>
 
-<body class="homepage" >
+<body>
 
     <div class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
@@ -65,7 +65,7 @@
                 <ul class="nav navbar-nav">
                 
                 
-                    <li class="active">
+                    <li >
                         <a href=".">Home</a>
                     </li>
                 
@@ -424,8 +424,8 @@
                             <i class="fa fa-arrow-left"></i> Previous
                         </a>
                     </li>
-                    <li >
-                        <a rel="prev" href="getting-started/features/">
+                    <li class="disabled">
+                        <a rel="prev" >
                             Next <i class="fa fa-arrow-right"></i>
                         </a>
                     </li>
@@ -447,49 +447,16 @@
 
     <div class="container">
         
-        <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
-    <ul class="nav bs-sidenav">
-    
-        <li class="main active"><a href="#expressive-psr-7-middleware-in-minutes">Expressive: PSR-7 Middleware in Minutes</a></li>
-        
-    
-    </ul>
-</div></div>
-        <div class="col-md-9" role="main">
 
-<h1 id="expressive-psr-7-middleware-in-minutes">Expressive: PSR-7 Middleware in Minutes</h1>
-<p>Expressive builds on <a href="https://github.com/zendframework/zend-stratigility">Stratigility</a>
-to provide a minimalist <a href="http://www.php-fig.org/psr/psr-7/">PSR-7</a> middleware
-framework for PHP, with the following features:</p>
-<ul>
-<li>Routing. Choose your own router; we support:<ul>
-<li><a href="https://github.com/auraphp/Aura.Router">Aura.Router</a></li>
-<li><a href="https://github.com/nikic/FastRoute">FastRoute</a></li>
-<li><a href="https://github.com/zendframework/zend-mvc">ZF2's MVC router</a></li>
-</ul>
-</li>
-<li>DI Containers, via <a href="https://github.com/container-interop/container-interop">container-interop</a>.
-  All middleware composed in Expressive may be retrieved from the composed
-  container.</li>
-<li>Optionally, templating. We support:<ul>
-<li><a href="http://platesphp.com/">Plates</a></li>
-<li><a href="http://twig.sensiolabs.org/">Twig</a></li>
-<li><a href="https://github.com/zendframework/zend-view">ZF2's PhpRenderer</a></li>
-</ul>
-</li>
-<li>Error handling. Create templated error pages, or use tools like
-  <a href="https://github.com/filp/whoops">whoops</a> for debugging purposes.</li>
-<li>Nested middleware applications. Write an application, and compose it later
-  in another, optionally under a separate subpath.</li>
-<li><a href="getting-started/skeleton/">Simplfied installation</a>. Our custom
-  <a href="https://getcomposer.org">Composer</a>-based installer prompts you for your
-  initial stack choices, giving you exactly the base you want to start from.</li>
-</ul>
-<p>Essentially, Expressive allows <em>you</em> to develop using the tools <em>you</em> prefer,
-and provides minimal structure and facilities to ease your development.</p>
-<p><a href="getting-started/features/">Keep reading</a>, and get started writing your first
-middleware application today!</p></div>
-        
+    <div class="row-fluid">
+      <div id="main-content" class="span12">
+        <h1 id="404-page-not-found" style="text-align: center">404</h1>
+        <p style="text-align: center"><strong>Page not found</strong></p>
+        <p style="text-align: center"><a href=".">Home</a></p>
+      </div>
+    </div>
+
+
     </div>
 
     <footer class="col-md-12 text-center">
@@ -537,8 +504,3 @@ middleware application today!</p></div>
     </body>
 
 </html>
-
-<!--
-MkDocs version : 0.14.0
-Build Date UTC : 2016-01-21 23:21:15.617567
--->

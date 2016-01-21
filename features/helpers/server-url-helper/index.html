@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">   
+    <link rel="shortcut icon" href="../../../img/favicon.ico">
+
+    <title>ServerUrlHelper - Expressive</title>
+
+    <link href="../../../css/bootstrap-custom.min.css" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.018/css/hack.min.css">
+    <link href='//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic&subset=latin-ext,latin' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin' rel='stylesheet' type='text/css'>
+    <link href="../../../css/base.css" rel="stylesheet">
+    <link href="../../../css/cinder.css" rel="stylesheet">
+    <link href="../../../css/prism-zf.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js"></script>
+    <script>
+    WebFont.load({
+        google: {
+            families: ['Open Sans', 'PT Sans']
+        }
+    });
+    </script>
+
+    
+</head>
+
+<body>
+
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+            <a class="navbar-brand" href="../../..">Expressive</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="../../..">Home</a>
+                    </li>
+                
+                
+                
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Getting Started <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../../getting-started/features/">Overview and Features</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../getting-started/standalone/">Quick Start: Standalone</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../getting-started/skeleton/">Quick Start: Skeleton Installer</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Features <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../application/">Applications</a>
+</li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Containers</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../container/intro/">Introduction</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../container/factories/">Container Factories</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../container/zend-servicemanager/">Using zend-servicemanager</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../container/pimple/">Using Pimple</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../container/aura-di/">Using Aura.Di</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Routing Adapters</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../router/intro/">Introduction</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../router/interface/">Routing Interface</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../router/uri-generation/">URI Generation</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../router/result-observers/">Route Result Observers</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../router/piping/">Routing vs Piping</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../router/aura/">Using Aura</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../router/fast-route/">Using FastRoute</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../router/zf2/">Using the ZF2 Router</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Templating</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../template/intro/">Introduction</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../template/interface/">Template Renderer Interface</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../template/middleware/">Templated Middleware</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../template/plates/">Using Plates</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../template/twig/">Using Twig</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../template/zend-view/">Using zend-view</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
+<li >
+    <a href="../../error-handling/">Error Handling</a>
+</li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Helpers</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../intro/">Introduction</a>
+</li>
+
+        
+            
+<li >
+    <a href="../url-helper/">UrlHelper</a>
+</li>
+
+        
+            
+<li class="active">
+    <a href="./">ServerUrlHelper</a>
+</li>
+
+        
+            
+<li >
+    <a href="../body-parse/">Body Parsing Middleware</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
+<li >
+    <a href="../../emitters/">Emitters</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cookbook <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../../cookbook/common-prefix-for-routes/">Prepending a common path to all routes</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/route-specific-pipeline/">Route-specific middleware pipelines</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/custom-404-page-handling/">Setting custom 404 page handling</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/using-custom-view-helpers/">Registering custom view helpers when using zend-view</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/using-zend-form-view-helpers/">Using zend-form view helpers</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/using-a-base-path/">Using Expressive from a subdirectory</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/modular-layout/">Building modular applications</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/setting-locale-depending-routing-parameter/">Setting a locale based on a routing parameter</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/setting-locale-without-routing-parameter/">Setting a locale without a routing parameter</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/debug-toolbars/">Enabling debug toolbars</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/using-routed-middleware-class-as-controller/">Handling multiple routes in a single class</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reference <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../../reference/usage-examples/">Examples</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../reference/expressive-projects/">Expressive Projects</a>
+</li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Migration</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../../reference/migration/rc-to-v1/">From RC5 and Earlier</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                </ul>
+            
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                
+                    <li >
+                        <a rel="next" href="../url-helper/">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../body-parse/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a href="https://github.com/zendframework/zend-expressive">
+                            
+                                <i class="fa fa-github"></i>
+                            
+                            GitHub
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+    <div class="container">
+        
+        <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#serverurlhelper">ServerUrlHelper</a></li>
+        
+            <li><a href="#usage">Usage</a></li>
+        
+            <li><a href="#creating-an-instance">Creating an instance</a></li>
+        
+            <li><a href="#using-the-helper-in-middleware">Using the helper in middleware</a></li>
+        
+    
+    </ul>
+</div></div>
+        <div class="col-md-9" role="main">
+
+<h1 id="serverurlhelper">ServerUrlHelper</h1>
+<p><code>Zend\Expressive\Helper\ServerUrlHelper</code> provides the ability to generate a full
+URI by passing only the path to the helper; it will then use that path with the
+current <code>Psr\Http\Message\UriInterface</code> instance provided to it in order to
+generate a fully qualified URI.</p>
+<h2 id="usage">Usage</h2>
+<p>When you have an instance, use either its <code>generate()</code> method, or call the
+instance as an invokable:</p>
+<pre class="codehilite"><code class="language-php">// Using the generate() method:
+$url = $helper-&gt;generate('/foo');
+
+// is equivalent to invocation:
+$url = $helper('/foo');</code></pre>
+
+
+<p>The helper is particularly useful when used in conjunction with the
+<a href="../url-helper/">UrlHelper</a>, as you can then create fully qualified URIs for use
+with headers, API hypermedia links, etc.:</p>
+<pre class="codehilite"><code class="language-php">$url = $serverUrl($url('resource', ['id' =&gt; 'sha1']));</code></pre>
+
+
+<p>The signature for the ServerUrlHelper <code>generate()</code> and <code>__invoke()</code> methods is:</p>
+<pre class="codehilite"><code class="language-php">function ($path = null) : string</code></pre>
+
+
+<p>Where:</p>
+<ul>
+<li><code>$path</code>, when provided, can be a string path to use to generate a URI.</li>
+</ul>
+<h2 id="creating-an-instance">Creating an instance</h2>
+<p>In order to use the helper, you will need to inject it with the current
+<code>UriInterface</code> from the request instance. To automate this, we provide
+<code>Zend\Expressive\Helper\ServerUrlMiddleware</code>, which composes a <code>ServerUrl</code>
+instance, and, when invoked, injects it with the URI instance.</p>
+<p>As such, you will need to:</p>
+<ul>
+<li>Register the <code>ServerUrlHelper</code> as a service in your container.</li>
+<li>Register the <code>ServerUrlMiddleware</code> as a service in your container.</li>
+<li>Register the <code>ServerUrlMiddleware</code> as pipeline middleware, anytime
+  before the routing middleware.</li>
+</ul>
+<p>The following examples demonstrate registering the services.</p>
+<pre class="codehilite"><code class="language-php">use Zend\Expressive\Helper\ServerUrlHelper;
+use Zend\Expressive\Helper\ServerUrlMiddleware;
+use Zend\Expressive\Helper\ServerUrlMiddlewareFactory;
+
+// zend-servicemanager:
+$services-&gt;setInvokableClass(ServerUrlHelper::class, ServerUrlHelper::class);
+$services-&gt;setFactory(ServerUrlMiddleware::class, ServerUrlMiddlewareFactory::class);
+
+// Pimple:
+$pimple[ServerUrlHelper::class] = function ($container) {
+    return new ServerUrlHelper();
+};
+$pimple[ServerUrlMiddleware::class] = function ($container) {
+    $factory = new ServerUrlMiddlewareFactory();
+    return $factory($container);
+};
+
+// Aura.Di:
+$container-&gt;set(ServerUrlHelper::class, $container-&gt;lazyNew(ServerUrlHelper::class));
+$container-&gt;set(ServerUrlMiddlewareFactory::class, $container-&gt;lazyNew(ServerUrlMiddlewareFactory::class));
+$container-&gt;set(
+    ServerUrlMiddleware::class,
+    $container-&gt;lazyGetCall(ServerUrlMiddlewareFactory::class, '__invoke', $container)
+);</code></pre>
+
+
+<p>To register the <code>ServerUrlMiddleware</code> as pipeline middleware anytime before the
+routing middleware:</p>
+<pre class="codehilite"><code class="language-php">use Zend\Expressive\Helper\ServerUrlMiddleware;
+
+// Programmatically:
+$app-&gt;pipe(ServerUrlMiddleware::class);
+$app-&gt;pipeRoutingMiddleware();
+$app-&gt;pipeDispatchMiddleware();
+
+// Or use configuration:
+// [
+//     'middleware_pipeline' =&gt; [
+//         ['middleware' =&gt; ServerUrlMiddleware::class, 'priority' =&gt; PHP_INT_MAX],
+//         /* ... */
+//     ],
+// ]</code></pre>
+
+
+<p>The following dependency configuration will work for all three when using the
+Expressive skeleton:</p>
+<pre class="codehilite"><code class="language-php">return [
+    'dependencies' =&gt; [
+        'invokables' =&gt; [
+            ServerUrlHelper::class =&gt; ServerUrlHelper::class,
+        ],
+        'factories' =&gt; [
+            ServerUrlMiddleware::class =&gt; ServerUrlMiddlewareFactory::class,
+        ],
+    ],
+    'middleware_pipeline' =&gt; [
+        ['middleware' =&gt; ServerUrlMiddleware::class, 'priority' =&gt; PHP_INT_MAX],
+        /* ... */
+    ],
+];</code></pre>
+
+
+<blockquote>
+<h3 id="skeleton-configures-helpers">Skeleton configures helpers</h3>
+<p>If you started your project using the Expressive skeleton package, the
+<code>ServerUrlHelper</code> and <code>ServerUrlMiddleware</code> factories are already registered
+for you, as is the <code>ServerUrlMiddleware</code> pipeline middleware.</p>
+</blockquote>
+<h2 id="using-the-helper-in-middleware">Using the helper in middleware</h2>
+<p>Compose the helper in your middleware (or elsewhere), and then use it to
+generate URI paths:</p>
+<pre class="codehilite"><code class="language-php">use Zend\Expressive\Helper\ServerUrlHelper;
+
+class FooMiddleware
+{
+    private $helper;
+
+    public function __construct(ServerUrlHelper $helper)
+    {
+        $this-&gt;helper = $helper;
+    }
+
+    public function __invoke($request, $response, callable $next)
+    {
+        $response = $response-&gt;withHeader(
+            'Link',
+            $this-&gt;helper-&gt;generate() . '; rel=&quot;self&quot;'
+        );
+        return $next($request, $response);
+    }
+}</code></pre></div>
+        
+    </div>
+
+    <footer class="col-md-12 text-center">
+        <hr>
+        <p>
+        <small>Copyright (c) 2016 <a href="http://www.zend.com/">Zend Technologies USA Inc.</a><br></small>
+        </p>
+        <p><small><a href="http://framework.zend.com">Learn more about Zend Framework</a></small></p>
+    </footer>
+
+    <script src="../../../js/jquery-1.10.2.min.js"></script>
+    <script src="../../../js/bootstrap-3.0.3.min.js"></script>
+    <script src="../../../js/prism-zf.js"></script>
+
+    <script data-main="../../../mkdocs/js/search.js" src="../../../mkdocs/js/require.js"></script>
+    <script src="../../../js/base.js"></script>
+
+    <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        From here you can search these documents. Enter your search terms below.
+                    </p>
+                    <form role="form">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                        </div>
+                    </form>
+                    <div id="mkdocs-search-results"></div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </body>
+
+</html>

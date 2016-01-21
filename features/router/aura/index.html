@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">   
+    <link rel="shortcut icon" href="../../../img/favicon.ico">
+
+    <title>Using Aura - Expressive</title>
+
+    <link href="../../../css/bootstrap-custom.min.css" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.018/css/hack.min.css">
+    <link href='//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic&subset=latin-ext,latin' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin' rel='stylesheet' type='text/css'>
+    <link href="../../../css/base.css" rel="stylesheet">
+    <link href="../../../css/cinder.css" rel="stylesheet">
+    <link href="../../../css/prism-zf.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js"></script>
+    <script>
+    WebFont.load({
+        google: {
+            families: ['Open Sans', 'PT Sans']
+        }
+    });
+    </script>
+
+    
+</head>
+
+<body>
+
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+            <a class="navbar-brand" href="../../..">Expressive</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="../../..">Home</a>
+                    </li>
+                
+                
+                
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Getting Started <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../../getting-started/features/">Overview and Features</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../getting-started/standalone/">Quick Start: Standalone</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../getting-started/skeleton/">Quick Start: Skeleton Installer</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Features <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../application/">Applications</a>
+</li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Containers</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../container/intro/">Introduction</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../container/factories/">Container Factories</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../container/zend-servicemanager/">Using zend-servicemanager</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../container/pimple/">Using Pimple</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../container/aura-di/">Using Aura.Di</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Routing Adapters</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../intro/">Introduction</a>
+</li>
+
+        
+            
+<li >
+    <a href="../interface/">Routing Interface</a>
+</li>
+
+        
+            
+<li >
+    <a href="../uri-generation/">URI Generation</a>
+</li>
+
+        
+            
+<li >
+    <a href="../result-observers/">Route Result Observers</a>
+</li>
+
+        
+            
+<li >
+    <a href="../piping/">Routing vs Piping</a>
+</li>
+
+        
+            
+<li class="active">
+    <a href="./">Using Aura</a>
+</li>
+
+        
+            
+<li >
+    <a href="../fast-route/">Using FastRoute</a>
+</li>
+
+        
+            
+<li >
+    <a href="../zf2/">Using the ZF2 Router</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Templating</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../template/intro/">Introduction</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../template/interface/">Template Renderer Interface</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../template/middleware/">Templated Middleware</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../template/plates/">Using Plates</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../template/twig/">Using Twig</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../template/zend-view/">Using zend-view</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
+<li >
+    <a href="../../error-handling/">Error Handling</a>
+</li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Helpers</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../helpers/intro/">Introduction</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../helpers/url-helper/">UrlHelper</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../helpers/server-url-helper/">ServerUrlHelper</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../helpers/body-parse/">Body Parsing Middleware</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
+<li >
+    <a href="../../emitters/">Emitters</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cookbook <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../../cookbook/common-prefix-for-routes/">Prepending a common path to all routes</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/route-specific-pipeline/">Route-specific middleware pipelines</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/custom-404-page-handling/">Setting custom 404 page handling</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/using-custom-view-helpers/">Registering custom view helpers when using zend-view</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/using-zend-form-view-helpers/">Using zend-form view helpers</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/using-a-base-path/">Using Expressive from a subdirectory</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/modular-layout/">Building modular applications</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/setting-locale-depending-routing-parameter/">Setting a locale based on a routing parameter</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/setting-locale-without-routing-parameter/">Setting a locale without a routing parameter</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/debug-toolbars/">Enabling debug toolbars</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/using-routed-middleware-class-as-controller/">Handling multiple routes in a single class</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reference <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../../reference/usage-examples/">Examples</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../reference/expressive-projects/">Expressive Projects</a>
+</li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Migration</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../../reference/migration/rc-to-v1/">From RC5 and Earlier</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                </ul>
+            
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                
+                    <li >
+                        <a rel="next" href="../piping/">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../fast-route/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a href="https://github.com/zendframework/zend-expressive">
+                            
+                                <i class="fa fa-github"></i>
+                            
+                            GitHub
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+    <div class="container">
+        
+        <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#using-aurarouter">Using Aura.Router</a></li>
+        
+            <li><a href="#installing-aurarouter">Installing Aura.Router</a></li>
+        
+            <li><a href="#quick-start">Quick Start</a></li>
+        
+            <li><a href="#programmatic-creation">Programmatic Creation</a></li>
+        
+            <li><a href="#factory-driven-creation">Factory-Driven Creation</a></li>
+        
+    
+    </ul>
+</div></div>
+        <div class="col-md-9" role="main">
+
+<h1 id="using-aurarouter">Using Aura.Router</h1>
+<p><a href="https://github.com/auraphp/Aura.Router">Aura.Router</a> provides a plethora of
+methods for further configuring the router instance. One of the more useful
+configuration is to provide default specifications:</p>
+<ul>
+<li>A regular expression that applies the same for a given routing match:</li>
+</ul>
+<pre class="codehilite"><code class="language-php">// Parameters named &quot;id&quot; will only match digits by default:
+$router-&gt;addTokens([
+  'id' =&gt; '\d+',
+]);</code></pre>
+
+
+<ul>
+<li>A default parameter and/or its default value to always provide:</li>
+</ul>
+<pre class="codehilite"><code class="language-php">// mediatype defaults to &quot;application/xhtml+xml&quot; and will be available in all
+// requests:
+$router-&gt;addValues([
+  'mediatype' =&gt; 'application/xhtml+xml',
+]);</code></pre>
+
+
+<ul>
+<li>Only match if secure (i.e., under HTTPS):</li>
+</ul>
+<pre class="codehilite"><code class="language-php">$router-&gt;setSecure(true);</code></pre>
+
+
+<p>In order to specify these, you need access to the underlying Aura.Router
+instance, however, and the <code>RouterInterface</code> does not provide an accessor!</p>
+<p>The answer, then, is to use dependency injection. This can be done in two ways:
+programmatically, or via a factory to use in conjunction with your container
+instance.</p>
+<h2 id="installing-aurarouter">Installing Aura.Router</h2>
+<p>To use Aura.Router, you will first need to install the Aura.Router integration:</p>
+<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-expressive-aurarouter</code></pre>
+
+
+<h2 id="quick-start">Quick Start</h2>
+<p>At its simplest, you can instantiate a <code>Zend\Expressive\Router\AuraRouter</code> instance
+with no arguments; it will create the underlying Aura.Router objects required
+and compose them for you:</p>
+<pre class="codehilite"><code class="language-php">use Zend\Expressive\Router\AuraRouter;
+
+$router = new AuraRouter();</code></pre>
+
+
+<h2 id="programmatic-creation">Programmatic Creation</h2>
+<p>If you need greater control over the Aura.Router setup and configuration, you
+can create the instances necessary and inject them into
+<code>Zend\Expressive\Router\AuraRouter</code> during instantiation.</p>
+<pre class="codehilite"><code class="language-php">&lt;?php
+use Aura\Router\RouterFactory;
+use Zend\Expressive\AppFactory;
+use Zend\Expressive\Router\AuraRouter as AuraBridge;
+
+$auraRouter = (new RouterFactory())-&gt;newInstance();
+$auraRouter-&gt;setSecure(true);
+$auraRouter-&gt;addValues([
+    'mediatype' =&gt; 'application/xhtml+xml',
+]);
+
+$router = new AuraBridge($auraRouter);
+
+// First argument is the container to use, if not using the default;
+// second is the router.
+$app = AppFactory::create(null, $router);</code></pre>
+
+
+<blockquote>
+<h3 id="piping-the-route-middleware">Piping the route middleware</h3>
+<p>As a reminder, you will need to ensure that middleware is piped in the order
+in which it needs to be executed; please see the section on "Controlling
+middleware execution order" in the <a href="../piping/">piping documentation</a>. This is
+particularly salient when defining routes before injecting the router in the
+application instance!</p>
+</blockquote>
+<h2 id="factory-driven-creation">Factory-Driven Creation</h2>
+<p><a href="../../container/intro/">We recommend using an Inversion of Control container</a>
+for your applications; as such, in this section we will demonstrate 
+two strategies for creating your Aura.Router implementation.</p>
+<h3 id="basic-router">Basic Router</h3>
+<p>If you don't need to provide any setup or configuration, you can simply
+instantiate and return an instance of <code>Zend\Expressive\Router\AuraRouter</code> for the
+service name <code>Zend\Expressive\Router\RouterInterface</code>.</p>
+<p>A factory would look like this:</p>
+<pre class="codehilite"><code class="language-php">// in src/Application/Container/RouterFactory.php
+namespace Application\Container;
+
+use Interop\Container\ContainerInterface;
+use Zend\Expressive\Router\AuraRouter;
+
+class RouterFactory
+{
+    /**
+     * @param ContainerInterface $container
+     * @return AuraRouter
+     */
+    public function __invoke(ContainerInterface $container)
+    {
+        return new AuraRouter();
+    }
+}</code></pre>
+
+
+<p>You would register this with zend-servicemanager using:</p>
+<pre class="codehilite"><code class="language-php">$container-&gt;setFactory(
+    'Zend\Expressive\Router\RouterInterface',
+    'Application\Container\RouterFactory'
+);</code></pre>
+
+
+<p>And in Pimple:</p>
+<pre class="codehilite"><code class="language-php">$pimple['Zend\Expressive\Router\RouterInterface'] = new Application\Container\RouterFactory();</code></pre>
+
+
+<p>For zend-servicemanager, you can omit the factory entirely, and register the
+class as an invokable:</p>
+<pre class="codehilite"><code class="language-php">$container-&gt;setInvokableClass(
+    'Zend\Expressive\Router\RouterInterface',
+    'Zend\Expressive\Router\AuraRouter'
+);</code></pre>
+
+
+<h3 id="advanced-configuration">Advanced Configuration</h3>
+<p>If you want to provide custom setup or configuration, you can do so. In this
+example, we will be defining two factories:</p>
+<ul>
+<li>A factory to register as and generate an <code>Aura\Router\Router</code> instance.</li>
+<li>A factory registered as <code>Zend\Expressive\Router\RouterInterface</code>, which
+  creates and returns a <code>Zend\Expressive\Router\AuraRouter</code> instance composing the
+  <code>Aura\Router\Router</code> instance.</li>
+</ul>
+<p>Sound difficult? It's not; we've essentially done it above already!</p>
+<pre class="codehilite"><code class="language-php">// in src/Application/Container/AuraRouterFactory.php:
+namespace Application\Container;
+
+use Aura\Router\RouterFactory;
+use Interop\Container\ContainerInterface;
+
+class AuraRouterFactory
+{
+    /**
+     * @param ContainerInterface $container
+     * @return \Aura\Router\Router
+     */
+    public function __invoke(ContainerInterface $container)
+    {
+        $router = (new RouterFactory())-&gt;newInstance();
+        $router-&gt;setSecure(true);
+        $router-&gt;addValues([
+            'mediatype' =&gt; 'application/xhtml+xml',
+        ]);
+
+        return $router;
+    }
+}
+
+// in src/Application/Container/RouterFactory.php
+namespace Application\Container;
+
+use Interop\Container\ContainerInterface;
+use Zend\Expressive\Router\AuraRouter as AuraBridge;
+
+class RouterFactory
+{
+    /**
+     * @param ContainerInterface $container
+     * @return AuraBridge
+     */
+    public function __invoke(ContainerInterface $container)
+    {
+        return new AuraBridge($container-&gt;get('Aura\Router\Router'));
+    }
+}</code></pre>
+
+
+<p>From here, you will need to register your factories with your IoC container.</p>
+<p>If you are using zend-servicemanager, this will look like:</p>
+<pre class="codehilite"><code class="language-php">// Programmatically:
+use Zend\ServiceManager\ServiceManager;
+
+$container = new ServiceManager();
+$container-&gt;addFactory(
+    'Aura\Router\Router',
+    'Application\Container\AuraRouterFactory'
+);
+$container-&gt;addFactory(
+    'Zend\Expressive\Router\RouterInterface',
+    'Application\Container\RouterFactory'
+);
+
+// Alternately, via configuration:
+return [
+    'factories' =&gt; [
+        'Aura\Router\Router' =&gt; 'Application\Container\AuraRouterFactory',
+        'Zend\Expressive\Router\RouterInterface' =&gt; 'Application\Container\RouterFactory',
+    ],
+];</code></pre>
+
+
+<p>For Pimple, configuration looks like:</p>
+<pre class="codehilite"><code class="language-php">use Application\Container\AuraRouterFactory;
+use Application\Container\RouterFactory;
+use Interop\Container\Pimple\PimpleInterop as Pimple;
+
+$container = new Pimple();
+$container['Aura\Router\Router'] = new AuraRouterFactory();
+$container['Zend\Expressive\Router\RouterInterface'] = new RouterFactory();</code></pre></div>
+        
+    </div>
+
+    <footer class="col-md-12 text-center">
+        <hr>
+        <p>
+        <small>Copyright (c) 2016 <a href="http://www.zend.com/">Zend Technologies USA Inc.</a><br></small>
+        </p>
+        <p><small><a href="http://framework.zend.com">Learn more about Zend Framework</a></small></p>
+    </footer>
+
+    <script src="../../../js/jquery-1.10.2.min.js"></script>
+    <script src="../../../js/bootstrap-3.0.3.min.js"></script>
+    <script src="../../../js/prism-zf.js"></script>
+
+    <script data-main="../../../mkdocs/js/search.js" src="../../../mkdocs/js/require.js"></script>
+    <script src="../../../js/base.js"></script>
+
+    <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        From here you can search these documents. Enter your search terms below.
+                    </p>
+                    <form role="form">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                        </div>
+                    </form>
+                    <div id="mkdocs-search-results"></div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </body>
+
+</html>
