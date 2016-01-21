@@ -89,7 +89,7 @@ return [
 > ```php
 > [
 >     'name' => 'home',
->     'path' => '/{locale[a-z]{2}}',
+>     'path' => '/{locale:[a-z]{2}}',
 >     'middleware' => Application\Action\HomePageAction::class,
 >     'allowed_methods' => ['GET'],
 > ]
