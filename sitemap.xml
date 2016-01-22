@@ -3,8 +3,8 @@
 
     
     <url>
-     <loc>None/</loc>
-     <lastmod>2016-01-21</lastmod>
+     <loc>https://zendframework.github.io/zend-expressive/</loc>
+     <lastmod>2016-01-22</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -12,66 +12,20 @@
     
         
     <url>
-     <loc>None/getting-started/features/</loc>
-     <lastmod>2016-01-21</lastmod>
+     <loc>https://zendframework.github.io/zend-expressive/getting-started/features/</loc>
+     <lastmod>2016-01-22</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>None/getting-started/standalone/</loc>
-     <lastmod>2016-01-21</lastmod>
+     <loc>https://zendframework.github.io/zend-expressive/getting-started/standalone/</loc>
+     <lastmod>2016-01-22</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>None/getting-started/skeleton/</loc>
-     <lastmod>2016-01-21</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
-    
-
-    
-        
-    <url>
-     <loc>None/features/application/</loc>
-     <lastmod>2016-01-21</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
-    <url>
-     <loc>None</loc>
-     <lastmod></lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
-    <url>
-     <loc>None</loc>
-     <lastmod></lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
-    <url>
-     <loc>None</loc>
-     <lastmod></lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
-    <url>
-     <loc>None/features/error-handling/</loc>
-     <lastmod>2016-01-21</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
-    <url>
-     <loc>None</loc>
-     <lastmod></lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
-    <url>
-     <loc>None/features/emitters/</loc>
-     <lastmod>2016-01-21</lastmod>
+     <loc>https://zendframework.github.io/zend-expressive/getting-started/skeleton/</loc>
+     <lastmod>2016-01-22</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -80,68 +34,44 @@
     
         
     <url>
-     <loc>None/cookbook/common-prefix-for-routes/</loc>
-     <lastmod>2016-01-21</lastmod>
+     <loc>https://zendframework.github.io/zend-expressive/features/application/</loc>
+     <lastmod>2016-01-22</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>None/cookbook/route-specific-pipeline/</loc>
-     <lastmod>2016-01-21</lastmod>
+     <loc>https://zendframework.github.io/zend-expressive</loc>
+     <lastmod></lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>None/cookbook/custom-404-page-handling/</loc>
-     <lastmod>2016-01-21</lastmod>
+     <loc>https://zendframework.github.io/zend-expressive</loc>
+     <lastmod></lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>None/cookbook/using-custom-view-helpers/</loc>
-     <lastmod>2016-01-21</lastmod>
+     <loc>https://zendframework.github.io/zend-expressive</loc>
+     <lastmod></lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>None/cookbook/using-zend-form-view-helpers/</loc>
-     <lastmod>2016-01-21</lastmod>
+     <loc>https://zendframework.github.io/zend-expressive/features/error-handling/</loc>
+     <lastmod>2016-01-22</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>None/cookbook/using-a-base-path/</loc>
-     <lastmod>2016-01-21</lastmod>
+     <loc>https://zendframework.github.io/zend-expressive</loc>
+     <lastmod></lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>None/cookbook/modular-layout/</loc>
-     <lastmod>2016-01-21</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
-    <url>
-     <loc>None/cookbook/setting-locale-depending-routing-parameter/</loc>
-     <lastmod>2016-01-21</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
-    <url>
-     <loc>None/cookbook/setting-locale-without-routing-parameter/</loc>
-     <lastmod>2016-01-21</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
-    <url>
-     <loc>None/cookbook/debug-toolbars/</loc>
-     <lastmod>2016-01-21</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
-    <url>
-     <loc>None/cookbook/using-routed-middleware-class-as-controller/</loc>
-     <lastmod>2016-01-21</lastmod>
+     <loc>https://zendframework.github.io/zend-expressive/features/emitters/</loc>
+     <lastmod>2016-01-22</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -150,19 +80,89 @@
     
         
     <url>
-     <loc>None/reference/usage-examples/</loc>
-     <lastmod>2016-01-21</lastmod>
+     <loc>https://zendframework.github.io/zend-expressive/cookbook/common-prefix-for-routes/</loc>
+     <lastmod>2016-01-22</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>None/reference/expressive-projects/</loc>
-     <lastmod>2016-01-21</lastmod>
+     <loc>https://zendframework.github.io/zend-expressive/cookbook/route-specific-pipeline/</loc>
+     <lastmod>2016-01-22</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>None</loc>
+     <loc>https://zendframework.github.io/zend-expressive/cookbook/custom-404-page-handling/</loc>
+     <lastmod>2016-01-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>https://zendframework.github.io/zend-expressive/cookbook/using-custom-view-helpers/</loc>
+     <lastmod>2016-01-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>https://zendframework.github.io/zend-expressive/cookbook/using-zend-form-view-helpers/</loc>
+     <lastmod>2016-01-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>https://zendframework.github.io/zend-expressive/cookbook/using-a-base-path/</loc>
+     <lastmod>2016-01-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>https://zendframework.github.io/zend-expressive/cookbook/modular-layout/</loc>
+     <lastmod>2016-01-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>https://zendframework.github.io/zend-expressive/cookbook/setting-locale-depending-routing-parameter/</loc>
+     <lastmod>2016-01-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>https://zendframework.github.io/zend-expressive/cookbook/setting-locale-without-routing-parameter/</loc>
+     <lastmod>2016-01-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>https://zendframework.github.io/zend-expressive/cookbook/debug-toolbars/</loc>
+     <lastmod>2016-01-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>https://zendframework.github.io/zend-expressive/cookbook/using-routed-middleware-class-as-controller/</loc>
+     <lastmod>2016-01-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    
+
+    
+        
+    <url>
+     <loc>https://zendframework.github.io/zend-expressive/reference/usage-examples/</loc>
+     <lastmod>2016-01-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>https://zendframework.github.io/zend-expressive/reference/expressive-projects/</loc>
+     <lastmod>2016-01-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>https://zendframework.github.io/zend-expressive</loc>
      <lastmod></lastmod>
      <changefreq>daily</changefreq>
     </url>
