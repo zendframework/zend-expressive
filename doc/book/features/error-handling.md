@@ -49,7 +49,7 @@ use Zend\Expressive\Application;
 use Zend\Expressive\Plates\PlatesRenderer;
 use Zend\Expressive\TemplatedErrorHandler;
 
-$plates = new Plates();
+$plates = new PlatesRenderer();
 $plates->addPath(__DIR__ . '/templates/error', 'error');
 $finalHandler = new TemplatedErrorHandler($plates, 'error::404', 'error::500');
 
@@ -98,7 +98,7 @@ $whoops->writeToOutput(false);
 $whoops->allowQuit(false);
 $whoops->pushHandler($handler);
 
-$plates = new Plates();
+$plates = new PlatesRenderer();
 $plates->addPath(__DIR__ . '/templates/error', 'error');
 $finalHandler = new WhoopsErrorHandler(
     $whoops,
