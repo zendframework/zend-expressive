@@ -3,6 +3,7 @@
 #
 # Environment variables that may be of use:
 #
+# - SITE_URL indicates the URL to the site, to ensure search works;
 # - GH_USER_NAME indicates the GitHub author name to use;
 # - GH_USER_EMAIL indicates the email address for that author;
 # - GH_REF indicates the URI, without scheme or user-info, to the repository;
@@ -18,7 +19,7 @@ set -o errexit -o nounset
 rev=$(git rev-parse --short HEAD)
 
 # Get documentation templates and assets
-wget -O zf-mkdoc-theme.tgz https://github.com/weierophinney/zf-mkdoc-theme/archive/0.1.0.tar.gz
+wget -O zf-mkdoc-theme.tgz https://github.com/weierophinney/zf-mkdoc-theme/archive/0.1.1.tar.gz
 mkdir zf-mkdoc-theme
 (
     cd zf-mkdoc-theme
@@ -26,6 +27,7 @@ mkdir zf-mkdoc-theme
 )
 
 # Update the mkdocs.yml
+echo "site_url: ${SITE_URL}"
 echo "markdown_extensions:" >> mkdocs.yml
 echo "    - markdown.extensions.codehilite:" >> mkdocs.yml
 echo "        use_pygments: False" >> mkdocs.yml
