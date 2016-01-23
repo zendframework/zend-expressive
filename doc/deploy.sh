@@ -18,22 +18,6 @@ set -o errexit -o nounset
 # Get curent commit revision
 rev=$(git rev-parse --short HEAD)
 
-# Get documentation templates and assets
-wget -O zf-mkdoc-theme.tgz https://github.com/weierophinney/zf-mkdoc-theme/archive/0.1.1.tar.gz
-mkdir zf-mkdoc-theme
-(
-    cd zf-mkdoc-theme
-    tar xzf ../zf-mkdoc-theme.tgz --strip-components=1
-)
-
-# Update the mkdocs.yml
-echo "site_url: ${SITE_URL}"
-echo "markdown_extensions:" >> mkdocs.yml
-echo "    - markdown.extensions.codehilite:" >> mkdocs.yml
-echo "        use_pygments: False" >> mkdocs.yml
-echo "    - pymdownx.superfences" >> mkdocs.yml
-echo "theme_dir: zf-mkdoc-theme" >> mkdocs.yml
-
 # Initialize gh-pages checkout
 mkdir -p doc/html
 (
@@ -47,7 +31,7 @@ mkdir -p doc/html
 )
 
 # Build the documentation
-mkdocs build --clean
+./doc/build.sh
 
 # Commit and push the documentation to gh-pages
 (
