@@ -49,12 +49,12 @@
                 </li>
                 {% if include_next_prev %}
                     <li {% if not previous_page %}class="disabled"{% endif %}>
-                        <a rel="next" {% if previous_page %}href="{{ previous_page.url }}"{% endif %}>
+                        <a rel="prev" {% if previous_page %}href="{{ previous_page.url }}"{% endif %}>
                             <i class="fa fa-arrow-left"></i> Previous
                         </a>
                     </li>
                     <li {% if not next_page %}class="disabled"{% endif %}>
-                        <a rel="prev" {% if next_page %}href="{{ next_page.url }}"{% endif %}>
+                        <a rel="next" {% if next_page %}href="{{ next_page.url }}"{% endif %}>
                             Next <i class="fa fa-arrow-right"></i>
                         </a>
                     </li>

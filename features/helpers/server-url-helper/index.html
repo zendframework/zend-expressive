@@ -419,12 +419,12 @@
                 </li>
                 
                     <li >
-                        <a rel="next" href="../url-helper/">
+                        <a rel="prev" href="../url-helper/">
                             <i class="fa fa-arrow-left"></i> Previous
                         </a>
                     </li>
                     <li >
-                        <a rel="prev" href="../body-parse/">
+                        <a rel="next" href="../body-parse/">
                             Next <i class="fa fa-arrow-right"></i>
                         </a>
                     </li>
@@ -609,7 +609,20 @@ class FooMiddleware
         );
         return $next($request, $response);
     }
-}</code></pre></div>
+}</code></pre>
+
+<hr />
+
+<nav>
+  <ul class="pager">
+    <li class="previous">
+      <a rel="prev" href="../url-helper/"><i class="fa fa-arrow-left"></i> Previous</a>
+    </li>
+    <li class="next">
+      <a rel="next" href="../body-parse/">Next <i class="fa fa-arrow-right"></i></a>
+    </li>
+  </ul>
+</nav></div>
         
     </div>
 

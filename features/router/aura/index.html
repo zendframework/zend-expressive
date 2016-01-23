@@ -419,12 +419,12 @@
                 </li>
                 
                     <li >
-                        <a rel="next" href="../piping/">
+                        <a rel="prev" href="../piping/">
                             <i class="fa fa-arrow-left"></i> Previous
                         </a>
                     </li>
                     <li >
-                        <a rel="prev" href="../fast-route/">
+                        <a rel="next" href="../fast-route/">
                             Next <i class="fa fa-arrow-right"></i>
                         </a>
                     </li>
@@ -688,7 +688,20 @@ use Interop\Container\Pimple\PimpleInterop as Pimple;
 
 $container = new Pimple();
 $container['Aura\Router\Router'] = new AuraRouterFactory();
-$container['Zend\Expressive\Router\RouterInterface'] = new RouterFactory();</code></pre></div>
+$container['Zend\Expressive\Router\RouterInterface'] = new RouterFactory();</code></pre>
+
+<hr />
+
+<nav>
+  <ul class="pager">
+    <li class="previous">
+      <a rel="prev" href="../piping/"><i class="fa fa-arrow-left"></i> Previous</a>
+    </li>
+    <li class="next">
+      <a rel="next" href="../fast-route/">Next <i class="fa fa-arrow-right"></i></a>
+    </li>
+  </ul>
+</nav></div>
         
     </div>
 

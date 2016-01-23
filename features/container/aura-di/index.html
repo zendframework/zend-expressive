@@ -419,12 +419,12 @@
                 </li>
                 
                     <li >
-                        <a rel="next" href="../pimple/">
+                        <a rel="prev" href="../pimple/">
                             <i class="fa fa-arrow-left"></i> Previous
                         </a>
                     </li>
                     <li >
-                        <a rel="prev" href="../../router/intro/">
+                        <a rel="next" href="../../router/intro/">
                             Next <i class="fa fa-arrow-right"></i>
                         </a>
                     </li>
@@ -588,7 +588,20 @@ class Common extends ContainerConfig
 require 'vendor/autoload.php';
 $container = require 'config/services.php';
 $app = $container-&gt;get('Zend\Expressive\Application');
-$app-&gt;run();</code></pre></div>
+$app-&gt;run();</code></pre>
+
+<hr />
+
+<nav>
+  <ul class="pager">
+    <li class="previous">
+      <a rel="prev" href="../pimple/"><i class="fa fa-arrow-left"></i> Previous</a>
+    </li>
+    <li class="next">
+      <a rel="next" href="../../router/intro/">Next <i class="fa fa-arrow-right"></i></a>
+    </li>
+  </ul>
+</nav></div>
         
     </div>
 
