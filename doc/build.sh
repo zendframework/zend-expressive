@@ -14,7 +14,8 @@
 
 # Get documentation templates and assets
 if [[ ! -d zf-mkdoc-theme ]];then
-    wget -O zf-mkdoc-theme.tgz https://github.com/weierophinney/zf-mkdoc-theme/archive/0.1.6.tar.gz ;
+    echo "Fetching and installing theme" ;
+    wget -O zf-mkdoc-theme.tgz https://github.com/weierophinney/zf-mkdoc-theme/archive/0.1.7.tar.gz ;
     mkdir zf-mkdoc-theme ;
     (
         cd zf-mkdoc-theme ;
@@ -23,6 +24,7 @@ if [[ ! -d zf-mkdoc-theme ]];then
 fi
 
 # Update the mkdocs.yml
+echo "Building documentation"
 cp mkdocs.yml mkdocs.yml.orig
 echo "site_url: ${SITE_URL}"
 echo "markdown_extensions:" >> mkdocs.yml
@@ -33,3 +35,11 @@ echo "theme_dir: zf-mkdoc-theme" >> mkdocs.yml
 
 mkdocs build --clean
 mv mkdocs.yml.orig mkdocs.yml
+
+# Make images responsive
+echo "Making images responsive"
+php doc/img_responsive.php
+
+# Replace landing page content
+echo "Replacing landing page content"
+php doc/swap_index.php
