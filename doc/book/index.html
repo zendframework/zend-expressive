@@ -1,0 +1,171 @@
+<div class="container">
+  <div class="jumbotron">
+    <h1>Expressive</h1>
+    
+    <p>PSR-7 Middleware in Minutes</p>
+  </div>
+</div>
+
+<div class="container features">
+  <div class="row row-flex row-flex-wrap">
+    <div class="col-sm-6 col-md-4">
+      <div class="panel panel-success"><div class="panel-content">
+        <img src="images/checkmark.png" alt="PSR-7" /><br />
+
+        <h3>PSR-7</h3>
+
+        <p>
+          Built to consume <a href="http://www.php-fig.org/psr/psr-7/">PSR-7</a>!
+        </p>
+      </div></div>
+    </div>
+
+    <div class="col-sm-6 col-md-4">
+      <div class="panel panel-success"><div class="panel-content center-block">
+        <img src="images/lambda.png" alt="Middleware" /><br />
+
+        <h3>Middleware</h3>
+
+        <p>
+          Create <a href="https://github.com/zendframework/zend-stratigility/blob/master/doc/book/middleware.md">middleware</a>
+          applications, using as many layers as you want, and the architecture
+          your project needs.
+        </p>
+      </div></div>
+    </div>
+
+    <div class="col-sm-6 col-md-4">
+      <div class="panel panel-success"><div class="panel-content center-block">
+        <img src="images/nodes.png" alt="Routing" /><br />
+
+        <h3>Routing</h3>
+
+        <p>
+          Route requests to middleware using <a href="features/router/intro/">the routing library of your choice</a>.
+        </p>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="row row-flex row-flex-wrap">
+    <div class="col-sm-6 col-md-4">
+      <div class="panel panel-success"><div class="panel-content">
+        <img src="images/syringe.png" alt="Dependency Injection" /><br />
+
+        <h3>Dependency Injection</h3>
+
+        <p>
+          Make your code flexible and robust, using the
+          <a href="features/container/intro/">dependency injection container of your choice</a>.
+        </p>
+      </div></div>
+    </div>
+
+    <div class="col-sm-6 col-md-4">
+      <div class="panel panel-success"><div class="panel-content center-block">
+        <img src="images/pencil.png" alt="Templating" /><br />
+
+        <h3>Templating</h3>
+
+        <p>
+          Create <a href="features/template/intro/">templated responses</a>, using
+          a variety of template engines.
+        </p>
+      </div></div>
+    </div>
+
+    <div class="col-sm-6 col-md-4">
+      <div class="panel panel-success"><div class="panel-content center-block">
+        <img src="images/warning.png" alt="Error Handling" /><br />
+
+        <h3>Error Handling</h3>
+
+        <p>
+          <a href="features/error-handling/">Handle errors gracefully</a>, using
+          templated error pages, <a href="http://filp.github.io/whoops/">whoops</a>,
+          or your own solution!
+        </p>
+      </div></div>
+    </div>
+  </div>
+</div>
+
+<div class="container install">
+  <div class="row"><div class="panel"><div class="panel-content">
+    <h2>Get Started Now!</h2>
+
+    <p>Installation is only a <a href="https://getcomposer.org">Composer</a> command away!</p>
+
+    <pre><code class="language-bash" data-trim>
+$ composer create-project -s rc zendframework/zend-expressive-skeleton expressive
+    </code></pre>
+
+    <h3>Choose what you want</h3>
+
+    <p>
+      Expressive provides interfaces for routing and templating, letting <em>you</em>
+      choose what to use, and how you want to implement it.
+    </p>
+
+    <p>
+      Our unique installer allows you to select <em>your</em> choices when starting
+      your project!
+    </p>
+
+    <div class="container"><div class="row">
+        <div class="col-xs-8">
+          <img class="img-responsive" src="images/installer.png" alt="Expressive Installer" /><br />
+        </div>
+      
+        <div class="col-xs-4">
+          <button type="btn btn-lg btn-primary"><a href="getting-started/skeleton/">Learn more</a></button>
+        </div>
+    </div></div>
+
+    <h3>Applications, Simplified</h3>
+
+    <div class="container"><div class="row">
+        <div class="col-xs-8">
+          <p>Write middleware:</p>
+
+          <pre><code class="language-php" data-trim>
+$pathMiddleware = function (
+    ServerRequestInterface $request,
+    ResponseInterface $response,
+    callable $next
+) {
+    $uri  = $request->getUri();
+    $path = $uri->getPath();
+
+    $response->getBody()->write('You visited ' . $path);
+    return $next($request, $response->withHeader('X-Path', $path));
+};
+    </code></pre>
+
+          <p>And add it to an application:</p>
+
+          <pre><code class="language-php" data-trim>
+$app->get('/path', $pathMiddleware);
+          </code></pre>
+        </div>
+      
+        <div class="col-xs-4">
+          <button type="btn btn-lg btn-primary"><a href="features/application/">Learn more</a></button>
+        </div>
+    </div></div>
+  </div></div></div>
+</div>
+
+<div class="container">
+  <div class="row"><div class="panel"><div class="panel-content">
+    <h2>Learn more</h2>
+
+    <ul>
+      <li><a href="getting-started/features/">Features overview</a></li>
+      <li><a href="getting-started/standalone/">Getting Started: Standalone installation</a></li>
+      <li><a href="getting-started/standalone/">Getting Started: Skeleton Installer</a></li>
+    </ul>
+
+    <p>Or use the menu to navigate to the section you're interested in.</p>
+  </div></div></div>
+</div>
