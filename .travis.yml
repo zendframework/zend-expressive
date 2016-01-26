@@ -7,6 +7,7 @@ cache:
     - $HOME/.composer/cache
     - $HOME/.local
     - vendor
+    - zf-mkdoc-theme
 
 env:
   global:
@@ -50,9 +51,13 @@ after_script:
   - if [[ $EXECUTE_TEST_COVERALLS == 'true' ]]; then composer coveralls ; fi
 
 after_success:
-  - if [[ $DEPLOY_DOCS == 'true' && $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST == 'false' ]]; then pip install --user mkdocs ; fi
-  - if [[ $DEPLOY_DOCS == 'true' && $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST == 'false' ]]; then pip install --user pymdown-extensions ; fi
-  - if [[ $DEPLOY_DOCS == 'true' && $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST == 'false' ]]; then ./doc/deploy.sh ; fi
+  - export DEPLOY=$(if [[ $DEPLOY_DOCS == 'true' && $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST == 'false' ]]; then echo -n "true" ; else echo -n "false" ; fi)
+  - export NEEDS_THEME=$([ -d zf-mkdoc-theme/theme ] ; result=$? ; if (( result == 0 )); then echo -n "false"; else echo -n "true" ; fi)
+  - if [[ $DEPLOY == "true" ]]; then pip install --user mkdocs ; fi
+  - if [[ $DEPLOY == "true" ]]; then pip install --user pymdown-extensions ; fi
+  - if [[ $DEPLOY == "true" && $NEEDS_THEME == "true" ]]; then echo "Downloading zf-mkdoc-theme" ; $(if [[ ! -d zf-mkdoc-theme ]];then mkdir zf-mkdoc-theme ; fi) ; $(curl -s -L https://github.com/zendframework/zf-mkdoc-theme/releases/latest | egrep -o '/zendframework/zf-mkdoc-theme/archive/[0-9]*\.[0-9]*\.[0-9]*.tar.gz' | head -n1 | wget -O zf-mkdoc-theme.tgz --base=https://github.com/ -i -) ; $(cd zf-mkdoc-theme ; tar xzf ../zf-mkdoc-theme.tgz --strip-components=1) ; echo "Finished downloading and installing zf-mkdoc-theme" ; fi
+  - export CAN_DEPLOY=$([ -f zf-mkdoc-theme/deploy.sh ] ; result=$? ; if (( result == 0 )); then echo -n "true"; else echo -n "false" ; fi)
+  - if [[ $DEPLOY == "true" && $CAN_DEPLOY == "true" ]]; then echo "Preparing to build and deploy documentation" ; ./zf-mkdoc-theme/deploy.sh ; echo "Completed deploying documentation" ; else echo "Missing deployment script" ; fi
 
 notifications:
   email: true
