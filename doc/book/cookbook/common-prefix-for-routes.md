@@ -19,7 +19,7 @@ As your application progresses, you may have a mixture of different content, and
 the above segregated under the path `/api`.
 
 This is essentially the same problem as addressed in the
-["Segregating your application to a subpath"](../usage-examples.md#segregating-your-application-to-a-subpath) example.
+["Segregating your application to a subpath"](../reference/usage-examples.md#segregating-your-application-to-a-subpath) example.
 
 To accomplish it:
 

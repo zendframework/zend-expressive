@@ -5,7 +5,17 @@ language: php
 cache:
   directories:
     - $HOME/.composer/cache
+    - $HOME/.local
     - vendor
+    - zf-mkdoc-theme
+
+env:
+  global:
+    - SITE_URL: https://zendframework.github.io/zend-expressive
+    - GH_USER_NAME: "Matthew Weier O'Phinney"
+    - GH_USER_EMAIL: matthew@weierophinney.net
+    - GH_REF: github.com/zendframework/zend-expressive.git
+    - secure: "C3RfQG69KAbqQqyQAgF6LhPvIpy5zSk0XnILvGEbcDoB36gg6/OcEHFCfFGdDZdSc3itDwwt65eiCVvKC4K5deuvqbCR1gAHAacYpW4jDV4fVaO40eiqZmQ7BZ1LHBQssJsa46yd0lwMmnj7V1Gya8MhD7ga5LINUe6ZxGzgo2Y3XRSWUzYcIiiGbCXXTgix8yG4de+Z5batsx0aT+99E0+U0DVB+DGoVaWRNwOY0UNdggTaKG0ahPJczlMsMsXyafop7LVAsYdIvaYoOMC8gshB/tket+q0b+61i9zaDtQv+x0oWvkobyDksr24jYkLAKMMQGFBq1cVJElVbNHSdtY0dLunpnQn9iaZ8PW8IhIw83YeyR9KPgbX3bF9SRt+Eay2j/YB2RbNK5BG2c/NeidnflMjcjPEhA4Ab6f0N1vy9wex5w/FAJUrhpfQB6AZgIJ/wovnJJAvF1etBSfZ0CYA+oAzYRRFQXo5Eq+lxvX5mQ2w2+sv6sUBS0IoP+1+JKzR98k2pi+q+4HhVVPH28aRfr8PTR/YRCmcUK68H7OKWf8h1vuJYjtN3V5FBOhlej8N9cYqQUBj4YpITqYP0PdzE1iUOoDpZVBMlWqxYw1vKhNiWusMCdJlI1psGWNs9t7hrMpJCg9eRWCe16akEoRrZGreU53ekFZpgeEQgGI="
 
 matrix:
   fast_finish: true
@@ -13,36 +23,41 @@ matrix:
     - php: 5.5
       env:
         - EXECUTE_CS_CHECK=true
-        - EXECUTE_DOC_CHECK=true
     - php: 5.6
       env:
         - EXECUTE_TEST_COVERALLS=true
+        - DEPLOY_DOCS=true
     - php: 7
-    - php: hhvm 
+    - php: hhvm
   allow_failures:
     - php: hhvm
 
 before_install:
+  - export PATH="$HOME/.local/bin:$PATH"
   - if [[ $EXECUTE_TEST_COVERALLS != 'true' ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
   - composer self-update
-  - if [[ $EXECUTE_DOC_CHECK == 'true' ]]; then composer require --dev --no-update phly/bookdown2mkdocs ; fi
   - if [[ $EXECUTE_TEST_COVERALLS == 'true' ]]; then composer require --dev --no-update satooshi/php-coveralls:dev-master ; fi
 
 install:
   - travis_retry composer install --no-interaction
   - composer info -i
 
-before_script:
-  - if [[ $EXECUTE_DOC_CHECK == 'true' ]]; then cp mkdocs.yml mkdocs.yml.orig ; fi
-
 script:
   - if [[ $EXECUTE_TEST_COVERALLS == 'true' ]]; then composer test-coverage ; fi
   - if [[ $EXECUTE_TEST_COVERALLS != 'true' ]]; then composer test ; fi
   - if [[ $EXECUTE_CS_CHECK == 'true' ]]; then composer cs ; fi
-  - if [[ $EXECUTE_DOC_CHECK == 'true' ]]; then make mkdocs ; diff mkdocs.yml mkdocs.yml.orig ; return $? ; fi
 
 after_script:
   - if [[ $EXECUTE_TEST_COVERALLS == 'true' ]]; then composer coveralls ; fi
+
+after_success:
+  - export DEPLOY=$(if [[ $DEPLOY_DOCS == 'true' && $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST == 'false' ]]; then echo -n "true" ; else echo -n "false" ; fi)
+  - export NEEDS_THEME=$([ -d zf-mkdoc-theme/theme ] ; result=$? ; if (( result == 0 )); then echo -n "false"; else echo -n "true" ; fi)
+  - if [[ $DEPLOY == "true" ]]; then pip install --user mkdocs ; fi
+  - if [[ $DEPLOY == "true" ]]; then pip install --user pymdown-extensions ; fi
+  - if [[ $DEPLOY == "true" && $NEEDS_THEME == "true" ]]; then echo "Downloading zf-mkdoc-theme" ; $(if [[ ! -d zf-mkdoc-theme ]];then mkdir zf-mkdoc-theme ; fi) ; $(curl -s -L https://github.com/zendframework/zf-mkdoc-theme/releases/latest | egrep -o '/zendframework/zf-mkdoc-theme/archive/[0-9]*\.[0-9]*\.[0-9]*.tar.gz' | head -n1 | wget -O zf-mkdoc-theme.tgz --base=https://github.com/ -i -) ; $(cd zf-mkdoc-theme ; tar xzf ../zf-mkdoc-theme.tgz --strip-components=1) ; echo "Finished downloading and installing zf-mkdoc-theme" ; fi
+  - export CAN_DEPLOY=$([ -f zf-mkdoc-theme/deploy.sh ] ; result=$? ; if (( result == 0 )); then echo -n "true"; else echo -n "false" ; fi)
+  - if [[ $DEPLOY == "true" && $CAN_DEPLOY == "true" ]]; then echo "Preparing to build and deploy documentation" ; ./zf-mkdoc-theme/deploy.sh ; echo "Completed deploying documentation" ; else echo "Missing deployment script" ; fi
 
 notifications:
   email: true

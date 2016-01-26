@@ -4,9 +4,34 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ## 1.1.0 - TBD
 
+- Nothing.
+
 ### Added
 
 - Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
+## 1.0.0 - TBD
+
+Initial stable release.
+
+### Added
+
+- [#279](https://github.com/zendframework/zend-expressive/pull/279) updates
+  the documentation to provide automation for pushing to GitHub pages. As part
+  of that work, documentation was re-organized, and a landing page provided.
+  Documentation can now be found at: https://zendframework.github.io/zend-expressive/
 
 ### Deprecated
 

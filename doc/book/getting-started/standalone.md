@@ -2,7 +2,7 @@
 
 Expressive allows you to get started at your own pace. You can start with
 the simplest example, detailed below, or move on to a more structured,
-configuration-driven approach as detailed in the [use case examples](usage-examples.md).
+configuration-driven approach as detailed in the [use case examples](../reference/usage-examples.md).
 
 ## 1. Create a new project directory
 
@@ -113,10 +113,10 @@ http://localhost:8080/ to see if your application responds correctly!
 At this point, you have a working zend-expressive application, that responds to
 a single route. From here, you may want to read up on:
 
-- [Applications](application.md)
-- [Containers](container/intro.md)
-- [Routing](router/intro.md)
-- [Templating](template/intro.md)
-- [Error Handling](error-handling.md)
+- [Applications](../features/application.md)
+- [Containers](../features/container/intro.md)
+- [Routing](../features/router/intro.md)
+- [Templating](../features/template/intro.md)
+- [Error Handling](../features/error-handling.md)
 
-Additionally, we have more [use case examples](usage-examples.md).
+Additionally, we have more [use case examples](../reference/usage-examples.md).
