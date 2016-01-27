@@ -67,6 +67,8 @@ $app->get('/', function ($request, $response, $next) {
     return $response;
 });
 
+$app->pipeRoutingMiddleware();
+$app->pipeDispatchMiddleware();
 $app->run();
 ```
 
@@ -76,6 +78,21 @@ $app->run();
 > you use Apache, for instance, you'll need to setup rewrite rules to ensure
 > your bootstrap is invoked for unknown URLs. We'll cover that in a later
 > chapter.
+
+> ### Routing and dispatching
+>
+> Note the lines from the above:
+>
+> ```php
+> $app->pipeRoutingMiddleware();
+> $app->pipeDispatchMiddleware();
+> ```
+>
+> Expressive's `Application` class provides two separate middlewares, one for
+> routing, and one for dispatching middleware matched by routing. This allows
+> you to slip in validations between the two activities if desired. They are
+> not automatically piped to the application, however, to allow exactly that
+> situation, which means they must be piped manually.
 
 ## 5. Start a web server
 
