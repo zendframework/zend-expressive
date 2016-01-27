@@ -50,7 +50,7 @@ a [post detailing these steps](https://blog.bitexpert.de/blog/using-prophiler-wi
 ## php-middleware/php-debug-bar
 
 [php-middleware/php-debug-bar](https://github.com/php-middleware/phpdebugbar)
-provides a PSR-7 middleware wrapper around [maximebf/debugbar](https://github.com/maximebf/debugbar),
+provides a PSR-7 middleware wrapper around [maximebf/php-debugbar](https://github.com/maximebf/php-debugbar),
 a popular framework-agnostic debug bar for PHP projects.
 
 First, install the middleware in your application:
