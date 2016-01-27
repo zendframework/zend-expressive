@@ -534,7 +534,7 @@ handler.</p>
 use Zend\Expressive\Plates\PlatesRenderer;
 use Zend\Expressive\TemplatedErrorHandler;
 
-$plates = new Plates();
+$plates = new PlatesRenderer();
 $plates-&gt;addPath(__DIR__ . '/templates/error', 'error');
 $finalHandler = new TemplatedErrorHandler($plates, 'error::404', 'error::500');
 
@@ -574,7 +574,7 @@ $whoops-&gt;writeToOutput(false);
 $whoops-&gt;allowQuit(false);
 $whoops-&gt;pushHandler($handler);
 
-$plates = new Plates();
+$plates = new PlatesRenderer();
 $plates-&gt;addPath(__DIR__ . '/templates/error', 'error');
 $finalHandler = new WhoopsErrorHandler(
     $whoops,
