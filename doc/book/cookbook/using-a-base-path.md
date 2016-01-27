@@ -90,7 +90,7 @@ configuration.
 To install it:
 
 ```bash
-$ composer require "mtymek/blast-base-url:dev-master@dev"
+$ composer require mtymek/blast-base-url
 ```
 
 To configure it, update the file `config/autoload/middleware-pipeline.global.php`,
@@ -127,9 +127,8 @@ the request URI and the operating system path to the application.
 
 The primary advantage of `mtymek/blast-base-url` is in its additional features:
 
-- it provides an override of `Zend\Expressive\Helper\UrlHelper` that is aware of
-  the base path, allowing you to create route-based URLs relative to the base
-  path.
+- it injects `Zend\Expressive\Helper\UrlHelper` with the base path, allowing you 
+  to create relative route-based URLs.
 - it provides a new helper, `Blast\BaseUrl\BasePathHelper`, which allows you to
   create URLs relative to the base path; this is particularly useful for assets.
 
@@ -143,27 +142,8 @@ return [
             Blast\BaseUrl\BasePathHelper::class => Blast\BaseUrl\BasePathHelper::class,            
             /* ... */
         ],
-        'factories' => [
-            Blast\BaseUrl\UrlHelper::class => Blast\BaseUrl\UrlHelperFactory::class,            
-            /* ... */
-        ],
-        'aliases' => [
-            // alias default UrlHelper with Blast\BaseUrl alternative
-            Helper\UrlHelper::class => Blast\BaseUrl\UrlHelper::class,
-            /* ... */
-        ],
     ],
 ];
-```
-
-Additionally, remove the following from the same file:
-
-```php
-        'factories' => [
-            // Remove the following line only:
-            Helper\UrlHelper::class => Helper\UrlHelperFactory::class,
-            /* ... */
-        ],
 ```
 
 Finally, if you're using zend-view, you can register a new "basePath" helper in
