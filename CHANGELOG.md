@@ -43,7 +43,8 @@ Initial stable release.
 
 ### Fixed
 
-- Nothing.
+- [#280](https://github.com/zendframework/zend-expressive/pull/280) fixes
+  references to the `PlatesRenderer` in the error handling documentation.
 
 ## 1.0.0rc7 - 2016-01-21
 
