@@ -133,6 +133,7 @@ Your bootstrap (typically `public/index.php`) will then look like this:
 
 ```php
 chdir(dirname(__DIR__));
+require 'vendor/autoload.php';
 $container = require 'config/services.php';
 $app = $container->get('Zend\Expressive\Application');
 $app->run();
