@@ -25,6 +25,8 @@ Initial stable release.
 
 - [#280](https://github.com/zendframework/zend-expressive/pull/280) fixes
   references to the `PlatesRenderer` in the error handling documentation.
+- [#284](https://github.com/zendframework/zend-expressive/pull/284) fixes
+  the reference to maximebf/php-debugbar in the debug bar documentation.
 
 ## 1.0.0rc7 - 2016-01-21
 
