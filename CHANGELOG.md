@@ -27,6 +27,9 @@ Initial stable release.
   references to the `PlatesRenderer` in the error handling documentation.
 - [#284](https://github.com/zendframework/zend-expressive/pull/284) fixes
   the reference to maximebf/php-debugbar in the debug bar documentation.
+- [#285](https://github.com/zendframework/zend-expressive/pull/285) updates
+  the section on mtymek/blast-base-url in the "Using a Base Path" cookbook
+  recipe to conform to its latest release.
 
 ## 1.0.0rc7 - 2016-01-21
 
