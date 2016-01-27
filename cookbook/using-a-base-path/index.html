@@ -557,7 +557,7 @@ excluded from git by default):</p>
 <p>To use <code>mtymek/blast-base-url</code>, install it via Composer, and register some
 configuration.</p>
 <p>To install it:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require &quot;mtymek/blast-base-url:dev-master@dev&quot;</code></pre>
+<pre class="codehilite"><code class="language-bash">$ composer require mtymek/blast-base-url</code></pre>
 
 
 <p>To configure it, update the file <code>config/autoload/middleware-pipeline.global.php</code>,
@@ -591,9 +591,8 @@ configuration is necessary, as it does auto-detection of the base path based on
 the request URI and the operating system path to the application.</p>
 <p>The primary advantage of <code>mtymek/blast-base-url</code> is in its additional features:</p>
 <ul>
-<li>it provides an override of <code>Zend\Expressive\Helper\UrlHelper</code> that is aware of
-  the base path, allowing you to create route-based URLs relative to the base
-  path.</li>
+<li>it injects <code>Zend\Expressive\Helper\UrlHelper</code> with the base path, allowing you 
+  to create relative route-based URLs.</li>
 <li>it provides a new helper, <code>Blast\BaseUrl\BasePathHelper</code>, which allows you to
   create URLs relative to the base path; this is particularly useful for assets.</li>
 </ul>
@@ -605,25 +604,8 @@ the request URI and the operating system path to the application.</p>
             Blast\BaseUrl\BasePathHelper::class =&gt; Blast\BaseUrl\BasePathHelper::class,            
             /* ... */
         ],
-        'factories' =&gt; [
-            Blast\BaseUrl\UrlHelper::class =&gt; Blast\BaseUrl\UrlHelperFactory::class,            
-            /* ... */
-        ],
-        'aliases' =&gt; [
-            // alias default UrlHelper with Blast\BaseUrl alternative
-            Helper\UrlHelper::class =&gt; Blast\BaseUrl\UrlHelper::class,
-            /* ... */
-        ],
     ],
 ];</code></pre>
-
-
-<p>Additionally, remove the following from the same file:</p>
-<pre class="codehilite"><code class="language-php">        'factories' =&gt; [
-            // Remove the following line only:
-            Helper\UrlHelper::class =&gt; Helper\UrlHelperFactory::class,
-            /* ... */
-        ],</code></pre>
 
 
 <p>Finally, if you're using zend-view, you can register a new "basePath" helper in
