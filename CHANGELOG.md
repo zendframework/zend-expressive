@@ -32,6 +32,10 @@ Initial stable release.
   recipe to conform to its latest release.
 - [#286](https://github.com/zendframework/zend-expressive/pull/286) fixes the
   documentation of the Composer "serve" command to correct a typo.
+- [#291](https://github.com/zendframework/zend-expressive/pull/291) fixes the
+  documentation links to the RC5 -> v1 migration guide in both the CHANGELOG as
+  well as the error messages emitted, ensuring users can locate the correct
+  documentation in order to upgrade.
 
 ## 1.0.0rc7 - 2016-01-21
 
