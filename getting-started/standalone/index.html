@@ -549,6 +549,8 @@ $app-&gt;get('/', function ($request, $response, $next) {
     return $response;
 });
 
+$app-&gt;pipeRoutingMiddleware();
+$app-&gt;pipeDispatchMiddleware();
 $app-&gt;run();</code></pre>
 
 
@@ -558,6 +560,17 @@ $app-&gt;run();</code></pre>
 you use Apache, for instance, you'll need to setup rewrite rules to ensure
 your bootstrap is invoked for unknown URLs. We'll cover that in a later
 chapter.</p>
+<h3 id="routing-and-dispatching">Routing and dispatching</h3>
+<p>Note the lines from the above:</p>
+<pre class="codehilite"><code class="language-php">$app-&gt;pipeRoutingMiddleware();
+$app-&gt;pipeDispatchMiddleware();</code></pre>
+
+
+<p>Expressive's <code>Application</code> class provides two separate middlewares, one for
+routing, and one for dispatching middleware matched by routing. This allows
+you to slip in validations between the two activities if desired. They are
+not automatically piped to the application, however, to allow exactly that
+situation, which means they must be piped manually.</p>
 </blockquote>
 <h2 id="5-start-a-web-server">5. Start a web server</h2>
 <p>Since we're just testing out the basic functionality of our application, we'll
