@@ -36,6 +36,9 @@ Initial stable release.
   documentation links to the RC5 -> v1 migration guide in both the CHANGELOG as
   well as the error messages emitted, ensuring users can locate the correct
   documentation in order to upgrade.
+- [#287](https://github.com/zendframework/zend-expressive/pull/287) updates the
+  "standalone" quick start to reference calling `$app->pipeRoutingMiddleware()`
+  and `$app->pipeDispatchMiddleware()` per the changes in RC6.
 
 ## 1.0.0rc7 - 2016-01-21
 
