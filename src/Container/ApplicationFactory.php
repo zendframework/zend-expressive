@@ -245,14 +245,14 @@ class ApplicationFactory
             throw new ContainerInvalidArgumentException(
                 'middleware_pipeline cannot contain a mix of middleware AND pre_/post_routing keys; '
                 . 'please update your configuration to define middleware_pipeline as a single pipeline; '
-                . 'see http://zend-expressive.rtfd.org/en/latest/migration/rc-to-v1/'
+                . 'see https://zendframework.github.io/zend-expressive/reference/migration/rc-to-v1/'
             );
         }
 
         trigger_error(
             'pre_routing and post_routing configuration is deprecated; '
             . 'update your configuration to define the middleware_pipeline as a single pipeline; '
-            . 'see http://zend-expressive.rtfd.org/en/latest/migration/rc-to-v1/',
+            . 'see https://zendframework.github.io/zend-expressive/reference/migration/rc-to-v1/',
             E_USER_DEPRECATED
         );
 

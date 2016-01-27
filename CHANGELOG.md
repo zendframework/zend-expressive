@@ -83,7 +83,7 @@ In particular:
   addition: a `priority` key can be used to allow you to granularly shape the
   execution order of the middleware pipeline.
 
-A [migration guide](http://zend-expressive.rtfd.org/en/latest/migration/rc-to-v1/)
+A [migration guide](https://zendframework.github.io/zend-expressive/reference/migration/rc-to-v1/)
 was written to help developers migrate to RC6 from earlier versions.
 
 ### Added
