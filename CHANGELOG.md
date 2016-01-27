@@ -50,6 +50,8 @@ Initial stable release.
 - [#285](https://github.com/zendframework/zend-expressive/pull/285) updates
   the section on mtymek/blast-base-url in the "Using a Base Path" cookbook
   recipe to conform to its latest release.
+- [#286](https://github.com/zendframework/zend-expressive/pull/286) fixes the
+  documentation of the Composer "serve" command to correct a typo.
 
 ## 1.0.0rc7 - 2016-01-21
 
