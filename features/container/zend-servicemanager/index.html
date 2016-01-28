@@ -614,6 +614,7 @@ return $container;</code></pre>
 
 <p>Your bootstrap (typically <code>public/index.php</code>) will then look like this:</p>
 <pre class="codehilite"><code class="language-php">chdir(dirname(__DIR__));
+require 'vendor/autoload.php';
 $container = require 'config/services.php';
 $app = $container-&gt;get('Zend\Expressive\Application');
 $app-&gt;run();</code></pre>
