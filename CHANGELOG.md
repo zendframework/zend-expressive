@@ -61,6 +61,9 @@ Initial stable release.
 - [#287](https://github.com/zendframework/zend-expressive/pull/287) updates the
   "standalone" quick start to reference calling `$app->pipeRoutingMiddleware()`
   and `$app->pipeDispatchMiddleware()` per the changes in RC6.
+- [#293](https://github.com/zendframework/zend-expressive/pull/293) adds
+  a `require 'vendor/autoload.php';` line to the bootstrap script referenced in
+  the zend-servicemanager examples.
 
 ## 1.0.0rc7 - 2016-01-21
 
