@@ -257,17 +257,17 @@ class LocaleMiddleware
     {
         $uri = $request->getUri();
         $path = $uri->getPath();
-        if (! preg_match('#^/(?P<lang>[a-z]{2})/#', $path, $matches)) {
+        if (! preg_match('#^/(?P<locale>[a-z]{2,3}([-_][a-zA-Z]{2}|))/#', $path, $matches)) {
             return $next($request, $response);
         }
 
-        $lang = $matches['lang'];
-        Locale::setDefault($lang);
-        $this->helper->setBasePath($lang);
+        $locale = $matches['locale'];
+        Locale::setDefault(Locale::canonicalize($locale));
+        $this->helper->setBasePath($locale);
 
         return $next(
             $request->withUri(
-                $uri->withPath(substr($path, 3))
+                $uri->withPath(substr($path, (strlen($locale) + 1)))
             ),
             $response
         );
