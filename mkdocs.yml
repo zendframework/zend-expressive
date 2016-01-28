@@ -58,3 +58,5 @@ site_name: Expressive
 site_description: 'zend-expressive: PSR-7 Middleware Microframework'
 repo_url: 'https://github.com/zendframework/zend-expressive'
 copyright: 'Copyright (c) 2016 <a href="http://www.zend.com/">Zend Technologies USA Inc.</a>'
+extra_css:
+    - css/zend-expressive.css

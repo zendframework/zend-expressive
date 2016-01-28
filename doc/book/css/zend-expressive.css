@@ -1,0 +1,30 @@
+.features .panel-content {
+  padding: 0.5em;
+  text-align: center;
+}
+
+.features .panel-content img {
+  height: 128px;
+}
+
+.install .panel {
+  background-color: #B3FFFF;
+}
+
+.install .panel-content {
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+.install + .panel {
+  background-color: #66FFCC;
+}
+
+.container.install h2 {
+  text-align: center;
+}
+
+.screenshot {
+  margin-left: auto;
+  margin-right: auto;
+}

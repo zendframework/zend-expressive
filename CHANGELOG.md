@@ -12,6 +12,8 @@ Initial stable release.
   the documentation to provide automation for pushing to GitHub pages. As part
   of that work, documentation was re-organized, and a landing page provided.
   Documentation can now be found at: https://zendframework.github.io/zend-expressive/
+- [#299](https://github.com/zendframework/zend-expressive/pull/299) adds
+  component-specific CSS to the documentation.
 
 ### Deprecated
 
