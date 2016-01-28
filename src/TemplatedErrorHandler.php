@@ -160,12 +160,12 @@ class TemplatedErrorHandler
      * Proxies to `handleError()`; exists primarily to as an extension point
      * for other handlers.
      *
-     * @param \Exception $exception
+     * @param \Throwable $exception
      * @param Request    $request
      * @param Response   $response
      * @return Response
      */
-    protected function handleException(\Exception $exception, Request $request, Response $response)
+    protected function handleException($exception, Request $request, Response $response)
     {
         return $this->handleError($exception, $request, $response);
     }
@@ -277,7 +277,7 @@ class TemplatedErrorHandler
     {
         $response = $response->withStatus(Utils::getStatusCode($error, $response));
 
-        if (! $error instanceof \Exception) {
+        if (! $error instanceof \Exception && ! $error instanceof \Throwable) {
             return $this->handleError($error, $request, $response);
         }
 
