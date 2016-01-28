@@ -105,29 +105,7 @@ pre {
     height: 45px;
 }
 
-.jumbotron {
-  background-color: #66FFCC;
-}
-
-.features .panel-content {
-  padding: 0.5em;
-  text-align: center;
-}
-
-.features .panel-content img {
-  height: 128px;
-}
-
-.install .panel {
-  background-color: #B3FFFF;
-}
-
-.install .panel-content {
-  padding-left: 1em;
-  padding-right: 1em;
-}
-
-/* Grid layout for homepage
+/* Grid layout (primarily for homepage; can be used wherever)
  * Source: http://www.bootply.com/126437
  */
 .row-flex, .row-flex > div[class*='col-'] {  
@@ -165,4 +143,37 @@ pre {
     display: flex;
     -webkit-flex: 2;
     flex: 2;
+}
+
+/* Headers changes */
+.navbar-brand a {
+    color: #68B604;
+    text-decoration: none;
+}
+
+.jumbotron {
+    background-color: #018D74;
+    padding: 21px;
+}
+
+.jumbotron > h1, .jumbotron p {
+    font-weight: normal;
+    margin: 21px;
+    text-align: center;
+    color: white;
+}
+
+.jumbotron > pre[class*="language-"] {
+     text-align:center;
+     border-width: 0;
+}
+
+:not(pre) > pre[class*="language-"] {
+    border-radius: 0;
+    background-color: #2E2E2D;
+}
+
+.navbar-default {
+    border-bottom: 0;
+    border-radius: 0;
 }
