@@ -71,6 +71,8 @@ Initial stable release.
   namespace referenced in the modulear-layout documentation to provide a better
   separation between the module/package/whatever, and the application consuming
   it.
+- [#298](https://github.com/zendframework/zend-expressive/pull/298) fixes a typo
+  in a URI generation example.
 
 ## 1.0.0rc7 - 2016-01-21
 
