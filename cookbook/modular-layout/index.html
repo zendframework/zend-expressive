@@ -539,9 +539,9 @@ module; its only requirement is to expose default configuration using a "config
 provider", which is simply an invokable class that returns a configuration
 array.</p>
 <p>For instance, this is how your module could provide its own routes:</p>
-<pre class="codehilite"><code class="language-php">namespace App;
+<pre class="codehilite"><code class="language-php">namespace MyModule;
 
-class AppConfig
+class ModuleConfig
 {
     public function __invoke()
     {
@@ -570,7 +570,7 @@ class AppConfig
 within the arguments of the <code>ConfigManager</code> constructor in the <code>config/config.php</code>
 file:</p>
 <pre class="codehilite"><code class="language-php">$configManager = new ConfigManager([
-    App\AppConfig::class,
+    MyModule\ModuleConfig::class,
     new PhpFileProvider('config/autoload/{{,*.}global,{,*.}local}.php'),
 ]);</code></pre>
 
