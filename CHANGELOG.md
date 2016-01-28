@@ -34,6 +34,9 @@ Initial stable release.
   Documentation can now be found at: https://zendframework.github.io/zend-expressive/
 - [#299](https://github.com/zendframework/zend-expressive/pull/299) adds
   component-specific CSS to the documentation.
+- [#295](https://github.com/zendframework/zend-expressive/pull/295) adds
+  support for handling PHP 7 engine exceptions in the templated and whoops final
+  handlers.
 
 ### Deprecated
 

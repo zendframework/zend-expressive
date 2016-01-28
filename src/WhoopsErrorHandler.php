@@ -69,12 +69,12 @@ class WhoopsErrorHandler extends TemplatedErrorHandler
      * the generated payload, and then injects the response with the result
      * of whoops handling the exception.
      *
-     * @param \Exception $exception
+     * @param \Throwable $exception
      * @param Request $request
      * @param Response $response
      * @return Response
      */
-    protected function handleException(\Exception $exception, Request $request, Response $response)
+    protected function handleException($exception, Request $request, Response $response)
     {
         $this->prepareWhoopsHandler($request);
 
