@@ -529,12 +529,12 @@ the name:</p>
   (<code>:</code>)-separated list of the uppercase HTTP method names, in the order in which
   they were added.</li>
 </ul>
-<pre class="codehilite"><code class="language-php">$app-&gt;route('/foo, $middleware', ['GET', 'POST']); // &quot;foo^GET:POST&quot;</code></pre>
+<pre class="codehilite"><code class="language-php">$app-&gt;route('/foo', $middleware, ['GET', 'POST']); // &quot;foo^GET:POST&quot;</code></pre>
 
 
 <p>Like the HTTP-specific methods, <code>route()</code> also returns a <code>Route</code> instance,
   and you can set the name on it:</p>
-<pre class="codehilite"><code class="language-php">$route = $app-&gt;route('/foo, $middleware', ['GET', 'POST']); // &quot;foo^GET:POST&quot;
+<pre class="codehilite"><code class="language-php">$route = $app-&gt;route('/foo', $middleware, ['GET', 'POST']); // &quot;foo^GET:POST&quot;
 $route-&gt;setName('foo'); // &quot;foo&quot;</code></pre>
 
 
