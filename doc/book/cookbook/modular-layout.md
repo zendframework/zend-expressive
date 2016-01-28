@@ -53,9 +53,9 @@ array.
 For instance, this is how your module could provide its own routes:
 
 ```php
-namespace App;
+namespace MyModule;
 
-class AppConfig
+class ModuleConfig
 {
     public function __invoke()
     {
@@ -87,7 +87,7 @@ file:
 
 ```php
 $configManager = new ConfigManager([
-    App\AppConfig::class,
+    MyModule\ModuleConfig::class,
     new PhpFileProvider('config/autoload/{{,*.}global,{,*.}local}.php'),
 ]);
 ```
