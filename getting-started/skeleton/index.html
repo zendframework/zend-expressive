@@ -503,15 +503,9 @@ prompts you to choose a router, dependency injection container, template
 renderer, and error handler from the outset.</p>
 <h2 id="1-create-a-new-project">1. Create a new project</h2>
 <p>First, we'll create a new project, using Composer's <code>create-project</code> command:</p>
-<pre class="codehilite"><code class="language-bash">$ composer create-project -s rc zendframework/zend-expressive-skeleton expressive</code></pre>
+<pre class="codehilite"><code class="language-bash">$ composer create-project zendframework/zend-expressive-skeleton expressive</code></pre>
 
 
-<blockquote>
-<h3 id="stability">Stability</h3>
-<p>The Expressive installer is currently in release candidate status. For Composer
-to recognize the version as installable, you must pass the <code>-s rc</code> flag,
-indicating it should use packages of RC stability.</p>
-</blockquote>
 <p>This will prompt you to choose:</p>
 <ul>
 <li>A router. We recommend using the default, FastRoute.</li>
