@@ -38,14 +38,14 @@ the name:
   they were added.
 
   ```php
-  $app->route('/foo, $middleware', ['GET', 'POST']); // "foo^GET:POST"
+  $app->route('/foo', $middleware, ['GET', 'POST']); // "foo^GET:POST"
   ```
 
   Like the HTTP-specific methods, `route()` also returns a `Route` instance,
   and you can set the name on it:
 
   ```php
-  $route = $app->route('/foo, $middleware', ['GET', 'POST']); // "foo^GET:POST"
+  $route = $app->route('/foo', $middleware, ['GET', 'POST']); // "foo^GET:POST"
   $route->setName('foo'); // "foo"
   ```
 
