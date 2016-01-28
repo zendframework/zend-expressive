@@ -11,14 +11,8 @@ renderer, and error handler from the outset.
 First, we'll create a new project, using Composer's `create-project` command:
 
 ```bash
-$ composer create-project -s rc zendframework/zend-expressive-skeleton expressive
+$ composer create-project zendframework/zend-expressive-skeleton expressive
 ```
-
-> ### Stability
->
-> The Expressive installer is currently in release candidate status. For Composer
-> to recognize the version as installable, you must pass the `-s rc` flag,
-> indicating it should use packages of RC stability.
 
 This will prompt you to choose:
 
