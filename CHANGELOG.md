@@ -44,6 +44,10 @@ Initial stable release.
 - [#293](https://github.com/zendframework/zend-expressive/pull/293) adds
   a `require 'vendor/autoload.php';` line to the bootstrap script referenced in
   the zend-servicemanager examples.
+- [#294](https://github.com/zendframework/zend-expressive/pull/294) updates the
+  namespace referenced in the modulear-layout documentation to provide a better
+  separation between the module/package/whatever, and the application consuming
+  it.
 
 ## 1.0.0rc7 - 2016-01-21
 
