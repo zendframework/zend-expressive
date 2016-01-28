@@ -2,7 +2,7 @@
 
 [![Build Status](https://secure.travis-ci.org/zendframework/zend-expressive.svg?branch=master)](https://secure.travis-ci.org/zendframework/zend-expressive)
 
-*Begin developing PSR-7 middleware applications in minutes!*
+*Develop PSR-7 middleware applications in minutes!*
 
 zend-expressive builds on [zend-stratigility](https://github.com/zendframework/zend-stratigility)
 to provide a minimalist PSR-7 middleware framework for PHP, with the following
@@ -36,7 +36,7 @@ also provides configuration for officially supported dependencies.
 To use the skeleton, use Composer's `create-project` command:
 
 ```bash
-$ composer create-project -s rc zendframework/zend-expressive-skeleton <project dir>
+$ composer create-project zendframework/zend-expressive-skeleton <project dir>
 ```
 
 This will prompt you through choosing your dependencies, and then create and

@@ -22,7 +22,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
-## 1.0.0 - TBD
+## 1.0.0 - 2016-01-28
 
 Initial stable release.
 
