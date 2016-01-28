@@ -4,7 +4,23 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ## 1.1.0 - TBD
 
+### Added
+
 - Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
+## 1.0.1 - TBD
 
 ### Added
 
