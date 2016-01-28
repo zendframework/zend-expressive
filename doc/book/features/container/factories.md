@@ -273,7 +273,7 @@ It consumes the following `config` structure:
 ]
 ```
 
-Whe `debug` is true, it disables caching, enables debug mode, enables strict
+When `debug` is true, it disables caching, enables debug mode, enables strict
 variables, and enables auto reloading. The `assets_*` values are used to seed
 the `TwigExtension` instance (assuming the router was found).
 
