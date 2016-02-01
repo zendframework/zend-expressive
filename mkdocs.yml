@@ -49,6 +49,7 @@ pages:
         - 'Setting a locale without a routing parameter': cookbook/setting-locale-without-routing-parameter.md
         - 'Enabling debug toolbars': cookbook/debug-toolbars.md
         - 'Handling multiple routes in a single class': cookbook/using-routed-middleware-class-as-controller.md
+        - 'Flash Messengers': cookbook/flash-messengers.md
     - Reference:
         - Examples: reference/usage-examples.md
         - 'Expressive Projects': reference/expressive-projects.md
