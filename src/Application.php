@@ -506,10 +506,19 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
      * @param null|array $methods HTTP method to accept; null indicates any.
      * @param null|string $name the name of the route
      * @return Router\Route
+     * @throws Exception\RuntimeException if the router does not implement RuntimeConfigurableRouterInterface
      * @throws Exception\InvalidArgumentException if $path is not a Router\Route AND middleware is null.
      */
     public function route($path, $middleware = null, array $methods = null, $name = null)
     {
+        if (! $this->router instanceof RuntimeConfigurableRouterInterface) {
+            throw new Exception\RuntimeException(sprintf(
+                'Injected router %s does not implement %s',
+                get_class($this->router),
+                RuntimeConfigurableRouterInterface::class
+            ));
+        }
+
         if (! $path instanceof Router\Route && null === $middleware) {
             throw new Exception\InvalidArgumentException(sprintf(
                 '%s expects either a route argument, or a combination of a path and middleware arguments',

@@ -31,6 +31,7 @@ use Zend\Expressive\Exception\InvalidMiddlewareException;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouteResult;
 use Zend\Expressive\Router\RouterInterface;
+use Zend\Expressive\Router\RuntimeConfigurableRouterInterface;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\Stratigility\Route as StratigilityRoute;
 use ZendTest\Expressive\TestAsset\InvokableMiddleware;
@@ -47,7 +48,7 @@ class ApplicationTest extends TestCase
         $this->noopMiddleware = function ($req, $res, $next) {
         };
 
-        $this->router = $this->prophesize(RouterInterface::class);
+        $this->router = $this->prophesize(RuntimeConfigurableRouterInterface::class);
     }
 
     public function getApp()
@@ -146,6 +147,14 @@ class ApplicationTest extends TestCase
     {
         $app = $this->getApp();
         $this->setExpectedException(Exception\InvalidArgumentException::class);
+        $app->route('/path');
+    }
+
+    public function testCallingRouteWithConsumerOnlyRouter()
+    {
+        $this->router = $this->prophesize(RouteInterface::class);
+        $app = $this->getApp();
+        $this->setExpectedException(Exception\RuntimeException::class);
         $app->route('/path');
     }
 
