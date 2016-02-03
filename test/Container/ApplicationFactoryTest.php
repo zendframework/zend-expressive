@@ -28,6 +28,7 @@ use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Stratigility\ErrorMiddlewareInterface;
+use Zend\Stratigility\FinalHandler;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\Stratigility\Route as StratigilityRoute;
 use ZendTest\Expressive\ContainerTrait;
@@ -197,7 +198,18 @@ class ApplicationFactoryTest extends TestCase
         $this->assertInstanceOf(EmitterStack::class, $app->getEmitter());
         $this->assertCount(1, $app->getEmitter());
         $this->assertInstanceOf(SapiEmitter::class, $app->getEmitter()->pop());
-        $this->assertNull($app->getFinalHandler());
+        $this->assertEquals(new FinalHandler([], null), $app->getFinalHandler());
+    }
+
+    public function testUsesFinalHandlerConfigOptionsForDefaultFinalHandler()
+    {
+        $container = $this->mockContainerInterface();
+        $this->injectServiceInContainer($container, 'config', ['final_handler' => ['options' => ['it' => 'worked']]]);
+        $factory = new ApplicationFactory();
+
+        $app = $factory->__invoke($container->reveal());
+        $final = $app->getFinalHandler();
+        $this->assertSame(['it' => 'worked'], self::readAttribute($final, 'options'));
     }
 
     /**

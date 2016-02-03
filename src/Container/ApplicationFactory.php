@@ -16,6 +16,7 @@ use Zend\Expressive\Container\Exception\InvalidArgumentException as ContainerInv
 use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouterInterface;
+use Zend\Stratigility\FinalHandler;
 
 /**
  * Factory to use with an IoC container in order to return an Application instance.
@@ -141,7 +142,7 @@ class ApplicationFactory
 
         $finalHandler = $container->has('Zend\Expressive\FinalHandler')
             ? $container->get('Zend\Expressive\FinalHandler')
-            : null;
+            : $this->marshalFinalHandler($container);
 
         $emitter = $container->has(EmitterInterface::class)
             ? $container->get(EmitterInterface::class)
@@ -469,5 +470,19 @@ class ApplicationFactory
             $queue->insert($item, [$priority, $serial--]);
             return $queue;
         };
+    }
+
+    /**
+     * Create default FinalHandler with options configured under the key final_handler.options.
+     *
+     * @param ContainerInterface $container
+     *
+     * @return FinalHandler
+     */
+    private function marshalFinalHandler(ContainerInterface $container)
+    {
+        $config = $container->has('config') ? $container->get('config') : [];
+        $options = isset($config['final_handler']['options']) ? $config['final_handler']['options'] : [];
+        return new FinalHandler($options, null);
     }
 }
