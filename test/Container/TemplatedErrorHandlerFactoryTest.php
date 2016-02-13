@@ -26,7 +26,7 @@ class TemplatedErrorHandlerFactoryTest extends TestCase
     /** @var ObjectProphecy */
     protected $container;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->container = $this->mockContainerInterface();
         $this->factory   = new TemplatedErrorHandlerFactory();

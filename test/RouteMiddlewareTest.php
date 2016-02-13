@@ -31,7 +31,7 @@ class RouteMiddlewareTest extends TestCase
     /** @var ObjectProphecy */
     protected $container;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->router    = $this->prophesize(RouterInterface::class);
         $this->container = $this->mockContainerInterface();

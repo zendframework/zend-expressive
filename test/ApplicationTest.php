@@ -42,7 +42,7 @@ class ApplicationTest extends TestCase
 {
     use ContainerTrait;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->noopMiddleware = function ($req, $res, $next) {
         };

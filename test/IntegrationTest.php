@@ -23,7 +23,7 @@ class IntegrationTest extends TestCase
 {
     public $response;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->response = null;
     }
