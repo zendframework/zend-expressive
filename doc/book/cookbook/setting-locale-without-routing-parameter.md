@@ -46,7 +46,7 @@ class SetLocaleMiddleware
         
         $path = $uri->getPath();
         
-        if (! preg_match('#^/(?P<locale>[a-z]{2})/#', $path, $matches) {
+        if (! preg_match('#^/(?P<locale>[a-z]{2})/#', $path, $matches)) {
             Locale::setDefault('de_DE');
             return $next($request, $response);
         }
