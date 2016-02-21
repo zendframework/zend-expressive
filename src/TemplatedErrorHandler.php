@@ -205,10 +205,10 @@ class TemplatedErrorHandler
             return $response;
         }
 
-        if (($originalResponse === $response || $decoratedResponse === $response)
+        if (($originalResponse === $response || $originalResponse === $decoratedResponse)
             && $this->bodySize !== $response->getBody()->getSize()
         ) {
-            // Response matches either the original response or the
+            // Original response matches either the response or the
             // decorated response; but the body size has changed; return it
             // verbatim.
             return $response;
