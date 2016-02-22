@@ -6,7 +6,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#306](https://github.com/zendframework/zend-expressive/pull/306) adds a
+  cookbook recipe covering flash messages.
 
 ### Deprecated
 
