@@ -36,9 +36,9 @@ with no arguments; it will create the underlying FastRoute objects required
 and compose them for you:
 
 ```php
-use Zend\Expressive\Router\FastRoute;
+use Zend\Expressive\Router\FastRouteRouter;
 
-$router = new FastRoute();
+$router = new FastRouteRouter();
 ```
 
 ## Programmatic Creation
