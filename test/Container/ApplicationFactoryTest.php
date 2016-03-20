@@ -14,7 +14,6 @@ use InvalidArgumentException;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use ReflectionFunction;
-use ReflectionMethod;
 use ReflectionProperty;
 use SplQueue;
 use Zend\Diactoros\Response\EmitterInterface;

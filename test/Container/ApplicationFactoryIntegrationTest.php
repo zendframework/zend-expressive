@@ -17,7 +17,6 @@ use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\ServerRequest;
 use Zend\Expressive\Container\ApplicationFactory;
-use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouteResult;
 use Zend\Expressive\Router\RouterInterface;
 use ZendTest\Expressive\ContainerTrait;
