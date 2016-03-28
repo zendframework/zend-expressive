@@ -5,7 +5,7 @@ facilitate setting up common dependencies. The following is a list of provided
 containers, what they will create, the suggested service name, and any
 additional dependencies they may require.
 
-All containers, unless noted otherwise, are in the `Zend\Expressive\Container`
+All factories, unless noted otherwise, are in the `Zend\Expressive\Container`
 namespace, and define an `__invoke()` method that accepts an
 `Interop\Container\ContainerInterface` instance as the sole argument.
 
