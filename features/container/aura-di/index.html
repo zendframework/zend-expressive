@@ -59,7 +59,7 @@
 
             <!-- Main title -->
             <span class="navbar-brand">
-              <a href="http://framework.zend.com"><img src="../../../img/zf-logo-mark.png" height="28" alt="Zend Framework" /></a>
+              <a class="logo-link" href="http://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Zend Framework"><img src="../../../img/zf-logo-mark.png" height="28" alt="Zend Framework" /></a>
               <a href="../../..">Expressive</a>
             </span>
         </div>
@@ -426,22 +426,16 @@
 
             <ul class="nav navbar-nav navbar-right">
                 <li>
+                    <a href="#" class="component-toggle" data-toggle="tooltip" data-placement="bottom" title="Show component list">
+                        <i class="fa fa-book"></i> Components
+                    </a>
+                </li>
+
+                <li>
                     <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
                         <i class="fa fa-search"></i> Search
                     </a>
                 </li>
-                
-                    <li >
-                        <a rel="prev" href="../pimple/">
-                            <i class="fa fa-arrow-left"></i> Previous
-                        </a>
-                    </li>
-                    <li >
-                        <a rel="next" href="../../router/intro/">
-                            Next <i class="fa fa-arrow-right"></i>
-                        </a>
-                    </li>
-                
                 
                     <li>
                         <a href="https://github.com/zendframework/zend-expressive">
@@ -471,6 +465,17 @@
         
     
     </ul>
+
+    
+    <ul class="pager hidden-print">
+      <li class="previous">
+        <a rel="prev" href="../pimple/"><i class="fa fa-arrow-left"></i> Previous</a>
+      </li>
+      <li class="next">
+        <a rel="next" href="../../router/intro/">Next <i class="fa fa-arrow-right"></i></a>
+      </li>
+    </ul>
+    
 </div></div>
         <div class="col-md-9" role="main">
 
@@ -489,17 +494,6 @@
   
   <li class="active">Using Aura.Di</li>
 </ol>
-
-<nav class="hidden-lg">
-  <ul class="pager">
-    <li class="previous">
-      <a rel="prev" href="../pimple/"><i class="fa fa-arrow-left"></i> Previous</a>
-    </li>
-    <li class="next">
-      <a rel="next" href="../../router/intro/">Next <i class="fa fa-arrow-right"></i></a>
-    </li>
-  </ul>
-</nav>
 
 <h1 id="using-auradi">Using Aura.Di</h1>
 <p><a href="https://github.com/auraphp/Aura.Di/">Aura.Di</a> provides a serializable dependency
@@ -618,8 +612,9 @@ $app-&gt;run();</code></pre>
 
 <hr />
 
+
 <nav>
-  <ul class="pager">
+  <ul class="pager hidden-print">
     <li class="previous">
       <a rel="prev" href="../pimple/"><i class="fa fa-arrow-left"></i> Previous</a>
     </li>
@@ -627,7 +622,8 @@ $app-&gt;run();</code></pre>
       <a rel="next" href="../../router/intro/">Next <i class="fa fa-arrow-right"></i></a>
     </li>
   </ul>
-</nav></div>
+</nav>
+</div>
         
     </div>
     <!-- content:end -->
@@ -675,6 +671,124 @@ $app-&gt;run();</code></pre>
         </div>
     </div>
 
+    <div class="zf-components">
+  <div class="zf-components-grid">
+    <div class="zf-logo">
+      <a href="http://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Go to the ZF homepage"><img src="http://framework.zend.com/images/logos/zf-logo-mark.png" alt="Zend Framework" width="250" /></a>
+    </div>
+
+    <div class="component-list"></div>
+
+    <p class="zf-components-rollup"><a href="#">Hide list</a></p>
+  </div>
+</div>
+
+    <script>
+  // Prepare the component list dropdown for display
+  $(function () {
+    var components = $(".zf-components"),
+        componentList = components.find(".component-list"),
+        sidebar = $(".bs-sidebar.affix"),
+        sidebarInitialPos = sidebar.css("position"),
+        hidden,
+        componentToggle = $(".component-toggle"),
+        navbar = $(".navbar-fixed-top"),
+        rollUpLink = $(".zf-components-rollup a");
+
+    // Initial setup on document load
+    components.insertBefore(navbar);
+    $(".zf-logo a").tooltip();
+    componentToggle.tooltip();
+    rollUpLink.attr({ href: "#", alt: "Hide component list" });
+
+    // Cast initial sidebar position value
+    if (undefined === sidebarInitialPos) {
+      sidebarInitialPos = "fixed";
+    }
+
+    // Setup onclick events to toggle list
+    componentToggle.click(toggleComponentList);
+    rollUpLink.click(toggleComponentList);
+
+    // Toggle the component list display
+    function toggleComponentList(event) {
+      event.preventDefault();
+
+      if (hidden === undefined) {
+        // Not loaded yet; load and display.
+        loadComponentList();
+        return;
+      }
+
+      if (hidden) {
+        // Hidden; display.
+        showComponentList();
+        return;
+      }
+
+      // Currently visible; hide
+      hideComponentList();
+    }
+
+    // Show the component list
+    function showComponentList() {
+      navbar.css({position: "relative"});
+      sidebar.css({position: "relative"});
+      components
+        .css({"margin-top": "-" + components.outerHeight() + "px"})
+        .show()
+        .animate({"margin-top": 0}, {
+          complete: function () {
+            componentToggle
+              .data("placement", "top")
+              .attr("data-original-title", "Hide component list");
+            hidden = false;
+          },
+          queue: false
+        });
+    }
+
+    // Hide the component list
+    function hideComponentList() {
+      components.animate({"margin-top": "-" + components.outerHeight() + "px"}, {
+        complete: function () {
+          navbar.css({position: "fixed"});
+          sidebar.css({position: sidebarInitialPos});
+          componentToggle
+            .data("placement", "bottom")
+            .attr("data-original-title", "Show component list");
+          components.hide();
+          hidden = true;
+        },
+        queue: false
+      });
+      sidebar.animate({ top: sidebarInitialTop + "px" }, { queue: false});
+    }
+
+    // Inject a component into the componet list DOM.
+    function injectComponent(index, component) {
+      componentList.append('<div class="component"><h4><a href="' + component.url + '">' + component.name + '</a></h4><p>' + component.description + '</p></div>');
+    }
+
+    // Parse the component list, build the DOM, and display it.
+    function parseComponentList(components) {
+      $.each(components, injectComponent);
+      showComponentList();
+    }
+
+    // Fetch the component list and display it.
+    function loadComponentList () {
+      $.ajax({
+        url: "//zendframework.github.io/zf-mkdoc-theme/scripts/zf-component-list.json",
+        dataType: "text json",
+        success: parseComponentList,
+        error: function (e) {
+          console.log("Error occurred with XHR call", e);
+        }
+      });
+    }
+  });
+</script>
     </body>
 
 </html>

@@ -26,6 +26,32 @@
         padding-top: 10px;
         padding-bottom: 10px;
     }
+
+    .zf-logo {
+        width: 100%;
+    }
+
+    .component-list {
+        width: 100%;
+    }
+
+    .component-list .component {
+        width: 100%;
+    }
+}
+
+@media (min-width: 1025px) {
+  .zf-logo {
+      width: 20%;
+  }
+
+  .component-list {
+      width: 75%;
+  }
+
+  .component-list .component {
+      width: 49%;
+  }
 }
 
 body {
@@ -176,4 +202,74 @@ pre {
 .navbar-default {
     border-bottom: 0;
     border-radius: 0;
+}
+
+.zf-components {
+    display: none;
+    transform: translateZ(0);
+}
+
+.zf-components-grid {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    align-items: stretch;
+    align-content: space-between;
+    justify-content: space-between;
+}
+
+.zf-logo {
+    order: -1;
+    align-self: flex-start;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.zf-components-rollup {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    border-top: 1px dotted #018D74;
+    padding-top: 1em;
+    padding-bottom 1em;
+    text-align: center;
+}
+
+.component-list {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    align-items: stretch;
+    align-content: space-between;
+    justify-content: space-between;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.component {
+    border-top: 1px dotted #018D74;
+    padding-top: 5px;
+    margin-bottom: 1em;
+}
+
+.component h4 {
+    display: inline;
+    font-style: normal;
+    font-weight: bold;
+}
+
+.component h4 a {
+    color: #018D74;
+}
+
+.component p {
+    font-size: 0.8em;
+    line-height: 1.2em;
+}
+
+.bs-sidebar .pager {
+    margin-top: 10px;
+    margin-bottom: 0;
+    border-top: 1px solid #E8E8E8;
 }

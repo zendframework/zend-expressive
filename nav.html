@@ -3,7 +3,7 @@
 
         <!-- Collapsed navigation -->
         <div class="navbar-header">
-            {% if include_nav or include_next_prev or repo_url %}
+            {% if include_nav or repo_url %}
             <!-- Expander button -->
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                 <span class="sr-only">Toggle navigation</span>
@@ -15,7 +15,7 @@
 
             <!-- Main title -->
             <span class="navbar-brand">
-              <a href="http://framework.zend.com"><img src="{{ base_url }}/img/zf-logo-mark.png" height="28" alt="Zend Framework" /></a>
+              <a class="logo-link" href="http://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Zend Framework"><img src="{{ base_url }}/img/zf-logo-mark.png" height="28" alt="Zend Framework" /></a>
               <a href="{{ homepage_url }}">{{ site_name }}</a>
             </span>
         </div>
@@ -46,22 +46,16 @@
 
             <ul class="nav navbar-nav navbar-right">
                 <li>
+                    <a href="#" class="component-toggle" data-toggle="tooltip" data-placement="bottom" title="Show component list">
+                        <i class="fa fa-book"></i> Components
+                    </a>
+                </li>
+
+                <li>
                     <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
                         <i class="fa fa-search"></i> Search
                     </a>
                 </li>
-                {% if include_next_prev %}
-                    <li {% if not previous_page %}class="disabled"{% endif %}>
-                        <a rel="prev" {% if previous_page %}href="{{ previous_page.url }}"{% endif %}>
-                            <i class="fa fa-arrow-left"></i> Previous
-                        </a>
-                    </li>
-                    <li {% if not next_page %}class="disabled"{% endif %}>
-                        <a rel="next" {% if next_page %}href="{{ next_page.url }}"{% endif %}>
-                            Next <i class="fa fa-arrow-right"></i>
-                        </a>
-                    </li>
-                {% endif %}
                 {% if repo_url %}
                     <li>
                         <a href="{{ repo_url }}">
