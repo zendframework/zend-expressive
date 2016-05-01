@@ -83,7 +83,7 @@ return [
 
 > ### Where to register the flash middleware
 >
-> Sessions can sometimes be expensive. As such, you may not want the falsh
+> Sessions can sometimes be expensive. As such, you may not want the flash
 > middleware enabled for every request. If this is the case, add the flash
 > middleware as part of a route-specific pipeline instead.
 
