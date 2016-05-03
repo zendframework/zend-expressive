@@ -15,7 +15,7 @@ that composes:
 You can define the `Application` instance in several ways:
 
 - Direct instantiation, which requires providing several dependencies.
-- The `AppFactory`, which will use sane defaults, but allows injecting alternate
+- The `AppFactory`, which will use some common defaults, but allows injecting alternate
   container and/or router implementations.
 - Via a dependency injection container; we provide a factory for setting up all
   aspects of the instance via configuration and other defined services.
