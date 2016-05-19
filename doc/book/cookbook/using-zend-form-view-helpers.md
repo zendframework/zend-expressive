@@ -111,13 +111,13 @@ The above creates an instance of the `Zend\Form\View\HelperConfig` class,
 uses it to configure the already created `Zend\View\HelperPluginManager`
 instance, and then returns the plugin manager instance.
 
-From here, you'll add a `delegator_factories` configuration key in your
+From here, you'll add a `delegators` configuration key in your
 `config/autoload/templates.global.php` file:
 
 ```php
 return [
     'dependencies' => [
-        'delegator_factories' => [
+        'delegators' => [
             Zend\View\HelperPluginManager::class => [
                 Your\Application\FormHelpersDelegatorFactory::class,
             ],
