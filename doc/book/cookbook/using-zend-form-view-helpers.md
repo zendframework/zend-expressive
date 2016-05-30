@@ -35,25 +35,21 @@ zend-form component (or whichever other components you wish to use).
 namespace Your\Application;
 
 use Interop\Container\ContainerInterface;
-use Zend\Form\View\HelperConfig as FormHelperConfig;
 use Zend\ServiceManager\Config;
 use Zend\View\HelperPluginManager;
 
 class HelperPluginManagerFactory
 {
     public function __invoke(ContainerInterface $container)
-    {   
-        $config = $container->has('config') ? $container->get('config') : []; 
-        $config = isset($config['view_helpers']) ? $config['view_helpers'] : []; 
-        $manager = new HelperPluginManager(new Config($config));
-        $manager->setServiceLocator($container);
+    {
+        $manager = new HelperPluginManager($container);
 
-        // Add zend-form view helper configuration:
-        $formConfig = new FormHelperConfig();
-        $formConfig->configureServiceManager($manager);
+        $config = $container->has('config') ? $container->get('config') : [];
+        $config = isset($config['view_helpers']) ? $config['view_helpers'] : [];
+        (new Config($config))->configureServiceManager($manager);
 
-        return $manager;                                                                                                                                                                                                                                                        
-    }   
+        return $manager;
+    }
 }
 ```
 
