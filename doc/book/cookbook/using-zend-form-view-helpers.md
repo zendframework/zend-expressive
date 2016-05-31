@@ -10,6 +10,19 @@ want to use the various view helpers available in other components, such as:
 By default, only the view helpers directly available in zend-view are available;
 how can you add the others?
 
+To add the zend-form view helpers create a file `config/autoload/zend-form.global.php`
+with the contents:
+
+```php
+<?php
+use Zend\Form\ConfigProvider;
+
+$provider = new ConfigProvider();
+return $provider();
+```
+
+and that will essentially do everything needed.
+
 If you installed Expressive via the skeleton, the service
 `Zend\View\HelperPluginManager` is registered for you, and represents the helper
 plugin manager injected into the `PhpRenderer` instance. As such, you only need
