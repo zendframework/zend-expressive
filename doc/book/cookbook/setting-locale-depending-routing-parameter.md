@@ -108,21 +108,34 @@ registered in the pipeline immediately following the routing middleware.
 Such a `LocalizationMiddleware` class could look similar to this:
 
 ```php
+<?php
+
 namespace Application\I18n;
 
 use Locale;
-use Zend\Expressive\Router\RouteResult;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class LocalizationMiddleware
 {
-    public function __invoke($request, $response, $next)
+    const LOCALIZATION_ATTRIBUTE = 'locale';
+
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
-        $locale = $request->getAttribute('locale', 'de_DE');
-        Locale::setDefault($locale);
-        return $next($request, $response);
+        // Get locale from route, fallback to the user's browser preference
+        $locale = $request->getAttribute(
+            'locale',
+            Locale::acceptFromHttp($request->getServerParams()['HTTP_ACCEPT_LANGUAGE'])
+        );
+
+        // Store the locale as a request attribute
+        return $next($request->withAttribute(self::LOCALIZATION_ATTRIBUTE, $locale), $response);
     }
 }
 ```
+
+> **NOTE:** Don't use `Locale::setDefault($locale)` to set a global static locale.
+> PSR-7 apps may run in async processes which may overwrite the locale.
 
 In your `config/autoload/middleware-pipeline.global.php`, you'd register the
 dependency, and inject the middleware into the pipeline following the routing
