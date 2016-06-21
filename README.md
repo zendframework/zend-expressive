@@ -1,6 +1,7 @@
 # zend-expressive
 
 [![Build Status](https://secure.travis-ci.org/zendframework/zend-expressive.svg?branch=master)](https://secure.travis-ci.org/zendframework/zend-expressive)
+[![Coverage Status](https://coveralls.io/repos/github/zendframework/zend-expressive/badge.svg?branch=master)](https://coveralls.io/github/zendframework/zend-expressive?branch=master)
 
 *Develop PSR-7 middleware applications in minutes!*
 
