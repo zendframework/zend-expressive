@@ -163,7 +163,7 @@ class ApplicationFactory
      * @param Application $app
      * @param ContainerInterface $container
      */
-    private function injectRoutesAndPipeline(Application $app, ContainerInterface $container)
+    protected function injectRoutesAndPipeline(Application $app, ContainerInterface $container)
     {
         $config = $container->has('config') ? $container->get('config') : [];
         $pipelineCreated = false;
