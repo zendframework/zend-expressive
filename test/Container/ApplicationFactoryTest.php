@@ -222,6 +222,8 @@ class ApplicationFactoryTest extends TestCase
                 'pre_routing' => [
                     [ 'middleware' => $middleware ],
                     [ 'path' => '/foo', 'middleware' => $middleware ],
+                    [ 'host' => 'foo.example.com', 'middleware' => $middleware ],
+                    [ 'host' => 'foo.example.com', 'path' => '/foo', 'middleware' => $middleware ],
                 ],
                 'post_routing' => [ ],
             ],
@@ -242,7 +244,7 @@ class ApplicationFactoryTest extends TestCase
         $r->setAccessible(true);
         $pipeline = $r->getValue($app);
 
-        $this->assertCount(5, $pipeline);
+        $this->assertCount(7, $pipeline);
 
         $route = $pipeline->dequeue();
         $this->assertInstanceOf(StratigilityRoute::class, $route);
@@ -253,6 +255,18 @@ class ApplicationFactoryTest extends TestCase
         $this->assertInstanceOf(StratigilityRoute::class, $route);
         $this->assertSame($middleware, $route->handler);
         $this->assertEquals('/foo', $route->path);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf(StratigilityRoute::class, $route);
+        $this->assertSame($middleware, $route->handler);
+        $this->assertEquals('/', $route->path);
+        $this->assertEquals('foo.example.com', $route->host);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf(StratigilityRoute::class, $route);
+        $this->assertSame($middleware, $route->handler);
+        $this->assertEquals('/foo', $route->path);
+        $this->assertEquals('foo.example.com', $route->host);
 
         $route = $pipeline->dequeue();
         $this->assertInstanceOf(StratigilityRoute::class, $route);
@@ -293,6 +307,8 @@ class ApplicationFactoryTest extends TestCase
                 'post_routing' => [
                     [ 'middleware' => $middleware ],
                     [ 'path' => '/foo', 'middleware' => $middleware ],
+                    [ 'host' => 'foo.example.com', 'middleware' => $middleware ],
+                    [ 'host' => 'foo.example.com', 'path' => '/foo', 'middleware' => $middleware ],
                 ],
             ],
         ];
@@ -312,7 +328,7 @@ class ApplicationFactoryTest extends TestCase
         $r->setAccessible(true);
         $pipeline = $r->getValue($app);
 
-        $this->assertCount(5, $pipeline);
+        $this->assertCount(7, $pipeline);
 
         $route = $pipeline->dequeue();
         $this->assertInstanceOf(StratigilityRoute::class, $route);
@@ -340,6 +356,18 @@ class ApplicationFactoryTest extends TestCase
         $this->assertInstanceOf(Closure::class, $route->handler);
         $this->assertTrue(call_user_func($route->handler, 'req', 'res'));
         $this->assertEquals('/foo', $route->path);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf(StratigilityRoute::class, $route);
+        $this->assertSame($middleware, $route->handler);
+        $this->assertEquals('/', $route->path);
+        $this->assertEquals('foo.example.com', $route->host);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf(StratigilityRoute::class, $route);
+        $this->assertSame($middleware, $route->handler);
+        $this->assertEquals('/foo', $route->path);
+        $this->assertEquals('foo.example.com', $route->host);
     }
 
     /**
@@ -355,6 +383,8 @@ class ApplicationFactoryTest extends TestCase
             'middleware_pipeline' => [
                 [ 'middleware' => 'Middleware' ],
                 [ 'path' => '/foo', 'middleware' => 'Middleware' ],
+                [ 'host' => 'foo.example.com', 'middleware' => 'Middleware' ],
+                [ 'host' => 'foo.example.com', 'path' => '/foo', 'middleware' => 'Middleware' ],
             ],
         ];
 
@@ -367,7 +397,7 @@ class ApplicationFactoryTest extends TestCase
         $r->setAccessible(true);
         $pipeline = $r->getValue($app);
 
-        $this->assertCount(2, $pipeline);
+        $this->assertCount(4, $pipeline);
 
         $route = $pipeline->dequeue();
         $this->assertInstanceOf(StratigilityRoute::class, $route);
@@ -380,6 +410,20 @@ class ApplicationFactoryTest extends TestCase
         $this->assertInstanceOf(Closure::class, $route->handler);
         $this->assertTrue(call_user_func($route->handler, 'req', 'res'));
         $this->assertEquals('/foo', $route->path);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf(StratigilityRoute::class, $route);
+        $this->assertInstanceOf(Closure::class, $route->handler);
+        $this->assertTrue(call_user_func($route->handler, 'req', 'res'));
+        $this->assertEquals('/', $route->path);
+        $this->assertEquals('foo.example.com', $route->host);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf(StratigilityRoute::class, $route);
+        $this->assertInstanceOf(Closure::class, $route->handler);
+        $this->assertTrue(call_user_func($route->handler, 'req', 'res'));
+        $this->assertEquals('/foo', $route->path);
+        $this->assertEquals('foo.example.com', $route->host);
     }
 
     /**
@@ -519,6 +563,8 @@ class ApplicationFactoryTest extends TestCase
             'middleware_pipeline' => [
                 [ 'middleware' => 'Middleware' ],
                 [ 'path' => '/foo', 'middleware' => 'Middleware' ],
+                [ 'host' => 'foo.example.com', 'middleware' => 'Middleware' ],
+                [ 'host' => 'foo.example.com', 'path' => '/foo', 'middleware' => 'Middleware' ],
             ],
         ];
 
@@ -533,12 +579,14 @@ class ApplicationFactoryTest extends TestCase
      */
     public function testRaisesExceptionOnInvocationOfUninvokableServiceSpecifiedMiddlewarePulledFromContainer()
     {
-        $middleware = (object) [];
+        $middleware = (object)[];
 
         $config = [
             'middleware_pipeline' => [
-                [ 'middleware' => 'Middleware' ],
-                [ 'path' => '/foo', 'middleware' => 'Middleware' ],
+                ['middleware' => 'Middleware'],
+                ['path' => '/foo', 'middleware' => 'Middleware'],
+                ['host' => 'foo.example.com', 'middleware' => 'Middleware'],
+                ['host' => 'foo.example.com', 'path' => '/foo', 'middleware' => 'Middleware'],
             ],
         ];
 
@@ -551,7 +599,7 @@ class ApplicationFactoryTest extends TestCase
         $r->setAccessible(true);
         $pipeline = $r->getValue($app);
 
-        $this->assertCount(2, $pipeline);
+        $this->assertCount(4, $pipeline);
 
         $first = $pipeline->dequeue();
         $this->assertInstanceOf(StratigilityRoute::class, $first);
@@ -563,7 +611,24 @@ class ApplicationFactoryTest extends TestCase
         $this->assertInstanceOf(Closure::class, $second->handler);
         $this->assertEquals('/foo', $second->path);
 
-        foreach (['first' => $first->handler, 'second' => $second->handler] as $index => $handler) {
+        $third = $pipeline->dequeue();
+        $this->assertInstanceOf(StratigilityRoute::class, $third);
+        $this->assertInstanceOf(Closure::class, $third->handler);
+        $this->assertEquals('/', $third->path);
+        $this->assertEquals('foo.example.com', $third->host);
+
+        $fourth = $pipeline->dequeue();
+        $this->assertInstanceOf(StratigilityRoute::class, $fourth);
+        $this->assertInstanceOf(Closure::class, $fourth->handler);
+        $this->assertEquals('/foo', $fourth->path);
+        $this->assertEquals('foo.example.com', $fourth->host);
+
+        foreach ([
+                     'first' => $first->handler,
+                     'second' => $second->handler,
+                     'third' => $third->handler,
+                     'fourth' => $fourth->handler
+                 ] as $index => $handler) {
             try {
                 $handler('req', 'res');
                 $this->fail(sprintf('%s handler succeed, but should have raised an exception', $index));
@@ -648,6 +713,8 @@ class ApplicationFactoryTest extends TestCase
                 'pre_routing' => [
                     [ 'middleware' => $middleware ],
                     [ 'path' => '/foo', 'middleware' => $middleware ],
+                    [ 'host' => 'foo.example.com', 'middleware' => $middleware ],
+                    [ 'host' => 'foo.example.com', 'path' => '/foo', 'middleware' => $middleware ],
                 ],
                 'post_routing' => [ ],
             ],
@@ -668,7 +735,7 @@ class ApplicationFactoryTest extends TestCase
         $r->setAccessible(true);
         $pipeline = $r->getValue($app);
 
-        $this->assertCount(5, $pipeline);
+        $this->assertCount(7, $pipeline);
 
         $route = $pipeline->dequeue();
         $this->assertInstanceOf(StratigilityRoute::class, $route);
@@ -679,6 +746,18 @@ class ApplicationFactoryTest extends TestCase
         $this->assertInstanceOf(StratigilityRoute::class, $route);
         $this->assertSame($middleware, $route->handler);
         $this->assertEquals('/foo', $route->path);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf(StratigilityRoute::class, $route);
+        $this->assertSame($middleware, $route->handler);
+        $this->assertEquals('/', $route->path);
+        $this->assertEquals('foo.example.com', $route->host);
+
+        $route = $pipeline->dequeue();
+        $this->assertInstanceOf(StratigilityRoute::class, $route);
+        $this->assertSame($middleware, $route->handler);
+        $this->assertEquals('/foo', $route->path);
+        $this->assertEquals('foo.example.com', $route->host);
 
         $route = $pipeline->dequeue();
         $this->assertInstanceOf(StratigilityRoute::class, $route);
@@ -862,6 +941,8 @@ class ApplicationFactoryTest extends TestCase
         $pipelineFirst = clone $api;
         $hello = clone $api;
         $pipelineLast = clone $api;
+        $hostWithNoPath = clone $api;
+        $hostWithPath = clone $api;
 
         $this->injectServiceInContainer($this->container, 'DynamicPath', $dynamicPath);
         $this->injectServiceInContainer($this->container, 'Goodbye', $goodbye);
@@ -870,6 +951,8 @@ class ApplicationFactoryTest extends TestCase
         $pipeline = [
             [ 'path' => '/api', 'middleware' => $api ],
             [ 'path' => '/dynamic-path', 'middleware' => 'DynamicPath' ],
+            [ 'host' => 'foo.example.com', 'middleware' => $hostWithNoPath ],
+            [ 'host' => 'foo.example.com', 'path' => '/foo', 'middleware' => $hostWithPath ],
             ['middleware' => $noPath],
             ['middleware' => 'Goodbye'],
             ['middleware' => [
@@ -902,25 +985,39 @@ class ApplicationFactoryTest extends TestCase
         $r->setAccessible(true);
         $pipeline = $r->getValue($app);
 
-        $this->assertCount(5, $pipeline, 'Did not get expected pipeline count!');
+        $this->assertCount(7, $pipeline, 'Did not get expected pipeline count!');
 
         $test = $pipeline->dequeue();
         $this->assertEquals('/api', $test->path);
+        $this->assertEquals(null, $test->host);
         $this->assertSame($api, $test->handler);
 
         // Lazy middleware is not marshaled until invocation
         $test = $pipeline->dequeue();
         $this->assertEquals('/dynamic-path', $test->path);
+        $this->assertEquals(null, $test->host);
         $this->assertNotSame($dynamicPath, $test->handler);
         $this->assertInstanceOf(Closure::class, $test->handler);
 
         $test = $pipeline->dequeue();
         $this->assertEquals('/', $test->path);
+        $this->assertEquals('foo.example.com', $test->host);
+        $this->assertSame($hostWithNoPath, $test->handler);
+
+        $test = $pipeline->dequeue();
+        $this->assertEquals('/foo', $test->path);
+        $this->assertEquals('foo.example.com', $test->host);
+        $this->assertSame($hostWithPath, $test->handler);
+
+        $test = $pipeline->dequeue();
+        $this->assertEquals('/', $test->path);
+        $this->assertEquals(null, $test->host);
         $this->assertSame($noPath, $test->handler);
 
         // Lazy middleware is not marshaled until invocation
         $test = $pipeline->dequeue();
         $this->assertEquals('/', $test->path);
+        $this->assertEquals(null, $test->host);
         $this->assertNotSame($goodbye, $test->handler);
         $this->assertInstanceOf(Closure::class, $test->handler);
 
