@@ -330,14 +330,21 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
      * proxies to pipe().
      *
      * @param string|callable $path Either a URI path prefix, or middleware.
+     * @param null|string|array|callable $host Either a URI host, or middleware.
      * @param null|string|callable $middleware Middleware
      * @return self
      */
-    public function pipeErrorHandler($path, $middleware = null)
+    public function pipeErrorHandler($path, $host = null, $middleware = null)
     {
-        if (null === $middleware) {
+        if (null === $middleware && null === $host) {
             $middleware = $this->prepareMiddleware($path, $this->container, $forError = true);
             $path = '/';
+            $host = null;
+        }
+
+        if($path && $host && null === $middleware) {
+            $middleware = $this->prepareMiddleware($host, $this->container, $forError = true);
+            $host = null;
         }
 
         if (! is_callable($middleware)
@@ -346,7 +353,7 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
             $middleware = $this->prepareMiddleware($middleware, $this->container, $forError = true);
         }
 
-        parent::pipe($path, $middleware);
+        parent::pipe($path, $host, $middleware);
 
         return $this;
     }
