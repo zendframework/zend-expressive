@@ -270,7 +270,7 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
             $host = null;
         }
 
-        if($path && $host && null === $middleware) {
+        if ($path && $host && null === $middleware) {
             $middleware = $this->prepareMiddleware($host, $this->container);
             $host = null;
         }
@@ -342,7 +342,7 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
             $host = null;
         }
 
-        if($path && $host && null === $middleware) {
+        if ($path && $host && null === $middleware) {
             $middleware = $this->prepareMiddleware($host, $this->container, $forError = true);
             $host = null;
         }
