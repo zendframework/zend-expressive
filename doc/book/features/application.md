@@ -145,19 +145,19 @@ and, more specifically, its `MiddlewarePipe` definition, you can also pipe
 should execute on each request, defining error handlers, and/or segregating
 applications by subpath.
 
-The signature of `pipe()` is:
+`pipe()` can be called with up to three arguments:
 
 ```php
-public function pipe($pathOrMiddleware, $middleware = null)
+public function pipe($middleware)
+public function pipe(string $path, $middleware)
+public function pipe(string $path, string $host, $middleware)
 ```
 
 where:
 
-- `$pathOrMiddleware` is either a string URI path (for path segregation), a
-  callable middleware, or the service name for a middleware to fetch from the
-  composed container.
-- `$middleware` is required if `$pathOrMiddleware` is a string URI path. It can
-  be one of:
+- `$path` is a string URI path (for path segregation) 
+- `$host` is a string URI host (for host segregation), 
+- `$middleware` can be one of
   - a callable;
   - a service name that resolves to valid middleware in the container;
   - a fully qualified class name of a constructor-less class;
@@ -170,10 +170,12 @@ middleware only when it is invoked. Internally, it wraps the call to fetch and
 dispatch the middleware inside a closure.
 
 Additionally, we define a new method, `pipeErrorHandler()`, with the following
-signature:
+signatures:
 
 ```php
-public function pipeErrorHandler($pathOrMiddleware, $middleware = null)
+public function pipeErrorHandler($middleware)
+public function pipeErrorHandler($path, $middleware)
+public function pipeErrorHandler($path, $host, $middleware)
 ```
 
 It acts just like `pipe()` except when the middleware specified is a service
