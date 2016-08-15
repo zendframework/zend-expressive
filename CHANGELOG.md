@@ -6,7 +6,16 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#309](https://github.com/zendframework/zend-expressive/pull/309) adds the
+  ability to provide options with which to instantiate the `FinalHandler`
+  instance, via the configuration:
+
+  ```php
+  [
+      'final_handler' => [
+          'options' => [ /* array of options */ ],
+      ],
+  ```
 
 ### Deprecated
 
@@ -14,7 +23,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Removed
 
-- Nothing.
+- [#309](https://github.com/zendframework/zend-expressive/pull/309) updates the
+  zend-stratigility minimum supported version to 1.2, in order to allow
+  providing final handler configuration.
 
 ### Fixed
 
