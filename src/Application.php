@@ -11,12 +11,15 @@ namespace Zend\Expressive;
 
 use Interop\Container\ContainerInterface;
 use Interop\Container\Exception\ContainerException;
+use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use UnexpectedValueException;
 use Zend\Diactoros\Request;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
+use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Stratigility\MiddlewarePipe;
 
@@ -552,10 +555,19 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
      */
     public function run(ServerRequestInterface $request = null, ResponseInterface $response = null)
     {
-        $request  = $request ?: ServerRequestFactory::fromGlobals();
-        $response = $response ?: new Response();
+        try {
+            $request  = $request ?: ServerRequestFactory::fromGlobals();
+        } catch (InvalidArgumentException $e) {
+            // Unable to parse uploaded files
+            $this->emitMarshalServerRequestException($e);
+            return;
+        } catch (UnexpectedValueException $e) {
+            // Invalid request method
+            $this->emitMarshalServerRequestException($e);
+            return;
+        }
 
-        $response = $this($request, $response);
+        $response = $this($request, $response ?: new Response());
 
         $emitter = $this->getEmitter();
         $emitter->emit($response);
@@ -653,5 +665,19 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
                 'Duplicate route detected; same name or path, and one or more HTTP methods intersect'
             );
         }
+    }
+
+    /**
+     * @var \Exception|\Throwable $exception
+     * @return void
+     */
+    private function emitMarshalServerRequestException($exception)
+    {
+        $response = (new Response())
+            ->withStatus(400);
+        $finalHandler = $this->getFinalHandler();
+        $response = $finalHandler(new ServerRequest(), $response, $exception);
+        $emitter = $this->getEmitter();
+        $emitter->emit($response);
     }
 }
