@@ -12,16 +12,20 @@ namespace ZendTest\Expressive;
 use BadMethodCallException;
 use DomainException;
 use Interop\Container\ContainerInterface;
+use InvalidArgumentException;
+use Mockery;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use ReflectionProperty;
 use RuntimeException;
+use UnexpectedValueException;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Diactoros\ServerRequest as Request;
 use Zend\Diactoros\ServerRequest;
+use Zend\Diactoros\ServerRequestFactory;
 use Zend\Expressive\Application;
 use Zend\Expressive\Emitter\EmitterStack;
 use Zend\Expressive\Exception;
@@ -620,5 +624,65 @@ class ApplicationTest extends TestCase
 
         $this->setExpectedException(InvalidMiddlewareException::class);
         $handler('foo', 'bar', 'baz', 'bat');
+    }
+
+    public function invalidRequestExceptions()
+    {
+        return [
+            'invalid file'             => [
+                InvalidArgumentException::class,
+                'Invalid value in files specification',
+            ],
+            'invalid protocol version' => [
+                UnexpectedValueException::class,
+                'Unrecognized protocol version (foo-bar)',
+            ],
+        ];
+    }
+
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     * @dataProvider invalidRequestExceptions
+     */
+    public function testRunInvokesFinalHandlerWhenServerRequestFactoryRaisesException(
+        $expectedException,
+        $message
+    ) {
+        // try/catch is necessary in the case that the test fails.
+        // Assertion exceptions raised inside prophecy expectations normally
+        // are fine, but in the context of runInSeparateProcess, these
+        // lead to closure serialization errors. try/catch allows us to
+        // catch those and provide failure assertions.
+        try {
+            $requestFactory = Mockery::mock('alias:' . ServerRequestFactory::class)
+                ->shouldReceive('fromGlobals')
+                ->withNoArgs()
+                ->andThrow($expectedException, $message)
+                ->once()
+                ->getMock();
+
+            $finalHandler = function ($request, $response, $err = null) use ($expectedException, $message) {
+                $this->assertEquals(400, $response->getStatusCode());
+                $this->assertInstanceOf($expectedException, $err);
+                $this->assertEquals($message, $err->getMessage());
+                return $response;
+            };
+
+            $emitter = $this->prophesize(EmitterInterface::class);
+            $emitter->emit(Argument::that(function ($response) {
+                $this->assertInstanceOf(ResponseInterface::class, $response, 'Emitter did not receive a response');
+                $this->assertEquals(400, $response->getStatusCode());
+                return true;
+            }))->shouldBeCalled();
+
+            $app = new Application($this->router->reveal(), null, $finalHandler, $emitter->reveal());
+
+            $app->run();
+        } catch (\Throwable $e) {
+            $this->fail($e->getMessage());
+        } catch (\Exception $e) {
+            $this->fail($e->getMessage());
+        }
     }
 }

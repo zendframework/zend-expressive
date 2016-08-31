@@ -8,12 +8,15 @@
 namespace Zend\Expressive;
 
 use Interop\Container\ContainerInterface;
+use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use UnexpectedValueException;
 use Zend\Diactoros\Request;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
+use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Stratigility\FinalHandler;
 use Zend\Stratigility\Http\Response as StratigilityResponse;
@@ -487,8 +490,19 @@ class Application extends MiddlewarePipe
      */
     public function run(ServerRequestInterface $request = null, ResponseInterface $response = null)
     {
+        try {
+            $request  = $request ?: ServerRequestFactory::fromGlobals();
+        } catch (InvalidArgumentException $e) {
+            // Unable to parse uploaded files
+            $this->emitMarshalServerRequestException($e);
+            return;
+        } catch (UnexpectedValueException $e) {
+            // Invalid request method
+            $this->emitMarshalServerRequestException($e);
+            return;
+        }
+
         $response = $response ?: new Response();
-        $request  = $request ?: ServerRequestFactory::fromGlobals();
         $request  = $request->withAttribute('originalResponse', $response);
 
         $response = $this($request, $response);
@@ -628,5 +642,19 @@ class Application extends MiddlewarePipe
         };
 
         $previous = set_error_handler($handler);
+    }
+
+    /**
+     * @var \Exception|\Throwable $exception
+     * @return void
+     */
+    private function emitMarshalServerRequestException($exception)
+    {
+        $response = (new Response())
+            ->withStatus(400);
+        $finalHandler = $this->getFinalHandler();
+        $response = $finalHandler(new ServerRequest(), $response, $exception);
+        $emitter = $this->getEmitter();
+        $emitter->emit($response);
     }
 }
