@@ -16,6 +16,9 @@ All notable changes to this project will be documented in this file, in reverse 
           'options' => [ /* array of options */ ],
       ],
   ```
+- [#373](https://github.com/zendframework/zend-expressive/pull/373) adds interception
+  of exceptions from the `ServerRequestFactory` for invalid request information in order
+  to return `400` responses.
 
 ### Deprecated
 

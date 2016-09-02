@@ -31,7 +31,8 @@
         "zendframework/zend-expressive-aurarouter": "^1.0",
         "zendframework/zend-expressive-fastroute": "^1.0",
         "zendframework/zend-expressive-zendrouter": "^1.0",
-        "zendframework/zend-servicemanager": "^2.6"
+        "zendframework/zend-servicemanager": "^2.6",
+        "mockery/mockery": "^0.9.5"
     },
     "autoload": {
       "psr-4": {
