@@ -188,6 +188,9 @@ $app = AppFactory::create($container);
 $app->get('/', 'HelloWorld');
 $app->get('/ping', 'Ping');
 
+$app->pipeRoutingMiddleware();
+$app->pipeDispatchMiddleware();
+
 $app->run();
 ```
 
