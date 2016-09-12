@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <phpdox xmlns="http://xml.phpdox.net/config">
-  <project name="Example" source="src" workdir="${basedir}/build/api/xml">
+  <project name="Example" source="src" workdir="${basedir}/api/xml">
     <collector backend="parser" />
-    <generator output="${basedir}/build/api">
+    <generator output="${basedir}/api">
       <build engine="html" output="html"/>
     </generator>
   </project>
