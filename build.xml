@@ -179,38 +179,6 @@
         </exec>
     </target>
 
-    <target name="storage-permissions" depends="storage-permissions.unix,storage-permissions.windows" description="Setting storage permissions" />
-
-    <target name="storage-permissions.unix" depends="storage.unix.check" if="storage.unix.exist" description="Setting storage permissions on unix">
-        <echo>Setting app/storage to 777</echo>
-        <chmod file="${src-dir}/storage/**" perm="777" type="dir" failonerror="false" />
-    </target>
-
-    <target name="storage-permissions.windows" depends="storage.windows.check" if="storage.windows.exist" description="Setting storage permissions on windows">
-        <echo>Setting app/storage to writable</echo>
-        <attrib file="${src-dir}/storage/**" perm="+R" failonerror="false" />
-    </target>
-
-    <!--// Check to see it the app/storage folder exist, if so, then can change permissions //-->
-    <target name="storage.unix.check" description="Check for app/storage on unix">
-        <condition property="storage.unix.exist">
-            <and>
-                <available file="${src-dir}/storage" type="dir" />
-                <os family="unix" />
-            </and>
-        </condition>
-    </target>
-
-    <!--// Check to see it the app/storage folder exist, if so, then can change permissions //-->
-    <target name="storage.windows.check" description="Check for app/storage on windows">
-        <condition property="storage.windows.exist">
-            <and>
-                <available file="${src-dir}/storage" type="dir" />
-                <os family="windows" />
-            </and>
-        </condition>
-    </target>
-
      <target name="prepare" depends="clean-build" description="Prepare for build">
         <echo>Making the build artifact folders</echo>
         <mkdir dir="${build-dir}/api" />
