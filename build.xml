@@ -172,6 +172,10 @@
             <arg value="${build-dir}/coverage" />
             <arg value="--coverage-clover" />
             <arg value="${build-dir}/logs/clover.xml" />
+            <arg value="--coverage-crap4j" />
+            <arg value="${build-dir}/logs/crap4j.xml" />
+            <arg value="--log-junit" />
+            <arg value="${build-dir}/logs/junit.xml" />
         </exec>
     </target>
 
