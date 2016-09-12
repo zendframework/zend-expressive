@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<phpdox xmlns="http://xml.phpdox.net/config" silent="false">
+
+    <project name="YourProject" source="app" workdir="${build-dir}/api/xml">
+
+        <collector publiconly="false" backend="parser">
+        	<include mask="*.php" />
+   			<exclude mask="*Autoload.php" />
+        </collector>
+
+        <generator output="${build-dir}/api/docs">
+
+            <build engine="html" enabled="true" output="html" />
+
+            <build engine="todo" enabled="false" output="todo">
+                <file name="todolist.txt" encoding="utf-8" />
+            </build>
+
+            <build engine="graph" enabled="true" output="graph" />
+
+        </generator>
+    </project>
+
+</phpdox>

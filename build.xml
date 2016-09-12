@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="zend-expressive" default="build" basedir=".">
+    <property name="build-dir" value="${basedir}/build" />
+    <property name="src-dir" value="${basedir}/src" />
+
+    <target name="build"
+        depends="build-common,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpcb" />
+
+    <target name="build-clean"
+        depends="clean,build-common,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpcb" />
+
+    <target name="build-dox"
+        depends="build-common,phpdox,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpcb" />
+
+    <target name="build-dox-clean"
+        depends="clean,build-common,phpdox,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpcb" />
+
+    <target name="build-parallel"
+        depends="build-common,tools-parallel" />
+
+    <target name="build-parallel-clean"
+        depends="clean,build-common,tools-parallel" />
+
+    <target name="build-common" depends="lint,prepare,composer,phpunit" />
+
+    <target name="tools-parallel" description="Run tools in parallel">
+        <parallel threadCount="2">
+            <sequential>
+                <antcall target="pdepend" />
+                <antcall target="phpcs-ci" />
+                <antcall target="phpmd-ci" />
+            </sequential>
+            <antcall target="phpcb" />
+            <antcall target="phpcpd" />
+            <antcall target="phpdox" />
+            <antcall target="phploc" />
+        </parallel>
+    </target>
+
+    <target name="clean" depends="clean-build,clean-composer" description="Cleanup build and composer artifacts" />
+
+    <target name="clean-build" description="Cleanup build artifacts">
+        <echo>Cleaning out the build artifacts</echo>
+        <delete dir="${build-dir}/api" />
+        <delete dir="${build-dir}/code-browser" />
+        <delete dir="${build-dir}/coverage" />
+        <delete dir="${build-dir}/logs" />
+        <delete dir="${build-dir}/pdepend" />
+    </target>
+
+    <target name="composer" depends="clean-composer,composer-install,composer-update" description="Install or update dependencies" />
+
+    <!--// Check to see it the vendor folder already exist, if so, then no reason to run //-->
+    <target name="composer.check">
+        <condition property="composer.lock.exist.in.gitignore">
+            <resourcecontains resource="${basedir}/.gitignore" substring="composer.lock" />
+        </condition>
+    </target>
+
+    <target name="clean-composer" depends="composer.check" if="composer.lock.exist.in.gitignore" description="Cleanup composer artifacts">
+        <delete file="${basedir}/composer.lock" />
+    </target>
+
+    <target name="composer-install" depends="composer.check" unless="composer.lock.exist.in.gitignore" description="Installing dependencies">
+        <echo>Installing dependencies</echo>
+        <exec executable="composer" failonerror="true">
+            <arg value="install" />
+        </exec>
+    </target>
+
+    <target name="composer-update" depends="composer.check" if="composer.lock.exist.in.gitignore" description="Updating dependencies">
+        <echo>Updating dependencies</echo>
+        <exec executable="composer" failonerror="true">
+            <arg value="update" />
+        </exec>
+    </target>
+
+    <target name="lint" description="Perform syntax check of sourcecode files">
+        <apply executable="php" failonerror="false">
+            <arg value="-l" />
+            <fileset dir="${src-dir}">
+                <include name="**/*.php" />
+                <modified />
+            </fileset>
+        </apply>
+    </target>
+
+    <target name="pdepend" description="Calculate software metrics using PHP_Depend">
+        <exec executable="pdepend">
+            <arg value="--jdepend-xml=${build-dir}/logs/jdepend.xml" />
+            <arg value="--jdepend-chart=${build-dir}/pdepend/dependencies.svg" />
+            <arg value="--overview-pyramid=${build-dir}/pdepend/overview-pyramid.svg" />
+            <arg path="${src-dir}" />
+        </exec>
+    </target>
+
+    <target name="phpcb" description="Aggregate tool output with PHP_CodeBrowser">
+        <exec executable="phpcb">
+            <arg value="--log" />
+            <arg path="${build-dir}/logs" />
+            <arg value="--source" />
+            <arg path="${src-dir}" />
+            <arg value="--output" />
+            <arg path="${build-dir}/code-browser" />
+        </exec>
+    </target>
+
+     <target name="phpcpd" description="Find duplicate code using PHPCPD">
+        <exec executable="phpcpd">
+            <arg value="--log-pmd" />
+            <arg value="${build-dir}/logs/pmd-cpd.xml" />
+            <arg path="${src-dir}" />
+        </exec>
+    </target>
+
+    <target name="phpcs"
+         description="Find coding standard violations using PHP_CodeSniffer and print human readable output. Intended for usage on the command line before committing.">
+        <exec executable="phpcs">
+            <arg value="--standard=${build-dir}/phpcs.xml" />
+            <arg path="${src-dir}" />
+        </exec>
+    </target>
+
+    <target name="phpcs-ci" description="Find coding standard violations using PHP_CodeSniffer creating a log file for the continuous integration server">
+        <exec executable="phpcs" output="/dev/null">
+            <arg value="--report=checkstyle" />
+            <arg value="--report-file=${build-dir}/logs/checkstyle.xml" />
+            <arg value="--standard=${build-dir}/phpcs.xml" />
+            <arg path="${src-dir}" />
+        </exec>
+    </target>
+
+    <target name="phpdox" description="Generate API documentation using phpDox">
+        <exec executable="phpdox">
+            <arg value="-f" />
+            <arg value="${build-dir}/phpdox.xml" />
+        </exec>
+    </target>
+
+    <target name="phploc" description="Measure project size using PHPLOC">
+        <exec executable="phploc">
+           <arg value="--log-csv" />
+           <arg value="${build-dir}/logs/phploc.csv" />
+           <arg path="${src-dir}" />
+        </exec>
+    </target>
+
+     <target name="phpmd" description="Perform project mess detection using PHPMD and print human readable output. Intended for usage on the command line before committing.">
+        <exec executable="phpmd">
+            <arg path="${src-dir}" />
+            <arg value="text" />
+            <arg value="${build-dir}/phpmd.xml" />
+        </exec>
+    </target>
+
+    <target name="phpmd-ci" description="Perform project mess detection using PHPMD creating a log file for the continuous integration server">
+        <exec executable="phpmd">
+            <arg path="${src-dir}" />
+            <arg value="xml" />
+            <arg value="${build-dir}/phpmd.xml" />
+            <arg value="--reportfile" />
+            <arg value="${build-dir}/logs/pmd.xml" />
+        </exec>
+    </target>
+
+    <target name="phpunit" description="Run unit tests with PHPUnit">
+        <exec executable="phpunit" failonerror="true">
+            <arg value="-c" />
+            <arg value="${basedir}/phpunit.xml.dist" />
+            <arg value="--coverage-html" />
+            <arg value="${build-dir}/coverage" />
+        </exec>
+    </target>
+
+    <target name="storage-permissions" depends="storage-permissions.unix,storage-permissions.windows" description="Setting storage permissions" />
+
+    <target name="storage-permissions.unix" depends="storage.unix.check" if="storage.unix.exist" description="Setting storage permissions on unix">
+        <echo>Setting app/storage to 777</echo>
+        <chmod file="${src-dir}/storage/**" perm="777" type="dir" failonerror="false" />
+    </target>
+
+    <target name="storage-permissions.windows" depends="storage.windows.check" if="storage.windows.exist" description="Setting storage permissions on windows">
+        <echo>Setting app/storage to writable</echo>
+        <attrib file="${src-dir}/storage/**" perm="+R" failonerror="false" />
+    </target>
+
+    <!--// Check to see it the app/storage folder exist, if so, then can change permissions //-->
+    <target name="storage.unix.check" description="Check for app/storage on unix">
+        <condition property="storage.unix.exist">
+            <and>
+                <available file="${src-dir}/storage" type="dir" />
+                <os family="unix" />
+            </and>
+        </condition>
+    </target>
+
+    <!--// Check to see it the app/storage folder exist, if so, then can change permissions //-->
+    <target name="storage.windows.check" description="Check for app/storage on windows">
+        <condition property="storage.windows.exist">
+            <and>
+                <available file="${src-dir}/storage" type="dir" />
+                <os family="windows" />
+            </and>
+        </condition>
+    </target>
+
+     <target name="prepare" depends="clean-build" description="Prepare for build">
+        <echo>Making the build artifact folders</echo>
+        <mkdir dir="${build-dir}/api" />
+        <mkdir dir="${build-dir}/code-browser" />
+        <mkdir dir="${build-dir}/coverage" />
+        <mkdir dir="${build-dir}/logs" />
+        <mkdir dir="${build-dir}/pdepend" />
+    </target>
+
+</project>
