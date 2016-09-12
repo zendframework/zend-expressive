@@ -5,10 +5,10 @@
     <property name="src-dir" value="${basedir}/src" />
 
     <target name="build"
-        depends="build-common,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpcb" />
+        depends="build-common,phploc,phpdox,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpcb" />
 
     <target name="build-clean"
-        depends="clean,build-common,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpcb" />
+        depends="clean,build-common,phpdox,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpcb" />
 
     <target name="build-dox"
         depends="build-common,phpdox,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpcb" />
