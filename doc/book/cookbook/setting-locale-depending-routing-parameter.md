@@ -125,7 +125,9 @@ class LocalizationMiddleware
         // Get locale from route, fallback to the user's browser preference
         $locale = $request->getAttribute(
             'locale',
-            Locale::acceptFromHttp($request->getServerParams()['HTTP_ACCEPT_LANGUAGE'] ?? 'en_US')
+            Locale::acceptFromHttp(
+                isset($request->getServerParams()['HTTP_ACCEPT_LANGUAGE']) ? $request->getServerParams()['HTTP_ACCEPT_LANGUAGE'] : 'en_US'
+            )
         );
 
         // Store the locale as a request attribute
