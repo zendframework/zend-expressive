@@ -62,7 +62,7 @@ use Zend\ServiceManager\DelegatorFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Stratigility\MiddlewarePipe;
 
-class ApiResourcePipelineDelegatorFactory
+class ApiResourcePipelineDelegatorFactory implements DelegatorFactoryInterface
 {
     public function createDelegatorWithName(
         ServiceLocatorInterface $container,
@@ -98,7 +98,7 @@ return [
             'ValidationMiddleware' => '...',
             'ApiResourceMiddleware' => '...',
         ],
-        'delegator_factories' => [
+        'delegators' => [
             'ApiResourceMiddleware' => [
                 'ApiResourcePipelineDelegatorFactory',
             ],
