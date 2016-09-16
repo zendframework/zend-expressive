@@ -91,7 +91,7 @@ use Zend\Form\View\HelperConfig;
 use Zend\ServiceManager\DelegatorFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class FormHelpersDelegatorFactory
+class FormHelpersDelegatorFactory implements DelegatorFactoryInterface
 {
     public function createDelegatorWithName(
         ServiceLocatorInterface $container,
