@@ -87,21 +87,23 @@ You'll first need to create a delegator factory:
 ```php
 namespace Your\Application;
 
+use Zend\ServiceManager\Factory\DelegatorFactoryInterface;
+use Interop\Container\ContainerInterface;
 use Zend\Form\View\HelperConfig;
-use Zend\ServiceManager\DelegatorFactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
 class FormHelpersDelegatorFactory implements DelegatorFactoryInterface
 {
-    public function createDelegatorWithName(
-        ServiceLocatorInterface $container,
-        $name,
-        $requestedName,
-        $callback
+    public function __invoke(
+        ContainerInterface $container, 
+        $name, 
+        callable $callback, 
+        array $options = null
     ) {
         $helpers = $callback();
+
         $config = new HelperConfig();
         $config->configureServiceManager($helpers);
+
         return $helpers;
     }
 }
