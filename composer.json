@@ -46,12 +46,6 @@
     "suggest": {
         "filp/whoops": "^1.1 to use the Whoops error handler",
         "zendframework/zend-expressive-helpers": "^1.0 for its UrlHelper, ServerUrlHelper, and BodyParseMiddleware",
-        "zendframework/zend-expressive-aurarouter": "^1.0 to use the Aura.Router routing adapter",
-        "zendframework/zend-expressive-fastroute": "^1.0 to use the FastRoute routing adapter",
-        "zendframework/zend-expressive-zendrouter": "^1.0 to use the zend-mvc routing adapter",
-        "zendframework/zend-expressive-platesrenderer": "^1.0 to use the Plates template renderer",
-        "zendframework/zend-expressive-twigrenderer": "^1.0 to use the Twig template renderer",
-        "zendframework/zend-expressive-zendviewrenderer": "^1.0 to use the zend-view PhpRenderer template renderer",
         "aura/di": "3.0.*@beta to make use of Aura.Di dependency injection container",
         "xtreamwayz/pimple-container-interop": "^1.0 to use Pimple for dependency injection",
         "zendframework/zend-servicemanager": "^2.5 to use zend-servicemanager for dependency injection"
