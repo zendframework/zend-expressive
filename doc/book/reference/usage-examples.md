@@ -317,11 +317,13 @@ In `config/autoload/dependencies.global.php`, place the following:
 ```php
 <?php
 
+use Zend\ServiceManager\Factory\InvokableFactory;
+
 return [
     'dependencies' => [
         'invokables' => [
-            \Application\HelloWorldAction::class => \Application\HelloWorldAction::class,
-            \Application\PingAction::class => \Application\PingAction::class,
+            \Application\HelloWorldAction::class => InvokableFactory::class,
+            \Application\PingAction::class => InvokableFactory::class,
         ],
         'factories' => [
             \Zend\Expressive\Application::class => \Zend\Expressive\Container\ApplicationFactory::class,
@@ -355,7 +357,7 @@ In `src/Application/HelloWorld.php`, place the following:
 
 ```php
 <?php
-namespace App;
+namespace Application;
 
 class HelloWorld
 {
@@ -371,7 +373,7 @@ In `src/Application/Ping.php`, place the following:
 
 ```php
 <?php
-namespace App;
+namespace Application;
 
 use Zend\Diactoros\Response\JsonResponse;
 
@@ -384,7 +386,13 @@ class Ping
 }
 ```
 
-After that’s done run `composer dump-autoload` from the command-line, in the root directory of your project. Finally, in `public/index.php`, place the following:
+After that’s done run:
+
+```
+composer dump-autoload
+```
+
+Finally, in `public/index.php`, place the following:
 
 ```php
 <?php
