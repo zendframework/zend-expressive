@@ -276,77 +276,84 @@ In `config/config.php`, place the following:
 
 ```php
 <?php
-use Zend\Config\Factory as ConfigFactory;
+
+use Zend\Stdlib\ArrayUtils;
 use Zend\Stdlib\Glob;
 
-$files = Glob::glob('config/autoload/{{,*.}global,{,*.}local}.php', Glob::GLOB_BRACE);
-if (0 === count($files)) {
-    return [];
+$config = [];
+// Load configuration from autoload path
+foreach (Glob::glob('config/autoload/{{,*.}global,{,*.}local}.php', Glob::GLOB_BRACE) as $file) {
+    $config = ArrayUtils::merge($config, include $file);
 }
-return ConfigFactory::fromFiles($files);
+
+// Return an ArrayObject so we can inject the config as a service in Aura.Di
+// and still use array checks like ``is_array``.
+return new ArrayObject($config, ArrayObject::ARRAY_AS_PROPS);
 ```
 
-In `config/autoload/global.php`, place the following:
+In `config/container.php`, place the following:
 
 ```php
 <?php
-return [
-    'routes' => [
-        [
-            'path' => '/',
-            'middleware' => 'Application\HelloWorld',
-            'allowed_methods' => [ 'GET' ],
-        ],
-        [
-            'path' => '/ping',
-            'middleware' => 'Application\Ping',
-            'allowed_methods' => [ 'GET' ],
-        ],
-    ],
-];
-```
 
-In `config/dependencies.php`, place the following:
+use Zend\ServiceManager\Config;
+use Zend\ServiceManager\ServiceManager;
 
-```php
-<?php
-use Zend\Config\Factory as ConfigFactory;
-use Zend\Stdlib\Glob;
+// Load configuration
+$config = require __DIR__.'/config.php';
 
-return ConfigFactory::fromFiles(
-    Glob::glob('config/autoload/dependencies.{global,local}.php', Glob::GLOB_BRACE)
-);
+// Build container
+$container = new ServiceManager();
+(new Config($config['dependencies']))->configureServiceManager($container);
+
+// Inject config
+$container->setService('config', $config);
+
+return $container;
 ```
 
 In `config/autoload/dependencies.global.php`, place the following:
 
 ```php
 <?php
+
+use Zend\ServiceManager\Factory\InvokableFactory;
+
 return [
-    'services' => [
-        'config' => include __DIR__ . '/../config.php',
-    ],
-    'invokables' => [
-        'Application\HelloWorld' => 'Application\HelloWorld',
-        'Application\Ping' => 'Application\Ping',
-    ],
-    'factories' => [
-        'Zend\Expressive\Application' => 'Zend\Expressive\Container\ApplicationFactory',
+    'dependencies' => [
+        'invokables' => [
+            \Application\HelloWorldAction::class => InvokableFactory::class,
+            \Application\PingAction::class => InvokableFactory::class,
+        ],
+        'factories' => [
+            \Zend\Expressive\Application::class => \Zend\Expressive\Container\ApplicationFactory::class,
+        ],
+    ]
+];
+```
+
+In `config/autoload/routes.global.php`, place the following:
+
+```php
+<?php
+
+return [
+    'routes' => [
+        [
+            'path' => '/',
+            'middleware' => \Application\HelloWorldAction::class,
+            'allowed_methods' => [ 'GET' ],
+        ],
+        [
+            'path' => '/ping',
+            'middleware' => \Application\PingAction::class,
+            'allowed_methods' => [ 'GET' ],
+        ],
     ],
 ];
 ```
 
-In `config/services.php`, place the following:
-
-```php
-<?php
-use Zend\ServiceManager\Config;
-use Zend\ServiceManager\ServiceManager;
-
-return new ServiceManager(new Config(include 'config/dependencies.php'));
-```
-
-In `src/HelloWorld.php`, place the following:
+In `src/Application/HelloWorld.php`, place the following:
 
 ```php
 <?php
@@ -362,7 +369,7 @@ class HelloWorld
 }
 ```
 
-In `src/Ping.php`, place the following:
+In `src/Application/Ping.php`, place the following:
 
 ```php
 <?php
@@ -379,6 +386,12 @@ class Ping
 }
 ```
 
+After that’s done run:
+
+```
+composer dump-autoload
+```
+
 Finally, in `public/index.php`, place the following:
 
 ```php
@@ -390,7 +403,7 @@ chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
 
 $container = include 'config/services.php';
-$app       = $container->get('Zend\Expressive\Application');
+$app       = $container->get(Zend\Expressive\Application::class);
 $app->run();
 ```
 
