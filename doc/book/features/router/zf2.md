@@ -18,7 +18,7 @@ If you instantiate it with no arguments, it will create an empty
 use Zend\Expressive\AppFactory;
 use Zend\Expressive\Router\ZendRouter;
 
-$app = AppFactory(null, new ZendRouter());
+$app = AppFactory::create(null, new ZendRouter());
 ```
 
 The `TreeRouteStack` offers some unique features:
