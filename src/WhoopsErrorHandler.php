@@ -51,7 +51,7 @@ class WhoopsErrorHandler extends TemplatedErrorHandler
      */
     public function __construct(
         Whoops $whoops,
-        PrettyPageHandler $whoopsHandler,
+        PrettyPageHandler $whoopsHandler = null,
         Template\TemplateRendererInterface $renderer = null,
         $template404 = 'error/404',
         $templateError = 'error/error',
@@ -76,9 +76,18 @@ class WhoopsErrorHandler extends TemplatedErrorHandler
      */
     protected function handleException($exception, Request $request, Response $response)
     {
-        $this->prepareWhoopsHandler($request);
+        // Push the whoops handler if any
+        if (null !== $this->whoopsHandler) {
+            $this->whoops->pushHandler($this->whoopsHandler);
+        }
 
-        $this->whoops->pushHandler($this->whoopsHandler);
+        // Walk through all handlers
+        foreach ($this->whoops->getHandlers() as $handler) {
+            // Add fancy data for the PrettyPageHandler
+            if ($handler instanceof PrettyPageHandler) {
+                $this->prepareWhoopsHandler($request, $handler);
+            }
+        }
 
         $response
             ->getBody()
@@ -90,16 +99,17 @@ class WhoopsErrorHandler extends TemplatedErrorHandler
     /**
      * Prepare the Whoops page handler with a table displaying request information
      *
-     * @param Request $request
+     * @param Request           $request
+     * @param PrettyPageHandler $handler
      */
-    private function prepareWhoopsHandler(Request $request)
+    private function prepareWhoopsHandler(Request $request, PrettyPageHandler $handler)
     {
         if ($request instanceof StratigilityRequest) {
             $request = $request->getOriginalRequest();
         }
 
         $uri = $request->getUri();
-        $this->whoopsHandler->addDataTable('Expressive Application Request', [
+        $handler->addDataTable('Expressive Application Request', [
             'HTTP Method'            => $request->getMethod(),
             'URI'                    => (string) $uri,
             'Script'                 => $request->getServerParams()['SCRIPT_NAME'],
