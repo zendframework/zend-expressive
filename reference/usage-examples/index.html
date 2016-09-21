@@ -736,69 +736,78 @@ development than in production, after all!).</p>
 <p>Now we can start creating our configuration files and container factories.</p>
 <p>In <code>config/config.php</code>, place the following:</p>
 <pre class="codehilite"><code class="language-php">&lt;?php
-use Zend\Config\Factory as ConfigFactory;
+
+use Zend\Stdlib\ArrayUtils;
 use Zend\Stdlib\Glob;
 
-$files = Glob::glob('config/autoload/{{,*.}global,{,*.}local}.php', Glob::GLOB_BRACE);
-if (0 === count($files)) {
-    return [];
+$config = [];
+// Load configuration from autoload path
+foreach (Glob::glob('config/autoload/{{,*.}global,{,*.}local}.php', Glob::GLOB_BRACE) as $file) {
+    $config = ArrayUtils::merge($config, include $file);
 }
-return ConfigFactory::fromFiles($files);</code></pre>
+
+// Return an ArrayObject so we can inject the config as a service in Aura.Di
+// and still use array checks like ``is_array``.
+return new ArrayObject($config, ArrayObject::ARRAY_AS_PROPS);</code></pre>
 
 
-<p>In <code>config/autoload/global.php</code>, place the following:</p>
+<p>In <code>config/container.php</code>, place the following:</p>
 <pre class="codehilite"><code class="language-php">&lt;?php
-return [
-    'routes' =&gt; [
-        [
-            'path' =&gt; '/',
-            'middleware' =&gt; 'Application\HelloWorld',
-            'allowed_methods' =&gt; [ 'GET' ],
-        ],
-        [
-            'path' =&gt; '/ping',
-            'middleware' =&gt; 'Application\Ping',
-            'allowed_methods' =&gt; [ 'GET' ],
-        ],
-    ],
-];</code></pre>
 
+use Zend\ServiceManager\Config;
+use Zend\ServiceManager\ServiceManager;
 
-<p>In <code>config/dependencies.php</code>, place the following:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
-use Zend\Config\Factory as ConfigFactory;
-use Zend\Stdlib\Glob;
+// Load configuration
+$config = require __DIR__.'/config.php';
 
-return ConfigFactory::fromFiles(
-    Glob::glob('config/autoload/dependencies.{global,local}.php', Glob::GLOB_BRACE)
-);</code></pre>
+// Build container
+$container = new ServiceManager();
+(new Config($config['dependencies']))-&gt;configureServiceManager($container);
+
+// Inject config
+$container-&gt;setService('config', $config);
+
+return $container;</code></pre>
 
 
 <p>In <code>config/autoload/dependencies.global.php</code>, place the following:</p>
 <pre class="codehilite"><code class="language-php">&lt;?php
+
+use Zend\ServiceManager\Factory\InvokableFactory;
+
 return [
-    'services' =&gt; [
-        'config' =&gt; include __DIR__ . '/../config.php',
-    ],
-    'invokables' =&gt; [
-        'Application\HelloWorld' =&gt; 'Application\HelloWorld',
-        'Application\Ping' =&gt; 'Application\Ping',
-    ],
-    'factories' =&gt; [
-        'Zend\Expressive\Application' =&gt; 'Zend\Expressive\Container\ApplicationFactory',
+    'dependencies' =&gt; [
+        'invokables' =&gt; [
+            \Application\HelloWorldAction::class =&gt; InvokableFactory::class,
+            \Application\PingAction::class =&gt; InvokableFactory::class,
+        ],
+        'factories' =&gt; [
+            \Zend\Expressive\Application::class =&gt; \Zend\Expressive\Container\ApplicationFactory::class,
+        ],
+    ]
+];</code></pre>
+
+
+<p>In <code>config/autoload/routes.global.php</code>, place the following:</p>
+<pre class="codehilite"><code class="language-php">&lt;?php
+
+return [
+    'routes' =&gt; [
+        [
+            'path' =&gt; '/',
+            'middleware' =&gt; \Application\HelloWorldAction::class,
+            'allowed_methods' =&gt; [ 'GET' ],
+        ],
+        [
+            'path' =&gt; '/ping',
+            'middleware' =&gt; \Application\PingAction::class,
+            'allowed_methods' =&gt; [ 'GET' ],
+        ],
     ],
 ];</code></pre>
 
 
-<p>In <code>config/services.php</code>, place the following:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
-use Zend\ServiceManager\Config;
-use Zend\ServiceManager\ServiceManager;
-
-return new ServiceManager(new Config(include 'config/dependencies.php'));</code></pre>
-
-
-<p>In <code>src/HelloWorld.php</code>, place the following:</p>
+<p>In <code>src/Application/HelloWorld.php</code>, place the following:</p>
 <pre class="codehilite"><code class="language-php">&lt;?php
 namespace Application;
 
@@ -812,7 +821,7 @@ class HelloWorld
 }</code></pre>
 
 
-<p>In <code>src/Ping.php</code>, place the following:</p>
+<p>In <code>src/Application/Ping.php</code>, place the following:</p>
 <pre class="codehilite"><code class="language-php">&lt;?php
 namespace Application;
 
@@ -827,6 +836,10 @@ class Ping
 }</code></pre>
 
 
+<p>After that’s done run:</p>
+<pre class="codehilite"><code>composer dump-autoload</code></pre>
+
+
 <p>Finally, in <code>public/index.php</code>, place the following:</p>
 <pre class="codehilite"><code class="language-php">&lt;?php
 // Change to the project root, to simplify resolving paths
@@ -836,7 +849,7 @@ chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
 
 $container = include 'config/services.php';
-$app       = $container-&gt;get('Zend\Expressive\Application');
+$app       = $container-&gt;get(Zend\Expressive\Application::class);
 $app-&gt;run();</code></pre>
 
 
