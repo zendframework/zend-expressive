@@ -25,7 +25,7 @@
         "zendframework/zend-stratigility": "^1.1"
     },
     "require-dev": {
-        "filp/whoops": "^1.1",
+        "filp/whoops": "^2.0",
         "phpunit/phpunit": "^4.7",
         "squizlabs/php_codesniffer": "^2.3",
         "zendframework/zend-expressive-aurarouter": "^1.0",
@@ -44,7 +44,7 @@
       }
     },
     "suggest": {
-        "filp/whoops": "^1.1 to use the Whoops error handler",
+        "filp/whoops": "^2.0 to use the Whoops error handler",
         "zendframework/zend-expressive-helpers": "^1.0 for its UrlHelper, ServerUrlHelper, and BodyParseMiddleware",
         "zendframework/zend-expressive-aurarouter": "^1.0 to use the Aura.Router routing adapter",
         "zendframework/zend-expressive-fastroute": "^1.0 to use the FastRoute routing adapter",
