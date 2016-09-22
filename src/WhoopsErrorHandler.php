@@ -77,7 +77,7 @@ class WhoopsErrorHandler extends TemplatedErrorHandler
     protected function handleException($exception, Request $request, Response $response)
     {
         // Push the whoops handler if any
-        if (null !== $this->whoopsHandler) {
+        if ($this->whoopsHandler !== null) {
             $this->whoops->pushHandler($this->whoopsHandler);
         }
 
