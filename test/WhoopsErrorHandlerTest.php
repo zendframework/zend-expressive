@@ -15,6 +15,7 @@ use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
+use Whoops\Handler\Handler;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run as Whoops;
 use Zend\Diactoros\ServerRequest;
@@ -26,11 +27,6 @@ use Zend\Stratigility\Http\Request as StratigilityRequest;
  */
 class WhoopsErrorHandlerTest extends TestCase
 {
-    public function getWhoops()
-    {
-        return $this->prophesize(Whoops::class);
-    }
-
     public function getPrettyPageHandler()
     {
         return $this->prophesize(PrettyPageHandler::class);
@@ -38,11 +34,12 @@ class WhoopsErrorHandlerTest extends TestCase
 
     public function testInstantiationRequiresWhoopsAndPageHandler()
     {
-        $whoops = $this->getWhoops();
+        $whoops = new Whoops();
+        $whoops->allowQuit(false);
         $pageHandler = $this->getPrettyPageHandler();
 
-        $handler = new WhoopsErrorHandler($whoops->reveal(), $pageHandler->reveal());
-        $this->assertAttributeSame($whoops->reveal(), 'whoops', $handler);
+        $handler = new WhoopsErrorHandler($whoops, $pageHandler->reveal());
+        $this->assertAttributeSame($whoops, 'whoops', $handler);
         $this->assertAttributeSame($pageHandler->reveal(), 'whoopsHandler', $handler);
     }
 
@@ -52,28 +49,31 @@ class WhoopsErrorHandlerTest extends TestCase
 
         $pageHandler = $this->getPrettyPageHandler();
         $pageHandler->addDataTable('Expressive Application Request', Argument::type('array'))->shouldBeCalled();
+        $pageHandler->setRun(Argument::any())->shouldBeCalled();
+        $pageHandler->setInspector(Argument::any())->shouldBeCalled();
+        $pageHandler->setException($exception)->shouldBeCalled();
+        $pageHandler->handle(Argument::any())->willReturn(Handler::QUIT)->shouldBeCalled();
 
-        $whoops = $this->getWhoops();
-        $whoops->handleException($exception)->willReturn('Whoops content');
-        $whoops->pushHandler(Argument::type(PrettyPageHandler::class))->shouldBeCalled();
+        $whoops = new Whoops();
+        $whoops->allowQuit(false);
 
-        $handler = new WhoopsErrorHandler($whoops->reveal(), $pageHandler->reveal());
+        $handler = new WhoopsErrorHandler($whoops, $pageHandler->reveal());
 
-        $stream    = $this->prophesize(StreamInterface::class);
-        $stream->write('Whoops content')->shouldBeCalled();
+        $stream = $this->prophesize(StreamInterface::class);
+        $stream->write('')->shouldBeCalled();
 
-        $expected  = $this->prophesize(ResponseInterface::class);
+        $expected = $this->prophesize(ResponseInterface::class);
         $expected->getBody()->will(function () use ($stream) {
             return $stream->reveal();
         });
 
-        $response  = $this->prophesize(ResponseInterface::class);
+        $response = $this->prophesize(ResponseInterface::class);
         $response->getStatusCode()->willReturn(200);
         $response->withStatus(500)->will(function () use ($expected) {
             return $expected->reveal();
         });
 
-        $request   = $this->prophesize(ServerRequestInterface::class);
+        $request = $this->prophesize(ServerRequestInterface::class);
         $request->getUri()->willReturn('http://example.com');
         $request->getMethod()->shouldBeCalled();
         $request->getServerParams()->willReturn(['SCRIPT_NAME' => __FILE__])->shouldBeCalled();
@@ -93,28 +93,31 @@ class WhoopsErrorHandlerTest extends TestCase
 
         $pageHandler = $this->getPrettyPageHandler();
         $pageHandler->addDataTable('Expressive Application Request', Argument::type('array'))->shouldBeCalled();
+        $pageHandler->setRun(Argument::any())->shouldBeCalled();
+        $pageHandler->setInspector(Argument::any())->shouldBeCalled();
+        $pageHandler->setException($exception)->shouldBeCalled();
+        $pageHandler->handle(Argument::any())->willReturn(Handler::QUIT)->shouldBeCalled();
 
-        $whoops = $this->getWhoops();
-        $whoops->handleException($exception)->willReturn('Whoops content');
-        $whoops->pushHandler(Argument::type(PrettyPageHandler::class))->shouldBeCalled();
+        $whoops  = new Whoops();
+        $whoops->allowQuit(false);
 
-        $handler = new WhoopsErrorHandler($whoops->reveal(), $pageHandler->reveal());
+        $handler = new WhoopsErrorHandler($whoops, $pageHandler->reveal());
 
-        $stream    = $this->prophesize(StreamInterface::class);
-        $stream->write('Whoops content')->shouldBeCalled();
+        $stream = $this->prophesize(StreamInterface::class);
+        $stream->write('')->shouldBeCalled();
 
-        $expected  = $this->prophesize(ResponseInterface::class);
+        $expected = $this->prophesize(ResponseInterface::class);
         $expected->getBody()->will(function () use ($stream) {
             return $stream->reveal();
         });
 
-        $response  = $this->prophesize(ResponseInterface::class);
+        $response = $this->prophesize(ResponseInterface::class);
         $response->getStatusCode()->willReturn(200);
         $response->withStatus(500)->will(function () use ($expected) {
             return $expected->reveal();
         });
 
-        $request = new ServerRequest(['SCRIPT_NAME' => __FILE__]);
+        $request           = new ServerRequest(['SCRIPT_NAME' => __FILE__]);
         $decoratingRequest = $this->prophesize(StratigilityRequest::class);
         $decoratingRequest->getOriginalRequest()->willReturn($request);
 
