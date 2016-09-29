@@ -26,7 +26,7 @@ $ composer require zendframework/zend-expressive zendframework/zend-expressive-f
 >
 > Expressive needs a routing implementation in order to create routed
 > middleware. We suggest FastRoute in the quick start, but you can also
-> currently choose from Aura.Router and the ZF2 MVC router.
+> currently choose from Aura.Router and zend-router.
 
 > ### Containers
 >
