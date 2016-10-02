@@ -7,7 +7,7 @@ framework for PHP, with the following features:
 - Routing. Choose your own router; we support:
     - [Aura.Router](https://github.com/auraphp/Aura.Router)
     - [FastRoute](https://github.com/nikic/FastRoute)
-    - [ZF2's MVC router](https://github.com/zendframework/zend-mvc)
+    - [zend-router](https://github.com/zendframework/zend-expressive-router)
 - DI Containers, via [container-interop](https://github.com/container-interop/container-interop).
   All middleware composed in Expressive may be retrieved from the composed
   container.
