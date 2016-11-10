@@ -19,7 +19,6 @@ use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use ReflectionProperty;
 use RuntimeException;
-use SplQueue;
 use UnexpectedValueException;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmitterInterface;
