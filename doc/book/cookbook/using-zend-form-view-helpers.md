@@ -43,8 +43,8 @@ class HelperPluginManagerFactory
 {
     public function __invoke(ContainerInterface $container)
     {   
-        $config = $container->has('config') ? $container->get('config') : []; 
-        $config = isset($config['view_helpers']) ? $config['view_helpers'] : []; 
+        $config = $container->has('config') ? $container->get('config') : [];
+        $config = isset($config['view_helpers']) ? $config['view_helpers'] : [];
         $manager = new HelperPluginManager(new Config($config));
         $manager->setServiceLocator($container);
 
@@ -73,7 +73,7 @@ This approach will work for any of the various containers supported.
 
 ## Delegator factories/service extension
 
-[Delegator factories](http://framework.zend.com/manual/current/en/modules/zend.service-manager.delegator-factories.html)
+[Delegator factories](https://docs.zendframework.com/zend-servicemanager/delegators/)
 and [service extension](https://github.com/silexphp/Pimple/tree/1.1#modifying-services-after-creation)
 operate on the same principle: they intercept after the original factory was
 called, and then operate on the generated instance, either modifying or
