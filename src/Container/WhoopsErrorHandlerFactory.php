@@ -10,6 +10,7 @@
 namespace Zend\Expressive\Container;
 
 use Interop\Container\ContainerInterface;
+use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Expressive\WhoopsErrorHandler;
 
 /**
@@ -50,8 +51,8 @@ class WhoopsErrorHandlerFactory
 {
     public function __invoke(ContainerInterface $container)
     {
-        $template = $container->has('Zend\Expressive\Template\TemplateRendererInterface')
-            ? $container->get('Zend\Expressive\Template\TemplateRendererInterface')
+        $template = $container->has(TemplateRendererInterface::class)
+            ? $container->get(TemplateRendererInterface::class)
             : null;
 
         $config = $container->has('config')
