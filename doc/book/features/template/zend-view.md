@@ -98,7 +98,7 @@ render in order to provide content within the selected layout.
 use Zend\Expressive\ZendView\ZendViewRenderer;
 
 // Create the engine instance with a layout name:
-$renderer = new ZendViewRenderer(null, 'layout');
+$renderer = new ZendViewRenderer(null, 'layout::layout');
 ```
 
 ### Layout view model passed to constructor
@@ -112,7 +112,7 @@ $layout = new ViewModel([
     'encoding' => 'utf-8',
     'cssPath'  => '/css/prod/',
 ]);
-$layout->setTemplate('layout');
+$layout->setTemplate('layout::layout');
 
 // Create the engine instance with the layout:
 $renderer = new ZendViewRenderer(null, $layout);
@@ -122,7 +122,7 @@ $renderer = new ZendViewRenderer(null, $layout);
 
 ```php
 $content = $renderer->render('blog/entry', [
-    'layout' => 'blog',
+    'layout' => 'layout::blog',
     'entry'  => $entry,
 ]);
 ```
@@ -137,7 +137,7 @@ $layout = new ViewModel([
     'encoding' => 'utf-8',
     'cssPath'  => '/css/blog/',
 ]);
-$layout->setTemplate('layout');
+$layout->setTemplate('layout::layout');
 
 $content = $renderer->render('blog/entry', [
     'layout' => $layout,
