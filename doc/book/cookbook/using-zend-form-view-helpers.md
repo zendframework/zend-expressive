@@ -96,37 +96,55 @@ You'll first need to create a delegator factory:
 ```php
 namespace Your\Application;
 
-use Zend\Form\View\HelperConfig;
+use Interop\Container\ContainerInterface;
+use Zend\ServiceManager\Config;
 use Zend\ServiceManager\DelegatorFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 class FormHelpersDelegatorFactory
 {
+    /**
+     * zend-servicemanager v3 usage
+     */
+    public function __invoke(
+        ContainerInterface $container,
+        $name,
+        callable $callback,
+        array $options = null
+    ) {
+        $helpers = $callback();
+
+        $config = $container->has('config') ? $container->get('config') : [];
+        $config = new Config($config['view_helpers']);
+        $config->configureServiceManager($helpers);
+        return $helpers;
+    }
+
+    /**
+     * zend-servicemanager v2 compatibility
+     */
     public function createDelegatorWithName(
         ServiceLocatorInterface $container,
         $name,
         $requestedName,
         $callback
     ) {
-        $helpers = $callback();
-        $config = new HelperConfig();
-        $config->configureServiceManager($helpers);
-        return $helpers;
+        return $this($container, $name, $callback);
     }
 }
 ```
 
-The above creates an instance of the `Zend\Form\View\HelperConfig` class,
-uses it to configure the already created `Zend\View\HelperPluginManager`
-instance, and then returns the plugin manager instance.
+The above creates an instance of `Zend\ServiceManager\Config`, uses it to
+configure the already created `Zend\View\HelperPluginManager` instance, and then
+returns the plugin manager instance.
 
-From here, you'll add a `delegator_factories` configuration key in your
+From here, you'll add a `delegators` configuration key in your
 `config/autoload/templates.global.php` file:
 
 ```php
 return [
     'dependencies' => [
-        'delegator_factories' => [
+        'delegators' => [
             Zend\View\HelperPluginManager::class => [
                 Your\Application\FormHelpersDelegatorFactory::class,
             ],
@@ -156,12 +174,13 @@ invokables are defined:
 ```php
 // The following assumes you've added the following import statements to
 // the start of the file:
-// use Zend\Form\View\HelperConfig as FormHelperConfig;
+// use Zend\ServiceManager\Config as ServiceConfig;
 // use Zend\View\HelperPluginManager;
 $container[HelperPluginManager::class] = $container->extend(
     HelperPluginManager::class,
     function ($helpers, $container) {
-        $config = new FormHelperConfig();
+        $config = isset($container['config']) ? $container['config'] : [];
+        $config = new ServiceConfig($config['view_helpers']);
         $config->configureServiceManager($helpers);
         return $helpers;
     }
