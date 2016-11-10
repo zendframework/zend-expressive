@@ -22,7 +22,7 @@ use Zend\Expressive\Template\TemplateRendererInterface;
 
 class EntryMiddleware
 {
-    private $renderer;
+    private $templateRenderer;
 
     public function __construct(TemplateRendererInterface $renderer)
     {
@@ -74,7 +74,7 @@ use Zend\Expressive\Template\TemplateRendererInterface;
 
 class EntryMiddleware
 {
-    private $renderer;
+    private $templateRenderer;
 
     public function __construct(TemplateRendererInterface $renderer)
     {
