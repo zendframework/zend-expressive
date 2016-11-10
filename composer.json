@@ -26,13 +26,14 @@
     },
     "require-dev": {
         "filp/whoops": "^1.1",
+        "malukenho/docheader": "^0.1.0",
+        "mockery/mockery": "^0.9.5",
         "phpunit/phpunit": "^4.7",
         "squizlabs/php_codesniffer": "^2.3",
         "zendframework/zend-expressive-aurarouter": "^1.0",
         "zendframework/zend-expressive-fastroute": "^1.0",
         "zendframework/zend-expressive-zendrouter": "^1.0",
-        "zendframework/zend-servicemanager": "^2.6",
-        "mockery/mockery": "^0.9.5"
+        "zendframework/zend-servicemanager": "^2.6"
     },
     "autoload": {
       "psr-4": {
@@ -66,6 +67,7 @@
         "cs": "phpcs",
         "cs-fix": "phpcbf",
         "test": "phpunit",
-        "test-coverage": "phpunit --coverage-clover clover.xml"
+        "test-coverage": "phpunit --coverage-clover clover.xml",
+        "license-check": "vendor/bin/docheader check src/"
     }
 }
