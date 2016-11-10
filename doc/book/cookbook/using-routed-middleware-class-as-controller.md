@@ -236,7 +236,7 @@ class AlbumPage extends AbstractPage
 > use Zend\Diactoros\Response\HtmlResponse;
 > use Zend\Expressive\Template\TemplateRendererInterface;
 > 
-> class AlbumPage extends AbstractPage
+> class AlbumPage
 > {
 >     use ActionBasedInvocation;
 >
