@@ -11,7 +11,6 @@ namespace ZendTest\Expressive\Container;
 
 use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
-use ReflectionFunction;
 use ReflectionProperty;
 use Whoops\Handler\JsonResponseHandler;
 use Whoops\Handler\PrettyPageHandler;

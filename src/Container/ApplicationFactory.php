@@ -18,7 +18,6 @@ use Zend\Expressive\Container\Exception\InvalidArgumentException as ContainerInv
 use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouterInterface;
-use Zend\Stratigility\MiddlewarePipe;
 
 /**
  * Factory to use with an IoC container in order to return an Application instance.

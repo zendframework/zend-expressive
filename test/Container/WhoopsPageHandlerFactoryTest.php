@@ -11,8 +11,6 @@ namespace ZendTest\Expressive\Container;
 
 use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
-use ReflectionFunction;
-use ReflectionProperty;
 use Whoops\Handler\PrettyPageHandler;
 use Zend\Expressive\Container\Exception\InvalidServiceException;
 use Zend\Expressive\Container\WhoopsPageHandlerFactory;
