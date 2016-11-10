@@ -87,21 +87,23 @@ You'll first need to create a delegator factory:
 ```php
 namespace Your\Application;
 
+use Zend\ServiceManager\Factory\DelegatorFactoryInterface;
+use Interop\Container\ContainerInterface;
 use Zend\Form\View\HelperConfig;
-use Zend\ServiceManager\DelegatorFactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
-class FormHelpersDelegatorFactory
+class FormHelpersDelegatorFactory implements DelegatorFactoryInterface
 {
-    public function createDelegatorWithName(
-        ServiceLocatorInterface $container,
-        $name,
-        $requestedName,
-        $callback
+    public function __invoke(
+        ContainerInterface $container, 
+        $name, 
+        callable $callback, 
+        array $options = null
     ) {
         $helpers = $callback();
+
         $config = new HelperConfig();
         $config->configureServiceManager($helpers);
+
         return $helpers;
     }
 }
@@ -111,13 +113,13 @@ The above creates an instance of the `Zend\Form\View\HelperConfig` class,
 uses it to configure the already created `Zend\View\HelperPluginManager`
 instance, and then returns the plugin manager instance.
 
-From here, you'll add a `delegator_factories` configuration key in your
+From here, you'll add a `delegators` configuration key in your
 `config/autoload/templates.global.php` file:
 
 ```php
 return [
     'dependencies' => [
-        'delegator_factories' => [
+        'delegators' => [
             Zend\View\HelperPluginManager::class => [
                 Your\Application\FormHelpersDelegatorFactory::class,
             ],
