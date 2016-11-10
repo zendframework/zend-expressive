@@ -136,8 +136,14 @@ class LocalizationMiddleware
 }
 ```
 
-> **NOTE:** Don't use `Locale::setDefault($locale)` to set a global static locale.
-> PSR-7 apps may run in async processes which may overwrite the locale.
+> ### Locale::setDefault is unsafe
+>
+> Do not use `Locale::setDefault($locale)` to set a global static locale.
+> PSR-7 apps may run in async processes, which could lead to another process
+> overwriting the value, and thus lead to unexpected results for your users.
+>
+> Use a request parameter as detailed above instead, as the request is created
+> specific to each process.
 
 In your `config/autoload/middleware-pipeline.global.php`, you'd register the
 dependency, and inject the middleware into the pipeline following the routing
