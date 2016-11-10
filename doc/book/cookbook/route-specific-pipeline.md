@@ -35,8 +35,8 @@ class ApiResourcePipelineFactory
         $pipeline = new MiddlewarePipe();
 
         // These correspond to the bullet points above
-        $pipeline->pipe($container->get('AuthenticationMiddleware)');
-        $pipeline->pipe($container->get('AuthorizationMiddleware)');
+        $pipeline->pipe($container->get('AuthenticationMiddleware'));
+        $pipeline->pipe($container->get('AuthorizationMiddleware'));
         $pipeline->pipe($container->get('BodyParsingMiddleware'));
         $pipeline->pipe($container->get('ValidationMiddleware'));
 
