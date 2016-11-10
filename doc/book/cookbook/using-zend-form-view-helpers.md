@@ -73,7 +73,7 @@ This approach will work for any of the various containers supported.
 
 ## Delegator factories/service extension
 
-[Delegator factories](http://zendframework.github.io/zend-servicemanager/delegators/)
+[Delegator factories](https://docs.zendframework.com/zend-servicemanager/delegators/)
 and [service extension](https://github.com/silexphp/Pimple/tree/1.1#modifying-services-after-creation)
 operate on the same principle: they intercept after the original factory was
 called, and then operate on the generated instance, either modifying or

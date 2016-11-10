@@ -46,7 +46,7 @@ configuration. Configuration uses the following structure:
 ]
 ```
 
-Read more about zend-servicemanager in [its documentation](http://zendframework.github.io/zend-servicemanager/).
+Read more about zend-servicemanager in [its documentation](https://docs.zendframework.com/zend-servicemanager/).
 
 ## Installing zend-servicemanager
 
