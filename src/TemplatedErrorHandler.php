@@ -279,7 +279,6 @@ class TemplatedErrorHandler
             return $this->handleError($error, $request, $response);
         }
 
-
         return $this->handleException($error, $request, $response);
     }
 }
