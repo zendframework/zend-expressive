@@ -39,7 +39,7 @@ class ErrorMiddlewarePipe
     private $pipeline;
 
     /**
-     * @param MiddlewarePipe $pipe
+     * @param MiddlewarePipe $pipeline
      */
     public function __construct(MiddlewarePipe $pipeline)
     {
