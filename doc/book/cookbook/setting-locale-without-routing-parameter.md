@@ -46,13 +46,13 @@ class SetLocaleMiddleware
         
         $path = $uri->getPath();
         
-        if (! preg_match('#^/(?P<locale>[a-z]{2})/#', $path, $matches) {
+        if (! preg_match('#^/(?P<locale>[a-z]{2,3}([-_][a-zA-Z]{2}|))/#', $path, $matches) {
             Locale::setDefault('de_DE');
             return $next($request, $response);
         }
         
         $locale = $matches['locale'];
-        Locale::setDefault($locale);
+        Locale::setDefault(Locale::canonicalize($locale));
         $this->helper->setBasePath($locale);
         
         return $next(

@@ -43,7 +43,7 @@ return [
             'allowed_methods' => ['GET'],
             'options'         => [
                 'constraints' => [
-                    'locale' => '[a-z]{2}',
+                    'locale' => '[a-z]{2,3}([-_][a-zA-Z]{2}|)',
                 ],
             ],
         ],
@@ -54,7 +54,7 @@ return [
             'allowed_methods' => ['GET'],
             'options'         => [
                 'constraints' => [
-                    'locale' => '[a-z]{2}',
+                    'locale' => '[a-z]{2,3}([-_][a-zA-Z]{2}|)',
                 ],
             ],
         ],
@@ -77,7 +77,7 @@ return [
 >     'options'         => [
 >         'constraints' => [
 >             'tokens' => [
->                 'locale' => '[a-z]{2}',
+>                 'locale' => '[a-z]{2,3}([-_][a-zA-Z]{2}|)',
 >             ],
 >         ],
 >     ],
@@ -89,7 +89,7 @@ return [
 > ```php
 > [
 >     'name' => 'home',
->     'path' => '/{locale:[a-z]{2}}',
+>     'path' => '/{locale:[a-z]{2,3}([-_][a-zA-Z]{2}|)}',
 >     'middleware' => Application\Action\HomePageAction::class,
 >     'allowed_methods' => ['GET'],
 > ]
@@ -118,7 +118,7 @@ class LocalizationMiddleware
     public function __invoke($request, $response, $next)
     {
         $locale = $request->getAttribute('locale', 'de_DE');
-        Locale::setDefault($locale);
+        Locale::setDefault(Locale::canonicalize($locale));
         return $next($request, $response);
     }
 }
