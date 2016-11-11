@@ -282,7 +282,7 @@ return [
             [ 'middleware' => DebugToolbarMiddleware::class ],
             [
                 'middleware' => ApiMiddleware::class,
-                'path' => '/api,
+                'path' => '/api',
             ],
         ],
 
@@ -307,7 +307,7 @@ return [
         ],
         'api' => [
             'middleware' => ApiMiddleware::class,
-            'path' => '/api,
+            'path' => '/api',
             'priority' => 100,
         ],
 
