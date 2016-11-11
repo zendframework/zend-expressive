@@ -525,8 +525,8 @@ class ApiResourcePipelineFactory
         $pipeline = new MiddlewarePipe();
 
         // These correspond to the bullet points above
-        $pipeline-&gt;pipe($container-&gt;get('AuthenticationMiddleware)');
-        $pipeline-&gt;pipe($container-&gt;get('AuthorizationMiddleware)');
+        $pipeline-&gt;pipe($container-&gt;get('AuthenticationMiddleware'));
+        $pipeline-&gt;pipe($container-&gt;get('AuthorizationMiddleware'));
         $pipeline-&gt;pipe($container-&gt;get('BodyParsingMiddleware'));
         $pipeline-&gt;pipe($container-&gt;get('ValidationMiddleware'));
 
@@ -541,7 +541,7 @@ class ApiResourcePipelineFactory
 <p>This gives you full control over the creation of the pipeline. You would,
 however, need to ensure that you map the middleware to the pipeline factory when
 setting up your container configuration.</p>
-<p>One alternative when using zend-servicemanager is to use a <a href="http://framework.zend.com/manual/current/en/modules/zend.service-manager.delegator-factories.html">delegator factory</a>.
+<p>One alternative when using zend-servicemanager is to use a <a href="https://docs.zendframework.com/zend-servicemanager/delegators/">delegator factory</a>.
 Delegator factories allow you to decorate the primary factory used to create the
 middleware in order to change the instance or return an alternate instance. In
 this case, we'd do the latter. The following is an example:</p>

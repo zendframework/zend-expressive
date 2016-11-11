@@ -505,6 +505,16 @@ want to use the various view helpers available in other components, such as:</p>
 </ul>
 <p>By default, only the view helpers directly available in zend-view are available;
 how can you add the others?</p>
+<p>To add the zend-form view helpers create a file <code>config/autoload/zend-form.global.php</code>
+with the contents:</p>
+<pre class="codehilite"><code class="language-php">&lt;?php
+use Zend\Form\ConfigProvider;
+
+$provider = new ConfigProvider();
+return $provider();</code></pre>
+
+
+<p>and that will essentially do everything needed.</p>
 <p>If you installed Expressive via the skeleton, the service
 <code>Zend\View\HelperPluginManager</code> is registered for you, and represents the helper
 plugin manager injected into the <code>PhpRenderer</code> instance. As such, you only need
@@ -526,25 +536,21 @@ zend-form component (or whichever other components you wish to use).</p>
 <pre class="codehilite"><code class="language-php">namespace Your\Application;
 
 use Interop\Container\ContainerInterface;
-use Zend\Form\View\HelperConfig as FormHelperConfig;
 use Zend\ServiceManager\Config;
 use Zend\View\HelperPluginManager;
 
 class HelperPluginManagerFactory
 {
     public function __invoke(ContainerInterface $container)
-    {   
-        $config = $container-&gt;has('config') ? $container-&gt;get('config') : []; 
-        $config = isset($config['view_helpers']) ? $config['view_helpers'] : []; 
-        $manager = new HelperPluginManager(new Config($config));
-        $manager-&gt;setServiceLocator($container);
+    {
+        $manager = new HelperPluginManager($container);
 
-        // Add zend-form view helper configuration:
-        $formConfig = new FormHelperConfig();
-        $formConfig-&gt;configureServiceManager($manager);
+        $config = $container-&gt;has('config') ? $container-&gt;get('config') : [];
+        $config = isset($config['view_helpers']) ? $config['view_helpers'] : [];
+        (new Config($config))-&gt;configureServiceManager($manager);
 
-        return $manager;                                                                                                                                                                                                                                                        
-    }   
+        return $manager;
+    }
 }</code></pre>
 
 
@@ -558,7 +564,7 @@ class HelperPluginManagerFactory
 
 <p>This approach will work for any of the various containers supported.</p>
 <h2 id="delegator-factoriesservice-extension">Delegator factories/service extension</h2>
-<p><a href="http://framework.zend.com/manual/current/en/modules/zend.service-manager.delegator-factories.html">Delegator factories</a>
+<p><a href="https://docs.zendframework.com/zend-servicemanager/delegators/">Delegator factories</a>
 and <a href="https://github.com/silexphp/Pimple/tree/1.1#modifying-services-after-creation">service extension</a>
 operate on the same principle: they intercept after the original factory was
 called, and then operate on the generated instance, either modifying or
@@ -568,34 +574,52 @@ time of writing, we're unaware of a mechanism for doing so in Aura.Di.</p>
 <p>You'll first need to create a delegator factory:</p>
 <pre class="codehilite"><code class="language-php">namespace Your\Application;
 
-use Zend\Form\View\HelperConfig;
+use Interop\Container\ContainerInterface;
+use Zend\ServiceManager\Config;
 use Zend\ServiceManager\DelegatorFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 class FormHelpersDelegatorFactory
 {
+    /**
+     * zend-servicemanager v3 usage
+     */
+    public function __invoke(
+        ContainerInterface $container,
+        $name,
+        callable $callback,
+        array $options = null
+    ) {
+        $helpers = $callback();
+
+        $config = $container-&gt;has('config') ? $container-&gt;get('config') : [];
+        $config = new Config($config['view_helpers']);
+        $config-&gt;configureServiceManager($helpers);
+        return $helpers;
+    }
+
+    /**
+     * zend-servicemanager v2 compatibility
+     */
     public function createDelegatorWithName(
         ServiceLocatorInterface $container,
         $name,
         $requestedName,
         $callback
     ) {
-        $helpers = $callback();
-        $config = new HelperConfig();
-        $config-&gt;configureServiceManager($helpers);
-        return $helpers;
+        return $this($container, $name, $callback);
     }
 }</code></pre>
 
 
-<p>The above creates an instance of the <code>Zend\Form\View\HelperConfig</code> class,
-uses it to configure the already created <code>Zend\View\HelperPluginManager</code>
-instance, and then returns the plugin manager instance.</p>
-<p>From here, you'll add a <code>delegator_factories</code> configuration key in your
+<p>The above creates an instance of <code>Zend\ServiceManager\Config</code>, uses it to
+configure the already created <code>Zend\View\HelperPluginManager</code> instance, and then
+returns the plugin manager instance.</p>
+<p>From here, you'll add a <code>delegators</code> configuration key in your
 <code>config/autoload/templates.global.php</code> file:</p>
 <pre class="codehilite"><code class="language-php">return [
     'dependencies' =&gt; [
-        'delegator_factories' =&gt; [
+        'delegators' =&gt; [
             Zend\View\HelperPluginManager::class =&gt; [
                 Your\Application\FormHelpersDelegatorFactory::class,
             ],
@@ -621,12 +645,13 @@ you'll need to edit the main container configuration file,
 invokables are defined:</p>
 <pre class="codehilite"><code class="language-php">// The following assumes you've added the following import statements to
 // the start of the file:
-// use Zend\Form\View\HelperConfig as FormHelperConfig;
+// use Zend\ServiceManager\Config as ServiceConfig;
 // use Zend\View\HelperPluginManager;
 $container[HelperPluginManager::class] = $container-&gt;extend(
     HelperPluginManager::class,
     function ($helpers, $container) {
-        $config = new FormHelperConfig();
+        $config = isset($container['config']) ? $container['config'] : [];
+        $config = new ServiceConfig($config['view_helpers']);
         $config-&gt;configureServiceManager($helpers);
         return $helpers;
     }

@@ -732,17 +732,17 @@ class LocaleMiddleware
     {
         $uri = $request-&gt;getUri();
         $path = $uri-&gt;getPath();
-        if (! preg_match('#^/(?P&lt;lang&gt;[a-z]{2})/#', $path, $matches)) {
+        if (! preg_match('#^/(?P&lt;locale&gt;[a-z]{2,3}([-_][a-zA-Z]{2}|))/#', $path, $matches)) {
             return $next($request, $response);
         }
 
-        $lang = $matches['lang'];
-        Locale::setDefault($lang);
-        $this-&gt;helper-&gt;setBasePath($lang);
+        $locale = $matches['locale'];
+        Locale::setDefault(Locale::canonicalize($locale));
+        $this-&gt;helper-&gt;setBasePath($locale);
 
         return $next(
             $request-&gt;withUri(
-                $uri-&gt;withPath(substr($path, 3))
+                $uri-&gt;withPath(substr($path, (strlen($locale) + 1)))
             ),
             $response
         );

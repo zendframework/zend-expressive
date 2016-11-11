@@ -532,7 +532,7 @@ lowercase alphabetical characters:</p>
             'allowed_methods' =&gt; ['GET'],
             'options'         =&gt; [
                 'constraints' =&gt; [
-                    'locale' =&gt; '[a-z]{2}',
+                    'locale' =&gt; '[a-z]{2,3}([-_][a-zA-Z]{2}|)',
                 ],
             ],
         ],
@@ -543,7 +543,7 @@ lowercase alphabetical characters:</p>
             'allowed_methods' =&gt; ['GET'],
             'options'         =&gt; [
                 'constraints' =&gt; [
-                    'locale' =&gt; '[a-z]{2}',
+                    'locale' =&gt; '[a-z]{2,3}([-_][a-zA-Z]{2}|)',
                 ],
             ],
         ],
@@ -564,7 +564,7 @@ as such, may not work in your application.</p>
     'options'         =&gt; [
         'constraints' =&gt; [
             'tokens' =&gt; [
-                'locale' =&gt; '[a-z]{2}',
+                'locale' =&gt; '[a-z]{2,3}([-_][a-zA-Z]{2}|)',
             ],
         ],
     ],
@@ -574,7 +574,7 @@ as such, may not work in your application.</p>
 <p>For FastRoute:</p>
 <pre class="codehilite"><code class="language-php">[
     'name' =&gt; 'home',
-    'path' =&gt; '/{locale:[a-z]{2}}',
+    'path' =&gt; '/{locale:[a-z]{2,3}([-_][a-zA-Z]{2}|)}',
     'middleware' =&gt; Application\Action\HomePageAction::class,
     'allowed_methods' =&gt; ['GET'],
 ]</code></pre>
@@ -588,22 +588,42 @@ simply cut-and-paste them without modification.</p>
 you need to implement localization middleware that acts on the route result, and
 registered in the pipeline immediately following the routing middleware.</p>
 <p>Such a <code>LocalizationMiddleware</code> class could look similar to this:</p>
-<pre class="codehilite"><code class="language-php">namespace Application\I18n;
+<pre class="codehilite"><code class="language-php">&lt;?php
+
+namespace Application\I18n;
 
 use Locale;
-use Zend\Expressive\Router\RouteResult;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class LocalizationMiddleware
 {
-    public function __invoke($request, $response, $next)
+    const LOCALIZATION_ATTRIBUTE = 'locale';
+
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
-        $locale = $request-&gt;getAttribute('locale', 'de_DE');
-        Locale::setDefault($locale);
-        return $next($request, $response);
+        // Get locale from route, fallback to the user's browser preference
+        $locale = $request-&gt;getAttribute(
+            'locale',
+            Locale::acceptFromHttp(
+                isset($request-&gt;getServerParams()['HTTP_ACCEPT_LANGUAGE']) ? $request-&gt;getServerParams()['HTTP_ACCEPT_LANGUAGE'] : 'en_US'
+            )
+        );
+
+        // Store the locale as a request attribute
+        return $next($request-&gt;withAttribute(self::LOCALIZATION_ATTRIBUTE, $locale), $response);
     }
 }</code></pre>
 
 
+<blockquote>
+<h3 id="localesetdefault-is-unsafe">Locale::setDefault is unsafe</h3>
+<p>Do not use <code>Locale::setDefault($locale)</code> to set a global static locale.
+PSR-7 apps may run in async processes, which could lead to another process
+overwriting the value, and thus lead to unexpected results for your users.</p>
+<p>Use a request parameter as detailed above instead, as the request is created
+specific to each process.</p>
+</blockquote>
 <p>In your <code>config/autoload/middleware-pipeline.global.php</code>, you'd register the
 dependency, and inject the middleware into the pipeline following the routing
 middleware:</p>

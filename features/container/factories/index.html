@@ -512,7 +512,7 @@
 facilitate setting up common dependencies. The following is a list of provided
 containers, what they will create, the suggested service name, and any
 additional dependencies they may require.</p>
-<p>All containers, unless noted otherwise, are in the <code>Zend\Expressive\Container</code>
+<p>All factories, unless noted otherwise, are in the <code>Zend\Expressive\Container</code>
 namespace, and define an <code>__invoke()</code> method that accepts an
 <code>Interop\Container\ContainerInterface</code> instance as the sole argument.</p>
 <h2 id="applicationfactory">ApplicationFactory</h2>
@@ -776,7 +776,7 @@ per namespace when using Plates.</p>
 ]</code></pre>
 
 
-<p>Whe <code>debug</code> is true, it disables caching, enables debug mode, enables strict
+<p>When <code>debug</code> is true, it disables caching, enables debug mode, enables strict
 variables, and enables auto reloading. The <code>assets_*</code> values are used to seed
 the <code>TwigExtension</code> instance (assuming the router was found).</p>
 <h2 id="zendviewrendererfactory">ZendViewRendererFactory</h2>

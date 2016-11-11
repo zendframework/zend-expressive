@@ -3,8 +3,8 @@
 
     
     <url>
-     <loc>None/</loc>
-     <lastmod>2016-10-02</lastmod>
+     <loc>/</loc>
+     <lastmod>2016-11-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -12,66 +12,20 @@
     
         
     <url>
-     <loc>None/getting-started/features/</loc>
-     <lastmod>2016-10-02</lastmod>
+     <loc>/getting-started/features/</loc>
+     <lastmod>2016-11-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>None/getting-started/standalone/</loc>
-     <lastmod>2016-10-02</lastmod>
+     <loc>/getting-started/standalone/</loc>
+     <lastmod>2016-11-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>None/getting-started/skeleton/</loc>
-     <lastmod>2016-10-02</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
-    
-
-    
-        
-    <url>
-     <loc>None/features/application/</loc>
-     <lastmod>2016-10-02</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
-    <url>
-     <loc>None</loc>
-     <lastmod></lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
-    <url>
-     <loc>None</loc>
-     <lastmod></lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
-    <url>
-     <loc>None</loc>
-     <lastmod></lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
-    <url>
-     <loc>None/features/error-handling/</loc>
-     <lastmod>2016-10-02</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
-    <url>
-     <loc>None</loc>
-     <lastmod></lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
-    <url>
-     <loc>None/features/emitters/</loc>
-     <lastmod>2016-10-02</lastmod>
+     <loc>/getting-started/skeleton/</loc>
+     <lastmod>2016-11-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -80,74 +34,44 @@
     
         
     <url>
-     <loc>None/cookbook/common-prefix-for-routes/</loc>
-     <lastmod>2016-10-02</lastmod>
+     <loc>/features/application/</loc>
+     <lastmod>2016-11-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>None/cookbook/route-specific-pipeline/</loc>
-     <lastmod>2016-10-02</lastmod>
+     <loc></loc>
+     <lastmod></lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>None/cookbook/custom-404-page-handling/</loc>
-     <lastmod>2016-10-02</lastmod>
+     <loc></loc>
+     <lastmod></lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>None/cookbook/using-custom-view-helpers/</loc>
-     <lastmod>2016-10-02</lastmod>
+     <loc></loc>
+     <lastmod></lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>None/cookbook/using-zend-form-view-helpers/</loc>
-     <lastmod>2016-10-02</lastmod>
+     <loc>/features/error-handling/</loc>
+     <lastmod>2016-11-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>None/cookbook/using-a-base-path/</loc>
-     <lastmod>2016-10-02</lastmod>
+     <loc></loc>
+     <lastmod></lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>None/cookbook/modular-layout/</loc>
-     <lastmod>2016-10-02</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
-    <url>
-     <loc>None/cookbook/setting-locale-depending-routing-parameter/</loc>
-     <lastmod>2016-10-02</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
-    <url>
-     <loc>None/cookbook/setting-locale-without-routing-parameter/</loc>
-     <lastmod>2016-10-02</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
-    <url>
-     <loc>None/cookbook/debug-toolbars/</loc>
-     <lastmod>2016-10-02</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
-    <url>
-     <loc>None/cookbook/using-routed-middleware-class-as-controller/</loc>
-     <lastmod>2016-10-02</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
-    <url>
-     <loc>None/cookbook/flash-messengers/</loc>
-     <lastmod>2016-10-02</lastmod>
+     <loc>/features/emitters/</loc>
+     <lastmod>2016-11-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -156,19 +80,95 @@
     
         
     <url>
-     <loc>None/reference/usage-examples/</loc>
-     <lastmod>2016-10-02</lastmod>
+     <loc>/cookbook/common-prefix-for-routes/</loc>
+     <lastmod>2016-11-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>None/reference/expressive-projects/</loc>
-     <lastmod>2016-10-02</lastmod>
+     <loc>/cookbook/route-specific-pipeline/</loc>
+     <lastmod>2016-11-11</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>None</loc>
+     <loc>/cookbook/custom-404-page-handling/</loc>
+     <lastmod>2016-11-11</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/cookbook/using-custom-view-helpers/</loc>
+     <lastmod>2016-11-11</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/cookbook/using-zend-form-view-helpers/</loc>
+     <lastmod>2016-11-11</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/cookbook/using-a-base-path/</loc>
+     <lastmod>2016-11-11</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/cookbook/modular-layout/</loc>
+     <lastmod>2016-11-11</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/cookbook/setting-locale-depending-routing-parameter/</loc>
+     <lastmod>2016-11-11</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/cookbook/setting-locale-without-routing-parameter/</loc>
+     <lastmod>2016-11-11</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/cookbook/debug-toolbars/</loc>
+     <lastmod>2016-11-11</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/cookbook/using-routed-middleware-class-as-controller/</loc>
+     <lastmod>2016-11-11</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/cookbook/flash-messengers/</loc>
+     <lastmod>2016-11-11</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    
+
+    
+        
+    <url>
+     <loc>/reference/usage-examples/</loc>
+     <lastmod>2016-11-11</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/reference/expressive-projects/</loc>
+     <lastmod>2016-11-11</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc></loc>
      <lastmod></lastmod>
      <changefreq>daily</changefreq>
     </url>

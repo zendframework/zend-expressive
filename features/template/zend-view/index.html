@@ -586,7 +586,7 @@ render in order to provide content within the selected layout.</p>
 <pre class="codehilite"><code class="language-php">use Zend\Expressive\ZendView\ZendViewRenderer;
 
 // Create the engine instance with a layout name:
-$renderer = new ZendViewRenderer(null, 'layout');</code></pre>
+$renderer = new ZendViewRenderer(null, 'layout::layout');</code></pre>
 
 
 <h3 id="layout-view-model-passed-to-constructor">Layout view model passed to constructor</h3>
@@ -598,7 +598,7 @@ $layout = new ViewModel([
     'encoding' =&gt; 'utf-8',
     'cssPath'  =&gt; '/css/prod/',
 ]);
-$layout-&gt;setTemplate('layout');
+$layout-&gt;setTemplate('layout::layout');
 
 // Create the engine instance with the layout:
 $renderer = new ZendViewRenderer(null, $layout);</code></pre>
@@ -606,7 +606,7 @@ $renderer = new ZendViewRenderer(null, $layout);</code></pre>
 
 <h3 id="provide-a-layout-name-when-rendering">Provide a layout name when rendering</h3>
 <pre class="codehilite"><code class="language-php">$content = $renderer-&gt;render('blog/entry', [
-    'layout' =&gt; 'blog',
+    'layout' =&gt; 'layout::blog',
     'entry'  =&gt; $entry,
 ]);</code></pre>
 
@@ -619,7 +619,7 @@ $layout = new ViewModel([
     'encoding' =&gt; 'utf-8',
     'cssPath'  =&gt; '/css/blog/',
 ]);
-$layout-&gt;setTemplate('layout');
+$layout-&gt;setTemplate('layout::layout');
 
 $content = $renderer-&gt;render('blog/entry', [
     'layout' =&gt; $layout,
