@@ -75,7 +75,7 @@ section on running tests.
 To run CS checks only:
 
 ```console
-$ composer cs
+$ composer cs-check
 ```
 
 To attempt to automatically fix common CS issues:
