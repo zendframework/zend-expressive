@@ -21,7 +21,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#391](https://github.com/zendframework/zend-expressive/pull/391) fixes the
+  `Application::run()` implementation to prevent emission of deprecation notices
+  when used with Stratigility 1.3.
 
 ## 1.0.0 - 2016-01-28
 
