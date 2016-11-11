@@ -30,17 +30,28 @@ class ErrorResponseGeneratorTest extends TestCase
     {
         $error = new RuntimeException('', 0);
 
-        $this->response->getBody()->will([$this->stream, 'reveal']);
-        $this->response
+        $initialResponse   = clone $this->response;
+        $secondaryResponse = clone $this->response;
+
+        $secondaryResponse->getBody()->will([$this->stream, 'reveal']);
+
+        $initialResponse
+            ->getStatusCode()
+            ->willReturn(200);
+        $initialResponse
             ->withStatus(500)
-            ->will([$this->response, 'reveal']);
+            ->will(function () use ($secondaryResponse) {
+                $secondaryResponse->getStatusCode()->willReturn(500);
+                $secondaryResponse->getReasonPhrase()->willReturn('Network Connect Timeout Error');
+                return $secondaryResponse->reveal();
+            });
 
         $this->stream->write('An unexpected error occurred')->shouldBeCalled();
 
         $generator = new ErrorResponseGenerator();
-        $response = $generator($error, $this->request->reveal(), $this->response->reveal());
+        $response = $generator($error, $this->request->reveal(), $initialResponse->reveal());
 
-        $this->assertSame($response, $this->response->reveal());
+        $this->assertSame($response, $secondaryResponse->reveal());
     }
 
     public function testWritesStackTraceToResponseWhenNoRendererPresentInDebugMode()
@@ -49,10 +60,21 @@ class ErrorResponseGeneratorTest extends TestCase
         $branch = new RuntimeException('branch', 0, $leaf);
         $error  = new RuntimeException('root', 599, $branch);
 
-        $this->response->getBody()->will([$this->stream, 'reveal']);
-        $this->response
+        $initialResponse   = clone $this->response;
+        $secondaryResponse = clone $this->response;
+
+        $secondaryResponse->getBody()->will([$this->stream, 'reveal']);
+
+        $initialResponse
+            ->getStatusCode()
+            ->willReturn(200);
+        $initialResponse
             ->withStatus(599)
-            ->will([$this->response, 'reveal']);
+            ->will(function () use ($secondaryResponse) {
+                $secondaryResponse->getStatusCode()->willReturn(599);
+                $secondaryResponse->getReasonPhrase()->willReturn('Network Connect Timeout Error');
+                return $secondaryResponse->reveal();
+            });
 
         $this->stream
             ->write(Argument::that(function ($body) use ($leaf, $branch, $error) {
@@ -64,9 +86,9 @@ class ErrorResponseGeneratorTest extends TestCase
             ->shouldBeCalled();
 
         $generator = new ErrorResponseGenerator($debug = true);
-        $response = $generator($error, $this->request->reveal(), $this->response->reveal());
+        $response = $generator($error, $this->request->reveal(), $initialResponse->reveal());
 
-        $this->assertSame($response, $this->response->reveal());
+        $this->assertSame($response, $secondaryResponse->reveal());
     }
 
     public function testTemplates()
@@ -84,24 +106,43 @@ class ErrorResponseGeneratorTest extends TestCase
     {
         $error = new RuntimeException('', 0);
 
+        $initialResponse   = clone $this->response;
+        $secondaryResponse = clone $this->response;
+
         $this->renderer
-            ->render($expected, [])
+            ->render($expected, [
+                'response' => $secondaryResponse->reveal(),
+                'request'  => $this->request->reveal(),
+                'uri'      => 'https://example.com/foo',
+                'status'   => 500,
+                'reason'   => 'Internal Server Error',
+            ])
             ->willReturn('TEMPLATED CONTENTS');
 
-        $this->response->getBody()->will([$this->stream, 'reveal']);
-        $this->response
+        $secondaryResponse->getBody()->will([$this->stream, 'reveal']);
+
+        $initialResponse
+            ->getStatusCode()
+            ->willReturn(200);
+        $initialResponse
             ->withStatus(500)
-            ->will([$this->response, 'reveal']);
+            ->will(function () use ($secondaryResponse) {
+                $secondaryResponse->getStatusCode()->willReturn(500);
+                $secondaryResponse->getReasonPhrase()->willReturn('Internal Server Error');
+                return $secondaryResponse->reveal();
+            });
 
         $this->stream->write('TEMPLATED CONTENTS')->shouldBeCalled();
+
+        $this->request->getUri()->willReturn('https://example.com/foo');
 
         $generator = $template
             ? new ErrorResponseGenerator(false, $this->renderer->reveal(), $template)
             : new ErrorResponseGenerator(false, $this->renderer->reveal());
 
-        $response = $generator($error, $this->request->reveal(), $this->response->reveal());
+        $response = $generator($error, $this->request->reveal(), $initialResponse->reveal());
 
-        $this->assertSame($response, $this->response->reveal());
+        $this->assertSame($response, $secondaryResponse->reveal());
     }
 
     /**
@@ -111,23 +152,43 @@ class ErrorResponseGeneratorTest extends TestCase
     {
         $error = new RuntimeException('', 0);
 
+        $initialResponse   = clone $this->response;
+        $secondaryResponse = clone $this->response;
+
+        $secondaryResponse->getBody()->will([$this->stream, 'reveal']);
+
+        $initialResponse
+            ->getStatusCode()
+            ->willReturn(200);
+        $initialResponse
+            ->withStatus(500)
+            ->will(function () use ($secondaryResponse) {
+                $secondaryResponse->getStatusCode()->willReturn(500);
+                $secondaryResponse->getReasonPhrase()->willReturn('Network Connect Timeout Error');
+                return $secondaryResponse->reveal();
+            });
+
         $this->renderer
-            ->render($expected, ['error' => $error])
+            ->render($expected, [
+                'response' => $secondaryResponse->reveal(),
+                'request'  => $this->request->reveal(),
+                'uri'      => 'https://example.com/foo',
+                'status'   => 500,
+                'reason'   => 'Network Connect Timeout Error',
+                'error'    => $error,
+            ])
             ->willReturn('TEMPLATED CONTENTS');
 
-        $this->response->getBody()->will([$this->stream, 'reveal']);
-        $this->response
-            ->withStatus(500)
-            ->will([$this->response, 'reveal']);
-
         $this->stream->write('TEMPLATED CONTENTS')->shouldBeCalled();
+
+        $this->request->getUri()->willReturn('https://example.com/foo');
 
         $generator = $template
             ? new ErrorResponseGenerator(true, $this->renderer->reveal(), $template)
             : new ErrorResponseGenerator(true, $this->renderer->reveal());
 
-        $response = $generator($error, $this->request->reveal(), $this->response->reveal());
+        $response = $generator($error, $this->request->reveal(), $initialResponse->reveal());
 
-        $this->assertSame($response, $this->response->reveal());
+        $this->assertSame($response, $secondaryResponse->reveal());
     }
 }
