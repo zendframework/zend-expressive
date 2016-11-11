@@ -98,7 +98,7 @@ public function __invoke($request, $response, $next)
     $flash = $request->getAttribute('flash');
     $flash->addMessage('message', 'Hello World!');
 
-    return RedirectResponse('/other-middleware')
+    return new RedirectResponse('/other-middleware');
 }
 ```
 
@@ -195,7 +195,7 @@ public function __invoke($request, $response, $next)
     $session->getSegment(__NAMESPACE__)
             ->setFlash('message', 'Hello World!');
 
-    return RedirectResponse('/other-middleware')
+    return new RedirectResponse('/other-middleware');
 }
 ```
 
