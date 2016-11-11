@@ -32,7 +32,7 @@ class NotFoundHandlerTest extends TestCase
     public function testWritesDefaultMessageToResponseIfNoTemplateRendererFound()
     {
         $this->request
-            ->getAttribute('originalUri', false)
+            ->getUri()
             ->willReturn('https://example.com/foo');
         $this->request
             ->getMethod()
@@ -76,7 +76,9 @@ class NotFoundHandlerTest extends TestCase
 
         $this->stream->write('TEMPLATED RESPONSE')->shouldBeCalled();
 
-        $middleware = new NotFoundHandler($this->response->reveal());
+        $middleware = $template
+            ? new NotFoundHandler($this->response->reveal(), $this->renderer->reveal(), $template)
+            : new NotFoundHandler($this->response->reveal(), $this->renderer->reveal());
 
         $response = $middleware->process($this->request->reveal(), $this->delegate->reveal());
 
