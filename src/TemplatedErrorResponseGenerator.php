@@ -17,10 +17,13 @@ class TemplatedErrorResponseGenerator
 
     private $renderer;
 
-    public function __construct(TemplateRendererInterface $renderer, $isDevelopmentMode = false)
+    private $template;
+
+    public function __construct(TemplateRendererInterface $renderer, $template, $isDevelopmentMode = false)
     {
         $this->renderer          = $renderer;
         $this->isDevelopmentMode = $isDevelopmentMode;
+        $this->template          = $template;
     }
 
     public function __invoke($e, ServerRequestInterface $request, ResponseInterface $response)
