@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 1.0.3 - 2016-11-11
+
+### Added
+
+- Nothing.
+
+### Changes
+
+- [#395](https://github.com/zendframework/zend-expressive/pull/395) updates
+  `Application::__invoke()` to add an error handler to swallow deprecation
+  notices due to triggering error middleware when using Stratigility 1.3+. Since
+  error middleware is triggered whenever the `raiseThrowables` flag is not
+  enabled and an error or empty queue situation is encountered, handling it this
+  way prevents any such errors from bubbling out of the application.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 1.0.2 - 2016-11-11
 
 ### Added
