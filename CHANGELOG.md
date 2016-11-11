@@ -8,6 +8,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - [#306](https://github.com/zendframework/zend-expressive/pull/306) adds a
   cookbook recipe covering flash messages.
+- [#384](https://github.com/zendframework/zend-expressive/pull/384) adds support
+  for Whoops version 2 releases, providing PHP 7 support for Whoops.
 
 ### Deprecated
 
