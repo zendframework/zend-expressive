@@ -29,7 +29,7 @@ class ErrorResponseGenerator
     /**
      * @var string
      */
-    private $stackTraceTemplate =<<<'EOT'
+    private $stackTraceTemplate = <<<'EOT'
 %s raised in file %s line %d:
 Message: %s
 Stack Trace:
