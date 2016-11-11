@@ -149,7 +149,7 @@ return [
 Finally, if you're using zend-view, you can register a new "basePath" helper in
 your `config/autoload/templates.global.php`:
 
-```
+```php
 return [
     /* ... */
     'view_helpers' => [
