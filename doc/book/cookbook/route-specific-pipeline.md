@@ -58,17 +58,21 @@ middleware in order to change the instance or return an alternate instance. In
 this case, we'd do the latter. The following is an example:
 
 ```php
+use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\DelegatorFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Stratigility\MiddlewarePipe;
 
-class ApiResourcePipelineDelegatorFactory
+class ApiResourcePipelineDelegatorFactory implements DelegatorFactoryInterface
 {
-    public function createDelegatorWithName(
-        ServiceLocatorInterface $container,
+    /**
+     * zend-servicemanager v3 support
+     */
+    public function __invoke(
+        ContainerInterface $container,
         $name,
-        $requestedName,
-        $callback
+        callable $callback,
+        array $options = null
     ) {
         $pipeline = new MiddlewarePipe();
 
@@ -82,6 +86,18 @@ class ApiResourcePipelineDelegatorFactory
         $pipeline->pipe($callback());
 
         return $pipeline;
+    }
+
+    /**
+     * zend-servicemanager v2 support
+     */
+    public function createDelegatorWithName(
+        ServiceLocatorInterface $container,
+        $name,
+        $requestedName,
+        $callback
+    ) {
+        return $this($container, $name, $callback);
     }
 }
 ```
@@ -98,7 +114,7 @@ return [
             'ValidationMiddleware' => '...',
             'ApiResourceMiddleware' => '...',
         ],
-        'delegator_factories' => [
+        'delegators' => [
             'ApiResourceMiddleware' => [
                 'ApiResourcePipelineDelegatorFactory',
             ],
