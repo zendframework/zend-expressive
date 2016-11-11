@@ -50,9 +50,7 @@ class IntegrationTest extends TestCase
         $response = new Response();
 
         set_error_handler(function ($errno, $errstr) {
-            return (false !== strstr($errstr, 'OriginalMessages')
-                || false !== strstr($errstr, '$out')
-            );
+            return false !== strstr($errstr, 'OriginalMessages');
         }, E_USER_DEPRECATED);
 
         $app->run($request, $response);
