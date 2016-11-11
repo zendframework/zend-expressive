@@ -11,7 +11,6 @@ use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run as Whoops;
-use Zend\Stratigility\Http\Request as StratigilityRequest;
 
 /**
  * Final handler with templated page capabilities plus Whoops exception reporting.
@@ -102,11 +101,9 @@ class WhoopsErrorHandler extends TemplatedErrorHandler
      */
     private function prepareWhoopsHandler(Request $request, PrettyPageHandler $handler)
     {
-        if ($request instanceof StratigilityRequest) {
-            $request = $request->getOriginalRequest();
-        }
+        $uri = $request->getAttribute('originalUri', false) ?: $request->getUri();
+        $request = $request->getAttribute('originalRequest', false) ?: $request;
 
-        $uri = $request->getUri();
         $handler->addDataTable('Expressive Application Request', [
             'HTTP Method'            => $request->getMethod(),
             'URI'                    => (string) $uri,

@@ -26,13 +26,39 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Removed
 
-- [#309](https://github.com/zendframework/zend-expressive/pull/309) updates the
-  zend-stratigility minimum supported version to 1.2, in order to allow
-  providing final handler configuration.
+- Nothing.
 
 ### Fixed
 
 - Nothing.
+
+## 1.0.2 - 2016-11-11
+
+### Added
+
+- Nothing.
+
+### Changes
+
+- [#393](https://github.com/zendframework/zend-expressive/pull/393) updates
+  `Application::run()` to inject the request with an `originalResponse`
+  attribute using the provided response as the value.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#393](https://github.com/zendframework/zend-expressive/pull/393) fixes how
+  each of the `TemplatedErrorHandler` and `WhoopsErrorHandler` access the
+  "original" request, URI, and/or response. Previously, these used
+  Stratigility-specific methods; they now use request attributes, eliminating
+  deprecation notices emitted in Stratigility 1.3+ versions.
 
 ## 1.0.1 - 2016-11-11
 

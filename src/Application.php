@@ -573,7 +573,10 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
             return;
         }
 
-        $response = $this($request, $response ?: new Response());
+        $response = $response ?: new Response();
+        $request  = $request->withAttribute('originalResponse', $response);
+
+        $response = $this($request, $response);
 
         $emitter = $this->getEmitter();
         $emitter->emit($response);
