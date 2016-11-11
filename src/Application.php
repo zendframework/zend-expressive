@@ -130,6 +130,8 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
      * If $out is not provided, uses the result of `getFinalHandler()`.
      *
      * @todo Remove logic for creating final handler for version 2.0.
+     * @todo Remove error handler for deprecation notice due to triggering
+     *     error middleware for version 2.0.0.
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
      * @param callable|null $out
@@ -137,6 +139,10 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $out = null)
     {
+        set_error_handler(function ($errno, $errstr) {
+            return false !== strstr($errstr, 'error middleware is deprecated');
+        }, E_USER_DEPRECATED);
+
         if (! $out && (null === ($out = $this->getFinalHandler($response)))) {
             $response = $response instanceof StratigilityResponse
                 ? $response
@@ -144,7 +150,11 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
             $out = new FinalHandler([], $response);
         }
 
-        return parent::__invoke($request, $response, $out);
+        $result = parent::__invoke($request, $response, $out);
+
+        restore_error_handler();
+
+        return $result;
     }
 
     /**
