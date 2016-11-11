@@ -8,24 +8,29 @@
 namespace Zend\Expressive\Container;
 
 use Interop\Container\ContainerInterface;
+use Zend\Expressive\Middleware\ErrorResponseGenerator;
 use Zend\Expressive\Template\TemplateRendererInterface;
-use Zend\Expressive\TemplatedErrorResponseGenerator;
 
-class TemplatedErrorResponseGeneratorFactory
+class ErrorResponseGeneratorFactory
 {
+    /**
+     * @param ContainerInterface $container
+     * @return ErrorResponseGenerator
+     */
     public function __invoke(ContainerInterface $container)
     {
         $config = $container->has('config') ? $container->get('config') : [];
+
         $debug = isset($config['debug']) ? $config['debug'] : false;
 
         $template = isset($config['zend-expressive']['error_handler']['template_error'])
             ? $config['zend-expressive']['error_handler']['template_error']
-            : 'error/error';
+            : ErrorResponseGenerator::TEMPLATE_DEFAULT;
 
-        return new TemplatedErrorResponseGenerator(
-            $container->get(TemplateRendererInterface::class),
-            $template,
-            $debug
-        );
+        $renderer = $container->has(TemplateRendererInterface::class)
+            ? $container->get(TemplateRendererInterface::class)
+            : null;
+
+        return new ErrorResponseGenerator($debug, $renderer, $template);
     }
 }

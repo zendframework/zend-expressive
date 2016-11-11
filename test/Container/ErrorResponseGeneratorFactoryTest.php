@@ -31,7 +31,7 @@ class ErrorResponseGeneratorFactoryTest extends TestCase
 
         $this->assertAttributeEquals(false, 'debug', $generator);
         $this->assertAttributeEmpty('renderer', $generator);
-        $this->assertAttributeEquals('error::404', 'template', $generator);
+        $this->assertAttributeEquals('error::error', 'template', $generator);
     }
 
     public function testUsesDebugConfigurationToSetDebugFlag()
