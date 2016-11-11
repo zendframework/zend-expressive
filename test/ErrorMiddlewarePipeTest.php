@@ -10,6 +10,7 @@
 namespace ZendTest\Expressive;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use Prophecy\Argument;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\UriInterface as Uri;
@@ -59,9 +60,15 @@ class ErrorMiddlewarePipeTest extends TestCase
         $request->getUri()->willReturn($uri->reveal());
 
         // The following is required due to Stratigility decorating requests:
-        $request->withAttribute('originalUri', $uri->reveal())->will(function () use ($request) {
-            return $request->reveal();
-        });
+        $request
+            ->withAttribute('originalUri', Argument::that([$uri, 'reveal']))
+            ->will([$request, 'reveal']);
+        // Stratigility 1.3 also injects the originalRequest attribute
+        if (method_exists($this->internalPipe, 'process')) {
+            $request
+                ->withAttribute('originalRequest', Argument::that([$request, 'reveal']))
+                ->will([$request, 'reveal']);
+        }
 
         $response = $this->prophesize(Response::class);
 
@@ -69,9 +76,16 @@ class ErrorMiddlewarePipeTest extends TestCase
             $this->fail('Final handler should not be triggered');
         };
 
+        // Stratigility 1.3 deprecates error middleware
+        set_error_handler(function ($errno, $errstr) {
+            return false !== strstr($errstr, 'error middleware is deprecated');
+        }, E_USER_DEPRECATED);
+
         $result = $this->errorPipe->__invoke($error, $request->reveal(), $response->reveal(), $final);
-        $this->assertInstanceOf(StratigilityResponse::class, $result);
-        $this->assertSame($response->reveal(), $result->getOriginalResponse());
+
+        restore_error_handler();
+
+        $this->assertInstanceOf(Response::class, $result);
         $this->assertTrue($triggered->first);
         $this->assertFalse($triggered->second);
         $this->assertTrue($triggered->third);

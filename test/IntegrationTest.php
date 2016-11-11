@@ -49,7 +49,16 @@ class IntegrationTest extends TestCase
         $request  = new ServerRequest([], [], 'https://example.com/foo', 'GET');
         $response = new Response();
 
+        set_error_handler(function ($errno, $errstr) {
+            return (false !== strstr($errstr, 'OriginalMessages')
+                || false !== strstr($errstr, '$out')
+            );
+        }, E_USER_DEPRECATED);
+
         $app->run($request, $response);
+
+        restore_error_handler();
+
         $this->assertInstanceOf(ResponseInterface::class, $this->response);
         $this->assertEquals(404, $this->response->getStatusCode());
     }
@@ -61,7 +70,14 @@ class IntegrationTest extends TestCase
         $request      = new ServerRequest([], [], 'https://example.com/foo', 'GET');
         $response     = new Response();
 
+        set_error_handler(function ($errno, $errstr) {
+            return false !== strstr($errstr, 'OriginalMessages');
+        }, E_USER_DEPRECATED);
+
         $app->run($request, $response);
+
+        restore_error_handler();
+
         $this->assertInstanceOf(ResponseInterface::class, $this->response);
         $this->assertEquals(404, $this->response->getStatusCode());
     }
