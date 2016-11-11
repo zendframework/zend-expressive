@@ -104,7 +104,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 class FormHelpersDelegatorFactory
 {
     /**
-     * zend-servicemanager v3 usage
+     * zend-servicemanager v3 support
      */
     public function __invoke(
         ContainerInterface $container,
@@ -121,7 +121,7 @@ class FormHelpersDelegatorFactory
     }
 
     /**
-     * zend-servicemanager v2 compatibility
+     * zend-servicemanager v2 support
      */
     public function createDelegatorWithName(
         ServiceLocatorInterface $container,
