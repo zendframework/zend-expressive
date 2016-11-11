@@ -9,7 +9,6 @@ namespace Zend\Expressive;
 
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Zend\Stratigility\Http\Response as StratigilityResponse;
 use Zend\Stratigility\Utils;
 
 /**

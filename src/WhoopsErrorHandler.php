@@ -11,7 +11,6 @@ use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run as Whoops;
-use Zend\Stratigility\Http\Request as StratigilityRequest;
 
 /**
  * Final handler with templated page capabilities plus Whoops exception reporting.
