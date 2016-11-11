@@ -558,8 +558,9 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
      */
     public function run(ServerRequestInterface $request = null, ResponseInterface $response = null)
     {
-        $request  = $request ?: ServerRequestFactory::fromGlobals();
         $response = $response ?: new Response();
+        $request  = $request ?: ServerRequestFactory::fromGlobals();
+        $request  = $request->withAttribute('originalResponse', $response);
 
         $response = $this($request, $response);
 

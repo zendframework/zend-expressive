@@ -9,7 +9,6 @@ namespace Zend\Expressive;
 
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Zend\Stratigility\Http\Response as StratigilityResponse;
 use Zend\Stratigility\Utils;
 
 /**
@@ -191,9 +190,7 @@ class TemplatedErrorHandler
         }
 
         $originalResponse  = $this->originalResponse;
-        $decoratedResponse = $response instanceof StratigilityResponse
-            ? $response->getOriginalResponse()
-            : $response;
+        $decoratedResponse = $request->getAttribute('originalResponse', $response);
 
         if ($originalResponse !== $response
             && $originalResponse !== $decoratedResponse

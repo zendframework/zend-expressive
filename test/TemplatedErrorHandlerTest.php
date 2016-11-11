@@ -12,7 +12,7 @@ namespace ZendTest\Expressive;
 use Exception;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Argument;
-use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
@@ -30,7 +30,7 @@ class TemplatedErrorHandlerTest extends TestCase
 
     public function getRequest($stream)
     {
-        $request = $this->prophesize(RequestInterface::class);
+        $request = $this->prophesize(ServerRequestInterface::class);
         $request->getBody()->will(function () use ($stream) {
             return $stream->reveal();
         });
@@ -130,6 +130,9 @@ class TemplatedErrorHandlerTest extends TestCase
         $handler->setOriginalResponse($response->reveal());
 
         $request = $this->getRequest($this->getStream());
+        $request
+            ->getAttribute('originalResponse', Argument::that([$response, 'reveal']))
+            ->will([$response, 'reveal']);
 
         $result = $handler($request->reveal(), $response->reveal());
         $this->assertSame($expected->reveal(), $result);
@@ -151,6 +154,9 @@ class TemplatedErrorHandlerTest extends TestCase
         $handler->setOriginalResponse($response->reveal());
 
         $request = $this->getRequest($this->getStream());
+        $request
+            ->getAttribute('originalResponse', Argument::that([$response, 'reveal']))
+            ->will([$response, 'reveal']);
 
         $result = $handler($request->reveal(), $response->reveal());
         $this->assertSame($response->reveal(), $result);
@@ -167,6 +173,9 @@ class TemplatedErrorHandlerTest extends TestCase
 
         $response = $this->getResponse($this->getStream());
         $request  = $this->getRequest($this->getStream());
+        $request
+            ->getAttribute('originalResponse', Argument::that([$response, 'reveal']))
+            ->will([$response, 'reveal']);
 
         $result = $handler($request->reveal(), $response->reveal());
         $this->assertSame($response->reveal(), $result);
@@ -243,6 +252,9 @@ class TemplatedErrorHandlerTest extends TestCase
 
         $request = $this->getRequest($this->getStream());
         $request->getUri()->shouldBeCalled();
+        $request
+            ->getAttribute('originalResponse', Argument::that([$response, 'reveal']))
+            ->will([$response, 'reveal']);
 
         $result = $handler($request->reveal(), $response->reveal());
         $this->assertSame($expected->reveal(), $result);
