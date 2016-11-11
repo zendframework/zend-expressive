@@ -758,7 +758,7 @@ constant <code>Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE
             [ 'middleware' =&gt; DebugToolbarMiddleware::class ],
             [
                 'middleware' =&gt; ApiMiddleware::class,
-                'path' =&gt; '/api,
+                'path' =&gt; '/api',
             ],
         ],
 
@@ -781,7 +781,7 @@ constant <code>Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE
         ],
         'api' =&gt; [
             'middleware' =&gt; ApiMiddleware::class,
-            'path' =&gt; '/api,
+            'path' =&gt; '/api',
             'priority' =&gt; 100,
         ],
 
