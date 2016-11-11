@@ -128,7 +128,14 @@ class ApplicationFactoryIntegrationTest extends TestCase
         $request = new ServerRequest([], [], 'http://example.com/needs/authentication', 'GET');
         $response = new Response();
 
+        set_error_handler(function ($errno, $errstr) {
+            return false !== strstr($errstr, 'error middleware is deprecated');
+        }, E_USER_DEPRECATED);
+
         $response = $app($request, $response);
+
+        restore_error_handler();
+
         $this->assertInstanceOf(ResponseInterface::class, $response);
         $this->assertEquals(401, $response->getStatusCode(), 'Unexpected response');
         $this->assertTrue($response->hasHeader('X-Always'));
@@ -148,7 +155,8 @@ class ApplicationFactoryIntegrationTest extends TestCase
         $routeResultSpy = function ($request, $response, $next) {
             $result = $request->getAttribute(RouteResult::class, false);
             $value = $result ? $result->getMatchedRouteName() : 'not-found';
-            return $next($request, $response->withHeader('X-Route-Result', $value));
+            $response = $next($request, $response);
+            return $response->withHeader('X-Route-Result', $value);
         };
 
         $needsAuthentication = function ($request, $response, $next) {
@@ -214,7 +222,14 @@ class ApplicationFactoryIntegrationTest extends TestCase
         $request = new ServerRequest([], [], 'http://example.com/needs/authentication', 'GET');
         $response = new Response();
 
+        set_error_handler(function ($errno, $errstr) {
+            return false !== strstr($errstr, 'error middleware is deprecated');
+        }, E_USER_DEPRECATED);
+
         $response = $app($request, $response);
+
+        restore_error_handler();
+
         $this->assertInstanceOf(ResponseInterface::class, $response);
         $this->assertEquals(401, $response->getStatusCode(), 'Unexpected response');
         $this->assertTrue($response->hasHeader('X-Always'));
