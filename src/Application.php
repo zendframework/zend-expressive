@@ -18,6 +18,8 @@ use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\ServerRequestFactory;
+use Zend\Stratigility\FinalHandler;
+use Zend\Stratigility\Http\Response as StratigilityResponse;
 use Zend\Stratigility\MiddlewarePipe;
 
 /**
@@ -130,6 +132,7 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
      *
      * If $out is not provided, uses the result of `getFinalHandler()`.
      *
+     * @todo Remove logic for creating final handler for version 2.0.
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
      * @param callable|null $out
@@ -137,7 +140,13 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $out = null)
     {
-        $out = $out ?: $this->getFinalHandler($response);
+        if (! $out && (null === ($out = $this->getFinalHandler($response)))) {
+            $response = $response instanceof StratigilityResponse
+                ? $response
+                : new StratigilityResponse($response);
+            $out = new FinalHandler([], $response);
+        }
+
         return parent::__invoke($request, $response, $out);
     }
 

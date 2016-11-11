@@ -11,10 +11,10 @@ cache:
 
 env:
   global:
-    - SITE_URL: https://zendframework.github.io/zend-expressive
-    - GH_USER_NAME: "Matthew Weier O'Phinney"
-    - GH_USER_EMAIL: matthew@weierophinney.net
-    - GH_REF: github.com/zendframework/zend-expressive.git
+    - SITE_URL=https://zendframework.github.io/zend-expressive
+    - GH_USER_NAME="Matthew Weier O'Phinney"
+    - GH_USER_EMAIL=matthew@weierophinney.net
+    - GH_REF=github.com/zendframework/zend-expressive.git
     - secure: "djSWIzje6Y+r72owunmsiCxNlXm1pmnlwMdjhy3L8g9lSnShC7MFvHBhhvEBQgVkKIxjmzq6RPI5wH/+LcotsHsM+LgVsgNhr9B9OR82Y3BNZM+bCU6qKmLWKn2bFafF097VBt22VaggFFlJhifWdCHZ65xfBIXXEACTDLm1nbOL9aKryEpsGTyd/NUyRLPyc9ShoVgHo/6I+NXHGbADxLGokdnQDw4kUpjWs++/G490OrkY8rZHDD2TpCcPca/v7i1+RrJVLnFVhXBAzSmxFLQon+FVN6orhiONs9r8u/sNovQtAEpaO4hmn8LFrf0oK/d4CgNdvm+1CQt+3TWJOM/yqYxOVxB9WukWfeGLn1d/XZvr9pUuF1BAP0r1kd95ewXgSwG9H5CCSBer39c+NnVTHE0PHUSaL0YX5VuOlAJ9K/suxHkRzQroJkkx34hI7EsJYsoMXrxBll7t5l9J8EQNGeihMc81pBWS262PyAlJxDtZ3aJpoVhhrVRpBdKNhXPFi5/nBb8EFxQUIAzYOSPJjbzJZxNBfB13Mq9Qn9WeEtw25QnHY60FmiVTs7hPCuMFOnUrJD+dW4Rkj86GBMecihdB/8TfYFvr6742rMZ+x6KhbyGOJADhp06YJC/2zPfpGzvWR8QqGDfDhXQAS7QNj/yH72OVIwUkC4oePfI="
 
 matrix:
