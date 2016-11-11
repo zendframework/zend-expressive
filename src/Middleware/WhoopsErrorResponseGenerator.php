@@ -7,10 +7,12 @@
 
 namespace Zend\Expressive\Middleware;
 
+use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Whoops\Handler\PrettyPageHandler;
-use Whoops\RunInterface as Whoops;
+use Whoops\Run;
+use Whoops\RunInterface;
 
 class WhoopsErrorResponseGenerator
 {
@@ -20,10 +22,21 @@ class WhoopsErrorResponseGenerator
     private $whoops;
 
     /**
-     * @param Whoops $whoops
+     * @param Run|RunInterface $whoops
+     * @throws InvalidArgumentException if $whoops is not a Run or RunInterface
+     *     instance.
      */
-    public function __construct(Whoops $whoops)
+    public function __construct($whoops)
     {
+        if (! ($whoops instanceof RunInterface || $whoops instanceof Run)) {
+            throw new InvalidArgumentException(sprintf(
+                '%s expects a %s or %s instance; received %s',
+                Run::class,
+                RunInterface::class,
+                is_object($whoops) ? get_class($whoops) : gettype($whoops)
+            ));
+        }
+
         $this->whoops = $whoops;
     }
 
