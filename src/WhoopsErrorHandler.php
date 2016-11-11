@@ -102,11 +102,9 @@ class WhoopsErrorHandler extends TemplatedErrorHandler
      */
     private function prepareWhoopsHandler(Request $request, PrettyPageHandler $handler)
     {
-        if ($request instanceof StratigilityRequest) {
-            $request = $request->getOriginalRequest();
-        }
+        $uri = $request->getAttribute('originalUri', false) ?: $request->getUri();
+        $request = $request->getAttribute('originalRequest', false) ?: $request;
 
-        $uri = $request->getUri();
         $handler->addDataTable('Expressive Application Request', [
             'HTTP Method'            => $request->getMethod(),
             'URI'                    => (string) $uri,

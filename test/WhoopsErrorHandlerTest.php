@@ -82,6 +82,8 @@ class WhoopsErrorHandlerTest extends TestCase
         $request->getAttributes()->shouldBeCalled();
         $request->getQueryParams()->shouldBeCalled();
         $request->getParsedBody()->shouldBeCalled();
+        $request->getAttribute('originalUri', false)->willReturn(false);
+        $request->getAttribute('originalRequest', false)->willReturn(false);
 
         $result = $handler($request->reveal(), $response->reveal(), $exception);
         $this->assertSame($expected->reveal(), $result);
@@ -119,7 +121,8 @@ class WhoopsErrorHandlerTest extends TestCase
 
         $request           = new ServerRequest(['SCRIPT_NAME' => __FILE__]);
         $decoratingRequest = $this->prophesize(StratigilityRequest::class);
-        $decoratingRequest->getOriginalRequest()->willReturn($request);
+        $decoratingRequest->getAttribute('originalRequest', false)->willReturn($request);
+        $decoratingRequest->getAttribute('originalUri', false)->willReturn($request->getUri());
 
         $result = $handler($decoratingRequest->reveal(), $response->reveal(), $exception);
         $this->assertSame($expected->reveal(), $result);

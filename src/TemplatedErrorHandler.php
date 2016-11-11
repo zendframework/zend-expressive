@@ -191,9 +191,7 @@ class TemplatedErrorHandler
         }
 
         $originalResponse  = $this->originalResponse;
-        $decoratedResponse = $response instanceof StratigilityResponse
-            ? $response->getOriginalResponse()
-            : $response;
+        $decoratedResponse = $request->getAttribute('originalResponse', $response);
 
         if ($originalResponse !== $response
             && $originalResponse !== $decoratedResponse
