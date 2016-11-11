@@ -545,17 +545,21 @@ setting up your container configuration.</p>
 Delegator factories allow you to decorate the primary factory used to create the
 middleware in order to change the instance or return an alternate instance. In
 this case, we'd do the latter. The following is an example:</p>
-<pre class="codehilite"><code class="language-php">use Zend\ServiceManager\DelegatorFactoryInterface;
+<pre class="codehilite"><code class="language-php">use Interop\Container\ContainerInterface;
+use Zend\ServiceManager\DelegatorFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Stratigility\MiddlewarePipe;
 
-class ApiResourcePipelineDelegatorFactory
+class ApiResourcePipelineDelegatorFactory implements DelegatorFactoryInterface
 {
-    public function createDelegatorWithName(
-        ServiceLocatorInterface $container,
+    /**
+     * zend-servicemanager v3 support
+     */
+    public function __invoke(
+        ContainerInterface $container,
         $name,
-        $requestedName,
-        $callback
+        callable $callback,
+        array $options = null
     ) {
         $pipeline = new MiddlewarePipe();
 
@@ -570,6 +574,18 @@ class ApiResourcePipelineDelegatorFactory
 
         return $pipeline;
     }
+
+    /**
+     * zend-servicemanager v2 support
+     */
+    public function createDelegatorWithName(
+        ServiceLocatorInterface $container,
+        $name,
+        $requestedName,
+        $callback
+    ) {
+        return $this($container, $name, $callback);
+    }
 }</code></pre>
 
 
@@ -583,7 +599,7 @@ class ApiResourcePipelineDelegatorFactory
             'ValidationMiddleware' =&gt; '...',
             'ApiResourceMiddleware' =&gt; '...',
         ],
-        'delegator_factories' =&gt; [
+        'delegators' =&gt; [
             'ApiResourceMiddleware' =&gt; [
                 'ApiResourcePipelineDelegatorFactory',
             ],
