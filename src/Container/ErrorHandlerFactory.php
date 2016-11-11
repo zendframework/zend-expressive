@@ -9,16 +9,21 @@ namespace Zend\Expressive\Container;
 
 use Interop\Container\ContainerInterface;
 use Zend\Diactoros\Response;
-use Zend\Expressive\TemplatedErrorResponseGenerator;
+use Zend\Expressive\Middleware\ErrorResponseGenerator;
 use Zend\Stratigility\Middleware\ErrorHandler;
 
 class ErrorHandlerFactory
 {
+    /**
+     * @param ContainerInterface $container
+     * @return ErrorHandler
+     */
     public function __invoke(ContainerInterface $container)
     {
-        return new ErrorHandler(
-            new Response(),
-            $container->get(TemplatedErrorResponseGenerator::class)
-        );
+        $generator = $container->has(ErrorResponseGenerator::class)
+            ? $container->get(ErrorResponseGenerator::class)
+            : null;
+
+        return new ErrorHandler(new Response(), $generator);
     }
 }

@@ -13,6 +13,7 @@ use Psr\Http\Message\ResponseInterface;
 use Zend\Expressive\Container\ErrorHandlerFactory;
 use Zend\Expressive\Middleware\ErrorResponseGenerator;
 use Zend\Stratigility\Middleware\ErrorHandler;
+use Zend\Stratigility\Middleware\ErrorResponseGenerator as StratigilityGenerator;
 
 class ErrorHandlerFactoryTest extends TestCase
 {
@@ -21,7 +22,7 @@ class ErrorHandlerFactoryTest extends TestCase
         $this->container = $this->prophesize(ContainerInterface::class);
     }
 
-    public function testFactoryCreatesHandlerWithoutGeneratorIfNoGeneratorServiceAvailable()
+    public function testFactoryCreatesHandlerWithStratigilityGeneratorIfNoGeneratorServiceAvailable()
     {
         $this->container->has(ErrorResponseGenerator::class)->willReturn(false);
 
@@ -30,7 +31,7 @@ class ErrorHandlerFactoryTest extends TestCase
 
         $this->assertInstanceOf(ErrorHandler::class, $handler);
         $this->assertAttributeInstanceOf(ResponseInterface::class, 'responsePrototype', $handler);
-        $this->assertAttributeEmpty('responseGenerator', $handler);
+        $this->assertAttributeInstanceOf(StratigilityGenerator::class, 'responseGenerator', $handler);
     }
 
     public function testFactoryCreatesHandlerWithGeneratorIfGeneratorServiceAvailable()
