@@ -16,7 +16,7 @@
         }
     },
     "require": {
-        "php": "^5.5 || ^7.0",
+        "php": "^5.6 || ^7.0",
         "container-interop/container-interop": "^1.1",
         "psr/http-message": "^1.0",
         "zendframework/zend-diactoros": "^1.1",
@@ -27,7 +27,7 @@
     "require-dev": {
         "filp/whoops": "^1.1 || ^2.0",
         "phpunit/phpunit": "^4.7",
-        "squizlabs/php_codesniffer": "^2.3",
+        "zendframework/zend-coding-standard": "~1.0.0",
         "zendframework/zend-expressive-aurarouter": "^1.0",
         "zendframework/zend-expressive-fastroute": "^1.0",
         "zendframework/zend-expressive-zendrouter": "^1.0",
@@ -53,11 +53,11 @@
     },
     "scripts": {
         "check": [
-            "@cs",
+            "@cs-check",
             "@test"
         ],
         "coveralls": "coveralls",
-        "cs": "phpcs",
+        "cs-check": "phpcs",
         "cs-fix": "phpcbf",
         "test": "phpunit",
         "test-coverage": "phpunit --coverage-clover clover.xml",
