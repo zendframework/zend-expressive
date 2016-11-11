@@ -44,7 +44,6 @@ class WhoopsErrorResponseGeneratorTest extends TestCase
         $this->request->getAttribute('originalUri', false)->shouldNotBeCalled();
         $this->request->getAttribute('originalRequest', false)->shouldNotBeCalled();
 
-        $this->response->withStatus(500)->will([$this->response, 'reveal']);
         $this->response->getBody()->will([$this->stream, 'reveal']);
 
         $this->stream->write('WHOOPS')->shouldBeCalled();
@@ -52,7 +51,7 @@ class WhoopsErrorResponseGeneratorTest extends TestCase
         $generator = new WhoopsErrorResponseGenerator($this->whoops->reveal());
 
         $this->assertSame(
-            $this->response,
+            $this->response->reveal(),
             $generator($error, $this->request->reveal(), $this->response->reveal())
         );
     }
@@ -88,7 +87,6 @@ class WhoopsErrorResponseGeneratorTest extends TestCase
         $this->request->getQueryParams()->willReturn([]);
         $this->request->getParsedBody()->willReturn([]);
 
-        $this->response->withStatus(500)->will([$this->response, 'reveal']);
         $this->response->getBody()->will([$this->stream, 'reveal']);
 
         $this->stream->write('WHOOPS')->shouldBeCalled();
@@ -96,7 +94,7 @@ class WhoopsErrorResponseGeneratorTest extends TestCase
         $generator = new WhoopsErrorResponseGenerator($this->whoops->reveal());
 
         $this->assertSame(
-            $this->response,
+            $this->response->reveal(),
             $generator($error, $this->request->reveal(), $this->response->reveal())
         );
     }
