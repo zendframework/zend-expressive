@@ -30,13 +30,13 @@ class WhoopsErrorHandlerFactoryTest extends TestCase
 
     public function setUp()
     {
-        $whoops      = $this->prophesize(Whoops::class);
-        $pageHandler = $this->prophesize(PrettyPageHandler::class);
+        $whoops          = new Whoops();
+        $pageHandler     = $this->prophesize(PrettyPageHandler::class);
         $this->container = $this->mockContainerInterface();
         $this->injectServiceInContainer($this->container, 'Zend\Expressive\WhoopsPageHandler', $pageHandler->reveal());
-        $this->injectServiceInContainer($this->container, 'Zend\Expressive\Whoops', $whoops->reveal());
+        $this->injectServiceInContainer($this->container, 'Zend\Expressive\Whoops', $whoops);
 
-        $this->factory   = new WhoopsErrorHandlerFactory();
+        $this->factory = new WhoopsErrorHandlerFactory();
     }
 
     public function testReturnsAWhoopsErrorHandler()
@@ -59,10 +59,14 @@ class WhoopsErrorHandlerFactoryTest extends TestCase
 
     public function testWillInjectTemplateNamesFromConfigurationWhenPresent()
     {
-        $config = ['zend-expressive' => ['error_handler' => [
-            'template_404'   => 'error::404',
-            'template_error' => 'error::500',
-        ]]];
+        $config = [
+            'zend-expressive' => [
+                'error_handler' => [
+                    'template_404'   => 'error::404',
+                    'template_error' => 'error::500',
+                ],
+            ],
+        ];
         $this->injectServiceInContainer($this->container, 'config', $config);
 
         $factory = $this->factory;

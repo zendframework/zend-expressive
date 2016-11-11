@@ -46,15 +46,19 @@ class WhoopsPageHandlerFactoryTest extends TestCase
         $this->injectServiceInContainer($this->container, 'config', $config);
 
         $factory = $this->factory;
-        $result = $factory($this->container->reveal());
+        $result  = $factory($this->container->reveal());
         $this->assertInstanceOf(PrettyPageHandler::class, $result);
         $this->assertAttributeEquals($config['whoops']['editor'], 'editor', $result);
     }
 
     public function testWillInjectCallableEditor()
     {
-        $config = ['whoops' => ['editor' => function () {
-        }]];
+        $config = [
+            'whoops' => [
+                'editor' => function () {
+                },
+            ],
+        ];
         $this->injectServiceInContainer($this->container, 'config', $config);
         $factory = $this->factory;
 
@@ -72,7 +76,7 @@ class WhoopsPageHandlerFactoryTest extends TestCase
         $this->injectServiceInContainer($this->container, 'custom', $editor);
 
         $factory = $this->factory;
-        $result = $factory($this->container->reveal());
+        $result  = $factory($this->container->reveal());
         $this->assertInstanceOf(PrettyPageHandler::class, $result);
         $this->assertAttributeSame($editor, 'editor', $result);
     }

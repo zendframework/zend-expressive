@@ -30,17 +30,17 @@ class WhoopsFactoryTest extends TestCase
 
     public function setUp()
     {
-        $pageHandler = $this->prophesize(PrettyPageHandler::class);
+        $pageHandler     = $this->prophesize(PrettyPageHandler::class);
         $this->container = $this->mockContainerInterface();
         $this->injectServiceInContainer($this->container, 'Zend\Expressive\WhoopsPageHandler', $pageHandler->reveal());
 
-        $this->factory   = new WhoopsFactory();
+        $this->factory = new WhoopsFactory();
     }
 
     public function assertWhoopsContainsHandler($type, Whoops $whoops, $message = null)
     {
         $message = $message ?: sprintf("Failed to assert whoops runtime composed handler of type %s", $type);
-        $r = new ReflectionProperty($whoops, 'handlerStack');
+        $r       = new ReflectionProperty($whoops, 'handlerStack');
         $r->setAccessible(true);
         $stack = $r->getValue($whoops);
 
@@ -80,11 +80,18 @@ class WhoopsFactoryTest extends TestCase
      */
     public function testJsonResponseHandlerCanBeConfigured()
     {
-        $config = ['whoops' => ['json_exceptions' => [
-            'display'    => true,
-            'show_trace' => true,
-            'ajax_only'  => true,
-        ]]];
+        // Set for Whoops 2.x json handler detection
+        $_SERVER['HTTP_X_REQUESTED_WITH'] = 'xmlhttprequest';
+
+        $config = [
+            'whoops' => [
+                'json_exceptions' => [
+                    'display'    => true,
+                    'show_trace' => true,
+                    'ajax_only'  => true,
+                ],
+            ],
+        ];
         $this->injectServiceInContainer($this->container, 'config', $config);
 
         $factory = $this->factory;
@@ -93,6 +100,9 @@ class WhoopsFactoryTest extends TestCase
         $jsonHandler = $whoops->popHandler();
         $this->assertInstanceOf(JsonResponseHandler::class, $jsonHandler);
         $this->assertAttributeSame(true, 'returnFrames', $jsonHandler);
-        $this->assertAttributeSame(true, 'onlyForAjaxRequests', $jsonHandler);
+
+        if (method_exists($jsonHandler, 'onlyForAjaxRequests')) {
+            $this->assertAttributeSame(true, 'onlyForAjaxRequests', $jsonHandler);
+        }
     }
 }

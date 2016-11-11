@@ -80,7 +80,15 @@ class WhoopsFactory
         }
 
         if (isset($config['json_exceptions']['ajax_only'])) {
-            $handler->onlyForAjaxRequests(true);
+            if (method_exists(\Whoops\Util\Misc::class, 'isAjaxRequest')) {
+                // Whoops 2.x
+                if (! \Whoops\Util\Misc::isAjaxRequest()) {
+                    return;
+                }
+            } elseif (method_exists($handler, 'onlyForAjaxRequests')) {
+                // Whoops 1.x
+                $handler->onlyForAjaxRequests(true);
+            }
         }
 
         $whoops->pushHandler($handler);
