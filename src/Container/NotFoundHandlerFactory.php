@@ -16,9 +16,18 @@ class NotFoundHandlerFactory
 {
     public function __invoke(ContainerInterface $container)
     {
+        $config = $container->has('config')
+            ? $container->get('config')
+            : [];
+
+        $template = isset($config['zend-expressive']['error_handler']['template_404'])
+            ? $config['zend-expressive']['error_handler']['template_404']
+            : 'error/404';
+
         return new NotFoundHandler(
             $container->get(TemplateRendererInterface::class),
-            new Response()
+            new Response(),
+            $template
         );
     }
 }

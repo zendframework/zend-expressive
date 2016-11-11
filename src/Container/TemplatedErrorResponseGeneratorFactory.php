@@ -18,8 +18,13 @@ class TemplatedErrorResponseGeneratorFactory
         $config = $container->has('config') ? $container->get('config') : [];
         $debug = isset($config['debug']) ? $config['debug'] : false;
 
+        $template = isset($config['zend-expressive']['error_handler']['template_error'])
+            ? $config['zend-expressive']['error_handler']['template_error']
+            : 'error/error';
+
         return new TemplatedErrorResponseGenerator(
             $container->get(TemplateRendererInterface::class),
+            $template,
             $debug
         );
     }

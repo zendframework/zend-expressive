@@ -20,16 +20,19 @@ class NotFoundHandler implements ServerMiddlewareInterface
 
     private $responsePrototype;
 
+    private $template;
+
     /**
      * NotFoundHandler constructor.
      *
      * @param TemplateRendererInterface $renderer
      * @param ResponseInterface         $responsePrototype
      */
-    public function __construct(TemplateRendererInterface $renderer, ResponseInterface $responsePrototype)
+    public function __construct(TemplateRendererInterface $renderer, ResponseInterface $responsePrototype, $template)
     {
         $this->renderer          = $renderer;
         $this->responsePrototype = $responsePrototype;
+        $this->template          = $template;
     }
 
     /**
@@ -61,7 +64,7 @@ class NotFoundHandler implements ServerMiddlewareInterface
     {
         $response = $this->responsePrototype->withStatus(404);
         $response->getBody()->write(
-            $this->renderer->render('error::404')
+            $this->renderer->render($this->template)
         );
 
         return $response;
