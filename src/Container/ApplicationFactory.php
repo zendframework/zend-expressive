@@ -114,6 +114,9 @@ use Zend\Stratigility\FinalHandler;
  * the `middleware` value of a specification. Internally, this will create
  * a `Zend\Stratigility\MiddlewarePipe` instance, with the middleware
  * specified piped in the order provided.
+ *
+ * You may disable injection of configured routing and the middleware pipeline
+ * by enabling the `zend-expressive.programmatic_pipeline` configuration flag.
  */
 class ApplicationFactory
 {
@@ -150,7 +153,13 @@ class ApplicationFactory
 
         $app = new Application($router, $container, $finalHandler, $emitter);
 
-        $this->injectRoutesAndPipeline($app, $container);
+        $config = $container->has('config') ? $container->get('config') : [];
+
+        if (! isset($config['zend-expressive']['programmatic_pipeline'])
+            || ! $config['zend-expressive']['programmatic_pipeline']
+        ) {
+            $this->injectRoutesAndPipeline($app, $config);
+        }
 
         return $app;
     }
@@ -159,11 +168,10 @@ class ApplicationFactory
      * Injects routes and the middleware pipeline into the application.
      *
      * @param Application $app
-     * @param ContainerInterface $container
+     * @param array $config
      */
-    private function injectRoutesAndPipeline(Application $app, ContainerInterface $container)
+    private function injectRoutesAndPipeline(Application $app, array $config)
     {
-        $config = $container->has('config') ? $container->get('config') : [];
         $pipelineCreated = false;
 
         if (isset($config['middleware_pipeline']) && is_array($config['middleware_pipeline'])) {
