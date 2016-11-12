@@ -860,4 +860,67 @@ class ApplicationFactoryTest extends TestCase
         $this->assertTrue($r->isClosure(), 'Configured middleware is not the expected lazy-middleware closure');
         $this->assertEquals(4, $r->getNumberOfParameters(), 'Configured middleware is not error middleware');
     }
+
+    /**
+     * @group programmatic
+     */
+    public function testWillNotInjectConfiguredRoutesOrPipelineIfProgrammaticPipelineFlagEnabled()
+    {
+        // @codingStandardsIgnoreStart
+        $api = function ($request, $response, $next) {};
+        // @codingStandardsIgnoreEnd
+
+        $dynamicPath = clone $api;
+        $noPath = clone $api;
+        $goodbye = clone $api;
+        $pipelineFirst = clone $api;
+        $hello = clone $api;
+        $pipelineLast = clone $api;
+
+        $config = [
+            'middleware_pipeline' => [
+                [ 'path' => '/api', 'middleware' => $api ],
+                [ 'path' => '/dynamic-path', 'middleware' => 'DynamicPath' ],
+                ['middleware' => $noPath],
+                ['middleware' => 'Goodbye'],
+                ['middleware' => [
+                    $pipelineFirst,
+                    'Hello',
+                    $pipelineLast,
+                ]],
+            ],
+            'routes' => [
+                [
+                    'path' => '/',
+                    'middleware' => 'HelloWorld',
+                    'name' => 'home',
+                    'allowed_methods' => ['GET'],
+                    'options' => [],
+                ],
+            ],
+            'zend-expressive' => [
+                'programmatic_pipeline' => true,
+            ],
+        ];
+
+        $this->injectServiceInContainer($this->container, 'DynamicPath', $dynamicPath);
+        $this->injectServiceInContainer($this->container, 'Goodbye', $goodbye);
+        $this->injectServiceInContainer($this->container, 'Hello', $hello);
+        $this->injectServiceInContainer($this->container, 'config', $config);
+
+        $app = $this->factory->__invoke($this->container->reveal());
+
+        $this->assertAttributeSame(false, 'routeMiddlewareIsRegistered', $app);
+        $this->assertAttributeSame(false, 'dispatchMiddlewareIsRegistered', $app);
+
+        $r = new ReflectionProperty($app, 'pipeline');
+        $r->setAccessible(true);
+        $pipeline = $r->getValue($app);
+        $this->assertCount(0, $pipeline, 'Pipeline contains entries and should not');
+
+        $r = new ReflectionProperty($app, 'routes');
+        $r->setAccessible(true);
+        $routes = $r->getValue($app);
+        $this->assertEmpty($routes, 'Routes exist, and should not');
+    }
 }

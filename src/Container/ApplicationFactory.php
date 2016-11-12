@@ -35,6 +35,9 @@ use Zend\Stratigility\FinalHandler;
  * to provide routing and middleware pipeline configuration; this factory
  * delegates to the methods in that static class in order to seed the
  * Application instance.
+ *
+ * You may disable injection of configured routing and the middleware pipeline
+ * by enabling the `zend-expressive.programmatic_pipeline` configuration flag.
  */
 class ApplicationFactory
 {
@@ -71,7 +74,13 @@ class ApplicationFactory
 
         $app = new Application($router, $container, $finalHandler, $emitter);
 
-        $this->injectRoutesAndPipeline($app, $container);
+        $config = $container->has('config') ? $container->get('config') : [];
+
+        if (! isset($config['zend-expressive']['programmatic_pipeline'])
+            || ! $config['zend-expressive']['programmatic_pipeline']
+        ) {
+            $this->injectRoutesAndPipeline($app, $config);
+        }
 
         return $app;
     }
@@ -80,11 +89,10 @@ class ApplicationFactory
      * Injects routes and the middleware pipeline into the application.
      *
      * @param Application $app
-     * @param ContainerInterface $container
+     * @param array $config
      */
-    private function injectRoutesAndPipeline(Application $app, ContainerInterface $container)
+    private function injectRoutesAndPipeline(Application $app, array $config)
     {
-        $config = $container->has('config') ? $container->get('config') : [];
         ApplicationUtils::injectRoutesFromConfig($app, $config);
         ApplicationUtils::injectPipelineFromConfig($app, $config);
     }
