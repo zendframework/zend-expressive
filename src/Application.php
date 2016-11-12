@@ -338,12 +338,22 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
      * Once middleware detection and wrapping (if necessary) is complete,
      * proxies to pipe().
      *
+     * @deprecated Since 1.1.0; will be removed in 2.0.0.
      * @param string|callable $path Either a URI path prefix, or middleware.
      * @param null|string|callable $middleware Middleware
      * @return self
      */
     public function pipeErrorHandler($path, $middleware = null)
     {
+        trigger_error(sprintf(
+            'Stratigility-style error middleware is deprecated by Stratigility 1.3 '
+            . 'and Expressive 1.1. Please update your application to use standard '
+            . 'middleware designed for error handling as described in %s '
+            . 'and %s.',
+            'https://docs.zendframework.com/zend-stratigility/error-handlers/',
+            'https://docs.zendframework.com/zend-expressive/features/error-handling/'
+        ), E_USER_DEPRECATED);
+
         if (null === $middleware) {
             $middleware = $this->prepareMiddleware($path, $this->container, $forError = true);
             $path = '/';

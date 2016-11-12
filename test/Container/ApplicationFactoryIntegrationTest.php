@@ -48,6 +48,15 @@ class ApplicationFactoryIntegrationTest extends TestCase
 
         $this->injectServiceInContainer($this->container, RouterInterface::class, $this->router->reveal());
         $this->injectServiceInContainer($this->container, EmitterInterface::class, $this->emitter->reveal());
+
+        set_error_handler(function ($errno, $errmsg) {
+            return false !== strstr($errmsg, 'error middleware is deprecated');
+        }, E_USER_DEPRECATED);
+    }
+
+    public function tearDown()
+    {
+        restore_error_handler();
     }
 
     public function testConfiguredErrorMiddlewarePipeIsExecutedWhenMiddlewareCallsNextWithError()

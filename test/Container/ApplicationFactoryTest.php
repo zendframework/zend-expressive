@@ -399,6 +399,7 @@ class ApplicationFactoryTest extends TestCase
     }
 
     /**
+     * @todo Remove for 2.0.0
      * @group piping
      */
     public function testCanMarkPipedMiddlewareServiceAsErrorMiddleware()
@@ -416,7 +417,13 @@ class ApplicationFactoryTest extends TestCase
         $this->injectServiceInContainer($this->container, 'config', $config);
         $this->injectServiceInContainer($this->container, 'Middleware', $middleware);
 
+        set_error_handler(function ($errno, $errmsg) {
+            return false !== strstr($errmsg, 'error middleware is deprecated');
+        }, E_USER_DEPRECATED);
+
         $app = $this->factory->__invoke($this->container->reveal());
+
+        restore_error_handler();
 
         $r = new ReflectionProperty($app, 'pipeline');
         $r->setAccessible(true);
@@ -820,6 +827,9 @@ class ApplicationFactoryTest extends TestCase
         }
     }
 
+    /**
+     * @todo Remove for 2.0.0
+     */
     public function testProperlyRegistersNestedErrorMiddlewareAsLazyErrorMiddleware()
     {
         $config = ['middleware_pipeline' => [
@@ -836,7 +846,13 @@ class ApplicationFactoryTest extends TestCase
         $fooError = $this->prophesize(ErrorMiddlewareInterface::class)->reveal();
         $this->injectServiceInContainer($this->container, 'FooError', $fooError);
 
+        set_error_handler(function ($errno, $errmsg) {
+            return false !== strstr($errmsg, 'error middleware is deprecated');
+        }, E_USER_DEPRECATED);
+
         $app = $this->factory->__invoke($this->container->reveal());
+
+        restore_error_handler();
 
         $r = new ReflectionProperty($app, 'pipeline');
         $r->setAccessible(true);

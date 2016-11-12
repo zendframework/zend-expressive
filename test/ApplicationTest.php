@@ -479,6 +479,7 @@ class ApplicationTest extends TestCase
     }
 
     /**
+     * @todo Remove for 2.0.0
      * @group lazy-piping
      */
     public function testAllowsPipingErrorMiddlewareUsingServiceNameAsSoleArgument()
@@ -491,7 +492,14 @@ class ApplicationTest extends TestCase
         $this->injectServiceInContainer($container, 'foo', $middleware);
 
         $app = new Application($this->router->reveal(), $container->reveal());
+
+        set_error_handler(function ($errno, $errmsg) {
+            return false !== strstr($errmsg, 'error middleware is deprecated');
+        }, E_USER_DEPRECATED);
+
         $app->pipeErrorHandler('foo');
+
+        restore_error_handler();
 
         $r = new ReflectionProperty($app, 'pipeline');
         $r->setAccessible(true);
@@ -556,6 +564,7 @@ class ApplicationTest extends TestCase
     }
 
     /**
+     * @todo Remove for 2.0.0
      * @group lazy-piping
      */
     public function testAllowsPipingErrorMiddlewareAsServiceNameWithPath()
@@ -568,7 +577,14 @@ class ApplicationTest extends TestCase
         $this->injectServiceInContainer($container, 'foo', $middleware);
 
         $app = new Application($this->router->reveal(), $container->reveal());
+
+        set_error_handler(function ($errno, $errmsg) {
+            return false !== strstr($errmsg, 'error middleware is deprecated');
+        }, E_USER_DEPRECATED);
+
         $app->pipeErrorHandler('/foo', 'foo');
+
+        restore_error_handler();
 
         $r = new ReflectionProperty($app, 'pipeline');
         $r->setAccessible(true);
@@ -581,6 +597,9 @@ class ApplicationTest extends TestCase
         $this->assertEquals('invoked', $handler('foo', 'bar', 'baz', 'bat'));
     }
 
+    /**
+     * @todo Remove for 2.0.0
+     */
     public function testAllowsPipingErrorMiddlewareWithoutPath()
     {
         $middleware = function ($error, $req, $res, $next) {
@@ -591,7 +610,14 @@ class ApplicationTest extends TestCase
         $this->injectServiceInContainer($container, 'foo', $middleware);
 
         $app = new Application($this->router->reveal(), $container->reveal());
+
+        set_error_handler(function ($errno, $errmsg) {
+            return false !== strstr($errmsg, 'error middleware is deprecated');
+        }, E_USER_DEPRECATED);
+
         $app->pipeErrorHandler($middleware);
+
+        restore_error_handler();
 
         $r = new ReflectionProperty($app, 'pipeline');
         $r->setAccessible(true);
@@ -604,7 +630,10 @@ class ApplicationTest extends TestCase
         $this->assertEquals('invoked', $handler('foo', 'bar', 'baz', 'bat'));
     }
 
-    public function testPipingNotInvokableErrorMiddlewareRisesException()
+    /**
+     * @todo Remove for 2.0.0
+     */
+    public function testPipingNotInvokableErrorMiddlewareRaisesException()
     {
         $middleware = 'not callable';
 
@@ -612,7 +641,14 @@ class ApplicationTest extends TestCase
         $this->injectServiceInContainer($container, 'foo', $middleware);
 
         $app = new Application($this->router->reveal(), $container->reveal());
+
+        set_error_handler(function ($errno, $errmsg) {
+            return false !== strstr($errmsg, 'error middleware is deprecated');
+        }, E_USER_DEPRECATED);
+
         $app->pipeErrorHandler('/foo', 'foo');
+
+        restore_error_handler();
 
         $r = new ReflectionProperty($app, 'pipeline');
         $r->setAccessible(true);

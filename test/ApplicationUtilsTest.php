@@ -359,6 +359,9 @@ class ApplicationUtilsTest extends TestCase
         }
     }
 
+    /**
+     * @todo Remove for 2.0.0
+     */
     public function testProperlyRegistersNestedErrorMiddlewareAsLazyErrorMiddleware()
     {
         $config = ['middleware_pipeline' => [
@@ -376,7 +379,13 @@ class ApplicationUtilsTest extends TestCase
 
         $app = $this->createApplication();
 
+        set_error_handler(function ($errno, $errmsg) {
+            return false !== strstr($errmsg, 'error middleware is deprecated');
+        }, E_USER_DEPRECATED);
+
         ApplicationUtils::injectPipelineFromConfig($app, $config);
+
+        restore_error_handler();
 
         $r = new ReflectionProperty($app, 'pipeline');
         $r->setAccessible(true);
