@@ -45,11 +45,6 @@ class ApplicationFactory
     const ROUTING_MIDDLEWARE = 'EXPRESSIVE_ROUTING_MIDDLEWARE';
 
     /**
-     * @deprecated This constant will be removed in v1.1.
-     */
-    const ROUTE_RESULT_OBSERVER_MIDDLEWARE = 'EXPRESSIVE_ROUTE_RESULT_OBSERVER_MIDDLEWARE';
-
-    /**
      * Create and return an Application instance.
      *
      * See the class level docblock for information on what services this

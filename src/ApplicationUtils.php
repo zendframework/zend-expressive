@@ -208,7 +208,6 @@ class ApplicationUtils
      * routing o dispatching middleware to a callable; if the provided item does not
      * match either, the item is returned verbatim.
      *
-     * @todo Remove ROUTE_RESULT_OBSERVER_MIDDLEWARE detection for 1.1
      * @param Application $app
      * @return callable
      */
@@ -221,13 +220,6 @@ class ApplicationUtils
 
             if ($item === Container\ApplicationFactory::DISPATCH_MIDDLEWARE) {
                 return [$app, 'dispatchMiddleware'];
-            }
-
-            if ($item === Container\ApplicationFactory::ROUTE_RESULT_OBSERVER_MIDDLEWARE) {
-                $r = new ReflectionProperty($app, 'routeResultObserverMiddlewareIsRegistered');
-                $r->setAccessible(true);
-                $r->setValue($app, true);
-                return [$app, 'routeResultObserverMiddleware'];
             }
 
             return $item;
@@ -263,7 +255,6 @@ class ApplicationUtils
         $appMiddlewares = [
             Container\ApplicationFactory::ROUTING_MIDDLEWARE,
             Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
-            Container\ApplicationFactory::ROUTE_RESULT_OBSERVER_MIDDLEWARE
         ];
 
         return function ($item) use ($app, $pipelineMap, $appMiddlewares) {
