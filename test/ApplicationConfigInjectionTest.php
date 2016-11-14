@@ -14,14 +14,16 @@ use ReflectionFunction;
 use ReflectionProperty;
 use SplQueue;
 use Zend\Expressive\Application;
-use Zend\Expressive\ApplicationUtils;
 use Zend\Expressive\Container\ApplicationFactory;
 use Zend\Expressive\ErrorMiddlewarePipe;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Stratigility\ErrorMiddlewareInterface;
 use Zend\Stratigility\MiddlewarePipe;
 
-class ApplicationUtilsTest extends TestCase
+/**
+ * Tests the functionality present in the ApplicationConfigInjectionTrait.
+ */
+class ApplicationConfigInjectionTest extends TestCase
 {
     use ContainerTrait;
 
@@ -101,7 +103,7 @@ class ApplicationUtilsTest extends TestCase
 
         $app = $this->createApplication();
 
-        ApplicationUtils::injectRoutesFromConfig($app, $config);
+        $app->injectRoutesFromConfig($config);
 
         $r = new ReflectionProperty($app, 'routes');
         $r->setAccessible(true);
@@ -127,7 +129,7 @@ class ApplicationUtilsTest extends TestCase
 
         $app = $this->createApplication();
 
-        ApplicationUtils::injectPipelineFromConfig($app, $config);
+        $app->injectPipelineFromConfig($config);
 
         $r = new ReflectionProperty($app, 'routes');
         $r->setAccessible(true);
@@ -164,7 +166,7 @@ class ApplicationUtilsTest extends TestCase
         $this->injectServiceInContainer($this->container, RouterInterface::class, $this->router->reveal());
         $app = $this->createApplication();
 
-        ApplicationUtils::injectPipelineFromConfig($app, $config);
+        $app->injectPipelineFromConfig($config);
 
         $this->assertAttributeSame(true, 'routeMiddlewareIsRegistered', $app);
         $this->assertAttributeSame(true, 'dispatchMiddlewareIsRegistered', $app);
@@ -193,7 +195,7 @@ class ApplicationUtilsTest extends TestCase
         ];
         $app = $this->createApplication();
 
-        ApplicationUtils::injectPipelineFromConfig($app, $config);
+        $app->injectPipelineFromConfig($config);
 
         $this->assertAttributeSame(true, 'routeMiddlewareIsRegistered', $app);
     }
@@ -207,7 +209,7 @@ class ApplicationUtilsTest extends TestCase
         ];
         $app = $this->createApplication();
 
-        ApplicationUtils::injectPipelineFromConfig($app, $config);
+        $app->injectPipelineFromConfig($config);
 
         $this->assertAttributeSame(true, 'dispatchMiddlewareIsRegistered', $app);
     }
@@ -227,7 +229,7 @@ class ApplicationUtilsTest extends TestCase
 
         $app = $this->createApplication();
 
-        ApplicationUtils::injectPipelineFromConfig($app, $config);
+        $app->injectPipelineFromConfig($config);
 
         $r = new ReflectionProperty($app, 'pipeline');
         $r->setAccessible(true);
@@ -253,7 +255,7 @@ class ApplicationUtilsTest extends TestCase
 
         $app = $this->createApplication();
 
-        ApplicationUtils::injectPipelineFromConfig($app, $config);
+        $app->injectPipelineFromConfig($config);
 
         $r = new ReflectionProperty($app, 'pipeline');
         $r->setAccessible(true);
@@ -283,7 +285,7 @@ class ApplicationUtilsTest extends TestCase
 
         $app = $this->createApplication();
 
-        ApplicationUtils::injectPipelineFromConfig($app, $config);
+        $app->injectPipelineFromConfig($config);
 
         $r = new ReflectionProperty($app, 'pipeline');
         $r->setAccessible(true);
@@ -318,7 +320,7 @@ class ApplicationUtilsTest extends TestCase
 
         $app = $this->createApplication();
 
-        ApplicationUtils::injectPipelineFromConfig($app, $config);
+        $app->injectPipelineFromConfig($config);
 
         $r = new ReflectionProperty($app, 'pipeline');
         $r->setAccessible(true);
@@ -383,7 +385,7 @@ class ApplicationUtilsTest extends TestCase
             return false !== strstr($errmsg, 'error middleware is deprecated');
         }, E_USER_DEPRECATED);
 
-        ApplicationUtils::injectPipelineFromConfig($app, $config);
+        $app->injectPipelineFromConfig($config);
 
         restore_error_handler();
 

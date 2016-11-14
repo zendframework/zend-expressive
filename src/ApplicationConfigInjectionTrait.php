@@ -11,15 +11,8 @@ use ReflectionProperty;
 use SplPriorityQueue;
 use Zend\Expressive\Router\Route;
 
-class ApplicationUtils
+trait ApplicationConfigInjectionTrait
 {
-    /**
-     * Non-instantiable
-     */
-    private function __construct()
-    {
-    }
-
     /**
      * Inject a middleware pipeline from the middleware_pipeline configuration.
      *
@@ -36,8 +29,8 @@ class ApplicationUtils
      *     'middleware_pipeline' => [
      *         // An array of middleware to register with the pipeline.
      *         // entries to register prior to routing/dispatching...
-     *         Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
-     *         Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+     *         Application::ROUTING_MIDDLEWARE,
+     *         Application::DISPATCH_MIDDLEWARE,
      *         // entries to register after routing/dispatching...
      *     ],
      * ];
@@ -82,26 +75,30 @@ class ApplicationUtils
      *
      * Please note: error middleware is deprecated starting with the 1.1 release.
      *
-     * @param Application $application
-     * @param array $config
+     * @param null|array $config If null, attempts to pull the 'config' service
+     *     from the composed container.
      * @return void
      */
-    public static function injectPipelineFromConfig(Application $application, array $config)
+    public function injectPipelineFromConfig(array $config = null)
     {
+        if (null === $config) {
+            $config = $this->container->has('config') ? $this->container->get('config') : [];
+        }
+
         if (empty($config['middleware_pipeline'])) {
             if (! isset($config['routes']) || ! is_array($config['routes'])) {
                 return;
             }
 
-            $application->pipeRoutingMiddleware();
-            $application->pipeDispatchMiddleware();
+            $this->pipeRoutingMiddleware();
+            $this->pipeDispatchMiddleware();
             return;
         }
 
         // Create a priority queue from the specifications
         $queue = array_reduce(
-            array_map(self::createCollectionMapper($application), $config['middleware_pipeline']),
-            self::createPriorityQueueReducer(),
+            array_map($this->createCollectionMapper(), $config['middleware_pipeline']),
+            $this->createPriorityQueueReducer(),
             new SplPriorityQueue()
         );
 
@@ -110,7 +107,7 @@ class ApplicationUtils
             $error = array_key_exists('error', $spec) ? (bool) $spec['error'] : false;
             $pipe  = $error ? 'pipeErrorHandler' : 'pipe';
 
-            $application->{$pipe}($path, $spec['middleware']);
+            $this->{$pipe}($path, $spec['middleware']);
         }
     }
 
@@ -150,12 +147,16 @@ class ApplicationUtils
      * The "options" key may also be omitted, and its interpretation will be
      * dependent on the underlying router used.
      *
-     * @param Application $application
-     * @param array $config
+     * @param null|array $config If null, attempts to pull the 'config' service
+     *     from the composed container.
      * @return void
      */
-    public static function injectRoutesFromConfig(Application $application, array $config)
+    public function injectRoutesFromConfig(array $config = null)
     {
+        if (null === $config) {
+            $config = $this->container->has('config') ? $this->container->get('config') : [];
+        }
+
         if (! isset($config['routes']) || ! is_array($config['routes'])) {
             return;
         }
@@ -191,7 +192,7 @@ class ApplicationUtils
                 $route->setOptions($options);
             }
 
-            $application->route($route);
+            $this->route($route);
         }
     }
 
@@ -208,18 +209,17 @@ class ApplicationUtils
      * routing o dispatching middleware to a callable; if the provided item does not
      * match either, the item is returned verbatim.
      *
-     * @param Application $app
      * @return callable
      */
-    private static function createPipelineMapper(Application $app)
+    private function createPipelineMapper()
     {
-        return function ($item) use ($app) {
-            if ($item === Container\ApplicationFactory::ROUTING_MIDDLEWARE) {
-                return [$app, 'routeMiddleware'];
+        return function ($item) {
+            if ($item === Application::ROUTING_MIDDLEWARE) {
+                return [$this, 'routeMiddleware'];
             }
 
-            if ($item === Container\ApplicationFactory::DISPATCH_MIDDLEWARE) {
-                return [$app, 'dispatchMiddleware'];
+            if ($item === Application::DISPATCH_MIDDLEWARE) {
+                return [$this, 'dispatchMiddleware'];
             }
 
             return $item;
@@ -246,18 +246,17 @@ class ApplicationUtils
      * If the 'middleware' value is missing, or not viable as middleware, it
      * raises an exception, to ensure the pipeline is built correctly.
      *
-     * @param Application $app
      * @return callable
      */
-    private static function createCollectionMapper(Application $app)
+    private function createCollectionMapper()
     {
-        $pipelineMap = self::createPipelineMapper($app);
+        $pipelineMap = $this->createPipelineMapper();
         $appMiddlewares = [
-            Container\ApplicationFactory::ROUTING_MIDDLEWARE,
-            Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+            Application::ROUTING_MIDDLEWARE,
+            Application::DISPATCH_MIDDLEWARE,
         ];
 
-        return function ($item) use ($app, $pipelineMap, $appMiddlewares) {
+        return function ($item) use ($pipelineMap, $appMiddlewares) {
             if (in_array($item, $appMiddlewares, true)) {
                 return ['middleware' => $pipelineMap($item)];
             }
@@ -265,7 +264,7 @@ class ApplicationUtils
             if (! is_array($item) || ! array_key_exists('middleware', $item)) {
                 throw new Container\Exception\InvalidArgumentException(sprintf(
                     'Invalid pipeline specification received; must be an array containing a middleware '
-                    . 'key, or one of the ApplicationFactory::*_MIDDLEWARE constants; received %s',
+                    . 'key, or one of the Application::*_MIDDLEWARE constants; received %s',
                     (is_object($item) ? get_class($item) : gettype($item))
                 ));
             }
@@ -292,7 +291,7 @@ class ApplicationUtils
      *
      * @return callable
      */
-    private static function createPriorityQueueReducer()
+    private function createPriorityQueueReducer()
     {
         // $serial is used to ensure that items of the same priority are enqueued
         // in the order in which they are inserted.
