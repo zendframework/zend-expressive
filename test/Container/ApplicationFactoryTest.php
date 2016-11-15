@@ -28,6 +28,7 @@ use Zend\Expressive\Router\RouterInterface;
 use Zend\Stratigility\ErrorMiddlewareInterface;
 use Zend\Stratigility\FinalHandler;
 use Zend\Stratigility\MiddlewarePipe;
+use Zend\Stratigility\NoopFinalHandler;
 use Zend\Stratigility\Route as StratigilityRoute;
 use ZendTest\Expressive\ContainerTrait;
 use ZendTest\Expressive\TestAsset\InvokableMiddleware;
@@ -938,5 +939,79 @@ class ApplicationFactoryTest extends TestCase
         $r->setAccessible(true);
         $routes = $r->getValue($app);
         $this->assertEmpty($routes, 'Routes exist, and should not');
+    }
+
+    /**
+     * @group programmatic
+     */
+    public function testSetsApplicationRaiseThrowablesFlagWhenConfigFlagEnabled()
+    {
+        $config = [
+            'zend-expressive' => [
+                'programmatic_pipeline' => true,
+                'raise_throwables'      => true,
+            ],
+        ];
+
+        $this->injectServiceInContainer($this->container, 'config', $config);
+        $this->container->has(NoopFinalHandler::class)->willReturn(false);
+
+        $app = $this->factory->__invoke($this->container->reveal());
+
+        $this->assertAttributeSame(true, 'raiseThrowables', $app);
+    }
+
+    /**
+     * @group programmatic
+     */
+    public function testWillNotInjectFinalHandlerIfRaiseThrowablesFlagEnabled()
+    {
+        $config = [
+            'zend-expressive' => [
+                'programmatic_pipeline' => true,
+                'raise_throwables'      => true,
+            ],
+        ];
+
+        $this->injectServiceInContainer($this->container, 'config', $config);
+        $this->container->has('Zend\Expressive\FinalHandler')->shouldNotBeCalled();
+        $this->container->has(NoopFinalHandler::class)->willReturn(false);
+
+        $app = $this->factory->__invoke($this->container->reveal());
+
+        return $app;
+    }
+
+    /**
+     * @group programmatic
+     * @depends testWillNotInjectFinalHandlerIfRaiseThrowablesFlagEnabled
+     */
+    public function testWillInjectNoopFinalHandlerIfRaiseThrowablesFlagEnabled($app)
+    {
+        $this->assertAttributeInstanceOf(NoopFinalHandler::class, 'finalHandler', $app);
+    }
+
+    /**
+     * @group programmatic
+     */
+    public function testWhenRaiseThrowablesEnabledWillUseConfiguredNoopFinalHandlerServiceIfAvailable()
+    {
+        $finalHandler = function () {
+        };
+
+        $config = [
+            'zend-expressive' => [
+                'programmatic_pipeline' => true,
+                'raise_throwables'      => true,
+            ],
+        ];
+
+        $this->injectServiceInContainer($this->container, 'config', $config);
+        $this->container->has('Zend\Expressive\FinalHandler')->shouldNotBeCalled();
+        $this->injectServiceInContainer($this->container, NoopFinalHandler::class, $finalHandler);
+
+        $app = $this->factory->__invoke($this->container->reveal());
+
+        $this->assertAttributeSame($finalHandler, 'finalHandler', $app);
     }
 }
