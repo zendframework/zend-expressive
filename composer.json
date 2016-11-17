@@ -58,8 +58,8 @@
             "@test"
         ],
         "upload-coverage": "coveralls -v",
-        "cs-check": "phpcs --colors",
-        "cs-fix": "phpcbf --colors",
+        "cs-check": "phpcs",
+        "cs-fix": "phpcbf",
         "test": "phpunit --colors=always",
         "test-coverage": "phpunit --coverage-clover clover.xml",
         "license-check": "vendor/bin/docheader check src/"
