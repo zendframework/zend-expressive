@@ -321,6 +321,28 @@ $app->pipeDispatchMiddleware();
 $app->pipe(Middleware\NotFoundHandler::class);
 ```
 
+### Error handling and PHP errors
+
+As noted above, `Zend\Stratigility\Middleware\ErrorHandler` also creates a PHP
+error handler that casts PHP errors to `ErrorException` instances. More
+specifically, it uses the current `error_reporting` value to determine _which_
+errors it should cast this way.
+
+This can be problematic when deprecation errors are triggered &mdash; and
+both Stratigility and Expressive will trigger a number of these based on
+functionality you may have in place. If they are cast to exceptions, code that
+would normally run will now result in error pages.
+
+We recommend adding the following line to your `public/index.php` towards the
+top of the file:
+
+```php
+error_reporting(E_ALL & ~E_USER_DEPRECATED);
+```
+
+This will prevent the error handler from casting deprecation notices to
+exceptions.
+
 ## Programmatic middleware pipelines
 
 With Expressive 1.0, we recommended creating middleware pipelines and routing
