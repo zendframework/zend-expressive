@@ -7,6 +7,7 @@
 
 namespace Zend\Expressive\Container;
 
+use ArrayObject;
 use Interop\Container\ContainerInterface;
 use SplPriorityQueue;
 use Zend\Diactoros\Response\EmitterInterface;
@@ -156,6 +157,7 @@ class ApplicationFactory
     public function __invoke(ContainerInterface $container)
     {
         $config = $container->has('config') ? $container->get('config') : [];
+        $config = $config instanceof ArrayObject ? $config->getArrayCopy() : $config;
 
         $router = $container->has(RouterInterface::class)
             ? $container->get(RouterInterface::class)
