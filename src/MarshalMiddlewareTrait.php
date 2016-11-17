@@ -13,6 +13,7 @@ use Interop\Http\Middleware\DelegateInterface;
 use Interop\Http\Middleware\ServerMiddlewareInterface;
 use ReflectionFunction;
 use ReflectionMethod;
+use ReflectionProperty;
 use Zend\Stratigility\Delegate\CallableDelegateDecorator;
 use Zend\Stratigility\MiddlewarePipe;
 
@@ -99,6 +100,10 @@ trait MarshalMiddlewareTrait
     {
         $middlewarePipe = new MiddlewarePipe();
 
+        if ($this->raiseThrowables) {
+            $middlewarePipe->raiseThrowables();
+        }
+
         foreach ($middlewares as $middleware) {
             $middlewarePipe->pipe(
                 $this->prepareMiddleware($middleware, $container, $forError)
@@ -152,6 +157,10 @@ trait MarshalMiddlewareTrait
 
             // Middleware pipeline
             if ($invokable instanceof MiddlewarePipe) {
+                if ($this->raiseThrowables) {
+                    $invokable->raiseThrowables();
+                }
+
                 return $invokable($request, $response, $next);
             }
 
