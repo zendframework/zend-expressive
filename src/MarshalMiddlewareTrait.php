@@ -93,6 +93,10 @@ trait MarshalMiddlewareTrait
     {
         $middlewarePipe = new MiddlewarePipe();
 
+        if ($this->raiseThrowables) {
+            $middlewarePipe->raiseThrowables();
+        }
+
         foreach ($middlewares as $middleware) {
             $middlewarePipe->pipe(
                 $this->prepareMiddleware($middleware, $container, $forError)
