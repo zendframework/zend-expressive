@@ -337,11 +337,11 @@ We recommend adding the following line to your `public/index.php` towards the
 top of the file:
 
 ```php
-error_reporting(E_ALL & ~E_USER_DEPRECATED);
+error_reporting(error_reporting() & ~E_USER_DEPRECATED);
 ```
 
 This will prevent the error handler from casting deprecation notices to
-exceptions.
+exceptions, while keeping the rest of your error reporting mask intact.
 
 ## Programmatic middleware pipelines
 
