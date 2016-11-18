@@ -437,8 +437,8 @@ your application:
   prior to calling `$app->run();`:
 
   ```php
-  include 'config/pipeline.php';
-  include 'config/routes.php';
+  require 'config/pipeline.php';
+  require 'config/routes.php';
   ```
 
 Once this has been done, the application will use your new programmatic
@@ -480,7 +480,7 @@ This tool does the following:
   configuration for the new error handlers.
 
 - Inserts two lines before the `$app->run()` statement of your
-  `public/index.php`, one each to include `config/pipeline.php` and
+  `public/index.php`, one each to require `config/pipeline.php` and
   `config/routes.php`.
 
 Your `middleware_pipeline` and `routes` configuration are not removed at this
