@@ -44,7 +44,7 @@ class WhoopsErrorResponseGenerator
      * @param \Throwable|\Exception $e
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
-     * @return $response
+     * @return ResponseInterface
      */
     public function __invoke($e, ServerRequestInterface $request, ResponseInterface $response)
     {
