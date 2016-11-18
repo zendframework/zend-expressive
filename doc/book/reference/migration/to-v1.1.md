@@ -557,4 +557,48 @@ accept the legacy double-pass signature, but will require that you either:
   instance (which also requires a `$responsePrototype`).
 
 We recommend that you begin writing middleware to follow the http-interop
-standard at this time.
+standard at this time. As an example:
+
+```php
+namespace App\Middleware;
+
+use Interop\Http\Middleware\DelegateInterface;
+use Interop\Http\Middleware\ServerMiddlewareInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
+class XClacksOverheadMiddleware implements ServerMiddlewareInterface
+{
+    /**
+     * {@inheritDoc}
+     */
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
+        $response = $delegate->process($request);
+        return $response->withHeader('X-Clacks-Overhead', 'GNU Terry Pratchett');
+    }
+}
+```
+
+Alternately, you can write this as a callable:
+
+```php
+namespace App\Middleware;
+
+use Interop\Http\Middleware\DelegateInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
+class XClacksOverheadMiddleware
+{
+    /**
+     * @param ServerRequestInterface $request
+     * @param DelegateInterface $delegate
+     * @return ResponseInterface
+     */
+    public function __invoke(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
+        $response = $delegate->process($request);
+        return $response->withHeader('X-Clacks-Overhead', 'GNU Terry Pratchett');
+    }
+}
+```
