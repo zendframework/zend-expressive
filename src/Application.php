@@ -446,7 +446,10 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
             if ($result->isMethodFailure()) {
                 $response = $response->withStatus(405)
                     ->withHeader('Allow', implode(',', $result->getAllowedMethods()));
-                return $next($request, $response, 405);
+
+                return $this->raiseThrowables
+                    ? $response
+                    : $next($request, $response, 405);
             }
             return $next($request, $response);
         }
