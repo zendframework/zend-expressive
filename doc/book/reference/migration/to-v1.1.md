@@ -81,7 +81,7 @@ Prior to version 1.1, error handling was accomplished via two mechanisms:
   middleware_ using the caught exception as the `$err` argument.
 
 - The "Final Handler". This is a special middleware type with the signature
-  `function ServerRequestInterface $request, ResponseInterface $response, $err = null)`,
+  `function (ServerRequestInterface $request, ResponseInterface $response, $err = null)`,
   and is typically passed when invoking the outermost middleware; in the case of
   Expressive, it is composed in the `Application` instance, and passed to the
   application middleware when it executes `run()`. It is called when the
