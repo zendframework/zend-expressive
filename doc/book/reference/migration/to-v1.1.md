@@ -523,7 +523,7 @@ Other things you may want to do:
 ## http-interop
 
 Stratigility 1.3 provides the ability to work with [http-interop middleware
-0.2.0](https://github.com/http-interop/http-middleware/tree/ff545c87e97bf4d88f0cb7eb3e89f99aaa53d7a9).
+0.2.0](https://github.com/http-interop/http-middleware/tree/0.2.0).
 
 This specification, which is being developed as the basis of
 [PSR-15](https://github.com/php-fig/fig-standards/tree/master/proposed/http-middleware),
