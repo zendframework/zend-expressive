@@ -47,6 +47,14 @@ trait MarshalMiddlewareTrait
             return $middleware;
         }
 
+        if ($middleware === Application::ROUTING_MIDDLEWARE) {
+            return [$this, 'routeMiddleware'];
+        }
+
+        if ($middleware === Application::DISPATCH_MIDDLEWARE) {
+            return [$this, 'dispatchMiddleware'];
+        }
+
         if (is_array($middleware)) {
             return $this->marshalMiddlewarePipe($middleware, $container, $forError);
         }
