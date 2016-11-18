@@ -620,4 +620,30 @@ class RouteMiddlewareTest extends TestCase
         $this->assertSame($response, $test);
         $this->assertTrue($triggered);
     }
+
+    /**
+     * @error-handling
+     */
+    public function testRoutingMiddlewareShouldReturn405ResponseDirectlyWhenRaiseThrowablesFlagEnabled()
+    {
+        $request  = new ServerRequest();
+        $response = new Response();
+        $result   = RouteResult::fromRouteFailure(['GET', 'POST']);
+
+        $this->router->match($request)->willReturn($result);
+
+        $next = function ($request, $response) {
+            $this->fail('Next called when it should not have been');
+        };
+
+        $app = $this->getApplication();
+        $app->raiseThrowables();
+
+        $test = $app->routeMiddleware($request, $response, $next);
+        $this->assertInstanceOf(ResponseInterface::class, $test);
+        $this->assertEquals(405, $test->getStatusCode());
+        $allow = $test->getHeaderLine('Allow');
+        $this->assertContains('GET', $allow);
+        $this->assertContains('POST', $allow);
+    }
 }

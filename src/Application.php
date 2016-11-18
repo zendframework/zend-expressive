@@ -379,7 +379,10 @@ class Application extends MiddlewarePipe
                 // Need to swallow deprecation notices, as this is how 405 errors
                 // are reported in the 1.0 series.
                 $this->swallowDeprecationNotices();
-                return $next($request, $response, 405);
+
+                return $this->raiseThrowables
+                    ? $response
+                    : $next($request, $response, 405);
             }
             return $next($request, $response);
         }
