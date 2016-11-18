@@ -8,7 +8,6 @@
 namespace ZendTest\Expressive;
 
 use Closure;
-use InvalidArgumentException;
 use PHPUnit_Framework_TestCase as TestCase;
 use ReflectionFunction;
 use ReflectionProperty;

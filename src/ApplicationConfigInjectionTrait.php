@@ -7,7 +7,6 @@
 
 namespace Zend\Expressive;
 
-use ReflectionProperty;
 use SplPriorityQueue;
 use Zend\Expressive\Router\Route;
 

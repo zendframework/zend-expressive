@@ -11,7 +11,6 @@ use ArrayObject;
 use Interop\Container\ContainerInterface;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Expressive\Application;
-use Zend\Expressive\ApplicationUtils;
 use Zend\Expressive\Exception;
 use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\RouterInterface;
@@ -36,10 +35,10 @@ use Zend\Stratigility\NoopFinalHandler;
  *   definitions, these will be used to seed routes in the Application instance
  *   before returning it.
  *
- * Please see the `Zend\Expressive\ApplicationUtils` class for details on how
+ * Please see `Zend\Expressive\ApplicationConfigInjectionTrait` for details on how
  * to provide routing and middleware pipeline configuration; this factory
- * delegates to the methods in that static class in order to seed the
- * Application instance.
+ * delegates to the methods in that trait in order to seed the
+ * `Application` instance (which composes the trait).
  *
  * You may disable injection of configured routing and the middleware pipeline
  * by enabling the `zend-expressive.programmatic_pipeline` configuration flag.

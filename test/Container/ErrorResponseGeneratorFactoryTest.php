@@ -29,6 +29,7 @@ class ErrorResponseGeneratorFactoryTest extends TestCase
 
         $generator = $factory($this->container->reveal());
 
+        $this->assertInstanceOf(ErrorResponseGenerator::class, $generator);
         $this->assertAttributeEquals(false, 'debug', $generator);
         $this->assertAttributeEmpty('renderer', $generator);
         $this->assertAttributeEquals('error::error', 'template', $generator);
