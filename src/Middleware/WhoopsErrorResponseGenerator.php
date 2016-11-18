@@ -17,7 +17,7 @@ use Whoops\RunInterface;
 class WhoopsErrorResponseGenerator
 {
     /**
-     * @var Whoops
+     * @var Run
      */
     private $whoops;
 
