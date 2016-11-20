@@ -13,7 +13,7 @@ you should be aware of, and potentially update your application to adopt:
 
 Stratigility 1.3 deprecates its internal request and response decorators,
 `Zend\Stratigility\Http\Request` and `Zend\Stratigility\Http\Response`,
-respsectively. The main utility of these instances was to provide access in
+respectively. The main utility of these instances was to provide access in
 inner middleware layers to the original request, original response, and original
 URI.
 
@@ -65,6 +65,25 @@ If using programmatic pipelines (see below):
 $app->pipe(OriginalMessages::class);
 /* all other middleware */
 ```
+
+### Identifying and fixing getOriginal calls
+
+Expressive 1.1 provides a tool for identifying and fixing calls to the
+`getOriginal*()` methods, `vendor/bin/expressive-migrate-original-messages`.
+
+This tool will update calls to `getOriginalRequest()` and `getOriginalUri()` to
+instead use the new request attributes that the `OriginalMessages` middleware
+injects:
+
+- `getOriginalRequest()` becomes `getAttribute('originalRequest', $request)`
+- `getOriginalUri()` becomes `getAttribute('originalUri', $request->getUri())`
+
+In both cases, `$request` will be replaced with whatever variable name you used
+for the request instance.
+
+For `getOriginalResponse()` calls, which happen on the response instance, the
+tool will instead tell you what files had such calls, and detail how you can
+update those calls to use the `originalResponse` request attribute.
 
 ## Error handling
 
@@ -414,7 +433,7 @@ We recommend rewriting your middleware pipeline and routing configuration into
 programmatic/declarative statements. Specifically:
 
 - We recommend putting the pipeline declarations into `config/pipeline.php`.
-- We recommend putting the pipeline declarations into `config/routes.php`.
+- We recommend putting the routing declarations into `config/routes.php`.
 
 Once you've written these, you will then need to make the following changes to
 your application:
