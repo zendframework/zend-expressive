@@ -621,3 +621,34 @@ class XClacksOverheadMiddleware
     }
 }
 ```
+
+## Detecting error middleware usage
+
+As noted above in the section on [error handling](#error-handling), Stratigility
+"error middleware" (middleware with the signature `function ($error,
+ServerRequestInterface $request, ResponseInterface $response, callable $next)`)
+is deprecated, in favor of using normal middleware with try/catch blocks for
+handling exceptions.
+
+To help you migrate, we provide a tool,
+`vendor/bin/expressive-scan-for-error-middleware`. This tool will scan the
+provided directory (defaulting to `./src` in the current working directory) and
+report files with the following:
+
+- Classes implementing `Zend\Stratigility\ErrorMiddlewareInterface`.
+- Invokable classes implementing the error middleware signature.
+- Methods accepting `$next` that invoke it with an error argument.
+
+As an example:
+
+```bash
+$ ./vendor/bin/expressive-scan-for-error-middleware scan
+# or, with a directory argument:
+$ ./vendor/bin/expressive-scan-for-error-middleware scan --dir ./lib
+```
+
+You may also call the tool using its `help` command or `--help` or `-h` flags to
+get full usage information.
+
+Use this tool to identify potential problem areas in your application, and
+update your code to use the new error handling facilities as outlined above.
