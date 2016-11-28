@@ -25,7 +25,7 @@ require __DIR__ . '/../vendor/autoload.php';
 $app = new Application();
 
 $app->get('/', function ($req, $res, $next) {
-    $res->write('Hello, world!');
+    $res->getBody()->write('Hello, world!');
     return $res;
 });
 
@@ -79,7 +79,7 @@ class ApplicationFactory
 
         // Setup the application programatically within the factory
         $app->get('/', function ($req, $res, $next) {
-            $res->write('Hello, world!');
+            $res->getBody()->write('Hello, world!');
             return $res;
         });
 
@@ -193,7 +193,7 @@ class HelloWorldFactory
 
         // or returning a closure:
         return function ($req, $res, $next) {
-            $res->write('Hello, world!');
+            $res->getBody()->write('Hello, world!');
             return $res;
         };
     }
@@ -314,7 +314,7 @@ class CustomMiddleware
 
     public function __invoke($req, $res, $next)
     {
-        $res->write($this->renderer->render('some/template', ['some' => 'vars']));
+        $res->getBody()->write($this->renderer->render('some/template', ['some' => 'vars']));
         return $res;
 
         // or:
