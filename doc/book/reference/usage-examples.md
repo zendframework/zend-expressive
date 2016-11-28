@@ -173,7 +173,7 @@ $container = new ServiceManager();
 
 $container->setFactory('HelloWorld', function ($container) {
     return function ($req, $res, $next) {
-        $res->write('Hello, world!');
+        $res->getBody()->write('Hello, world!');
         return $res;
     };
 });
@@ -363,7 +363,7 @@ class HelloWorld
 {
     public function __invoke($req, $res, $next)
     {
-        $res->write('Hello, world!');
+        $res->getBody()->write('Hello, world!');
         return $res;
     }
 }
@@ -428,7 +428,7 @@ calling `$app->run()`, add the following in your `public/index.php`:
 
 ```php
 $app->post('/post', function ($req, $res, $next) {
-    $res->write('IN POST!');
+    $res->getBody()->write('IN POST!');
     return $res;
 });
 ```
