@@ -15,7 +15,7 @@ use Zend\Expressive\Template\TemplateRendererInterface;
 class NotFoundHandlerFactory
 {
     /**
-     * @param ContainerInterface
+     * @param ContainerInterface $container
      * @return NotFoundHandler
      */
     public function __invoke(ContainerInterface $container)
