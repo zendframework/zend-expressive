@@ -11,7 +11,6 @@ use ArrayObject;
 use Interop\Container\ContainerInterface;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Expressive\Application;
-use Zend\Expressive\Exception;
 use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Stratigility\FinalHandler;
