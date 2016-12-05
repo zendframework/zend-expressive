@@ -90,12 +90,12 @@ class ApplicationConfigInjectionTest extends TestCase
                 [
                     'path' => '/',
                     'middleware' => $middleware,
-                    'allowed_methods' => [ 'GET' ],
+                    'allowed_methods' => ['GET'],
                 ],
                 [
                     'path' => '/ping',
                     'middleware' => 'Ping',
-                    'allowed_methods' => [ 'GET' ],
+                    'allowed_methods' => ['GET'],
                 ],
             ],
         ];
@@ -118,10 +118,10 @@ class ApplicationConfigInjectionTest extends TestCase
         $config = [
             'routes' => [
                 [
-                    'allowed_methods' => [ 'GET' ],
+                    'allowed_methods' => ['GET'],
                 ],
                 [
-                    'allowed_methods' => [ 'POST' ],
+                    'allowed_methods' => ['POST'],
                 ],
             ],
         ];
@@ -146,7 +146,7 @@ class ApplicationConfigInjectionTest extends TestCase
             [
                 'path' => '/',
                 'middleware' => clone $middleware,
-                'allowed_methods' => [ 'GET' ],
+                'allowed_methods' => ['GET'],
             ],
         ];
 
@@ -219,12 +219,12 @@ class ApplicationConfigInjectionTest extends TestCase
         $middleware = function ($request, $response, $next) {};
         // @codingStandardsIgnoreEnd
 
-        $pipeline1 = [ [ 'middleware' => clone $middleware, 'priority' => 1 ] ];
-        $pipeline2 = [ [ 'middleware' => clone $middleware, 'priority' => 100 ] ];
-        $pipeline3 = [ [ 'middleware' => clone $middleware, 'priority' => -100 ] ];
+        $pipeline1 = [['middleware' => clone $middleware, 'priority' => 1]];
+        $pipeline2 = [['middleware' => clone $middleware, 'priority' => 100]];
+        $pipeline3 = [['middleware' => clone $middleware, 'priority' => -100]];
 
         $pipeline = array_merge($pipeline3, $pipeline1, $pipeline2);
-        $config = [ 'middleware_pipeline' => $pipeline ];
+        $config = ['middleware_pipeline' => $pipeline];
 
         $app = $this->createApplication();
 
@@ -245,12 +245,12 @@ class ApplicationConfigInjectionTest extends TestCase
         $middleware = function ($request, $response, $next) {};
         // @codingStandardsIgnoreEnd
 
-        $pipeline1 = [ [ 'middleware' => clone $middleware ] ];
-        $pipeline2 = [ [ 'middleware' => clone $middleware ] ];
-        $pipeline3 = [ [ 'middleware' => clone $middleware ] ];
+        $pipeline1 = [['middleware' => clone $middleware]];
+        $pipeline2 = [['middleware' => clone $middleware]];
+        $pipeline3 = [['middleware' => clone $middleware]];
 
         $pipeline = array_merge($pipeline3, $pipeline1, $pipeline2);
-        $config = [ 'middleware_pipeline' => $pipeline ];
+        $config = ['middleware_pipeline' => $pipeline];
 
         $app = $this->createApplication();
 
@@ -272,15 +272,15 @@ class ApplicationConfigInjectionTest extends TestCase
         // @codingStandardsIgnoreEnd
 
         $pipeline = [
-            [ 'middleware' => clone $middleware, 'priority' => -100 ],
+            ['middleware' => clone $middleware, 'priority' => -100],
             ApplicationFactory::ROUTING_MIDDLEWARE,
-            [ 'middleware' => clone $middleware, 'priority' => 1 ],
-            [ 'middleware' => clone $middleware ],
+            ['middleware' => clone $middleware, 'priority' => 1],
+            ['middleware' => clone $middleware],
             ApplicationFactory::DISPATCH_MIDDLEWARE,
-            [ 'middleware' => clone $middleware, 'priority' => 100 ],
+            ['middleware' => clone $middleware, 'priority' => 100],
         ];
 
-        $config = [ 'middleware_pipeline' => $pipeline ];
+        $config = ['middleware_pipeline' => $pipeline];
 
         $app = $this->createApplication();
 
@@ -291,10 +291,10 @@ class ApplicationConfigInjectionTest extends TestCase
         $test = $r->getValue($app);
 
         $this->assertSame($pipeline[5]['middleware'], $test->dequeue()->handler);
-        $this->assertSame([ $app, 'routeMiddleware' ], $test->dequeue()->handler);
+        $this->assertSame([$app, 'routeMiddleware'], $test->dequeue()->handler);
         $this->assertSame($pipeline[2]['middleware'], $test->dequeue()->handler);
         $this->assertSame($pipeline[3]['middleware'], $test->dequeue()->handler);
-        $this->assertSame([ $app, 'dispatchMiddleware' ], $test->dequeue()->handler);
+        $this->assertSame([$app, 'dispatchMiddleware'], $test->dequeue()->handler);
         $this->assertSame($pipeline[0]['middleware'], $test->dequeue()->handler);
     }
 
@@ -315,7 +315,7 @@ class ApplicationConfigInjectionTest extends TestCase
     public function testRoutingAndDispatchMiddlewareCanBeComposedWithinArrayStandardSpecification($pipeline)
     {
         $expected = $pipeline[0]['middleware'];
-        $config = [ 'middleware_pipeline' => $pipeline ];
+        $config = ['middleware_pipeline' => $pipeline];
 
         $app = $this->createApplication();
 
