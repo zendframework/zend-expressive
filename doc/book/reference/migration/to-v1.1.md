@@ -469,10 +469,19 @@ do.
 
 To simplify this process, we provide a tool, detailed in the next section.
 
-## Migration tool
+## Migration tooling
 
 In order to make migrating to programmatic pipelines and the new error handling
-less difficult, we have created a migration tool, installed as a vendor binary,
+less difficult, we have created several migration tools, installed as vendor
+binaries, to assist you. These include:
+
+- `vendor/bin/expressive-pipeline-from-config`
+- `vendor/bin/expressive-migrate-original-messages`
+- `vendor/bin/expressive-scan-for-error-middleware`
+
+### Migrate to programmatic pipelines
+
+a migration tool, installed as a vendor binary,
 to assist you: `vendor/bin/expressive-pipeline-from-config`.
 
 This tool does the following:
@@ -538,6 +547,74 @@ Other things you may want to do:
 - Consider providing your own `Zend\Stratigility\NoopFinalHandler`
   implementation; this will now only be invoked if the queue is exhausted, and
   could return a generic 404 page, raise an exception, etc.
+
+### Migrate original messages calls
+
+If you were relying on the Stratigility-specific request and response
+implementations, and, more specifically, the `getOriginal*()` methods they
+defined, you will need to update your code to instead use request attributes.
+The tool `vendor/bin/expressive-migrate-original-messages` can do this
+automatically for the request methods `getOriginalRequest()` and
+`getOriginalUri()`, and will notify you of any `getOriginalResponse()` calls,
+along with helpful information on how to migrate those.
+
+Invoke it as follows:
+
+```bash
+$ ./vendor/bin/expressive-migrate-original-messages scan
+```
+
+By default, it will scan the `src/` directory under the current working
+directory. You may also pass a `--src` flag, with the value pointing to another
+location:
+
+```bash
+$ ./vendor/bin/expressive-migrate-original-messages scan --src library/
+```
+
+(Use the `help` command or a `--help` or `-h` flag to get full usage if
+necessary.)
+
+### Scan for error middleware
+
+As noted in the [error handling section above](#error-handling), Stratigility
+"error middleware" is deprecated starting with Stratigility 1.3. This includes
+both the _definition_ of such middleware (either via direct or duck-typed
+implementation of `Zend\Stratigility\ErrorMiddlewareInterface`), as well as the
+_invocation_ of it (by passing a third, error, argument to `$next()`). As such,
+you will need to remove such middleware from your application, and update any
+invocations to instead raise exceptions.
+
+To aid in this, we provide the tool `vendor/bin/expressive-scan-for-error-middleware`.
+Invoke it as follows:
+
+```bash
+$ ./vendor/bin/expressive-scan-for-error-middleware scan
+```
+
+By default, it will scan the `src/` directory under the current working
+directory. You can also pass a `--dir` argument to specify an alternate
+directory:
+
+```bash
+$ ./vendor/bin/expressive-scan-for-error-middleware scan --dir library
+```
+
+(Use the `help` command or a `--help` or `-h` flag to get full usage if
+necessary.)
+
+The command will scan the given directory for PHP files containing classes, and
+emit information on any classes that satisfy one or more of the following:
+
+- Implementations of `Zend\Stratigility\ErrorMiddlewareInterface`.
+- Duck-typed implementations of error middleware.
+- Any method that accepts a callable `$next` argument that also invokes it with
+  an error argument.
+
+If any are detected, it also emits information on how to update your code.
+
+Please note, this may also require adding additional error middleware once you
+have set up your programmatic pipeline, as noted above.
 
 ## http-interop
 
