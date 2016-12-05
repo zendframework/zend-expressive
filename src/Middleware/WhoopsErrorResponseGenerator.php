@@ -31,6 +31,7 @@ class WhoopsErrorResponseGenerator
         if (! ($whoops instanceof RunInterface || $whoops instanceof Run)) {
             throw new InvalidArgumentException(sprintf(
                 '%s expects a %s or %s instance; received %s',
+                get_class($this),
                 Run::class,
                 RunInterface::class,
                 is_object($whoops) ? get_class($whoops) : gettype($whoops)
