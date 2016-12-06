@@ -28,7 +28,7 @@ $composer = false;
 foreach ($paths as $path) {
     foreach ($bins as $bin) {
         $try = sprintf('%s%s%s', $path, DIRECTORY_SEPARATOR, $bin);
-        if (is_executable($try)) {
+        if (file_exists($try)) {
             $composer = $try;
             break 2;
         }
@@ -43,11 +43,7 @@ if (! $composer) {
     exit(1);
 }
 
-$args = $argc > 2
-    ? array_slice($argv, 2)
-    : [];
-
-$command = array_shift($args);
+$command = $argc > 1 ? $argv[1] : '';
 
 switch (strtolower($command)) {
     case 'remove':
