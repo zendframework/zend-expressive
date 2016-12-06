@@ -46,7 +46,7 @@ switch (strtolower($command)) {
     case 'remove':
         echo "Removing zend-expressive-tooling\n";
         $remove  = true;
-        $command = sprintf('%s remove zendframework/zend-expressive-tooling', $composer);
+        $command = sprintf('%s remove --dev zendframework/zend-expressive-tooling', $composer);
         break;
     default:
         echo "Installing zend-expressive-tooling\n";
