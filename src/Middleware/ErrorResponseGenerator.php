@@ -43,9 +43,9 @@ EOT;
     private $template;
 
     /**
-     * @var bool $isDevelopmentMode
-     * @var null|TemplateRendererInterface $renderer
-     * @var string $template
+     * @param bool $isDevelopmentMode
+     * @param null|TemplateRendererInterface $renderer
+     * @param string $template
      */
     public function __construct(
         $isDevelopmentMode = false,
