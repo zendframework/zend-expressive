@@ -17,12 +17,8 @@ if (false === ($paths = getenv('PATH'))) {
     exit(1);
 }
 
-$paths = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN'
-    ? explode(';', $paths)
-    : explode(':', $paths);
-
-$bins = ['composer', 'composer.bat', 'composer.phar'];
-
+$paths    = explode(PATH_SEPARATOR, $paths);
+$bins     = ['composer', 'composer.bat', 'composer.phar'];
 $composer = false;
 
 foreach ($paths as $path) {
