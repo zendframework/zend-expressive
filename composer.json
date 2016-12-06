@@ -50,8 +50,12 @@
         "zendframework/zend-expressive-helpers": "^1.0 for its UrlHelper, ServerUrlHelper, and BodyParseMiddleware",
         "aura/di": "3.0.*@beta to make use of Aura.Di dependency injection container",
         "xtreamwayz/pimple-container-interop": "^1.0 to use Pimple for dependency injection",
+        "zendframework/zend-expressive-tooling": "For migration and development tools; require it with the --dev flag",
         "zendframework/zend-servicemanager": "^2.5 to use zend-servicemanager for dependency injection"
     },
+    "bin": [
+        "bin/expressive-tooling"
+    ],
     "scripts": {
         "check": [
             "@cs-check",

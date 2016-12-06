@@ -1,0 +1,64 @@
+#!/usr/bin/env php
+<?php // @codingStandardsIgnoreFile
+/**
+ * Script for migrating configuration-driven pipelines/routes to programmatic usage.
+ *
+ * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
+ * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
+ */
+
+namespace Zend\Expressive;
+
+if (false === ($paths = getenv('PATH'))) {
+    fwrite(STDERR, "No PATH environment provided; cannot execute.\n");
+    fwrite(STDERR, "Please manually run 'composer require --dev zendframework/zend-expressive-tooling'\n");
+    fwrite(STDERR, "or 'composer remove zendframework/zend-expressive-tooling'.\n");
+    exit(1);
+}
+
+$paths = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN'
+    ? explode(';', $paths)
+    : explode(':', $paths);
+
+$bins = ['composer', 'composer.bat', 'composer.phar'];
+
+$composer = false;
+
+foreach ($paths as $path) {
+    foreach ($bins as $bin) {
+        $try = sprintf('%s%s%s', $path, DIRECTORY_SEPARATOR, $bin);
+        if (is_executable($try)) {
+            $composer = $try;
+            break 2;
+        }
+    }
+}
+
+if (! $composer) {
+    fwrite(STDERR, "Unable to find composer, composer.bat, or composer.phar in your PATH.\n");
+    fwrite(STDERR, "Please manually run 'composer require --dev zendframework/zend-expressive-tooling'\n");
+    fwrite(STDERR, "or 'composer remove zendframework/zend-expressive-tooling', using the\n");
+    fwrite(STDERR, "appropriate path to your composer binary.\n");
+    exit(1);
+}
+
+$args = $argc > 2
+    ? array_slice($argv, 2)
+    : [];
+
+$command = array_shift($args);
+
+switch (strtolower($command)) {
+    case 'remove':
+        echo "Removing zend-expressive-tooling\n";
+        $command = sprintf('%s remove zendframework/zend-expressive-tooling', $composer);
+        break;
+    default:
+        echo "Installing zend-expressive-tooling\n";
+        $command = sprintf('%s require --dev zendframework/zend-expressive-tooling', $composer);
+        break;
+}
+
+system($command, $return);
+exit($return);
