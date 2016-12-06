@@ -40,10 +40,12 @@ if (! $composer) {
 }
 
 $command = $argc > 1 ? $argv[1] : '';
+$remove  = false;
 
 switch (strtolower($command)) {
     case 'remove':
         echo "Removing zend-expressive-tooling\n";
+        $remove  = true;
         $command = sprintf('%s remove zendframework/zend-expressive-tooling', $composer);
         break;
     default:
@@ -57,6 +59,10 @@ system($command, $return);
 if ($return !== 0) {
     fwrite(STDERR, "\n\nRequested installation/removal failed; please check the logs above.\n");
     exit($return);
+}
+
+if ($remove) {
+    exit(0);
 }
 
 $toolingPackage = sprintf('%s/vendor/zendframework/zend-expressive-tooling/composer.json', getcwd());
