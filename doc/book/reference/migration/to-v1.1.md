@@ -472,8 +472,26 @@ To simplify this process, we provide a tool, detailed in the next section.
 ## Migration tooling
 
 In order to make migrating to programmatic pipelines and the new error handling
-less difficult, we have created several migration tools, installed as vendor
-binaries, to assist you. These include:
+less difficult, we have created several migration tools in a new package,
+[zendframework/zend-expressive-tooling](https://github.com/zendframework/zend-expressive-tooling).
+You may install this package in one of the following ways:
+
+- Via the vendor binary `./vendor/bin/expressive-tooling`:
+
+  ```bash
+  $ ./vendor/bin/expressive-tooling        # install
+  $ ./vendor/bin/expressive-tooling remove # uninstall
+  ```
+
+- Using Composer:
+
+  ```bash
+  $ composer require --dev zendframework/zend-expressive-tooling # install
+  $ composer remove --dev zendframework/zend-expressive-tooling  # uninstall
+  ```
+
+Once installed, you will have access to each of the following vendor binaries,
+which are detailed in the following sections:
 
 - `vendor/bin/expressive-pipeline-from-config`
 - `vendor/bin/expressive-migrate-original-messages`
@@ -481,8 +499,8 @@ binaries, to assist you. These include:
 
 ### Migrate to programmatic pipelines
 
-a migration tool, installed as a vendor binary,
-to assist you: `vendor/bin/expressive-pipeline-from-config`.
+To assist you in migrating to programmatic pipelines, we provide
+`vendor/bin/expressive-pipeline-from-config`.
 
 This tool does the following:
 
