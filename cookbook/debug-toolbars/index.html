@@ -540,36 +540,32 @@ a popular framework-agnostic debug bar for PHP projects.</p>
 <pre class="codehilite"><code class="language-bash">$ composer require php-middleware/php-debug-bar</code></pre>
 
 
-<p>This package provides a factory for creating the middleware, so we only need to
-wire it into our middleware pipeline.  Create and edit the file
-<code>config/autoload/middleware-pipeline.local.php</code> to read as follows:</p>
-<pre class="codehilite"><code class="language-php">use PhpMiddleware\PhpDebugBar\PhpDebugBarMiddleware;
-use PhpMiddleware\PhpDebugBar\PhpDebugBarMiddlewareFactory;
-
-return [
-    'dependencies' =&gt; [
-        'factories' =&gt; [
-            PhpDebugBarMiddleware::class =&gt; PhpDebugBarMiddlewareFactory::class,
-        ],
-    ],
-    'middleware_pipeline' =&gt; [
-        [
-            'middleware' =&gt; [
-                PhpDebugBarMiddleware::class,
-            ],
-            'priority' =&gt; 1000,
-        ],
-    ],
-];</code></pre>
+<p>This package provides a config provider. You can add it to your application in
+one of two ways:</p>
+<ul>
+<li>If you are using the <a href="../modular-layout/">ConfigManager</a>, add an entry for it:</li>
+</ul>
+<pre class="codehilite"><code class="language-php">$configManager = new Zend\Expressive\ConfigManager\ConfigManager([
+    PhpMiddleware\PhpDebugBar\ConfigProvider::class,
+    new Zend\Expressive\ConfigManager\PhpFileProvider('config/autoload/{{,*.}global,{,*.}local}.php'),
+]);</code></pre>
 
 
-<p>These changes will activate the toolbar in your application.</p>
+<ul>
+<li>If you are not using the ConfigManager, create a new configuration file,
+  <code>config/autoload/php-debugbar.global.php</code>, with the following contents:</li>
+</ul>
+<pre class="codehilite"><code class="language-php">&lt;?php
+use PhpMiddleware\PhpDebugBar\ConfigProvider;
+
+$provider = new ConfigProvider();
+return $provider();</code></pre>
+
+
 <blockquote>
 <h3 id="use-locally_1">Use locally!</h3>
-<p>You'll note that we specified the file <code>middleware-pipeline.local.php</code>, and
-not <code>middleware-pipeline.global.php</code>. This ensures that the toolbar is only
-enabled in the local environment, and not committed to your production
-settings.</p>
+<p>Remember to enable <code>PhpMiddleware\PhpDebugBar\ConfigProvider</code> only in your
+development enviroments!</p>
 </blockquote>
 
 <hr />
