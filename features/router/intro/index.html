@@ -461,6 +461,8 @@
         
             <li><a href="#retrieving-matched-parameters">Retrieving matched parameters</a></li>
         
+            <li><a href="#retrieving-the-matched-route">Retrieving the matched route</a></li>
+        
             <li><a href="#uri-generation">URI generation</a></li>
         
             <li><a href="#supported-implementations">Supported implementations</a></li>
@@ -524,6 +526,47 @@ matched:</p>
 <pre class="codehilite"><code class="language-php">$id = $request-&gt;getAttribute('id');</code></pre>
 
 
+<h2 id="retrieving-the-matched-route">Retrieving the matched route</h2>
+<p>When routing is successful, the routing middleware injects a
+<code>Zend\Expressive\Router\RouteResult</code> instance as a request attribute, using that
+class name as the attribute name. The <code>RouteResult</code> instance provides you access
+to the following:</p>
+<ul>
+<li>The matched route name, via <code>$result-&gt;getMatchedRouteName()</code>.</li>
+<li>The matched middleware, via <code>$result-&gt;getMatchedMiddleware()</code>.</li>
+<li>Matched parameters, via <code>$result-&gt;getMatchedParams()</code> (as noted above, these
+  are also each injected as discrete request attributes).</li>
+<li>Allowed HTTP methods, via <code>$result-&gt;getAllowedMethods()</code>.</li>
+</ul>
+<p>As an example, you could use middleware similar to the following to return a 403
+response if routing was successful, but no <code>Authorization</code> header is present:</p>
+<pre class="codehilite"><code class="language-php">use Zend\Diactoros\Response\EmptyResponse;
+use Zend\Expressive\Router\RouteResult;
+
+function ($request, $response, $next) use ($routesRequiringAuthorization, $validator) {
+    if (! ($result = $request-&gt;getAttribute(RouteResult::class, false))) {
+        // No route matched; delegate to next middleware
+        return $next($request, $response);
+    }
+
+    if (! in_array($result-&gt;getMatchedRouteName(), $routesRequiringAuthorization, true)) {
+        // Not a route requiring authorization
+        return $next($request, $response);
+    }
+
+    $header = $request-&gt;getHeaderLine('Authorization');
+    if (! $validator($header)) {
+        return new EmptyResponse(403);
+    }
+
+    return $next($request, $response);
+}</code></pre>
+
+
+<p>Note that the first step is to determine if we have a <code>RouteResult</code>; if we do
+not have one, we should either delegate to the next middleware, or return some
+sort of response (generally a 404). In the case of Expressive, a later
+middleware will generate the 404 response for us, so we can safely delegate.</p>
 <h2 id="uri-generation">URI generation</h2>
 <p>Because routers have knowledge of the various paths they can match, they are
 also typically used within applications to generate URIs to other application
