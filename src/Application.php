@@ -129,9 +129,8 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
      *
      * If $out is not provided, uses the result of `getFinalHandler()`.
      *
-     * @todo Remove logic for creating final handler for version 2.0.
-     * @todo Remove error handler for deprecation notice due to triggering
-     *     error middleware for version 2.0.0.
+     * @todo Remove logic for creating final handler for version 2.0.0.
+     * @todo Remove swallowDeprecationNotices() invocation for version 2.0.0.
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
      * @param callable|null $out
@@ -673,6 +672,7 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
     /**
      * Register an error handler to swallow deprecation notices due to error middleware usage.
      *
+     * @todo Remove method for version 2.0.0.
      * @return void
      */
     private function swallowDeprecationNotices()
@@ -689,13 +689,12 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
             return;
         }
 
-        $composite = function ($errno, $errstr, $errfile, $errline, $errcontext) use ($handler, $previous) {
+        set_error_handler(function ($errno, $errstr, $errfile, $errline, $errcontext) use ($handler, $previous) {
             if ($handler($errno, $errstr)) {
                 return true;
             }
 
             return $previous($errno, $errstr, $errfile, $errline, $errcontext);
-        };
-        set_error_handler($composite);
+        });
     }
 }
