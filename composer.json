@@ -32,7 +32,7 @@
         "zendframework/zend-expressive-fastroute": "^1.0",
         "zendframework/zend-expressive-zendrouter": "^1.0",
         "zendframework/zend-servicemanager": "^2.6",
-        "malukenho/docheader": "^0.1.0"
+        "malukenho/docheader": "^0.1.5"
     },
     "autoload": {
       "psr-4": {
