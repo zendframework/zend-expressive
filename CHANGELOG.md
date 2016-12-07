@@ -32,6 +32,28 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
+## 1.0.4 - 2016-12-07
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#402](https://github.com/zendframework/zend-expressive/pull/402) fixes how
+  `Application::__invoke()` registers the error handler designed to swallow
+  deprecation notices, as introduced in 1.0.3. It now checks to see if another
+  error handler was previously registered, and, if so, creates a composite
+  handler that will delegate to the previous for all other errors.
+
 ## 1.0.3 - 2016-11-11
 
 ### Added
