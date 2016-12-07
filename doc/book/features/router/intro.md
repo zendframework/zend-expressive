@@ -31,6 +31,51 @@ matched:
 $id = $request->getAttribute('id');
 ```
 
+## Retrieving the matched route
+
+When routing is successful, the routing middleware injects a
+`Zend\Expressive\Router\RouteResult` instance as a request attribute, using that
+class name as the attribute name. The `RouteResult` instance provides you access
+to the following:
+
+- The matched route name, via `$result->getMatchedRouteName()`.
+- The matched middleware, via `$result->getMatchedMiddleware()`.
+- Matched parameters, via `$result->getMatchedParams()` (as noted above, these
+  are also each injected as discrete request attributes).
+- Allowed HTTP methods, via `$result->getAllowedMethods()`.
+
+As an example, you could use middleware similar to the following to return a 403
+response if routing was successful, but no `Authorization` header is present:
+
+```php
+use Zend\Diactoros\Response\EmptyResponse;
+use Zend\Expressive\Router\RouteResult;
+
+function ($request, $response, $next) use ($routesRequiringAuthorization, $validator) {
+    if (! ($result = $request->getAttribute(RouteResult::class, false))) {
+        // No route matched; delegate to next middleware
+        return $next($request, $response);
+    }
+
+    if (! in_array($result->getMatchedRouteName(), $routesRequiringAuthorization, true)) {
+        // Not a route requiring authorization
+        return $next($request, $response);
+    }
+
+    $header = $request->getHeaderLine('Authorization');
+    if (! $validator($header)) {
+        return new EmptyResponse(403);
+    }
+
+    return $next($request, $response);
+}
+```
+
+Note that the first step is to determine if we have a `RouteResult`; if we do
+not have one, we should either delegate to the next middleware, or return some
+sort of response (generally a 404). In the case of Expressive, a later
+middleware will generate the 404 response for us, so we can safely delegate.
+
 ## URI generation
 
 Because routers have knowledge of the various paths they can match, they are
