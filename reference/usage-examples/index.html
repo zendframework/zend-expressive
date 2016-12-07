@@ -651,7 +651,7 @@ $container = new ServiceManager();
 
 $container-&gt;setFactory('HelloWorld', function ($container) {
     return function ($req, $res, $next) {
-        $res-&gt;write('Hello, world!');
+        $res-&gt;getBody()-&gt;write('Hello, world!');
         return $res;
     };
 });
@@ -815,7 +815,7 @@ class HelloWorld
 {
     public function __invoke($req, $res, $next)
     {
-        $res-&gt;write('Hello, world!');
+        $res-&gt;getBody()-&gt;write('Hello, world!');
         return $res;
     }
 }</code></pre>
@@ -868,7 +868,7 @@ together.</p>
 route and middleware. Between pulling the application from the container and
 calling <code>$app-&gt;run()</code>, add the following in your <code>public/index.php</code>:</p>
 <pre class="codehilite"><code class="language-php">$app-&gt;post('/post', function ($req, $res, $next) {
-    $res-&gt;write('IN POST!');
+    $res-&gt;getBody()-&gt;write('IN POST!');
     return $res;
 });</code></pre>
 
