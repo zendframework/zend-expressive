@@ -264,7 +264,7 @@ trait ApplicationConfigInjectionTrait
                 throw new Container\Exception\InvalidArgumentException(sprintf(
                     'Invalid pipeline specification received; must be an array containing a middleware '
                     . 'key, or one of the Application::*_MIDDLEWARE constants; received %s',
-                    (is_object($item) ? get_class($item) : gettype($item))
+                    is_object($item) ? get_class($item) : gettype($item)
                 ));
             }
 
