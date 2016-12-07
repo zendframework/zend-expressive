@@ -84,9 +84,9 @@ class IntegrationTest extends TestCase
      */
     public function testErrorMiddlewareDeprecationErrorHandlerWillNotOverridePreviouslyRegisteredErrorHandler()
     {
-        $triggered = false;
+        $triggered = 0;
         $this->errorHandler = set_error_handler(function ($errno, $errstr) use (&$triggered) {
-            $triggered = true;
+            $triggered++;
             return true;
         });
 
@@ -104,6 +104,10 @@ class IntegrationTest extends TestCase
 
         $app->run($request, $response);
 
-        $this->assertTrue($triggered);
+        trigger_error('Triggered', E_USER_NOTICE);
+
+        restore_error_handler();
+
+        $this->assertSame(2, $triggered);
     }
 }
