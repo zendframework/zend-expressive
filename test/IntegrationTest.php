@@ -21,11 +21,21 @@ use Zend\Expressive\TemplatedErrorHandler;
 
 class IntegrationTest extends TestCase
 {
+    public $errorHandler;
     public $response;
 
     public function setUp()
     {
         $this->response = null;
+        $this->errorHandler = null;
+    }
+
+    public function tearDown()
+    {
+        if ($this->errorHandler) {
+            set_error_handler($this->errorHandler);
+            $this->errorHandler = null;
+        }
     }
 
     public function getEmitter()
@@ -66,5 +76,34 @@ class IntegrationTest extends TestCase
 
         $this->assertInstanceOf(ResponseInterface::class, $this->response);
         $this->assertEquals(404, $this->response->getStatusCode());
+    }
+
+    /**
+     * @todo Remove for version 2.0, as that version will remove error middleware support
+     * @group 400
+     */
+    public function testErrorMiddlewareDeprecationErrorHandlerWillNotOverridePreviouslyRegisteredErrorHandler()
+    {
+        $triggered = false;
+        $this->errorHandler = set_error_handler(function ($errno, $errstr) use (&$triggered) {
+            $triggered = true;
+            return true;
+        });
+
+        $expected = new Response();
+        $middleware = function ($request, $response, $next) use ($expected) {
+            trigger_error('Triggered', E_USER_NOTICE);
+            return $expected;
+        };
+
+        $app      = new Application(new FastRouteRouter(), null, null, $this->getEmitter());
+        $app->pipe($middleware);
+
+        $request  = new ServerRequest([], [], 'https://example.com/foo', 'GET');
+        $response = clone $expected;
+
+        $app->run($request, $response);
+
+        $this->assertTrue($triggered);
     }
 }
