@@ -7,6 +7,7 @@
 
 namespace ZendTest\Expressive\Middleware;
 
+use Fig\Http\Message\StatusCodeInterface;
 use Interop\Http\Middleware\DelegateInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Argument;
@@ -40,7 +41,7 @@ class NotFoundHandlerTest extends TestCase
 
         $this->renderer->render(Argument::any(), Argument::any())->shouldNotBeCalled();
 
-        $this->response->withStatus(404)->will([$this->response, 'reveal']);
+        $this->response->withStatus(StatusCodeInterface::STATUS_NOT_FOUND)->will([$this->response, 'reveal']);
         $this->response->getBody()->will([$this->stream, 'reveal']);
 
         $this->stream->write('Cannot POST https://example.com/foo')->shouldBeCalled();
@@ -71,7 +72,7 @@ class NotFoundHandlerTest extends TestCase
             ])
             ->willReturn('TEMPLATED RESPONSE');
 
-        $this->response->withStatus(404)->will([$this->response, 'reveal']);
+        $this->response->withStatus(StatusCodeInterface::STATUS_NOT_FOUND)->will([$this->response, 'reveal']);
         $this->response->getBody()->will([$this->stream, 'reveal']);
 
         $this->stream->write('TEMPLATED RESPONSE')->shouldBeCalled();

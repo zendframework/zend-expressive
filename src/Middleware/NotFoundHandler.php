@@ -7,6 +7,7 @@
 
 namespace Zend\Expressive\Middleware;
 
+use Fig\Http\Message\StatusCodeInterface;
 use Interop\Http\Middleware\DelegateInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -65,7 +66,7 @@ class NotFoundHandler extends StratigilityNotFoundHandler
             return parent::process($request, $delegate);
         }
 
-        $response = $this->responsePrototype->withStatus(404);
+        $response = $this->responsePrototype->withStatus(StatusCodeInterface::STATUS_NOT_FOUND);
         $response->getBody()->write(
             $this->renderer->render($this->template, ['request' => $request])
         );
