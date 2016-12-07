@@ -139,9 +139,7 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $out = null)
     {
-        set_error_handler(function ($errno, $errstr) {
-            return false !== strstr($errstr, 'error middleware is deprecated');
-        }, E_USER_DEPRECATED);
+        $this->swallowDeprecationNotices();
 
         if (! $out && (null === ($out = $this->getFinalHandler($response)))) {
             $response = $response instanceof StratigilityResponse
@@ -670,5 +668,34 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
                 'Duplicate route detected; same name or path, and one or more HTTP methods intersect'
             );
         }
+    }
+
+    /**
+     * Register an error handler to swallow deprecation notices due to error middleware usage.
+     *
+     * @return void
+     */
+    private function swallowDeprecationNotices()
+    {
+        $handler = function ($errno, $errstr) {
+            if ($errno !== E_USER_DEPRECATED) {
+                return false;
+            }
+            return false !== strstr($errstr, 'error middleware is deprecated');
+        };
+
+        $previous = set_error_handler($handler);
+        if (! $previous) {
+            return;
+        }
+
+        $composite = function ($errno, $errstr, $errfile, $errline, $errcontext) use ($handler, $previous) {
+            if ($handler($errno, $errstr)) {
+                return true;
+            }
+
+            return $previous($errno, $errstr, $errfile, $errline, $errcontext);
+        };
+        set_error_handler($composite);
     }
 }
