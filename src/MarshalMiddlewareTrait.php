@@ -224,11 +224,7 @@ trait MarshalMiddlewareTrait
         $r = $this->reflectMiddleware($middleware);
         $paramsCount = $r->getNumberOfParameters();
 
-        if ($paramsCount !== 2) {
-            return false;
-        }
-
-        return true;
+        return $paramsCount === 2;
     }
 
     /**
