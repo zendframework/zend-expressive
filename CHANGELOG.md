@@ -55,6 +55,14 @@ All notable changes to this project will be documented in this file, in reverse 
     is not available.
   - no router is specified, and the class `Zend\Expressive\Router\FastRouteRouter`
     is not available.
+- [#405](https://github.com/zendframework/zend-expressive/pull/405) fixes how
+  the `TemplatedErrorHandler` injects templated content into the response.
+  Previously, it would `write()` directly to the existing response body, which
+  could lead to issues if previous middleware had written to the response (as
+  the templated contents would append the previous contents). With this release,
+  it now creates a new `Zend\Diactoros\Stream`, writes to that, and returns a
+  new response with that new stream, guaranteeing it only contains the new
+  contents.
 
 ## 1.0.4 - 2016-12-07
 
