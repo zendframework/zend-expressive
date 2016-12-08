@@ -705,24 +705,17 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
      */
     private function swallowDeprecationNotices()
     {
-        $handler = function ($errno, $errstr) {
-            if ($errno !== E_USER_DEPRECATED) {
-                return false;
+        $previous = null;
+        $handler = function ($errno, $errstr, $errfile, $errline, $errcontext) use (&$previous) {
+            $swallow = $errno === E_USER_DEPRECATED && false !== strstr($errstr, 'error middleware is deprecated');
+
+            if ($swallow || $previous === null) {
+                return $swallow;
             }
-            return false !== strstr($errstr, 'error middleware is deprecated');
+
+            $previous($errno, $errstr, $errfile, $errline, $errcontext);
         };
 
         $previous = set_error_handler($handler);
-        if (! $previous) {
-            return;
-        }
-
-        set_error_handler(function ($errno, $errstr, $errfile, $errline, $errcontext) use ($handler, $previous) {
-            if ($handler($errno, $errstr)) {
-                return true;
-            }
-
-            return $previous($errno, $errstr, $errfile, $errline, $errcontext);
-        });
     }
 }
