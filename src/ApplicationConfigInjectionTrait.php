@@ -124,7 +124,7 @@ trait ApplicationConfigInjectionTrait
      *         [
      *             'path' => '/path/to/match',
      *             'middleware' => 'Middleware Service Name or Callable',
-     *             'allowed_methods' => [ 'GET', 'POST', 'PATCH' ],
+     *             'allowed_methods' => ['GET', 'POST', 'PATCH'],
      *             'options' => [
      *                 'stuff' => 'to',
      *                 'pass'  => 'to',
@@ -176,8 +176,8 @@ trait ApplicationConfigInjectionTrait
             } else {
                 $methods = Route::HTTP_METHOD_ANY;
             }
-            $name    = isset($spec['name']) ? $spec['name'] : null;
-            $route   = new Route($spec['path'], $spec['middleware'], $methods, $name);
+            $name  = isset($spec['name']) ? $spec['name'] : null;
+            $route = new Route($spec['path'], $spec['middleware'], $methods, $name);
 
             if (isset($spec['options'])) {
                 $options = $spec['options'];
@@ -299,7 +299,8 @@ trait ApplicationConfigInjectionTrait
             $priority = isset($item['priority']) && is_int($item['priority'])
                 ? $item['priority']
                 : 1;
-            $queue->insert($item, [$priority, $serial--]);
+            $queue->insert($item, [$priority, $serial]);
+            $serial -= 1;
             return $queue;
         };
     }
