@@ -7,6 +7,7 @@
 
 namespace Zend\Expressive;
 
+use Fig\Http\Message\StatusCodeInterface as StatusCode;
 use Interop\Container\ContainerInterface;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
@@ -444,12 +445,12 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
 
         if ($result->isFailure()) {
             if ($result->isMethodFailure()) {
-                $response = $response->withStatus(405)
+                $response = $response->withStatus(StatusCode::STATUS_METHOD_NOT_ALLOWED)
                     ->withHeader('Allow', implode(',', $result->getAllowedMethods()));
 
                 return $this->raiseThrowables
                     ? $response
-                    : $next($request, $response, 405);
+                    : $next($request, $response, StatusCode::STATUS_METHOD_NOT_ALLOWED);
             }
             return $next($request, $response);
         }
@@ -724,7 +725,7 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
     private function emitMarshalServerRequestException($exception)
     {
         $response = (new Response())
-            ->withStatus(400);
+            ->withStatus(StatusCode::STATUS_BAD_REQUEST);
         $finalHandler = $this->getFinalHandler();
         $response = $finalHandler(new ServerRequest(), $response, $exception);
         $emitter = $this->getEmitter();
