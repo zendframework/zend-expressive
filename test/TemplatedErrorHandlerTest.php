@@ -202,21 +202,32 @@ class TemplatedErrorHandlerTest extends TestCase
             'error::500'
         );
 
-        $expected = $this->getResponse($this->getStream());
-
         $stream   = $this->getStream();
         $stream->getSize()->willReturn(0);
-        $stream->write('Templated contents')->shouldBeCalled();
 
-        $response = $this->getResponse($stream);
+        $response = $this->prophesize(ResponseInterface::class);
         $response->getStatusCode()->willReturn(200);
-        $response->withStatus(404)->willReturn($expected->reveal());
+        $response->getBody()->will([$stream, 'reveal']);
+        $response
+            ->withBody(Argument::that(function ($body) use ($stream) {
+                if (! $body instanceof StreamInterface) {
+                    return false;
+                }
+
+                if ($body === $stream) {
+                    return false;
+                }
+
+                return 'Templated contents' === (string) $body;
+            }))
+            ->will([$response, 'reveal']);
+        $response->withStatus(404)->will([$response, 'reveal']);
 
         $request = $this->getRequest($this->getStream());
         $request->getUri()->shouldBeCalled();
 
         $result = $handler($request->reveal(), $response->reveal());
-        $this->assertSame($expected->reveal(), $result);
+        $this->assertSame($response->reveal(), $result);
     }
 
     /**
@@ -238,15 +249,26 @@ class TemplatedErrorHandlerTest extends TestCase
             'error::500'
         );
 
-        $expected = $this->getResponse($this->getStream());
-
         $stream   = $this->getStream();
         $stream->getSize()->willReturn(100);
-        $stream->write('Templated contents')->shouldBeCalled();
 
-        $response = $this->getResponse($stream);
+        $response = $this->prophesize(ResponseInterface::class);
         $response->getStatusCode()->willReturn(200);
-        $response->withStatus(404)->willReturn($expected->reveal());
+        $response->getBody()->will([$stream, 'reveal']);
+        $response
+            ->withBody(Argument::that(function ($body) use ($stream) {
+                if (! $body instanceof StreamInterface) {
+                    return false;
+                }
+
+                if ($body === $stream) {
+                    return false;
+                }
+
+                return 'Templated contents' === (string) $body;
+            }))
+            ->will([$response, 'reveal']);
+        $response->withStatus(404)->will([$response, 'reveal']);
 
         $handler->setOriginalResponse($response->reveal());
 
@@ -257,7 +279,7 @@ class TemplatedErrorHandlerTest extends TestCase
             ->will([$response, 'reveal']);
 
         $result = $handler($request->reveal(), $response->reveal());
-        $this->assertSame($expected->reveal(), $result);
+        $this->assertSame($response->reveal(), $result);
     }
 
     /* Tests covering handleErrorResponse() paths; NO TEMPLATE */
@@ -361,54 +383,35 @@ class TemplatedErrorHandlerTest extends TestCase
 
     /* Tests covering handleErrorResponse() paths; WITH TEMPLATE */
 
-    /**
-     * @group templated
-     */
-    public function testNonExceptionErrorReturnsResponseWith500StatusAndTemplateResultsWhenTemplatingInjected()
+    public function errors()
     {
-        $renderer = $this->getTemplateImplementation();
-        $renderer
-            ->render(
-                'error::500',
-                Argument::type('array')
-            )
-            ->willReturn('Templated contents');
-
-        $handler = new TemplatedErrorHandler(
-            $renderer->reveal(),
-            'error::404',
-            'error::500'
-        );
-
-        $stream   = $this->getStream();
-        $stream->getSize()->willReturn(0);
-        $stream->write('Templated contents')->shouldBeCalled();
-
-        $expected = $this->getResponse($stream);
-        $expected->getStatusCode()->willReturn(500)->shouldBeCalled();
-        $expected->getReasonPhrase()->shouldBeCalled();
-
-        $response = $this->getResponse($stream);
-        $response->getStatusCode()->willReturn(200);
-        $response->withStatus(500)->willReturn($expected->reveal());
-
-        $request = $this->getRequest($this->getStream());
-        $request->getUri()->shouldBeCalled();
-
-        $result = $handler($request->reveal(), $response->reveal(), 'error');
-        $this->assertSame($expected->reveal(), $result);
+        return [
+            'error'     => ['error'],
+            'exception' => [new Exception('exception')],
+        ];
     }
 
     /**
      * @group templated
+     * @dataProvider errors
      */
-    public function testExceptionErrorReturnsResponseWith500StatusAndTemplateResultsWhenTemplatingInjected()
+    public function testReturns500ResponseWithNewStreamWhenReturningAnErrorResponse($error)
     {
         $renderer = $this->getTemplateImplementation();
         $renderer
             ->render(
                 'error::500',
-                Argument::type('array')
+                Argument::that(function ($params) use ($error) {
+                    if (! is_array($params)) {
+                        return false;
+                    }
+
+                    if (empty($params['error'])) {
+                        return false;
+                    }
+
+                    return $error === $params['error'];
+                })
             )
             ->willReturn('Templated contents');
 
@@ -418,22 +421,27 @@ class TemplatedErrorHandlerTest extends TestCase
             'error::500'
         );
 
-        $stream   = $this->getStream();
-        $stream->getSize()->willReturn(0);
-        $stream->write('Templated contents')->shouldBeCalled();
-
-        $expected = $this->getResponse($stream);
+        $expected = $this->prophesize(ResponseInterface::class);
         $expected->getStatusCode()->willReturn(500)->shouldBeCalled();
         $expected->getReasonPhrase()->shouldBeCalled();
+        $expected
+            ->withBody(Argument::that(function ($stream) {
+                if (! $stream instanceof StreamInterface) {
+                    return false;
+                }
 
-        $response = $this->getResponse($stream);
+                return 'Templated contents' === (string) $stream;
+            }))
+            ->will([$expected, 'reveal']);
+
+        $response = $this->prophesize(ResponseInterface::class);
         $response->getStatusCode()->willReturn(200);
         $response->withStatus(500)->willReturn($expected->reveal());
 
         $request = $this->getRequest($this->getStream());
         $request->getUri()->shouldBeCalled();
 
-        $result = $handler($request->reveal(), $response->reveal(), new Exception());
+        $result = $handler($request->reveal(), $response->reveal(), $error);
         $this->assertSame($expected->reveal(), $result);
     }
 }
