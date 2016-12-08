@@ -52,16 +52,16 @@ class ApplicationConfigInjectionTest extends TestCase
                 return false;
             }
 
-            if (isset($spec['allowed_methods'])) {
-                if ($route->getAllowedMethods() !== $spec['allowed_methods']) {
-                    return false;
-                }
+            if (isset($spec['allowed_methods'])
+                && $route->getAllowedMethods() !== $spec['allowed_methods']
+            ) {
+                return false;
             }
 
-            if (! isset($spec['allowed_methods'])) {
-                if ($route->getAllowedMethods() !== Route::HTTP_METHOD_ANY) {
-                    return false;
-                }
+            if (! isset($spec['allowed_methods'])
+                && $route->getAllowedMethods() !== Route::HTTP_METHOD_ANY
+            ) {
+                return false;
             }
 
             return true;
