@@ -484,6 +484,7 @@ Each middleware specified must be in the following form:
     'middleware' => 'Name of middleware service, or a callable',
     // optional:
     'path'  => '/path/to/match',
+    'host'  => 'host.to.match.example.com',
     'error' => true,
     'priority' => 1, // Integer
 ]
@@ -625,13 +626,13 @@ this is done to ensure that lazy-loading of error middleware works as expected.
 > This also means that if the service specified is not valid middleware, you
 > will not find out until the application attempts to invoke it.
 
-## Segregating your application to a subpath
+## Segregating your application to a subpath or host
 
 One benefit of a middleware-based application is the ability to compose
-middleware and segregate them by paths. `Zend\Expressive\Application` is itself
+middleware and segregate them by paths and/or hosts. `Zend\Expressive\Application` is itself
 middleware, allowing you to do exactly that if desired.
 
-In the following example, we'll assume that `$api` and `$blog` are
+In the following example, we'll assume that `$api`, `$blog` and `$support` are
 `Zend\Expressive\Application` instances, and compose them into a
 `Zend\Stratigility\MiddlewarePipe`.
 
@@ -645,6 +646,7 @@ require __DIR__ . '/../vendor/autoload.php';
 $app = new MiddlewarePipe();
 $app->pipe('/blog', $blog);
 $app->pipe('/api', $api);
+$app->pipe('/', 'support.example.com', $support);
 
 $server = Server::createServerFromRequest(
     $app,
@@ -659,6 +661,7 @@ You could also compose them in an `Application` instance, and utilize `run()`:
 $app = AppFactory::create();
 $app->pipe('/blog', $blog);
 $app->pipe('/api', $api);
+$app->pipe('/', 'support.example.com', $support);
 
 $app->run();
 ```

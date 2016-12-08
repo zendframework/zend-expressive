@@ -343,10 +343,11 @@ class ApplicationFactory
 
         foreach ($queue as $spec) {
             $path  = isset($spec['path']) ? $spec['path'] : '/';
+            $host  = isset($spec['host']) ? $spec['host'] : null;
             $error = array_key_exists('error', $spec) ? (bool) $spec['error'] : false;
             $pipe  = $error ? 'pipeErrorHandler' : 'pipe';
 
-            $app->{$pipe}($path, $spec['middleware']);
+            $app->{$pipe}($path, $host, $spec['middleware']);
         }
 
         return $injections;
