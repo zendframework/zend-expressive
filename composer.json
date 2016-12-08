@@ -26,7 +26,7 @@
     },
     "require-dev": {
         "filp/whoops": "^1.1 || ^2.0",
-        "malukenho/docheader": "^0.1.0",
+        "malukenho/docheader": "^0.1.5",
         "mockery/mockery": "^0.9.5",
         "phpunit/phpunit": "^4.7",
         "zendframework/zend-coding-standard": "~1.0.0",
