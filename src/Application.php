@@ -677,6 +677,7 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
      */
     private function swallowDeprecationNotices()
     {
+        $previous = null;
         $handler = function ($errno, $errstr, $errfile, $errline, $errcontext) use (&$previous) {
             $swallow = $errno === E_USER_DEPRECATED && false !== strstr($errstr, 'error middleware is deprecated');
 
