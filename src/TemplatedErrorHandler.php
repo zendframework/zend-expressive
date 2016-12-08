@@ -9,6 +9,7 @@ namespace Zend\Expressive;
 
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use Zend\Diactoros\Stream;
 use Zend\Stratigility\Utils;
 
 /**
@@ -136,7 +137,8 @@ class TemplatedErrorHandler
     protected function handleError($error, Request $request, Response $response)
     {
         if ($this->renderer) {
-            $response->getBody()->write(
+            $stream = new Stream('php://temp', 'wb+');
+            $stream->write(
                 $this->renderer->render($this->templateError, [
                     'uri'      => $request->getUri(),
                     'error'    => $error,
@@ -146,6 +148,7 @@ class TemplatedErrorHandler
                     'response' => $response,
                 ])
             );
+            return $response->withBody($stream);
         }
 
         return $response;
@@ -248,9 +251,11 @@ class TemplatedErrorHandler
     private function create404(Request $request, Response $response)
     {
         if ($this->renderer) {
-            $response->getBody()->write(
+            $stream = new Stream('php://temp', 'wb+');
+            $stream->write(
                 $this->renderer->render($this->template404, [ 'uri' => $request->getUri() ])
             );
+            $response = $response->withBody($stream);
         }
         return $response->withStatus(404);
     }
