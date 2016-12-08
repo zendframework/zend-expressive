@@ -18,7 +18,7 @@ if (false === ($paths = getenv('PATH'))) {
 }
 
 $paths    = explode(PATH_SEPARATOR, $paths);
-$bins     = ['composer', 'composer.bat', 'composer.phar'];
+$bins     = ['composer', 'composer.bat', 'composer.cmd', 'composer.phar'];
 $composer = false;
 
 foreach ($paths as $path) {
