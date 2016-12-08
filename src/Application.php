@@ -7,6 +7,7 @@
 
 namespace Zend\Expressive;
 
+use Fig\Http\Message\StatusCodeInterface as StatusCode;
 use Interop\Container\ContainerInterface;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
@@ -35,7 +36,11 @@ use Zend\Stratigility\MiddlewarePipe;
  */
 class Application extends MiddlewarePipe implements Router\RouteResultSubjectInterface
 {
+    use ApplicationConfigInjectionTrait;
     use MarshalMiddlewareTrait;
+
+    const ROUTING_MIDDLEWARE = Container\ApplicationFactory::ROUTING_MIDDLEWARE;
+    const DISPATCH_MIDDLEWARE = Container\ApplicationFactory::DISPATCH_MIDDLEWARE;
 
     /**
      * @var null|ContainerInterface
@@ -68,6 +73,12 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
         'PATCH',
         'DELETE',
     ];
+
+    /**
+     * @var bool Flag indicating whether or not throwables/exceptions raised
+     *     by middleware should be caught, or raised by the dispatcher.
+     */
+    private $raiseThrowables = false;
 
     /**
      * @var bool Flag indicating whether or not the route middleware is
@@ -338,12 +349,22 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
      * Once middleware detection and wrapping (if necessary) is complete,
      * proxies to pipe().
      *
+     * @deprecated Since 1.1.0; will be removed in 2.0.0.
      * @param string|callable $path Either a URI path prefix, or middleware.
      * @param null|string|callable $middleware Middleware
      * @return self
      */
     public function pipeErrorHandler($path, $middleware = null)
     {
+        trigger_error(sprintf(
+            'Stratigility-style error middleware is deprecated by Stratigility 1.3 '
+            . 'and Expressive 1.1. Please update your application to use standard '
+            . 'middleware designed for error handling as described in %s '
+            . 'and %s.',
+            'https://docs.zendframework.com/zend-stratigility/error-handlers/',
+            'https://docs.zendframework.com/zend-expressive/features/error-handling/'
+        ), E_USER_DEPRECATED);
+
         if (null === $middleware) {
             $middleware = $this->prepareMiddleware($path, $this->container, $forError = true);
             $path = '/';
@@ -424,9 +445,12 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
 
         if ($result->isFailure()) {
             if ($result->isMethodFailure()) {
-                $response = $response->withStatus(405)
+                $response = $response->withStatus(StatusCode::STATUS_METHOD_NOT_ALLOWED)
                     ->withHeader('Allow', implode(',', $result->getAllowedMethods()));
-                return $next($request, $response, 405);
+
+                return $this->raiseThrowables
+                    ? $response
+                    : $next($request, $response, StatusCode::STATUS_METHOD_NOT_ALLOWED);
             }
             return $next($request, $response);
         }
@@ -646,6 +670,17 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
     }
 
     /**
+     * Exists solely to allow us to test the flag within our own logic.
+     *
+     * {@inheritDoc}
+     */
+    public function raiseThrowables()
+    {
+        parent::raiseThrowables();
+        $this->raiseThrowables = true;
+    }
+
+    /**
      * Determine if the route is duplicated in the current list.
      *
      * Checks if a route with the same name or path exists already in the list;
@@ -690,7 +725,7 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
     private function emitMarshalServerRequestException($exception)
     {
         $response = (new Response())
-            ->withStatus(400);
+            ->withStatus(StatusCode::STATUS_BAD_REQUEST);
         $finalHandler = $this->getFinalHandler();
         $response = $finalHandler(new ServerRequest(), $response, $exception);
         $emitter = $this->getEmitter();

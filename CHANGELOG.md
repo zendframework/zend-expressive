@@ -16,13 +16,83 @@ All notable changes to this project will be documented in this file, in reverse 
           'options' => [ /* array of options */ ],
       ],
   ```
+
 - [#373](https://github.com/zendframework/zend-expressive/pull/373) adds interception
   of exceptions from the `ServerRequestFactory` for invalid request information in order
   to return `400` responses.
 
+- [#396](https://github.com/zendframework/zend-expressive/pull/396) adds
+  `Zend\Expressive\Middleware\NotFoundHandler`, which provides a way to return a
+  templated 404 response to users. This middleware should be used as innermost
+  middleware. You may use the new `Zend\Expressive\Container\NotFoundHandlerFactory`
+  to generate the instance via your DI container.
+
+- [#396](https://github.com/zendframework/zend-expressive/pull/396) adds
+  `Zend\Expressive\Container\ErrorHandlerFactory`, for generating a
+  `Zend\Stratigility\Middleware\ErrorHandler` to use with your application.
+  If a `Zend\Expressive\Middleware\ErrorResponseGenerator` service is present in
+  the container, it will be used to seed the `ErrorHandler` with a response
+  generator. If you use this facility, you should enable the
+  `zend-expressive.raise_throwables` configuration flag.
+
+- [#396](https://github.com/zendframework/zend-expressive/pull/396) adds
+  `Zend\Expressive\Middleware\ErrorResponseGenerator` and
+  `Zend\Expressive\Middleware\WhoopsErrorResponseGenerator`, which may be used
+  with `Zend\Stratigility\Middleware\ErrorHandler` to generate error responses.
+  The first will generate templated error responses if a template renderer is
+  composed, and the latter will generate Whoops output.
+  You may use the new `Zend\Expressive\Container\ErrorResponseGeneratorFactory`
+  and `Zend\Expressive\Container\WhoopsErrorResponseGeneratorFactory`,
+  respectively, to create these instances; if you do, assign these to the
+  service name `Zend\Expressive\Middleware\ErrorResponseGenerator` to have them
+  automatically registered with the `ErrorHandler`.
+
+- [#396](https://github.com/zendframework/zend-expressive/pull/396) adds
+  `Zend\Expressive\ApplicationConfigInjectionTrait`, which exposes two methods,
+  `injectRoutesFromConfig()` and `injectPipelineFromConfig()`; this trait is now
+  composed into the `Application` class. These methods allow you to configure an
+  `Application` instance from configuration if desired, and are now used by the
+  `ApplicationFactory` to configure the `Application` instance.
+
+- [#396](https://github.com/zendframework/zend-expressive/pull/396) adds
+  support for [http-interop middleware 0.2.0](https://github.com/http-interop/http-middleware/tree/0.2.0);
+  you may now pipe such middleware directly to the `Application` instance, or
+  pipe service names that resolve to such middleware.
+
+- [#396](https://github.com/zendframework/zend-expressive/pull/396) adds
+  a vendor binary, `vendor/bin/expressive-tooling`, which will install (or
+  uninstall) the [zend-expressive-tooling](https://github.com/zendframework/zend-expressive-tooling);
+  this package provides migration tools for updating your application to use
+  programmatic pipelines and the new error handling strategy, as well as tools
+  for identifying usage of the legacy Stratigility request and response
+  decorators and error middleware.
+
+### Changes
+
+- [#396](https://github.com/zendframework/zend-expressive/pull/396) updates the
+  zend-stratigility dependency to require `^1.3`, ensuring that developers may
+  use the new middleware-based error handling system.
+
+- [#396](https://github.com/zendframework/zend-expressive/pull/396) updates the
+  `Zend\Expressive\Container\ApplicationFactory` to vary creation of the
+  `Application` instance based on two new configuration variables:
+
+  - `zend-expressive.programmatic-pipeline` will cause the factory to skip
+    injection of the middleware pipeline and routes from configuration. It is
+    then up to the developer to do so, or use the `Application` API to pipe
+    middleware and/or add routed middleware.
+
+  - `zend-expressive.raise_throwables` will cause the factory to call the new
+    `raiseThrowables()` method exposed by `Application` (and inherited from
+    `Zend\Stratigility\MiddlewarePipe`). Doing so will cause the application to
+    raise any `Throwable` or `Exception` instances caught, instead of catching
+    them and dispatching them to (legacy) Stratigility error middleware.
+
 ### Deprecated
 
-- Nothing.
+- [#396](https://github.com/zendframework/zend-expressive/pull/396) deprecates
+  the `pipeErrorMiddleware()` method. Please migrate to the new error handling
+  facilities.
 
 ### Removed
 

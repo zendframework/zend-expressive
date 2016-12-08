@@ -1,7 +1,5 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
  * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
@@ -30,6 +28,7 @@ use Zend\Expressive\Router\RouterInterface;
 use Zend\Stratigility\ErrorMiddlewareInterface;
 use Zend\Stratigility\FinalHandler;
 use Zend\Stratigility\MiddlewarePipe;
+use Zend\Stratigility\NoopFinalHandler;
 use Zend\Stratigility\Route as StratigilityRoute;
 use ZendTest\Expressive\ContainerTrait;
 use ZendTest\Expressive\TestAsset\InvokableMiddleware;
@@ -139,12 +138,12 @@ class ApplicationFactoryTest extends TestCase
                 [
                     'path' => '/',
                     'middleware' => $middleware,
-                    'allowed_methods' => [ 'GET' ],
+                    'allowed_methods' => ['GET'],
                 ],
                 [
                     'path' => '/ping',
                     'middleware' => 'Ping',
-                    'allowed_methods' => [ 'GET' ],
+                    'allowed_methods' => ['GET'],
                 ],
             ],
         ];
@@ -167,10 +166,10 @@ class ApplicationFactoryTest extends TestCase
         $config = [
             'routes' => [
                 [
-                    'allowed_methods' => [ 'GET' ],
+                    'allowed_methods' => ['GET'],
                 ],
                 [
-                    'allowed_methods' => [ 'POST' ],
+                    'allowed_methods' => ['POST'],
                 ],
             ],
         ];
@@ -214,147 +213,6 @@ class ApplicationFactoryTest extends TestCase
 
     /**
      * @group piping
-     * @deprecated This test can be removed for 1.1
-     */
-    public function testCanPipeMiddlewareProvidedDuringConfigurationPriorToSettingRoutes()
-    {
-        $middleware = function ($req, $res, $next = null) {
-        };
-
-        $config = [
-            'routes' => [
-                [
-                    'path' => '/',
-                    'middleware' => 'HelloWorld',
-                    'allowed_methods' => [ 'GET' ],
-                ],
-            ],
-            'middleware_pipeline' => [
-                'pre_routing' => [
-                    [ 'middleware' => $middleware ],
-                    [ 'path' => '/foo', 'middleware' => $middleware ],
-                ],
-                'post_routing' => [ ],
-            ],
-        ];
-
-        $this->injectServiceInContainer($this->container, 'config', $config);
-
-        // @codingStandardsIgnoreStart
-        set_error_handler(function ($errno, $errmsg) {
-            $this->assertContains('routing', $errmsg);
-        }, E_USER_DEPRECATED);
-        // @codingStandardsIgnoreEnd
-
-        $app = $this->factory->__invoke($this->container->reveal());
-        restore_error_handler();
-
-        $r = new ReflectionProperty($app, 'pipeline');
-        $r->setAccessible(true);
-        $pipeline = $r->getValue($app);
-
-        $this->assertCount(5, $pipeline);
-
-        $route = $pipeline->dequeue();
-        $this->assertInstanceOf(StratigilityRoute::class, $route);
-        $this->assertSame($middleware, $route->handler);
-        $this->assertEquals('/', $route->path);
-
-        $route = $pipeline->dequeue();
-        $this->assertInstanceOf(StratigilityRoute::class, $route);
-        $this->assertSame($middleware, $route->handler);
-        $this->assertEquals('/foo', $route->path);
-
-        $route = $pipeline->dequeue();
-        $this->assertInstanceOf(StratigilityRoute::class, $route);
-        $this->assertSame([$app, 'routeMiddleware'], $route->handler);
-        $this->assertEquals('/', $route->path);
-
-        $route = $pipeline->dequeue();
-        $this->assertInstanceOf(StratigilityRoute::class, $route);
-        $this->assertSame([$app, 'routeResultObserverMiddleware'], $route->handler);
-        $this->assertEquals('/', $route->path);
-
-        $route = $pipeline->dequeue();
-        $this->assertInstanceOf(StratigilityRoute::class, $route);
-        $this->assertSame([$app, 'dispatchMiddleware'], $route->handler);
-        $this->assertEquals('/', $route->path);
-    }
-
-    /**
-     * @group piping
-     * @deprecated This test can be removed for 1.1
-     */
-    public function testCanPipeMiddlewareProvidedDuringConfigurationAfterSettingRoutes()
-    {
-        $middleware = function ($req, $res, $next = null) {
-            return true;
-        };
-
-        $config = [
-            'routes' => [
-                [
-                    'path' => '/',
-                    'middleware' => 'HelloWorld',
-                    'allowed_methods' => [ 'GET' ],
-                ],
-            ],
-            'middleware_pipeline' => [
-                'pre_routing' => [ ],
-                'post_routing' => [
-                    [ 'middleware' => $middleware ],
-                    [ 'path' => '/foo', 'middleware' => $middleware ],
-                ],
-            ],
-        ];
-
-        $this->injectServiceInContainer($this->container, 'config', $config);
-
-        // @codingStandardsIgnoreStart
-        set_error_handler(function ($errno, $errmsg) {
-            $this->assertContains('routing', $errmsg);
-        }, E_USER_DEPRECATED);
-        // @codingStandardsIgnoreEnd
-
-        $app = $this->factory->__invoke($this->container->reveal());
-        restore_error_handler();
-
-        $r = new ReflectionProperty($app, 'pipeline');
-        $r->setAccessible(true);
-        $pipeline = $r->getValue($app);
-
-        $this->assertCount(5, $pipeline);
-
-        $route = $pipeline->dequeue();
-        $this->assertInstanceOf(StratigilityRoute::class, $route);
-        $this->assertSame([$app, 'routeMiddleware'], $route->handler);
-        $this->assertEquals('/', $route->path);
-
-        $route = $pipeline->dequeue();
-        $this->assertInstanceOf(StratigilityRoute::class, $route);
-        $this->assertSame([$app, 'routeResultObserverMiddleware'], $route->handler);
-        $this->assertEquals('/', $route->path);
-
-        $route = $pipeline->dequeue();
-        $this->assertInstanceOf(StratigilityRoute::class, $route);
-        $this->assertSame([$app, 'dispatchMiddleware'], $route->handler);
-        $this->assertEquals('/', $route->path);
-
-        $route = $pipeline->dequeue();
-        $this->assertInstanceOf(StratigilityRoute::class, $route);
-        $this->assertInstanceOf(Closure::class, $route->handler);
-        $this->assertTrue(call_user_func($route->handler, 'req', 'res'));
-        $this->assertEquals('/', $route->path);
-
-        $route = $pipeline->dequeue();
-        $this->assertInstanceOf(StratigilityRoute::class, $route);
-        $this->assertInstanceOf(Closure::class, $route->handler);
-        $this->assertTrue(call_user_func($route->handler, 'req', 'res'));
-        $this->assertEquals('/foo', $route->path);
-    }
-
-    /**
-     * @group piping
      */
     public function testPipedMiddlewareAsServiceNamesAreReturnedAsClosuresThatPullFromContainer()
     {
@@ -364,8 +222,8 @@ class ApplicationFactoryTest extends TestCase
 
         $config = [
             'middleware_pipeline' => [
-                [ 'middleware' => 'Middleware' ],
-                [ 'path' => '/foo', 'middleware' => 'Middleware' ],
+                ['middleware' => 'Middleware'],
+                ['path' => '/foo', 'middleware' => 'Middleware'],
             ],
         ];
 
@@ -400,8 +258,8 @@ class ApplicationFactoryTest extends TestCase
     {
         $config = [
             'middleware_pipeline' => [
-                [ 'foo' => 'bar' ],
-                [ 'path' => '/foo' ],
+                ['foo' => 'bar'],
+                ['path' => '/foo'],
             ],
         ];
 
@@ -434,8 +292,8 @@ class ApplicationFactoryTest extends TestCase
     {
         $config = [
             'middleware_pipeline' => [
-                [ 'middleware' => $middleware ],
-                [ 'path' => '/foo', 'middleware' => $middleware ],
+                ['middleware' => $middleware],
+                ['path' => '/foo', 'middleware' => $middleware],
             ],
         ];
 
@@ -455,81 +313,13 @@ class ApplicationFactoryTest extends TestCase
 
     /**
      * @group piping
-     * @deprecated This test can be removed for 1.1
-     */
-    public function testCanPipePreRoutingMiddlewareAsArray()
-    {
-        $config = [
-            'middleware_pipeline' => [
-                'pre_routing' => [
-                    [
-                        'middleware' => [
-                            'Hello',
-                            function () {
-                            },
-                        ],
-                    ],
-                ],
-            ],
-        ];
-
-        $this->injectServiceInContainer($this->container, 'config', $config);
-        $this->injectServiceInContainer($this->container, 'Hello', function () {
-        });
-
-        // @codingStandardsIgnoreStart
-        set_error_handler(function ($errno, $errmsg) {
-            $this->assertContains('routing', $errmsg);
-        }, E_USER_DEPRECATED);
-        // @codingStandardsIgnoreEnd
-
-        $this->factory->__invoke($this->container->reveal());
-        restore_error_handler();
-    }
-
-    /**
-     * @group piping
-     * @deprecated This test can be removed for 1.1
-     */
-    public function testCanPipePostRoutingMiddlewareAsArray()
-    {
-        $config = [
-            'middleware_pipeline' => [
-                'post_routing' => [
-                    [
-                        'middleware' => [
-                            'Hello',
-                            function () {
-                            },
-                        ],
-                    ],
-                ],
-            ],
-        ];
-
-        $this->injectServiceInContainer($this->container, 'config', $config);
-        $this->injectServiceInContainer($this->container, 'Hello', function () {
-        });
-
-        // @codingStandardsIgnoreStart
-        set_error_handler(function ($errno, $errmsg) {
-            $this->assertContains('routing', $errmsg);
-        }, E_USER_DEPRECATED);
-        // @codingStandardsIgnoreEnd
-
-        $this->factory->__invoke($this->container->reveal());
-        restore_error_handler();
-    }
-
-    /**
-     * @group piping
      */
     public function testRaisesExceptionForPipedMiddlewareServiceNamesNotFoundInContainer()
     {
         $config = [
             'middleware_pipeline' => [
-                [ 'middleware' => 'Middleware' ],
-                [ 'path' => '/foo', 'middleware' => 'Middleware' ],
+                ['middleware' => 'Middleware'],
+                ['path' => '/foo', 'middleware' => 'Middleware'],
             ],
         ];
 
@@ -548,8 +338,8 @@ class ApplicationFactoryTest extends TestCase
 
         $config = [
             'middleware_pipeline' => [
-                [ 'middleware' => 'Middleware' ],
-                [ 'path' => '/foo', 'middleware' => 'Middleware' ],
+                ['middleware' => 'Middleware'],
+                ['path' => '/foo', 'middleware' => 'Middleware'],
             ],
         ];
 
@@ -610,6 +400,7 @@ class ApplicationFactoryTest extends TestCase
     }
 
     /**
+     * @todo Remove for 2.0.0
      * @group piping
      */
     public function testCanMarkPipedMiddlewareServiceAsErrorMiddleware()
@@ -620,14 +411,20 @@ class ApplicationFactoryTest extends TestCase
 
         $config = [
             'middleware_pipeline' => [
-                [ 'middleware' => 'Middleware', 'error' => true ],
+                ['middleware' => 'Middleware', 'error' => true],
             ],
         ];
 
         $this->injectServiceInContainer($this->container, 'config', $config);
         $this->injectServiceInContainer($this->container, 'Middleware', $middleware);
 
+        set_error_handler(function ($errno, $errmsg) {
+            return false !== strstr($errmsg, 'error middleware is deprecated');
+        }, E_USER_DEPRECATED);
+
         $app = $this->factory->__invoke($this->container->reveal());
+
+        restore_error_handler();
 
         $r = new ReflectionProperty($app, 'pipeline');
         $r->setAccessible(true);
@@ -643,93 +440,6 @@ class ApplicationFactoryTest extends TestCase
         $r = new ReflectionFunction($route->handler);
         $this->assertEquals(4, $r->getNumberOfRequiredParameters());
         $this->assertTrue(call_user_func($route->handler, 'error', 'req', 'res', 'next'));
-    }
-
-    /**
-     * @group 64
-     * @deprecated This test can be removed for 1.1
-     */
-    public function testWillPipeRoutingMiddlewareEvenIfNoRoutesAreRegistered()
-    {
-        $middleware = function ($req, $res, $next = null) {
-        };
-
-        $config = [
-            'middleware_pipeline' => [
-                'pre_routing' => [
-                    [ 'middleware' => $middleware ],
-                    [ 'path' => '/foo', 'middleware' => $middleware ],
-                ],
-                'post_routing' => [ ],
-            ],
-        ];
-
-        $this->injectServiceInContainer($this->container, 'config', $config);
-
-        // @codingStandardsIgnoreStart
-        set_error_handler(function ($errno, $errmsg) {
-            $this->assertContains('routing', $errmsg);
-        }, E_USER_DEPRECATED);
-        // @codingStandardsIgnoreEnd
-
-        $app = $this->factory->__invoke($this->container->reveal());
-        restore_error_handler();
-
-        $r = new ReflectionProperty($app, 'pipeline');
-        $r->setAccessible(true);
-        $pipeline = $r->getValue($app);
-
-        $this->assertCount(5, $pipeline);
-
-        $route = $pipeline->dequeue();
-        $this->assertInstanceOf(StratigilityRoute::class, $route);
-        $this->assertSame($middleware, $route->handler);
-        $this->assertEquals('/', $route->path);
-
-        $route = $pipeline->dequeue();
-        $this->assertInstanceOf(StratigilityRoute::class, $route);
-        $this->assertSame($middleware, $route->handler);
-        $this->assertEquals('/foo', $route->path);
-
-        $route = $pipeline->dequeue();
-        $this->assertInstanceOf(StratigilityRoute::class, $route);
-        $this->assertSame([$app, 'routeMiddleware'], $route->handler);
-        $this->assertEquals('/', $route->path);
-
-        $route = $pipeline->dequeue();
-        $this->assertInstanceOf(StratigilityRoute::class, $route);
-        $this->assertSame([$app, 'routeResultObserverMiddleware'], $route->handler);
-        $this->assertEquals('/', $route->path);
-
-        $route = $pipeline->dequeue();
-        $this->assertInstanceOf(StratigilityRoute::class, $route);
-        $this->assertSame([$app, 'dispatchMiddleware'], $route->handler);
-        $this->assertEquals('/', $route->path);
-    }
-
-    public function testCanSpecifyRouteNamesViaConfiguration()
-    {
-        $config = [
-            'routes' => [
-                [
-                    'path' => '/',
-                    'middleware' => 'HelloWorld',
-                    'name' => 'home',
-                ],
-            ],
-        ];
-
-        $this->injectServiceInContainer($this->container, 'config', $config);
-
-        $app = $this->factory->__invoke($this->container->reveal());
-
-        $r = new ReflectionProperty($app, 'routes');
-        $r->setAccessible(true);
-        $routes = $r->getValue($app);
-        $route  = array_shift($routes);
-
-        $this->assertInstanceOf(Route::class, $route);
-        $this->assertEquals('home', $route->getName());
     }
 
     public function testCanSpecifyRouteOptionsViaConfiguration()
@@ -809,58 +519,6 @@ class ApplicationFactoryTest extends TestCase
         $this->factory->__invoke($this->container->reveal());
     }
 
-    /**
-     * @deprecated This test can be removed for 1.1
-     */
-    public function testExceptionIsRaisedInCaseOfInvalidPreRoutingMiddlewarePipeline()
-    {
-        $config = [
-            'middleware_pipeline' => [
-                'pre_routing' => 'invalid',
-            ],
-        ];
-
-        $this->injectServiceInContainer($this->container, 'config', $config);
-
-        $this->setExpectedException(
-            ContainerException\InvalidArgumentException::class,
-            'Pre-routing middleware collection must be an array; received "string"'
-        );
-        // @codingStandardsIgnoreStart
-        set_error_handler(function ($errno, $errmsg) {
-            $this->assertContains('routing', $errmsg);
-        }, E_USER_DEPRECATED);
-        // @codingStandardsIgnoreEnd
-
-        $this->factory->__invoke($this->container->reveal());
-    }
-
-    /**
-     * @deprecated This test can be removed for 1.1
-     */
-    public function testExceptionIsRaisedInCaseOfInvalidPostRoutingMiddlewarePipeline()
-    {
-        $config = [
-            'middleware_pipeline' => [
-                'post_routing' => 'invalid',
-            ],
-        ];
-
-        $this->injectServiceInContainer($this->container, 'config', $config);
-
-        $this->setExpectedException(
-            ContainerException\InvalidArgumentException::class,
-            'Post-routing middleware collection must be an array; received "string"'
-        );
-        // @codingStandardsIgnoreStart
-        set_error_handler(function ($errno, $errmsg) {
-            $this->assertContains('routing', $errmsg);
-        }, E_USER_DEPRECATED);
-        // @codingStandardsIgnoreEnd
-
-        $this->factory->__invoke($this->container->reveal());
-    }
-
     public function testWillCreatePipelineBasedOnMiddlewareConfiguration()
     {
         // @codingStandardsIgnoreStart
@@ -879,8 +537,8 @@ class ApplicationFactoryTest extends TestCase
         $this->injectServiceInContainer($this->container, 'Hello', $hello);
 
         $pipeline = [
-            [ 'path' => '/api', 'middleware' => $api ],
-            [ 'path' => '/dynamic-path', 'middleware' => 'DynamicPath' ],
+            ['path' => '/api', 'middleware' => $api],
+            ['path' => '/dynamic-path', 'middleware' => 'DynamicPath'],
             ['middleware' => $noPath],
             ['middleware' => 'Goodbye'],
             ['middleware' => [
@@ -955,66 +613,6 @@ class ApplicationFactoryTest extends TestCase
         $this->assertSame($pipelineLast, $test->handler);
     }
 
-    public function mixedMiddlewarePipelines()
-    {
-        // @codingStandardsIgnoreStart
-        $middleware = function ($request, $response, $next) {};
-        $pre = ['middleware' => clone $middleware];
-        $post = ['middleware' => clone $middleware];
-        $pipelined = ['middleware' => clone $middleware];
-        return [
-            'pre_routing'  => [['middleware_pipeline' => ['pre_routing' => [$pre], $pipelined]]],
-            'post_routing' => [['middleware_pipeline' => ['post_routing' => [$post], $pipelined]]],
-            'pre_and_post' => [['middleware_pipeline' => ['pre_routing' => [$pre], 'post_routing' => [$post], $pipelined]]],
-        ];
-        // @codingStandardsIgnoreEnd
-    }
-
-    /**
-     * @dataProvider mixedMiddlewarePipelines
-     */
-    public function testRaisesExceptionIfMiddlewarePipelineConfigurationMixesMiddlewareAndPreOrPostRouting($config)
-    {
-        $this->injectServiceInContainer($this->container, 'config', $config);
-
-        $this->setExpectedException(InvalidArgumentException::class, 'mix of middleware');
-        $this->factory->__invoke($this->container->reveal());
-    }
-
-    public function middlewarePipelinesWithPreOrPostRouting()
-    {
-        // @codingStandardsIgnoreStart
-        $middleware = function ($request, $response, $next) {};
-        $config = ['middleware' => clone $middleware];
-        return [
-            'pre_routing'  => [['pre_routing'  => [$config]]],
-            'post_routing' => [['post_routing' => [$config]]],
-        ];
-        // @codingStandardsIgnoreEnd
-    }
-
-    /**
-     * @dataProvider middlewarePipelinesWithPreOrPostRouting
-     * @deprecated This test can be removed for 1.1
-     */
-    public function testRaisesDeprecationNoticeForUsageOfPreOrPostRoutingPipelineConfiguration($config)
-    {
-        $config = ['middleware_pipeline' => $config];
-        $this->injectServiceInContainer($this->container, 'config', $config);
-
-        // @codingStandardsIgnoreStart
-        $triggered = false;
-        set_error_handler(function ($errno, $errmsg) use (&$triggered) {
-            $this->assertContains('routing', $errmsg);
-            $triggered = true;
-        }, E_USER_DEPRECATED);
-        // @codingStandardsIgnoreEnd
-
-        $this->factory->__invoke($this->container->reveal());
-        restore_error_handler();
-        $this->assertTrue($triggered, 'Deprecation notice was not triggered!');
-    }
-
     public function configWithRoutesButNoPipeline()
     {
         // @codingStandardsIgnoreStart
@@ -1025,7 +623,7 @@ class ApplicationFactoryTest extends TestCase
             [
                 'path' => '/',
                 'middleware' => clone $middleware,
-                'allowed_methods' => [ 'GET' ],
+                'allowed_methods' => ['GET'],
             ],
         ];
 
@@ -1087,56 +685,18 @@ class ApplicationFactoryTest extends TestCase
         $this->assertAttributeSame(true, 'dispatchMiddlewareIsRegistered', $app);
     }
 
-    /**
-     * @deprecated This test can be removed for 1.1
-     */
-    public function testPipelineContainingRouteResultObserverMiddlewareConstantPipesRelatedMiddleware()
-    {
-        $config = [
-            'middleware_pipeline' => [
-                ApplicationFactory::ROUTE_RESULT_OBSERVER_MIDDLEWARE,
-            ],
-        ];
-        $this->injectServiceInContainer($this->container, 'config', $config);
-
-        $app = $this->factory->__invoke($this->container->reveal());
-        $this->assertAttributeSame(true, 'routeResultObserverMiddlewareIsRegistered', $app);
-    }
-
-    /**
-     * @dataProvider middlewarePipelinesWithPreOrPostRouting
-     * @deprecated This test can be removed for 1.1
-     */
-    public function testUsageOfDeprecatedConfigurationRegistersRouteResultObserverMiddleware($config)
-    {
-        $config = ['middleware_pipeline' => $config];
-        $this->injectServiceInContainer($this->container, 'config', $config);
-
-        // @codingStandardsIgnoreStart
-        set_error_handler(function ($errno, $errmsg) use (&$triggered) {
-            $this->assertContains('routing', $errmsg);
-            $triggered = true;
-        }, E_USER_DEPRECATED);
-        // @codingStandardsIgnoreEnd
-
-        $app = $this->factory->__invoke($this->container->reveal());
-        restore_error_handler();
-
-        $this->assertAttributeSame(true, 'routeResultObserverMiddlewareIsRegistered', $app);
-    }
-
     public function testFactoryHonorsPriorityOrderWhenAttachingMiddleware()
     {
         // @codingStandardsIgnoreStart
         $middleware = function ($request, $response, $next) {};
         // @codingStandardsIgnoreEnd
 
-        $pipeline1 = [ [ 'middleware' => clone $middleware, 'priority' => 1 ] ];
-        $pipeline2 = [ [ 'middleware' => clone $middleware, 'priority' => 100 ] ];
-        $pipeline3 = [ [ 'middleware' => clone $middleware, 'priority' => -100 ] ];
+        $pipeline1 = [['middleware' => clone $middleware, 'priority' => 1]];
+        $pipeline2 = [['middleware' => clone $middleware, 'priority' => 100]];
+        $pipeline3 = [['middleware' => clone $middleware, 'priority' => -100]];
 
         $pipeline = array_merge($pipeline3, $pipeline1, $pipeline2);
-        $config = [ 'middleware_pipeline' => $pipeline ];
+        $config = ['middleware_pipeline' => $pipeline];
         $this->injectServiceInContainer($this->container, 'config', $config);
 
         $app = $this->factory->__invoke($this->container->reveal());
@@ -1156,12 +716,12 @@ class ApplicationFactoryTest extends TestCase
         $middleware = function ($request, $response, $next) {};
         // @codingStandardsIgnoreEnd
 
-        $pipeline1 = [ [ 'middleware' => clone $middleware ] ];
-        $pipeline2 = [ [ 'middleware' => clone $middleware ] ];
-        $pipeline3 = [ [ 'middleware' => clone $middleware ] ];
+        $pipeline1 = [['middleware' => clone $middleware]];
+        $pipeline2 = [['middleware' => clone $middleware]];
+        $pipeline3 = [['middleware' => clone $middleware]];
 
         $pipeline = array_merge($pipeline3, $pipeline1, $pipeline2);
-        $config = [ 'middleware_pipeline' => $pipeline ];
+        $config = ['middleware_pipeline' => $pipeline];
         $this->injectServiceInContainer($this->container, 'config', $config);
 
         $app = $this->factory->__invoke($this->container->reveal());
@@ -1182,15 +742,15 @@ class ApplicationFactoryTest extends TestCase
         // @codingStandardsIgnoreEnd
 
         $pipeline = [
-            [ 'middleware' => clone $middleware, 'priority' => -100 ],
+            ['middleware' => clone $middleware, 'priority' => -100],
             ApplicationFactory::ROUTING_MIDDLEWARE,
-            [ 'middleware' => clone $middleware, 'priority' => 1 ],
-            [ 'middleware' => clone $middleware ],
+            ['middleware' => clone $middleware, 'priority' => 1],
+            ['middleware' => clone $middleware],
             ApplicationFactory::DISPATCH_MIDDLEWARE,
-            [ 'middleware' => clone $middleware, 'priority' => 100 ],
+            ['middleware' => clone $middleware, 'priority' => 100],
         ];
 
-        $config = [ 'middleware_pipeline' => $pipeline ];
+        $config = ['middleware_pipeline' => $pipeline];
         $this->injectServiceInContainer($this->container, 'config', $config);
 
         $app = $this->factory->__invoke($this->container->reveal());
@@ -1200,10 +760,10 @@ class ApplicationFactoryTest extends TestCase
         $test = $r->getValue($app);
 
         $this->assertSame($pipeline[5]['middleware'], $test->dequeue()->handler);
-        $this->assertSame([ $app, 'routeMiddleware' ], $test->dequeue()->handler);
+        $this->assertSame([$app, 'routeMiddleware'], $test->dequeue()->handler);
         $this->assertSame($pipeline[2]['middleware'], $test->dequeue()->handler);
         $this->assertSame($pipeline[3]['middleware'], $test->dequeue()->handler);
-        $this->assertSame([ $app, 'dispatchMiddleware' ], $test->dequeue()->handler);
+        $this->assertSame([$app, 'dispatchMiddleware'], $test->dequeue()->handler);
         $this->assertSame($pipeline[0]['middleware'], $test->dequeue()->handler);
     }
 
@@ -1224,7 +784,7 @@ class ApplicationFactoryTest extends TestCase
     public function testRoutingAndDispatchMiddlewareCanBeComposedWithinArrayStandardSpecification($pipeline)
     {
         $expected = $pipeline[0]['middleware'];
-        $config = [ 'middleware_pipeline' => $pipeline ];
+        $config = ['middleware_pipeline' => $pipeline];
         $this->injectServiceInContainer($this->container, 'config', $config);
 
         $app = $this->factory->__invoke($this->container->reveal());
@@ -1268,6 +828,9 @@ class ApplicationFactoryTest extends TestCase
         }
     }
 
+    /**
+     * @todo Remove for 2.0.0
+     */
     public function testProperlyRegistersNestedErrorMiddlewareAsLazyErrorMiddleware()
     {
         $config = ['middleware_pipeline' => [
@@ -1284,7 +847,13 @@ class ApplicationFactoryTest extends TestCase
         $fooError = $this->prophesize(ErrorMiddlewareInterface::class)->reveal();
         $this->injectServiceInContainer($this->container, 'FooError', $fooError);
 
+        set_error_handler(function ($errno, $errmsg) {
+            return false !== strstr($errmsg, 'error middleware is deprecated');
+        }, E_USER_DEPRECATED);
+
         $app = $this->factory->__invoke($this->container->reveal());
+
+        restore_error_handler();
 
         $r = new ReflectionProperty($app, 'pipeline');
         $r->setAccessible(true);
@@ -1307,5 +876,142 @@ class ApplicationFactoryTest extends TestCase
         $r = new ReflectionFunction($middleware);
         $this->assertTrue($r->isClosure(), 'Configured middleware is not the expected lazy-middleware closure');
         $this->assertEquals(4, $r->getNumberOfParameters(), 'Configured middleware is not error middleware');
+    }
+
+    /**
+     * @group programmatic
+     */
+    public function testWillNotInjectConfiguredRoutesOrPipelineIfProgrammaticPipelineFlagEnabled()
+    {
+        // @codingStandardsIgnoreStart
+        $api = function ($request, $response, $next) {};
+        // @codingStandardsIgnoreEnd
+
+        $dynamicPath = clone $api;
+        $noPath = clone $api;
+        $goodbye = clone $api;
+        $pipelineFirst = clone $api;
+        $hello = clone $api;
+        $pipelineLast = clone $api;
+
+        $config = [
+            'middleware_pipeline' => [
+                ['path' => '/api', 'middleware' => $api],
+                ['path' => '/dynamic-path', 'middleware' => 'DynamicPath'],
+                ['middleware' => $noPath],
+                ['middleware' => 'Goodbye'],
+                ['middleware' => [
+                    $pipelineFirst,
+                    'Hello',
+                    $pipelineLast,
+                ]],
+            ],
+            'routes' => [
+                [
+                    'path' => '/',
+                    'middleware' => 'HelloWorld',
+                    'name' => 'home',
+                    'allowed_methods' => ['GET'],
+                    'options' => [],
+                ],
+            ],
+            'zend-expressive' => [
+                'programmatic_pipeline' => true,
+            ],
+        ];
+
+        $this->injectServiceInContainer($this->container, 'DynamicPath', $dynamicPath);
+        $this->injectServiceInContainer($this->container, 'Goodbye', $goodbye);
+        $this->injectServiceInContainer($this->container, 'Hello', $hello);
+        $this->injectServiceInContainer($this->container, 'config', $config);
+
+        $app = $this->factory->__invoke($this->container->reveal());
+
+        $this->assertAttributeSame(false, 'routeMiddlewareIsRegistered', $app);
+        $this->assertAttributeSame(false, 'dispatchMiddlewareIsRegistered', $app);
+
+        $r = new ReflectionProperty($app, 'pipeline');
+        $r->setAccessible(true);
+        $pipeline = $r->getValue($app);
+        $this->assertCount(0, $pipeline, 'Pipeline contains entries and should not');
+
+        $r = new ReflectionProperty($app, 'routes');
+        $r->setAccessible(true);
+        $routes = $r->getValue($app);
+        $this->assertEmpty($routes, 'Routes exist, and should not');
+    }
+
+    /**
+     * @group programmatic
+     */
+    public function testSetsApplicationRaiseThrowablesFlagWhenConfigFlagEnabled()
+    {
+        $config = [
+            'zend-expressive' => [
+                'programmatic_pipeline' => true,
+                'raise_throwables'      => true,
+            ],
+        ];
+
+        $this->injectServiceInContainer($this->container, 'config', $config);
+        $this->container->has(NoopFinalHandler::class)->willReturn(false);
+
+        $app = $this->factory->__invoke($this->container->reveal());
+
+        $this->assertAttributeSame(true, 'raiseThrowables', $app);
+    }
+
+    /**
+     * @group programmatic
+     */
+    public function testWillNotInjectFinalHandlerIfRaiseThrowablesFlagEnabled()
+    {
+        $config = [
+            'zend-expressive' => [
+                'programmatic_pipeline' => true,
+                'raise_throwables'      => true,
+            ],
+        ];
+
+        $this->injectServiceInContainer($this->container, 'config', $config);
+        $this->container->has('Zend\Expressive\FinalHandler')->shouldNotBeCalled();
+        $this->container->has(NoopFinalHandler::class)->willReturn(false);
+
+        $app = $this->factory->__invoke($this->container->reveal());
+
+        return $app;
+    }
+
+    /**
+     * @group programmatic
+     * @depends testWillNotInjectFinalHandlerIfRaiseThrowablesFlagEnabled
+     */
+    public function testWillInjectNoopFinalHandlerIfRaiseThrowablesFlagEnabled($app)
+    {
+        $this->assertAttributeInstanceOf(NoopFinalHandler::class, 'finalHandler', $app);
+    }
+
+    /**
+     * @group programmatic
+     */
+    public function testWhenRaiseThrowablesEnabledWillUseConfiguredNoopFinalHandlerServiceIfAvailable()
+    {
+        $finalHandler = function () {
+        };
+
+        $config = [
+            'zend-expressive' => [
+                'programmatic_pipeline' => true,
+                'raise_throwables'      => true,
+            ],
+        ];
+
+        $this->injectServiceInContainer($this->container, 'config', $config);
+        $this->container->has('Zend\Expressive\FinalHandler')->shouldNotBeCalled();
+        $this->injectServiceInContainer($this->container, NoopFinalHandler::class, $finalHandler);
+
+        $app = $this->factory->__invoke($this->container->reveal());
+
+        $this->assertAttributeSame($finalHandler, 'finalHandler', $app);
     }
 }

@@ -7,7 +7,13 @@
 
 namespace Zend\Expressive;
 
+use Closure;
 use Interop\Container\ContainerInterface;
+use Interop\Http\Middleware\DelegateInterface;
+use Interop\Http\Middleware\ServerMiddlewareInterface;
+use ReflectionFunction;
+use ReflectionMethod;
+use Zend\Stratigility\Delegate\CallableDelegateDecorator;
 use Zend\Stratigility\MiddlewarePipe;
 
 /**
@@ -39,6 +45,14 @@ trait MarshalMiddlewareTrait
     {
         if (is_callable($middleware)) {
             return $middleware;
+        }
+
+        if ($middleware === Application::ROUTING_MIDDLEWARE) {
+            return [$this, 'routeMiddleware'];
+        }
+
+        if ($middleware === Application::DISPATCH_MIDDLEWARE) {
+            return [$this, 'dispatchMiddleware'];
         }
 
         if (is_array($middleware)) {
@@ -93,6 +107,10 @@ trait MarshalMiddlewareTrait
     {
         $middlewarePipe = new MiddlewarePipe();
 
+        if ($this->raiseThrowables) {
+            $middlewarePipe->raiseThrowables();
+        }
+
         foreach ($middlewares as $middleware) {
             $middlewarePipe->pipe(
                 $this->prepareMiddleware($middleware, $container, $forError)
@@ -131,12 +149,47 @@ trait MarshalMiddlewareTrait
     {
         return function ($request, $response, $next = null) use ($container, $middleware) {
             $invokable = $container->get($middleware);
+
+            // http-interop middleware
+            if ($invokable instanceof ServerMiddlewareInterface
+                && ! $invokable instanceof MiddlewarePipe
+            ) {
+                return $invokable->process(
+                    $request,
+                    $next instanceof DelegateInterface
+                        ? $next
+                        : new CallableDelegateDecorator($next, $response)
+                );
+            }
+
+            // Middleware pipeline
+            if ($invokable instanceof MiddlewarePipe) {
+                if ($this->raiseThrowables) {
+                    $invokable->raiseThrowables();
+                }
+
+                return $invokable($request, $response, $next);
+            }
+
+            // Unknown - invalid!
             if (! is_callable($invokable)) {
                 throw new Exception\InvalidMiddlewareException(sprintf(
                     'Lazy-loaded middleware "%s" is not invokable',
                     $middleware
                 ));
             }
+
+            // Callable http-interop middleware
+            if ($this->isCallableInteropMiddleware($invokable)) {
+                return $invokable(
+                    $request,
+                    $next instanceof DelegateInterface
+                        ? $next
+                        : new CallableDelegateDecorator($next, $response)
+                );
+            }
+
+            // Legacy double-pass signature
             return $invokable($request, $response, $next);
         };
     }
@@ -158,5 +211,43 @@ trait MarshalMiddlewareTrait
             }
             return $invokable($error, $request, $response, $next);
         };
+    }
+
+    /**
+     * Is callable middleware interop middleware?
+     *
+     * @param callable $middleware
+     * @return bool
+     */
+    private function isCallableInteropMiddleware(callable $middleware)
+    {
+        $r = $this->reflectMiddleware($middleware);
+        $paramsCount = $r->getNumberOfParameters();
+
+        return $paramsCount === 2;
+    }
+
+    /**
+     * Reflect a callable middleware.
+     *
+     * Duplicates MiddlewarePipe::getReflectionFunction, but that method is not
+     * callable due to private visibility.
+     *
+     * @param callable $middleware
+     * @return \ReflectionFunctionAbstract
+     */
+    private function reflectMiddleware(callable $middleware)
+    {
+        if (is_array($middleware)) {
+            $class = array_shift($middleware);
+            $method = array_shift($middleware);
+            return new ReflectionMethod($class, $method);
+        }
+
+        if ($middleware instanceof Closure || ! is_object($middleware)) {
+            return new ReflectionFunction($middleware);
+        }
+
+        return new ReflectionMethod($middleware, '__invoke');
     }
 }

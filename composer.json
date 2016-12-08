@@ -22,18 +22,19 @@
         "zendframework/zend-diactoros": "^1.1",
         "zendframework/zend-expressive-router": "^1.1",
         "zendframework/zend-expressive-template": "^1.0.1",
-        "zendframework/zend-stratigility": ">=1.1.0 < 1.3.0 || >=1.3.1 <2.0.0"
+        "zendframework/zend-stratigility": "^1.3.1",
+        "fig/http-message-util": "^1.1"
     },
     "require-dev": {
         "filp/whoops": "^1.1 || ^2.0",
         "malukenho/docheader": "^0.1.5",
         "mockery/mockery": "^0.9.5",
-        "phpunit/phpunit": "^4.7",
+        "phpunit/phpunit": "^5.0",
         "zendframework/zend-coding-standard": "~1.0.0",
         "zendframework/zend-expressive-aurarouter": "^1.0",
         "zendframework/zend-expressive-fastroute": "^1.0",
         "zendframework/zend-expressive-zendrouter": "^1.0",
-        "zendframework/zend-servicemanager": "^2.6"
+        "zendframework/zend-servicemanager": "^2.6 || ^3.1.1"
     },
     "autoload": {
       "psr-4": {
@@ -50,8 +51,12 @@
         "zendframework/zend-expressive-helpers": "^1.0 for its UrlHelper, ServerUrlHelper, and BodyParseMiddleware",
         "aura/di": "3.0.*@beta to make use of Aura.Di dependency injection container",
         "xtreamwayz/pimple-container-interop": "^1.0 to use Pimple for dependency injection",
+        "zendframework/zend-expressive-tooling": "For migration and development tools; require it with the --dev flag",
         "zendframework/zend-servicemanager": "^2.5 to use zend-servicemanager for dependency injection"
     },
+    "bin": [
+        "bin/expressive-tooling"
+    ],
     "scripts": {
         "check": [
             "@cs-check",
@@ -60,7 +65,7 @@
         "upload-coverage": "coveralls -v",
         "cs-check": "phpcs",
         "cs-fix": "phpcbf",
-        "test": "phpunit",
+        "test": "phpunit --colors=always",
         "test-coverage": "phpunit --coverage-clover clover.xml",
         "license-check": "vendor/bin/docheader check src/"
     }

@@ -7,6 +7,7 @@
 
 namespace Zend\Expressive;
 
+use Fig\Http\Message\StatusCodeInterface as StatusCode;
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Zend\Diactoros\Stream;
@@ -257,7 +258,7 @@ class TemplatedErrorHandler
             );
             $response = $response->withBody($stream);
         }
-        return $response->withStatus(404);
+        return $response->withStatus(StatusCode::STATUS_NOT_FOUND);
     }
 
     /**
