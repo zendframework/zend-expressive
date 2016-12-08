@@ -74,7 +74,7 @@ class ApplicationConfigInjectionTest extends TestCase
            ['HelloWorld'],
            [
                 function () {
-                }
+                },
            ],
            [[InvokableMiddleware::class, 'staticallyCallableMiddleware']],
         ];
