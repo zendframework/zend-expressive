@@ -33,6 +33,9 @@ All notable changes to this project will be documented in this file, in reverse 
   it now creates a new `Zend\Diactoros\Stream`, writes to that, and returns a
   new response with that new stream, guaranteeing it only contains the new
   contents.
+- [#404](https://github.com/zendframework/zend-expressive/pull/404) fixes the
+  `swallowDeprecationNotices()` handler such that it will not swallow a global
+  handler once application execution completes.
 
 ## 1.0.4 - 2016-12-07
 
