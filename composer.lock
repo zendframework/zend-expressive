@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "bfe38efe126728318092ad61f0c56de6",
-    "content-hash": "36ae45df1f447559f5a7e11cfa725cea",
+    "hash": "8e99a5ef4f9f8500dc14587de32a162e",
+    "content-hash": "1de54fe5d6df880378b1fe7e6951da6a",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -557,16 +557,16 @@
         },
         {
             "name": "malukenho/docheader",
-            "version": "0.1.4",
+            "version": "0.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/malukenho/docheader.git",
-                "reference": "64137b8fd198163fa69fbc1affe0c900aaf8d257"
+                "reference": "f35ada934d1de3f5ba09970a6541009a41347658"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/malukenho/docheader/zipball/64137b8fd198163fa69fbc1affe0c900aaf8d257",
-                "reference": "64137b8fd198163fa69fbc1affe0c900aaf8d257",
+                "url": "https://api.github.com/repos/malukenho/docheader/zipball/f35ada934d1de3f5ba09970a6541009a41347658",
+                "reference": "f35ada934d1de3f5ba09970a6541009a41347658",
                 "shasum": ""
             },
             "require": {
@@ -603,7 +603,7 @@
                 "code standard",
                 "license"
             ],
-            "time": "2016-10-04 16:06:27"
+            "time": "2016-11-17 16:46:05"
         },
         {
             "name": "nikic/fast-route",

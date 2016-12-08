@@ -40,11 +40,31 @@ final class AppFactory
      * @param null|Router\RouterInterface $router Router implementation to use;
      *     defaults to the FastRoute router bridge.
      * @return Application
+     * @throws Exception\MissingDependencyException if the container was not
+     *     provided and the ServiceManager class is not present.
+     * @throws Exception\MissingDependencyException if the router was not
+     *     provided and the Router\FastRouteRouter class is not present.
      */
     public static function create(
         ContainerInterface $container = null,
         Router\RouterInterface $router = null
     ) {
+        if (! $container && ! class_exists(ServiceManager::class)) {
+            throw new Exception\MissingDependencyException(sprintf(
+                '%s requires a container, but none was provided and %s is not installed',
+                __CLASS__,
+                ServiceManager::class
+            ));
+        }
+
+        if (! $router && ! class_exists(Router\FastRouteRouter::class)) {
+            throw new Exception\MissingDependencyException(sprintf(
+                '%s requires a router, but none was provided and %s is not installed',
+                __CLASS__,
+                Router\FastRouteRouter::class
+            ));
+        }
+
         $container = $container ?: new ServiceManager();
         $router    = $router    ?: new Router\FastRouteRouter();
         $emitter   = new Emitter\EmitterStack();
