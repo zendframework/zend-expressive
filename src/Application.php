@@ -192,9 +192,7 @@ class Application extends MiddlewarePipe
                 ));
         }
 
-        $callback = [$this, 'route'];
-
-        return $callback(...$args);
+        return $this->route(...$args);
     }
 
     /**
