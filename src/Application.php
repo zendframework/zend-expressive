@@ -90,13 +90,6 @@ class Application extends MiddlewarePipe
     private $router;
 
     /**
-     * Observers to trigger once we have a route result.
-     *
-     * @var Router\RouteResultObserverInterface[]
-     */
-    private $routeResultObservers = [];
-
-    /**
      * List of all routes registered directly with the application.
      *
      * @var Router\Route[]
