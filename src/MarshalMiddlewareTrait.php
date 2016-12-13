@@ -56,12 +56,16 @@ trait MarshalMiddlewareTrait
         }
 
         if (! is_callable($callable)) {
+            if (is_object($middleware) === true) {
+                $type = get_class($middleware) . '[Object]';
+            } else {
+                $scalarType = gettype($middleware) . '[Scalar]';
+                $type = is_string($middleware) ? $middleware . ' ' . $scalarType : $scalarType;
+            }
             throw new Exception\InvalidMiddlewareException(
                 sprintf(
                     'Unable to resolve middleware "%s" to a callable',
-                    (is_object($middleware)
-                    ? get_class($middleware) . "[Object]"
-                    : gettype($middleware) . '[Scalar]')
+                    $type
                 )
             );
         }
