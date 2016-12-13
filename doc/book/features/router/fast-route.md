@@ -295,7 +295,8 @@ return [
         'factories' => [
             //..
             // Notice that the factory is not the InvokableFactory anymore.
-            Zend\Expressive\Router\RouterInterface::class => Zend\Expressive\Router\FastRouteRouterFactory::class,
+            Zend\Expressive\Router\RouterInterface::class 
+                => Zend\Expressive\Router\FastRouteRouterFactory::class,
             //..
         ],
     ],
@@ -304,7 +305,7 @@ return [
     'router' => [
         'fastroute' => [
             'cache_enabled' => true, // bool 
-            'cache_file'    => 'data/cache/fastroute.php.cachedata/cache/fastroute.cache', //optional path relative to the working directory
+            'cache_file'    => 'data/cache/fastroute.php.cache', //optional path relative to the working directory
         ],
     ],
 
