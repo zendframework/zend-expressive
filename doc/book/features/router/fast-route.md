@@ -273,3 +273,55 @@ $container['Zend\Expressive\Router\RouterInterface'] = new RouterFactory();
 ```
 
 ### FastRoute caching support
+
+Starting from version 1.3.0 zend-expressive-fastroute supports fast-route 
+dispatch data caching.
+
+To enable this feature a couple of modifications are needed to be made in 
+the `routes.global.php` configuration file. 
+
+First we need to delegate the creation of the router instance to the new 
+provided factory.
+
+Then we need to add a new configuration entry. The options under this key 
+will be used by the factory to build the router instance. These options
+will allow us to toggle caching support and to specify a custom cache file.
+
+As an example:
+``` php
+return [
+    'dependencies' => [
+        //..
+        'factories' => [
+            //..
+            // Notice that the factory is not the InvokableFactory anymore.
+            Zend\Expressive\Router\RouterInterface::class => Zend\Expressive\Router\FastRouteRouterFactory::class,
+            //..
+        ],
+    ],
+    
+    // the new entry for caching support
+    'router' => [
+        'fastroute' => [
+            'cache_enabled' => true, // bool 
+            'cache_file'    => 'data/cache/fastroute.php.cachedata/cache/fastroute.cache', //optional path relative to the working directory
+        ],
+    ],
+
+    'routes' => [...],
+]
+```
+The new entry options are quite self-explanatory:
+- `cache_enabled` (bool) is used to toggle caching support. It's advisable to enable 
+  caching in a production environment and leave it disabled for the development 
+  environment. Commenting or omitting this option is equivalent to having it set 
+  to `false`
+- `cache_file` (string) This is an optional parameter that represents the relative 
+  path of the dispatch data cache file relative to the zend-expressive working
+  directory. The default is `data/cache/fastroute.php.cache`. `data/cache` is the
+  default zend-expressive cache directory created by the skeleton application. 
+  If you choose a custom path make sure that the containing directory exists 
+  and is writable by the owner of the php process. As for other zend-expressive 
+  cached configuaration, you need to purge this file in order to enable any newly 
+  added route if caching is enabled.
+  
