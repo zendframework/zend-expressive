@@ -291,16 +291,19 @@ As an example:
 ``` php
 // config file routes.global.php
 
-use Zend\Expressive\Router\RouterInterface;
-use Zend\Expressive\Router\FastRouteRouterFactory;
-
 return [
     'dependencies' => [
         //..
+        'invokables' => [
+            //..
+            // comment or remove the following line
+            // Zend\Expressive\Router\RouterInterface::class => Zend\Expressive\Router\FastRouteRouter::class,
+            //..
+        ],
         'factories' => [
             //..
-            // Notice that the factory is not the InvokableFactory anymore.
-            RouterInterface::class => FastRouteRouterFactory::class,
+            // Add this line (the router instance is now built in a factory)
+            Zend\Expressive\Router\RouterInterface::class => Zend\Expressive\Router\FastRouteRouterFactory::class,
             //..
         ],
     ],
