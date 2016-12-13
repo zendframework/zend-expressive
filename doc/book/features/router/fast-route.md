@@ -283,7 +283,7 @@ configuration file.
 1. First we need to delegate the creation of the router instance to the new 
    provided factory.
 
-2. Then we need to add a new configuration entry (`$config['router']['fastroute']`) 
+2. Then we need to add a new configuration entry (`$config['router']['fastroute']`). 
    The options in this entry will be used by the factory to build the router 
    instance in order to toggle caching support and to specify a custom cache file.
 
