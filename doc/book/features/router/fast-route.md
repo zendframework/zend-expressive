@@ -302,7 +302,7 @@ return [
         ],
         'factories' => [
             //..
-            // Add this line (the router instance is now built in a factory)
+            // Add this line (the router instance is now built "in the factory")
             Zend\Expressive\Router\RouterInterface::class => Zend\Expressive\Router\FastRouteRouterFactory::class,
             //..
         ],
