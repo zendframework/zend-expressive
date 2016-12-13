@@ -274,8 +274,8 @@ $container['Zend\Expressive\Router\RouterInterface'] = new RouterFactory();
 
 ### FastRoute caching support
 
-Starting from version 1.3.0 zend-expressive-fastroute supports fast-route 
-dispatch data caching.
+Starting from version 1.3.0 zend-expressive-fastroute comes with support 
+for fast-route native dispatch data caching.
 
 To enable this feature a couple of modifications are needed to be made in 
 the `routes.global.php` configuration file. 
@@ -289,14 +289,18 @@ will allow us to toggle caching support and to specify a custom cache file.
 
 As an example:
 ``` php
+// config file routes.global.php
+
+use Zend\Expressive\Router\RouterInterface;
+use Zend\Expressive\Router\FastRouteRouterFactory;
+
 return [
     'dependencies' => [
         //..
         'factories' => [
             //..
             // Notice that the factory is not the InvokableFactory anymore.
-            Zend\Expressive\Router\RouterInterface::class 
-                => Zend\Expressive\Router\FastRouteRouterFactory::class,
+            RouterInterface::class => FastRouteRouterFactory::class,
             //..
         ],
     ],
