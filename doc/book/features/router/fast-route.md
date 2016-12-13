@@ -331,5 +331,5 @@ The new entry options are quite self-explanatory:
   If you choose a custom path make sure that the containing directory exists 
   and is writable by the owner of the php process. As for other zend-expressive 
   cached configuaration, you need to purge this file in order to enable any newly 
-  added route if caching is enabled.
+  added route when fast-route caching is enabled.
   
