@@ -271,3 +271,5 @@ $container['FastRoute\RouteCollector'] = new FastRouteCollectorFactory();
 $container['FastRoute\RouteDispatcher'] = new FastRouteDispatcherFactory();
 $container['Zend\Expressive\Router\RouterInterface'] = new RouterFactory();
 ```
+
+### FastRoute caching support
