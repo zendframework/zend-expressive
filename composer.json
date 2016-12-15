@@ -20,18 +20,19 @@
         "container-interop/container-interop": "^1.1",
         "psr/http-message": "^1.0",
         "zendframework/zend-diactoros": "^1.1",
-        "zendframework/zend-expressive-router": "^1.1 || ^2.0",
+        "zendframework/zend-expressive-router": "^1.3.2 || ^2.0",
         "zendframework/zend-expressive-template": "^1.0.1",
-        "zendframework/zend-stratigility": "^1.3.3"
+        "zendframework/zend-stratigility": "^1.3.3",
+        "fig/http-message-util": "^1.1"
     },
     "require-dev": {
         "filp/whoops": "^1.1 || ^2.0",
         "phpunit/phpunit": "^4.7",
         "zendframework/zend-coding-standard": "~1.0.0",
-        "zendframework/zend-expressive-aurarouter": "^1.0 || ^2.0",
-        "zendframework/zend-expressive-fastroute": "^1.0 || ^2.0",
-        "zendframework/zend-expressive-zendrouter": "^1.0 || ^2.0",
-        "zendframework/zend-servicemanager": "^2.6",
+        "zendframework/zend-expressive-aurarouter": "^1.1.3 || ^2.0",
+        "zendframework/zend-expressive-fastroute": "^1.3 || ^2.0",
+        "zendframework/zend-expressive-zendrouter": "^1.3 || ^2.0",
+        "zendframework/zend-servicemanager": "^2.6 || ^3.1.1",
         "malukenho/docheader": "^0.1.5",
         "mockery/mockery": "^0.9.5"
     },
