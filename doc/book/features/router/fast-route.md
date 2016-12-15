@@ -324,10 +324,11 @@ The new entry options are quite self-explanatory:
   caching in a production environment and leave it disabled for the development 
   environment. Commenting or omitting this option is equivalent to having it set 
   to `false`
-- `cache_file` (string) This is an optional parameter that represents the relative 
-  path of the dispatch data cache file relative to the zend-expressive working
-  directory. The default is `data/cache/fastroute.php.cache`. `data/cache` is the
-  default zend-expressive cache directory created by the skeleton application. 
+- `cache_file` (string) This is an optional parameter that represents the path of 
+  the dispatch data cache file relative to the zend-expressive working directory. 
+  The default is `data/cache/fastroute.php.cache`. `data/cache` is the
+  default zend-expressive cache directory created by the skeleton application.
+  An absolute file path is also supported.
   If you choose a custom path make sure that the containing directory exists 
   and is writable by the owner of the php process. As for other zend-expressive 
   cached configuaration, you need to purge this file in order to enable any newly 
