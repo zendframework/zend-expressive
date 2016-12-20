@@ -8,6 +8,7 @@ you should be aware of, and potentially update your application to adopt:
 - Error handling
 - Programmatic middleware pipelines
 - Usage of [http-interop middleware](https://github.com/http-interop/http-middleware)
+- Implicit handling of `HEAD` and `OPTIONS` requests
 
 ## Original messages
 
@@ -199,8 +200,8 @@ handling needs should you decide to opt in to this functionality:
     - `$template = 'error::error'`: the template to render, with a default value
       if none is provided.
 
-  `Zend\Expressive\Container\ErrorResponseGeneratorFactory` can create an
-  instance, using the following:
+- `Zend\Expressive\Container\ErrorResponseGeneratorFactory` can create an
+  instance of the `ErrorResponseGenerator` using the following:
 
     - The `debug` top-level configuration value is used to set the
       `$isDevelopmentMode` flag.
@@ -215,8 +216,7 @@ handling needs should you decide to opt in to this functionality:
   generate the error response. Its constructor takes a single argument, a
   `Whoops\Run` instance. If a `Whoops\Handler\PrettyPageHandler` is registered
   with the instance, it will add a data table with request details derived from
-  the `ServerRequestInterface` instance.
-
+  the `ServerRequestInterface` instance.<br/><br/>
   `Zend\Expressive\Container\WhoopsErrorResponseGeneratorFactory` can create an
   instance, and will use the `Zend\Expressive\Whoops` service to seed the
   `Whoops\Run` argument.
@@ -226,8 +226,7 @@ handling needs should you decide to opt in to this functionality:
   get to the innermost layer, no middleware was able to handle the request,
   indicating a 404.) By default, it will produce a canned plaintext response.
   However, you can also provide an optional `TemplateRendererInterface` instance
-  and `$template` in order to provided templated content.
-
+  and `$template` in order to provided templated content.<br/><br/>
   The constructor arguments are:
 
     - `ResponseInterface $responsePrototype`: this is an empty response on which
@@ -239,8 +238,8 @@ handling needs should you decide to opt in to this functionality:
     -  $template = 'error::404'`: optionally, you may provide a
       template to render; if none is provided, a sane default is used.
 
-  `Zend\Expressive\Container\NotFoundHandlerFactory` can create an instance for
-  you, and will use the following to do so:
+- `Zend\Expressive\Container\NotFoundHandlerFactory` can create an instance of
+  the `NotFoundHandler` for you, and will use the following to do so:
 
     - The `Zend\Expressive\Template\TemplateRendererInterface` service, if
       available.
@@ -250,8 +249,8 @@ handling needs should you decide to opt in to this functionality:
 
 - `Zend\Expressive\Container\ErrorHandlerFactory` will create an instance of
   `Zend\Stratigility\Middleware\ErrorHandler`, and use the
-  `Zend\Stratigility\Middleware\ErrorResponseGenerator` service to seed it.
-
+  `Zend\Stratigility\Middleware\ErrorResponseGenerator` service to seed
+  it.<br/><br/>
   As such, register one of the following as a factory for the
   `Zend\Stratigility\Middleware\ErrorResponseGenerator` service:
 
@@ -747,3 +746,43 @@ get full usage information.
 
 Use this tool to identify potential problem areas in your application, and
 update your code to use the new error handling facilities as outlined above.
+
+## Handling HEAD and OPTIONS requests
+
+Prior to 1.1, it was possible to route middleware that could not handle `HEAD`
+and/or `OPTIONS` requests. Per [RFC 7231, section 4.1](https://tools.ietf.org/html/rfc7231#section-4.1),
+"all general-purpose servers MUST support the methods GET and HEAD. All other
+methods are OPTIONAL." Additionally, most servers and implementors agree that
+`OPTIONS` _should_ be supported for any given resource, so that consumers can
+determine what methods are allowed for the given resource.
+
+To make this happen, the Expressive project implemented several features.
+
+First, zend-expressive-router 1.3.0 introduced several features in both
+`Zend\Expressive\Router\Route` and `Zend\Expressive\Router\RouteResult` to help
+consumers implement support for `HEAD` and `OPTIONS` in an automated way. The
+`Route` class now has two new methods, `implicitHead()` and `implicitOptions()`;
+these each return a boolean `true` value if support for those methods is
+_implicit_ &mdash; i.e., not defined explicitly for the route. The `RouteResult`
+class now introduces a new factory method, `fromRoute()`, that will create an
+instance from a `Route` instance; this then allows consumers of a `RouteResult`
+to query the `Route` to see if a matched `HEAD` or `OPTIONS` request needs
+automated handling. Each of the supported router implementations were updated to
+use this method, as well as to return a successful routing result if `HEAD`
+and/or `OPTIONS` requests are submitted, but the route does not explicitly
+support the method.
+
+Within Expressive itself, we now offer two new middleware to provide this
+automation:
+
+- `Zend\Expressive\Middleware\ImplicitHeadMiddleware`
+- `Zend\Expressive\Middleware\ImplicitOptionsMiddleware`
+
+If you want to support these methods automatically, each of these should be
+enabled between the routing and dispatch middleware. If you use the
+`expressive-pipeline-from-config` tool as documented in the
+[programmatic pipeline migration section](#migrate-to-programmatic-pipelines),
+entries for each will be injected into your generated pipeline.
+
+Please see the [chapter on the implicit methods middleware](../../features/middleware/implicit-methods-middleware.md)
+for more information on each.
