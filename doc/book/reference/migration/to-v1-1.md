@@ -200,8 +200,8 @@ handling needs should you decide to opt in to this functionality:
     - `$template = 'error::error'`: the template to render, with a default value
       if none is provided.
 
-  `Zend\Expressive\Container\ErrorResponseGeneratorFactory` can create an
-  instance, using the following:
+- `Zend\Expressive\Container\ErrorResponseGeneratorFactory` can create an
+  instance of the `ErrorResponseGenerator` using the following:
 
     - The `debug` top-level configuration value is used to set the
       `$isDevelopmentMode` flag.
@@ -216,8 +216,7 @@ handling needs should you decide to opt in to this functionality:
   generate the error response. Its constructor takes a single argument, a
   `Whoops\Run` instance. If a `Whoops\Handler\PrettyPageHandler` is registered
   with the instance, it will add a data table with request details derived from
-  the `ServerRequestInterface` instance.
-
+  the `ServerRequestInterface` instance.<br/><br/>
   `Zend\Expressive\Container\WhoopsErrorResponseGeneratorFactory` can create an
   instance, and will use the `Zend\Expressive\Whoops` service to seed the
   `Whoops\Run` argument.
@@ -227,8 +226,7 @@ handling needs should you decide to opt in to this functionality:
   get to the innermost layer, no middleware was able to handle the request,
   indicating a 404.) By default, it will produce a canned plaintext response.
   However, you can also provide an optional `TemplateRendererInterface` instance
-  and `$template` in order to provided templated content.
-
+  and `$template` in order to provided templated content.<br/><br/>
   The constructor arguments are:
 
     - `ResponseInterface $responsePrototype`: this is an empty response on which
@@ -240,8 +238,8 @@ handling needs should you decide to opt in to this functionality:
     -  $template = 'error::404'`: optionally, you may provide a
       template to render; if none is provided, a sane default is used.
 
-  `Zend\Expressive\Container\NotFoundHandlerFactory` can create an instance for
-  you, and will use the following to do so:
+- `Zend\Expressive\Container\NotFoundHandlerFactory` can create an instance of
+  the `NotFoundHandler` for you, and will use the following to do so:
 
     - The `Zend\Expressive\Template\TemplateRendererInterface` service, if
       available.
@@ -251,8 +249,8 @@ handling needs should you decide to opt in to this functionality:
 
 - `Zend\Expressive\Container\ErrorHandlerFactory` will create an instance of
   `Zend\Stratigility\Middleware\ErrorHandler`, and use the
-  `Zend\Stratigility\Middleware\ErrorResponseGenerator` service to seed it.
-
+  `Zend\Stratigility\Middleware\ErrorResponseGenerator` service to seed
+  it.<br/><br/>
   As such, register one of the following as a factory for the
   `Zend\Stratigility\Middleware\ErrorResponseGenerator` service:
 
