@@ -67,6 +67,18 @@ All notable changes to this project will be documented in this file, in reverse 
   for identifying usage of the legacy Stratigility request and response
   decorators and error middleware.
 
+- [#413](https://github.com/zendframework/zend-expressive/pull/413) adds the
+  middleware `Zend\Expressive\Middleware\ImplicitHeadMiddleware`; this
+  middleware can be used to provide implicit support for `HEAD` requests when
+  the matched route does not explicitly support the method.
+
+- [#413](https://github.com/zendframework/zend-expressive/pull/413) adds the
+  middleware `Zend\Expressive\Middleware\ImplicitOptionsMiddleware`; this
+  middleware can be used to provide implicit support for `OPTIONS` requests when
+  the matched route does not explicitly support the method; the returned 200
+  response will also include an `Allow` header listing allowed HTTP methods for
+  the URI.
+
 ### Changes
 
 - [#396](https://github.com/zendframework/zend-expressive/pull/396) updates the
@@ -87,6 +99,9 @@ All notable changes to this project will be documented in this file, in reverse 
     `Zend\Stratigility\MiddlewarePipe`). Doing so will cause the application to
     raise any `Throwable` or `Exception` instances caught, instead of catching
     them and dispatching them to (legacy) Stratigility error middleware.
+
+- [#413](https://github.com/zendframework/zend-expressive/pull/413) updates the
+  zend-expressive-router minimum supported version to 1.3.2.
 
 ### Deprecated
 
