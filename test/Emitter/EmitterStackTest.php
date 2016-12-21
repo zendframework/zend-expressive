@@ -110,16 +110,31 @@ class EmitterStackTest extends TestCase
         $second->emit(Argument::type(ResponseInterface::class))
             ->willReturn(null);
 
-        $third = $this->prophesize(EmitterInterface::class);
-        $third->emit(Argument::type(ResponseInterface::class))
-            ->willReturn(false);
-
         $this->emitter->push($first->reveal());
         $this->emitter->push($second->reveal());
-        $this->emitter->push($third->reveal());
 
         $response = $this->prophesize(ResponseInterface::class);
 
         $this->assertNull($this->emitter->emit($response->reveal()));
+    }
+
+    public function testEmitReturnFalseIfOnlyEmmittersReturnFalse()
+    {
+        $first = $this->prophesize(EmitterInterface::class);
+        $first->emit(Argument::type(ResponseInterface::class))
+            ->willReturn(false);
+
+        $this->emitter->push($first->reveal());
+
+        $response = $this->prophesize(ResponseInterface::class);
+
+        $this->assertFalse($this->emitter->emit($response->reveal()));
+    }
+
+    public function testEmitReturnFalseIfNothingEmmit()
+    {
+        $response = $this->prophesize(ResponseInterface::class);
+
+        $this->assertFalse($this->emitter->emit($response->reveal()));
     }
 }
