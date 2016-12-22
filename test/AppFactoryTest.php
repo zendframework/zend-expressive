@@ -9,6 +9,20 @@
 
 namespace ZendTest\Expressive;
 
+namespace Zend\Expressive;
+
+use ZendTest\Expressive\AppFactoryTest;
+
+function class_exists($classname)
+{
+    if (AppFactoryTest::$existingClasses === null) {
+        return \class_exists($classname);
+    }
+    return in_array($classname, AppFactoryTest::$existingClasses, true);
+}
+
+namespace ZendTest\Expressive;
+
 use Interop\Container\ContainerInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use ReflectionClass;
@@ -17,6 +31,7 @@ use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Expressive\AppFactory;
 use Zend\Expressive\Application;
 use Zend\Expressive\Emitter\EmitterStack;
+use Zend\Expressive\Exception\MissingDependencyException;
 use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\ServiceManager\ServiceManager;
@@ -26,6 +41,13 @@ use Zend\ServiceManager\ServiceManager;
  */
 class AppFactoryTest extends TestCase
 {
+    static public $existingClasses = null;
+
+    protected function tearDown()
+    {
+        self::$existingClasses = null;
+    }
+
     public function getRouterFromApplication(Application $app)
     {
         $r = new ReflectionProperty($app, 'router');
@@ -87,5 +109,27 @@ class AppFactoryTest extends TestCase
         $reflection = new ReflectionClass(AppFactory::class);
         $constructor = $reflection->getConstructor();
         $this->assertFalse($constructor->isPublic());
+    }
+
+    public function testThrowExceptionWhenContainerNotProvidedAndServiceManagerNotExists()
+    {
+        self::$existingClasses = [
+            FastRouteRouter::class,
+        ];
+
+        $this->setExpectedException(MissingDependencyException::class);
+
+        AppFactory::create();
+    }
+
+    public function testThrowExceptionWhenContainerNotProvidedAndFastRouteRouterNotExists()
+    {
+        self::$existingClasses = [
+            ServiceManager::class,
+        ];
+
+        $this->setExpectedException(MissingDependencyException::class);
+
+        AppFactory::create();
     }
 }
