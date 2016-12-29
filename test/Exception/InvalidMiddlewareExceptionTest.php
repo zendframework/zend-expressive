@@ -17,7 +17,6 @@ final class InvalidMiddlewareExceptionTest extends \PHPUnit_Framework_TestCase
         $exception = new InvalidMiddlewareException();
 
         $this->assertInstanceOf(ExceptionInterface::class, $exception);
-        $this->assertInstanceOf(InvalidMiddlewareException::class, $exception);
 
         $this->setExpectedException(InvalidMiddlewareException::class);
 

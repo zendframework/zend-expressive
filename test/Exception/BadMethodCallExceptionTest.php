@@ -17,7 +17,6 @@ final class BadMethodCallExceptionTest extends \PHPUnit_Framework_TestCase
         $exception = new BadMethodCallException();
 
         $this->assertInstanceOf(ExceptionInterface::class, $exception);
-        $this->assertInstanceOf(BadMethodCallException::class, $exception);
 
         $this->setExpectedException(BadMethodCallException::class);
 

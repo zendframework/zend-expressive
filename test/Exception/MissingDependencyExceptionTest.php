@@ -17,7 +17,6 @@ final class MissingDependencyExceptionTest extends \PHPUnit_Framework_TestCase
         $exception = new MissingDependencyException();
 
         $this->assertInstanceOf(ExceptionInterface::class, $exception);
-        $this->assertInstanceOf(MissingDependencyException::class, $exception);
 
         $this->setExpectedException(MissingDependencyException::class);
 

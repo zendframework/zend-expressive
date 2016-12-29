@@ -17,7 +17,6 @@ final class InvalidArgumentExceptionTest extends \PHPUnit_Framework_TestCase
         $exception = new InvalidArgumentException();
 
         $this->assertInstanceOf(ExceptionInterface::class, $exception);
-        $this->assertInstanceOf(InvalidArgumentException::class, $exception);
 
         $this->setExpectedException(InvalidArgumentException::class);
 

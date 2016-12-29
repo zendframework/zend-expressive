@@ -17,7 +17,6 @@ final class DuplicateRouteExceptionTest extends \PHPUnit_Framework_TestCase
         $exception = new DuplicateRouteException();
 
         $this->assertInstanceOf(ExceptionInterface::class, $exception);
-        $this->assertInstanceOf(DuplicateRouteException::class, $exception);
 
         $this->setExpectedException(DuplicateRouteException::class);
 

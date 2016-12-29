@@ -17,7 +17,6 @@ final class ContainerNotRegisteredExceptionTest extends \PHPUnit_Framework_TestC
         $exception = new ContainerNotRegisteredException();
 
         $this->assertInstanceOf(ExceptionInterface::class, $exception);
-        $this->assertInstanceOf(ContainerNotRegisteredException::class, $exception);
 
         $this->setExpectedException(ContainerNotRegisteredException::class);
 

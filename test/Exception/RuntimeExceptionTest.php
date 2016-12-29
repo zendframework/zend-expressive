@@ -17,7 +17,6 @@ final class RuntimeExceptionTest extends \PHPUnit_Framework_TestCase
         $exception = new RuntimeException();
 
         $this->assertInstanceOf(ExceptionInterface::class, $exception);
-        $this->assertInstanceOf(RuntimeException::class, $exception);
 
         $this->setExpectedException(RuntimeException::class);
 
