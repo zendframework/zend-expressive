@@ -102,10 +102,6 @@ class ImplicitHeadMiddleware
      */
     private function getResponse()
     {
-        if ($this->response) {
-            return $this->response;
-        }
-
-        return new Response();
+        return $this->response ?: new Response();
     }
 }

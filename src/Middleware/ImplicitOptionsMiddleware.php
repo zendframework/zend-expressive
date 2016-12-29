@@ -88,10 +88,6 @@ class ImplicitOptionsMiddleware
      */
     private function getResponse()
     {
-        if ($this->response) {
-            return $this->response;
-        }
-
-        return new Response('php://temp', StatusCode::STATUS_OK);
+        return $this->response ?: new Response('php://temp', StatusCode::STATUS_OK);
     }
 }
