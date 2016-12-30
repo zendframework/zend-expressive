@@ -312,7 +312,8 @@ return [
     'router' => [
         'fastroute' => [
             'cache_enabled' => true, // bool 
-            'cache_file'    => 'data/cache/fastroute.php.cache', //optional path relative to the working directory
+             // optional (but recommended) cache file path
+            'cache_file'    => '/path/to/data/cache/fastroute.php.cache',
         ],
     ],
 
@@ -325,10 +326,12 @@ The new entry options are quite self-explanatory:
   environment. Commenting or omitting this option is equivalent to having it set 
   to `false`
 - `cache_file` (string) This is an optional parameter that represents the path of 
-  the dispatch data cache file relative to the zend-expressive working directory. 
-  The default is `data/cache/fastroute.php.cache`. `data/cache` is the
-  default zend-expressive cache directory created by the skeleton application.
-  An absolute file path is also supported.
+  the dispatch data cache file. It can be provided as an absolute file path or as a 
+  path relative to the zend-expressive working directory. 
+  It defaults to `data/cache/fastroute.php.cache`, where `data/cache` is the 
+  commonly defined zend-expressive cache directory created by the skeleton application.
+  An explicit absolute file path is recommended since the php `include` construct will 
+  skip searching in the `include_path`s and the current  directory.
   If you choose a custom path make sure that the containing directory exists 
   and is writable by the owner of the php process. As for other zend-expressive 
   cached configuaration, you need to purge this file in order to enable any newly 
