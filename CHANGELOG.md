@@ -117,6 +117,26 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
+## 1.0.6 - 2017-01-09
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#420](https://github.com/zendframework/zend-expressive/pull/420) fixes the
+  `routeMiddleware()`'s handling of 405 errors such that it now no longer emits
+  deprecation notices when running under the Stratigility 1.3 series.
+
 ## 1.0.5 - 2016-12-08
 
 ### Added
