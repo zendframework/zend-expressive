@@ -271,3 +271,69 @@ $container['FastRoute\RouteCollector'] = new FastRouteCollectorFactory();
 $container['FastRoute\RouteDispatcher'] = new FastRouteDispatcherFactory();
 $container['Zend\Expressive\Router\RouterInterface'] = new RouterFactory();
 ```
+
+### FastRoute caching support
+
+Starting from version 1.3.0 zend-expressive-fastroute comes with support 
+for fast-route native dispatch data caching.
+
+To enable this feature a couple of changes are needed in the `routes.global.php` 
+configuration file. 
+
+1. First we need to delegate the creation of the router instance to the new 
+   provided factory.
+
+2. Then we need to add a new configuration entry (`$config['router']['fastroute']`). 
+   The options in this entry will be used by the factory to build the router 
+   instance in order to toggle caching support and to specify a custom cache file.
+
+As an example:
+``` php
+// config file routes.global.php
+
+return [
+    'dependencies' => [
+        //..
+        'invokables' => [
+            //..
+            // comment or remove the following line
+            // Zend\Expressive\Router\RouterInterface::class => Zend\Expressive\Router\FastRouteRouter::class,
+            //..
+        ],
+        'factories' => [
+            //..
+            // Add this line (the router instance is now built "in the factory")
+            Zend\Expressive\Router\RouterInterface::class => Zend\Expressive\Router\FastRouteRouterFactory::class,
+            //..
+        ],
+    ],
+    
+    // the new entry for caching support
+    'router' => [
+        'fastroute' => [
+            'cache_enabled' => true, // bool 
+             // optional (but recommended) cache file path
+            'cache_file'    => '/path/to/data/cache/fastroute.php.cache',
+        ],
+    ],
+
+    'routes' => [...],
+]
+```
+The new entry options are quite self-explanatory:
+- `cache_enabled` (bool) is used to toggle caching support. It's advisable to enable 
+  caching in a production environment and leave it disabled for the development 
+  environment. Commenting or omitting this option is equivalent to having it set 
+  to `false`
+- `cache_file` (string) This is an optional parameter that represents the path of 
+  the dispatch data cache file. It can be provided as an absolute file path or as a 
+  path relative to the zend-expressive working directory. 
+  It defaults to `data/cache/fastroute.php.cache`, where `data/cache` is the 
+  commonly defined zend-expressive cache directory created by the skeleton application.
+  An explicit absolute file path is recommended since the php `include` construct will 
+  skip searching in the `include_path`s and the current  directory.
+  If you choose a custom path make sure that the containing directory exists 
+  and is writable by the owner of the php process. As for other zend-expressive 
+  cached configuaration, you need to purge this file in order to enable any newly 
+  added route when fast-route caching is enabled.
+  
