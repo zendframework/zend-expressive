@@ -1,7 +1,7 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
 
@@ -423,6 +423,10 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
             if ($result->isMethodFailure()) {
                 $response = $response->withStatus(405)
                     ->withHeader('Allow', implode(',', $result->getAllowedMethods()));
+
+                // Need to swallow deprecation notices, as this is how 405 errors
+                // are reported in the 1.0 series.
+                $this->swallowDeprecationNotices();
                 return $next($request, $response, 405);
             }
             return $next($request, $response);
