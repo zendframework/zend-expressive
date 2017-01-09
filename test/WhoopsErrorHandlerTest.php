@@ -15,6 +15,7 @@ use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
+use ReflectionClass;
 use Whoops\Handler\Handler;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run as Whoops;
@@ -29,7 +30,17 @@ class WhoopsErrorHandlerTest extends TestCase
 {
     public function getPrettyPageHandler()
     {
-        return $this->prophesize(PrettyPageHandler::class);
+        $handler = $this->prophesize(PrettyPageHandler::class);
+
+        // whoops 2.1.5 introduced a new method, which the runner calls when
+        // invoked; as such, we need to test if this method is present and mock
+        // a request to it if present.
+        $r = new ReflectionClass(PrettyPageHandler::class);
+        if ($r->hasMethod('contentType')) {
+            $handler->contentType()->willReturn('text/html');
+        }
+
+        return $handler;
     }
 
     public function testInstantiationRequiresWhoopsAndPageHandler()
