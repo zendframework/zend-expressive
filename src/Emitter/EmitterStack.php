@@ -38,15 +38,13 @@ class EmitterStack extends SplStack implements EmitterInterface
      */
     public function emit(ResponseInterface $response)
     {
-        $completed = false;
         foreach ($this as $emitter) {
             if (false !== $emitter->emit($response)) {
-                $completed = true;
-                break;
+                return null;
             }
         }
 
-        return ($completed ? null : false);
+        return false;
     }
 
     /**

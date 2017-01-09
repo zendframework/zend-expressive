@@ -71,7 +71,7 @@ EOT;
             return $this->prepareTemplatedResponse($e, $request, $response);
         }
 
-        return $this->prepareDefaultResponse($e, $request, $response);
+        return $this->prepareDefaultResponse($e, $response);
     }
 
     /**
@@ -103,11 +103,10 @@ EOT;
 
     /**
      * @param \Throwable|\Exception $e
-     * @param ServerRequestInterface $request
      * @param ResponseInterface $response
      * @return ResponseInterface
      */
-    private function prepareDefaultResponse($e, ServerRequestInterface $request, ResponseInterface $response)
+    private function prepareDefaultResponse($e, ResponseInterface $response)
     {
         $message = 'An unexpected error occurred';
 
