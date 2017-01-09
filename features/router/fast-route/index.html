@@ -737,6 +737,87 @@ $container['FastRoute\RouteCollector'] = new FastRouteCollectorFactory();
 $container['FastRoute\RouteDispatcher'] = new FastRouteDispatcherFactory();
 $container['Zend\Expressive\Router\RouterInterface'] = new RouterFactory();</code></pre>
 
+
+<h3 id="fastroute-caching-support">FastRoute caching support</h3>
+<ul>
+<li>Since zend-expressive-fastroute 1.3.0.</li>
+</ul>
+<p>Starting from version 1.3.0, zend-expressive-fastroute comes with support 
+for FastRoute native dispatch data caching.</p>
+<p>Enabling this feature requires changes to your configuration. Typically, router
+configuration occurs in <code>config/autoload/routes.global.php</code>; as such, we will
+reference that file when indicating configuration changes.</p>
+<p>The changes required are:</p>
+<ul>
+<li>
+<p>You will need to delegate creation of the router instance to a new factory.</p>
+</li>
+<li>
+<p>You will need to add a new configuration entry, <code>$config['router']['fastroute']</code>. 
+  The options in this entry will be used by the factory to build the router
+  instance in order to toggle caching support and to specify a custom cache
+  file.</p>
+</li>
+</ul>
+<p>As an example:</p>
+<pre class="codehilite"><code class="language-php">// File config/autoload/routes.global.php
+
+return [
+    'dependencies' =&gt; [
+        //..
+        'invokables' =&gt; [
+            /* ... */
+            // Comment out or remove the following line:
+            // Zend\Expressive\Router\RouterInterface::class =&gt; Zend\Expressive\Router\FastRouteRouter::class,
+            /* ... */
+        ],
+        'factories' =&gt; [
+            /* ... */
+            // Add this line; the specified factory now creates the router instance:
+            Zend\Expressive\Router\RouterInterface::class =&gt; Zend\Expressive\Router\FastRouteRouterFactory::class,
+            /* ... */
+        ],
+    ],
+
+    // Add the following to enable caching support:
+    'router' =&gt; [
+        'fastroute' =&gt; [
+             // Enable caching support:
+            'cache_enabled' =&gt; true,
+             // Optional (but recommended) cache file path:
+            'cache_file'    =&gt; 'data/cache/fastroute.php.cache',
+        ],
+    ],
+
+    'routes' =&gt; [ /* ... */ ],
+]</code></pre>
+
+
+<p>The FastRoute-specific caching options are as follows:</p>
+<ul>
+<li>
+<p><code>cache_enabled</code> (bool) is used to toggle caching support. It's advisable to enable 
+  caching in a production environment and leave it disabled for the development
+  environment. Commenting or omitting this option is equivalent to having it set
+  to <code>false</code>. We recommend enabling it in <code>config/autoload/routes.global.php</code>,
+  and, in development, disabling it within <code>config/autoload/routes.local.php</code> or
+  <code>config/autoload/local.php</code>.</p>
+</li>
+<li>
+<p><code>cache_file</code> (string) is an optional parameter that represents the path of 
+  the dispatch data cache file. It can be provided as an absolute file path or
+  as a path relative to the zend-expressive working directory. </p>
+</li>
+</ul>
+<p>It defaults to <code>data/cache/fastroute.php.cache</code>, where <code>data/cache/</code> is the
+  cache directory defined within the zend-expressive skeleton application.  An
+  explicit absolute file path is recommended since the php <code>include</code> construct
+  will skip searching the <code>include_path</code> and the current directory.</p>
+<p>If you choose a custom path, make sure that the directory exists and is
+  writable by the owner of the PHP process. As with any other zend-expressive
+  cached configuration, you will need to purge this file in order to enable any
+  newly added route when FastRoute caching is enabled.</p>
+
 <hr />
 
 
