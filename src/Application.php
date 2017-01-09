@@ -168,13 +168,21 @@ class Application extends MiddlewarePipe
         switch (count($args)) {
             case 2:
                 // We have path and middleware; append the HTTP method.
-                $args[] = [$method];
+                $routeArgs = [
+                    $args[0],
+                    $args[1],
+                    [$method],
+                ];
                 break;
             case 3:
                 // Need to reflow arguments to (0 => path, 1 => middleware, 2 => methods, 3 => name)
                 // from (0 => path, 1 => middleware, 2 => name)
-                $args[3] = $args[2];  // place name in $args[3]
-                $args[2] = [$method]; // method becomes $args[2]
+                $routeArgs = [
+                    $args[0],
+                    $args[1],
+                    [$method],
+                    $args[2],
+                ];
                 break;
             default:
                 throw new Exception\BadMethodCallException(sprintf(
@@ -185,7 +193,7 @@ class Application extends MiddlewarePipe
                 ));
         }
 
-        return $this->route(...$args);
+        return $this->route(...$routeArgs);
     }
 
     /**

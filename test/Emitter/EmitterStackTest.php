@@ -11,6 +11,7 @@ namespace ZendTest\Expressive\Emitter;
 
 use InvalidArgumentException;
 use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit_Framework_Assert as Assert;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use SplStack;
@@ -121,5 +122,25 @@ class EmitterStackTest extends TestCase
         $response = $this->prophesize(ResponseInterface::class);
 
         $this->assertNull($this->emitter->emit($response->reveal()));
+    }
+
+    public function testEmitReturnsFalseIfLastEmmitterReturnsFalse()
+    {
+        $first = $this->prophesize(EmitterInterface::class);
+        $first->emit(Argument::type(ResponseInterface::class))
+            ->willReturn(false);
+
+        $this->emitter->push($first->reveal());
+
+        $response = $this->prophesize(ResponseInterface::class);
+
+        $this->assertFalse($this->emitter->emit($response->reveal()));
+    }
+
+    public function testEmitReturnsFalseIfNoEmittersAreComposed()
+    {
+        $response = $this->prophesize(ResponseInterface::class);
+
+        $this->assertFalse($this->emitter->emit($response->reveal()));
     }
 }
