@@ -13,6 +13,7 @@ use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseInterface;
+use SplQueue;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequest;
 use Zend\Expressive\Application;
@@ -23,6 +24,8 @@ use Zend\Expressive\Router\RouteResult;
 use Zend\Expressive\Router\RouteResultObserverInterface;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Router\ZendRouter;
+use Zend\Stratigility\Next;
+use Zend\Stratigility\Route;
 
 class RouteMiddlewareTest extends TestCase
 {
@@ -58,6 +61,44 @@ class RouteMiddlewareTest extends TestCase
             $this->assertEquals(405, $response->getStatusCode());
             return $response;
         };
+
+        $app  = $this->getApplication();
+        $test = $app->routeMiddleware($request, $response, $next);
+        $this->assertInstanceOf(ResponseInterface::class, $test);
+        $this->assertEquals(405, $test->getStatusCode());
+        $allow = $test->getHeaderLine('Allow');
+        $this->assertContains('GET', $allow);
+        $this->assertContains('POST', $allow);
+    }
+
+    /**
+     * @todo Remove for 1.1.0. In that version, you either raise throwables, or
+     *     you opt in to the legacy error handling, and understand you will receive
+     *     deprecation notices.
+     * @group 419
+     */
+    public function testRoutingFailureDueToHttpMethodCallsNextWithoutEmittingDeprecationNotice()
+    {
+        $request  = new ServerRequest();
+        $response = new Response();
+        $result   = RouteResult::fromRouteFailure(['GET', 'POST']);
+
+        $this->router->match($request)->willReturn($result);
+
+        $route = new Route('/', function ($error, $request, $response, $next) {
+            $this->assertEquals(405, $error);
+            $this->assertEquals(405, $response->getStatusCode());
+            return $response;
+        });
+
+        $queue = new SplQueue();
+        $queue->enqueue($route);
+
+        $done = function ($request, $response, $error = false) {
+            $this->fail('Should not reach final handler, but did');
+        };
+
+        $next = new Next($queue, $done);
 
         $app  = $this->getApplication();
         $test = $app->routeMiddleware($request, $response, $next);

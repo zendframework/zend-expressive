@@ -423,6 +423,10 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
             if ($result->isMethodFailure()) {
                 $response = $response->withStatus(405)
                     ->withHeader('Allow', implode(',', $result->getAllowedMethods()));
+
+                // Need to swallow deprecation notices, as this is how 405 errors
+                // are reported in the 1.0 series.
+                $this->swallowDeprecationNotices();
                 return $next($request, $response, 405);
             }
             return $next($request, $response);
