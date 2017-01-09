@@ -44,7 +44,10 @@
     "autoload-dev": {
       "psr-4": {
         "ZendTest\\Expressive\\": "test/"
-      }
+      },
+      "files": [
+        "test/class_exists.php"
+      ]
     },
     "suggest": {
         "filp/whoops": "^2.0 to use the Whoops error handler",

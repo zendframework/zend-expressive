@@ -272,6 +272,17 @@ class ApplicationTest extends TestCase
         });
     }
 
+    public function testDispatchMiddlewareExecutesNextMiddlewareInStackIfNoRouteMatchPresent()
+    {
+        $request = new ServerRequest([], [], '/', 'GET');
+
+        $result = $this->getApp()->dispatchMiddleware($request, new Response(), function () {
+            return true;
+        });
+
+        $this->assertTrue($result);
+    }
+
     public function testCannotPipeRouteMiddlewareMoreThanOnce()
     {
         $app             = $this->getApp();
