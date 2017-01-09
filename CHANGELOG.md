@@ -111,7 +111,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Removed
 
-- Nothing.
+- [#406](https://github.com/zendframework/zend-expressive/pull/406) removes the
+  `RouteResultSubjectInterface` implementation from `Zend\Expressive\Application`,
+  per the deprecation prior to the 1.0 stable release.
 
 ### Fixed
 
