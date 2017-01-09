@@ -22,6 +22,8 @@ use Zend\Expressive\Router\RouteResult;
 use Zend\Expressive\Router\RouteResultObserverInterface;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Router\ZendRouter;
+use Zend\Stratigility\Http\Request as StratigilityRequest;
+use Zend\Stratigility\Http\Response as StratigilityResponse;
 use Zend\Stratigility\Next;
 use Zend\Stratigility\Route;
 
@@ -77,8 +79,9 @@ class RouteMiddlewareTest extends TestCase
      */
     public function testRoutingFailureDueToHttpMethodCallsNextWithoutEmittingDeprecationNotice()
     {
-        $request  = new ServerRequest();
-        $response = new Response();
+        // Stratigility request/response required for this test, due to usage of Next instance.
+        $request  = new StratigilityRequest(new ServerRequest());
+        $response = new StratigilityResponse(new Response());
         $result   = RouteResult::fromRouteFailure(['GET', 'POST']);
 
         $this->router->match($request)->willReturn($result);
