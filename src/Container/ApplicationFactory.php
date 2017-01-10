@@ -120,11 +120,6 @@ class ApplicationFactory
     const ROUTING_MIDDLEWARE = 'EXPRESSIVE_ROUTING_MIDDLEWARE';
 
     /**
-     * @deprecated This constant will be removed in v1.1.
-     */
-    const ROUTE_RESULT_OBSERVER_MIDDLEWARE = 'EXPRESSIVE_ROUTE_RESULT_OBSERVER_MIDDLEWARE';
-
-    /**
      * Create and return an Application instance.
      *
      * See the class level docblock for information on what services this
@@ -166,7 +161,7 @@ class ApplicationFactory
         $pipelineCreated = false;
 
         if (isset($config['middleware_pipeline']) && is_array($config['middleware_pipeline'])) {
-            $pipelineCreated = $this->injectPipeline($config['middleware_pipeline'], $app);
+            $pipelineCreated = $this->injectMiddleware($config['middleware_pipeline'], $app);
         }
 
         if (isset($config['routes']) && is_array($config['routes'])) {
@@ -176,105 +171,6 @@ class ApplicationFactory
                 $app->pipeRoutingMiddleware();
                 $app->pipeDispatchMiddleware();
             }
-        }
-    }
-
-    /**
-     * Inject the middleware pipeline
-     *
-     * This method injects the middleware pipeline.
-     *
-     * If the pre-RC6 pre_/post_routing keys exist, it raises a deprecation
-     * notice, and then builds the pipeline based on that configuration
-     * (though it will raise an exception if other keys are *also* present).
-     *
-     * Otherwise, it passes the pipeline on to `injectMiddleware()`,
-     * returning a boolean value based on whether or not any
-     * middleware was injected.
-     *
-     * @deprecated This method will be removed in v1.1.
-     * @param array $pipeline
-     * @param Application $app
-     * @return bool
-     */
-    private function injectPipeline(array $pipeline, Application $app)
-    {
-        $deprecatedKeys = $this->getDeprecatedKeys(array_keys($pipeline));
-        if (! empty($deprecatedKeys)) {
-            $this->handleDeprecatedPipeline($deprecatedKeys, $pipeline, $app);
-            return true;
-        }
-
-        return $this->injectMiddleware($pipeline, $app);
-    }
-
-    /**
-     * Retrieve a list of deprecated keys from the pipeline, if any.
-     *
-     * @deprecated This method will be removed in v1.1.
-     * @param array $pipelineKeys
-     * @return array
-     */
-    private function getDeprecatedKeys(array $pipelineKeys)
-    {
-        return array_intersect(['pre_routing', 'post_routing'], $pipelineKeys);
-    }
-
-    /**
-     * Handle deprecated pre_/post_routing configuration.
-     *
-     * @deprecated This method will be removed in v1.1.
-     * @param array $deprecatedKeys The list of deprecated keys present in the
-     *     pipeline
-     * @param array $pipeline
-     * @param Application $app
-     * @return void
-     * @throws ContainerInvalidArgumentException if $pipeline contains more than
-     *     just pre_ and/or post_routing keys.
-     * @throws ContainerInvalidArgumentException if the pre_routing configuration,
-     *     if present, is not an array
-     * @throws ContainerInvalidArgumentException if the post_routing configuration,
-     *     if present, is not an array
-     */
-    private function handleDeprecatedPipeline(array $deprecatedKeys, array $pipeline, Application $app)
-    {
-        if (count($deprecatedKeys) < count($pipeline)) {
-            throw new ContainerInvalidArgumentException(
-                'middleware_pipeline cannot contain a mix of middleware AND pre_/post_routing keys; '
-                . 'please update your configuration to define middleware_pipeline as a single pipeline; '
-                . 'see https://zendframework.github.io/zend-expressive/reference/migration/rc-to-v1/'
-            );
-        }
-
-        trigger_error(
-            'pre_routing and post_routing configuration is deprecated; '
-            . 'update your configuration to define the middleware_pipeline as a single pipeline; '
-            . 'see https://zendframework.github.io/zend-expressive/reference/migration/rc-to-v1/',
-            E_USER_DEPRECATED
-        );
-
-        if (isset($pipeline['pre_routing'])) {
-            if (! is_array($pipeline['pre_routing'])) {
-                throw new ContainerInvalidArgumentException(sprintf(
-                    'Pre-routing middleware collection must be an array; received "%s"',
-                    gettype($pipeline['pre_routing'])
-                ));
-            }
-            $this->injectMiddleware($pipeline['pre_routing'], $app);
-        }
-
-        $app->pipeRoutingMiddleware();
-        $app->pipeRouteResultObserverMiddleware();
-        $app->pipeDispatchMiddleware();
-
-        if (isset($pipeline['post_routing'])) {
-            if (! is_array($pipeline['post_routing'])) {
-                throw new ContainerInvalidArgumentException(sprintf(
-                    'Post-routing middleware collection must be an array; received "%s"',
-                    gettype($pipeline['post_routing'])
-                ));
-            }
-            $this->injectMiddleware($pipeline['post_routing'], $app);
         }
     }
 
@@ -364,7 +260,6 @@ class ApplicationFactory
      * routing o dispatching middleware to a callable; if the provided item does not
      * match either, the item is returned verbatim.
      *
-     * @todo Remove ROUTE_RESULT_OBSERVER_MIDDLEWARE detection for 1.1
      * @param Application $app
      * @return callable
      */
@@ -377,13 +272,6 @@ class ApplicationFactory
 
             if ($item === self::DISPATCH_MIDDLEWARE) {
                 return [$app, 'dispatchMiddleware'];
-            }
-
-            if ($item === self::ROUTE_RESULT_OBSERVER_MIDDLEWARE) {
-                $r = new \ReflectionProperty($app, 'routeResultObserverMiddlewareIsRegistered');
-                $r->setAccessible(true);
-                $r->setValue($app, true);
-                return [$app, 'routeResultObserverMiddleware'];
             }
 
             return $item;
@@ -418,8 +306,7 @@ class ApplicationFactory
         $pipelineMap = $this->createPipelineMapper($app);
         $appMiddlewares = [
             self::ROUTING_MIDDLEWARE,
-            self::DISPATCH_MIDDLEWARE,
-            self::ROUTE_RESULT_OBSERVER_MIDDLEWARE
+            self::DISPATCH_MIDDLEWARE
         ];
 
         return function ($item) use ($app, $pipelineMap, $appMiddlewares) {
