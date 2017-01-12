@@ -29,7 +29,7 @@
         "filp/whoops": "^1.1 || ^2.0",
         "malukenho/docheader": "^0.1.5",
         "mockery/mockery": "^0.9.5",
-        "phpunit/phpunit": "^5.7",
+        "phpunit/phpunit": "^5.7.1",
         "zendframework/zend-coding-standard": "~1.0.0",
         "zendframework/zend-expressive-aurarouter": "^2.0",
         "zendframework/zend-expressive-fastroute": "^2.0",
