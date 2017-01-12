@@ -21,6 +21,7 @@ use Zend\Expressive\Exception\InvalidMiddlewareException;
 use Zend\Expressive\Middleware;
 use Zend\Expressive\Router\AuraRouter;
 use Zend\Expressive\Router\FastRouteRouter;
+use Zend\Expressive\Router\Route as ExpressiveRoute;
 use Zend\Expressive\Router\RouteResult;
 use Zend\Expressive\Router\RouteResultObserverInterface;
 use Zend\Expressive\Router\RouterInterface;
@@ -105,11 +106,10 @@ class RouteMiddlewareTest extends TestCase
             return $finalResponse;
         };
 
-        $result = RouteResult::fromRouteMatch(
+        $result = RouteResult::fromRoute(new ExpressiveRoute(
             '/foo',
-            $middleware,
-            []
-        );
+            $middleware
+        ));
 
         $this->router->match($request)->willReturn($result);
         $request = $request->withAttribute(RouteResult::class, $result);
@@ -123,56 +123,6 @@ class RouteMiddlewareTest extends TestCase
         $this->assertSame($finalResponse, $test);
     }
 
-    public function testRoutingSuccessWithoutMiddlewareRaisesExceptionInDispatch()
-    {
-        $request  = new ServerRequest();
-        $response = new Response();
-
-        $middleware = (object) [];
-
-        $result = RouteResult::fromRouteMatch(
-            '/foo',
-            false,
-            []
-        );
-
-        $this->router->match($request)->willReturn($result);
-        $request = $request->withAttribute(RouteResult::class, $result);
-
-        $next = function ($request, $response) {
-            $this->fail('Should not enter $next');
-        };
-
-        $app = $this->getApplication();
-        $this->setExpectedException(InvalidMiddlewareException::class, 'does not have');
-        $app->dispatchMiddleware($request, $response, $next);
-    }
-
-    public function testRoutingSuccessResolvingToNonCallableNonStringMiddlewareRaisesExceptionAtDispatch()
-    {
-        $request  = new ServerRequest();
-        $response = new Response();
-
-        $middleware = (object) [];
-
-        $result = RouteResult::fromRouteMatch(
-            '/foo',
-            $middleware,
-            []
-        );
-
-        $this->router->match($request)->willReturn($result);
-        $request = $request->withAttribute(RouteResult::class, $result);
-
-        $next = function ($request, $response) {
-            $this->fail('Should not enter $next');
-        };
-
-        $app = $this->getApplication();
-        $this->setExpectedException(InvalidMiddlewareException::class, 'callable');
-        $app->dispatchMiddleware($request, $response, $next);
-    }
-
     public function testRoutingSuccessResolvingToUninvokableMiddlewareRaisesExceptionAtDispatch()
     {
         $request  = new ServerRequest();
@@ -180,11 +130,10 @@ class RouteMiddlewareTest extends TestCase
 
         $middleware = (object) [];
 
-        $result = RouteResult::fromRouteMatch(
+        $result = RouteResult::fromRoute(new ExpressiveRoute(
             '/foo',
-            'not a class',
-            []
-        );
+            'not a class'
+        ));
 
         $this->router->match($request)->willReturn($result);
         $request = $request->withAttribute(RouteResult::class, $result);
@@ -204,11 +153,10 @@ class RouteMiddlewareTest extends TestCase
     {
         $request  = new ServerRequest();
         $response = new Response();
-        $result   = RouteResult::fromRouteMatch(
+        $result   = RouteResult::fromRoute(new ExpressiveRoute(
             '/foo',
-            __NAMESPACE__ . '\TestAsset\InvokableMiddleware',
-            []
-        );
+            __NAMESPACE__ . '\TestAsset\InvokableMiddleware'
+        ));
 
         $this->router->match($request)->willReturn($result);
         $request = $request->withAttribute(RouteResult::class, $result);
@@ -234,11 +182,10 @@ class RouteMiddlewareTest extends TestCase
             return $res->withHeader('X-Middleware', 'Invoked');
         };
 
-        $result = RouteResult::fromRouteMatch(
+        $result = RouteResult::fromRoute(new ExpressiveRoute(
             '/foo',
-            'TestAsset\Middleware',
-            []
-        );
+            'TestAsset\Middleware'
+        ));
 
         $this->router->match($request)->willReturn($result);
         $request = $request->withAttribute(RouteResult::class, $result);
@@ -708,7 +655,7 @@ class RouteMiddlewareTest extends TestCase
 
         $request  = new ServerRequest();
         $response = new Response();
-        $result   = RouteResult::fromRouteMatch('resource', $middleware, $matches);
+        $result   = RouteResult::fromRoute(new ExpressiveRoute('resource', $middleware), $matches);
 
         $this->router->match($request)->willReturn($result);
 
