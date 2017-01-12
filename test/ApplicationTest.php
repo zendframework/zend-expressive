@@ -1,9 +1,7 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
 
@@ -29,8 +27,8 @@ use Zend\Diactoros\ServerRequestFactory;
 use Zend\Expressive\Application;
 use Zend\Expressive\Emitter\EmitterStack;
 use Zend\Expressive\Exception;
-use Zend\Expressive\Router\Exception as RouterException;
 use Zend\Expressive\Exception\InvalidMiddlewareException;
+use Zend\Expressive\Router\Exception as RouterException;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouteResult;
 use Zend\Expressive\Router\RouterInterface;
@@ -238,7 +236,7 @@ class ApplicationTest extends TestCase
         ];
 
         $request = new ServerRequest([], [], '/', 'GET');
-        $routeResult = RouteResult::fromRouteMatch(__METHOD__, $middleware, []);
+        $routeResult = RouteResult::fromRoute(new Route('/', $middleware, [], __METHOD__));
         $request = $request->withAttribute(RouteResult::class, $routeResult);
 
         $container = $this->mockContainerInterface();
@@ -265,7 +263,7 @@ class ApplicationTest extends TestCase
     public function testThrowsExceptionWhenDispatchingUncallableMiddleware($middleware)
     {
         $request = new ServerRequest([], [], '/', 'GET');
-        $routeResult = RouteResult::fromRouteMatch(__METHOD__, $middleware, []);
+        $routeResult = RouteResult::fromRoute(new Route('/', $middleware, [], __METHOD__));
         $request = $request->withAttribute(RouteResult::class, $routeResult);
 
         $this->getApp()->dispatchMiddleware($request, new Response(), function () {

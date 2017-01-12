@@ -100,8 +100,8 @@ All notable changes to this project will be documented in this file, in reverse 
     raise any `Throwable` or `Exception` instances caught, instead of catching
     them and dispatching them to (legacy) Stratigility error middleware.
 
-- [#413](https://github.com/zendframework/zend-expressive/pull/413) updates the
-  zend-expressive-router minimum supported version to 1.3.2.
+- [#422](https://github.com/zendframework/zend-expressive/pull/422) updates the
+  zend-expressive-router minimum supported version to 2.0.0.
 
 ### Deprecated
 

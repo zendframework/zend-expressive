@@ -429,15 +429,11 @@ class Application extends MiddlewarePipe
             return $next($request, $response);
         }
 
-        $middleware = $routeResult->getMatchedMiddleware();
-        if (! $middleware) {
-            throw new Exception\InvalidMiddlewareException(sprintf(
-                'The route %s does not have a middleware to dispatch',
-                $routeResult->getMatchedRouteName()
-            ));
-        }
+        $middleware = $this->prepareMiddleware(
+            $routeResult->getMatchedMiddleware(),
+            $this->container
+        );
 
-        $middleware = $this->prepareMiddleware($middleware, $this->container);
         return $middleware($request, $response, $next);
     }
 
