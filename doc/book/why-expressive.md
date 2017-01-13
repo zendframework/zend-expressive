@@ -1,8 +1,8 @@
-# Should You Choose Zend Expressive Over Zend\Mvc?
+# Should You Choose Zend\Expressive Over Zend\Mvc?
 
 After creating several projects with Zend\Expressive, we recommend that you choose Expressive for any new project — _if the choice is yours to make_.
 
-## We Recommend Zend Expressive
+## We Recommend Zend\Expressive
 
 [Zend\MVC](https://github.com/zendframework/zend-mvc) has many preconceptions about how things work, yet they're very broad and unspecific.
 What’s more, it also has several pre-wired structures in place.
@@ -14,7 +14,7 @@ To quote Zend Framework project lead, [Matthew Weier O’Phinney](https://twitte
 
 > The problem is that Zend\Mvc is anything but beginner-friendly at this point. You're required to deep dive into the event manager, service manager, and module system — right from the outset; And to do this you need more than a passing understanding of object-oriented programming and a range of design patterns.
 
-Zend Expressive (specifically applications based on [the Expressive Skeleton Installer](https://zendframework.github.io/zend-expressive/)) on the other hand, comes with barely any of these assumptions and requirements.
+Zend\Expressive (specifically applications based on [the Expressive Skeleton Installer](https://zendframework.github.io/zend-expressive/)) on the other hand, comes with barely any of these assumptions and requirements.
 
 It provides a very minimalist structure. Essentially all you have to become familiar with are five core components. These are:
 
@@ -31,7 +31,7 @@ What’s more, you can mix and match the types of applications that you create.
 Do you just need an API? Great; you can do that quite quickly.
 Do you want an HTML-based front-end? That’s available too.
 
-When building applications with Zend Expressive, you can make use of any other Zend library, or non-Zend library.
+When building applications with Zend\Expressive, you can make use of any other Zend library, or non-Zend library.
 You can pick and choose what you need, as and when you need it.
 You’re not bound by many, if any, constraints and design decisions.
 
