@@ -730,4 +730,39 @@ class ApplicationTest extends TestCase
             $this->fail($e->getMessage());
         }
     }
+
+    /**
+     * @dataProvider superGlobalSetupProvider
+     *
+     * @param callable $setupSuperGlobals
+     */
+    public function testRunReturnsResponse(callable $setupSuperGlobals)
+    {
+        $setupSuperGlobals();
+
+        $finalHandler = function () {
+            return $this->prophesize(ResponseInterface::class)->reveal();
+        };
+
+        $emitter = $this->prophesize(EmitterInterface::class);
+        $app = new Application($this->router->reveal(), null, $finalHandler, $emitter->reveal());
+
+        $response = $app->run();
+
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+    }
+
+    public function superGlobalSetupProvider()
+    {
+        return [
+            'all good' => [ function () {
+            } ],
+            'invalid files' => [ function () {
+                $_FILES = [ 'foobar' ];
+            } ],
+            'invalid protocol' => [ function () {
+                $_SERVER['SERVER_PROTOCOL'] = 'foobar';
+            } ],
+        ];
+    }
 }

@@ -493,7 +493,9 @@ class Application extends MiddlewarePipe
      * the returned response using the composed emitter.
      *
      * @param null|ServerRequestInterface $request
-     * @param null|ResponseInterface $response
+     * @param null|ResponseInterface      $response
+     *
+     * @return ResponseInterface
      */
     public function run(ServerRequestInterface $request = null, ResponseInterface $response = null)
     {
@@ -501,12 +503,10 @@ class Application extends MiddlewarePipe
             $request  = $request ?: ServerRequestFactory::fromGlobals();
         } catch (InvalidArgumentException $e) {
             // Unable to parse uploaded files
-            $this->emitMarshalServerRequestException($e);
-            return;
+            return $this->emitMarshalServerRequestException($e);
         } catch (UnexpectedValueException $e) {
             // Invalid request method
-            $this->emitMarshalServerRequestException($e);
-            return;
+            return $this->emitMarshalServerRequestException($e);
         }
 
         $response = $response ?: new Response();
@@ -516,6 +516,8 @@ class Application extends MiddlewarePipe
 
         $emitter = $this->getEmitter();
         $emitter->emit($response);
+
+        return $response;
     }
 
     /**
@@ -625,7 +627,7 @@ class Application extends MiddlewarePipe
 
     /**
      * @var \Exception|\Throwable $exception
-     * @return void
+     * @return ResponseInterface
      */
     private function emitMarshalServerRequestException($exception)
     {
@@ -635,6 +637,8 @@ class Application extends MiddlewarePipe
         $response = $finalHandler(new ServerRequest(), $response, $exception);
         $emitter = $this->getEmitter();
         $emitter->emit($response);
+
+        return $response;
     }
 
     /**
