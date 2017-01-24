@@ -128,7 +128,6 @@ class Application extends MiddlewarePipe
      * If $out is not provided, uses the result of `getFinalHandler()`.
      *
      * @todo Remove logic for creating final handler for version 2.0.0.
-     * @todo Remove swallowDeprecationNotices() invocation for version 2.0.0.
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
      * @param callable|null $out
@@ -136,8 +135,6 @@ class Application extends MiddlewarePipe
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $out = null)
     {
-        $this->swallowDeprecationNotices();
-
         if (! $out && (null === ($out = $this->getFinalHandler($response)))) {
             $response = $response instanceof StratigilityResponse
                 ? $response
@@ -146,8 +143,6 @@ class Application extends MiddlewarePipe
         }
 
         $result = parent::__invoke($request, $response, $out);
-
-        restore_error_handler();
 
         return $result;
     }
@@ -645,27 +640,5 @@ class Application extends MiddlewarePipe
         $response = $finalHandler(new ServerRequest(), $response, $exception);
         $emitter = $this->getEmitter();
         $emitter->emit($response);
-    }
-
-    /**
-     * Register an error handler to swallow deprecation notices due to error middleware usage.
-     *
-     * @todo Remove method for version 2.0.0.
-     * @return void
-     */
-    private function swallowDeprecationNotices()
-    {
-        $previous = null;
-        $handler = function ($errno, $errstr, $errfile, $errline, $errcontext) use (&$previous) {
-            $swallow = $errno === E_USER_DEPRECATED && false !== strstr($errstr, 'error middleware is deprecated');
-
-            if ($swallow || $previous === null) {
-                return $swallow;
-            }
-
-            $previous($errno, $errstr, $errfile, $errline, $errcontext);
-        };
-
-        $previous = set_error_handler($handler);
     }
 }
