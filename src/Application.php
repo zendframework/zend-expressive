@@ -483,6 +483,16 @@ class Application extends MiddlewarePipe
     }
 
     /**
+     * Retrieve all directly registered routes with the application.
+     *
+     * @return Router\Route[]
+     */
+    public function getRoutes()
+    {
+        return $this->routes;
+    }
+
+    /**
      * Run the application
      *
      * If no request or response are provided, the method will use
