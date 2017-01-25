@@ -23,11 +23,9 @@ use Zend\Stratigility\NoopFinalHandler;
  *
  * - 'Zend\Expressive\Router\RouterInterface'. If missing, a FastRoute router
  *   bridge will be instantiated and used.
- * - 'Zend\Expressive\FinalHandler'. The service should be a callable to use as
- *   the final handler when the middleware pipeline is exhausted.
- *   If the 'zend-expressive.raise_throwables' flag is enabled, the factory will
- *   instead look for the 'Zend\Stratigility\NoopFinalHandler' service,
- *   creating an empty instance if none is found.
+ * - 'Zend\Stratigility\NoopFinalHandler'. The service should be a callable to use as
+ *   the default delegate when the middleware pipeline is exhausted. The factory will
+ *   create an empty instance if none is found.
  * - 'Zend\Diactoros\Response\EmitterInterface'. If missing, an EmitterStack is
  *   created, adding a SapiEmitter to the bottom of the stack.
  * - 'config' (an array or ArrayAccess object). If present, and it contains route
@@ -41,23 +39,11 @@ use Zend\Stratigility\NoopFinalHandler;
  *
  * You may disable injection of configured routing and the middleware pipeline
  * by enabling the `zend-expressive.programmatic_pipeline` configuration flag.
- *
- * You may opt-in to providing a middleware-based error handler by enabling the
- * `zend-expressive.raise_throwables` configuration flag. If you do this, the
- * application will no longer catch exceptions and invoke Stratigility error
- * middleware; you will instead need to provide custom middleware that provides
- * the try/catch block. You may use Zend\Stratigility\Middleware\ErrorHandler,
- * with our provided Zend\Expressive\Middleware\ErrorResponseGenerator and/or
- * Zend\Expressive\Middleware\WhoopsErrorResponseGenerator classes.
- *
- * Additionally, when raise_throwables is enabled, you will need to provide an
- * innermost middleware to invoke when the queue is exhausted; we suggest
- * Zend\Expressive\Middleware\NotFoundHandler.
  */
 class ApplicationFactory
 {
-    const DISPATCH_MIDDLEWARE = 'EXPRESSIVE_DISPATCH_MIDDLEWARE';
-    const ROUTING_MIDDLEWARE = 'EXPRESSIVE_ROUTING_MIDDLEWARE';
+    const DISPATCH_MIDDLEWARE = Application::DISPATCH_MIDDLEWARE;
+    const ROUTING_MIDDLEWARE = Application::ROUTING_MIDDLEWARE;
 
     /**
      * Create and return an Application instance.
@@ -77,19 +63,13 @@ class ApplicationFactory
             ? $container->get(RouterInterface::class)
             : new FastRouteRouter();
 
-        $finalHandler = ! empty($config['zend-expressive']['raise_throwables'])
-            ? $this->marshalNoopFinalHandler($container)
-            : $this->marshalLegacyFinalHandler($container, $config);
+        $delegate = $this->marshalNoopFinalHandler($container);
 
         $emitter = $container->has(EmitterInterface::class)
             ? $container->get(EmitterInterface::class)
             : null;
 
-        $app = new Application($router, $container, $finalHandler, $emitter);
-
-        if (! empty($config['zend-expressive']['raise_throwables'])) {
-            $app->raiseThrowables();
-        }
+        $app = new Application($router, $container, $delegate, $emitter);
 
         if (empty($config['zend-expressive']['programmatic_pipeline'])) {
             $this->injectRoutesAndPipeline($app, $config);
@@ -119,22 +99,5 @@ class ApplicationFactory
         return $container->has(NoopFinalHandler::class)
             ? $container->get(NoopFinalHandler::class)
             : new NoopFinalHandler();
-    }
-
-    /**
-     * Create default FinalHandler with options configured under the key final_handler.options.
-     *
-     * @param ContainerInterface $container
-     * @param array|\ArrayObject $config
-     * @return callable|FinalHandler
-     */
-    private function marshalLegacyFinalHandler(ContainerInterface $container, $config)
-    {
-        if ($container->has('Zend\Expressive\FinalHandler')) {
-            return $container->get('Zend\Expressive\FinalHandler');
-        }
-
-        $options = isset($config['final_handler']['options']) ? $config['final_handler']['options'] : [];
-        return new FinalHandler($options, null);
     }
 }

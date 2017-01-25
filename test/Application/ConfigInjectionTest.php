@@ -7,7 +7,6 @@
 
 namespace ZendTest\Expressive\Application;
 
-use Closure;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;

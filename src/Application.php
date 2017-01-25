@@ -38,8 +38,8 @@ class Application extends MiddlewarePipe
     use ApplicationConfigInjectionTrait;
     use MarshalMiddlewareTrait;
 
-    const ROUTING_MIDDLEWARE = Container\ApplicationFactory::ROUTING_MIDDLEWARE;
-    const DISPATCH_MIDDLEWARE = Container\ApplicationFactory::DISPATCH_MIDDLEWARE;
+    const DISPATCH_MIDDLEWARE = 'EXPRESSIVE_DISPATCH_MIDDLEWARE';
+    const ROUTING_MIDDLEWARE = 'EXPRESSIVE_ROUTING_MIDDLEWARE';
 
     /**
      * @var null|ContainerInterface
