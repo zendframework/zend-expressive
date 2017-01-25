@@ -8,7 +8,7 @@
 namespace ZendTest\Expressive\Middleware;
 
 use Fig\Http\Message\StatusCodeInterface;
-use Interop\Http\Middleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\DelegateInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
