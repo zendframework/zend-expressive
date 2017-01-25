@@ -9,12 +9,13 @@ namespace Zend\Expressive;
 
 use Closure;
 use Interop\Container\ContainerInterface;
-use Interop\Http\Middleware\DelegateInterface;
-use Interop\Http\Middleware\ServerMiddlewareInterface;
-use ReflectionFunction;
-use ReflectionMethod;
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
+use Psr\Http\Message\ResponseInterface;
 use Zend\Stratigility\Delegate\CallableDelegateDecorator;
 use Zend\Stratigility\MiddlewarePipe;
+use Zend\Stratigility\Middleware\CallableInteropMiddlewareWrapper;
+use Zend\Stratigility\Middleware\CallableMiddlewareWrapper;
 
 /**
  * Trait defining methods for verifying and/or generating middleware to pipe to
@@ -22,6 +23,8 @@ use Zend\Stratigility\MiddlewarePipe;
  */
 trait MarshalMiddlewareTrait
 {
+    use IsCallableInteropMiddlewareTrait;
+
     /**
      * Prepare middleware for piping.
      *
@@ -35,52 +38,55 @@ trait MarshalMiddlewareTrait
      * - If no callable is created, an exception is thrown.
      *
      * @param mixed $middleware
+     * @param Router\RouterInterface $router
+     * @param ResponseInterface $responsePrototype
      * @param null|ContainerInterface $container
-     * @param bool $forError Whether or not generated middleware is intended to
-     *     represent error middleware; defaults to false.
-     * @return callable
+     * @return ServerMiddlewareInterface
      * @throws Exception\InvalidMiddlewareException
      */
-    private function prepareMiddleware($middleware, ContainerInterface $container = null, $forError = false)
-    {
-        if (is_callable($middleware)) {
-            return $middleware;
-        }
-
+    private function prepareMiddleware(
+        $middleware,
+        Router\RouterInterface $router,
+        ResponseInterface $responsePrototype,
+        ContainerInterface $container = null
+    ) {
         if ($middleware === Application::ROUTING_MIDDLEWARE) {
-            return [$this, 'routeMiddleware'];
+            return new Middleware\RouteMiddleware($router, $responsePrototype);
         }
 
         if ($middleware === Application::DISPATCH_MIDDLEWARE) {
-            return [$this, 'dispatchMiddleware'];
+            return new Middleware\DispatchMiddleware();
+        }
+
+        if ($middleware instanceof ServerMiddlewareInterface) {
+            return $middleware;
+        }
+
+        if ($this->isCallableInteropMiddleware($middleware)) {
+            return new CallableInteropMiddlewareWrapper($middleware);
+        }
+
+        if (is_callable($middleware)) {
+            return new CallableMiddlewareWrapper($middleware, $responsePrototype);
         }
 
         if (is_array($middleware)) {
-            return $this->marshalMiddlewarePipe($middleware, $container, $forError);
+            return $this->marshalMiddlewarePipe($middleware, $router, $responsePrototype, $container);
         }
 
         if (is_string($middleware) && $container && $container->has($middleware)) {
-            $method = $forError ? 'marshalLazyErrorMiddlewareService' : 'marshalLazyMiddlewareService';
-            return $this->{$method}($middleware, $container);
+            return new Middleware\LazyLoadingMiddleware($container, $responsePrototype, $middleware);
         }
 
-        $callable = $middleware;
         if (is_string($middleware)) {
-            $callable = $this->marshalInvokableMiddleware($middleware);
+            return $this->marshalInvokableMiddleware($middleware, $responsePrototype);
         }
 
-        if (! is_callable($callable)) {
-            throw new Exception\InvalidMiddlewareException(
-                sprintf(
-                    'Unable to resolve middleware "%s" to a callable',
-                    (is_object($middleware)
-                    ? get_class($middleware) . "[Object]"
-                    : gettype($middleware) . '[Scalar]')
-                )
-            );
-        }
-
-        return $callable;
+        throw new Exception\InvalidMiddlewareException(sprintf(
+            'Unable to resolve middleware "%s" to a callable or %s',
+            (is_object($middleware) ? get_class($middleware) . "[Object]" : gettype($middleware) . '[Scalar]'),
+            ServerMiddlewareInterface::class
+        ));
     }
 
     /**
@@ -96,29 +102,25 @@ trait MarshalMiddlewareTrait
      * As each middleware is verified, it is piped to the middleware pipe.
      *
      * @param array $middlewares
+     * @param Router\RouterInterface $router
+     * @param ResponseInterface $responsePrototype
      * @param null|ContainerInterface $container
-     * @param bool $forError Whether or not the middleware pipe generated is
-     *     intended to be populated with error middleware; defaults to false.
-     * @return MiddlewarePipe|ErrorMiddlewarePipe When $forError is true,
-     *     returns an ErrorMiddlewarePipe.
+     * @return MiddlewarePipe
      * @throws Exception\InvalidMiddlewareException for any invalid middleware items.
      */
-    private function marshalMiddlewarePipe(array $middlewares, ContainerInterface $container = null, $forError = false)
-    {
+    private function marshalMiddlewarePipe(
+        array $middlewares,
+        Router\RouterInterface $router,
+        ResponseInterface $responsePrototype,
+        ContainerInterface $container = null
+    ) {
         $middlewarePipe = new MiddlewarePipe();
-
-        if ($this->raiseThrowables) {
-            $middlewarePipe->raiseThrowables();
-        }
+        $middlewarePipe->setResponsePrototype($responsePrototype);
 
         foreach ($middlewares as $middleware) {
             $middlewarePipe->pipe(
-                $this->prepareMiddleware($middleware, $container, $forError)
+                $this->prepareMiddleware($middleware, $router, $responsePrototype, $container)
             );
-        }
-
-        if ($forError) {
-            return new ErrorMiddlewarePipe($middlewarePipe);
         }
 
         return $middlewarePipe;
@@ -128,126 +130,35 @@ trait MarshalMiddlewareTrait
      * Attempt to instantiate the given middleware.
      *
      * @param string $middleware
-     * @return string|callable Returns $middleware intact on failure, and the
-     *     middleware instance on success.
+     * @param ResponseInterface $responsePrototype
+     * @return ServerMiddlewareInterface
+     * @throws Exception\InvalidMiddlewareException if $middleware is not a class.
+     * @throws Exception\InvalidMiddlewareException if $middleware does not resolve
+     *     to either an invokable class or ServerMiddlewareInterface instance.
      */
-    private function marshalInvokableMiddleware($middleware)
+    private function marshalInvokableMiddleware($middleware, ResponseInterface $responsePrototype)
     {
         if (! class_exists($middleware)) {
-            return $middleware;
+            throw new Exception\InvalidMiddlewareException(sprintf(
+                'Unable to create middleware "%s"; not a valid class or service name',
+                $middleware
+            ));
         }
 
-        return new $middleware();
-    }
-
-    /**
-     * @param string $middleware
-     * @param ContainerInterface $container
-     * @return callable
-     */
-    private function marshalLazyMiddlewareService($middleware, ContainerInterface $container)
-    {
-        return function ($request, $response, $next = null) use ($container, $middleware) {
-            $invokable = $container->get($middleware);
-
-            // http-interop middleware
-            if ($invokable instanceof ServerMiddlewareInterface
-                && ! $invokable instanceof MiddlewarePipe
-            ) {
-                return $invokable->process(
-                    $request,
-                    $next instanceof DelegateInterface
-                        ? $next
-                        : new CallableDelegateDecorator($next, $response)
-                );
-            }
-
-            // Middleware pipeline
-            if ($invokable instanceof MiddlewarePipe) {
-                if ($this->raiseThrowables) {
-                    $invokable->raiseThrowables();
-                }
-
-                return $invokable($request, $response, $next);
-            }
-
-            // Unknown - invalid!
-            if (! is_callable($invokable)) {
-                throw new Exception\InvalidMiddlewareException(sprintf(
-                    'Lazy-loaded middleware "%s" is not invokable',
-                    $middleware
-                ));
-            }
-
-            // Callable http-interop middleware
-            if ($this->isCallableInteropMiddleware($invokable)) {
-                return $invokable(
-                    $request,
-                    $next instanceof DelegateInterface
-                        ? $next
-                        : new CallableDelegateDecorator($next, $response)
-                );
-            }
-
-            // Legacy double-pass signature
-            return $invokable($request, $response, $next);
-        };
-    }
-
-    /**
-     * @param string $middleware
-     * @param ContainerInterface $container
-     * @return callable
-     */
-    private function marshalLazyErrorMiddlewareService($middleware, ContainerInterface $container)
-    {
-        return function ($error, $request, $response, $next) use ($container, $middleware) {
-            $invokable = $container->get($middleware);
-            if (! is_callable($invokable)) {
-                throw new Exception\InvalidMiddlewareException(sprintf(
-                    'Lazy-loaded middleware "%s" is not invokable',
-                    $middleware
-                ));
-            }
-            return $invokable($error, $request, $response, $next);
-        };
-    }
-
-    /**
-     * Is callable middleware interop middleware?
-     *
-     * @param callable $middleware
-     * @return bool
-     */
-    private function isCallableInteropMiddleware(callable $middleware)
-    {
-        $r = $this->reflectMiddleware($middleware);
-        $paramsCount = $r->getNumberOfParameters();
-
-        return $paramsCount === 2;
-    }
-
-    /**
-     * Reflect a callable middleware.
-     *
-     * Duplicates MiddlewarePipe::getReflectionFunction, but that method is not
-     * callable due to private visibility.
-     *
-     * @param callable $middleware
-     * @return \ReflectionFunctionAbstract
-     */
-    private function reflectMiddleware(callable $middleware)
-    {
-        if (is_array($middleware)) {
-            $class = array_shift($middleware);
-            $method = array_shift($middleware);
-            return new ReflectionMethod($class, $method);
+        $instance = new $middleware();
+        
+        if ($instance instanceof ServerMiddlewareInterface) {
+            return $instance;
         }
 
-        if ($middleware instanceof Closure || ! is_object($middleware)) {
-            return new ReflectionFunction($middleware);
+        if (! is_callable($instance)) {
+            throw new Exception\InvalidMiddlewareException(sprintf(
+                'Middleware of class "%s" is invalid; neither invokable nor %s',
+                $middleware,
+                ServerMiddlewareInterface::class
+            ));
         }
 
-        return new ReflectionMethod($middleware, '__invoke');
+        return new CallableMiddlewareWrapper($instance, $responsePrototype);
     }
 }

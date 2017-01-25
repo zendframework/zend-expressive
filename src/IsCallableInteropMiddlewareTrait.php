@@ -18,8 +18,12 @@ trait IsCallableInteropMiddlewareTrait
      * @param callable $middleware
      * @return bool
      */
-    private function isCallableInteropMiddleware(callable $middleware)
+    private function isCallableInteropMiddleware($middleware)
     {
+        if (! is_callable($middleware)) {
+            return false;
+        }
+
         $r = $this->reflectMiddleware($middleware);
         $paramsCount = $r->getNumberOfParameters();
 
