@@ -22,7 +22,7 @@
         "zendframework/zend-diactoros": "^1.1",
         "zendframework/zend-expressive-router": "^2.1",
         "zendframework/zend-expressive-template": "^1.0.4",
-        "zendframework/zend-stratigility": "^2.0",
+        "zendframework/zend-stratigility": "^2.0.1",
         "fig/http-message-util": "^1.1"
     },
     "require-dev": {

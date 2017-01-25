@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "53b262eec00bba319cadff8c259a144b",
-    "content-hash": "f6e58ccb40f51716ddb012da399c21e7",
+    "hash": "72f404820c51bfc8829257837aa60166",
+    "content-hash": "c19d319d85729f55845951b2b1cec5db",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -387,16 +387,16 @@
         },
         {
             "name": "zendframework/zend-stratigility",
-            "version": "2.0.0",
+            "version": "2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-stratigility.git",
-                "reference": "09d1aa4c61b5708f7a5ed53445e63a1ee044c0d2"
+                "reference": "229e7d94010d09d9e68096ff6f1d35f354d8dac9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-stratigility/zipball/09d1aa4c61b5708f7a5ed53445e63a1ee044c0d2",
-                "reference": "09d1aa4c61b5708f7a5ed53445e63a1ee044c0d2",
+                "url": "https://api.github.com/repos/zendframework/zend-stratigility/zipball/229e7d94010d09d9e68096ff6f1d35f354d8dac9",
+                "reference": "229e7d94010d09d9e68096ff6f1d35f354d8dac9",
                 "shasum": ""
             },
             "require": {
@@ -437,7 +437,7 @@
                 "middleware",
                 "psr-7"
             ],
-            "time": "2017-01-24 15:07:28"
+            "time": "2017-01-25 19:16:16"
         }
     ],
     "packages-dev": [

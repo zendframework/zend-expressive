@@ -103,10 +103,7 @@ trait ApplicationConfigInjectionTrait
 
         foreach ($queue as $spec) {
             $path  = isset($spec['path']) ? $spec['path'] : '/';
-            $error = array_key_exists('error', $spec) ? (bool) $spec['error'] : false;
-            $pipe  = $error ? 'pipeErrorHandler' : 'pipe';
-
-            $this->{$pipe}($path, $spec['middleware']);
+            $this->pipe($path, $spec['middleware']);
         }
     }
 
@@ -165,6 +162,7 @@ trait ApplicationConfigInjectionTrait
                 continue;
             }
 
+            $methods = Route::HTTP_METHOD_ANY;
             if (isset($spec['allowed_methods'])) {
                 $methods = $spec['allowed_methods'];
                 if (! is_array($methods)) {
@@ -173,9 +171,8 @@ trait ApplicationConfigInjectionTrait
                         gettype($methods)
                     ));
                 }
-            } else {
-                $methods = Route::HTTP_METHOD_ANY;
             }
+
             $name  = isset($spec['name']) ? $spec['name'] : null;
             $route = new Route($spec['path'], $spec['middleware'], $methods, $name);
 
@@ -193,36 +190,6 @@ trait ApplicationConfigInjectionTrait
 
             $this->route($route);
         }
-    }
-
-    /**
-     * Create and return the pipeline map callback.
-     *
-     * The returned callback has the signature:
-     *
-     * <code>
-     * function ($item) : callable|string
-     * </code>
-     *
-     * It is suitable for mapping pipeline middleware representing the application
-     * routing o dispatching middleware to a callable; if the provided item does not
-     * match either, the item is returned verbatim.
-     *
-     * @return callable
-     */
-    private function createPipelineMapper()
-    {
-        return function ($item) {
-            if ($item === Application::ROUTING_MIDDLEWARE) {
-                return [$this, 'routeMiddleware'];
-            }
-
-            if ($item === Application::DISPATCH_MIDDLEWARE) {
-                return [$this, 'dispatchMiddleware'];
-            }
-
-            return $item;
-        };
     }
 
     /**
@@ -249,15 +216,14 @@ trait ApplicationConfigInjectionTrait
      */
     private function createCollectionMapper()
     {
-        $pipelineMap = $this->createPipelineMapper();
         $appMiddlewares = [
             Application::ROUTING_MIDDLEWARE,
             Application::DISPATCH_MIDDLEWARE,
         ];
 
-        return function ($item) use ($pipelineMap, $appMiddlewares) {
+        return function ($item) use ($appMiddlewares) {
             if (in_array($item, $appMiddlewares, true)) {
-                return ['middleware' => $pipelineMap($item)];
+                return ['middleware' => $item];
             }
 
             if (! is_array($item) || ! array_key_exists('middleware', $item)) {
@@ -266,10 +232,6 @@ trait ApplicationConfigInjectionTrait
                     . 'key, or one of the Application::*_MIDDLEWARE constants; received %s',
                     is_object($item) ? get_class($item) : gettype($item)
                 ));
-            }
-
-            if (! is_callable($item['middleware']) && is_array($item['middleware'])) {
-                $item['middleware'] = array_map($pipelineMap, $item['middleware']);
             }
 
             return $item;
