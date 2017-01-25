@@ -19,9 +19,10 @@ use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\ServerRequestFactory;
-use Zend\Stratigility\FinalHandler;
+use Zend\Stratigility\Delegate\CallableDelegateDecorator;
 use Zend\Stratigility\Http\Response as StratigilityResponse;
 use Zend\Stratigility\MiddlewarePipe;
+use Zend\Stratigility\NoopFinalHandler;
 
 /**
  * Middleware application providing routing based on paths and HTTP methods.
@@ -46,6 +47,11 @@ class Application extends MiddlewarePipe
     private $container;
 
     /**
+     * @var callable
+     */
+    private $defaultDelegate;
+
+    /**
      * @var bool Flag indicating whether or not the dispatch middleware is
      *     registered in the middleware pipeline.
      */
@@ -55,11 +61,6 @@ class Application extends MiddlewarePipe
      * @var EmitterInterface
      */
     private $emitter;
-
-    /**
-     * @var callable
-     */
-    private $finalHandler;
 
     /**
      * @var string[] HTTP methods that can be used for routing
@@ -104,47 +105,24 @@ class Application extends MiddlewarePipe
      *
      * @param Router\RouterInterface $router
      * @param null|ContainerInterface $container IoC container from which to pull services, if any.
-     * @param null|callable $finalHandler Final handler to use when $out is not
-     *     provided on invocation.
+     * @param null|callable $defaultDelegate Default delegate to use when $out
+     *     is not provided on invocation / run() is invoked.
      * @param null|EmitterInterface $emitter Emitter to use when `run()` is
      *     invoked.
      */
     public function __construct(
         Router\RouterInterface $router,
         ContainerInterface $container = null,
-        callable $finalHandler = null,
+        callable $defaultDelegate = null,
         EmitterInterface $emitter = null
     ) {
         parent::__construct();
-        $this->router       = $router;
-        $this->container    = $container;
-        $this->finalHandler = $finalHandler;
-        $this->emitter      = $emitter;
-    }
+        $this->router          = $router;
+        $this->container       = $container;
+        $this->defaultDelegate = $defaultDelegate;
+        $this->emitter         = $emitter;
 
-    /**
-     * Overload middleware invocation.
-     *
-     * If $out is not provided, uses the result of `getFinalHandler()`.
-     *
-     * @todo Remove logic for creating final handler for version 2.0.0.
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @param callable|null $out
-     * @return ResponseInterface
-     */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $out = null)
-    {
-        if (! $out && (null === ($out = $this->getFinalHandler($response)))) {
-            $response = $response instanceof StratigilityResponse
-                ? $response
-                : new StratigilityResponse($response);
-            $out = new FinalHandler([], $response);
-        }
-
-        $result = parent::__invoke($request, $response, $out);
-
-        return $result;
+        $this->setResponsePrototype(new Response());
     }
 
     /**
@@ -239,92 +217,43 @@ class Application extends MiddlewarePipe
     public function pipe($path, $middleware = null)
     {
         if (null === $middleware) {
-            $middleware = $this->prepareMiddleware($path, $this->container);
+            $middleware = $this->prepareMiddleware(
+                $path,
+                $this->router,
+                $this->responsePrototype,
+                $this->container
+            );
             $path = '/';
         }
 
         if (! is_callable($middleware)
             && (is_string($middleware) || is_array($middleware))
         ) {
-            $middleware = $this->prepareMiddleware($middleware, $this->container);
+            $middleware = $this->prepareMiddleware(
+                $middleware,
+                $this->router,
+                $this->responsePrototype,
+                $this->container
+            );
         }
 
-        if ($middleware === [$this, 'routeMiddleware'] && $this->routeMiddlewareIsRegistered) {
+        if ($middleware instanceof Middleware\RouteMiddleware && $this->routeMiddlewareIsRegistered) {
             return $this;
         }
 
-        if ($middleware === [$this, 'dispatchMiddleware'] && $this->dispatchMiddlewareIsRegistered) {
+        if ($middleware instanceof Middleware\DispatchMiddleware && $this->dispatchMiddlewareIsRegistered) {
             return $this;
         }
 
         parent::pipe($path, $middleware);
 
-        if ($middleware === [$this, 'routeMiddleware']) {
+        if ($middleware instanceof Middleware\RouteMiddleware) {
             $this->routeMiddlewareIsRegistered = true;
         }
 
-        if ($middleware === [$this, 'dispatchMiddleware']) {
+        if ($middleware instanceof Middleware\DispatchMiddleware) {
             $this->dispatchMiddlewareIsRegistered = true;
         }
-
-        return $this;
-    }
-
-    /**
-     * Pipe an error handler.
-     *
-     * Middleware piped may be either callables or service names. Middleware
-     * specified as services will be wrapped in a closure similar to the
-     * following:
-     *
-     * <code>
-     * function ($error, $request, $response, $next) use ($container, $middleware) {
-     *     $invokable = $container->get($middleware);
-     *     if (! is_callable($invokable)) {
-     *         throw new Exception\InvalidMiddlewareException(sprintf(
-     *             'Lazy-loaded middleware "%s" is not invokable',
-     *             $middleware
-     *         ));
-     *     }
-     *     return $invokable($error, $request, $response, $next);
-     * };
-     * </code>
-     *
-     * This is done to delay fetching the middleware until it is actually used;
-     * the upshot is that you will not be notified if the service is invalid to
-     * use as middleware until runtime.
-     *
-     * Once middleware detection and wrapping (if necessary) is complete,
-     * proxies to pipe().
-     *
-     * @deprecated Since 1.1.0; will be removed in 2.0.0.
-     * @param string|callable $path Either a URI path prefix, or middleware.
-     * @param null|string|callable $middleware Middleware
-     * @return self
-     */
-    public function pipeErrorHandler($path, $middleware = null)
-    {
-        trigger_error(sprintf(
-            'Stratigility-style error middleware is deprecated by Stratigility 1.3 '
-            . 'and Expressive 1.1. Please update your application to use standard '
-            . 'middleware designed for error handling as described in %s '
-            . 'and %s.',
-            'https://docs.zendframework.com/zend-stratigility/error-handlers/',
-            'https://docs.zendframework.com/zend-expressive/features/error-handling/'
-        ), E_USER_DEPRECATED);
-
-        if (null === $middleware) {
-            $middleware = $this->prepareMiddleware($path, $this->container, $forError = true);
-            $path = '/';
-        }
-
-        if (! is_callable($middleware)
-            && (is_string($middleware) || is_array($middleware))
-        ) {
-            $middleware = $this->prepareMiddleware($middleware, $this->container, $forError = true);
-        }
-
-        parent::pipe($path, $middleware);
 
         return $this;
     }
@@ -337,7 +266,7 @@ class Application extends MiddlewarePipe
         if ($this->routeMiddlewareIsRegistered) {
             return;
         }
-        $this->pipe([$this, 'routeMiddleware']);
+        $this->pipe(self::ROUTING_MIDDLEWARE);
     }
 
     /**
@@ -348,88 +277,7 @@ class Application extends MiddlewarePipe
         if ($this->dispatchMiddlewareIsRegistered) {
             return;
         }
-        $this->pipe([$this, 'dispatchMiddleware']);
-    }
-
-    /**
-     * Middleware that routes the incoming request and delegates to the matched middleware.
-     *
-     * Uses the router to route the incoming request, injecting the request
-     * with:
-     *
-     * - the route result object (under a key named for the RouteResult class)
-     * - attributes for each matched routing parameter
-     *
-     * On completion, it calls on the next middleware (typically the
-     * `dispatchMiddleware()`).
-     *
-     * If routing fails, `$next()` is called; if routing fails due to HTTP
-     * method negotiation, the response is set to a 405, injected with an
-     * Allow header, and `$next()` is called with its `$error` argument set
-     * to the value `405` (invoking the next error middleware).
-     *
-     * @param  ServerRequestInterface $request
-     * @param  ResponseInterface $response
-     * @param  callable $next
-     * @return ResponseInterface
-     */
-    public function routeMiddleware(ServerRequestInterface $request, ResponseInterface $response, callable $next)
-    {
-        $result = $this->router->match($request);
-
-        if ($result->isFailure()) {
-            if ($result->isMethodFailure()) {
-                $response = $response->withStatus(StatusCode::STATUS_METHOD_NOT_ALLOWED)
-                    ->withHeader('Allow', implode(',', $result->getAllowedMethods()));
-
-                return $this->raiseThrowables
-                    ? $response
-                    : $next($request, $response, StatusCode::STATUS_METHOD_NOT_ALLOWED);
-            }
-            return $next($request, $response);
-        }
-
-        // Inject the actual route result, as well as individual matched parameters.
-        $request = $request->withAttribute(Router\RouteResult::class, $result);
-        foreach ($result->getMatchedParams() as $param => $value) {
-            $request = $request->withAttribute($param, $value);
-        }
-
-        return $next($request, $response);
-    }
-
-    /**
-     * Dispatch the middleware matched by routing.
-     *
-     * If the request does not have the route result, calls on the next
-     * middleware.
-     *
-     * Next, it checks if the route result has matched middleware; if not, it
-     * raises an exception.
-     *
-     * Finally, it attempts to marshal the middleware, and dispatches it when
-     * complete, return the response.
-     *
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @param callable $next
-     * @returns ResponseInterface
-     * @throws Exception\InvalidMiddlewareException if no middleware is present
-     *     to dispatch in the route result.
-     */
-    public function dispatchMiddleware(ServerRequestInterface $request, ResponseInterface $response, callable $next)
-    {
-        $routeResult = $request->getAttribute(Router\RouteResult::class, false);
-        if (! $routeResult) {
-            return $next($request, $response);
-        }
-
-        $middleware = $this->prepareMiddleware(
-            $routeResult->getMatchedMiddleware(),
-            $this->container
-        );
-
-        return $middleware($request, $response, $next);
+        $this->pipe(self::DISPATCH_MIDDLEWARE);
     }
 
     /**
@@ -467,8 +315,14 @@ class Application extends MiddlewarePipe
         $this->checkForDuplicateRoute($path, $methods);
 
         if (! isset($route)) {
-            $methods = (null === $methods) ? Router\Route::HTTP_METHOD_ANY : $methods;
-            $route   = new Router\Route($path, $middleware, $methods, $name);
+            $methods    = (null === $methods) ? Router\Route::HTTP_METHOD_ANY : $methods;
+            $middleware = $this->prepareMiddleware(
+                $middleware,
+                $this->router,
+                $this->responsePrototype,
+                $this->container
+            );
+            $route      = new Router\Route($path, $middleware, $methods, $name);
         }
 
         $this->routes[] = $route;
@@ -517,7 +371,10 @@ class Application extends MiddlewarePipe
         $response = $response ?: new Response();
         $request  = $request->withAttribute('originalResponse', $response);
 
-        $response = $this($request, $response);
+        $this->setResponsePrototype($response);
+        $delegate = new CallableDelegateDecorator($this->getDefaultDelegate($response), $response);
+
+        $response = $this->process($request, $delegate);
 
         $emitter = $this->getEmitter();
         $emitter->emit($response);
@@ -540,26 +397,23 @@ class Application extends MiddlewarePipe
     }
 
     /**
-     * Return the final handler to use during `run()` if the stack is exhausted.
+     * Return the default delegate to use during `run()` if the stack is exhausted.
+     *
+     * Creates a NoopFinalHandler instance using either the passed response or
+     * the current response prototype if no delegate was registered during
+     * instnatiation.
      *
      * @param null|ResponseInterface $response Response instance with which to seed the
-     *     FinalHandler; used to determine if the response passed to the handler
-     *     represents the original or final response state.
-     * @return callable|null
+     *     NoopFinalHandler.
+     * @return callable
      */
-    public function getFinalHandler(ResponseInterface $response = null)
+    public function getDefaultDelegate(ResponseInterface $response = null)
     {
-        if (! $this->finalHandler) {
-            return null;
-        }
+        $this->defaultDelegate = $this->defaultDelegate ?: new NoopFinalHandler(
+            $response ?: $this->responsePrototype
+        );
 
-        // Inject the handler with the response, if possible (e.g., the
-        // TemplatedErrorHandler and WhoopsErrorHandler implementations).
-        if (method_exists($this->finalHandler, 'setOriginalResponse')) {
-            $this->finalHandler->setOriginalResponse($response);
-        }
-
-        return $this->finalHandler;
+        return $this->defaultDelegate;
     }
 
     /**
@@ -634,10 +488,8 @@ class Application extends MiddlewarePipe
      */
     private function emitMarshalServerRequestException($exception)
     {
-        $response = (new Response())
+        $response = $this->responsePrototype
             ->withStatus(StatusCode::STATUS_BAD_REQUEST);
-        $finalHandler = $this->getFinalHandler();
-        $response = $finalHandler(new ServerRequest(), $response, $exception);
         $emitter = $this->getEmitter();
         $emitter->emit($response);
     }
