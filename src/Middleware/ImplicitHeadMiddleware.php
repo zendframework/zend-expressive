@@ -8,6 +8,8 @@
 namespace Zend\Expressive\Middleware;
 
 use Fig\Http\Message\RequestMethodInterface as RequestMethod;
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
@@ -39,7 +41,7 @@ use Zend\Expressive\Router\RouteResult;
  * the next layer, but alters the request passed to use the GET method;
  * it then provides an empty response body to the returned response.
  */
-class ImplicitHeadMiddleware
+class ImplicitHeadMiddleware implements ServerMiddlewareInterface
 {
     /**
      * @var null|ResponseInterface
@@ -64,32 +66,30 @@ class ImplicitHeadMiddleware
      * response.
      *
      * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @param callable $next
+     * @param DelegateInterface $delegate
      * @return ResponseInterface
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         if ($request->getMethod() !== RequestMethod::METHOD_HEAD) {
-            return $next($request, $response);
+            return $delegate->process($request);
         }
 
         if (false === ($result = $request->getAttribute(RouteResult::class, false))) {
-            return $next($request, $response);
+            return $delegate->process($request);
         }
 
         $route = $result->getMatchedRoute();
         if (! $route || ! $route->implicitHead()) {
-            return $next($request, $response);
+            return $delegate->process($request);
         }
 
         if (! $route->allowsMethod(RequestMethod::METHOD_GET)) {
             return $this->getResponse();
         }
 
-        $response = $next(
-            $request->withMethod(RequestMethod::METHOD_GET),
-            $response
+        $response = $delegate->process(
+            $request->withMethod(RequestMethod::METHOD_GET)
         );
 
         return $response->withBody(new Stream('php://temp/', 'wb+'));

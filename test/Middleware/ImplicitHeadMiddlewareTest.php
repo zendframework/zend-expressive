@@ -9,7 +9,8 @@ namespace ZendTest\Expressive\Middleware;
 
 use Fig\Http\Message\RequestMethodInterface as RequestMethod;
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
-use PHPUnit_Framework_TestCase as TestCase;
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -28,14 +29,12 @@ class ImplicitHeadMiddlewareTest extends TestCase
 
         $response = $this->prophesize(ResponseInterface::class)->reveal();
 
-        $next = function ($req, $res) use ($request, $response) {
-            $this->assertSame($request->reveal(), $req);
-            $this->assertSame($response, $res);
-            return $res;
-        };
+        $delegate = $this->prophesize(DelegateInterface::class);
+        $delegate->process($request->reveal())
+            ->willReturn($response);
 
         $middleware = new ImplicitHeadMiddleware();
-        $result = $middleware($request->reveal(), $response, $next);
+        $result = $middleware->process($request->reveal(), $delegate->reveal());
 
         $this->assertSame($response, $result);
     }
@@ -48,14 +47,12 @@ class ImplicitHeadMiddlewareTest extends TestCase
 
         $response = $this->prophesize(ResponseInterface::class)->reveal();
 
-        $next = function ($req, $res) use ($request, $response) {
-            $this->assertSame($request->reveal(), $req);
-            $this->assertSame($response, $res);
-            return $res;
-        };
+        $delegate = $this->prophesize(DelegateInterface::class);
+        $delegate->process($request->reveal())
+            ->willReturn($response);
 
         $middleware = new ImplicitHeadMiddleware();
-        $result = $middleware($request->reveal(), $response, $next);
+        $result = $middleware->process($request->reveal(), $delegate->reveal());
 
         $this->assertSame($response, $result);
     }
@@ -71,14 +68,12 @@ class ImplicitHeadMiddlewareTest extends TestCase
 
         $response = $this->prophesize(ResponseInterface::class)->reveal();
 
-        $next = function ($req, $res) use ($request, $response) {
-            $this->assertSame($request->reveal(), $req);
-            $this->assertSame($response, $res);
-            return $res;
-        };
+        $delegate = $this->prophesize(DelegateInterface::class);
+        $delegate->process($request->reveal())
+            ->willReturn($response);
 
         $middleware = new ImplicitHeadMiddleware();
-        $result = $middleware($request->reveal(), $response, $next);
+        $result = $middleware->process($request->reveal(), $delegate->reveal());
 
         $this->assertSame($response, $result);
     }
@@ -97,14 +92,12 @@ class ImplicitHeadMiddlewareTest extends TestCase
 
         $response = $this->prophesize(ResponseInterface::class)->reveal();
 
-        $next = function ($req, $res) use ($request, $response) {
-            $this->assertSame($request->reveal(), $req);
-            $this->assertSame($response, $res);
-            return $res;
-        };
+        $delegate = $this->prophesize(DelegateInterface::class);
+        $delegate->process($request->reveal())
+            ->willReturn($response);
 
         $middleware = new ImplicitHeadMiddleware();
-        $result = $middleware($request->reveal(), $response, $next);
+        $result = $middleware->process($request->reveal(), $delegate->reveal());
 
         $this->assertSame($response, $result);
     }
@@ -124,12 +117,11 @@ class ImplicitHeadMiddlewareTest extends TestCase
 
         $response = $this->prophesize(ResponseInterface::class)->reveal();
 
-        $next = function ($req, $res) {
-            $this->fail('Next invoked when it should not have been');
-        };
+        $delegate = $this->prophesize(DelegateInterface::class);
+        $delegate->process($request->reveal())->shouldNotBeCalled($response);
 
         $middleware = new ImplicitHeadMiddleware();
-        $result = $middleware($request->reveal(), $response, $next);
+        $result = $middleware->process($request->reveal(), $delegate->reveal());
 
         $this->assertInstanceOf(Response::class, $result);
         $this->assertEquals(StatusCode::STATUS_OK, $result->getStatusCode());
@@ -151,13 +143,12 @@ class ImplicitHeadMiddlewareTest extends TestCase
 
         $response = $this->prophesize(ResponseInterface::class)->reveal();
 
-        $next = function ($req, $res) {
-            $this->fail('Next invoked when it should not have been');
-        };
+        $delegate = $this->prophesize(DelegateInterface::class);
+        $delegate->process($request->reveal())->shouldNotBeCalled($response);
 
-        $expected = new Response();
+        $expected   = new Response();
         $middleware = new ImplicitHeadMiddleware($expected);
-        $result = $middleware($request->reveal(), $response, $next);
+        $result     = $middleware->process($request->reveal(), $delegate->reveal());
 
         $this->assertSame($expected, $result);
     }
@@ -185,14 +176,11 @@ class ImplicitHeadMiddlewareTest extends TestCase
             }))
             ->will([$response, 'reveal']);
 
-        $next = function ($req, $res) use ($request, $response) {
-            $this->assertSame($request->reveal(), $req);
-            $this->assertSame($response->reveal(), $res);
-            return $res;
-        };
+        $delegate = $this->prophesize(DelegateInterface::class);
+        $delegate->process($request->reveal())->will([$response, 'reveal']);
 
         $middleware = new ImplicitHeadMiddleware();
-        $result = $middleware($request->reveal(), $response->reveal(), $next);
+        $result = $middleware->process($request->reveal(), $delegate->reveal());
 
         $this->assertSame($response->reveal(), $result);
     }
