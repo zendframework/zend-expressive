@@ -139,7 +139,7 @@ class ApplicationTest extends TestCase
         $app = $this->getApp();
         $app->route('/foo', $this->noopMiddleware);
         $app->route('/bar', $this->noopMiddleware);
-        $this->setExpectedException(DomainException::class);
+        $this->expectException(DomainException::class);
         $app->route('/foo', function ($req, $res, $next) {
         });
     }
@@ -147,7 +147,7 @@ class ApplicationTest extends TestCase
     public function testCallingRouteWithOnlyAPathRaisesAnException()
     {
         $app = $this->getApp();
-        $this->setExpectedException(Exception\InvalidArgumentException::class);
+        $this->expectException(Exception\InvalidArgumentException::class);
         $app->route('/path');
     }
 
@@ -172,7 +172,7 @@ class ApplicationTest extends TestCase
     public function testCallingRouteWithAnInvalidPathTypeRaisesAnException($path)
     {
         $app = $this->getApp();
-        $this->setExpectedException(RouterException\InvalidArgumentException::class);
+        $this->expectException(RouterException\InvalidArgumentException::class);
         $app->route($path, new TestAsset\InteropMiddleware());
     }
 
@@ -209,7 +209,7 @@ class ApplicationTest extends TestCase
         $app   = $this->getApp();
         $route = $app->get('/foo', $this->noopMiddleware);
 
-        $this->setExpectedException(DomainException::class);
+        $this->expectException(DomainException::class);
         $test = $app->get('/foo', function ($req, $res, $next) {
         });
     }
@@ -352,21 +352,21 @@ class ApplicationTest extends TestCase
     public function testCallingGetContainerWhenNoContainerComposedWillRaiseException()
     {
         $app = new Application($this->router->reveal());
-        $this->setExpectedException(RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $app->getContainer();
     }
 
     public function testUnsupportedMethodCall()
     {
         $app = $this->getApp();
-        $this->setExpectedException(BadMethodCallException::class);
+        $this->expectException(BadMethodCallException::class);
         $app->foo();
     }
 
     public function testCallMethodWithCountOfArgsNotEqualsWith2()
     {
         $app = $this->getApp();
-        $this->setExpectedException(BadMethodCallException::class);
+        $this->expectException(BadMethodCallException::class);
         $app->post('/foo');
     }
 
@@ -479,7 +479,7 @@ class ApplicationTest extends TestCase
         $request = $this->prophesize(ServerRequest::class)->reveal();
         $delegate = $this->prophesize(DelegateInterface::class)->reveal();
 
-        $this->setExpectedException(InvalidMiddlewareException::class);
+        $this->expectException(InvalidMiddlewareException::class);
         $handler->process($request, $delegate);
     }
 

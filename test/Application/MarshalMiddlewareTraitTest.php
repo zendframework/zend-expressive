@@ -214,7 +214,8 @@ class MarshalMiddlewareTraitTest extends TestCase
 
         $base = [$first, $second, $third];
 
-        $this->setExpectedException(InvalidMiddlewareException::class, 'second-middleware');
+        $this->expectException(InvalidMiddlewareException::class);
+        $this->expectExceptionMessage('second-middleware');
         $middleware = $this->prepareMiddlewareWithoutContainer($base);
     }
 
@@ -256,7 +257,8 @@ class MarshalMiddlewareTraitTest extends TestCase
         $base = stdClass::class;
         $this->container->has(stdClass::class)->willReturn(false);
 
-        $this->setExpectedException(InvalidMiddlewareException::class, 'invalid; neither invokable');
+        $this->expectException(InvalidMiddlewareException::class);
+        $this->expectExceptionMessage('invalid; neither invokable');
         $this->prepareMiddleware($base);
     }
 
@@ -292,7 +294,8 @@ class MarshalMiddlewareTraitTest extends TestCase
      */
     public function testPreparingUnknownMiddlewareTypeRaisesException($invalid, $expectedMessage)
     {
-        $this->setExpectedException(InvalidMiddlewareException::class, $expectedMessage);
+        $this->expectException(InvalidMiddlewareException::class);
+        $this->expectedExceptionMessage($expectedMessage);
         $this->prepareMiddlewareWithoutContainer($invalid);
     }
 }

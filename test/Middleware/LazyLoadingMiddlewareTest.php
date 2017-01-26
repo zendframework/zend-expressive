@@ -114,7 +114,7 @@ class LazyLoadingMiddlewareTest extends TestCase
         $this->container->get('middleware')->willReturn($middleware);
         $lazyLoadingMiddleware = $this->buildLazyLoadingMiddleware('middleware');
 
-        $this->setExpectedException(InvalidMiddlewareException::class);
+        $this->expectException(InvalidMiddlewareException::class);
         $lazyLoadingMiddleware->process($this->request->reveal(), $this->delegate->reveal());
     }
 }

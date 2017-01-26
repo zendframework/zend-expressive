@@ -62,7 +62,7 @@ class EmitterStackTest extends TestCase
      */
     public function testCannotPushNonEmitterToStack($value)
     {
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->emitter->push($value);
     }
 
@@ -71,7 +71,7 @@ class EmitterStackTest extends TestCase
      */
     public function testCannotUnshiftNonEmitterToStack($value)
     {
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->emitter->unshift($value);
     }
 
@@ -80,7 +80,7 @@ class EmitterStackTest extends TestCase
      */
     public function testCannotSetNonEmitterToSpecificIndex($value)
     {
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->emitter->offsetSet(0, $value);
     }
 

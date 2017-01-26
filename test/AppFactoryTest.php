@@ -103,7 +103,7 @@ class AppFactoryTest extends TestCase
             FastRouteRouter::class,
         ];
 
-        $this->setExpectedException(MissingDependencyException::class);
+        $this->expectException(MissingDependencyException::class);
 
         AppFactory::create();
     }
@@ -114,7 +114,7 @@ class AppFactoryTest extends TestCase
             ServiceManager::class,
         ];
 
-        $this->setExpectedException(MissingDependencyException::class);
+        $this->expectException(MissingDependencyException::class);
 
         AppFactory::create();
     }

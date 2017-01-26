@@ -105,7 +105,7 @@ class WhoopsPageHandlerFactoryTest extends TestCase
 
         $factory = $this->factory;
 
-        $this->setExpectedException(InvalidServiceException::class);
+        $this->expectException(InvalidServiceException::class);
         $factory($this->container->reveal());
     }
 }

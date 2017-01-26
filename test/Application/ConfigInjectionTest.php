@@ -411,7 +411,8 @@ class ConfigInjectionTest extends TestCase
         $this->container->has('config')->willReturn(false);
         $app = $this->createApplication();
 
-        $this->setExpectedException(InvalidArgumentException::class, 'Allowed HTTP methods');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Allowed HTTP methods');
         $app->injectRoutesFromConfig($config);
     }
 
@@ -430,7 +431,8 @@ class ConfigInjectionTest extends TestCase
         $this->container->has('config')->willReturn(false);
         $app = $this->createApplication();
 
-        $this->setExpectedException(InvalidArgumentException::class, 'Route options must be an array');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Route options must be an array');
         $app->injectRoutesFromConfig($config);
     }
 
@@ -510,7 +512,8 @@ class ConfigInjectionTest extends TestCase
         ];
         $app = $this->createApplication();
 
-        $this->setExpectedException(InvalidArgumentException::class, 'Invalid pipeline specification received');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid pipeline specification received');
         $app->injectPipelineFromConfig($config);
     }
 }

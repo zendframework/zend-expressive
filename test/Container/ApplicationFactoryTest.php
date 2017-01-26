@@ -200,7 +200,7 @@ class ApplicationFactoryTest extends TestCase
         $app = $this->factory->__invoke($this->container->reveal());
 
         $routes = $app->getRoutes();
-        $this->assertEquals(0, count($routes));
+        $this->assertCount(0, $routes);
     }
 
     public function testWillUseSaneDefaultsForOptionalServices()
@@ -271,7 +271,8 @@ class ApplicationFactoryTest extends TestCase
 
         $this->injectServiceInContainer($this->container, 'config', $config);
 
-        $this->setExpectedException(ExpressiveException\InvalidArgumentException::class, 'pipeline');
+        $this->expectException(ExpressiveException\InvalidArgumentException::class);
+        $this->expectExceptionMessage('pipeline');
         $app = $this->factory->__invoke($this->container->reveal());
     }
 
@@ -331,7 +332,7 @@ class ApplicationFactoryTest extends TestCase
 
         $this->injectServiceInContainer($this->container, 'config', $config);
 
-        $this->setExpectedException(InvalidMiddlewareException::class);
+        $this->expectException(InvalidMiddlewareException::class);
         $app = $this->factory->__invoke($this->container->reveal());
     }
 
@@ -453,10 +454,8 @@ class ApplicationFactoryTest extends TestCase
 
         $this->injectServiceInContainer($this->container, 'config', $config);
 
-        $this->setExpectedException(
-            ExpressiveException\InvalidArgumentException::class,
-            'route must be in form of an array; received "string"'
-        );
+        $this->expectException(ExpressiveException\InvalidArgumentException::class);
+        $this->expectExceptionMessage('route must be in form of an array; received "string"');
         $this->factory->__invoke($this->container->reveal());
     }
 
@@ -474,10 +473,8 @@ class ApplicationFactoryTest extends TestCase
 
         $this->injectServiceInContainer($this->container, 'config', $config);
 
-        $this->setExpectedException(
-            ExpressiveException\InvalidArgumentException::class,
-            'options must be an array; received "string"'
-        );
+        $this->expectException(ExpressiveException\InvalidArgumentException::class);
+        $this->expectExceptionMessage('options must be an array; received "string"');
         $this->factory->__invoke($this->container->reveal());
     }
 
