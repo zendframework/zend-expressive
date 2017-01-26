@@ -730,4 +730,16 @@ class ApplicationTest extends TestCase
             $this->fail($e->getMessage());
         }
     }
+
+    public function testRetrieveRegisteredRoutes()
+    {
+        $route = new Route('/foo', $this->noopMiddleware);
+        $this->router->addRoute($route)->shouldBeCalled();
+        $app = $this->getApp();
+        $test = $app->route($route);
+        $this->assertSame($route, $test);
+        $routes = $app->getRoutes();
+        $this->assertCount(1, $routes);
+        $this->assertInstanceOf(Route::class, $routes[0]);
+    }
 }
