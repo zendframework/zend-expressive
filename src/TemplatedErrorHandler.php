@@ -19,6 +19,15 @@ use Zend\Stratigility\Utils;
  * Provides the optional ability to render a template for each of 404 and
  * general error conditions. If no template renderer is provided, returns
  * empty responses with appropriate status codes.
+ *
+ * @deprecated Since 2.0, to remove in 3.0. Please migrate your code to use
+ *     pipeline middleware for error handling, instead of the "final handler".
+ *     Use the `Zend\Stratigility\Middleware\ErrorHandler` service (via the
+ *     `Zend\Expressive\Container\ErrorHandlerFactory`), and the shipped
+ *     error response generator (`Zend\Expressive\Middleware\ErrorResponseGenerator`
+ *     via `Zend\Expressive\Container\ErrorResponseGeneratorFactory`), and
+ *     pipe the `ErrorHandler` middleware towards the outermost layer of your
+ *     application.
  */
 class TemplatedErrorHandler
 {

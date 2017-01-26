@@ -60,6 +60,15 @@ use Whoops\Run as Whoops;
  * </code>
  *
  * All values are booleans; omission of any implies boolean false.
+ *
+ * @deprecated Since 2.0, to remove in 3.0. Please migrate your code to use
+ *     pipeline middleware for error handling, instead of the "final handler".
+ *     Use the `Zend\Stratigility\Middleware\ErrorHandler` service (via the
+ *     `Zend\Expressive\Container\ErrorHandlerFactory`), and the shipped
+ *     whoops error response generator (`Zend\Expressive\Middleware\WhoopsErrorResponseGenerator`
+ *     via `Zend\Expressive\Container\WhoopsErrorResponseGeneratorFactory`), and
+ *     pipe the `ErrorHandler` middleware towards the outermost layer of your
+ *     application.
  */
 class WhoopsErrorHandlerFactory
 {
