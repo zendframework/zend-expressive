@@ -335,6 +335,13 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
      * Once middleware detection and wrapping (if necessary) is complete,
      * proxies to pipe().
      *
+     * @deprecated since 1.1.0; to remove in 2.0.0. Stratigility v1-style
+     *     "error middleware" (middleware with four arguments, the first of which
+     *     being an error) was deprecated in Stratigility 1.3, and support
+     *     removed in Stratigility 2.0. You can start using standard middleware
+     *     for error handling by calling `raiseThrowables()` on the `Application`
+     *     instance, and piping such middleware in an outer layer of your application.
+     *     For an example, see `Zend\Stratigility\Middleware\ErrorHandler`.
      * @param string|callable $path Either a URI path prefix, or middleware.
      * @param null|string|callable $middleware Middleware
      * @return self
@@ -410,6 +417,11 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
      * Allow header, and `$next()` is called with its `$error` argument set
      * to the value `405` (invoking the next error middleware).
      *
+     * @deprecated since 1.1.0; to remove in 2.0.0. This method is extracted to
+     *     its own dedicated middleware class starting in 2.0.0. If you are
+     *     manually piping this method into your application or middleware
+     *     pipelines, or overriding the method, you will need to update your
+     *     code when migrating to 2.0.
      * @param  ServerRequestInterface $request
      * @param  ResponseInterface $response
      * @param  callable $next
@@ -453,6 +465,11 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
      * Finally, it attempts to marshal the middleware, and dispatches it when
      * complete, return the response.
      *
+     * @deprecated since 1.1.0; to remove in 2.0.0. This method is extracted to
+     *     its own dedicated middleware class starting in 2.0.0. If you are
+     *     manually piping this method into your application or middleware
+     *     pipelines, or overriding the method, you will need to update your
+     *     code when migrating to 2.0.
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
      * @param callable $next
@@ -598,6 +615,9 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
     /**
      * Return the final handler to use during `run()` if the stack is exhausted.
      *
+     * @deprecated since 1.1.0; renamed to `getDefaultDelegate()` in version
+     *     2.0.0. If you are consuming this method, please update your code to call
+     *     getDefaultDelegate() instead.
      * @param null|ResponseInterface $response Response instance with which to seed the
      *     FinalHandler; used to determine if the response passed to the handler
      *     represents the original or final response state.
@@ -616,6 +636,20 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
         }
 
         return $this->finalHandler;
+    }
+
+    /**
+     * Return the default delegate to use during `run()` when the stack is exhausted.
+     *
+     * Provided as a forwards compatibility measure with version 2, and proxies
+     * to getFinalHandler(); please note that it does not accept any arguments,
+     * nor pass them on to that method.
+     *
+     * @return callable|null
+     */
+    public function getDefaultDelegate()
+    {
+        return $this->getFinalHandler();
     }
 
     /**
