@@ -348,8 +348,12 @@ class Application extends MiddlewarePipe
      * ServerRequestFactory::fromGlobals to create a request instance, and
      * instantiate a default response instance.
      *
-     * It then will invoke itself with the request and response, and emit
-     * the returned response using the composed emitter.
+     * It also creates a default delegate by decorating the return value from
+     * `getDefaultDelegate()` in a `CallableDelegateDecorator`, using the
+     * response prototype with a 404 status.
+     *
+     * It then processes itself, and emits the returned response using the
+     * composed emitter.
      *
      * @param null|ServerRequestInterface $request
      * @param null|ResponseInterface $response
@@ -372,7 +376,10 @@ class Application extends MiddlewarePipe
         $request  = $request->withAttribute('originalResponse', $response);
 
         $this->setResponsePrototype($response);
-        $delegate = new CallableDelegateDecorator($this->getDefaultDelegate($response), $response);
+        $delegate = new CallableDelegateDecorator(
+            $this->getDefaultDelegate(),
+            $response->withStatus(StatusCode::STATUS_NOT_FOUND)
+        );
 
         $response = $this->process($request, $delegate);
 
@@ -399,20 +406,11 @@ class Application extends MiddlewarePipe
     /**
      * Return the default delegate to use during `run()` if the stack is exhausted.
      *
-     * Creates a NoopFinalHandler instance using either the passed response or
-     * the current response prototype if no delegate was registered during
-     * instnatiation.
-     *
-     * @param null|ResponseInterface $response Response instance with which to seed the
-     *     NoopFinalHandler.
      * @return callable
      */
     public function getDefaultDelegate(ResponseInterface $response = null)
     {
-        $this->defaultDelegate = $this->defaultDelegate ?: new NoopFinalHandler(
-            $response ?: $this->responsePrototype
-        );
-
+        $this->defaultDelegate = $this->defaultDelegate ?: new NoopFinalHandler();
         return $this->defaultDelegate;
     }
 
