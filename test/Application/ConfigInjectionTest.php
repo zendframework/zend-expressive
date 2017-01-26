@@ -15,6 +15,7 @@ use ReflectionProperty;
 use SplQueue;
 use Zend\Expressive\Application;
 use Zend\Expressive\Container\ApplicationFactory;
+use Zend\Expressive\Exception\InvalidArgumentException;
 use Zend\Expressive\Middleware;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Stratigility\MiddlewarePipe;
@@ -374,5 +375,148 @@ class ConfigInjectionTest extends TestCase
             }
             $this->assertPipelineContainsInstanceOf($middleware, $innerPipeline, $message);
         }
+    }
+
+    public function testInjectPipelineFromConfigWithEmptyConfigAndNoConfigServiceDoesNothing()
+    {
+        $this->container->has('config')->willReturn(false);
+        $app = $this->createApplication();
+
+        $app->injectPipelineFromConfig();
+
+        $r = new ReflectionProperty($app, 'pipeline');
+        $r->setAccessible(true);
+        $pipeline = $r->getValue($app);
+        $this->assertInstanceOf(SplQueue::class, $pipeline);
+
+        $this->assertEquals(0, $pipeline->count());
+    }
+
+    public function testInjectRoutesFromConfigWithEmptyConfigAndNoConfigServiceDoesNothing()
+    {
+        $this->container->has('config')->willReturn(false);
+        $app = $this->createApplication();
+
+        $app->injectRoutesFromConfig();
+        $this->assertAttributeEquals([], 'routes', $app);
+    }
+
+    public function testInjectRoutesFromConfigRaisesExceptionIfAllowedMethodsIsInvalid()
+    {
+        $config = [
+            'routes' => [
+                [
+                    'path' => '/',
+                    'middleware' => new TestAsset\InteropMiddleware(),
+                    'allowed_methods' => 'not-valid',
+                ],
+            ],
+        ];
+        $this->container->has('config')->willReturn(false);
+        $app = $this->createApplication();
+
+        $this->setExpectedException(InvalidArgumentException::class, 'Allowed HTTP methods');
+        $app->injectRoutesFromConfig($config);
+    }
+
+    public function testInjectRoutesFromConfigRaisesExceptionIfOptionsIsNotAnArray()
+    {
+        $config = [
+            'routes' => [
+                [
+                    'path' => '/',
+                    'middleware' => new TestAsset\InteropMiddleware(),
+                    'allowed_methods' => ['GET'],
+                    'options' => 'invalid',
+                ],
+            ],
+        ];
+        $this->container->has('config')->willReturn(false);
+        $app = $this->createApplication();
+
+        $this->setExpectedException(InvalidArgumentException::class, 'Route options must be an array');
+        $app->injectRoutesFromConfig($config);
+    }
+
+    public function testInjectRoutesFromConfigCanProvideRouteOptions()
+    {
+        $config = [
+            'routes' => [
+                [
+                    'path' => '/',
+                    'middleware' => new TestAsset\InteropMiddleware(),
+                    'allowed_methods' => ['GET'],
+                    'options' => [
+                        'foo' => 'bar',
+                    ],
+                ],
+            ],
+        ];
+        $this->container->has('config')->willReturn(false);
+        $app = $this->createApplication();
+
+        $app->injectRoutesFromConfig($config);
+
+        $r = new ReflectionProperty($app, 'routes');
+        $r->setAccessible(true);
+        $routes = $r->getValue($app);
+
+        $route = array_shift($routes);
+        $this->assertEquals($config['routes'][0]['options'], $route->getOptions());
+    }
+
+    public function testInjectRoutesFromConfigWillSkipSpecsThatOmitPath()
+    {
+        $config = [
+            'routes' => [
+                [
+                    'middleware' => new TestAsset\InteropMiddleware(),
+                    'allowed_methods' => ['GET'],
+                    'options' => [
+                        'foo' => 'bar',
+                    ],
+                ],
+            ],
+        ];
+        $this->container->has('config')->willReturn(false);
+        $app = $this->createApplication();
+
+        $app->injectPipelineFromConfig($config);
+        $this->assertAttributeEquals([], 'routes', $app);
+    }
+
+    public function testInjectRoutesFromConfigWillSkipSpecsThatOmitMiddleware()
+    {
+        $config = [
+            'routes' => [
+                [
+                    'path' => '/',
+                    'allowed_methods' => ['GET'],
+                    'options' => [
+                        'foo' => 'bar',
+                    ],
+                ],
+            ],
+        ];
+        $this->container->has('config')->willReturn(false);
+        $app = $this->createApplication();
+
+        $app->injectPipelineFromConfig($config);
+        $this->assertAttributeEquals([], 'routes', $app);
+    }
+
+    public function testInjectPipelineFromConfigRaisesExceptionForSpecsOmittingMiddlewareKey()
+    {
+        $config = [
+            'middleware_pipeline' => [
+                [
+                    'this' => 'will not work',
+                ]
+            ],
+        ];
+        $app = $this->createApplication();
+
+        $this->setExpectedException(InvalidArgumentException::class, 'Invalid pipeline specification received');
+        $app->injectPipelineFromConfig($config);
     }
 }

@@ -166,7 +166,7 @@ trait ApplicationConfigInjectionTrait
             if (isset($spec['allowed_methods'])) {
                 $methods = $spec['allowed_methods'];
                 if (! is_array($methods)) {
-                    throw new Container\Exception\InvalidArgumentException(sprintf(
+                    throw new Exception\InvalidArgumentException(sprintf(
                         'Allowed HTTP methods for a route must be in form of an array; received "%s"',
                         gettype($methods)
                     ));
@@ -179,7 +179,7 @@ trait ApplicationConfigInjectionTrait
             if (isset($spec['options'])) {
                 $options = $spec['options'];
                 if (! is_array($options)) {
-                    throw new Container\Exception\InvalidArgumentException(sprintf(
+                    throw new Exception\InvalidArgumentException(sprintf(
                         'Route options must be an array; received "%s"',
                         gettype($options)
                     ));
@@ -227,7 +227,7 @@ trait ApplicationConfigInjectionTrait
             }
 
             if (! is_array($item) || ! array_key_exists('middleware', $item)) {
-                throw new Container\Exception\InvalidArgumentException(sprintf(
+                throw new Exception\InvalidArgumentException(sprintf(
                     'Invalid pipeline specification received; must be an array containing a middleware '
                     . 'key, or one of the Application::*_MIDDLEWARE constants; received %s',
                     is_object($item) ? get_class($item) : gettype($item)

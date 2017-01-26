@@ -21,8 +21,8 @@ use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Expressive\Application;
 use Zend\Expressive\Container\ApplicationFactory;
-use Zend\Expressive\Container\Exception as ContainerException;
 use Zend\Expressive\Emitter\EmitterStack;
+use Zend\Expressive\Exception as ExpressiveException;
 use Zend\Expressive\Exception\InvalidMiddlewareException;
 use Zend\Expressive\Middleware\DispatchMiddleware;
 use Zend\Expressive\Middleware\LazyLoadingMiddleware;
@@ -275,7 +275,7 @@ class ApplicationFactoryTest extends TestCase
 
         $this->injectServiceInContainer($this->container, 'config', $config);
 
-        $this->setExpectedException(ContainerException\InvalidArgumentException::class, 'pipeline');
+        $this->setExpectedException(ExpressiveException\InvalidArgumentException::class, 'pipeline');
         $app = $this->factory->__invoke($this->container->reveal());
     }
 
@@ -462,7 +462,7 @@ class ApplicationFactoryTest extends TestCase
         $this->injectServiceInContainer($this->container, 'config', $config);
 
         $this->setExpectedException(
-            ContainerException\InvalidArgumentException::class,
+            ExpressiveException\InvalidArgumentException::class,
             'route must be in form of an array; received "string"'
         );
         $this->factory->__invoke($this->container->reveal());
@@ -483,7 +483,7 @@ class ApplicationFactoryTest extends TestCase
         $this->injectServiceInContainer($this->container, 'config', $config);
 
         $this->setExpectedException(
-            ContainerException\InvalidArgumentException::class,
+            ExpressiveException\InvalidArgumentException::class,
             'options must be an array; received "string"'
         );
         $this->factory->__invoke($this->container->reveal());
