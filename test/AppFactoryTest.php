@@ -10,7 +10,7 @@
 namespace ZendTest\Expressive;
 
 use Interop\Container\ContainerInterface;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionProperty;
 use Zend\Diactoros\Response\SapiEmitter;

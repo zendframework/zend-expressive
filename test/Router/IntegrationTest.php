@@ -10,7 +10,7 @@ namespace ZendTest\Expressive\Router;
 use Fig\Http\Message\RequestMethodInterface as RequestMethod;
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
 use Interop\Http\ServerMiddleware\DelegateInterface;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseInterface;

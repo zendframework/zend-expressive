@@ -9,7 +9,7 @@
 
 namespace ZendTest\Expressive\Container;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Zend\Expressive\Container\TemplatedErrorHandlerFactory;
 use Zend\Expressive\Template\TemplateRendererInterface;

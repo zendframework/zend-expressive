@@ -9,7 +9,7 @@
 
 namespace ZendTest\Expressive;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use Zend\Diactoros\Response;

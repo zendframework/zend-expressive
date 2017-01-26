@@ -9,7 +9,7 @@
 
 namespace ZendTest\Expressive\Container;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Whoops\Handler\PrettyPageHandler;
 use Zend\Expressive\Container\Exception\InvalidServiceException;
