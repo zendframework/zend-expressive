@@ -28,6 +28,14 @@ use Zend\Stratigility\Next;
  * It is not implemented as an extension of MiddlewarePipe, as that class
  * implements the MiddlewareInterface, which prevents its use as error
  * middleware.
+ *
+ * @deprecated since 1.1.0; to remove in 2.0.0. Stratigility 1.3 deprecates the
+ *     concept of "error middleware" (middleware accepting exactly four arguments
+ *     the first of which being an error) in favor of using standard middleware
+ *     for error handling; you can use `Zend\Stratigility\ErrorHandler` either
+ *     directly or as an example of how to implement such middleware. If you are
+ *     using Stratigility 1.3, you can enable such error handling by calling
+ *     `raiseThrowables()` on your `Application` instance.
  */
 class ErrorMiddlewarePipe
 {
