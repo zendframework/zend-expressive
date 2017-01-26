@@ -295,7 +295,7 @@ class MarshalMiddlewareTraitTest extends TestCase
     public function testPreparingUnknownMiddlewareTypeRaisesException($invalid, $expectedMessage)
     {
         $this->expectException(InvalidMiddlewareException::class);
-        $this->expectedExceptionMessage($expectedMessage);
+        $this->expectExceptionMessage($expectedMessage);
         $this->prepareMiddlewareWithoutContainer($invalid);
     }
 }
