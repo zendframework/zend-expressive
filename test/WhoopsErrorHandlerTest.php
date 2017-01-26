@@ -19,7 +19,6 @@ use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run as Whoops;
 use Zend\Diactoros\ServerRequest;
 use Zend\Expressive\WhoopsErrorHandler;
-use Zend\Stratigility\Http\Request as StratigilityRequest;
 
 /**
  * @covers Zend\Expressive\WhoopsErrorHandler
@@ -98,7 +97,7 @@ class WhoopsErrorHandlerTest extends TestCase
         $this->assertSame($expected->reveal(), $result);
     }
 
-    public function testOriginalRequestIsPulledFromStratigilityRequest()
+    public function testOriginalRequestIsPulledFromProvidedRequest()
     {
         $exception = new Exception('Boom!');
 
@@ -129,7 +128,7 @@ class WhoopsErrorHandlerTest extends TestCase
         });
 
         $request           = new ServerRequest(['SCRIPT_NAME' => __FILE__]);
-        $decoratingRequest = $this->prophesize(StratigilityRequest::class);
+        $decoratingRequest = $this->prophesize(ServerRequestInterface::class);
         $decoratingRequest->getAttribute('originalRequest', false)->willReturn($request);
         $decoratingRequest->getAttribute('originalUri', false)->willReturn($request->getUri());
 
