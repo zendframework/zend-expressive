@@ -79,6 +79,11 @@ All notable changes to this project will be documented in this file, in reverse 
   response will also include an `Allow` header listing allowed HTTP methods for
   the URI.
 
+- [#426](https://github.com/zendframework/zend-expressive/pull/426) adds the
+  method `Application::getRoutes()`, which will return the list of
+  `Zend\Expressive\Router\Route` instances currently registered with the
+  application.
+
 ### Changes
 
 - [#396](https://github.com/zendframework/zend-expressive/pull/396) updates the
