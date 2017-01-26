@@ -10,7 +10,6 @@ namespace Zend\Expressive;
 use Interop\Container\ContainerInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
-use Zend\Stratigility\Delegate\CallableDelegateDecorator;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\Stratigility\Middleware\CallableInteropMiddlewareWrapper;
 use Zend\Stratigility\Middleware\CallableMiddlewareWrapper;
@@ -82,7 +81,7 @@ trait MarshalMiddlewareTrait
 
         throw new Exception\InvalidMiddlewareException(sprintf(
             'Unable to resolve middleware "%s" to a callable or %s',
-            (is_object($middleware) ? get_class($middleware) . "[Object]" : gettype($middleware) . '[Scalar]'),
+            is_object($middleware) ? get_class($middleware) . "[Object]" : gettype($middleware) . '[Scalar]',
             ServerMiddlewareInterface::class
         ));
     }
