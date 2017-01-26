@@ -146,7 +146,7 @@ trait MarshalMiddlewareTrait
         }
 
         $instance = new $middleware();
-        
+
         if ($instance instanceof ServerMiddlewareInterface) {
             return $instance;
         }
