@@ -175,9 +175,7 @@ class ApplicationFactoryTest extends TestCase
 
         $app = $this->factory->__invoke($this->container->reveal());
 
-        $r = new ReflectionProperty($app, 'routes');
-        $r->setAccessible(true);
-        $routes = $r->getValue($app);
+        $routes = $app->getRoutes();
 
         foreach ($config['routes'] as $route) {
             $this->assertRoute($route, $routes);
@@ -201,9 +199,7 @@ class ApplicationFactoryTest extends TestCase
 
         $app = $this->factory->__invoke($this->container->reveal());
 
-        $r = new ReflectionProperty($app, 'routes');
-        $r->setAccessible(true);
-        $routes = $r->getValue($app);
+        $routes = $app->getRoutes();
         $this->assertEquals(0, count($routes));
     }
 
@@ -403,9 +399,7 @@ class ApplicationFactoryTest extends TestCase
 
         $app = $this->factory->__invoke($this->container->reveal());
 
-        $r = new ReflectionProperty($app, 'routes');
-        $r->setAccessible(true);
-        $routes = $r->getValue($app);
+        $routes = $app->getRoutes();
 
         foreach ($config['routes'] as $route) {
             $this->assertRoute($route, $routes);
@@ -438,9 +432,7 @@ class ApplicationFactoryTest extends TestCase
 
         $app = $this->factory->__invoke($this->container->reveal());
 
-        $r = new ReflectionProperty($app, 'routes');
-        $r->setAccessible(true);
-        $routes = $r->getValue($app);
+        $routes = $app->getRoutes();
         $route  = array_shift($routes);
 
         $this->assertInstanceOf(Route::class, $route);
@@ -847,9 +839,7 @@ class ApplicationFactoryTest extends TestCase
         $pipeline = $r->getValue($app);
         $this->assertCount(0, $pipeline, 'Pipeline contains entries and should not');
 
-        $r = new ReflectionProperty($app, 'routes');
-        $r->setAccessible(true);
-        $routes = $r->getValue($app);
+        $routes = $app->getRoutes();
         $this->assertEmpty($routes, 'Routes exist, and should not');
     }
 }

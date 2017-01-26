@@ -125,9 +125,7 @@ class ConfigInjectionTest extends TestCase
 
         $app->injectRoutesFromConfig($config);
 
-        $r = new ReflectionProperty($app, 'routes');
-        $r->setAccessible(true);
-        $routes = $r->getValue($app);
+        $routes = $app->getRoutes();
 
         foreach ($config['routes'] as $route) {
             $this->assertRoute($route, $routes);
@@ -151,9 +149,7 @@ class ConfigInjectionTest extends TestCase
 
         $app->injectPipelineFromConfig($config);
 
-        $r = new ReflectionProperty($app, 'routes');
-        $r->setAccessible(true);
-        $routes = $r->getValue($app);
+        $routes = $app->getRoutes();
         $this->assertEquals(0, count($routes));
     }
 
@@ -457,9 +453,7 @@ class ConfigInjectionTest extends TestCase
 
         $app->injectRoutesFromConfig($config);
 
-        $r = new ReflectionProperty($app, 'routes');
-        $r->setAccessible(true);
-        $routes = $r->getValue($app);
+        $routes = $app->getRoutes();
 
         $route = array_shift($routes);
         $this->assertEquals($config['routes'][0]['options'], $route->getOptions());
