@@ -20,7 +20,6 @@ use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Stratigility\Delegate\CallableDelegateDecorator;
-use Zend\Stratigility\Http\Response as StratigilityResponse;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\Stratigility\NoopFinalHandler;
 
