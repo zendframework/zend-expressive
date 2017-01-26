@@ -74,12 +74,6 @@ class Application extends MiddlewarePipe
     ];
 
     /**
-     * @var bool Flag indicating whether or not throwables/exceptions raised
-     *     by middleware should be caught, or raised by the dispatcher.
-     */
-    private $raiseThrowables = false;
-
-    /**
      * @var bool Flag indicating whether or not the route middleware is
      *     registered in the middleware pipeline.
      */
@@ -429,17 +423,6 @@ class Application extends MiddlewarePipe
             $this->emitter->push(new SapiEmitter());
         }
         return $this->emitter;
-    }
-
-    /**
-     * Exists solely to allow us to test the flag within our own logic.
-     *
-     * {@inheritDoc}
-     */
-    public function raiseThrowables()
-    {
-        parent::raiseThrowables();
-        $this->raiseThrowables = true;
     }
 
     /**
