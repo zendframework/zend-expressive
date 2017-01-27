@@ -68,7 +68,7 @@ class MarshalMiddlewareTraitTest extends TestCase
         $this->assertAttributeSame($this->responsePrototype->reveal(), 'responsePrototype', $middleware);
     }
 
-    public function testPreparingRoutingMiddlewareWithoutContainergReturnsRoutingMiddleware()
+    public function testPreparingRoutingMiddlewareWithoutContainerReturnsRoutingMiddleware()
     {
         $middleware = $this->prepareMiddlewareWithoutContainer(Application::ROUTING_MIDDLEWARE);
         $this->assertInstanceOf(Middleware\RouteMiddleware::class, $middleware);
@@ -82,7 +82,7 @@ class MarshalMiddlewareTraitTest extends TestCase
         $this->assertInstanceOf(Middleware\DispatchMiddleware::class, $middleware);
     }
 
-    public function testPreparingDispatchMiddlewareWithoutContainergReturnsDispatchMiddleware()
+    public function testPreparingDispatchMiddlewareWithoutContainerReturnsDispatchMiddleware()
     {
         $middleware = $this->prepareMiddlewareWithoutContainer(Application::DISPATCH_MIDDLEWARE);
         $this->assertInstanceOf(Middleware\DispatchMiddleware::class, $middleware);
@@ -95,7 +95,7 @@ class MarshalMiddlewareTraitTest extends TestCase
         $this->assertSame($base, $middleware);
     }
 
-    public function testPreparingInteropMiddlewareWithoutContainergReturnsMiddlewareVerbatim()
+    public function testPreparingInteropMiddlewareWithoutContainerReturnsMiddlewareVerbatim()
     {
         $base = $this->prophesize(ServerMiddlewareInterface::class)->reveal();
         $middleware = $this->prepareMiddlewareWithoutContainer($base);

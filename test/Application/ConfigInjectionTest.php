@@ -104,7 +104,7 @@ class ConfigInjectionTest extends TestCase
     /**
      * @dataProvider callableMiddlewares
      */
-    public function testFactorySetsUpRoutesFromConfig($middleware)
+    public function testInjectRoutesFromConfigSetsUpRoutesFromConfig($middleware)
     {
         $config = [
             'routes' => [
@@ -147,7 +147,7 @@ class ConfigInjectionTest extends TestCase
 
         $app = $this->createApplication();
 
-        $app->injectPipelineFromConfig($config);
+        $app->injectRoutesFromConfig($config);
 
         $routes = $app->getRoutes();
         $this->assertEquals(0, count($routes));
@@ -230,7 +230,7 @@ class ConfigInjectionTest extends TestCase
         $this->assertAttributeSame(true, 'dispatchMiddlewareIsRegistered', $app);
     }
 
-    public function testFactoryHonorsPriorityOrderWhenAttachingMiddleware()
+    public function testInjectPipelineFromConfigHonorsPriorityOrderWhenAttachingMiddleware()
     {
         $middleware = new TestAsset\InteropMiddleware();
 
