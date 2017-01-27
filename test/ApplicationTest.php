@@ -16,6 +16,7 @@ use InvalidArgumentException;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use ReflectionProperty;
 use RuntimeException;
@@ -546,5 +547,63 @@ class ApplicationTest extends TestCase
         $routes = $app->getRoutes();
         $this->assertCount(1, $routes);
         $this->assertInstanceOf(Route::class, $routes[0]);
+    }
+
+    /**
+     * This test verifies that if the ErrorResponseGenerator service is available,
+     * it will be used to generate a response related to exceptions raised when
+     * creating the server request.
+     *
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     * @dataProvider invalidRequestExceptions
+     */
+    public function testRunReturnsResponseGeneratedByErrorResponseGeneratorWhenServerRequestFactoryRaisesException(
+        $expectedException,
+        $message
+    ) {
+        // try/catch is necessary in the case that the test fails.
+        // Assertion exceptions raised inside prophecy expectations normally
+        // are fine, but in the context of runInSeparateProcess, these
+        // lead to closure serialization errors. try/catch allows us to
+        // catch those and provide failure assertions.
+        try {
+            $generator = $this->prophesize(Middleware\ErrorResponseGenerator::class);
+            $generator
+                ->__invoke(
+                    Argument::type($expectedException),
+                    Argument::type(ServerRequestInterface::class),
+                    Argument::type(ResponseInterface::class)
+                )->will(function ($args) {
+                    return $args[2];
+                });
+
+            $container = $this->mockContainerInterface();
+            $this->injectServiceInContainer($container, Middleware\ErrorResponseGenerator::class, $generator);
+
+            $requestFactory = Mockery::mock('alias:' . ServerRequestFactory::class)
+                ->shouldReceive('fromGlobals')
+                ->withNoArgs()
+                ->andThrow($expectedException, $message)
+                ->once()
+                ->getMock();
+
+            $expectedResponse = $this->prophesize(ResponseInterface::class)->reveal();
+
+            $emitter = $this->prophesize(EmitterInterface::class);
+            $emitter->emit(Argument::that(function ($response) use ($expectedResponse) {
+                $this->assertSame($expectedResponse, $response, 'Unexpected response provided to emitter');
+                return true;
+            }))->shouldBeCalled();
+
+            $app = new Application($this->router->reveal(), $container->reveal(), null, $emitter->reveal());
+            $app->setResponsePrototype($expectedResponse);
+
+            $app->run();
+        } catch (\Throwable $e) {
+            $this->fail(sprintf("(%d) %s:\n%s", $e->getCode(), $e->getMessage(), $e->getTraceAsString()));
+        } catch (\Exception $e) {
+            $this->fail(sprintf("(%d) %s:\n%s", $e->getCode(), $e->getMessage(), $e->getTraceAsString()));
+        }
     }
 }

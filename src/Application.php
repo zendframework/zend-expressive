@@ -468,8 +468,14 @@ class Application extends MiddlewarePipe
      */
     private function emitMarshalServerRequestException($exception)
     {
-        $response = $this->responsePrototype
-            ->withStatus(StatusCode::STATUS_BAD_REQUEST);
+        if ($this->container && $this->container->has(Middleware\ErrorResponseGenerator::class)) {
+            $generator = $this->container->get(Middleware\ErrorResponseGenerator::class);
+            $response = $generator($exception, new ServerRequest(), $this->responsePrototype);
+        } else {
+            $response = $this->responsePrototype
+                ->withStatus(StatusCode::STATUS_BAD_REQUEST);
+        }
+
         $emitter = $this->getEmitter();
         $emitter->emit($response);
     }
