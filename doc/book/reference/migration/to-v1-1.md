@@ -4,9 +4,52 @@ Expressive 1.1 should not result in any upgrade problems for users. However,
 starting in this version, we offer a few changes affecting the following that
 you should be aware of, and potentially update your application to adopt:
 
+- Deprecations
 - Original request and response messages
 - Recommendation to use programmatic pipelines
 - Error handling
+
+## Deprecations
+
+The following classes and/or methods are deprecated with the 1.1.0 release, and
+will be removed for the 2.0 release:
+
+- `Zend\Expressive\Application::pipeErrorHandler()`: Stratigility v1 error
+  middleware are removed in the Stratigility v2 release, which Expressive 2.0 will
+  adopt.
+
+- `Zend\Expressive\Application::routeMiddleware()`: routing middleware moves to
+  a dedicated class starting in Expressive 2.0. If you were referencing the
+  method in order to pipe it as middleware, use `pipeRoutingMiddleware()` or
+  `pipe(ApplicationFactory::ROUTING_MIDDLEWARE)` instead.
+
+- `Zend\Expressive\Application::dispatchMiddleware()`: dispatch middleware moves
+  to a dedicated class starting in Expressive 2.0.If you were referencing the
+  method in order to pipe it as middleware, use `pipeDispatchMiddleware()` or
+  `pipe(ApplicationFactory::DISPATCH_MIDDLEWARE)` instead.
+
+- `Zend\Expressive\Application::getFinalHandler()`: this method gets renamed to
+  `getDefaultDelegate()` in Expressive 2.0. We recommend retrieving the value
+  from the application dependency injection container if you need it elsewhere.
+
+- `Zend\Expressive\Application::raiseThrowables()`: this method becomes a no-op
+  in Stratigility 2.0, on which Expressive 2.0 is based; the behavior it enabled
+  becomes the default behavior in that version.
+
+- `Zend\Expressive\Container\Exception\InvalidArgumentException`: this exception
+  type is thrown by `ApplicationFactory`; in Expressive 2.0, it throws
+  `Zend\Expressive\Exception\InvalidArgumentException` instead.
+
+- `Zend\Expressive\Container\Exception\NotFoundException`: this exception type
+  is not currently used anyways.
+
+- `Zend\Expressive\ErrorMiddlewarePipe`: Stratigility v1 error middleware are
+  removed in the Stratigility v2 release, which Expressive 2.0 will adopt,
+  making this specialized middleware pipe type irrelvant.
+
+If you were calling any of these directly, or extending or overriding them, you
+will need to update your code to work for version 2.0. We recommend not using
+these.
 
 ## Original messages
 
