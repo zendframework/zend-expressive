@@ -12,65 +12,37 @@ you should be aware of, and potentially update your application to adopt:
 
 ## Original messages
 
-Stratigility 1.3 deprecates its internal request and response decorators,
-`Zend\Stratigility\Http\Request` and `Zend\Stratigility\Http\Response`,
-respectively. The main utility of these instances was to provide access in
-inner middleware layers to the original request, original response, and original
-URI.
+In the [migration to version 1.1 guide](to-v1-1.md), we detail the fact that
+Stratigility 1.3 deprecated its internal request and response decorators.
+Stratigility 2.0, on which Expressive 2.0 is based, removes them entirely.
 
-As such access may still be desired, Stratigility 1.3 introduced
-`Zend\Stratigility\Middleware\OriginalMessages`. This middleware injects the
-following attributes into the request it passes to `$next()`:
+If your code relied on the various `getOriginal*()` methods those decorators
+exposed, you will need to update your code in two ways:
 
-- `originalRequest` is the request instance provided to the middleware.
-- `originalUri` is the URI instance associated with that request.
-- `originalResponse` is the response instance provided to the middleware.
+- You will need to add `Zend\Stratigility\Middleware\OriginalMessages` to your
+  middleware pipeline, as the outermost (or close to outermost) layer.
+- You will need to update your code to call on the request instance's
+  `getAttribute()` method with one of `originalRequest`, `originalUri`, or
+  `originalResponse` to retrieve the values.
 
-`Zend\Stratigility\FinalHandler` was updated to use these when they're
-available.
+To address the first point, see the [Expressive 1.1 migration
+documentation](to-v1-1.md#original-messages), which details how to update your
+configuration or programmatic pipeline.
 
-We recommend adding this middleware as the outermost (first) middleware in your
-pipeline. Using configuration-driven middleware, that would look like this:
+For the second point, we provide a tool via the
+[zendframework/zend-expressive-tooling](https://github.com/zendframework/zend-expressive-tooling)
+package which will help you in this latter part of the migration. Install it as
+a development requirement via composer:
 
-```php
-// config/autoload/middleware-pipeline.global.php
-/* ... */
-use Zend\Expressive\Helper;
-use Zend\Stratigility\Middleware\OriginalMessages;
-
-return [
-    'dependencies' => [
-        'invokables' => [
-            OriginalMessages::class => OriginalMessages::class,
-        ],
-        /* ... */
-    ],
-    'middleware_pipeline' => [
-        'always' => [
-            'middleware' => [
-                OriginalMessages::class, // <----- Add this entry
-                Helper\ServerUrlMiddleware::class,
-                /* ... */
-            ],
-            'priority' => 10000,
-        ],
-
-        /* ... */
-    ],
-];
+```bash
+$ composer require --dev zendframework/zend-expressive-tooling
 ```
 
-If using programmatic pipelines (see below):
+And then execute it via:
 
-```php
-$app->pipe(OriginalMessages::class);
-/* all other middleware */
+```bash
+$ ./vendor/bin/expressive-migrate-original-messages
 ```
-
-### Identifying and fixing getOriginal calls
-
-Expressive 1.1 provides a tool for identifying and fixing calls to the
-`getOriginal*()` methods, `vendor/bin/expressive-migrate-original-messages`.
 
 This tool will update calls to `getOriginalRequest()` and `getOriginalUri()` to
 instead use the new request attributes that the `OriginalMessages` middleware
@@ -88,50 +60,22 @@ update those calls to use the `originalResponse` request attribute.
 
 ## Error handling
 
-Prior to version 1.1, error handling was accomplished via two mechanisms:
+As noted in the [Expressive 1.1 migration docs](to-v1-1.md#error-handling),
+Stratigility 1.3 introduced the ability to tell it to no longer catch exceptions
+internally, paving the way for middleware-based error handling. Additionally, it
+deprecated its own `ErrorMiddlewareInterface` and duck-typed implementations of
+the interface in favor of middleware-based error handling. Finally, it
+deprecated the `$e`/`$error` argument to "final handlers", as that argument
+would be used only when attempting to invoke `ErrorMiddlewareInterface`
+instances.
 
-- Stratigility "error middleware" (middleware with the signature `function
-  ($error, ServerRequestInterface $request, ResponseInterface $response,
-  callable $next)`). This middleware would be invoked when calling `$next()`
-  with a third argument indicating an error, and would be expected to handle it
-  or delegate to the next error middleware.
+Stratigility 2.0, on which Expressive 2.0 is based, no longer catches exceptions
+internally, removes the `ErrorMiddlewareInterface` entirely, and thus the
+`$e`/`$error` argument to final handlers.
 
-  Internally, Stratigility would execute each middleware within a try/catch
-  block; if an exception were caught, it would then delegate to the next _error
-  middleware_ using the caught exception as the `$err` argument.
+As such, you **MUST** provide your own error handling with Expressive 2.0.
 
-- The "Final Handler". This is a special middleware type with the signature
-  `function (ServerRequestInterface $request, ResponseInterface $response, $err = null)`,
-  and is typically passed when invoking the outermost middleware; in the case of
-  Expressive, it is composed in the `Application` instance, and passed to the
-  application middleware when it executes `run()`. It is called when the
-  internal middleware pipeline is exhausted, but no response has been returned.
-  When invoked, it then needed to decide if this was a case of no middleware
-  matching (HTTP 404 status), middleware calling `$next()` with an altered
-  response (response is then returned), or an error (middleware called
-  `$next()` with an `$err` argument, but none was able to handle it).
-
-Expressive 1.1 updates the minimum supported Stratigility version to 1.3, which
-deprecates the concept of error middleware, and recommends a "final handler"
-that does no error handling, but instead returns a canned response (typically a
-404). Additionally, it deprecates the practice of wrapping middleware execution
-in a try/catch block, and provides a flag for disabling that behavior entirely,
-`raise_throwables`.
-
-Starting in Expressive 1.1, you can set the `raise_throwables` flag in your
-configuration:
-
-```php
-return [
-    'zend-expressive' => [
-        'raise_throwables' => true,
-    ],
-];
-```
-
-When enabled, the internal dispatcher will no longer catch exceptions, allowing
-you to write your own error handling middleware. Such middleware generally will
-look something like this:
+Error handling middleware will typically introduce a try/catch block:
 
 ```php
 function (
@@ -156,7 +100,14 @@ function (
 }
 ```
 
-Stratigility 1.3 provides such an implementation via its
+Additionally, you will need middleware registered as your innermost layer that
+is guaranteed to return a response. Generally, if you hit that layer, no other
+middleware is capable of handling the request, indicating a 400 (Bad Request) or
+404 (Not Found) HTTP status. With the combination of an error handler at the
+outermost layer, and a "not found" handler at the innermost layer, you can
+handle any error in your application.
+
+Stratigility 1.3 and 2.0 provide an error handler implementation via
 `Zend\Stratigility\Middleware\ErrorHandler`. In addition to the try/catch block,
 it also sets up a PHP error handler that will catch any PHP error types in the
 current `error_reporting` mask; the error handler will raise exceptions of the
@@ -174,8 +125,8 @@ function (
 ) : ResponseInterface
 ```
 
-Expressive 1.1 provides the following functionality to assist with your error
-handling needs should you decide to opt in to this functionality:
+Expressive 2.0 provides the following functionality to assist with your error
+handling needs:
 
 - `Zend\Expressive\Middleware\ErrorResponseGenerator` will output a canned
   plain/text message, or use a supplied template renderer to generate content
@@ -271,7 +222,6 @@ use Zend\Expressive\Container;
 use Zend\Expressive\Helper;
 use Zend\Expressive\Middleware;
 use Zend\Stratigility\Middleware\ErrorHandler;
-use Zend\Stratigility\Middleware\ErrorResponseGenerator;
 use Zend\Stratigility\Middleware\OriginalMessages;
 
 return [
@@ -291,7 +241,7 @@ return [
 
             // Add the following three entries:
             ErrorHandler::class => Container\ErrorHandlerFactory::class,
-            ErrorResponseGenerator::class => Container\ErrorResponseGeneratorFactory::class,
+            Middleware\ErrorResponseGenerator::class => Container\ErrorResponseGeneratorFactory::class,
             Middleware\NotFoundHandler::class => Container\NotFoundHandlerFactory::class,
         ],
     ],
@@ -346,10 +296,8 @@ error handler that casts PHP errors to `ErrorException` instances. More
 specifically, it uses the current `error_reporting` value to determine _which_
 errors it should cast this way.
 
-This can be problematic when deprecation errors are triggered &mdash; and
-both Stratigility and Expressive will trigger a number of these based on
-functionality you may have in place. If they are cast to exceptions, code that
-would normally run will now result in error pages.
+This can be problematic when deprecation errors are triggered.  If they are cast
+to exceptions, code that would normally run will now result in error pages.
 
 We recommend adding the following line to your `public/index.php` towards the
 top of the file:
@@ -361,117 +309,33 @@ error_reporting(error_reporting() & ~E_USER_DEPRECATED);
 This will prevent the error handler from casting deprecation notices to
 exceptions, while keeping the rest of your error reporting mask intact.
 
+### Removing legacy error middleware
+
+Stratigility version 1-style error middleware (middleware implementing
+`Zend\Stratigility\ErrorMiddlewareInterface`, or duck-typing its signature,
+which included an `$error` argument as the first argument to the middleware) is
+no longer supported with Stratigility version 2 and Expressive 2.0. You will
+need to find any instances of them in your application, or cases where your
+middleware invokes error middleware via the third argument to `$next()`.
+
+We provide a tool to assist you with that via the package 
+[zendframework/zend-expressive-tooling](https://github.com/zendframework/zend-expressive-tooling):
+`vendor/bin/expressive-scan-for-error-middleware`. Run the command from your
+project root, optionally passing the `help`, `--help`, or `-h` commands for
+usage. The tool will detect each of these for you, flagging them for you to
+update or remove.
+
 ## Programmatic middleware pipelines
 
-With Expressive 1.0, we recommended creating middleware pipelines and routing
-via configuration. Starting with 1.1, we recommend *programmatic creation of
-pipelines and routing*.
+Starting with Expressive 1.1, we recommended *programmatic creation of
+pipelines and routing*; the [Expressive 1.1 migration
+guide](to-v1-1.md#programmatic-middleware-pipelines) provides more detail.
 
-Programmatic pipelines exercise the existing Expressive API. Methods include:
+With Expressive 2.0, this is now the _default_ option shipped in the skeleton.
 
-- `pipe()` allows you to pipe middleware for the pipeline; this can optionally
-  take a `$path` argument. (If one argument is present, it is assumed to be
-  middleware; with two arguments, the first argument is the `$path`.) Paths are
-  literal URI path segments. If the incoming request matches that segment, the
-  middleware will execute; otherwise, it will not. These can be used to provide
-  sub-applications with their own routing.
-
-- `pipeRoutingMiddleware()` is used to pipe the internal routing middleware into
-  the pipeline.
-
-- `pipeDispatchMiddleware()` is used to pipe the internal dispatch middleware into
-  the pipeline.
-
-- `pipeErrorMiddleware()` is used to pipe the legacy Stratigility error
-  middleware into the pipeline. We recommend **NOT** using this method, and
-  instead adapting your application to use the new [error handling
-  facilities](#error-handling). Otherwise, it acts just like `pipe()`.
-  Starting in Expressive 1.1, this method will emit a deprecation notice.
-
-As an example pipeline:
-
-```php
-$app->pipe(OriginalMessages::class);
-$app->pipe(Helper\ServerUrlMiddleware::class);
-$app->pipe(ErrorHandler::class);
-$app->pipeRoutingMiddleware();
-$app->pipe(Helper\UrlHelperMiddleware::class);
-$app->pipeDispatchMiddleware();
-$app->pipe(Middleware\NotFoundHandler::class);
-```
-
-Expressive also provides methods for specifying routed middleware. These
-include:
-
-- `get($path, $middleware, $name = null)`
-- `post($path, $middleware, $name = null)`
-- `put($path, $middleware, $name = null)`
-- `patch($path, $middleware, $name = null)`
-- `delete($path, $middleware, $name = null)`
-- `route($path, $middleware, array $methods = null, $name = null)`
-
-Each returns a `Zend\Expressive\Router\Route` instance; this is useful if you
-wish to provide additional options to your route:
-
-```php
-$app->get('/api/ping', Ping::class)
-    ->setOptions([
-        'timestamp' => date(),
-    ]);
-```
-
-As an example, the default routes defined in the skeleton application can be
-written as follows:
-
-```php
-$app->get('/', \App\Action\HomePageAction::class, 'home');
-$app->get('/api.ping', \App\Action\PingAction::class, 'api.ping');
-```
-
-We recommend rewriting your middleware pipeline and routing configuration into
-programmatic/declarative statements. Specifically:
-
-- We recommend putting the pipeline declarations into `config/pipeline.php`.
-- We recommend putting the routing declarations into `config/routes.php`.
-
-Once you've written these, you will then need to make the following changes to
-your application:
-
-- First, enable the `zend-expressive.programmatic_pipeline` configuration flag.
-  This can be done in any `config/autoload/*.global.php` file:
-
-  ```php
-  return [
-      'zend-expressive' => [
-          'programmatic_pipeline' => true,
-      ]
-  ];
-  ```
-
-  Once enabled, any `middleware_pipeline` or `routes` configuration will be
-  ignored when creating the `Application` instance.
-
-- Second, update your `public/index.php` to add the following lines immediately
-  prior to calling `$app->run();`:
-
-  ```php
-  require 'config/pipeline.php';
-  require 'config/routes.php';
-  ```
-
-Once this has been done, the application will use your new programmatic
-pipelines instead of configuration. You can remove the `middleware_pipeline` and
-`routes` configuration after verifying your application continues to work.
-
-We also recommend setting up the new [error handling](#error-handling) when you
-do.
-
-To simplify this process, we provide a tool, detailed in the next section.
-
-## Migration tooling
-
-In order to make migrating to programmatic pipelines and the new error handling
-less difficult, we have created several migration tools in a new package,
+If you are upgrading from version 1 and are not currently using programmatic
+pipelines, we provide a migration tool that will convert your application to do
+so. The tool is available via the package
 [zendframework/zend-expressive-tooling](https://github.com/zendframework/zend-expressive-tooling).
 You may install this package in one of the following ways:
 
@@ -489,19 +353,10 @@ You may install this package in one of the following ways:
   $ composer remove --dev zendframework/zend-expressive-tooling  # uninstall
   ```
 
-Once installed, you will have access to each of the following vendor binaries,
-which are detailed in the following sections:
+Once installed, you will use the `vendor/bin/expressive-pipeline-from-config`
+command.
 
-- `vendor/bin/expressive-pipeline-from-config`
-- `vendor/bin/expressive-migrate-original-messages`
-- `vendor/bin/expressive-scan-for-error-middleware`
-
-### Migrate to programmatic pipelines
-
-To assist you in migrating to programmatic pipelines, we provide
-`vendor/bin/expressive-pipeline-from-config`.
-
-This tool does the following:
+This command does the following:
 
 - Reads your `middleware_pipeline` configuration, and generates a programmatic
   pipeline for you, which is then stored in `config/pipeline.php`. The generated
@@ -520,9 +375,8 @@ This tool does the following:
   routing table for you, which is then stored in `config/routes.php`.
 
 - Adds a new configuration file, `config/autoload/programmatic-pipeline.global.php`, 
-  which enables the `programmatic_pipelines` and `raise_throwables`
-  configuration flags outlined above. Additionally, it adds dependency
-  configuration for the new error handlers.
+  which enables the `programmatic_pipelines` configuration flag. Additionally,
+  it adds dependency configuration for the new error handlers.
 
 - Inserts two lines before the `$app->run()` statement of your
   `public/index.php`, one each to require `config/pipeline.php` and
@@ -559,84 +413,18 @@ Other things you may want to do:
 - Remove any Stratigility-style error middleware (middleware expecting an error
   as the first argument). If any specialized error handling should occur, add
   additional middleware into the pipeline that can catch exceptions, and have
-  that middleware re-throw for exceptions it cannot handle.
+  that middleware re-throw for exceptions it cannot handle. (Use the
+  `vendor/bin/expressive-scan-for-error-middleware` command from
+  zendframework/zend-expressive-tooling to assist in this.)
 
 - Consider providing your own `Zend\Stratigility\NoopFinalHandler`
   implementation; this will now only be invoked if the queue is exhausted, and
   could return a generic 404 page, raise an exception, etc.
 
-### Migrate original messages calls
-
-If you were relying on the Stratigility-specific request and response
-implementations, and, more specifically, the `getOriginal*()` methods they
-defined, you will need to update your code to instead use request attributes.
-The tool `vendor/bin/expressive-migrate-original-messages` can do this
-automatically for the request methods `getOriginalRequest()` and
-`getOriginalUri()`, and will notify you of any `getOriginalResponse()` calls,
-along with helpful information on how to migrate those.
-
-Invoke it as follows:
-
-```bash
-$ ./vendor/bin/expressive-migrate-original-messages scan
-```
-
-By default, it will scan the `src/` directory under the current working
-directory. You may also pass a `--src` flag, with the value pointing to another
-location:
-
-```bash
-$ ./vendor/bin/expressive-migrate-original-messages scan --src library/
-```
-
-(Use the `help` command or a `--help` or `-h` flag to get full usage if
-necessary.)
-
-### Scan for error middleware
-
-As noted in the [error handling section above](#error-handling), Stratigility
-"error middleware" is deprecated starting with Stratigility 1.3. This includes
-both the _definition_ of such middleware (either via direct or duck-typed
-implementation of `Zend\Stratigility\ErrorMiddlewareInterface`), as well as the
-_invocation_ of it (by passing a third, error, argument to `$next()`). As such,
-you will need to remove such middleware from your application, and update any
-invocations to instead raise exceptions.
-
-To aid in this, we provide the tool `vendor/bin/expressive-scan-for-error-middleware`.
-Invoke it as follows:
-
-```bash
-$ ./vendor/bin/expressive-scan-for-error-middleware scan
-```
-
-By default, it will scan the `src/` directory under the current working
-directory. You can also pass a `--dir` argument to specify an alternate
-directory:
-
-```bash
-$ ./vendor/bin/expressive-scan-for-error-middleware scan --dir library
-```
-
-(Use the `help` command or a `--help` or `-h` flag to get full usage if
-necessary.)
-
-The command will scan the given directory for PHP files containing classes, and
-emit information on any classes that satisfy one or more of the following:
-
-- Implementations of `Zend\Stratigility\ErrorMiddlewareInterface`.
-- Duck-typed implementations of error middleware.
-- Any method that accepts a callable `$next` argument that also invokes it with
-  an error argument.
-
-If any are detected, it also emits information on how to update your code.
-
-Please note, this may also require adding additional error middleware once you
-have set up your programmatic pipeline, as noted above.
-
 ## http-interop
 
-Stratigility 1.3 provides the ability to work with [http-interop middleware
-0.2.0](https://github.com/http-interop/http-middleware/tree/0.2.0).
+Stratigility 2.0 provides the ability to work with [http-interop middleware
+0.4.1](https://github.com/http-interop/http-middleware/tree/0.4.1).
 
 This specification, which is being developed as the basis of
 [PSR-15](https://github.com/php-fig/fig-standards/tree/master/proposed/http-middleware),
@@ -647,13 +435,13 @@ Double-pass refers to the fact that two arguments are passed to the delegation
 function `$next`: the request and response. Lambda or single-pass middleware
 only pass a single argument, the request.
 
-Stratigility 1.3 provides support for dispatching either style of middleware.
+Stratigility 2.0 provides support for dispatching either style of middleware.
 
 Specifically, your middleware can now implement:
 
-- `Interop\Http\Middleware\ServerMiddlewareInterface`, which defines a single
-  method, `process(ServerRequestInterface $request,
-  Interop\Http\Middleware\DelegateInterface $delegate)`.
+- `Interop\Http\ServerMiddleware\MiddlewareInterface`, which defines a single
+  method, `process(Psr\Http\Message\ServerRequestInterface $request,
+  Interop\Http\ServerMiddleware\Interface $delegate)`.
 - Callable middleware that follows the above signature (the typehint for the
   request argument is optional).
   
@@ -661,13 +449,17 @@ Both styles of middleware may be piped directly to the middleware pipeline or as
 routed middleware within Expressive. In each case, you can invoke the
 next middleware layer using `$delegate->process($request)`.
 
-Starting in Stratigility 2.0 and Expressive 2.0, `Application` will continue to
-accept the legacy double-pass signature, but will require that you either:
+In Expressive 2.0, `Application` will continue to accept the legacy double-pass
+signature, but will require that you either:
 
 - Provide a `$responsePrototype` (a `ResponseInterface` instance) to the
   `Application` instance prior to piping or routing such middleware.
 - Decorate the middleware in a `Zend\Stratigility\Middleware\CallableMiddlewareWrapper`
   instance (which also requires a `$responsePrototype`).
+
+If you use `Zend\Expressive\Container\ApplicationFactory` to create your
+`Application` instance, a response prototype will be injected for you from the
+outset.
 
 We recommend that you begin writing middleware to follow the http-interop
 standard at this time. As an example:
@@ -675,11 +467,11 @@ standard at this time. As an example:
 ```php
 namespace App\Middleware;
 
-use Interop\Http\Middleware\DelegateInterface;
-use Interop\Http\Middleware\ServerMiddlewareInterface;
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class XClacksOverheadMiddleware implements ServerMiddlewareInterface
+class XClacksOverheadMiddleware implements MiddlewareInterface
 {
     /**
      * {@inheritDoc}
@@ -697,7 +489,7 @@ Alternately, you can write this as a callable:
 ```php
 namespace App\Middleware;
 
-use Interop\Http\Middleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -716,40 +508,9 @@ class XClacksOverheadMiddleware
 }
 ```
 
-## Detecting error middleware usage
-
-As noted above in the section on [error handling](#error-handling), Stratigility
-"error middleware" (middleware with the signature `function ($error,
-ServerRequestInterface $request, ResponseInterface $response, callable $next)`)
-is deprecated, in favor of using normal middleware with try/catch blocks for
-handling exceptions.
-
-To help you migrate, we provide a tool,
-`vendor/bin/expressive-scan-for-error-middleware`. This tool will scan the
-provided directory (defaulting to `./src` in the current working directory) and
-report files with the following:
-
-- Classes implementing `Zend\Stratigility\ErrorMiddlewareInterface`.
-- Invokable classes implementing the error middleware signature.
-- Methods accepting `$next` that invoke it with an error argument.
-
-As an example:
-
-```bash
-$ ./vendor/bin/expressive-scan-for-error-middleware scan
-# or, with a directory argument:
-$ ./vendor/bin/expressive-scan-for-error-middleware scan --dir ./lib
-```
-
-You may also call the tool using its `help` command or `--help` or `-h` flags to
-get full usage information.
-
-Use this tool to identify potential problem areas in your application, and
-update your code to use the new error handling facilities as outlined above.
-
 ## Handling HEAD and OPTIONS requests
 
-Prior to 1.1, it was possible to route middleware that could not handle `HEAD`
+Prior to 2.0, it was possible to route middleware that could not handle `HEAD`
 and/or `OPTIONS` requests. Per [RFC 7231, section 4.1](https://tools.ietf.org/html/rfc7231#section-4.1),
 "all general-purpose servers MUST support the methods GET and HEAD. All other
 methods are OPTIONAL." Additionally, most servers and implementors agree that
