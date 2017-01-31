@@ -7,82 +7,32 @@
 
 namespace ZendTest\Expressive\Middleware;
 
-use Fig\Http\Message\StatusCodeInterface;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\StreamInterface;
+use Zend\Expressive\Delegate\NotFoundDelegate;
 use Zend\Expressive\Middleware\NotFoundHandler;
-use Zend\Expressive\Template\TemplateRendererInterface;
 
 class NotFoundHandlerTest extends TestCase
 {
     public function setUp()
     {
+        $this->internal = $this->prophesize(NotFoundDelegate::class);
         $this->request  = $this->prophesize(ServerRequestInterface::class);
-        $this->response = $this->prophesize(ResponseInterface::class);
-        $this->stream   = $this->prophesize(StreamInterface::class);
-        $this->renderer = $this->prophesize(TemplateRendererInterface::class);
 
         $this->delegate = $this->prophesize(DelegateInterface::class);
         $this->delegate->process(Argument::type(ServerRequestInterface::class))->shouldNotBeCalled();
     }
 
-    public function testWritesDefaultMessageToResponseIfNoTemplateRendererFound()
+    public function testProxiesToInternalDelegate()
     {
-        $this->request
-            ->getUri()
-            ->willReturn('https://example.com/foo');
-        $this->request
-            ->getMethod()
-            ->willReturn('POST');
+        $this->internal
+            ->process(Argument::that([$this->request, 'reveal']))
+            ->willReturn('CONTENT');
 
-        $this->renderer->render(Argument::any(), Argument::any())->shouldNotBeCalled();
-
-        $this->response->withStatus(StatusCodeInterface::STATUS_NOT_FOUND)->will([$this->response, 'reveal']);
-        $this->response->getBody()->will([$this->stream, 'reveal']);
-
-        $this->stream->write('Cannot POST https://example.com/foo')->shouldBeCalled();
-
-        $middleware = new NotFoundHandler($this->response->reveal());
-
-        $response = $middleware->process($this->request->reveal(), $this->delegate->reveal());
-
-        $this->assertSame($this->response->reveal(), $response);
-    }
-
-    public function templates()
-    {
-        return [
-            'default' => [null, 'error::404'],
-            'custom' => ['error::custom404', 'error::custom404'],
-        ];
-    }
-
-    /**
-     * @dataProvider templates
-     */
-    public function testWritesRenderedTemplateToResponseIfTemplateRendererFound($template, $expected)
-    {
-        $this->renderer
-            ->render($expected, [
-                'request' => $this->request->reveal(),
-            ])
-            ->willReturn('TEMPLATED RESPONSE');
-
-        $this->response->withStatus(StatusCodeInterface::STATUS_NOT_FOUND)->will([$this->response, 'reveal']);
-        $this->response->getBody()->will([$this->stream, 'reveal']);
-
-        $this->stream->write('TEMPLATED RESPONSE')->shouldBeCalled();
-
-        $middleware = $template
-            ? new NotFoundHandler($this->response->reveal(), $this->renderer->reveal(), $template)
-            : new NotFoundHandler($this->response->reveal(), $this->renderer->reveal());
-
-        $response = $middleware->process($this->request->reveal(), $this->delegate->reveal());
-
-        $this->assertSame($this->response->reveal(), $response);
+        $handler = new NotFoundHandler($this->internal->reveal());
+        $this->assertEquals('CONTENT', $handler->process($this->request->reveal(), $this->delegate->reveal()));
     }
 }

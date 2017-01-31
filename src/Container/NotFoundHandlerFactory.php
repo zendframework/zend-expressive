@@ -8,9 +8,8 @@
 namespace Zend\Expressive\Container;
 
 use Interop\Container\ContainerInterface;
-use Zend\Diactoros\Response;
+use Zend\Expressive\Delegate\NotFoundDelegate;
 use Zend\Expressive\Middleware\NotFoundHandler;
-use Zend\Expressive\Template\TemplateRendererInterface;
 
 class NotFoundHandlerFactory
 {
@@ -20,18 +19,6 @@ class NotFoundHandlerFactory
      */
     public function __invoke(ContainerInterface $container)
     {
-        $config = $container->has('config')
-            ? $container->get('config')
-            : [];
-
-        $renderer = $container->has(TemplateRendererInterface::class)
-            ? $container->get(TemplateRendererInterface::class)
-            : null;
-
-        $template = isset($config['zend-expressive']['error_handler']['template_404'])
-            ? $config['zend-expressive']['error_handler']['template_404']
-            : NotFoundHandler::TEMPLATE_DEFAULT;
-
-        return new NotFoundHandler(new Response(), $renderer, $template);
+        return new NotFoundHandler($container->get(NotFoundDelegate::class));
     }
 }

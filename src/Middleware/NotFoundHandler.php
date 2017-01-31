@@ -11,66 +11,32 @@ use Fig\Http\Message\StatusCodeInterface;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Expressive\Template\TemplateRendererInterface;
-use Zend\Stratigility\Middleware\NotFoundHandler as StratigilityNotFoundHandler;
+use Zend\Expressive\Delegate\NotFoundDelegate;
 
-class NotFoundHandler extends StratigilityNotFoundHandler
+class NotFoundHandler
 {
-    const TEMPLATE_DEFAULT = 'error::404';
+    /**
+     * @var NotFoundDelegate
+     */
+    private $internalDelegate;
 
     /**
-     * @var TemplateRendererInterface
+     * @param NotFoundDelegate $internalDelegate
      */
-    private $renderer;
-
-    /**
-     * This duplicates the property in StratigilityNotFoundHandler, but is done
-     * to ensure that we have access to the value in the methods we override.
-     *
-     * @var ResponseInterface
-     */
-    protected $responsePrototype;
-
-    /**
-     * @var string
-     */
-    private $template;
-
-    /**
-     * @param ResponseInterface $responsePrototype
-     * @param TemplateRendererInterface $renderer
-     * @param string $template
-     */
-    public function __construct(
-        ResponseInterface $responsePrototype,
-        TemplateRendererInterface $renderer = null,
-        $template = self::TEMPLATE_DEFAULT
-    ) {
-        parent::__construct($responsePrototype);
-        $this->responsePrototype = $responsePrototype;
-        $this->renderer          = $renderer;
-        $this->template          = $template;
+    public function __construct(NotFoundDelegate $internalDelegate)
+    {
+        $this->internalDelegate = $internalDelegate;
     }
 
     /**
      * Creates and returns a 404 response.
      *
-     * @param ServerRequestInterface $request  Ignored.
+     * @param ServerRequestInterface $request  Passed to internal delegate
      * @param DelegateInterface      $delegate Ignored.
-     *
      * @return ResponseInterface
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        if (! $this->renderer) {
-            return parent::process($request, $delegate);
-        }
-
-        $response = $this->responsePrototype->withStatus(StatusCodeInterface::STATUS_NOT_FOUND);
-        $response->getBody()->write(
-            $this->renderer->render($this->template, ['request' => $request])
-        );
-
-        return $response;
+        return $this->internalDelegate->process($request);
     }
 }
