@@ -7,6 +7,7 @@
 
 namespace Zend\Expressive;
 
+use Closure;
 use ReflectionFunction;
 use ReflectionMethod;
 
