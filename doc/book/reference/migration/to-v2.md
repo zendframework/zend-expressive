@@ -4,11 +4,155 @@ Expressive 2.0 should not result in many upgrade problems for users. However,
 starting in this version, we offer a few changes affecting the following that
 you should be aware of, and potentially update your application to adopt:
 
-- Original request and response messages
-- Error handling
-- Programmatic middleware pipelines
-- Usage of [http-interop middleware](https://github.com/http-interop/http-middleware)
-- Implicit handling of `HEAD` and `OPTIONS` requests
+- [Removed functionality](#removed-functionality)
+- [Deprecated functionality](#deprecated-functionality)
+- [Usage of http-interop middleware](#http-interop)
+- [Original request and response messages](#original-messages)
+- [Error handling](#error-handling)
+- [Final handlers become default delegates](#final-handlers-become-default-delegates)
+- [Programmatic middleware pipelines](#programmatic-middleware-pipelines)
+- [Implicit handling of `HEAD` and `OPTIONS` requests](#handling-head-and-options-requests)
+
+## Removed functionality
+
+The following classes and/or methods were removed for the Expressive 2.0
+release:
+
+- `Zend\Expressive\Application::pipeErrorHandler()`. Stratigility 2.0 dropped
+  its `ErrorMiddlewareInterface` and the concept of error middleware (middleware
+  supporting an additional `$error` argument in its signature); this method was
+  thus no longer relevant.
+
+- `Zend\Expressive\Application::routeMiddleware()`. Routing middleware was
+  extracted to the class `Zend\Expressive\Middleware\RouteMiddleware`.
+
+- `Zend\Expressive\Application::dispatchMiddleware()`. Dispatch middleware was
+  extracted to the class `Zend\Expressive\Middleware\DispatchMiddleware`.
+
+- `Zend\Expressive\Application::getFinalHandler()`. Stratigility 2 supports the
+  http-interop/http-middleware project, and now uses _delegates_. This method
+  was renamed to `getDefaultDelegate()`, and now returns an
+  `Interop\Http\ServerMiddleware\DelegateInterface` instance.
+
+- `Zend\Expressive\Container\Exception\InvalidArgumentException`. This exception
+  was thrown by `Zend\Expressive\Container\ApplicationFactory` previously; that
+  class now throws `Zend\Expressive\Exception\InvalidArgumentException` instead.
+
+- `Zend\Expressive\Container\Exception\NotFoundException`. This exception type
+  was never used internally.
+
+- `Zend\Expressive\ErrorMiddlewarePipe`. With the removal of Stratigility 1
+  error middleware, this specialized `MiddlewarePipe` no longer has any use.
+
+- `Zend\Expressive\Container\TemplatedErrorHandlerFactory`. See the section on
+  [final handler changes](#final-handlers-become-default-delegates) for more
+  information.
+
+- `Zend\Expressive\Container\WhoopsErrorHandlerFactory`. See the section on
+  [final handler changes](#final-handlers-become-default-delegates) for more
+  information.
+
+- `Zend\Expressive\TemplatedErrorHandler`. See the section on
+  [final handler changes](#final-handlers-become-default-delegates) for more
+  information.
+
+- `Zend\Expressive\WhoopsErrorHandler`. See the section on
+  [final handler changes](#final-handlers-become-default-delegates) for more
+  information.
+
+## Deprecated functionality
+
+- `Zend\Expressive\Application::raiseThrowables()`. Stratigility 2.0 makes the
+  method a no-op, as exceptions are no longer caught by the middleware
+  dispatcher. As such, the `raise_throwables` configuration argument now is no
+  longer used, either.
+
+## http-interop
+
+Stratigility 2.0 provides the ability to work with [http-interop middleware
+0.4.1](https://github.com/http-interop/http-middleware/tree/0.4.1).
+
+This specification, which is being developed as the basis of
+[PSR-15](https://github.com/php-fig/fig-standards/tree/master/proposed/http-middleware),
+defines what is known as _lambda_ or _single-pass_ middleware, vs the
+_double-pass_ middleware traditionally used by Stratigility and Expressive.
+
+Double-pass refers to the fact that two arguments are passed to the delegation
+function `$next`: the request and response. Lambda or single-pass middleware
+only pass a single argument, the request.
+
+Stratigility 2.0 provides support for dispatching either style of middleware.
+
+Specifically, your middleware can now implement:
+
+- `Interop\Http\ServerMiddleware\MiddlewareInterface`, which defines a single
+  method, `process(Psr\Http\Message\ServerRequestInterface $request,
+  Interop\Http\ServerMiddleware\Interface $delegate)`.
+- Callable middleware that follows the above signature (the typehint for the
+  request argument is optional).
+  
+Both styles of middleware may be piped directly to the middleware pipeline or as
+routed middleware within Expressive. In each case, you can invoke the
+next middleware layer using `$delegate->process($request)`.
+
+In Expressive 2.0, `Application` will continue to accept the legacy double-pass
+signature, but will require that you either:
+
+- Provide a `$responsePrototype` (a `ResponseInterface` instance) to the
+  `Application` instance prior to piping or routing such middleware.
+- Decorate the middleware in a `Zend\Stratigility\Middleware\CallableMiddlewareWrapper`
+  instance (which also requires a `$responsePrototype`).
+
+If you use `Zend\Expressive\Container\ApplicationFactory` to create your
+`Application` instance, a response prototype will be injected for you from the
+outset.
+
+We recommend that you begin writing middleware to follow the http-interop
+standard at this time. As an example:
+
+```php
+namespace App\Middleware;
+
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
+class XClacksOverheadMiddleware implements MiddlewareInterface
+{
+    /**
+     * {@inheritDoc}
+     */
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
+        $response = $delegate->process($request);
+        return $response->withHeader('X-Clacks-Overhead', 'GNU Terry Pratchett');
+    }
+}
+```
+
+Alternately, you can write this as a callable:
+
+```php
+namespace App\Middleware;
+
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
+class XClacksOverheadMiddleware
+{
+    /**
+     * @param ServerRequestInterface $request
+     * @param DelegateInterface $delegate
+     * @return ResponseInterface
+     */
+    public function __invoke(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
+        $response = $delegate->process($request);
+        return $response->withHeader('X-Clacks-Overhead', 'GNU Terry Pratchett');
+    }
+}
+```
 
 ## Original messages
 
@@ -325,6 +469,67 @@ project root, optionally passing the `help`, `--help`, or `-h` commands for
 usage. The tool will detect each of these for you, flagging them for you to
 update or remove.
 
+## Final handlers become default delegates
+
+One ramification of supporting [http-interop middleware](#http-interop) is that
+the concept of "final handlers" changes. In Stratigility 1.X and Expressive 1.X,
+a "final handler" was invoked when the middleware pipeline was exhausted;
+however, due to how Stratigility caught exceptions, this also meant that the
+final handler often acted as the application error handler, reporting errors to
+end users.
+
+With the [error handling changes noted above](#error-handling), error handling
+is moved to dedicated middleware. However, there is still a need to have
+something that can execute once the middleware pipeline is exhausted. Such a
+situation typically indicates no middleware was able to handle the request, or
+that the request was somehow malformed.
+
+In Expressive 2.0, we have removed final handlers, and replaced them with the
+concept of "default delegates". _Delegates_ are
+`Interop\Http\ServerMiddleware\DelegateInterface` instances, which are invoked
+by middleware when they wish to _delegate_ processing of the request to
+something else. Internally, Stratigility 2.0 and Expressive 2.0 use a delegate
+to iterate through the middleware pipeline. For Expressive 2.0, a _default
+delegate_ is a delegate executed when the application's internal middleware
+pipeline is exhausted.
+
+The ramifications for end users are as follows:
+
+- The `$finalHandler` argument to `Application`'s constructor, which previously
+  was a `callable`, is now called `$defaultDelegate`, and needs to be a
+  `DelegateInterface` instance.
+
+- `getFinalHandler()` no longer exists; we have _added_ `getDefaultDelegate()`.
+
+- The service `Zend\Expressive\FinalHandler` is no longer used. A new service,
+  `Zend\Expressive\Delegate\DefaultDelegate`, is used by `ApplicationFactory`,
+  and, if present, will be used to inject the `$defaultDelegate` argument of the
+  `Application` constructor.
+
+- We have removed the following classes, which either provided final handlers,
+  or acted as factories for them:
+  - `Zend\Expressive\TemplatedErrorHandler`
+  - `Zend\Expressive\WhoopsErrorHandler`
+  - `Zend\Expressive\Container\TemplatedErrorHandlerFactory`
+  - `Zend\Expressive\Container\WhoopsErrorHandlerFactory`
+
+If you use the `vendor/bin/expressive-pipeline-from-config` tool to migrate your
+application to programmatic pipelines, as described below, the `DefaultDelegate`
+service will be mapped to `Zend\Expressive\Container\NotFoundDelegateFactory`,
+which will provide an instance of `Zend\Expressive\Delegate\NotFoundDelegate`.
+This new class will produce a 404 response, using a template if the
+`Zend\Expressive\Template\TemplateRendererInterface` service is present, but
+otherwise producing a plain text response.
+
+Application's built using the 2.0 version of the skeleton application will have
+these features enabled by default.
+
+> ### NotFoundDelegate and NotFoundHandler
+>
+> `Zend\Expressive\Middleware\NotFoundHandler`, which is intended as innermost
+> middleware for producing a 404 response, composes and proxies to a
+> `NotFoundDelegate` instance to produce its response.
+
 ## Programmatic middleware pipelines
 
 Starting with Expressive 1.1, we recommended *programmatic creation of
@@ -420,93 +625,6 @@ Other things you may want to do:
 - Consider providing your own `Zend\Stratigility\NoopFinalHandler`
   implementation; this will now only be invoked if the queue is exhausted, and
   could return a generic 404 page, raise an exception, etc.
-
-## http-interop
-
-Stratigility 2.0 provides the ability to work with [http-interop middleware
-0.4.1](https://github.com/http-interop/http-middleware/tree/0.4.1).
-
-This specification, which is being developed as the basis of
-[PSR-15](https://github.com/php-fig/fig-standards/tree/master/proposed/http-middleware),
-defines what is known as _lambda_ or _single-pass_ middleware, vs the
-_double-pass_ middleware traditionally used by Stratigility and Expressive.
-
-Double-pass refers to the fact that two arguments are passed to the delegation
-function `$next`: the request and response. Lambda or single-pass middleware
-only pass a single argument, the request.
-
-Stratigility 2.0 provides support for dispatching either style of middleware.
-
-Specifically, your middleware can now implement:
-
-- `Interop\Http\ServerMiddleware\MiddlewareInterface`, which defines a single
-  method, `process(Psr\Http\Message\ServerRequestInterface $request,
-  Interop\Http\ServerMiddleware\Interface $delegate)`.
-- Callable middleware that follows the above signature (the typehint for the
-  request argument is optional).
-  
-Both styles of middleware may be piped directly to the middleware pipeline or as
-routed middleware within Expressive. In each case, you can invoke the
-next middleware layer using `$delegate->process($request)`.
-
-In Expressive 2.0, `Application` will continue to accept the legacy double-pass
-signature, but will require that you either:
-
-- Provide a `$responsePrototype` (a `ResponseInterface` instance) to the
-  `Application` instance prior to piping or routing such middleware.
-- Decorate the middleware in a `Zend\Stratigility\Middleware\CallableMiddlewareWrapper`
-  instance (which also requires a `$responsePrototype`).
-
-If you use `Zend\Expressive\Container\ApplicationFactory` to create your
-`Application` instance, a response prototype will be injected for you from the
-outset.
-
-We recommend that you begin writing middleware to follow the http-interop
-standard at this time. As an example:
-
-```php
-namespace App\Middleware;
-
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
-use Psr\Http\Message\ServerRequestInterface;
-
-class XClacksOverheadMiddleware implements MiddlewareInterface
-{
-    /**
-     * {@inheritDoc}
-     */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
-    {
-        $response = $delegate->process($request);
-        return $response->withHeader('X-Clacks-Overhead', 'GNU Terry Pratchett');
-    }
-}
-```
-
-Alternately, you can write this as a callable:
-
-```php
-namespace App\Middleware;
-
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-
-class XClacksOverheadMiddleware
-{
-    /**
-     * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
-     * @return ResponseInterface
-     */
-    public function __invoke(ServerRequestInterface $request, DelegateInterface $delegate)
-    {
-        $response = $delegate->process($request);
-        return $response->withHeader('X-Clacks-Overhead', 'GNU Terry Pratchett');
-    }
-}
-```
 
 ## Handling HEAD and OPTIONS requests
 
