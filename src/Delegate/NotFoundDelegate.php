@@ -53,7 +53,7 @@ class NotFoundDelegate implements DelegateInterface
     /**
      * Creates and returns a 404 response.
      *
-     * @param ServerRequestInterface $request  Ignored.
+     * @param ServerRequestInterface $request
      * @return ResponseInterface
      */
     public function process(ServerRequestInterface $request)
