@@ -268,8 +268,7 @@ class ApplicationTest extends TestCase
 
     public function testCanInjectDefaultDelegateViaConstructor()
     {
-        $defaultDelegate = function ($req, $res, $err = null) {
-        };
+        $defaultDelegate = $this->prophesize(DelegateInterface::class)->reveal();
         $app  = new Application($this->router->reveal(), null, $defaultDelegate);
         $test = $app->getDefaultDelegate();
         $this->assertSame($defaultDelegate, $test);
@@ -281,14 +280,14 @@ class ApplicationTest extends TestCase
         $this->router->match()->willReturn($routeResult);
 
         $finalResponse = $this->prophesize(ResponseInterface::class)->reveal();
-        $defaultDelegate = function ($req, $res, $err = null) use ($finalResponse) {
-            return $finalResponse;
-        };
+        $defaultDelegate = $this->prophesize(DelegateInterface::class);
+        $defaultDelegate->process(Argument::type(ServerRequestInterface::class))
+            ->willReturn($finalResponse);
 
         $emitter = $this->prophesize(EmitterInterface::class);
         $emitter->emit($finalResponse)->shouldBeCalled();
 
-        $app = new Application($this->router->reveal(), null, $defaultDelegate, $emitter->reveal());
+        $app = new Application($this->router->reveal(), null, $defaultDelegate->reveal(), $emitter->reveal());
 
         $request  = new Request([], [], 'http://example.com/');
 
@@ -325,16 +324,16 @@ class ApplicationTest extends TestCase
         $this->router->match()->willReturn($routeResult);
 
         $finalResponse = $this->prophesize(ResponseInterface::class)->reveal();
-        $defaultDelegate = function ($req, $res, $err = null) use ($finalResponse) {
-            return $finalResponse;
-        };
+        $defaultDelegate = $this->prophesize(DelegateInterface::class);
+        $defaultDelegate->process(Argument::type(ServerRequestInterface::class))
+            ->willReturn($finalResponse);
 
         $emitter = $this->prophesize(EmitterInterface::class);
         $emitter->emit(
             Argument::type(ResponseInterface::class)
         )->shouldBeCalled();
 
-        $app = new Application($this->router->reveal(), null, $defaultDelegate, $emitter->reveal());
+        $app = new Application($this->router->reveal(), null, $defaultDelegate->reveal(), $emitter->reveal());
 
         $request  = new Request([], [], 'http://example.com/');
         $response = $this->prophesize(ResponseInterface::class);

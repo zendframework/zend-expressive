@@ -9,6 +9,7 @@ namespace Zend\Expressive;
 
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
 use Interop\Container\ContainerInterface;
+use Interop\Http\ServerMiddleware\DelegateInterface;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -21,7 +22,6 @@ use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Stratigility\Delegate\CallableDelegateDecorator;
 use Zend\Stratigility\MiddlewarePipe;
-use Zend\Stratigility\NoopFinalHandler;
 
 /**
  * Middleware application providing routing based on paths and HTTP methods.
@@ -98,24 +98,39 @@ class Application extends MiddlewarePipe
      *
      * @param Router\RouterInterface $router
      * @param null|ContainerInterface $container IoC container from which to pull services, if any.
-     * @param null|callable $defaultDelegate Default delegate to use when $out
-     *     is not provided on invocation / run() is invoked.
+     * @param null|DelegateInterface|callable $defaultDelegate Default delegate
+     *     to use when $out is not provided on invocation / run() is invoked.
+     *     Callable arguments will be decorated using CallableDelegateDecorator.
      * @param null|EmitterInterface $emitter Emitter to use when `run()` is
      *     invoked.
      */
     public function __construct(
         Router\RouterInterface $router,
         ContainerInterface $container = null,
-        callable $defaultDelegate = null,
+        $defaultDelegate = null,
         EmitterInterface $emitter = null
     ) {
+        $this->setResponsePrototype(new Response());
+
+        $defaultDelegate = is_callable($defaultDelegate)
+            ? new CallableDelegateDecorator($defaultDelegate, $this->responsePrototype)
+            : $defaultDelegate;
+
+        if (! $defaultDelegate instanceof DelegateInterface
+            && null !== $defaultDelegate
+        ) {
+            throw new Exception\InvalidArgumentException(sprintf(
+                'Default delegate argument must be null, a callable, or a %s instance; received %s',
+                DelegateInterface::class,
+                is_object($defaultDelegate) ? get_class($defaultDelegate) : gettype($defaultDelegate)
+            ));
+        }
+
         parent::__construct();
         $this->router          = $router;
         $this->container       = $container;
         $this->defaultDelegate = $defaultDelegate;
         $this->emitter         = $emitter;
-
-        $this->setResponsePrototype(new Response());
     }
 
     /**
@@ -131,6 +146,8 @@ class Application extends MiddlewarePipe
             throw new Exception\BadMethodCallException('Unsupported method');
         }
 
+        // @codingStandardsIgnoreStart
+        // Ignoring standards here as there is a bug in how case statements are identified.
         switch (count($args)) {
             case 2:
                 // We have path and middleware; append the HTTP method.
@@ -158,6 +175,7 @@ class Application extends MiddlewarePipe
                     count($args)
                 ));
         }
+        // @codingStandardsIgnoreEnd
 
         return $this->route(...$routeArgs);
     }
@@ -341,11 +359,10 @@ class Application extends MiddlewarePipe
      * ServerRequestFactory::fromGlobals to create a request instance, and
      * instantiate a default response instance.
      *
-     * It also creates a default delegate by decorating the return value from
-     * `getDefaultDelegate()` in a `CallableDelegateDecorator`, using the
-     * response prototype with a 404 status.
+     * It retrieves the default delegate using getDefaultDelegate(), and
+     * uses that to process itself.
      *
-     * It then processes itself, and emits the returned response using the
+     * Once it has processed itself, it emits the returned response using the
      * composed emitter.
      *
      * @param null|ServerRequestInterface $request
@@ -367,12 +384,7 @@ class Application extends MiddlewarePipe
 
         $response = $response ?: new Response();
         $request  = $request->withAttribute('originalResponse', $response);
-
-        $this->setResponsePrototype($response);
-        $delegate = new CallableDelegateDecorator(
-            $this->getDefaultDelegate(),
-            $response->withStatus(StatusCode::STATUS_NOT_FOUND)
-        );
+        $delegate = $this->getDefaultDelegate();
 
         $response = $this->process($request, $delegate);
 
@@ -399,11 +411,27 @@ class Application extends MiddlewarePipe
     /**
      * Return the default delegate to use during `run()` if the stack is exhausted.
      *
-     * @return callable
+     * If no default delegate is present, attempts the following:
+     *
+     * - If a container is composed, and it has the Delegate\DefaultDelegate
+     *   service, pulls that service, assigns it, and returns it.
+     * - If no container is composed, creates an instance of Delegate\NotFoundDelegate
+     *   using the current response prototype only (i.e., no templating).
+     *
+     * @return DelegateInterface
      */
-    public function getDefaultDelegate(ResponseInterface $response = null)
+    public function getDefaultDelegate()
     {
-        $this->defaultDelegate = $this->defaultDelegate ?: new NoopFinalHandler();
+        if ($this->defaultDelegate) {
+            return $this->defaultDelegate;
+        }
+
+        if ($this->container && $this->container->has(Delegate\DefaultDelegate::class)) {
+            $this->defaultDelegate = $this->container->get(Delegate\DefaultDelegate::class);
+            return $this->defaultDelegate;
+        }
+
+        $this->defaultDelegate = new Delegate\NotFoundDelegate($this->responsePrototype);
         return $this->defaultDelegate;
     }
 

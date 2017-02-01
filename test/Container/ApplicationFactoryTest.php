@@ -21,6 +21,8 @@ use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Expressive\Application;
 use Zend\Expressive\Container\ApplicationFactory;
+use Zend\Expressive\Delegate\DefaultDelegate;
+use Zend\Expressive\Delegate\NotFoundDelegate;
 use Zend\Expressive\Emitter\EmitterStack;
 use Zend\Expressive\Exception as ExpressiveException;
 use Zend\Expressive\Exception\InvalidMiddlewareException;
@@ -31,7 +33,6 @@ use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Stratigility\MiddlewarePipe;
-use Zend\Stratigility\NoopFinalHandler;
 use Zend\Stratigility\Route as StratigilityRoute;
 use ZendTest\Expressive\ContainerTrait;
 use ZendTest\Expressive\TestAsset\InteropMiddleware;
@@ -63,12 +64,11 @@ class ApplicationFactoryTest extends TestCase
 
         $this->router = $this->prophesize(RouterInterface::class);
         $this->emitter = $this->prophesize(EmitterInterface::class);
-        $this->delegate = function ($req, $res, $err = null) {
-        };
+        $this->delegate = $this->prophesize(DelegateInterface::class)->reveal();
 
         $this->injectServiceInContainer($this->container, RouterInterface::class, $this->router->reveal());
         $this->injectServiceInContainer($this->container, EmitterInterface::class, $this->emitter->reveal());
-        $this->injectServiceInContainer($this->container, 'Zend\Stratigility\NoopFinalHandler', $this->delegate);
+        $this->injectServiceInContainer($this->container, DefaultDelegate::class, $this->delegate);
     }
 
     public static function assertRoute($spec, array $routes)
@@ -180,7 +180,7 @@ class ApplicationFactoryTest extends TestCase
         $this->assertInstanceOf(EmitterStack::class, $app->getEmitter());
         $this->assertCount(1, $app->getEmitter());
         $this->assertInstanceOf(SapiEmitter::class, $app->getEmitter()->pop());
-        $this->assertEquals(new NoopFinalHandler(), $app->getDefaultDelegate());
+        $this->assertInstanceOf(NotFoundDelegate::class, $app->getDefaultDelegate());
     }
 
     /**

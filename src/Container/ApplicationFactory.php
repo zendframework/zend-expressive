@@ -11,10 +11,9 @@ use ArrayObject;
 use Interop\Container\ContainerInterface;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Expressive\Application;
+use Zend\Expressive\Delegate;
 use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\RouterInterface;
-use Zend\Stratigility\FinalHandler;
-use Zend\Stratigility\NoopFinalHandler;
 
 /**
  * Factory to use with an IoC container in order to return an Application instance.
@@ -23,9 +22,13 @@ use Zend\Stratigility\NoopFinalHandler;
  *
  * - 'Zend\Expressive\Router\RouterInterface'. If missing, a FastRoute router
  *   bridge will be instantiated and used.
- * - 'Zend\Stratigility\NoopFinalHandler'. The service should be a callable to use as
- *   the default delegate when the middleware pipeline is exhausted. The factory will
- *   create an empty instance if none is found.
+ * - 'Zend\Expressive\Delegate\DefaultDelegate'. The service should be
+ *   either a `Interop\Http\ServerMiddleware\DelegateInterface` instance, or
+ *   a callable that accepts a request and optionally a response; the instance
+ *   will be used as the default delegate when the middleware pipeline is
+ *   exhausted. If none is provided, `Zend\Expressive\Application` will create
+ *   a `Zend\Expressive\Delegate\NotFoundDelegate` instance using the response
+ *   prototype only.
  * - 'Zend\Diactoros\Response\EmitterInterface'. If missing, an EmitterStack is
  *   created, adding a SapiEmitter to the bottom of the stack.
  * - 'config' (an array or ArrayAccess object). If present, and it contains route
@@ -63,7 +66,9 @@ class ApplicationFactory
             ? $container->get(RouterInterface::class)
             : new FastRouteRouter();
 
-        $delegate = $this->marshalNoopFinalHandler($container);
+        $delegate = $container->has(Delegate\DefaultDelegate::class)
+            ? $container->get(Delegate\DefaultDelegate::class)
+            : null;
 
         $emitter = $container->has(EmitterInterface::class)
             ? $container->get(EmitterInterface::class)
@@ -88,16 +93,5 @@ class ApplicationFactory
     {
         $app->injectRoutesFromConfig($config);
         $app->injectPipelineFromConfig($config);
-    }
-
-    /**
-     * @param ContainerInterface $container
-     * @return callable|NoopFinalHandler
-     */
-    private function marshalNoopFinalHandler(ContainerInterface $container)
-    {
-        return $container->has(NoopFinalHandler::class)
-            ? $container->get(NoopFinalHandler::class)
-            : new NoopFinalHandler();
     }
 }
