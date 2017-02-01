@@ -16,8 +16,8 @@ use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\ServerRequest;
 use Zend\Expressive\Application;
+use Zend\Expressive\Delegate\NotFoundDelegate;
 use Zend\Expressive\Router\FastRouteRouter;
-use Zend\Expressive\TemplatedErrorHandler;
 
 class IntegrationTest extends TestCase
 {
@@ -67,10 +67,10 @@ class IntegrationTest extends TestCase
 
     public function testInjectedFinalHandlerCanEmitA404WhenNoMiddlewareMatches()
     {
-        $finalHandler = new TemplatedErrorHandler();
-        $app          = new Application(new FastRouteRouter(), null, $finalHandler, $this->getEmitter());
         $request      = new ServerRequest([], [], 'https://example.com/foo', 'GET');
         $response     = new Response();
+        $delegate     = new NotFoundDelegate($response);
+        $app          = new Application(new FastRouteRouter(), null, $delegate, $this->getEmitter());
 
         $app->run($request, $response);
 
