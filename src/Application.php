@@ -98,39 +98,24 @@ class Application extends MiddlewarePipe
      *
      * @param Router\RouterInterface $router
      * @param null|ContainerInterface $container IoC container from which to pull services, if any.
-     * @param null|DelegateInterface|callable $defaultDelegate Default delegate
+     * @param null|DelegateInterface $defaultDelegate Default delegate
      *     to use when $out is not provided on invocation / run() is invoked.
-     *     Callable arguments will be decorated using CallableDelegateDecorator.
      * @param null|EmitterInterface $emitter Emitter to use when `run()` is
      *     invoked.
      */
     public function __construct(
         Router\RouterInterface $router,
         ContainerInterface $container = null,
-        $defaultDelegate = null,
+        DelegateInterface $defaultDelegate = null,
         EmitterInterface $emitter = null
     ) {
-        $this->setResponsePrototype(new Response());
-
-        $defaultDelegate = is_callable($defaultDelegate)
-            ? new CallableDelegateDecorator($defaultDelegate, $this->responsePrototype)
-            : $defaultDelegate;
-
-        if (! $defaultDelegate instanceof DelegateInterface
-            && null !== $defaultDelegate
-        ) {
-            throw new Exception\InvalidArgumentException(sprintf(
-                'Default delegate argument must be null, a callable, or a %s instance; received %s',
-                DelegateInterface::class,
-                is_object($defaultDelegate) ? get_class($defaultDelegate) : gettype($defaultDelegate)
-            ));
-        }
-
         parent::__construct();
         $this->router          = $router;
         $this->container       = $container;
         $this->defaultDelegate = $defaultDelegate;
         $this->emitter         = $emitter;
+
+        $this->setResponsePrototype(new Response());
     }
 
     /**
