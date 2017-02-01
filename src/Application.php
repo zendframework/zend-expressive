@@ -416,6 +416,12 @@ class Application extends MiddlewarePipe
             return $this->defaultDelegate;
         }
 
+        if ($this->container) {
+            $factory = new Container\NotFoundDelegateFactory();
+            $this->defaultDelegate = $factory($this->container);
+            return $this->defaultDelegate;
+        }
+
         $this->defaultDelegate = new Delegate\NotFoundDelegate($this->responsePrototype);
         return $this->defaultDelegate;
     }

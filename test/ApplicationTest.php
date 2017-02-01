@@ -28,6 +28,7 @@ use Zend\Diactoros\ServerRequest as Request;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Expressive\Application;
+use Zend\Expressive\Delegate;
 use Zend\Expressive\Emitter\EmitterStack;
 use Zend\Expressive\Exception;
 use Zend\Expressive\Exception\InvalidMiddlewareException;
@@ -36,6 +37,7 @@ use Zend\Expressive\Router\Exception as RouterException;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouteResult;
 use Zend\Expressive\Router\RouterInterface;
+use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\Stratigility\Route as StratigilityRoute;
 use ZendTest\Expressive\TestAsset\InvokableMiddleware;
@@ -604,5 +606,59 @@ class ApplicationTest extends TestCase
         } catch (\Exception $e) {
             $this->fail(sprintf("(%d) %s:\n%s", $e->getCode(), $e->getMessage(), $e->getTraceAsString()));
         }
+    }
+
+    public function testGetDefaultDelegateWillPullFromContainerIfServiceRegistered()
+    {
+        $delegate = $this->prophesize(DelegateInterface::class)->reveal();
+        $container = $this->mockContainerInterface();
+        $this->injectServiceInContainer($container, Delegate\DefaultDelegate::class, $delegate);
+
+        $app = new Application($this->router->reveal(), $container->reveal());
+
+        $test = $app->getDefaultDelegate();
+
+        $this->assertSame($delegate, $test);
+    }
+
+    public function testWillCreateAndConsumeNotFoundDelegateFactoryToCreateDelegateIfNoDelegateInContainer()
+    {
+        $container = $this->mockContainerInterface();
+        $container->has(Delegate\DefaultDelegate::class)->willReturn(false);
+        $container->has(TemplateRendererInterface::class)->willReturn(false);
+        $app = new Application($this->router->reveal(), $container->reveal());
+
+        $delegate = $app->getDefaultDelegate();
+
+        $this->assertInstanceOf(Delegate\NotFoundDelegate::class, $delegate);
+
+        $r = new ReflectionProperty($app, 'responsePrototype');
+        $r->setAccessible(true);
+        $appResponsePrototype = $r->getValue($app);
+
+        $this->assertAttributeNotSame($appResponsePrototype, 'responsePrototype', $delegate);
+        $this->assertAttributeEmpty('renderer', $delegate);
+    }
+
+    public function testWillUseConfiguredTemplateRendererWhenCreatingDelegateFromNotFoundDelegateFactory()
+    {
+        $container = $this->mockContainerInterface();
+        $container->has(Delegate\DefaultDelegate::class)->willReturn(false);
+
+        $renderer = $this->prophesize(TemplateRendererInterface::class)->reveal();
+        $this->injectServiceInContainer($container, TemplateRendererInterface::class, $renderer);
+
+        $app = new Application($this->router->reveal(), $container->reveal());
+
+        $delegate = $app->getDefaultDelegate();
+
+        $this->assertInstanceOf(Delegate\NotFoundDelegate::class, $delegate);
+
+        $r = new ReflectionProperty($app, 'responsePrototype');
+        $r->setAccessible(true);
+        $appResponsePrototype = $r->getValue($app);
+
+        $this->assertAttributeNotSame($appResponsePrototype, 'responsePrototype', $delegate);
+        $this->assertAttributeSame($renderer, 'renderer', $delegate);
     }
 }
