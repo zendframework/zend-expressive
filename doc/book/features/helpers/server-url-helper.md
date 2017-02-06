@@ -131,9 +131,12 @@ Compose the helper in your middleware (or elsewhere), and then use it to
 generate URI paths:
 
 ```php
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Helper\ServerUrlHelper;
 
-class FooMiddleware
+class FooMiddleware implements MiddlewareInterface
 {
     private $helper;
 
@@ -142,13 +145,13 @@ class FooMiddleware
         $this->helper = $helper;
     }
 
-    public function __invoke($request, $response, callable $next)
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $response = $response->withHeader(
+        $response = $delegate->process($request);
+        return $response->withHeader(
             'Link',
             $this->helper->generate() . '; rel="self"'
         );
-        return $next($request, $response);
     }
 }
 ```

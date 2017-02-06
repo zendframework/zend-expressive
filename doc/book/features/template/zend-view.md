@@ -152,11 +152,11 @@ integrate with PSR-7. These include:
 
 - `Zend\Expressive\ZendView\UrlHelper`. This helper consumes the
   application's `Zend\Expressive\Router\RouterInterface` instance in order
-  to generate URIs. It's signature is:
-  `url($routeName, array $substitutions = [])`
+  to generate URIs. Its signature is:
+  `url($routeName, array $routeParams = [], array $queryParams = [], $fragmentIdentifier = null, array $options = [])`
 - `Zend\Expressive\ZendView\ServerUrlHelper`. This helper consumes the
   URI from the application's request in order to provide fully qualified URIs.
-  It's signature is: `serverUrl($path = null)`.
+  Its signature is: `serverUrl($path = null)`.
 
   To use this particular helper, you will need to inject it with the request URI
   somewhere within your application:

@@ -94,7 +94,7 @@ $ composer require mtymek/blast-base-url
 ```
 
 To configure it, update the file `config/autoload/middleware-pipeline.global.php`,
-with the following contents:
+or `config/autoload/dependencies.global.php` to map the middleware to its factory:
 
 ```php
 return [
@@ -105,20 +105,23 @@ return [
         ],
         /* ... */
     ],
-    'middleware_pipeline' => [
-        [ 'middleware' => [ Blast\BaseUrl\BaseUrlMiddleware::class ], 'priority' => 1000 ],
-        /* ... */
-        'routing' => [
-            'middleware' => [
-                Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
-                Zend\Expressive\Helper\UrlHelperMiddleware::class,
-                Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
-            ],
-            'priority' => 1,
-        ],
-        /* ... */
-    ],
 ];
+```
+
+If using programmatic pipelines, pipe the middleware early in your pipeline:
+
+```php
+$app->pipe(\Blast\BaseUrl\BaseUrlMiddleware::class);
+```
+
+For configuration-driven pipelines, add an entry in your
+`config/autoload/middleware-pipeline.global.php` file:
+
+```php
+'middleware_pipeline' => [
+    [ 'middleware' => [ Blast\BaseUrl\BaseUrlMiddleware::class ], 'priority' => 1000 ],
+    /* ... */
+],
 ```
 
 At this point, the middleware will take care of the rewriting for you. No

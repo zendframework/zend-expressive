@@ -22,7 +22,13 @@ $url = $helper('resource', ['id' => 'sha1']);
 The signature for both is:
 
 ```php
-function ($routeName, array $params = []) : string
+function (
+    $routeName,
+    array $routeParams = [],
+    $queryParams = [],
+    $fragmentIdentifier = null,
+    array $options = []
+) : string
 ```
 
 Where:
@@ -30,7 +36,7 @@ Where:
 - `$routeName` is the name of a route defined in the composed router. You may
   omit this argument if you want to generate the path for the currently matched
   request.
-- `$params` is an array of substitutions to use for the provided route, with the
+- `$rotueParams` is an array of substitutions to use for the provided route, with the
   following behavior:
   - If a `RouteResult` is composed in the helper, and the `$routeName` matches
     it, the provided `$params` will be merged with any matched parameters, with
@@ -44,6 +50,12 @@ Where:
   - If no `$params` are provided, and the `$routeName` does not match the
     currently matched route, or if no route result is present, then no
     substitutions will be made.
+- `$queryParams` is an array of query string arguments to include in the
+  generated URI.
+- `$fragmentIdentifier` is a string to use as the URI fragment.
+- `$options` is an array of options to provide to the router for purposes of
+  controlling URI generation. As an example, zend-router can consume "translator"
+  and "text_domain" options in order to provide translated URIs.
 
 Each method will raise an exception if:
 
@@ -128,9 +140,9 @@ $app->pipeDispatchMiddleware();
 // [
 //     'middleware_pipeline' => [
 //         /* ... */
-//         Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+//         Zend\Expressive\Application::ROUTING_MIDDLEWARE,
 //         ['middleware' => UrlHelperMiddleware::class],
-//         Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+//         Zend\Expressive\Application::DISPATCH_MIDDLEWARE,
 //         /* ... */
 //     ],
 // ]
@@ -142,9 +154,9 @@ $app->pipeDispatchMiddleware();
 //         /* ... */
 //         'routing' => [
 //             'middleware' => [
-//                 Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+//                 Zend\Expressive\Application::ROUTING_MIDDLEWARE,
 //                 UrlHelperMiddleware::class
-//                 Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+//                 Zend\Expressive\Application::DISPATCH_MIDDLEWARE,
 //             ],
 //             'priority' => 1,
 //         ],
@@ -166,9 +178,9 @@ return [
         ],
     ],
     'middleware_pipeline' => [
-        Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+        Zend\Expressive\Application::ROUTING_MIDDLEWARE,
         ['middleware' => UrlHelperMiddleware::class],
-        Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+        Zend\Expressive\Application::DISPATCH_MIDDLEWARE,
     ],
 ];
 
@@ -183,9 +195,9 @@ return [
     'middleware_pipeline' => [
         'routing' => [
             'middleware' => [
-                Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+                Zend\Expressive\Application::ROUTING_MIDDLEWARE,
                 UrlHelperMiddleware::class,
-                Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+                Zend\Expressive\Application::DISPATCH_MIDDLEWARE,
             ],
             'priority' => 1,
         ],
@@ -241,10 +253,13 @@ detected language, before stripping it off the request URI instance to pass on
 to the router:
 
 ```php
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Locale;
+use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Helper\UrlHelper;
 
-class LocaleMiddleware
+class LocaleMiddleware implements MiddlewareInterface
 {
     private $helper;
 
@@ -253,24 +268,21 @@ class LocaleMiddleware
         $this->helper = $helper;
     }
 
-    public function __invoke($request, $response, $next)
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $uri = $request->getUri();
         $path = $uri->getPath();
         if (! preg_match('#^/(?P<locale>[a-z]{2,3}([-_][a-zA-Z]{2}|))/#', $path, $matches)) {
-            return $next($request, $response);
+            return $delegate->process($request);
         }
 
         $locale = $matches['locale'];
         Locale::setDefault(Locale::canonicalize($locale));
         $this->helper->setBasePath($locale);
 
-        return $next(
-            $request->withUri(
-                $uri->withPath(substr($path, (strlen($locale) + 1)))
-            ),
-            $response
-        );
+        return $delegate->process($request->withUri(
+            $uri->withPath(substr($path, (strlen($locale) + 1)))
+        ));
     }
 }
 ```

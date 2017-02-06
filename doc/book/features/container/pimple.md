@@ -47,6 +47,14 @@ $container['Zend\Expressive\Router\RouterInterface'] = function ($container) {
     return new Router\Aura();
 };
 
+// Expressive 2.X: We'll provide a default delegate:
+$delegateFactory = new Container\NotFoundDelegateFactory();
+$container['Zend\Expressive\Delegate\DefaultDelegate'] = $delegateFactory;
+$container['Zend\Expressive\Delegate\NotFoundDelegate'] = $delegateFactory;
+
+// Expressive 2.X: We'll provide a not found handler:
+$container['Zend\Expressive\Middleware\NotFoundHandler'] = new Container\NotFoundHandlerFactory();
+
 // Templating
 // In most cases, you can instantiate the template renderer you want to use
 // without using a factory:
@@ -54,17 +62,30 @@ $container[TemplateRendererInterface::class] = function ($container) {
     return new PlatesRenderer();
 };
 
-// These next two can be added in any environment; they won't be used unless
-// you add the WhoopsErrorHandler as the FinalHandler implementation:
+// These next two can be added in any environment; they won't be used unless:
+// - (Expressive 1.X): you add the WhoopsErrorHandler as the FinalHandler
+//   implementation:
+// - (Expressive 2.X): you add the WhoopsErrorResponseGenerator as the
+//   ErrorResponseGenerator implementation
 $container['Zend\Expressive\Whoops'] = new Container\WhoopsFactory();
 $container['Zend\Expressive\WhoopsPageHandler'] = new Container\WhoopsPageHandlerFactory();
 
 // Error Handling
+
+// - In Expressive 2.X, all environments:
+$container['Zend\Expressive\Middleware\ErrorHandler'] = new Container\ErrorHandlerFactory();
+
 // If in development:
+// - Expressive 1.X:
 $container['Zend\Expressive\FinalHandler'] = new Container\WhoopsErrorHandlerFactory();
+// - Expressive 2.X:
+$container['Zend\Expressive\Middleware\ErrorResponseGenerator'] = new Container\WhoopsErrorResponseGeneratorFactory();
 
 // If in production:
+// - Expressive 1.X:
 $container['Zend\Expressive\FinalHandler'] = new Container\TemplatedErrorHandlerFactory();
+// - Expressive 2.X:
+$container['Zend\Expressive\Middleware\ErrorResponseGenerator'] = new Container\ErrorResponseGeneratorFactory();
 
 return $container;
 ```
@@ -75,12 +96,20 @@ Your bootstrap (typically `public/index.php`) will then look like this:
 chdir(dirname(__DIR__));
 $container = require 'config/services.php';
 $app = $container->get('Zend\Expressive\Application');
+
+// In Expressive 2.X:
+require 'config/pipeline.php';
+require 'config/routes.php';
+
+// All versions:
 $app->run();
 ```
 
 > ### Environments
 > 
-> In the example above, we provide two alternate definitions for the service
-> `Zend\Expressive\FinalHandler`, one for development and one for production.
-> You will need to add logic to your file to determine which definition to
-> provide; this could be accomplished via an environment variable.
+> In the example above, we provide two alternate definitions for
+> either the service `Zend\Expressive\FinalHandler` (Expressive 1.X) or the
+> service `Zend\Expressive\Middleware\ErrorResponseGenerator` (Expressive 2.X),
+> one for development and one for production. You will need to add logic to
+> your file to determine which definition to provide; this could be accomplished
+> via an environment variable.

@@ -35,23 +35,37 @@ Expressive uses and exposes piping to users, with one addition: **middleware
 may be specified by service name, and zend-expressive will lazy-load the service
 only when the middleware is invoked**.
 
-In order to accomplish the lazy-loading, zend-expressive wraps the calls to fetch
-the middleware from the container and to dispatch that middleware inside a
-closure. This poses a problem for error handling middleware, however, as
-zend-stratigility identifies error handling middleware by its arity (number of
-function arguments); as such, zend-expressive defines an additional method for
-piping service-driven error handling middleware, `pipeErrorHandler()`. The
-method has the same signature as `pipe()`:
+In order to accomplish the lazy-loading, zend-expressive wraps the calls to
+fetch and dispatch the middleware inside a
+`Zend\Expressive\Middleware\LazyLoadingMiddleware` instance; as such, there is
+no overhead to utilizing service-based middleware _until it is dispatched_.
 
-```php
-// Without a path:
-$app->pipeErrorHandler('error handler service name');
-
-// Specific to a path:
-$app->pipeErrorHandler('/api', 'error handler service name');
-```
-
-This method will return a closure using the error middleware signature.
+> ### Service-based middleware in version 1
+> 
+> In Expressive 1.X versions, lazy-loading middleware was handled by wrapping
+> the middleware inside a closure which composed the container.
+> 
+> This posed a problem for Stratigility 1.X-style error handling middleware, as
+> zend-stratigility identified error handling middleware by its arity (number of
+> function arguments); as such, zend-expressive defined an additional method for
+> piping service-driven error handling middleware, `pipeErrorHandler()`. That
+> method had the same signature as `pipe()`:
+> 
+> ```php
+> // Without a path:
+> $app->pipeErrorHandler('error handler service name');
+> 
+> // Specific to a path:
+> $app->pipeErrorHandler('/api', 'error handler service name');
+> ```
+> 
+> That method returned a closure using the error middleware signature.
+>
+> As noted in the [error handling chapter](../error-handling.md), you should
+> not use Stratigility 1.X-style error handling middleware at this time, even
+> if you are still using Expressive 1.X. If you have calls to
+> `pipeErrorHandler()`, these should be removed, and you should replace them
+> with standard middleware that performs error handling.
 
 ## Routing
 
@@ -90,7 +104,7 @@ circumstances:
     - Logging requests
     - Performing content negotiation
     - Handling cookies
-- Error handling. Typically these should be piped after any normal middleware.
+- Error handling.
 - Application segregation. You can write re-usable middleware, potentially even
   based off of Expressive, that contains its own routing logic, and compose it
   such that it only executes if it matches a sub-path.
@@ -112,38 +126,33 @@ to the application as routed middleware*.
 As noted in the earlier section on piping, piped middleware is *queued*, meaning
 it has a FIFO ("first in, first out") execution order.
 
-Additionally, zend-expressive's routing capabilities are themselves implemented
-as piped middleware.
+Additionally, zend-expressive's routing and dispatch capabilities are themselves
+implemented as piped middleware.
 
-As such, if you programmatically configure the router and add routes without
-using `Application::route()`, you may run into issues with the order in which
-piped middleware (middleware added to the application via the `pipe()` method)
-is executed.
+To ensure your middleware is piped correctly, keep in mind the following:
 
-To ensure that everything executes in the correct order, you can call
-`Application::pipeRouteMiddleware()` at any time to pipe it to the application.
-As an example, after you have created your application instance:
+- If middleware should execute on _every request_, pipe it early.
+- Pipe routing and dispatch middleware using their dedicated application methods
+  (more on this below), optionally with middleware between them to further shape
+  application flow.
+- Pipe middleware guaranteed to return a response (such as a "not found" handler
+  or similar) _last_.
+
+To use the shipped routing and dispatch middleware (likely a good idea!), use
+the dedicated application methods `pipeRoutingMiddleware()` and
+`pipeDispatchMiddleware()`; `Application` contains logic to ensure neither of
+these are called more than once.
+
+As an example:
 
 ```php
-$app->pipe($middlewareToExecuteFirst);
-$app->pipeRouteMiddleware();
-$app->pipe($errorMiddleware);
+$app->pipe(OriginalMessages::class);
+$app->pipe(ServerUrlMiddleware::class);
+$app->pipe(XClacksOverhead::class);
+$app->pipe(ErrorHandler::class);
+$app->pipeRoutingMiddleware();
+$app->pipe(UrlHelperMiddleware::class);
+$app->pipe(AuthorizationCheck::class);
+$app->pipeDispatchMiddleware();
+$app->pipe(NotFoundHandler::class);
 ```
-
-If you fail to add any routes via `Application::route()` or to call
-`Application::pipeRouteMiddleware()`, the routing middleware will be called
-when executing the application. **This means that it will be last in the
-middleware pipeline,** which means that if you registered any error
-middleware, it can never be invoked.
-
-To sum:
-
-- Pipe middleware to execute on every request *before* routing any middleware
-  and/or *before* calling `Application::pipeRouteMiddleware()`.
-- Pipe error handling middleware *after* defining routes and/or *after* calling
-  `Application::pipeRouteMiddleware()`.
-
-If you use the provided `Zend\Expressive\Container\ApplicationFactory` for
-retrieving your `Application` instance, you can do this by defining pre- and
-post-pipeline middleware, and the factory will ensure everything is registered
-correctly.
