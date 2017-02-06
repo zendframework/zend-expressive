@@ -161,8 +161,7 @@ class ApplicationFactory
             ? $container->get(RouterInterface::class)
             : new FastRouteRouter();
 
-        $finalHandler = (isset($config['zend-expressive']['raise_throwables'])
-            && $config['zend-expressive']['raise_throwables'])
+        $finalHandler = ! empty($config['zend-expressive']['raise_throwables'])
             ? $this->marshalNoopFinalHandler($container)
             : $this->marshalLegacyFinalHandler($container, $config);
 
@@ -172,15 +171,11 @@ class ApplicationFactory
 
         $app = new Application($router, $container, $finalHandler, $emitter);
 
-        if (isset($config['zend-expressive']['raise_throwables'])
-            && $config['zend-expressive']['raise_throwables']
-        ) {
+        if (! empty($config['zend-expressive']['raise_throwables'])) {
             $app->raiseThrowables();
         }
 
-        if (! isset($config['zend-expressive']['programmatic_pipeline'])
-            || ! $config['zend-expressive']['programmatic_pipeline']
-        ) {
+        if (empty($config['zend-expressive']['programmatic_pipeline'])) {
             $this->injectRoutesAndPipeline($app, $config);
         }
 

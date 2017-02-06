@@ -644,6 +644,8 @@ class ApplicationTest extends TestCase
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      * @dataProvider invalidRequestExceptions
+     * @param string $expectedException
+     * @param string $message
      */
     public function testRunInvokesFinalHandlerWhenServerRequestFactoryRaisesException(
         $expectedException,

@@ -1,16 +1,18 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2016-2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2016-2017 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
 
 namespace ZendTest\Expressive;
 
+use Exception;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
+use Throwable;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequest;
@@ -61,9 +63,9 @@ class ApplicationMarshalMiddlewarePipeTest extends TestCase
             try {
                 $response = $next($request, $response);
                 return $response;
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 // fall-through
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 // fall-through
             }
 

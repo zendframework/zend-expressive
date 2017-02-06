@@ -920,9 +920,8 @@ class ApplicationFactoryTest extends TestCase
      */
     public function testWillNotInjectConfiguredRoutesOrPipelineIfProgrammaticPipelineFlagEnabled()
     {
-        // @codingStandardsIgnoreStart
-        $api = function ($request, $response, $next) {};
-        // @codingStandardsIgnoreEnd
+        $api = function ($request, $response, $next) {
+        };
 
         $dynamicPath = clone $api;
         $noPath = clone $api;
@@ -933,8 +932,8 @@ class ApplicationFactoryTest extends TestCase
 
         $config = [
             'middleware_pipeline' => [
-                [ 'path' => '/api', 'middleware' => $api ],
-                [ 'path' => '/dynamic-path', 'middleware' => 'DynamicPath' ],
+                ['path' => '/api', 'middleware' => $api],
+                ['path' => '/dynamic-path', 'middleware' => 'DynamicPath'],
                 ['middleware' => $noPath],
                 ['middleware' => 'Goodbye'],
                 ['middleware' => [
