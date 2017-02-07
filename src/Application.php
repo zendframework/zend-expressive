@@ -11,6 +11,7 @@ use Interop\Container\ContainerInterface;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Throwable;
 use UnexpectedValueException;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmitterInterface;
@@ -664,7 +665,7 @@ class Application extends MiddlewarePipe
     }
 
     /**
-     * @var \Exception|\Throwable $exception
+     * @param \Exception|Throwable $exception
      * @return void
      */
     private function emitMarshalServerRequestException($exception)

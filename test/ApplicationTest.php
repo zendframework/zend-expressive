@@ -19,6 +19,7 @@ use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use ReflectionProperty;
 use RuntimeException;
+use Throwable;
 use UnexpectedValueException;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmitterInterface;
@@ -681,7 +682,7 @@ class ApplicationTest extends TestCase
             $app = new Application($this->router->reveal(), null, $finalHandler, $emitter->reveal());
 
             $app->run();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->fail($e->getMessage());
         } catch (\Exception $e) {
             $this->fail($e->getMessage());
