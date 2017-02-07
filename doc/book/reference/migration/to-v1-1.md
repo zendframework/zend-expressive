@@ -47,6 +47,15 @@ will be removed for the 2.0 release:
   removed in the Stratigility v2 release, which Expressive 2.0 will adopt,
   making this specialized middleware pipe type irrelvant.
 
+- `Zend\Expressive\TemplatedErrorHandler` and `Zend\Expressive\WhoopsErrorHandler`:
+  The concept of "final handlers" will be removed in Expressive 2.0, to be
+  replaced with "default delegates" (implementations of
+  `Interop\Http\ServerMiddleware\DelegateInterface` that will be called if the
+  middleware pipeline is exhausted, and which will be guaranteed to return a
+  response). Expressive 2.0 will provide tooling to upgrade your dependencies to
+  make the transition seamless; end users will only be affected if they were
+  extending these classes.
+
 If you were calling any of these directly, or extending or overriding them, you
 will need to update your code to work for version 2.0. We recommend not using
 these.
