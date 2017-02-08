@@ -1,7 +1,7 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2016-2017 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
 
@@ -9,6 +9,8 @@ namespace Zend\Expressive\Middleware;
 
 use Fig\Http\Message\RequestMethodInterface as RequestMethod;
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
@@ -37,7 +39,7 @@ use Zend\Expressive\Router\RouteResult;
  *
  * In all other circumstances, it will return the result of the delegate.
  */
-class ImplicitOptionsMiddleware
+class ImplicitOptionsMiddleware implements ServerMiddlewareInterface
 {
     /**
      * @var null|ResponseInterface
@@ -58,23 +60,22 @@ class ImplicitOptionsMiddleware
      * Handle an implicit OPTIONS request.
      *
      * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @param callable $next
+     * @param DelegateInterface $delegate
      * @return ResponseInterface
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         if ($request->getMethod() !== RequestMethod::METHOD_OPTIONS) {
-            return $next($request, $response);
+            return $delegate->process($request);
         }
 
         if (false === ($result = $request->getAttribute(RouteResult::class, false))) {
-            return $next($request, $response);
+            return $delegate->process($request);
         }
 
         $route = $result->getMatchedRoute();
         if (! $route || ! $route->implicitOptions()) {
-            return $next($request, $response);
+            return $delegate->process($request);
         }
 
         $methods = implode(',', $route->getAllowedMethods());

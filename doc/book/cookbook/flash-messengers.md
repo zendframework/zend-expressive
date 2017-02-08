@@ -31,43 +31,69 @@ First, you'll need to add it to your application:
 $ composer require slim/flash
 ```
 
-Once you have, you'll need to create a factory to return middleware that will
-add the flash message provider to the request:
+Second, create middleware that will add the flash message provider to the request:
 
 ```php
+<?php
 namespace App;
 
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Slim\Flash\Messages;
 
-class SlimFlashMiddlewareFactory
+class SlimFlashMiddleware implements MiddlewareInterface
 {
-    public function __invoke($container)
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        return function ($request, $response, $next) {
-            // Start the session whenever we use this!
-            session_start();
+        // Start the session whenever we use this!
+        session_start();
 
-            return $next(
-                $request->withAttribute('flash', new Messages()),
-                $response
-            );
-        };
+        return $delegate->process(
+            $request->withAttribute('flash', new Messages()),
+        );
     }
 }
 ```
 
-Now, let's register it with our middleware pipeline. In
-`config/autoload/middleware-pipeline.global.php`, make the following additions:
+Third, we will register the new middleware with our container as an invokable.
+Edit either the file `config/autoload/dependencies.global.php` or
+`config/autoload/middleware-pipeline.global.php` to add the following:
 
 ```php
 return [
     'dependencies' => [
-        'factories' => [
-            'App\SlimFlashMiddleware' => App\SlimFlashMiddlewareFactory::class,
+        'invokables' => [
+            App\SlimFlashMiddleware::class => App\SlimFlashMiddleware::class,
             /* ... */
         ],
         /* ... */
     ],
+];
+```
+
+Finally, let's register it with our middleware pipeline. For programmatic
+pipelines, pipe the middleware somewhere, generally before the routing middleware:
+
+```php
+$app->pipe(App\SlimFlashMiddleware::class);
+```
+
+Or as part of a routed middleware pipeline:
+
+```php
+$app->post('/form/handler', [
+    App\SlimFlashMiddleware::class,
+    FormHandlerMiddleware::class,
+]);
+```
+
+If using configuration-driven pipelines, edit
+`config/autoload/middleware-pipeline.global.php` to make the following
+additions:
+
+```php
+return [
     'middleware_pipeline' => [
         'always' => [
             'middleware' => [
@@ -85,15 +111,17 @@ return [
 >
 > Sessions can sometimes be expensive. As such, you may not want the flash
 > middleware enabled for every request. If this is the case, add the flash
-> middleware as part of a route-specific pipeline instead.
+> middleware as part of a route-specific pipeline instead, as demonstrated
+> in the programmatic pipelines above.
 
 From here, you can add and read messages by accessing the request's flash
 attribute. As an example, middleware generating messages might read as follows:
 
 ```php
+use Interop\Http\ServerMiddleware\DelegateInterface;
 use Zend\Diactoros\Response\RedirectResponse;
 
-public function __invoke($request, $response, $next)
+function($request, DelegateInterface $delegate)
 {
     $flash = $request->getAttribute('flash');
     $flash->addMessage('message', 'Hello World!');
@@ -105,7 +133,9 @@ public function __invoke($request, $response, $next)
 And middleware consuming the message might read:
 
 ```php
-public function __invoke($request, $response, $next)
+use Interop\Http\ServerMiddleware\DelegateInterface;
+
+function($request, DelegateInterface $delegate)
 {
     $flash = $request->getAttribute('flash');
     $messages = $flash->getMessages();
@@ -142,8 +172,9 @@ return [
 ];
 ```
 
-In `config/autoload/middleware-pipeline.global.php`, add a factory entry for the
-`damess/expressive-session-middleware`, and add it to the middleware pipeline:
+In either `config/autoload/dependencies.global.php` or
+`config/autoload/middleware-pipeline.global.php`, add a factory entry for the
+`damess/expressive-session-middleware`:
 
 ```php
 return [
@@ -154,6 +185,23 @@ return [
         ],
         /* ... */
     ],
+];
+```
+
+Finally, add it to your middleware pipeline. For programmatic pipelines:
+
+```php
+use DaMess\Http\SessionMiddleware;
+
+$app->pipe(SessionMiddleware::class);
+/* ... */
+```
+
+If using configuration-driven pipelines, edit `config/autoload/middleware-pipeline.global.php`
+and add an entry for the new middleware:
+
+```php
+return [
     'middleware_pipeline' => [
         'always' => [
             'middleware' => [
@@ -187,9 +235,10 @@ an example, the middleware that is processing a POST request might set a flash
 message:
 
 ```php
+use Interop\Http\ServerMiddleware\DelegateInterface;
 use Zend\Diactoros\Response\RedirectResponse;
 
-public function __invoke($request, $response, $next)
+function($request, DelegateInterface $delegate)
 {
     $session = $request->getAttribute('session');
     $session->getSegment(__NAMESPACE__)
@@ -203,7 +252,9 @@ Another middleware, to which the original middleware redirects, might look like
 this:
 
 ```php
-public function __invoke($request, $response, $next)
+use Interop\Http\ServerMiddleware\DelegateInterface;
+
+function($request, DelegateInterface $delegate)
 {
     $session = $request->getAttribute('session');
     $message = $session->getSegment(__NAMESPACE__)

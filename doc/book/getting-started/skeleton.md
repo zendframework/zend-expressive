@@ -16,9 +16,13 @@ $ composer create-project zendframework/zend-expressive-skeleton expressive
 
 This will prompt you to choose:
 
-- A router. We recommend using the default, FastRoute.
+- Whether to install a minimal skeleton (no default middleware), a flat
+  application structure (all code under `src/`), or a modular structure
+  (directories under `src/` are modules, each with source code and potentially
+  templates, configuration, assets, etc.).
 - A dependency injection container. We recommend using the default, Zend
   ServiceManager.
+- A router. We recommend using the default, FastRoute.
 - A template renderer. You can ignore this when creating an API project, but if
   you will be creating any HTML pages, we recommend installing one. We prefer
   Plates.
@@ -62,22 +66,23 @@ Let's create a "Hello" action. Place the following in
 <?php
 namespace App\Action;
 
-use Psr\Http\Message\ResponseInterface;
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Expressive\Response\HtmlResponse;
 
-class HelloAction
+class HelloAction implements MiddlewareInterface;
 {
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $query  = $request->getQueryParams();
         $target = isset($query['target']) ? $query['target'] : 'World';
         $target = htmlspecialchars($target, ENT_HTML5, 'UTF-8');
 
-        $response->getBody()->write(sprintf(
+        return new HtmlResponse(sprintf(
             '<h1>Hello, %s!</h1>',
             $target
-        ));
-        return $response->withHeader('Content-Type', 'text/html');
+        ))
     }
 }
 ```
@@ -86,38 +91,31 @@ The above looks for a query string parameter "target", and uses its value to
 provide a message, which is then returned in an HTML response.
 
 Now we need to inform the application of this middleware, and indicate what
-path will invoke it. Open the file `config/autoload/routes.global.php`. Inside
-that file, you should have a structure similar to the following:
+path will invoke it. Open the file `config/autoload/dependencies.global.php`.
+Edit that file to add an _invokable_ entry for the new middleware:
+that file, e
 
 ```php
 return [
     'dependencies' => [
         /* ... */
-    ],
-    'routes' => [
+        'invokables' => [
+            App\Action\HelloAction::class => App\Action\HelloAction::class,
+            /* ... */
+        ],
         /* ... */
     ],
 ];
 ```
 
-We're going to add an entry under `routes`:
+Now open the file `config/routes.php`, and add the following at the bottom of
+the file:
 
 ```php
-return [
-    /* ... */
-    'routes' => [
-        /* ... */
-        [
-            'name' => 'hello',
-            'path' => '/hello',
-            'middleware' => App\Action\HelloAction::class,
-            'allowed_methods' => ['GET'],
-        ],
-    ],
-];
+$app->get('/hello', App\Action\HelloAction::class, 'hello');
 ```
 
-Once you've added the above entry, give it a try by going to each of the
+Once you've completed the above, give it a try by going to each of the
 following URIs:
 
 - http://localhost:8080/hello
@@ -153,12 +151,13 @@ Replace your `src/App/Action/HelloAction.php` file with the following contents:
 <?php
 namespace App\Action;
 
-use Psr\Http\Message\ResponseInterface;
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
-class HelloAction
+class HelloAction implements MiddlewareInterface
 {
     private $renderer;
 
@@ -167,7 +166,7 @@ class HelloAction
         $this->renderer = $renderer;
     }
 
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $query  = $request->getQueryParams();
         $target = isset($query['target']) ? $query['target'] : 'World';
@@ -180,72 +179,40 @@ class HelloAction
 ```
 
 The above modifies the class to accept a renderer to the constructor, and then
-calls on it to render a template. A few things to note:
-
-- We no longer need to escape our target; the template takes care of that for us.
-- We're using a specific response type here, from
-  [Diactoros](https://github.com/zendframework/zend-diactoros), which is the
-  default PSR-7 implementation Expressive uses. This response type simplifies
-  our response creation.
+calls on it to render a template. Note that we no longer need to escape our
+target; the template takes care of that for us.
 
 How does the template renderer get into the action, however? The answer is
 dependency injection.
 
 For the next part of the example, we'll be creating and wiring a factory for
 creating the `HelloAction` instance; the example assumes you used the default
-selection for a dependency injection container, Zend ServiceManager.
+selection for a dependency injection container, zend-servicemanager.
 
-Let's create a factory. Create the file `src/App/Action/HelloActionFactory.php` with
-the following contents:
+zend-servicemanager provides a tool for generating factories based on
+reflecting a class; we'll use that to generate our factory:
 
-```php
-<?php
-namespace App\Action;
-
-use Interop\Container\ContainerInterface;
-use Zend\Expressive\Template\TemplateRendererInterface;
-
-class HelloActionFactory
-{
-    public function __invoke(ContainerInterface $container)
-    {
-        return new HelloAction(
-            $container->get(TemplateRendererInterface::class)
-        );
-    }
-}
+```bash
+$ ./vendor/bin/generate-factory-for-class "App\\Action\\HelloAction" > src/App/Action/HelloActionFactory.php
 ```
 
 With that in place, we'll now update our configuration. Open the file
-`config/autoload/routes.global.php`; it should have a structure similar to
-the following:
+`config/autoload/dependencies.global.php`; we'll remove the `invokables` entry
+we created previously, and add a `factories` entry:
 
 ```php
 return [
     'dependencies' => [
+        /* ... */
         'invokables' => [
-            /* ... */
+            // Remove this entry:
+            App\Action\HelloAction::class => App\Action\HelloAction::class,
         ],
-    ],
-    'routes' => [
-        /* ... */
-    ],
-];
-```
-
-We're going to tell our application that we have a _factory_ for our
-`HelloAction` class:
-
-```php
-return [
-    'dependencies' => [
-        /* ... */
         'factories' => [
             /* ... */
+            // Add this:
             App\Action\HelloAction::class => App\Action\HelloActionFactory::class,
         ],
-    ],
-    'routes' => [
         /* ... */
     ],
 ];

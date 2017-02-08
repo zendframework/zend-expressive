@@ -20,8 +20,10 @@ We assume also that:
 
 - You have installed zend-expressive per the [installation instructions](../index.md#installation).
 - `public/` will be the document root of your application.
-- Your own classes are under `src/` with the top-level namespace `Application`,
-  and you have configured [autoloading](https://getcomposer.org/doc/01-basic-usage.md#autoloading) in your `composer.json` for those classes.
+- Your own classes are under `src/` with the top-level namespace `App`,
+  and you have configured [autoloading](https://getcomposer.org/doc/01-basic-usage.md#autoloading)
+  in your `composer.json` for those classes (this should be done for you during
+  installation).
 
 > ## Using the built-in web server
 >
@@ -84,13 +86,13 @@ As examples:
 
 ```php
 // GET
-// This demonstrates passing a callable middleware (assuming $helloWorld is
-// callable).
+// This demonstrates passing a middleware instance (assuming $helloWorld is
+// valid middleware)
 $app->get('/', $helloWorld);
 
 // POST
-// This example specifies the middleware as a service name instead of as a
-// callable.
+// This example specifies the middleware as a service name instead of as
+// actual executable middleware.
 $app->post('/trackback', 'TrackBack');
 
 // PUT
@@ -155,7 +157,8 @@ $app->route($route);
 
 Expressive works with [container-interop](https://github.com/container-interop/container-interop),
 though it's an optional feature. By default, if you use the `AppFactory`, it
-will use [zend-servicemanager](https://github.com/zendframework/zend-servicemanager).
+will use [zend-servicemanager](https://github.com/zendframework/zend-servicemanager)
+so long as that package is installed.
 
 In the following example, we'll populate the container with our middleware, and
 the application will pull it from there when matched.
@@ -163,7 +166,9 @@ the application will pull it from there when matched.
 Edit your `public/index.php` to read as follows:
 
 ```php
+use Interop\Http\ServerMiddleware\DelegateInterface;
 use Zend\Diactoros\Response\JsonResponse;
+use Zend\Diactoros\Response\TextResponse;
 use Zend\Expressive\AppFactory;
 use Zend\ServiceManager\ServiceManager;
 
@@ -172,14 +177,13 @@ require __DIR__ . '/../vendor/autoload.php';
 $container = new ServiceManager();
 
 $container->setFactory('HelloWorld', function ($container) {
-    return function ($req, $res, $next) {
-        $res->getBody()->write('Hello, world!');
-        return $res;
+    return function ($request, DelegateInterface $delegate) {
+        return new TextResponse('Hello, world!');
     };
 });
 
 $container->setFactory('Ping', function ($container) {
-    return function ($req, $res, $next) {
+    return function ($request, DelegateInterface $delegate) {
         return new JsonResponse(['ack' => time()]);
     };
 });
@@ -427,9 +431,8 @@ route and middleware. Between pulling the application from the container and
 calling `$app->run()`, add the following in your `public/index.php`:
 
 ```php
-$app->post('/post', function ($req, $res, $next) {
-    $res->getBody()->write('IN POST!');
-    return $res;
+$app->post('/post', function ($request, \Interop\Http\ServerMiddleware\DelegateInterface $delegate) {
+    return new \Zend\Diactoros\Response\TextResponse('IN POST!');
 });
 ```
 
@@ -484,7 +487,6 @@ Each middleware specified must be in the following form:
     'middleware' => 'Name of middleware service, or a callable',
     // optional:
     'path'  => '/path/to/match',
-    'error' => true,
     'priority' => 1, // Integer
 ]
 ```
@@ -498,16 +500,16 @@ they are attached.
 
 The default priority is 1, and this priority is used by the routing and dispatch
 middleware. To indicate that middleware should execute *before* these, use a
-priority higher than 1. For error middleware, use a priority less than 1.
+priority higher than 1.
 
 The above specification can be used for all middleware, with one exception:
 registration of the *routing* and/or *dispatch* middleware that Expressive
 provides. In these cases, use the following constants, which will be caught by
 the factory and expanded:
 
-- `Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE` for the
+- `Zend\Expressive\Application::ROUTING_MIDDLEWARE` for the
   routing middleware; this should always come before the dispatch middleware.
-- `Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE` for the
+- `Zend\Expressive\Application::DISPATCH_MIDDLEWARE` for the
   dispatch middleware.
 
 As an example:
@@ -516,8 +518,8 @@ As an example:
 return [
     'middleware_pipeline' => [
         [ /* ... */ ],
-        Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
-        Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+        Zend\Expressive\Application::ROUTING_MIDDLEWARE,
+        Zend\Expressive\Application::DISPATCH_MIDDLEWARE,
         [ /* ... */ ],
     ],
 ];
@@ -536,19 +538,11 @@ return [
 > Make sure these middleware specifications include the `priority` key, and that
 > the value of this key is greater than 1.
 >
-> Place *error* middleware *after* the routing middleware. This is middleware
-> that should only execute if routing fails or routed middleware cannot complete
-> the response. These specifications should also include the `priority` key, and
-> the value of that key for such middleware should be less than 1 or negative.
->
 > Use priority to shape the specific workflow you want for your middleware.
 
-Middleware items may be any callable, `Zend\Stratigility\MiddlewareInterface`
-implementation, or a service name that resolves to one of the two. Additionally,
-you can specify an array of such values; these will be composed in a single
-`Zend\Stratigility\MiddlewarePipe` instance, allowing layering of middleware.
-In fact, you can specify the various `ApplicationFactory::*_MIDDLEWARE`
-constants in such arrays as well:
+Middleware items may be any [valid middleware](../features/middleware-types.md),
+including _arrays_ of middleware, which indicate a nested middleware pipeline;
+these may even contain the routing and dispatch middleware constants:
 
 ```php
 return [
@@ -556,9 +550,9 @@ return [
         [ /* ... */ ],
         'routing' => [
             'middleware' => [
-                Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+                Zend\Expressive\Application::ROUTING_MIDDLEWARE,
                 /* ... middleware that introspects routing results ... */
-                Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+                Zend\Expressive\Application::DISPATCH_MIDDLEWARE,
             ],
             'priority' => 1,
         ],
@@ -580,50 +574,6 @@ return [
 The path, if specified, can only be a literal path to match, and is typically
 used for segregating middleware applications or applying rules to subsets of an
 application that match a common path root.
-
-`error` indicates whether or not the middleware represents error middleware;
-this is done to ensure that lazy-loading of error middleware works as expected.
-
-> #### Lazy-loaded Middleware
->
-> One feature of the `middleware_pipeline` is that any middleware service pulled
-> from the container is actually wrapped in a closure:
->
-> ```php
-> function ($request, $response, $next = null) use ($container, $middleware) {
->     $invokable = $container->get($middleware);
->     if (! is_callable($invokable)) {
->         throw new Exception\InvalidMiddlewareException(sprintf(
->             'Lazy-loaded middleware "%s" is not invokable',
->             $middleware
->         ));
->     }
->     return $invokable($request, $response, $next);
-> };
-> ```
->
-> If the `error` flag is specified and is truthy, the closure looks like this
-> instead, to ensure the middleware is treated by Stratigility as error
-> middleware:
->
-> ```php
-> function ($error, $request, $response, $next) use ($container, $middleware) {
->     $invokable = $container->get($middleware);
->     if (! is_callable($invokable)) {
->         throw new Exception\InvalidMiddlewareException(sprintf(
->             'Lazy-loaded middleware "%s" is not invokable',
->             $middleware
->         ));
->     }
->     return $invokable($error, $request, $response, $next);
-> };
-> ```
->
-> This implements *lazy-loading* for middleware pipeline services, delaying
-> retrieval from the container until the middleware is actually invoked.
->
-> This also means that if the service specified is not valid middleware, you
-> will not find out until the application attempts to invoke it.
 
 ## Segregating your application to a subpath
 

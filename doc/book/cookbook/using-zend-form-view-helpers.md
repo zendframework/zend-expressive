@@ -199,10 +199,13 @@ First, define the middleware:
 ```php
 namespace Your\Application
 
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Zend\Form\View\HelperConfig as FormHelperConfig;
 use Zend\View\HelperPluginManager;
 
-class FormHelpersMiddleware
+class FormHelpersMiddleware implements MiddlewareInterface
 {
     private $helpers;
 
@@ -211,11 +214,11 @@ class FormHelpersMiddleware
         $this->helpers = $helpers;
     }
 
-    public function __invoke($request, $response, callable $next)
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $config = new FormHelperConfig();
         $config->configureServiceManager($this->helpers);
-        return $next($request, $response);
+        return $delegate->process($request);
     }
 }
 ```
@@ -239,8 +242,9 @@ class FormHelpersMiddlewareFactory
 }
 ```
 
-Now, register these in the file
-`config/autoload/middleware-pipeline.global.php`:
+Next, register the middleware with its factory in one of
+`config/autoload/middleware-pipeline.global.php` or
+`config/autoload/dependencies.global.php`:
 
 ```php
 return [
@@ -251,20 +255,42 @@ return [
         ],
         /* ... */
     ],
-    'middleware_pipeline' => [
-        ['middleware' => Your\Application\FormHelpersMiddleware::class, 'priority' => 1000],
-        /* ... */
-        'routing' => [
-            'middleware' => [
-                Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
-                Zend\Expressive\Helper\UrlHelperMiddleware::class,
-                Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
-            ],
-            'priority' => 1,
-        ],
-        /* ... */
-    ],
 ];
+```
+
+If using programmatic pipelines, pipe the middleware in an appropriate location
+in your pipeline:
+
+```php
+$app->pipe(FormHelpersMiddleware::class);
+
+// or, perhaps, in a route-specific middleware pipeline:
+$app->post('/register', [
+    FormHelpersMiddleware::class,
+    RegisterMiddleware::class,
+], 'register');
+```
+
+If using configuration-driven pipelines or routing:
+
+```
+// Via the middleware pipeline:
+'middleware_pipeline' => [
+    ['middleware' => Your\Application\FormHelpersMiddleware::class, 'priority' => 1000],
+],
+
+// Or via routes:
+'routes' => [
+    [
+        'name'            => 'register',
+        'path'            => '/register',
+        'middleware'      => [
+            FormHelpersMiddleware::class,
+            RegisterMiddleware::class,
+        ],
+        'allowed_methods' => ['POST'],
+    ]
+]
 ```
 
 At that point, you're all set!

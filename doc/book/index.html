@@ -127,14 +127,12 @@ $ composer create-project zendframework/zend-expressive-skeleton expressive</cod
           <pre><code class="language-php" data-trim>
 $pathMiddleware = function (
     ServerRequestInterface $request,
-    ResponseInterface $response,
-    callable $next
+    DelegateInterface $delegate
 ) {
     $uri  = $request->getUri();
     $path = $uri->getPath();
 
-    $response->getBody()->write('You visited ' . $path);
-    return $next($request, $response->withHeader('X-Path', $path));
+    return new TextResponse('You visited ' . $path, 200, ['X-Path' => $path]);
 };</code></pre>
           <p>And add it to an application:</p>
           <pre><code class="language-php" data-trim>

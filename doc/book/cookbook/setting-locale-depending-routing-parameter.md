@@ -4,7 +4,7 @@ Localized web applications often set the locale (and therefor the language)
 based on a routing parameter, the session, or a specialized sub-domain.
 In this recipe we will concentrate on using a routing parameter.
 
-> ## Routing parameters
+> ### Routing parameters
 >
 > Using the approach in this chapter requires that you add a `/:locale` (or
 > similar) segment to each and every route that can be localized, and, depending
@@ -18,23 +18,50 @@ In this recipe we will concentrate on using a routing parameter.
 If you want to set the locale depending on an routing parameter, you first have
 to add a locale parameter to each route that requires localization.
 
-In this example we use the `locale` parameter, which should consist of two
-lowercase alphabetical characters:
+In the following examples, we use the `locale` parameter, which should consist
+of two lowercase alphabetical characters.
+
+### Dependency configuration
+
+The examples assume the following middleware dependency configuration:
+
+```php
+use Application\Action;
+
+return [
+    'dependencies' => [
+        'factories' => [
+            Action\HomePageAction::class    => Action\HomePageFactory::class,
+            Action\ContactPageAction::class => Action\ContactPageFactory::class,
+        ],
+    ],
+];
+```
+
+### Programmatic routes
+
+The following describes routing configuration for use when using a
+programmatic application.
+
+```php
+use Application\Action\ContactPageAction;
+use Application\Action\HomePageAction;
+
+$localeOptions = ['locale' => '[a-z]{2,3}([-_][a-zA-Z]{2}|)'];
+
+$app->get('/:locale', HomePageAction::class, 'home')
+    ->setOptions($localeOptions);
+$app->get('/:locale/contact', ContactPageAction::class, 'contact')
+    ->setOptions($localeOptions);
+```
+
+### Configuration-based routes
+
+The following describes routing configuration for use when using a
+configuration-driven application.
 
 ```php
 return [
-    'dependencies' => [
-        'invokables' => [
-            Zend\Expressive\Router\RouterInterface::class =>
-                Zend\Expressive\Router\ZendRouter::class,
-        ],
-        'factories' => [
-            Application\Action\HomePageAction::class =>
-                Application\Action\HomePageFactory::class,
-            Application\Action\ContactPageAction::class =>
-                Application\Action\ContactPageFactory::class,
-        ],
-    ],
     'routes' => [
         [
             'name' => 'home',
@@ -112,26 +139,27 @@ Such a `LocalizationMiddleware` class could look similar to this:
 
 namespace Application\I18n;
 
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Locale;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class LocalizationMiddleware
+class LocalizationMiddleware implements MiddlewareInterface
 {
     const LOCALIZATION_ATTRIBUTE = 'locale';
 
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         // Get locale from route, fallback to the user's browser preference
         $locale = $request->getAttribute(
             'locale',
             Locale::acceptFromHttp(
-                isset($request->getServerParams()['HTTP_ACCEPT_LANGUAGE']) ? $request->getServerParams()['HTTP_ACCEPT_LANGUAGE'] : 'en_US'
+                $request->getServerParams()['HTTP_ACCEPT_LANGUAGE'] ?? 'en_US'
             )
         );
 
         // Store the locale as a request attribute
-        return $next($request->withAttribute(self::LOCALIZATION_ATTRIBUTE, $locale), $response);
+        return $delegate->process($request->withAttribute(self::LOCALIZATION_ATTRIBUTE, $locale));
     }
 }
 ```
@@ -145,9 +173,8 @@ class LocalizationMiddleware
 > Use a request parameter as detailed above instead, as the request is created
 > specific to each process.
 
-In your `config/autoload/middleware-pipeline.global.php`, you'd register the
-dependency, and inject the middleware into the pipeline following the routing
-middleware:
+Register this new middleware in either `config/autoload/middleware-pipeline.global.php`
+or `config/autoload/dependencies.global.php`:
 
 ```php
 return [
@@ -158,6 +185,26 @@ return [
         ],
         /* ... */
     ],
+];
+```
+
+If using a programmatic pipeline, pipe it immediately after your routing middleware:
+
+```php
+use Application\I18n\LocalizationMiddleware;
+
+/* ... */
+$app->pipeRoutingMiddleware();
+$app->pipe(LocalizationMiddleware::class);
+/* ... */
+```
+
+If using a configuration-driven application, register it within your 
+`config/autoload/middleware-pipeline.global.php` file, injecting it
+into the pipeline following the routing middleware:
+
+```php
+return [
     'middleware_pipeline' => [
         /* ... */
         [

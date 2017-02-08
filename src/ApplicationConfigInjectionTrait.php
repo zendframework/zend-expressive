@@ -1,7 +1,7 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2016-2017 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
 
@@ -44,18 +44,11 @@ trait ApplicationConfigInjectionTrait
      *     'middleware' => 'Name of middleware service, or a callable',
      *     // optional:
      *     'path'  => '/path/to/match',
-     *     'error' => true,
      *     'priority' => 1, // integer
      * ]
      * </code>
      *
      * Note that the `path` element can only be a literal.
-     *
-     * `error` indicates whether or not the middleware represents error
-     * middleware; this is done so that Expressive can lazy-load an error
-     * middleware service (more below). Omitting `error` or setting it to a
-     * non-true value is the default, indicating the middleware is standard
-     * middleware.
      *
      * `priority` is used to shape the order in which middleware is piped to the
      * application. Values are integers, with high values having higher priority
@@ -63,16 +56,12 @@ trait ApplicationConfigInjectionTrait
      * Default priority if none is specified is 1. Middleware with the same
      * priority are piped in the order in which they appear.
      *
-     * Middleware piped may be either callables or service names. If you specify
-     * the middleware's `error` flag as `true`, the middleware will be piped using
-     * `Application::pipeErrorHandler()` instead of `Application::pipe()`.
+     * Middleware piped may be either callables or service names.
      *
      * Additionally, you can specify an array of callables or service names as
      * the `middleware` value of a specification. Internally, this will create
      * a `Zend\Stratigility\MiddlewarePipe` instance, with the middleware
      * specified piped in the order provided.
-     *
-     * Please note: error middleware is deprecated starting with the 1.1 release.
      *
      * @param null|array $config If null, attempts to pull the 'config' service
      *     from the composed container.
@@ -103,10 +92,7 @@ trait ApplicationConfigInjectionTrait
 
         foreach ($queue as $spec) {
             $path  = isset($spec['path']) ? $spec['path'] : '/';
-            $error = array_key_exists('error', $spec) ? (bool) $spec['error'] : false;
-            $pipe  = $error ? 'pipeErrorHandler' : 'pipe';
-
-            $this->{$pipe}($path, $spec['middleware']);
+            $this->pipe($path, $spec['middleware']);
         }
     }
 
@@ -165,24 +151,24 @@ trait ApplicationConfigInjectionTrait
                 continue;
             }
 
+            $methods = Route::HTTP_METHOD_ANY;
             if (isset($spec['allowed_methods'])) {
                 $methods = $spec['allowed_methods'];
                 if (! is_array($methods)) {
-                    throw new Container\Exception\InvalidArgumentException(sprintf(
+                    throw new Exception\InvalidArgumentException(sprintf(
                         'Allowed HTTP methods for a route must be in form of an array; received "%s"',
                         gettype($methods)
                     ));
                 }
-            } else {
-                $methods = Route::HTTP_METHOD_ANY;
             }
+
             $name  = isset($spec['name']) ? $spec['name'] : null;
             $route = new Route($spec['path'], $spec['middleware'], $methods, $name);
 
             if (isset($spec['options'])) {
                 $options = $spec['options'];
                 if (! is_array($options)) {
-                    throw new Container\Exception\InvalidArgumentException(sprintf(
+                    throw new Exception\InvalidArgumentException(sprintf(
                         'Route options must be an array; received "%s"',
                         gettype($options)
                     ));
@@ -193,36 +179,6 @@ trait ApplicationConfigInjectionTrait
 
             $this->route($route);
         }
-    }
-
-    /**
-     * Create and return the pipeline map callback.
-     *
-     * The returned callback has the signature:
-     *
-     * <code>
-     * function ($item) : callable|string
-     * </code>
-     *
-     * It is suitable for mapping pipeline middleware representing the application
-     * routing o dispatching middleware to a callable; if the provided item does not
-     * match either, the item is returned verbatim.
-     *
-     * @return callable
-     */
-    private function createPipelineMapper()
-    {
-        return function ($item) {
-            if ($item === Application::ROUTING_MIDDLEWARE) {
-                return [$this, 'routeMiddleware'];
-            }
-
-            if ($item === Application::DISPATCH_MIDDLEWARE) {
-                return [$this, 'dispatchMiddleware'];
-            }
-
-            return $item;
-        };
     }
 
     /**
@@ -249,27 +205,22 @@ trait ApplicationConfigInjectionTrait
      */
     private function createCollectionMapper()
     {
-        $pipelineMap = $this->createPipelineMapper();
         $appMiddlewares = [
             Application::ROUTING_MIDDLEWARE,
             Application::DISPATCH_MIDDLEWARE,
         ];
 
-        return function ($item) use ($pipelineMap, $appMiddlewares) {
+        return function ($item) use ($appMiddlewares) {
             if (in_array($item, $appMiddlewares, true)) {
-                return ['middleware' => $pipelineMap($item)];
+                return ['middleware' => $item];
             }
 
             if (! is_array($item) || ! array_key_exists('middleware', $item)) {
-                throw new Container\Exception\InvalidArgumentException(sprintf(
+                throw new Exception\InvalidArgumentException(sprintf(
                     'Invalid pipeline specification received; must be an array containing a middleware '
                     . 'key, or one of the Application::*_MIDDLEWARE constants; received %s',
                     is_object($item) ? get_class($item) : gettype($item)
                 ));
-            }
-
-            if (! is_callable($item['middleware']) && is_array($item['middleware'])) {
-                $item['middleware'] = array_map($pipelineMap, $item['middleware']);
             }
 
             return $item;

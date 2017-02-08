@@ -10,8 +10,8 @@
 namespace ZendTest\Expressive\Emitter;
 
 use InvalidArgumentException;
-use PHPUnit_Framework_TestCase as TestCase;
-use PHPUnit_Framework_Assert as Assert;
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Assert;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use SplStack;
@@ -62,7 +62,7 @@ class EmitterStackTest extends TestCase
      */
     public function testCannotPushNonEmitterToStack($value)
     {
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->emitter->push($value);
     }
 
@@ -71,7 +71,7 @@ class EmitterStackTest extends TestCase
      */
     public function testCannotUnshiftNonEmitterToStack($value)
     {
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->emitter->unshift($value);
     }
 
@@ -80,7 +80,7 @@ class EmitterStackTest extends TestCase
      */
     public function testCannotSetNonEmitterToSpecificIndex($value)
     {
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->emitter->offsetSet(0, $value);
     }
 

@@ -7,6 +7,7 @@ pages:
         - 'Quick Start: Standalone': getting-started/standalone.md
         - 'Quick Start: Skeleton Installer': getting-started/skeleton.md
     - Features:
+        - "Middleware Types": features/middleware-types.md
         - Applications: features/application.md
         - Containers:
             - Introduction: features/container/intro.md
@@ -30,6 +31,7 @@ pages:
             - 'Using Twig': features/template/twig.md
             - 'Using zend-view': features/template/zend-view.md
         - 'Error Handling': features/error-handling.md
+        - 'Modular Applications': features/modular-applications.md
         - Middleware:
             - 'Implicit HEAD and OPTIONS Middleware': features/middleware/implicit-methods-middleware.md
         - Helpers:
@@ -57,6 +59,7 @@ pages:
         - Migration:
             - 'From RC5 and Earlier': reference/migration/rc-to-v1.md
             - 'From the 1.0 series to 1.1+': reference/migration/to-v1-1.md
+            - 'To the 2.0 series': reference/migration/to-v2.md
 site_name: Expressive
 site_description: 'zend-expressive: PSR-7 Middleware Microframework'
 repo_url: 'https://github.com/zendframework/zend-expressive'

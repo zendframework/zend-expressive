@@ -12,7 +12,7 @@
     "extra": {
         "branch-alias": {
             "dev-master": "1.0-dev",
-            "dev-develop": "1.1-dev"
+            "dev-develop": "2.0-dev"
         }
     },
     "require": {
@@ -20,16 +20,16 @@
         "container-interop/container-interop": "^1.1",
         "psr/http-message": "^1.0",
         "zendframework/zend-diactoros": "^1.1",
-        "zendframework/zend-expressive-router": "^2.0",
+        "zendframework/zend-expressive-router": "^2.1",
         "zendframework/zend-expressive-template": "^1.0.4",
-        "zendframework/zend-stratigility": "^1.3.1",
+        "zendframework/zend-stratigility": "^2.0.1",
         "fig/http-message-util": "^1.1"
     },
     "require-dev": {
         "filp/whoops": "^1.1 || ^2.0",
         "malukenho/docheader": "^0.1.5",
         "mockery/mockery": "^0.9.5",
-        "phpunit/phpunit": "^5.7.1",
+        "phpunit/phpunit": "^5.7.9",
         "zendframework/zend-coding-standard": "~1.0.0",
         "zendframework/zend-expressive-aurarouter": "^2.0",
         "zendframework/zend-expressive-fastroute": "^2.0",

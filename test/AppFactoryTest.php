@@ -10,7 +10,7 @@
 namespace ZendTest\Expressive;
 
 use Interop\Container\ContainerInterface;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionProperty;
 use Zend\Diactoros\Response\SapiEmitter;
@@ -103,7 +103,7 @@ class AppFactoryTest extends TestCase
             FastRouteRouter::class,
         ];
 
-        $this->setExpectedException(MissingDependencyException::class);
+        $this->expectException(MissingDependencyException::class);
 
         AppFactory::create();
     }
@@ -114,7 +114,7 @@ class AppFactoryTest extends TestCase
             ServiceManager::class,
         ];
 
-        $this->setExpectedException(MissingDependencyException::class);
+        $this->expectException(MissingDependencyException::class);
 
         AppFactory::create();
     }

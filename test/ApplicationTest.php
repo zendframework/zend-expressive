@@ -9,11 +9,14 @@ namespace ZendTest\Expressive;
 
 use BadMethodCallException;
 use DomainException;
+use Fig\Http\Message\StatusCodeInterface as StatusCode;
 use Interop\Container\ContainerInterface;
+use Interop\Http\ServerMiddleware\DelegateInterface;
 use InvalidArgumentException;
 use Mockery;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use ReflectionProperty;
 use RuntimeException;
@@ -25,13 +28,16 @@ use Zend\Diactoros\ServerRequest as Request;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Expressive\Application;
+use Zend\Expressive\Delegate;
 use Zend\Expressive\Emitter\EmitterStack;
 use Zend\Expressive\Exception;
 use Zend\Expressive\Exception\InvalidMiddlewareException;
+use Zend\Expressive\Middleware;
 use Zend\Expressive\Router\Exception as RouterException;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouteResult;
 use Zend\Expressive\Router\RouterInterface;
+use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\Stratigility\Route as StratigilityRoute;
 use ZendTest\Expressive\TestAsset\InvokableMiddleware;
@@ -45,9 +51,7 @@ class ApplicationTest extends TestCase
 
     public function setUp()
     {
-        $this->noopMiddleware = function ($req, $res, $next) {
-        };
-
+        $this->noopMiddleware = new TestAsset\InteropMiddleware();
         $this->router = $this->prophesize(RouterInterface::class);
     }
 
@@ -138,7 +142,7 @@ class ApplicationTest extends TestCase
         $app = $this->getApp();
         $app->route('/foo', $this->noopMiddleware);
         $app->route('/bar', $this->noopMiddleware);
-        $this->setExpectedException(DomainException::class);
+        $this->expectException(DomainException::class);
         $app->route('/foo', function ($req, $res, $next) {
         });
     }
@@ -146,7 +150,7 @@ class ApplicationTest extends TestCase
     public function testCallingRouteWithOnlyAPathRaisesAnException()
     {
         $app = $this->getApp();
-        $this->setExpectedException(Exception\InvalidArgumentException::class);
+        $this->expectException(Exception\InvalidArgumentException::class);
         $app->route('/path');
     }
 
@@ -171,8 +175,8 @@ class ApplicationTest extends TestCase
     public function testCallingRouteWithAnInvalidPathTypeRaisesAnException($path)
     {
         $app = $this->getApp();
-        $this->setExpectedException(RouterException\InvalidArgumentException::class);
-        $app->route($path, 'middleware');
+        $this->expectException(RouterException\InvalidArgumentException::class);
+        $app->route($path, new TestAsset\InteropMiddleware());
     }
 
     /**
@@ -194,8 +198,7 @@ class ApplicationTest extends TestCase
         $app = $this->getApp();
         $route = $app->route('/foo', $this->noopMiddleware, []);
 
-        $middleware = function ($req, $res, $next) {
-        };
+        $middleware = new TestAsset\InteropMiddleware();
         $test = $app->get('/foo', $middleware);
         $this->assertNotSame($route, $test);
         $this->assertSame($route->getPath(), $test->getPath());
@@ -209,7 +212,7 @@ class ApplicationTest extends TestCase
         $app   = $this->getApp();
         $route = $app->get('/foo', $this->noopMiddleware);
 
-        $this->setExpectedException(DomainException::class);
+        $this->expectException(DomainException::class);
         $test = $app->get('/foo', function ($req, $res, $next) {
         });
     }
@@ -225,66 +228,10 @@ class ApplicationTest extends TestCase
         $this->assertCount(0, $pipeline);
     }
 
-    public function testDispatchMiddlewareCanDispatchArrayOfMiddlewareAsMiddlewarePipe()
-    {
-        $middleware = [
-            function () {
-            },
-            'FooBar',
-            [InvokableMiddleware::class, 'staticallyCallableMiddleware'],
-            InvokableMiddleware::class,
-        ];
-
-        $request = new ServerRequest([], [], '/', 'GET');
-        $routeResult = RouteResult::fromRoute(new Route('/', $middleware, [], __METHOD__));
-        $request = $request->withAttribute(RouteResult::class, $routeResult);
-
-        $container = $this->mockContainerInterface();
-        $this->injectServiceInContainer($container, 'FooBar', function () {
-        });
-
-        $app = new Application($this->router->reveal(), $container->reveal());
-        $app->dispatchMiddleware($request, new Response(), function () {
-        });
-    }
-
-    public function uncallableMiddleware()
-    {
-        return [
-            ['foo'],
-            [['foo']]
-        ];
-    }
-
-    /**
-     * @dataProvider uncallableMiddleware
-     * @expectedException \Zend\Expressive\Exception\InvalidMiddlewareException
-     */
-    public function testThrowsExceptionWhenDispatchingUncallableMiddleware($middleware)
-    {
-        $request = new ServerRequest([], [], '/', 'GET');
-        $routeResult = RouteResult::fromRoute(new Route('/', $middleware, [], __METHOD__));
-        $request = $request->withAttribute(RouteResult::class, $routeResult);
-
-        $this->getApp()->dispatchMiddleware($request, new Response(), function () {
-        });
-    }
-
-    public function testDispatchMiddlewareExecutesNextMiddlewareInStackIfNoRouteMatchPresent()
-    {
-        $request = new ServerRequest([], [], '/', 'GET');
-
-        $result = $this->getApp()->dispatchMiddleware($request, new Response(), function () {
-            return true;
-        });
-
-        $this->assertTrue($result);
-    }
-
     public function testCannotPipeRouteMiddlewareMoreThanOnce()
     {
         $app             = $this->getApp();
-        $routeMiddleware = [$app, 'routeMiddleware'];
+        $routeMiddleware = Application::ROUTING_MIDDLEWARE;
 
         $app->pipe($routeMiddleware);
         $app->pipe($routeMiddleware);
@@ -298,13 +245,13 @@ class ApplicationTest extends TestCase
         $this->assertInstanceOf(StratigilityRoute::class, $route);
         $test  = $route->handler;
 
-        $this->assertSame($routeMiddleware, $test);
+        $this->assertInstanceOf(Middleware\RouteMiddleware::class, $test);
     }
 
     public function testCannotPipeDispatchMiddlewareMoreThanOnce()
     {
-        $app             = $this->getApp();
-        $dispatchMiddleware = [$app, 'dispatchMiddleware'];
+        $app                = $this->getApp();
+        $dispatchMiddleware = Application::DISPATCH_MIDDLEWARE;
 
         $app->pipe($dispatchMiddleware);
         $app->pipe($dispatchMiddleware);
@@ -318,35 +265,35 @@ class ApplicationTest extends TestCase
         $this->assertInstanceOf(StratigilityRoute::class, $route);
         $test  = $route->handler;
 
-        $this->assertSame($dispatchMiddleware, $test);
+        $this->assertInstanceOf(Middleware\DispatchMiddleware::class, $test);
     }
 
-    public function testCanInjectFinalHandlerViaConstructor()
+    public function testCanInjectDefaultDelegateViaConstructor()
     {
-        $finalHandler = function ($req, $res, $err = null) {
-        };
-        $app  = new Application($this->router->reveal(), null, $finalHandler);
-        $test = $app->getFinalHandler();
-        $this->assertSame($finalHandler, $test);
+        $defaultDelegate = $this->prophesize(DelegateInterface::class)->reveal();
+        $app  = new Application($this->router->reveal(), null, $defaultDelegate);
+        $test = $app->getDefaultDelegate();
+        $this->assertSame($defaultDelegate, $test);
     }
 
-    public function testFinalHandlerIsUsedAtInvocationIfNoOutArgumentIsSupplied()
+    public function testDefaultDelegateIsUsedAtInvocationIfNoOutArgumentIsSupplied()
     {
         $routeResult = RouteResult::fromRouteFailure();
         $this->router->match()->willReturn($routeResult);
 
         $finalResponse = $this->prophesize(ResponseInterface::class)->reveal();
-        $finalHandler = function ($req, $res, $err = null) use ($finalResponse) {
-            return $finalResponse;
-        };
+        $defaultDelegate = $this->prophesize(DelegateInterface::class);
+        $defaultDelegate->process(Argument::type(ServerRequestInterface::class))
+            ->willReturn($finalResponse);
 
-        $app = new Application($this->router->reveal(), null, $finalHandler);
+        $emitter = $this->prophesize(EmitterInterface::class);
+        $emitter->emit($finalResponse)->shouldBeCalled();
+
+        $app = new Application($this->router->reveal(), null, $defaultDelegate->reveal(), $emitter->reveal());
 
         $request  = new Request([], [], 'http://example.com/');
-        $response = $this->prophesize(ResponseInterface::class);
 
-        $test = $app($request, $response->reveal());
-        $this->assertSame($finalResponse, $test);
+        $app->run($request);
     }
 
     public function testComposesEmitterStackWithSapiEmitterByDefault()
@@ -379,19 +326,20 @@ class ApplicationTest extends TestCase
         $this->router->match()->willReturn($routeResult);
 
         $finalResponse = $this->prophesize(ResponseInterface::class)->reveal();
-        $finalHandler = function ($req, $res, $err = null) use ($finalResponse) {
-            return $finalResponse;
-        };
+        $defaultDelegate = $this->prophesize(DelegateInterface::class);
+        $defaultDelegate->process(Argument::type(ServerRequestInterface::class))
+            ->willReturn($finalResponse);
 
         $emitter = $this->prophesize(EmitterInterface::class);
         $emitter->emit(
             Argument::type(ResponseInterface::class)
         )->shouldBeCalled();
 
-        $app = new Application($this->router->reveal(), null, $finalHandler, $emitter->reveal());
+        $app = new Application($this->router->reveal(), null, $defaultDelegate->reveal(), $emitter->reveal());
 
         $request  = new Request([], [], 'http://example.com/');
         $response = $this->prophesize(ResponseInterface::class);
+        $response->withStatus(StatusCode::STATUS_NOT_FOUND)->will([$response, 'reveal']);
 
         $app->run($request, $response->reveal());
     }
@@ -406,21 +354,21 @@ class ApplicationTest extends TestCase
     public function testCallingGetContainerWhenNoContainerComposedWillRaiseException()
     {
         $app = new Application($this->router->reveal());
-        $this->setExpectedException(RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $app->getContainer();
     }
 
     public function testUnsupportedMethodCall()
     {
         $app = $this->getApp();
-        $this->setExpectedException(BadMethodCallException::class);
+        $this->expectException(BadMethodCallException::class);
         $app->foo();
     }
 
     public function testCallMethodWithCountOfArgsNotEqualsWith2()
     {
         $app = $this->getApp();
-        $this->setExpectedException(BadMethodCallException::class);
+        $this->expectException(BadMethodCallException::class);
         $app->post('/foo');
     }
 
@@ -440,7 +388,7 @@ class ApplicationTest extends TestCase
 
         $route = $pipeline->dequeue();
         $this->assertInstanceOf(StratigilityRoute::class, $route);
-        $this->assertSame([$app, 'routeMiddleware'], $route->handler);
+        $this->assertInstanceOf(Middleware\RouteMiddleware::class, $route->handler);
         $this->assertEquals('/', $route->path);
     }
 
@@ -457,7 +405,7 @@ class ApplicationTest extends TestCase
 
         $route = $pipeline->dequeue();
         $this->assertInstanceOf(StratigilityRoute::class, $route);
-        $this->assertSame([$app, 'dispatchMiddleware'], $route->handler);
+        $this->assertInstanceOf(Middleware\DispatchMiddleware::class, $route->handler);
         $this->assertEquals('/', $route->path);
     }
 
@@ -466,9 +414,7 @@ class ApplicationTest extends TestCase
      */
     public function testPipingAllowsPassingMiddlewareServiceNameAsSoleArgument()
     {
-        $middleware = function ($req, $res, $next = null) {
-            return 'invoked';
-        };
+        $middleware = new TestAsset\InteropMiddleware();
 
         $container = $this->mockContainerInterface();
         $this->injectServiceInContainer($container, 'foo', $middleware);
@@ -483,42 +429,8 @@ class ApplicationTest extends TestCase
         $route = $pipeline->dequeue();
         $this->assertInstanceOf(StratigilityRoute::class, $route);
         $handler = $route->handler;
-
-        $this->assertEquals('invoked', $handler('foo', 'bar'));
-    }
-
-    /**
-     * @todo Remove for 2.0.0
-     * @group lazy-piping
-     */
-    public function testAllowsPipingErrorMiddlewareUsingServiceNameAsSoleArgument()
-    {
-        $middleware = function ($error, $req, $res, $next) {
-            return 'invoked';
-        };
-
-        $container = $this->mockContainerInterface();
-        $this->injectServiceInContainer($container, 'foo', $middleware);
-
-        $app = new Application($this->router->reveal(), $container->reveal());
-
-        set_error_handler(function ($errno, $errmsg) {
-            return false !== strstr($errmsg, 'error middleware is deprecated');
-        }, E_USER_DEPRECATED);
-
-        $app->pipeErrorHandler('foo');
-
-        restore_error_handler();
-
-        $r = new ReflectionProperty($app, 'pipeline');
-        $r->setAccessible(true);
-        $pipeline = $r->getValue($app);
-
-        $route = $pipeline->dequeue();
-        $this->assertInstanceOf(StratigilityRoute::class, $route);
-        $handler = $route->handler;
-
-        $this->assertEquals('invoked', $handler('foo', 'bar', 'baz', 'bat'));
+        $this->assertInstanceOf(Middleware\LazyLoadingMiddleware::class, $handler);
+        $this->assertAttributeEquals('foo', 'middlewareName', $handler);
     }
 
     /**
@@ -526,9 +438,7 @@ class ApplicationTest extends TestCase
      */
     public function testAllowsPipingMiddlewareAsServiceNameWithPath()
     {
-        $middleware = function ($req, $res, $next = null) {
-            return 'invoked';
-        };
+        $middleware = new TestAsset\InteropMiddleware();
 
         $container = $this->mockContainerInterface();
         $this->injectServiceInContainer($container, 'foo', $middleware);
@@ -543,14 +453,14 @@ class ApplicationTest extends TestCase
         $route = $pipeline->dequeue();
         $this->assertInstanceOf(StratigilityRoute::class, $route);
         $handler = $route->handler;
-
-        $this->assertEquals('invoked', $handler('foo', 'bar'));
+        $this->assertInstanceOf(Middleware\LazyLoadingMiddleware::class, $handler);
+        $this->assertAttributeEquals('foo', 'middlewareName', $handler);
     }
 
     /**
      * @group lazy-piping
      */
-    public function testPipingNotInvokableMiddlewareRisesException()
+    public function testPipingNotInvokableMiddlewareRaisesExceptionWhenInvokingRoute()
     {
         $middleware = 'not callable';
 
@@ -568,107 +478,11 @@ class ApplicationTest extends TestCase
         $this->assertInstanceOf(StratigilityRoute::class, $route);
         $handler = $route->handler;
 
-        $this->setExpectedException(InvalidMiddlewareException::class);
-        $handler('foo', 'bar');
-    }
+        $request = $this->prophesize(ServerRequest::class)->reveal();
+        $delegate = $this->prophesize(DelegateInterface::class)->reveal();
 
-    /**
-     * @todo Remove for 2.0.0
-     * @group lazy-piping
-     */
-    public function testAllowsPipingErrorMiddlewareAsServiceNameWithPath()
-    {
-        $middleware = function ($error, $req, $res, $next) {
-            return 'invoked';
-        };
-
-        $container = $this->mockContainerInterface();
-        $this->injectServiceInContainer($container, 'foo', $middleware);
-
-        $app = new Application($this->router->reveal(), $container->reveal());
-
-        set_error_handler(function ($errno, $errmsg) {
-            return false !== strstr($errmsg, 'error middleware is deprecated');
-        }, E_USER_DEPRECATED);
-
-        $app->pipeErrorHandler('/foo', 'foo');
-
-        restore_error_handler();
-
-        $r = new ReflectionProperty($app, 'pipeline');
-        $r->setAccessible(true);
-        $pipeline = $r->getValue($app);
-
-        $route = $pipeline->dequeue();
-        $this->assertInstanceOf(StratigilityRoute::class, $route);
-        $handler = $route->handler;
-
-        $this->assertEquals('invoked', $handler('foo', 'bar', 'baz', 'bat'));
-    }
-
-    /**
-     * @todo Remove for 2.0.0
-     */
-    public function testAllowsPipingErrorMiddlewareWithoutPath()
-    {
-        $middleware = function ($error, $req, $res, $next) {
-            return 'invoked';
-        };
-
-        $container = $this->mockContainerInterface();
-        $this->injectServiceInContainer($container, 'foo', $middleware);
-
-        $app = new Application($this->router->reveal(), $container->reveal());
-
-        set_error_handler(function ($errno, $errmsg) {
-            return false !== strstr($errmsg, 'error middleware is deprecated');
-        }, E_USER_DEPRECATED);
-
-        $app->pipeErrorHandler($middleware);
-
-        restore_error_handler();
-
-        $r = new ReflectionProperty($app, 'pipeline');
-        $r->setAccessible(true);
-        $pipeline = $r->getValue($app);
-
-        $route = $pipeline->dequeue();
-        $this->assertInstanceOf(StratigilityRoute::class, $route);
-        $handler = $route->handler;
-
-        $this->assertEquals('invoked', $handler('foo', 'bar', 'baz', 'bat'));
-    }
-
-    /**
-     * @todo Remove for 2.0.0
-     */
-    public function testPipingNotInvokableErrorMiddlewareRaisesException()
-    {
-        $middleware = 'not callable';
-
-        $container = $this->mockContainerInterface();
-        $this->injectServiceInContainer($container, 'foo', $middleware);
-
-        $app = new Application($this->router->reveal(), $container->reveal());
-
-        set_error_handler(function ($errno, $errmsg) {
-            return false !== strstr($errmsg, 'error middleware is deprecated');
-        }, E_USER_DEPRECATED);
-
-        $app->pipeErrorHandler('/foo', 'foo');
-
-        restore_error_handler();
-
-        $r = new ReflectionProperty($app, 'pipeline');
-        $r->setAccessible(true);
-        $pipeline = $r->getValue($app);
-
-        $route = $pipeline->dequeue();
-        $this->assertInstanceOf(StratigilityRoute::class, $route);
-        $handler = $route->handler;
-
-        $this->setExpectedException(InvalidMiddlewareException::class);
-        $handler('foo', 'bar', 'baz', 'bat');
+        $this->expectException(InvalidMiddlewareException::class);
+        $handler->process($request, $delegate);
     }
 
     public function invalidRequestExceptions()
@@ -690,7 +504,7 @@ class ApplicationTest extends TestCase
      * @preserveGlobalState disabled
      * @dataProvider invalidRequestExceptions
      */
-    public function testRunInvokesFinalHandlerWhenServerRequestFactoryRaisesException(
+    public function testRunReturnsResponseWithBadRequestStatusWhenServerRequestFactoryRaisesException(
         $expectedException,
         $message
     ) {
@@ -707,13 +521,6 @@ class ApplicationTest extends TestCase
                 ->once()
                 ->getMock();
 
-            $finalHandler = function ($request, $response, $err = null) use ($expectedException, $message) {
-                $this->assertEquals(400, $response->getStatusCode());
-                $this->assertInstanceOf($expectedException, $err);
-                $this->assertEquals($message, $err->getMessage());
-                return $response;
-            };
-
             $emitter = $this->prophesize(EmitterInterface::class);
             $emitter->emit(Argument::that(function ($response) {
                 $this->assertInstanceOf(ResponseInterface::class, $response, 'Emitter did not receive a response');
@@ -721,7 +528,7 @@ class ApplicationTest extends TestCase
                 return true;
             }))->shouldBeCalled();
 
-            $app = new Application($this->router->reveal(), null, $finalHandler, $emitter->reveal());
+            $app = new Application($this->router->reveal(), null, null, $emitter->reveal());
 
             $app->run();
         } catch (\Throwable $e) {
@@ -741,5 +548,117 @@ class ApplicationTest extends TestCase
         $routes = $app->getRoutes();
         $this->assertCount(1, $routes);
         $this->assertInstanceOf(Route::class, $routes[0]);
+    }
+
+    /**
+     * This test verifies that if the ErrorResponseGenerator service is available,
+     * it will be used to generate a response related to exceptions raised when
+     * creating the server request.
+     *
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     * @dataProvider invalidRequestExceptions
+     */
+    public function testRunReturnsResponseGeneratedByErrorResponseGeneratorWhenServerRequestFactoryRaisesException(
+        $expectedException,
+        $message
+    ) {
+        // try/catch is necessary in the case that the test fails.
+        // Assertion exceptions raised inside prophecy expectations normally
+        // are fine, but in the context of runInSeparateProcess, these
+        // lead to closure serialization errors. try/catch allows us to
+        // catch those and provide failure assertions.
+        try {
+            $generator = $this->prophesize(Middleware\ErrorResponseGenerator::class);
+            $generator
+                ->__invoke(
+                    Argument::type($expectedException),
+                    Argument::type(ServerRequestInterface::class),
+                    Argument::type(ResponseInterface::class)
+                )->will(function ($args) {
+                    return $args[2];
+                });
+
+            $container = $this->mockContainerInterface();
+            $this->injectServiceInContainer($container, Middleware\ErrorResponseGenerator::class, $generator);
+
+            $requestFactory = Mockery::mock('alias:' . ServerRequestFactory::class)
+                ->shouldReceive('fromGlobals')
+                ->withNoArgs()
+                ->andThrow($expectedException, $message)
+                ->once()
+                ->getMock();
+
+            $expectedResponse = $this->prophesize(ResponseInterface::class)->reveal();
+
+            $emitter = $this->prophesize(EmitterInterface::class);
+            $emitter->emit(Argument::that(function ($response) use ($expectedResponse) {
+                $this->assertSame($expectedResponse, $response, 'Unexpected response provided to emitter');
+                return true;
+            }))->shouldBeCalled();
+
+            $app = new Application($this->router->reveal(), $container->reveal(), null, $emitter->reveal());
+            $app->setResponsePrototype($expectedResponse);
+
+            $app->run();
+        } catch (\Throwable $e) {
+            $this->fail(sprintf("(%d) %s:\n%s", $e->getCode(), $e->getMessage(), $e->getTraceAsString()));
+        } catch (\Exception $e) {
+            $this->fail(sprintf("(%d) %s:\n%s", $e->getCode(), $e->getMessage(), $e->getTraceAsString()));
+        }
+    }
+
+    public function testGetDefaultDelegateWillPullFromContainerIfServiceRegistered()
+    {
+        $delegate = $this->prophesize(DelegateInterface::class)->reveal();
+        $container = $this->mockContainerInterface();
+        $this->injectServiceInContainer($container, Delegate\DefaultDelegate::class, $delegate);
+
+        $app = new Application($this->router->reveal(), $container->reveal());
+
+        $test = $app->getDefaultDelegate();
+
+        $this->assertSame($delegate, $test);
+    }
+
+    public function testWillCreateAndConsumeNotFoundDelegateFactoryToCreateDelegateIfNoDelegateInContainer()
+    {
+        $container = $this->mockContainerInterface();
+        $container->has(Delegate\DefaultDelegate::class)->willReturn(false);
+        $container->has(TemplateRendererInterface::class)->willReturn(false);
+        $app = new Application($this->router->reveal(), $container->reveal());
+
+        $delegate = $app->getDefaultDelegate();
+
+        $this->assertInstanceOf(Delegate\NotFoundDelegate::class, $delegate);
+
+        $r = new ReflectionProperty($app, 'responsePrototype');
+        $r->setAccessible(true);
+        $appResponsePrototype = $r->getValue($app);
+
+        $this->assertAttributeNotSame($appResponsePrototype, 'responsePrototype', $delegate);
+        $this->assertAttributeEmpty('renderer', $delegate);
+    }
+
+    public function testWillUseConfiguredTemplateRendererWhenCreatingDelegateFromNotFoundDelegateFactory()
+    {
+        $container = $this->mockContainerInterface();
+        $container->has(Delegate\DefaultDelegate::class)->willReturn(false);
+
+        $renderer = $this->prophesize(TemplateRendererInterface::class)->reveal();
+        $this->injectServiceInContainer($container, TemplateRendererInterface::class, $renderer);
+
+        $app = new Application($this->router->reveal(), $container->reveal());
+
+        $delegate = $app->getDefaultDelegate();
+
+        $this->assertInstanceOf(Delegate\NotFoundDelegate::class, $delegate);
+
+        $r = new ReflectionProperty($app, 'responsePrototype');
+        $r->setAccessible(true);
+        $appResponsePrototype = $r->getValue($app);
+
+        $this->assertAttributeNotSame($appResponsePrototype, 'responsePrototype', $delegate);
+        $this->assertAttributeSame($renderer, 'renderer', $delegate);
     }
 }

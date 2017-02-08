@@ -6,9 +6,6 @@ you should be aware of, and potentially update your application to adopt:
 
 - Original request and response messages
 - Error handling
-- Programmatic middleware pipelines
-- Usage of [http-interop middleware](https://github.com/http-interop/http-middleware)
-- Implicit handling of `HEAD` and `OPTIONS` requests
 
 ## Original messages
 
@@ -60,7 +57,8 @@ return [
 ];
 ```
 
-If using programmatic pipelines (see below):
+If you are [programmatically creating your pipeline](https://mwop.net/blog/2016-05-16-programmatic-expressive.html),
+use the following:
 
 ```php
 $app->pipe(OriginalMessages::class);
@@ -633,89 +631,6 @@ If any are detected, it also emits information on how to update your code.
 Please note, this may also require adding additional error middleware once you
 have set up your programmatic pipeline, as noted above.
 
-## http-interop
-
-Stratigility 1.3 provides the ability to work with [http-interop middleware
-0.2.0](https://github.com/http-interop/http-middleware/tree/0.2.0).
-
-This specification, which is being developed as the basis of
-[PSR-15](https://github.com/php-fig/fig-standards/tree/master/proposed/http-middleware),
-defines what is known as _lambda_ or _single-pass_ middleware, vs the
-_double-pass_ middleware traditionally used by Stratigility and Expressive.
-
-Double-pass refers to the fact that two arguments are passed to the delegation
-function `$next`: the request and response. Lambda or single-pass middleware
-only pass a single argument, the request.
-
-Stratigility 1.3 provides support for dispatching either style of middleware.
-
-Specifically, your middleware can now implement:
-
-- `Interop\Http\Middleware\ServerMiddlewareInterface`, which defines a single
-  method, `process(ServerRequestInterface $request,
-  Interop\Http\Middleware\DelegateInterface $delegate)`.
-- Callable middleware that follows the above signature (the typehint for the
-  request argument is optional).
-  
-Both styles of middleware may be piped directly to the middleware pipeline or as
-routed middleware within Expressive. In each case, you can invoke the
-next middleware layer using `$delegate->process($request)`.
-
-Starting in Stratigility 2.0 and Expressive 2.0, `Application` will continue to
-accept the legacy double-pass signature, but will require that you either:
-
-- Provide a `$responsePrototype` (a `ResponseInterface` instance) to the
-  `Application` instance prior to piping or routing such middleware.
-- Decorate the middleware in a `Zend\Stratigility\Middleware\CallableMiddlewareWrapper`
-  instance (which also requires a `$responsePrototype`).
-
-We recommend that you begin writing middleware to follow the http-interop
-standard at this time. As an example:
-
-```php
-namespace App\Middleware;
-
-use Interop\Http\Middleware\DelegateInterface;
-use Interop\Http\Middleware\ServerMiddlewareInterface;
-use Psr\Http\Message\ServerRequestInterface;
-
-class XClacksOverheadMiddleware implements ServerMiddlewareInterface
-{
-    /**
-     * {@inheritDoc}
-     */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
-    {
-        $response = $delegate->process($request);
-        return $response->withHeader('X-Clacks-Overhead', 'GNU Terry Pratchett');
-    }
-}
-```
-
-Alternately, you can write this as a callable:
-
-```php
-namespace App\Middleware;
-
-use Interop\Http\Middleware\DelegateInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-
-class XClacksOverheadMiddleware
-{
-    /**
-     * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
-     * @return ResponseInterface
-     */
-    public function __invoke(ServerRequestInterface $request, DelegateInterface $delegate)
-    {
-        $response = $delegate->process($request);
-        return $response->withHeader('X-Clacks-Overhead', 'GNU Terry Pratchett');
-    }
-}
-```
-
 ## Detecting error middleware usage
 
 As noted above in the section on [error handling](#error-handling), Stratigility
@@ -746,43 +661,3 @@ get full usage information.
 
 Use this tool to identify potential problem areas in your application, and
 update your code to use the new error handling facilities as outlined above.
-
-## Handling HEAD and OPTIONS requests
-
-Prior to 1.1, it was possible to route middleware that could not handle `HEAD`
-and/or `OPTIONS` requests. Per [RFC 7231, section 4.1](https://tools.ietf.org/html/rfc7231#section-4.1),
-"all general-purpose servers MUST support the methods GET and HEAD. All other
-methods are OPTIONAL." Additionally, most servers and implementors agree that
-`OPTIONS` _should_ be supported for any given resource, so that consumers can
-determine what methods are allowed for the given resource.
-
-To make this happen, the Expressive project implemented several features.
-
-First, zend-expressive-router 1.3.0 introduced several features in both
-`Zend\Expressive\Router\Route` and `Zend\Expressive\Router\RouteResult` to help
-consumers implement support for `HEAD` and `OPTIONS` in an automated way. The
-`Route` class now has two new methods, `implicitHead()` and `implicitOptions()`;
-these each return a boolean `true` value if support for those methods is
-_implicit_ &mdash; i.e., not defined explicitly for the route. The `RouteResult`
-class now introduces a new factory method, `fromRoute()`, that will create an
-instance from a `Route` instance; this then allows consumers of a `RouteResult`
-to query the `Route` to see if a matched `HEAD` or `OPTIONS` request needs
-automated handling. Each of the supported router implementations were updated to
-use this method, as well as to return a successful routing result if `HEAD`
-and/or `OPTIONS` requests are submitted, but the route does not explicitly
-support the method.
-
-Within Expressive itself, we now offer two new middleware to provide this
-automation:
-
-- `Zend\Expressive\Middleware\ImplicitHeadMiddleware`
-- `Zend\Expressive\Middleware\ImplicitOptionsMiddleware`
-
-If you want to support these methods automatically, each of these should be
-enabled between the routing and dispatch middleware. If you use the
-`expressive-pipeline-from-config` tool as documented in the
-[programmatic pipeline migration section](#migrate-to-programmatic-pipelines),
-entries for each will be injected into your generated pipeline.
-
-Please see the [chapter on the implicit methods middleware](../../features/middleware/implicit-methods-middleware.md)
-for more information on each.

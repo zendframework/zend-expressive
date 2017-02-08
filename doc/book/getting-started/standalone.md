@@ -55,6 +55,8 @@ root, and we want it to intercept any incoming request; as such, we'll use
 
 ```php
 <?php
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Zend\Diactoros\Response\TextResponse;
 use Zend\Expressive\AppFactory;
 
 chdir(dirname(__DIR__));
@@ -62,9 +64,8 @@ require 'vendor/autoload.php';
 
 $app = AppFactory::create();
 
-$app->get('/', function ($request, $response, $next) {
-    $response->getBody()->write('Hello, world!');
-    return $response;
+$app->get('/', function ($request, DelegateInterface $delegate) {
+    return new TextResponse('Hello, world!');
 });
 
 $app->pipeRoutingMiddleware();

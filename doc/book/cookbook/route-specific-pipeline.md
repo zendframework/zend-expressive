@@ -168,7 +168,8 @@ $app->route('/api/resource[/{id:[a-f0-9]{32}}]', [
 When either of these approaches are used, the individual middleware listed
 **MUST** be one of the following:
 
-- a callable middleware;
+- an instance of `Interop\Http\ServerMiddleware\MiddlewareInterface`;
+- a callable middleware (will be decorated as interop middleware);
 - a service name of middleware available in the container;
 - a fully qualified class name of a directly instantiable (no constructor
   arguments) middleware class.
