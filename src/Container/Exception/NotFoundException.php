@@ -12,6 +12,9 @@ use RuntimeException;
 
 /**
  * Exception indicating a service was not found in the container.
+ *
+ * @deprecated since 1.1.0; to remove in 2.0.0. This exception is not thrown
+ *     by any classes within Expressive at this time.
  */
 class NotFoundException extends RuntimeException implements
     ExceptionInterface,

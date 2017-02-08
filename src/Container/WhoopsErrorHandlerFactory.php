@@ -60,6 +60,13 @@ use Whoops\Run as Whoops;
  * </code>
  *
  * All values are booleans; omission of any implies boolean false.
+ *
+ * @deprecated since 1.1.0, to be removed in 2.0.0. The "final handler" concept
+ *     will be replaced with a "default delegate", which will be an
+ *     implementation of Interop\Http\ServerMiddleware\DelegateInterface that
+ *     returns a canned response. Expressive will provide tools to migrate your
+ *     code to use default delegates for 2.0; you will only need to manually
+ *     change your code if you are extending this class.
  */
 class WhoopsErrorHandlerFactory
 {
