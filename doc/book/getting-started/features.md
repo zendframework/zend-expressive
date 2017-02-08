@@ -74,10 +74,10 @@ Below is a diagram detailing the workflow used by Expressive.
 The `Application` acts as an "onion"; in the diagram above, the top is the
 outer-most layer of the onion, while the bottom is the inner-most.
 
-The `Application` dispatches each middleware. Each middleware accepts a
-*request*, a *response*, and the *next* middleware to dispatch. Internally,
-it's actually receiving the middleware stack itself, which knows which
-middleware to invoke next.
+The `Application` dispatches each middleware. Each middleware receives a request
+and a delegate for handing off processing of the request should the middleware
+not be able to fully process it itself. Internally, the delegate composes a
+queue of middleware, and invokes the next in the queue when invoked.
 
 Any given middleware can return a *response*, at which point execution winds
 its way back out the onion.
@@ -97,6 +97,39 @@ its way back out the onion.
 >   the middleware to a handler (HTTP 404 response status).
 > - Responses are returned back *through* the pipeline, in reverse order of
 >   traversal.
+
+> ### Double pass middleware
+>
+> The system described above is what is known as _lambda middleware_. Each
+> middleware receives the request and the delegate, and you pass only the
+> request to the delegate when wanting to hand off processing:
+>
+> ```php
+> function (ServerRequestInterface $request, DelegateInterface $delegate)
+> {
+>     $response = $delegate->process($request);
+>     return $response->withHeader('X-Test', time());
+> }
+> ```
+>
+> In Expressive 1.X, the default middleware style was what is known as _double
+> pass_ middleware. Double pass middleware receives both the request and a
+> response in addition to the delegate, and passes both the request and response
+> to the delegate when invoking it:
+>
+> ```php
+> function (ServerRequestInterface $request, ResponseInterface $response, callable $next)
+> {
+>     $response = $next($request, $response);
+>     return $response->withHeader('X-Test', time());
+> }
+> ```
+>
+> It is termed "double pass" because you pass both the request and response when
+> delegating to the next layer.
+> 
+> Expressive 2.X still supports double-pass middleware, though we recommend the
+> lambda style.
 
 > ### Stratigility 1.X Error Middleware
 >
