@@ -341,7 +341,7 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
      *     removed in Stratigility 2.0. You can start using standard middleware
      *     for error handling by calling `raiseThrowables()` on the `Application`
      *     instance, and piping such middleware in an outer layer of your application.
-     *     For an example, see `Zend\Stratigility\Middleware\ErrorHandler`.
+     *     For an example, {@see Zend\Stratigility\Middleware\ErrorHandler}.
      * @param string|callable $path Either a URI path prefix, or middleware.
      * @param null|string|callable $middleware Middleware
      * @return self
