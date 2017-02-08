@@ -44,18 +44,11 @@ trait ApplicationConfigInjectionTrait
      *     'middleware' => 'Name of middleware service, or a callable',
      *     // optional:
      *     'path'  => '/path/to/match',
-     *     'error' => true,
      *     'priority' => 1, // integer
      * ]
      * </code>
      *
      * Note that the `path` element can only be a literal.
-     *
-     * `error` indicates whether or not the middleware represents error
-     * middleware; this is done so that Expressive can lazy-load an error
-     * middleware service (more below). Omitting `error` or setting it to a
-     * non-true value is the default, indicating the middleware is standard
-     * middleware.
      *
      * `priority` is used to shape the order in which middleware is piped to the
      * application. Values are integers, with high values having higher priority
@@ -63,16 +56,12 @@ trait ApplicationConfigInjectionTrait
      * Default priority if none is specified is 1. Middleware with the same
      * priority are piped in the order in which they appear.
      *
-     * Middleware piped may be either callables or service names. If you specify
-     * the middleware's `error` flag as `true`, the middleware will be piped using
-     * `Application::pipeErrorHandler()` instead of `Application::pipe()`.
+     * Middleware piped may be either callables or service names.
      *
      * Additionally, you can specify an array of callables or service names as
      * the `middleware` value of a specification. Internally, this will create
      * a `Zend\Stratigility\MiddlewarePipe` instance, with the middleware
      * specified piped in the order provided.
-     *
-     * Please note: error middleware is deprecated starting with the 1.1 release.
      *
      * @param null|array $config If null, attempts to pull the 'config' service
      *     from the composed container.
