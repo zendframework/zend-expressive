@@ -20,16 +20,30 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - [#429](https://github.com/zendframework/zend-expressive/pull/429) deprecates
   the following methods and classes:
-  - `Zend\Expressive\Application::pipeErrorHandler()`
-  - `Zend\Expressive\Application::routeMiddleware()`
-  - `Zend\Expressive\Application::dispatchMiddleware()`
+  - `Zend\Expressive\Application::pipeErrorHandler()`; use the
+    `raise_throwables` flag and standard middleware to handle errors instead.
+  - `Zend\Expressive\Application::routeMiddleware()`; this is extracted to a
+    dedicated middleware class for 2.0.
+  - `Zend\Expressive\Application::dispatchMiddleware()`; this is extracted to a
+    dedicated middleware class for 2.0.
   - `Zend\Expressive\Application::getFinalHandler()` (this patch provides `getDefaultDelegate()` as a forwards-compatibility measure)
-  - `Zend\Expressive\Container\InvalidArgumentException`
-  - `Zend\Expressive\Container\NotFoundException`
+  - `Zend\Expressive\Container\Exception\InvalidArgumentException`; this will be removed
+    in 2.0.0, and places where it was used will instead throw
+    `Zend\Expressive\Exception\InvalidArgumentException`.
+  - `Zend\Expressive\Container\Exception\NotFoundException`; this exception is
+    never thrown at this point.
   - `Zend\Expressive\Container\TemplatedErrorHandlerFactory`
   - `Zend\Expressive\Container\WhoopsErrorHandlerFactory`
-  - `Zend\Expressive\ErrorMiddlewarePipe`
-  - `Zend\Expressive\TemplatedErrorHandler`
+  - `Zend\Expressive\ErrorMiddlewarePipe`; Stratigility 1.3 deprecates its
+    `Zend\Stratigility\ErrorMiddlewareInterface`, and removes it in version 2.0.
+    use the `raise_throwables` flag and standard middleware to handle errors
+    instead.
+  - `Zend\Expressive\TemplatedErrorHandler`; the "final handler" concept is
+    retired in Expressive 2.0, and replaced with default delegates (classes
+    implementing `Interop\Http\ServerMiddleware\DelegateInterface` that will be
+    executed when the internal pipeline is exhausted, in order to guarantee a
+    response). If you are using custom final handlers, you will need to rewrite
+    them when adopting Expressive 2.0.
   - `Zend\Expressive\WhoopsErrorHandler`
 
 ### Removed
