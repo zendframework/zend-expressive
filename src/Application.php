@@ -8,12 +8,15 @@
 namespace Zend\Expressive;
 
 use Interop\Container\ContainerInterface;
+use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Request;
+use Throwable;
+use UnexpectedValueException;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
+use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Stratigility\FinalHandler;
 use Zend\Stratigility\Http\Response as StratigilityResponse;
@@ -22,15 +25,13 @@ use Zend\Stratigility\MiddlewarePipe;
 /**
  * Middleware application providing routing based on paths and HTTP methods.
  *
- * @todo For 1.1, remove the RouteResultSubjectInterface implementation, and
- *     all deprecated properties and methods.
  * @method Router\Route get($path, $middleware, $name = null)
  * @method Router\Route post($path, $middleware, $name = null)
  * @method Router\Route put($path, $middleware, $name = null)
  * @method Router\Route patch($path, $middleware, $name = null)
  * @method Router\Route delete($path, $middleware, $name = null)
  */
-class Application extends MiddlewarePipe implements Router\RouteResultSubjectInterface
+class Application extends MiddlewarePipe
 {
     use MarshalMiddlewareTrait;
 
@@ -67,6 +68,12 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
     ];
 
     /**
+     * @var bool Flag indicating whether or not throwables/exceptions raised
+     *     by middleware should be caught, or raised by the dispatcher.
+     */
+    private $raiseThrowables = false;
+
+    /**
      * @var bool Flag indicating whether or not the route middleware is
      *     registered in the middleware pipeline.
      */
@@ -76,20 +83,6 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
      * @var Router\RouterInterface
      */
     private $router;
-
-    /**
-     * @deprecated This property will be removed in v1.1.
-     * @var bool Flag indicating whether or not the route result observer
-     *     middleware is registered in the middleware pipeline.
-     */
-    private $routeResultObserverMiddlewareIsRegistered = false;
-
-    /**
-     * Observers to trigger once we have a route result.
-     *
-     * @var Router\RouteResultObserverInterface[]
-     */
-    private $routeResultObservers = [];
 
     /**
      * List of all routes registered directly with the application.
@@ -187,8 +180,7 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
                 ));
         }
 
-        // @TODO: we can use variadic parameters when dependency is raised to PHP 5.6
-        return call_user_func_array([$this, 'route'], $args);
+        return $this->route(...$args);
     }
 
     /**
@@ -200,44 +192,6 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
     public function any($path, $middleware, $name = null)
     {
         return $this->route($path, $middleware, null, $name);
-    }
-
-    /**
-     * Attach a route result observer.
-     *
-     * @deprecated This method will be removed in v1.1.
-     * @param Router\RouteResultObserverInterface $observer
-     */
-    public function attachRouteResultObserver(Router\RouteResultObserverInterface $observer)
-    {
-        $this->routeResultObservers[] = $observer;
-    }
-
-    /**
-     * Detach a route result observer.
-     *
-     * @deprecated This method will be removed in v1.1.
-     * @param Router\RouteResultObserverInterface $observer
-     */
-    public function detachRouteResultObserver(Router\RouteResultObserverInterface $observer)
-    {
-        if (false === ($index = array_search($observer, $this->routeResultObservers, true))) {
-            return;
-        }
-        unset($this->routeResultObservers[$index]);
-    }
-
-    /**
-     * Notify all route result observers with the given route result.
-     *
-     * @deprecated This method will be removed in v1.1.
-     * @param Router\RouteResult
-     */
-    public function notifyRouteResultObservers(Router\RouteResult $result)
-    {
-        foreach ($this->routeResultObservers as $observer) {
-            $observer->update($result);
-        }
     }
 
     /**
@@ -387,20 +341,6 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
     }
 
     /**
-     * Register the route result observer middleware in the middleware pipeline.
-     *
-     * @deprecated This method will be removed in v1.1.
-     */
-    public function pipeRouteResultObserverMiddleware()
-    {
-        if ($this->routeResultObserverMiddlewareIsRegistered) {
-            return;
-        }
-        $this->pipe([$this, 'routeResultObserverMiddleware']);
-        $this->routeResultObserverMiddlewareIsRegistered = true;
-    }
-
-    /**
      * Middleware that routes the incoming request and delegates to the matched middleware.
      *
      * Uses the router to route the incoming request, injecting the request
@@ -439,7 +379,10 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
                 // Need to swallow deprecation notices, as this is how 405 errors
                 // are reported in the 1.0 series.
                 $this->swallowDeprecationNotices();
-                return $next($request, $response, 405);
+
+                return $this->raiseThrowables
+                    ? $response
+                    : $next($request, $response, 405);
             }
             return $next($request, $response);
         }
@@ -494,36 +437,6 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
 
         $middleware = $this->prepareMiddleware($middleware, $this->container);
         return $middleware($request, $response, $next);
-    }
-
-    /**
-     * Middleware for notifying route result observers.
-     *
-     * If the request has a route result, calls notifyRouteResultObservers().
-     *
-     * This middleware should be injected between the routing and dispatch
-     * middleware when creating your middleware pipeline.
-     *
-     * If you are using this, rewrite your observers as middleware that
-     * pulls the route result from the request instead.
-     *
-     * @deprecated This method will be removed in v1.1.
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @param callable $next
-     * @returns ResponseInterface
-     */
-    public function routeResultObserverMiddleware(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        callable $next
-    ) {
-        $result = $request->getAttribute(Router\RouteResult::class, false);
-        if ($result) {
-            $this->notifyRouteResultObservers($result);
-        }
-
-        return $next($request, $response);
     }
 
     /**
@@ -586,8 +499,19 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
      */
     public function run(ServerRequestInterface $request = null, ResponseInterface $response = null)
     {
+        try {
+            $request  = $request ?: ServerRequestFactory::fromGlobals();
+        } catch (InvalidArgumentException $e) {
+            // Unable to parse uploaded files
+            $this->emitMarshalServerRequestException($e);
+            return;
+        } catch (UnexpectedValueException $e) {
+            // Invalid request method
+            $this->emitMarshalServerRequestException($e);
+            return;
+        }
+
         $response = $response ?: new Response();
-        $request  = $request ?: ServerRequestFactory::fromGlobals();
         $request  = $request->withAttribute('originalResponse', $response);
 
         $response = $this($request, $response);
@@ -670,6 +594,17 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
     }
 
     /**
+     * Exists solely to allow us to test the flag within our own logic.
+     *
+     * {@inheritDoc}
+     */
+    public function raiseThrowables()
+    {
+        parent::raiseThrowables();
+        $this->raiseThrowables = true;
+    }
+
+    /**
      * Determine if the route is duplicated in the current list.
      *
      * Checks if a route with the same name or path exists already in the list;
@@ -727,5 +662,19 @@ class Application extends MiddlewarePipe implements Router\RouteResultSubjectInt
         };
 
         $previous = set_error_handler($handler);
+    }
+
+    /**
+     * @param \Exception|Throwable $exception
+     * @return void
+     */
+    private function emitMarshalServerRequestException($exception)
+    {
+        $response = (new Response())
+            ->withStatus(400);
+        $finalHandler = $this->getFinalHandler();
+        $response = $finalHandler(new ServerRequest(), $response, $exception);
+        $emitter = $this->getEmitter();
+        $emitter->emit($response);
     }
 }

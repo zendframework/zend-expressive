@@ -16,6 +16,8 @@ use Zend\Expressive\Container\Exception\InvalidArgumentException as ContainerInv
 use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouterInterface;
+use Zend\Stratigility\FinalHandler;
+use Zend\Stratigility\NoopFinalHandler;
 
 /**
  * Factory to use with an IoC container in order to return an Application instance.
@@ -26,6 +28,9 @@ use Zend\Expressive\Router\RouterInterface;
  *   bridge will be instantiated and used.
  * - 'Zend\Expressive\FinalHandler'. The service should be a callable to use as
  *   the final handler when the middleware pipeline is exhausted.
+ *   If the 'zend-expressive.raise_throwables' flag is enabled, the factory will
+ *   instead look for the 'Zend\Stratigility\NoopFinalHandler' service,
+ *   creating an empty instance if none is found.
  * - 'Zend\Diactoros\Response\EmitterInterface'. If missing, an EmitterStack is
  *   created, adding a SapiEmitter to the bottom of the stack.
  * - 'config' (an array or ArrayAccess object). If present, and it contains route
@@ -113,6 +118,21 @@ use Zend\Expressive\Router\RouterInterface;
  * the `middleware` value of a specification. Internally, this will create
  * a `Zend\Stratigility\MiddlewarePipe` instance, with the middleware
  * specified piped in the order provided.
+ *
+ * You may disable injection of configured routing and the middleware pipeline
+ * by enabling the `zend-expressive.programmatic_pipeline` configuration flag.
+ *
+ * You may opt-in to providing a middleware-based error handler by enabling the
+ * `zend-expressive.raise_throwables` configuration flag. If you do this, the
+ * application will no longer catch exceptions and invoke Stratigility error
+ * middleware; you will instead need to provide custom middleware that provides
+ * the try/catch block. You may use Zend\Stratigility\Middleware\ErrorHandler,
+ * with our provided Zend\Expressive\Middleware\ErrorResponseGenerator and/or
+ * Zend\Expressive\Middleware\WhoopsErrorResponseGenerator classes.
+ *
+ * Additionally, when raise_throwables is enabled, you will need to provide an
+ * innermost middleware to invoke when the queue is exhausted; we suggest
+ * Zend\Expressive\Middleware\NotFoundHandler.
  */
 class ApplicationFactory
 {
@@ -135,13 +155,15 @@ class ApplicationFactory
      */
     public function __invoke(ContainerInterface $container)
     {
+        $config = $container->has('config') ? $container->get('config') : [];
+
         $router = $container->has(RouterInterface::class)
             ? $container->get(RouterInterface::class)
             : new FastRouteRouter();
 
-        $finalHandler = $container->has('Zend\Expressive\FinalHandler')
-            ? $container->get('Zend\Expressive\FinalHandler')
-            : null;
+        $finalHandler = ! empty($config['zend-expressive']['raise_throwables'])
+            ? $this->marshalNoopFinalHandler($container)
+            : $this->marshalLegacyFinalHandler($container, $config);
 
         $emitter = $container->has(EmitterInterface::class)
             ? $container->get(EmitterInterface::class)
@@ -149,7 +171,13 @@ class ApplicationFactory
 
         $app = new Application($router, $container, $finalHandler, $emitter);
 
-        $this->injectRoutesAndPipeline($app, $container);
+        if (! empty($config['zend-expressive']['raise_throwables'])) {
+            $app->raiseThrowables();
+        }
+
+        if (empty($config['zend-expressive']['programmatic_pipeline'])) {
+            $this->injectRoutesAndPipeline($app, $config);
+        }
 
         return $app;
     }
@@ -158,11 +186,10 @@ class ApplicationFactory
      * Injects routes and the middleware pipeline into the application.
      *
      * @param Application $app
-     * @param ContainerInterface $container
+     * @param array $config
      */
-    private function injectRoutesAndPipeline(Application $app, ContainerInterface $container)
+    private function injectRoutesAndPipeline(Application $app, array $config)
     {
-        $config = $container->has('config') ? $container->get('config') : [];
         $pipelineCreated = false;
 
         if (isset($config['middleware_pipeline']) && is_array($config['middleware_pipeline'])) {
@@ -469,5 +496,33 @@ class ApplicationFactory
             $queue->insert($item, [$priority, $serial--]);
             return $queue;
         };
+    }
+
+    /**
+     * @param ContainerInterface $container
+     * @return callable|NoopFinalHandler
+     */
+    private function marshalNoopFinalHandler(ContainerInterface $container)
+    {
+        return $container->has(NoopFinalHandler::class)
+            ? $container->get(NoopFinalHandler::class)
+            : new NoopFinalHandler();
+    }
+
+    /**
+     * Create default FinalHandler with options configured under the key final_handler.options.
+     *
+     * @param ContainerInterface $container
+     * @param array|\ArrayObject $config
+     * @return callable|FinalHandler
+     */
+    private function marshalLegacyFinalHandler(ContainerInterface $container, $config)
+    {
+        if ($container->has('Zend\Expressive\FinalHandler')) {
+            return $container->get('Zend\Expressive\FinalHandler');
+        }
+
+        $options = isset($config['final_handler']['options']) ? $config['final_handler']['options'] : [];
+        return new FinalHandler($options, null);
     }
 }

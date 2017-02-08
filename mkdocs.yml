@@ -18,7 +18,6 @@ pages:
             - Introduction: features/router/intro.md
             - 'Routing Interface': features/router/interface.md
             - 'URI Generation': features/router/uri-generation.md
-            - 'Route Result Observers': features/router/result-observers.md
             - 'Routing vs Piping': features/router/piping.md
             - 'Using Aura': features/router/aura.md
             - 'Using FastRoute': features/router/fast-route.md
@@ -55,6 +54,7 @@ pages:
         - 'Expressive Projects': reference/expressive-projects.md
         - Migration:
             - 'From RC5 and Earlier': reference/migration/rc-to-v1.md
+            - 'To Expressive 1.1': reference/migration/to-v1-1.md
 site_name: Expressive
 site_description: 'zend-expressive: PSR-7 Middleware Microframework'
 repo_url: 'https://github.com/zendframework/zend-expressive'
