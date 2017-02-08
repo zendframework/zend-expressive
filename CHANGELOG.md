@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 1.1.0 - TBD
+
+### Added
+
+- [#429](https://github.com/zendframework/zend-expressive/pull/429) adds
+  `Zend\Expressive\Application::getDefaultDelegate()` as a
+  forwards-compatibility measure for the upcoming version 2.0.0. Currently,
+  it proxies to `getFinalHandler()`.
+
+### Changed
+
+- [#429](https://github.com/zendframework/zend-expressive/pull/429) updates the
+  minimum supported zend-stratigility version to 1.3.3.
+
+### Deprecated
+
+- [#429](https://github.com/zendframework/zend-expressive/pull/429) deprecates
+  the following methods and classes:
+  - `Zend\Expressive\Application::pipeErrorHandler()`
+  - `Zend\Expressive\Application::routeMiddleware()`
+  - `Zend\Expressive\Application::dispatchMiddleware()`
+  - `Zend\Expressive\Application::getFinalHandler()` (this patch provides `getDefaultDelegate()` as a forwards-compatibility measure)
+  - `Zend\Expressive\Container\InvalidArgumentException`
+  - `Zend\Expressive\Container\NotFoundException`
+  - `Zend\Expressive\Container\TemplatedErrorHandlerFactory`
+  - `Zend\Expressive\Container\WhoopsErrorHandlerFactory`
+  - `Zend\Expressive\ErrorMiddlewarePipe`
+  - `Zend\Expressive\TemplatedErrorHandler`
+  - `Zend\Expressive\WhoopsErrorHandler`
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 1.0.6 - 2017-01-09
 
 ### Added
