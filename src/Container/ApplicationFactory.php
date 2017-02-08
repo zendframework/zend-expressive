@@ -14,6 +14,8 @@ use Zend\Expressive\Application;
 use Zend\Expressive\Delegate;
 use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\RouterInterface;
+use Zend\Stratigility\FinalHandler;
+use Zend\Stratigility\NoopFinalHandler;
 
 /**
  * Factory to use with an IoC container in order to return an Application instance.

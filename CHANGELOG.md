@@ -166,6 +166,34 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
+- [#309](https://github.com/zendframework/zend-expressive/pull/309) adds the
+  ability to provide options with which to instantiate the `FinalHandler`
+  instance, via the configuration:
+
+  ```php
+  [
+      'final_handler' => [
+          'options' => [ /* array of options */ ],
+      ],
+  ```
+
+- [#373](https://github.com/zendframework/zend-expressive/pull/373) adds interception
+  of exceptions from the `ServerRequestFactory` for invalid request information in order
+  to return `400` responses.
+
+- [#432](https://github.com/zendframework/zend-expressive/pull/432) adds two new
+  configuration flags for use with `Zend\Expressive\Container\ApplicationFactory`:
+  - `zend-expressive.programmatic_pipelines`: when enabled, the factory will
+    ignore the `middleware_pipeline` and `routes` configuration, allowing you to
+    wire these programmatically instead. We recommend creating these in the
+    files `config/pipeline.php` and `config/routes.php`, respectively, and
+    modifying your `public/index.php` to `require` these files in statements
+    immediately preceding the call to `$app->run()`.
+  - `zend-expressive.raise_throwables`: when enabled, this will be used to
+    notify zend-stratigility's internal dispatcher to no longer catch
+    exceptions/throwables, and instead allow them to bubble out. This allows you
+    to write custom middleware for handling errors.
+
 - [#429](https://github.com/zendframework/zend-expressive/pull/429) adds
   `Zend\Expressive\Application::getDefaultDelegate()` as a
   forwards-compatibility measure for the upcoming version 2.0.0. Currently,
@@ -175,6 +203,21 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - [#429](https://github.com/zendframework/zend-expressive/pull/429) updates the
   minimum supported zend-stratigility version to 1.3.3.
+
+- [#396](https://github.com/zendframework/zend-expressive/pull/396) updates the
+  `Zend\Expressive\Container\ApplicationFactory` to vary creation of the
+  `Application` instance based on two new configuration variables:
+
+  - `zend-expressive.programmatic_pipeline` will cause the factory to skip
+    injection of the middleware pipeline and routes from configuration. It is
+    then up to the developer to do so, or use the `Application` API to pipe
+    middleware and/or add routed middleware.
+
+  - `zend-expressive.raise_throwables` will cause the factory to call the new
+    `raiseThrowables()` method exposed by `Application` (and inherited from
+    `Zend\Stratigility\MiddlewarePipe`). Doing so will cause the application to
+    raise any `Throwable` or `Exception` instances caught, instead of catching
+    them and dispatching them to (legacy) Stratigility error middleware.
 
 ### Deprecated
 
@@ -208,7 +251,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Removed
 
-- Nothing.
+- [#406](https://github.com/zendframework/zend-expressive/pull/406) removes the
+  `RouteResultSubjectInterface` implementation from `Zend\Expressive\Application`,
+  per the deprecation prior to the 1.0 stable release.
 
 ### Fixed
 

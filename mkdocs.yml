@@ -58,8 +58,8 @@ pages:
         - 'Expressive Projects': reference/expressive-projects.md
         - Migration:
             - 'From RC5 and Earlier': reference/migration/rc-to-v1.md
-            - 'From the 1.0 series to 1.1+': reference/migration/to-v1-1.md
-            - 'To the 2.0 series': reference/migration/to-v2.md
+            - 'To Expressive 1.1': reference/migration/to-v1-1.md
+            - 'To Expressive 2.0': reference/migration/to-v2.md
 site_name: Expressive
 site_description: 'zend-expressive: PSR-7 Middleware Microframework'
 repo_url: 'https://github.com/zendframework/zend-expressive'
