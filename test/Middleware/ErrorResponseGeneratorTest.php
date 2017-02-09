@@ -104,7 +104,7 @@ class ErrorResponseGeneratorTest extends TestCase
         $this->assertSame($response, $secondaryResponse->reveal());
     }
 
-    public function testTemplates()
+    public function templates()
     {
         return [
             'default' => [null, 'error::error'],
@@ -113,7 +113,7 @@ class ErrorResponseGeneratorTest extends TestCase
     }
 
     /**
-     * @dataProvider testTemplates
+     * @dataProvider templates
      *
      * @param null|string $template
      * @param string $expected
@@ -162,7 +162,7 @@ class ErrorResponseGeneratorTest extends TestCase
     }
 
     /**
-     * @dataProvider testTemplates
+     * @dataProvider templates
      *
      * @param null|string $template
      * @param string $expected
