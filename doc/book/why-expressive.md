@@ -14,7 +14,7 @@ want to use it optimally.  And to acquire that depth of knowledge, you’re goin
 to need to spend a lot of time, digging deep into zend-mvc’s internals, before
 you begin to get the most out of it.
 
-To quote Zend Framework project lead, [Matthew Weier O’Phinney](https://twitter.com/mwop):
+To quote Zend Framework project lead, [Matthew Weier O’Phinney](https://mwop.net):
 
 > The problem is that zend-mvc is anything but beginner-friendly at this point.
 > You're required to deep dive into the event manager, service manager, and
