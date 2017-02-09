@@ -63,6 +63,7 @@ We might then implement `Album\Action\AlbumPage` as follows:
 <?php
 namespace Album\Action;
 
+use Fig\Http\Message\StatusCodeInterface as StatusCode;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -90,7 +91,7 @@ class AlbumPage implements MiddlewareInterface
                 return $this->editAction($request, $delegate);
             default:
                 // Invalid; thus, a 404!
-                return new EmptyResponse(404);
+                return new EmptyResponse(StatusCode::STATUS_NOT_FOUND);
         }
     }
 
@@ -129,6 +130,7 @@ a generic implementation, via an `AbstractPage` class:
 <?php
 namespace App\Action;
 
+use Fig\Http\Message\StatusCodeInterface as StatusCode;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -141,7 +143,7 @@ abstract class AbstractPage implements MiddlewareInterface
         $action = $request->getAttribute('action', 'index') . 'Action';
 
         if (! method_exists($this, $action)) {
-            return new EmptyResponse(404);
+            return new EmptyResponse(StatusCode::STATUS_NOT_FOUND);
         }
 
         return $this->$action($request, $delegate);
@@ -190,6 +192,7 @@ class AlbumPage extends AbstractPage
 > <?php
 > namespace App\Action;
 > 
+> use Fig\Http\Message\StatusCodeInterface as StatusCode;
 > use Interop\Http\ServerMiddleware\DelegateInterface;
 > use Psr\Http\Message\ServerRequestInterface;
 > use Zend\Diactoros\Response\EmptyResponse;
@@ -201,7 +204,7 @@ class AlbumPage extends AbstractPage
 >         $action = $request->getAttribute('action', 'index') . 'Action';
 > 
 >         if (! method_exists($this, $action)) {
->             return new EmptyResponse(404);
+>             return new EmptyResponse(StatusCode::STATUS_NOT_FOUND);
 >         }
 > 
 >         return $this->$action($request, $delegate);
