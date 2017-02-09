@@ -26,5 +26,8 @@ framework for PHP, with the following features:
 Essentially, Expressive allows *you* to develop using the tools *you* prefer,
 and provides minimal structure and facilities to ease your development.
 
-[Keep reading](getting-started/features.md), and get started writing your first
-middleware application today!
+Should I choose it over Zend\Mvc?
+That’s a good question. [Here’s what we recommend.](why-expressive.md)
+
+If you’re keen to get started, then [keep reading](getting-started/features.md)
+and get started writing your first middleware application today!
