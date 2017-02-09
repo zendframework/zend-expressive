@@ -8,11 +8,12 @@
 namespace Zend\Expressive\Middleware;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Delegate\NotFoundDelegate;
 
-class NotFoundHandler
+class NotFoundHandler implements MiddlewareInterface
 {
     /**
      * @var NotFoundDelegate
