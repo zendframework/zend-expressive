@@ -136,8 +136,6 @@ class ImplicitOptionsMiddlewareTest extends TestCase
         $request->getMethod()->willReturn(RequestMethod::METHOD_OPTIONS);
         $request->getAttribute(RouteResult::class, false)->will([$result, 'reveal']);
 
-        $response = $this->prophesize(ResponseInterface::class)->reveal();
-
         $delegate = $this->prophesize(DelegateInterface::class);
         $delegate->process($request->reveal())->shouldNotBeCalled();
 

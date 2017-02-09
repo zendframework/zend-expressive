@@ -198,7 +198,7 @@ class ApplicationFactoryTest extends TestCase
 
         $this->expectException(ExpressiveException\InvalidArgumentException::class);
         $this->expectExceptionMessage('pipeline');
-        $app = $this->factory->__invoke($this->container->reveal());
+        $this->factory->__invoke($this->container->reveal());
     }
 
     public function testCanSpecifyRouteViaConfigurationWithNoMethods()

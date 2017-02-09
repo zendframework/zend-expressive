@@ -227,7 +227,7 @@ class MarshalMiddlewareTraitTest extends TestCase
 
         $this->expectException(InvalidMiddlewareException::class);
         $this->expectExceptionMessage('second-middleware');
-        $middleware = $this->prepareMiddlewareWithoutContainer($base);
+        $this->prepareMiddlewareWithoutContainer($base);
     }
 
     public function testPreparingServiceBasedMiddlewareReturnsLazyLoadingMiddleware()

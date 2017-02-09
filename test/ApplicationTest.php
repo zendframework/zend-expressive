@@ -221,10 +221,10 @@ class ApplicationTest extends TestCase
     {
         $this->router->addRoute(Argument::type(Route::class))->shouldBeCalledTimes(1);
         $app   = $this->getApp();
-        $route = $app->get('/foo', $this->noopMiddleware);
+        $app->get('/foo', $this->noopMiddleware);
 
         $this->expectException(DomainException::class);
-        $test = $app->get('/foo', function ($req, $res, $next) {
+        $app->get('/foo', function ($req, $res, $next) {
         });
     }
 
@@ -529,7 +529,7 @@ class ApplicationTest extends TestCase
         // lead to closure serialization errors. try/catch allows us to
         // catch those and provide failure assertions.
         try {
-            $requestFactory = Mockery::mock('alias:' . ServerRequestFactory::class)
+            Mockery::mock('alias:' . ServerRequestFactory::class)
                 ->shouldReceive('fromGlobals')
                 ->withNoArgs()
                 ->andThrow($expectedException, $message)
@@ -601,7 +601,7 @@ class ApplicationTest extends TestCase
             $container = $this->mockContainerInterface();
             $this->injectServiceInContainer($container, Middleware\ErrorResponseGenerator::class, $generator);
 
-            $requestFactory = Mockery::mock('alias:' . ServerRequestFactory::class)
+            Mockery::mock('alias:' . ServerRequestFactory::class)
                 ->shouldReceive('fromGlobals')
                 ->withNoArgs()
                 ->andThrow($expectedException, $message)
