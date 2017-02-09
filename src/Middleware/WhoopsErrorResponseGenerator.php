@@ -28,7 +28,7 @@ class WhoopsErrorResponseGenerator
      */
     public function __construct($whoops)
     {
-        if (! $whoops instanceof RunInterface) {
+        if (! ($whoops instanceof RunInterface || $whoops instanceof Run)) {
             throw new InvalidArgumentException(sprintf(
                 '%s expects a %s or %s instance; received %s',
                 get_class($this),
