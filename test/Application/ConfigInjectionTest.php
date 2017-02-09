@@ -159,7 +159,7 @@ class ConfigInjectionTest extends TestCase
         $app->injectRoutesFromConfig($config);
 
         $routes = $app->getRoutes();
-        $this->assertEquals(0, count($routes));
+        $this->assertCount(0, $routes);
     }
 
     public function configWithRoutesButNoPipeline()
@@ -348,7 +348,7 @@ class ConfigInjectionTest extends TestCase
         $r->setAccessible(true);
         $appPipeline = $r->getValue($app);
 
-        $this->assertEquals(1, count($appPipeline));
+        $this->assertCount(1, $appPipeline);
 
         $innerMiddleware = $appPipeline->dequeue()->handler;
         $this->assertInstanceOf(MiddlewarePipe::class, $innerMiddleware);
