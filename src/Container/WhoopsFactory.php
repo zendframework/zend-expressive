@@ -68,9 +68,7 @@ class WhoopsFactory
      */
     private function registerJsonHandler(Whoops $whoops, $config)
     {
-        if (! isset($config['json_exceptions']['display'])
-            || empty($config['json_exceptions']['display'])
-        ) {
+        if (empty($config['json_exceptions']['display'])) {
             return;
         }
 
