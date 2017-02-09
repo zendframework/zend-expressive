@@ -30,10 +30,10 @@ It provides a very minimalist structure. Essentially all you have to become
 familiar with are five core components. These are:
 
 - A DI container
-- A Router
-- An Error handler for development
-- A Template engine (if you’re not creating an API)
-- PSR-7 Middleware
+- A router
+- An error handler for development
+- A template engine (if you’re not creating an API)
+- PSR-7 messages and http-interop (future PSR-15) middleware
 
 Given that, you can quickly get up to speed with the framework and begin
 creating the application that you need.  We believe that this approach &mdash; in
