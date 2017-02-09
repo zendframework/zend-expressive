@@ -129,8 +129,6 @@ class Application extends MiddlewarePipe
             throw new Exception\BadMethodCallException('Unsupported method');
         }
 
-        // @codingStandardsIgnoreStart
-        // Ignoring standards here as there is a bug in how case statements are identified.
         switch (count($args)) {
             case 2:
                 // We have path and middleware; append the HTTP method.
@@ -158,7 +156,6 @@ class Application extends MiddlewarePipe
                     count($args)
                 ));
         }
-        // @codingStandardsIgnoreEnd
 
         return $this->route(...$routeArgs);
     }

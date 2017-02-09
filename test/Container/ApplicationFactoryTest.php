@@ -382,9 +382,8 @@ class ApplicationFactoryTest extends TestCase
 
     public function configWithRoutesButNoPipeline()
     {
-        // @codingStandardsIgnoreStart
-        $middleware = function ($request, $response, $next) {};
-        // @codingStandardsIgnoreEnd
+        $middleware = function ($request, $response, $next) {
+        };
 
         $routes = [
             [
