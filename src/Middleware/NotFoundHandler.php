@@ -7,7 +7,6 @@
 
 namespace Zend\Expressive\Middleware;
 
-use Fig\Http\Message\StatusCodeInterface;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

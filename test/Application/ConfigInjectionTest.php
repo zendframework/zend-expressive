@@ -7,14 +7,11 @@
 
 namespace ZendTest\Expressive\Application;
 
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
-use ReflectionFunction;
 use ReflectionProperty;
 use SplQueue;
 use Zend\Expressive\Application;
-use Zend\Expressive\Container\ApplicationFactory;
 use Zend\Expressive\Exception\InvalidArgumentException;
 use Zend\Expressive\Middleware;
 use Zend\Expressive\Router\RouterInterface;

@@ -7,16 +7,11 @@
 
 namespace ZendTest\Expressive\Container;
 
-use Closure;
 use Interop\Http\ServerMiddleware\DelegateInterface;
-use InvalidArgumentException;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
-use Psr\Http\Message\ServerRequestInterface;
-use ReflectionFunction;
 use ReflectionProperty;
-use SplQueue;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Expressive\Application;
@@ -25,7 +20,6 @@ use Zend\Expressive\Delegate\DefaultDelegate;
 use Zend\Expressive\Delegate\NotFoundDelegate;
 use Zend\Expressive\Emitter\EmitterStack;
 use Zend\Expressive\Exception as ExpressiveException;
-use Zend\Expressive\Exception\InvalidMiddlewareException;
 use Zend\Expressive\Middleware\DispatchMiddleware;
 use Zend\Expressive\Middleware\LazyLoadingMiddleware;
 use Zend\Expressive\Middleware\RouteMiddleware;
@@ -33,8 +27,6 @@ use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Stratigility\MiddlewarePipe;
-use Zend\Stratigility\NoopFinalHandler;
-use Zend\Stratigility\Route as StratigilityRoute;
 use ZendTest\Expressive\ContainerTrait;
 use ZendTest\Expressive\TestAsset\InteropMiddleware;
 use ZendTest\Expressive\TestAsset\InvokableMiddleware;

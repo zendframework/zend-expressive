@@ -9,7 +9,6 @@ namespace ZendTest\Expressive\Emitter;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\Assert;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use SplStack;
