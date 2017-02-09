@@ -91,7 +91,7 @@ $ mkdocs build
 ```
 
 Additionally, public-facing, browseable documentation is available at
-https://zendframework.github.io/zend-expressive/
+https://docs.zendframework.com/zend-expressive/
 
 ## Architecture
 
