@@ -156,6 +156,12 @@
     
         
     <url>
+     <loc>/why-expressive/</loc>
+     <lastmod>2017-02-09</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
      <loc>/reference/usage-examples/</loc>
      <lastmod>2017-02-09</lastmod>
      <changefreq>daily</changefreq>
