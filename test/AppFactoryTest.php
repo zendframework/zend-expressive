@@ -25,7 +25,7 @@ use Zend\ServiceManager\ServiceManager;
  */
 class AppFactoryTest extends TestCase
 {
-    static public $existingClasses = null;
+    static public $existingClasses;
 
     protected function tearDown()
     {
