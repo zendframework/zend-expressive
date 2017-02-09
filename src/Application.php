@@ -166,8 +166,8 @@ class Application extends MiddlewarePipe
 
     /**
      * @param string|Router\Route $path
-     * @param callable|string     $middleware Middleware (or middleware service name) to associate with route.
-     * @param null|string         $name the name of the route
+     * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
+     * @param null|string $name The name of the route.
      * @return Router\Route
      */
     public function any($path, $middleware, $name = null)
@@ -255,6 +255,8 @@ class Application extends MiddlewarePipe
 
     /**
      * Register the routing middleware in the middleware pipeline.
+     *
+     * @return void
      */
     public function pipeRoutingMiddleware()
     {
@@ -266,6 +268,8 @@ class Application extends MiddlewarePipe
 
     /**
      * Register the dispatch middleware in the middleware pipeline.
+     *
+     * @return void
      */
     public function pipeDispatchMiddleware()
     {
@@ -287,7 +291,7 @@ class Application extends MiddlewarePipe
      * @param string|Router\Route $path
      * @param callable|string|array $middleware Middleware (or middleware service name) to associate with route.
      * @param null|array $methods HTTP method to accept; null indicates any.
-     * @param null|string $name the name of the route
+     * @param null|string $name The name of the route.
      * @return Router\Route
      * @throws Exception\InvalidArgumentException if $path is not a Router\Route AND middleware is null.
      */
@@ -351,6 +355,7 @@ class Application extends MiddlewarePipe
      *
      * @param null|ServerRequestInterface $request
      * @param null|ResponseInterface $response
+     * @return void
      */
     public function run(ServerRequestInterface $request = null, ResponseInterface $response = null)
     {
@@ -381,7 +386,7 @@ class Application extends MiddlewarePipe
      *
      * If no IoC container is registered, we raise an exception.
      *
-     * @return \Interop\Container\ContainerInterface
+     * @return ContainerInterface
      * @throws Exception\ContainerNotRegisteredException
      */
     public function getContainer()

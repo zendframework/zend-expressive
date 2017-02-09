@@ -33,7 +33,7 @@ class WhoopsPageHandlerFactory
 {
     /**
      * @param ContainerInterface $container
-     * @returns PrettyPageHandler
+     * @return PrettyPageHandler
      */
     public function __invoke(ContainerInterface $container)
     {
@@ -54,6 +54,7 @@ class WhoopsPageHandlerFactory
      * @param PrettyPageHandler $handler
      * @param array|\ArrayAccess $config
      * @param ContainerInterface $container
+     * @return void
      * @throws Exception\InvalidServiceException for an invalid editor definition.
      */
     private function injectEditor(PrettyPageHandler $handler, $config, ContainerInterface $container)

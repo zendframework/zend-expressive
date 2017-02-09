@@ -52,6 +52,7 @@ class EmitterStack extends SplStack implements EmitterInterface
      *
      * @param mixed $index
      * @param EmitterInterface $emitter
+     * @return void
      * @throws InvalidArgumentException if not an EmitterInterface instance
      */
     public function offsetSet($index, $emitter)
@@ -64,6 +65,7 @@ class EmitterStack extends SplStack implements EmitterInterface
      * Push an emitter to the stack.
      *
      * @param EmitterInterface $emitter
+     * @return void
      * @throws InvalidArgumentException if not an EmitterInterface instance
      */
     public function push($emitter)
@@ -76,6 +78,7 @@ class EmitterStack extends SplStack implements EmitterInterface
      * Unshift an emitter to the stack.
      *
      * @param EmitterInterface $emitter
+     * @return void
      * @throws InvalidArgumentException if not an EmitterInterface instance
      */
     public function unshift($emitter)
@@ -88,6 +91,7 @@ class EmitterStack extends SplStack implements EmitterInterface
      * Validate that an emitter implements EmitterInterface.
      *
      * @param mixed $emitter
+     * @return void
      * @throws InvalidArgumentException for non-emitter instances
      */
     private function validateEmitter($emitter)

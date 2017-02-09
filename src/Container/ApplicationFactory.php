@@ -90,6 +90,7 @@ class ApplicationFactory
      *
      * @param Application $app
      * @param array $config
+     * @return void
      */
     private function injectRoutesAndPipeline(Application $app, array $config)
     {

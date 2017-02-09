@@ -135,6 +135,7 @@ trait ApplicationConfigInjectionTrait
      * @param null|array $config If null, attempts to pull the 'config' service
      *     from the composed container.
      * @return void
+     * @throws Exception\InvalidArgumentException
      */
     public function injectRoutesFromConfig(array $config = null)
     {
@@ -202,6 +203,7 @@ trait ApplicationConfigInjectionTrait
      * raises an exception, to ensure the pipeline is built correctly.
      *
      * @return callable
+     * @throws Exception\InvalidArgumentException
      */
     private function createCollectionMapper()
     {

@@ -64,6 +64,7 @@ class WhoopsFactory
      *
      * @param Whoops $whoops
      * @param array|\ArrayAccess $config
+     * @return void
      */
     private function registerJsonHandler(Whoops $whoops, $config)
     {
