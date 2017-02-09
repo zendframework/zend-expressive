@@ -7,7 +7,6 @@
 
 namespace Zend\Expressive\Middleware;
 
-use Fig\Http\Message\StatusCodeInterface;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -31,8 +30,8 @@ class NotFoundHandler
     /**
      * Creates and returns a 404 response.
      *
-     * @param ServerRequestInterface $request  Passed to internal delegate
-     * @param DelegateInterface      $delegate Ignored.
+     * @param ServerRequestInterface $request Passed to internal delegate
+     * @param DelegateInterface $delegate Ignored.
      * @return ResponseInterface
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)

@@ -1,20 +1,27 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
+ * @copyright Copyright (c) 2016-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
 
 namespace ZendTest\Expressive\Container;
 
 use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Zend\Expressive\Container\ErrorResponseGeneratorFactory;
 use Zend\Expressive\Middleware\ErrorResponseGenerator;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
 class ErrorResponseGeneratorFactoryTest extends TestCase
 {
+    /** @var ContainerInterface|ObjectProphecy */
+    private $container;
+
+    /** @var TemplateRendererInterface|ObjectProphecy */
+    private $renderer;
+
     public function setUp()
     {
         $this->container = $this->prophesize(ContainerInterface::class);

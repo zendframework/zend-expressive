@@ -7,9 +7,11 @@
 
 namespace ZendTest\Expressive\Middleware;
 
+use Fig\Http\Message\StatusCodeInterface as StatusCode;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Middleware\RouteMiddleware;
@@ -19,6 +21,21 @@ use Zend\Expressive\Router\RouterInterface;
 
 class RouteMiddlewareTest extends TestCase
 {
+    /** @var RouterInterface|ObjectProphecy */
+    private $router;
+
+    /** @var ResponseInterface|ObjectProphecy */
+    private $response;
+
+    /** @var RouteMiddleware */
+    private $middleware;
+
+    /** @var ServerRequestInterface|ObjectProphecy */
+    private $request;
+
+    /** @var DelegateInterface|ObjectProphecy */
+    private $delegate;
+
     public function setUp()
     {
         $this->router     = $this->prophesize(RouterInterface::class);
@@ -39,7 +56,7 @@ class RouteMiddlewareTest extends TestCase
         $this->router->match($this->request->reveal())->willReturn($result);
         $this->delegate->process()->shouldNotBeCalled();
         $this->request->withAttribute()->shouldNotBeCalled();
-        $this->response->withStatus(405)->will([$this->response, 'reveal']);
+        $this->response->withStatus(StatusCode::STATUS_METHOD_NOT_ALLOWED)->will([$this->response, 'reveal']);
         $this->response->withHeader('Allow', 'GET,POST')->will([$this->response, 'reveal']);
 
         $response = $this->middleware->process($this->request->reveal(), $this->delegate->reveal());

@@ -1,14 +1,13 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
 
 namespace ZendTest\Expressive;
 
+use Fig\Http\Message\StatusCodeInterface as StatusCode;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
@@ -62,52 +61,19 @@ class IntegrationTest extends TestCase
         $app->run($request, $response);
 
         $this->assertInstanceOf(ResponseInterface::class, $this->response);
-        $this->assertEquals(404, $this->response->getStatusCode());
+        $this->assertEquals(StatusCode::STATUS_NOT_FOUND, $this->response->getStatusCode());
     }
 
     public function testInjectedFinalHandlerCanEmitA404WhenNoMiddlewareMatches()
     {
-        $request      = new ServerRequest([], [], 'https://example.com/foo', 'GET');
-        $response     = new Response();
-        $delegate     = new NotFoundDelegate($response);
-        $app          = new Application(new FastRouteRouter(), null, $delegate, $this->getEmitter());
+        $request  = new ServerRequest([], [], 'https://example.com/foo', 'GET');
+        $response = new Response();
+        $delegate = new NotFoundDelegate($response);
+        $app      = new Application(new FastRouteRouter(), null, $delegate, $this->getEmitter());
 
         $app->run($request, $response);
 
         $this->assertInstanceOf(ResponseInterface::class, $this->response);
-        $this->assertEquals(404, $this->response->getStatusCode());
-    }
-
-    /**
-     * @todo Remove for version 2.0, as that version will remove error middleware support
-     * @group 400
-     */
-    public function testErrorMiddlewareDeprecationErrorHandlerWillNotOverridePreviouslyRegisteredErrorHandler()
-    {
-        $triggered = 0;
-        $this->errorHandler = set_error_handler(function ($errno, $errstr) use (&$triggered) {
-            $triggered++;
-            return true;
-        });
-
-        $expected = new Response();
-        $middleware = function ($request, $response, $next) use ($expected) {
-            trigger_error('Triggered', E_USER_NOTICE);
-            return $expected;
-        };
-
-        $app      = new Application(new FastRouteRouter(), null, null, $this->getEmitter());
-        $app->pipe($middleware);
-
-        $request  = new ServerRequest([], [], 'https://example.com/foo', 'GET');
-        $response = clone $expected;
-
-        $app->run($request, $response);
-
-        trigger_error('Triggered', E_USER_NOTICE);
-
-        restore_error_handler();
-
-        $this->assertSame(2, $triggered);
+        $this->assertEquals(StatusCode::STATUS_NOT_FOUND, $this->response->getStatusCode());
     }
 }

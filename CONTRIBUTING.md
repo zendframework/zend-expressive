@@ -41,18 +41,17 @@ To run tests:
 - Clone the repository:
 
   ```console
-  $ git clone git@github.com:zendframework/zend-expressive.git
+  $ git clone git://github.com/zendframework/zend-expressive.git
   $ cd zend-expressive
   ```
 
 - Install dependencies via composer:
 
   ```console
-  $ curl -sS https://getcomposer.org/installer | php --
-  $ ./composer.phar install
+  $ composer install
   ```
 
-  If you don't have `curl` installed, you can also download `composer.phar` from https://getcomposer.org/
+  If you don't have `composer` installed, please download it from https://getcomposer.org/download/
 
 - Run the tests using the "test" command shipped in the `composer.json`:
 
@@ -80,7 +79,6 @@ $ composer cs-check
 
 To attempt to automatically fix common CS issues:
 
-
 ```console
 $ composer cs-fix
 ```
@@ -88,18 +86,30 @@ $ composer cs-fix
 If the above fixes any CS issues, please re-run the tests to ensure
 they pass, and make sure you add and commit the changes after verification.
 
+## Running License Checks
+
+File-level docblocks should follow the format demonstrated in `.docheader`. To
+check for conformity, use:
+
+```console
+$ composer license-check
+```
+
+This will flag files that are incorrect, which you can then update. Re-run the
+tool to verify your changes.
+
 ## Recommended Workflow for Contributions
 
 Your first step is to establish a public repository from which we can
 pull your work into the master repository. We recommend using
 [GitHub](https://github.com), as that is where the component is already hosted.
 
-1. Setup a [GitHub account](http://github.com/), if you haven't yet
-2. Fork the repository (http://github.com/zendframework/zend-expressive)
+1. Setup a [GitHub account](https://github.com/), if you haven't yet
+2. Fork the repository (https://github.com/zendframework/zend-expressive)
 3. Clone the canonical repository locally and enter it.
 
    ```console
-   $ git clone git://github.com:zendframework/zend-expressive.git
+   $ git clone git://github.com/zendframework/zend-expressive.git
    $ cd zend-expressive
    ```
 
@@ -218,7 +228,6 @@ repository, we suggest doing some cleanup of these branches.
    ```console
    $ git push {username} :<branchname>
    ```
-
 
 ## Conduct
 

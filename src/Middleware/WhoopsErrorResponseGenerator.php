@@ -69,6 +69,7 @@ class WhoopsErrorResponseGenerator
      *
      * @param ServerRequestInterface $request
      * @param PrettyPageHandler $handler
+     * @return void
      */
     private function prepareWhoopsHandler(ServerRequestInterface $request, PrettyPageHandler $handler)
     {

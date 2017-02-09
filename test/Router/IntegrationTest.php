@@ -9,35 +9,34 @@ namespace ZendTest\Expressive\Router;
 
 use Fig\Http\Message\RequestMethodInterface as RequestMethod;
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
+use Interop\Container\ContainerInterface;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
-use Psr\Http\Message\ResponseInterface;
-use SplQueue;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Stream;
 use Zend\Expressive\Application;
-use Zend\Expressive\Exception\InvalidMiddlewareException;
 use Zend\Expressive\Middleware;
 use Zend\Expressive\Router\AuraRouter;
 use Zend\Expressive\Router\FastRouteRouter;
-use Zend\Expressive\Router\Route as ExpressiveRoute;
-use Zend\Expressive\Router\RouteResult;
-use Zend\Expressive\Router\RouteResultObserverInterface;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Router\ZendRouter;
-use Zend\Stratigility\Next;
-use Zend\Stratigility\Route;
 use ZendTest\Expressive\ContainerTrait;
 
 class IntegrationTest extends TestCase
 {
     use ContainerTrait;
 
-    /** @var ObjectProphecy */
-    protected $container;
+    /** @var Response */
+    private $response;
+
+    /** @var RouterInterface|ObjectProphecy */
+    private $router;
+
+    /** @var ContainerInterface|ObjectProphecy */
+    private $container;
 
     public function setUp()
     {
@@ -60,9 +59,9 @@ class IntegrationTest extends TestCase
     public function routerAdapters()
     {
         return [
-          'aura'       => [ AuraRouter::class ],
-          'fast-route' => [ FastRouteRouter::class ],
-          'zf2'        => [ ZendRouter::class ],
+          'aura'       => [AuraRouter::class],
+          'fast-route' => [FastRouteRouter::class],
+          'zf2'        => [ZendRouter::class],
         ];
     }
 
@@ -124,6 +123,8 @@ class IntegrationTest extends TestCase
 
     /**
      * @dataProvider routerAdapters
+     *
+     * @param string $adapter
      */
     public function testRoutingDoesNotMatchMethod($adapter)
     {
@@ -132,18 +133,21 @@ class IntegrationTest extends TestCase
         $delegate->process(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
-        $request = new ServerRequest([ 'REQUEST_METHOD' => 'DELETE' ], [], '/foo', 'DELETE');
+        $request = new ServerRequest(['REQUEST_METHOD' => 'DELETE'], [], '/foo', 'DELETE');
         $result  = $app->process($request, $delegate->reveal());
 
-        $this->assertSame(405, $result->getStatusCode());
+        $this->assertSame(StatusCode::STATUS_METHOD_NOT_ALLOWED, $result->getStatusCode());
         $headers = $result->getHeaders();
-        $this->assertSame([ 'GET,POST' ], $headers['Allow']);
+        $this->assertSame(['GET,POST'], $headers['Allow']);
     }
 
     /**
      * @see https://github.com/zendframework/zend-expressive/issues/40
      * @group 40
+     *
      * @dataProvider routerAdapters
+     *
+     * @param string $adapter
      */
     public function testRoutingWithSamePathWithoutName($adapter)
     {
@@ -154,12 +158,12 @@ class IntegrationTest extends TestCase
         $delegate->process(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
-        $request = new ServerRequest([ 'REQUEST_METHOD' => 'GET' ], [], '/foo', 'GET');
+        $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');
         $result  = $app->process($request, $delegate->reveal());
 
         $this->assertEquals('Middleware GET', (string) $result->getBody());
 
-        $request  = new ServerRequest([ 'REQUEST_METHOD' => 'POST' ], [], '/foo', 'POST');
+        $request  = new ServerRequest(['REQUEST_METHOD' => 'POST'], [], '/foo', 'POST');
         $result   = $app->process($request, $delegate->reveal());
 
         $this->assertEquals('Middleware POST', (string) $result->getBody());
@@ -168,7 +172,10 @@ class IntegrationTest extends TestCase
     /**
      * @see https://github.com/zendframework/zend-expressive/issues/40
      * @group 40
+     *
      * @dataProvider routerAdapters
+     *
+     * @param string $adapter
      */
     public function testRoutingWithSamePathWithName($adapter)
     {
@@ -179,12 +186,12 @@ class IntegrationTest extends TestCase
         $delegate->process(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
-        $request = new ServerRequest([ 'REQUEST_METHOD' => 'GET' ], [], '/foo', 'GET');
+        $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');
         $result  = $app->process($request, $delegate->reveal());
 
         $this->assertEquals('Middleware GET', (string) $result->getBody());
 
-        $request = new ServerRequest([ 'REQUEST_METHOD' => 'POST' ], [], '/foo', 'POST');
+        $request = new ServerRequest(['REQUEST_METHOD' => 'POST'], [], '/foo', 'POST');
         $result  = $app->process($request, $delegate->reveal());
 
         $this->assertEquals('Middleware POST', (string) $result->getBody());
@@ -193,7 +200,10 @@ class IntegrationTest extends TestCase
     /**
      * @see https://github.com/zendframework/zend-expressive/issues/40
      * @group 40
+     *
      * @dataProvider routerAdapters
+     *
+     * @param string $adapter
      */
     public function testRoutingWithSamePathWithRouteWithoutName($adapter)
     {
@@ -204,12 +214,12 @@ class IntegrationTest extends TestCase
         $delegate->process(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
-        $request = new ServerRequest([ 'REQUEST_METHOD' => 'GET' ], [], '/foo', 'GET');
+        $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');
         $result  = $app->process($request, $delegate->reveal());
 
         $this->assertEquals('Middleware GET', (string) $result->getBody());
 
-        $request = new ServerRequest([ 'REQUEST_METHOD' => 'POST' ], [], '/foo', 'POST');
+        $request = new ServerRequest(['REQUEST_METHOD' => 'POST'], [], '/foo', 'POST');
         $result  = $app->process($request, $delegate->reveal());
 
         $this->assertEquals('Middleware POST', (string) $result->getBody());
@@ -217,7 +227,10 @@ class IntegrationTest extends TestCase
 
     /**
      * @see https://github.com/zendframework/zend-expressive/issues/40
+     *
      * @dataProvider routerAdapters
+     *
+     * @param string $adapter
      */
     public function testRoutingWithSamePathWithRouteWithName($adapter)
     {
@@ -228,12 +241,12 @@ class IntegrationTest extends TestCase
         $delegate->process(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
-        $request = new ServerRequest([ 'REQUEST_METHOD' => 'GET' ], [], '/foo', 'GET');
+        $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');
         $result  = $app->process($request, $delegate->reveal());
 
         $this->assertEquals('Middleware GET', (string) $result->getBody());
 
-        $request = new ServerRequest([ 'REQUEST_METHOD' => 'POST' ], [], '/foo', 'POST');
+        $request = new ServerRequest(['REQUEST_METHOD' => 'POST'], [], '/foo', 'POST');
         $result  = $app->process($request, $delegate->reveal());
 
         $this->assertEquals('Middleware POST', (string) $result->getBody());
@@ -242,7 +255,10 @@ class IntegrationTest extends TestCase
     /**
      * @see https://github.com/zendframework/zend-expressive/issues/40
      * @group 40
+     *
      * @dataProvider routerAdapters
+     *
+     * @param string $adapter
      */
     public function testRoutingWithSamePathWithRouteWithMultipleMethods($adapter)
     {
@@ -265,15 +281,15 @@ class IntegrationTest extends TestCase
         $delegate->process(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
-        $request = new ServerRequest([ 'REQUEST_METHOD' => 'GET' ], [], '/foo', 'GET');
+        $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');
         $result  = $app->process($request, $delegate->reveal());
         $this->assertEquals('Middleware GET, POST', (string) $result->getBody());
 
-        $request = new ServerRequest([ 'REQUEST_METHOD' => 'POST' ], [], '/foo', 'POST');
+        $request = new ServerRequest(['REQUEST_METHOD' => 'POST'], [], '/foo', 'POST');
         $result  = $app->process($request, $delegate->reveal());
         $this->assertEquals('Middleware GET, POST', (string) $result->getBody());
 
-        $request = new ServerRequest([ 'REQUEST_METHOD' => 'DELETE' ], [], '/foo', 'DELETE');
+        $request = new ServerRequest(['REQUEST_METHOD' => 'DELETE'], [], '/foo', 'DELETE');
         $result  = $app->process($request, $delegate->reveal());
         $this->assertEquals('Middleware DELETE', (string) $result->getBody());
     }
@@ -300,6 +316,9 @@ class IntegrationTest extends TestCase
 
     /**
      * @dataProvider routerAdaptersForHttpMethods
+     *
+     * @param string $adapter
+     * @param string $method
      */
     public function testMatchWithAllHttpMethods($adapter, $method)
     {
@@ -318,7 +337,7 @@ class IntegrationTest extends TestCase
         $delegate->process(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
-        $request = new ServerRequest([ 'REQUEST_METHOD' => $method ], [], '/foo', $method);
+        $request = new ServerRequest(['REQUEST_METHOD' => $method], [], '/foo', $method);
         $result  = $app->process($request, $delegate->reveal());
         $this->assertEquals('Middleware', (string) $result->getBody());
     }
@@ -449,8 +468,11 @@ class IntegrationTest extends TestCase
     }
 
     /**
-     * @dataProvider routerAdapters
      * @group 74
+     *
+     * @dataProvider routerAdapters
+     *
+     * @param string $adapter
      */
     public function testWithOnlyRootPathRouteDefinedRoutingToSubPathsShouldDelegate($adapter)
     {
@@ -463,12 +485,12 @@ class IntegrationTest extends TestCase
             return $res->withBody($stream);
         }, ['GET']);
 
-        $expected = (new Response())->withStatus(404);
+        $expected = (new Response())->withStatus(StatusCode::STATUS_NOT_FOUND);
         $delegate = $this->prophesize(DelegateInterface::class);
         $delegate->process(Argument::type(ServerRequest::class))
             ->willReturn($expected);
 
-        $request = new ServerRequest([ 'REQUEST_METHOD' => 'GET' ], [], '/foo', 'GET');
+        $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');
         $result  = $app->process($request, $delegate->reveal());
         $this->assertSame($expected, $result);
     }

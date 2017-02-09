@@ -119,7 +119,7 @@ For configuration-driven pipelines, add an entry in your
 
 ```php
 'middleware_pipeline' => [
-    [ 'middleware' => [ Blast\BaseUrl\BaseUrlMiddleware::class ], 'priority' => 1000 ],
+    ['middleware' => [Blast\BaseUrl\BaseUrlMiddleware::class], 'priority' => 1000],
     /* ... */
 ],
 ```

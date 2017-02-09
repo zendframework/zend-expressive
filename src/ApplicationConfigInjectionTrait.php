@@ -91,13 +91,13 @@ trait ApplicationConfigInjectionTrait
         );
 
         foreach ($queue as $spec) {
-            $path  = isset($spec['path']) ? $spec['path'] : '/';
+            $path = isset($spec['path']) ? $spec['path'] : '/';
             $this->pipe($path, $spec['middleware']);
         }
     }
 
     /**
-     * Inject routes from  configuration.
+     * Inject routes from configuration.
      *
      * Introspects the provided configuration for routes to inject in the
      * application instance.
@@ -135,6 +135,7 @@ trait ApplicationConfigInjectionTrait
      * @param null|array $config If null, attempts to pull the 'config' service
      *     from the composed container.
      * @return void
+     * @throws Exception\InvalidArgumentException
      */
     public function injectRoutesFromConfig(array $config = null)
     {
@@ -202,6 +203,7 @@ trait ApplicationConfigInjectionTrait
      * raises an exception, to ensure the pipeline is built correctly.
      *
      * @return callable
+     * @throws Exception\InvalidArgumentException
      */
     private function createCollectionMapper()
     {

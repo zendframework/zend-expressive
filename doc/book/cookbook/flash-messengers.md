@@ -50,7 +50,7 @@ class SlimFlashMiddleware implements MiddlewareInterface
         session_start();
 
         return $delegate->process(
-            $request->withAttribute('flash', new Messages()),
+            $request->withAttribute('flash', new Messages())
         );
     }
 }

@@ -7,10 +7,10 @@
 
 namespace ZendTest\Expressive\Middleware;
 
-use Interop\Container\ContainerInterface;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Middleware\DispatchMiddleware;
@@ -19,6 +19,15 @@ use Zend\Expressive\Router\RouteResult;
 
 class DispatchMiddlewareTest extends TestCase
 {
+    /** @var DispatchMiddleware */
+    private $middleware;
+
+    /** @var ServerRequestInterface|ObjectProphecy */
+    private $request;
+
+    /** @var DelegateInterface|ObjectProphecy */
+    private $delegate;
+
     public function setUp()
     {
         $this->middleware = new DispatchMiddleware();

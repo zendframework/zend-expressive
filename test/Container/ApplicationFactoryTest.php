@@ -7,16 +7,12 @@
 
 namespace ZendTest\Expressive\Container;
 
-use Closure;
+use Interop\Container\ContainerInterface;
 use Interop\Http\ServerMiddleware\DelegateInterface;
-use InvalidArgumentException;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
-use Psr\Http\Message\ServerRequestInterface;
-use ReflectionFunction;
 use ReflectionProperty;
-use SplQueue;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Expressive\Application;
@@ -25,7 +21,6 @@ use Zend\Expressive\Delegate\DefaultDelegate;
 use Zend\Expressive\Delegate\NotFoundDelegate;
 use Zend\Expressive\Emitter\EmitterStack;
 use Zend\Expressive\Exception as ExpressiveException;
-use Zend\Expressive\Exception\InvalidMiddlewareException;
 use Zend\Expressive\Middleware\DispatchMiddleware;
 use Zend\Expressive\Middleware\LazyLoadingMiddleware;
 use Zend\Expressive\Middleware\RouteMiddleware;
@@ -33,8 +28,6 @@ use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Stratigility\MiddlewarePipe;
-use Zend\Stratigility\NoopFinalHandler;
-use Zend\Stratigility\Route as StratigilityRoute;
 use ZendTest\Expressive\ContainerTrait;
 use ZendTest\Expressive\TestAsset\InteropMiddleware;
 use ZendTest\Expressive\TestAsset\InvokableMiddleware;
@@ -46,16 +39,19 @@ class ApplicationFactoryTest extends TestCase
 {
     use ContainerTrait;
 
-    /** @var ObjectProphecy */
+    /** @var ContainerInterface|ObjectProphecy */
     protected $container;
 
-    /** @var ObjectProphecy */
+    /** @var ApplicationFactory */
+    private $factory;
+
+    /** @var EmitterInterface|ObjectProphecy */
     protected $emitter;
 
-    /** @var ObjectProphecy */
+    /** @var DelegateInterface|ObjectProphecy */
     protected $delegate;
 
-    /** @var ObjectProphecy */
+    /** @var RouterInterface|ObjectProphecy */
     protected $router;
 
     public function setUp()
@@ -139,6 +135,8 @@ class ApplicationFactoryTest extends TestCase
 
     /**
      * @dataProvider callableMiddlewares
+     *
+     * @param callable $middleware
      */
     public function testFactorySetsUpRoutesFromConfig($middleware)
     {
@@ -200,7 +198,7 @@ class ApplicationFactoryTest extends TestCase
 
         $this->expectException(ExpressiveException\InvalidArgumentException::class);
         $this->expectExceptionMessage('pipeline');
-        $app = $this->factory->__invoke($this->container->reveal());
+        $this->factory->__invoke($this->container->reveal());
     }
 
     public function testCanSpecifyRouteViaConfigurationWithNoMethods()
@@ -390,9 +388,8 @@ class ApplicationFactoryTest extends TestCase
 
     public function configWithRoutesButNoPipeline()
     {
-        // @codingStandardsIgnoreStart
-        $middleware = function ($request, $response, $next) {};
-        // @codingStandardsIgnoreEnd
+        $middleware = function ($request, $response, $next) {
+        };
 
         $routes = [
             [
@@ -411,8 +408,10 @@ class ApplicationFactoryTest extends TestCase
 
     /**
      * @dataProvider configWithRoutesButNoPipeline
+     *
+     * @param array $config
      */
-    public function testProvidingRoutesAndNoPipelineImplicitlyRegistersRoutingAndDispatchMiddleware($config)
+    public function testProvidingRoutesAndNoPipelineImplicitlyRegistersRoutingAndDispatchMiddleware(array $config)
     {
         $this->injectServiceInContainer($this->container, 'config', $config);
         $app = $this->factory->__invoke($this->container->reveal());

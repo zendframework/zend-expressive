@@ -1,7 +1,7 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
 
@@ -10,6 +10,7 @@ namespace Zend\Expressive\Container;
 use Interop\Container\ContainerInterface;
 use Whoops\Handler\JsonResponseHandler;
 use Whoops\Run as Whoops;
+use Whoops\Util\Misc;
 
 /**
  * Create and return an instance of the Whoops runner.
@@ -64,12 +65,11 @@ class WhoopsFactory
      *
      * @param Whoops $whoops
      * @param array|\ArrayAccess $config
+     * @return void
      */
     private function registerJsonHandler(Whoops $whoops, $config)
     {
-        if (! isset($config['json_exceptions']['display'])
-            || empty($config['json_exceptions']['display'])
-        ) {
+        if (empty($config['json_exceptions']['display'])) {
             return;
         }
 
@@ -80,9 +80,9 @@ class WhoopsFactory
         }
 
         if (isset($config['json_exceptions']['ajax_only'])) {
-            if (method_exists(\Whoops\Util\Misc::class, 'isAjaxRequest')) {
+            if (method_exists(Misc::class, 'isAjaxRequest')) {
                 // Whoops 2.x
-                if (! \Whoops\Util\Misc::isAjaxRequest()) {
+                if (! Misc::isAjaxRequest()) {
                     return;
                 }
             } elseif (method_exists($handler, 'onlyForAjaxRequests')) {

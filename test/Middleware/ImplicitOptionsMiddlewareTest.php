@@ -95,7 +95,7 @@ class ImplicitOptionsMiddlewareTest extends TestCase
 
     public function testWhenNoResponseProvidedToConstructorImplicitOptionsRequestCreatesResponse()
     {
-        $allowedMethods = ['GET', 'POST'];
+        $allowedMethods = [RequestMethod::METHOD_GET, RequestMethod::METHOD_POST];
 
         $route = $this->prophesize(Route::class);
         $route->implicitOptions()->willReturn(true);
@@ -123,7 +123,7 @@ class ImplicitOptionsMiddlewareTest extends TestCase
 
     public function testInjectsAllowHeaderInResponseProvidedToConstructorDuringOptionsRequest()
     {
-        $allowedMethods = ['GET', 'POST'];
+        $allowedMethods = [RequestMethod::METHOD_GET, RequestMethod::METHOD_POST];
 
         $route = $this->prophesize(Route::class);
         $route->implicitOptions()->willReturn(true);
@@ -135,8 +135,6 @@ class ImplicitOptionsMiddlewareTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getMethod()->willReturn(RequestMethod::METHOD_OPTIONS);
         $request->getAttribute(RouteResult::class, false)->will([$result, 'reveal']);
-
-        $response = $this->prophesize(ResponseInterface::class)->reveal();
 
         $delegate = $this->prophesize(DelegateInterface::class);
         $delegate->process($request->reveal())->shouldNotBeCalled();

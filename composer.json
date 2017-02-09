@@ -29,7 +29,7 @@
         "filp/whoops": "^1.1 || ^2.0",
         "malukenho/docheader": "^0.1.5",
         "mockery/mockery": "^0.9.5",
-        "phpunit/phpunit": "^5.7.9",
+        "phpunit/phpunit": "^5.7.12 || ^6.0.6",
         "zendframework/zend-coding-standard": "~1.0.0",
         "zendframework/zend-expressive-aurarouter": "^2.0",
         "zendframework/zend-expressive-fastroute": "^2.0",
@@ -50,18 +50,19 @@
       ]
     },
     "suggest": {
-        "filp/whoops": "^2.0 to use the Whoops error handler",
-        "zendframework/zend-expressive-helpers": "^1.0 for its UrlHelper, ServerUrlHelper, and BodyParseMiddleware",
-        "aura/di": "3.0.*@beta to make use of Aura.Di dependency injection container",
+        "filp/whoops": "^2.1 to use the Whoops error handler",
+        "zendframework/zend-expressive-helpers": "^3.0 for its UrlHelper, ServerUrlHelper, and BodyParseMiddleware",
+        "aura/di": "^3.2 to make use of Aura.Di dependency injection container",
         "xtreamwayz/pimple-container-interop": "^1.0 to use Pimple for dependency injection",
         "zendframework/zend-expressive-tooling": "For migration and development tools; require it with the --dev flag",
-        "zendframework/zend-servicemanager": "^2.5 to use zend-servicemanager for dependency injection"
+        "zendframework/zend-servicemanager": "^3.2 to use zend-servicemanager for dependency injection"
     },
     "bin": [
         "bin/expressive-tooling"
     ],
     "scripts": {
         "check": [
+            "@license-check",
             "@cs-check",
             "@test"
         ],
@@ -70,6 +71,6 @@
         "cs-fix": "phpcbf",
         "test": "phpunit --colors=always",
         "test-coverage": "phpunit --coverage-clover clover.xml",
-        "license-check": "vendor/bin/docheader check src/"
+        "license-check": "vendor/bin/docheader check src/ test/"
     }
 }
