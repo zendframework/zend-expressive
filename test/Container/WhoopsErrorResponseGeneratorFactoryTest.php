@@ -1,14 +1,15 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
+ * @copyright Copyright (c) 2016-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
 
 namespace ZendTest\Expressive\Container;
 
 use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Whoops\Run;
 use Whoops\RunInterface;
 use Zend\Expressive\Container\WhoopsErrorResponseGeneratorFactory;
@@ -16,6 +17,12 @@ use Zend\Expressive\Middleware\WhoopsErrorResponseGenerator;
 
 class WhoopsErrorResponseGeneratorFactoryTest extends TestCase
 {
+    /** @var ContainerInterface|ObjectProphecy */
+    private $container;
+
+    /** @var Run|RunInterface|ObjectProphecy */
+    private $whoops;
+
     public function setUp()
     {
         $this->container = $this->prophesize(ContainerInterface::class);

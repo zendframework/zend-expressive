@@ -9,6 +9,7 @@ namespace ZendTest\Expressive\Container;
 
 use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Zend\Expressive\Container\NotFoundDelegateFactory;
 use Zend\Diactoros\Response;
 use Zend\Expressive\Delegate\NotFoundDelegate;
@@ -16,6 +17,9 @@ use Zend\Expressive\Template\TemplateRendererInterface;
 
 class NotFoundDelegateFactoryTest extends TestCase
 {
+    /** @var ContainerInterface|ObjectProphecy */
+    private $container;
+
     protected function setUp()
     {
         $this->container = $this->prophesize(ContainerInterface::class);

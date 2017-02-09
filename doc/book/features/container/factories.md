@@ -114,7 +114,7 @@ order to seed the `Application` instance:
       [
           'path' => '/path/to/match',
           'middleware' => 'Middleware service name, valid middleware, or array of these values',
-          'allowed_methods' => [ 'GET', 'POST', 'PATCH' ],
+          'allowed_methods' => ['GET', 'POST', 'PATCH'],
           'options' => [
               'stuff' => 'to',
               'pass'  => 'to',

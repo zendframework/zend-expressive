@@ -7,19 +7,20 @@
 
 namespace ZendTest\Expressive\Application;
 
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
+use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
-use ReflectionFunction;
+use Prophecy\Prophecy\ObjectProphecy;
 use ReflectionProperty;
 use SplQueue;
 use Zend\Expressive\Application;
-use Zend\Expressive\Container\ApplicationFactory;
 use Zend\Expressive\Exception\InvalidArgumentException;
 use Zend\Expressive\Middleware;
+use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Stratigility\MiddlewarePipe;
 use ZendTest\Expressive\ContainerTrait;
+use ZendTest\Expressive\TestAsset\InvokableMiddleware;
 
 /**
  * Tests the functionality present in the ApplicationConfigInjectionTrait.
@@ -27,6 +28,12 @@ use ZendTest\Expressive\ContainerTrait;
 class ConfigInjectionTest extends TestCase
 {
     use ContainerTrait;
+
+    /** @var ContainerInterface|ObjectProphecy */
+    private $container;
+
+    /** @var RouterInterface|ObjectProphecy */
+    private $router;
 
     public function setUp()
     {
@@ -103,6 +110,8 @@ class ConfigInjectionTest extends TestCase
 
     /**
      * @dataProvider callableMiddlewares
+     *
+     * @param callable $middleware
      */
     public function testInjectRoutesFromConfigSetsUpRoutesFromConfig($middleware)
     {
@@ -150,14 +159,13 @@ class ConfigInjectionTest extends TestCase
         $app->injectRoutesFromConfig($config);
 
         $routes = $app->getRoutes();
-        $this->assertEquals(0, count($routes));
+        $this->assertCount(0, $routes);
     }
 
     public function configWithRoutesButNoPipeline()
     {
-        // @codingStandardsIgnoreStart
-        $middleware = function ($request, $response, $next) {};
-        // @codingStandardsIgnoreEnd
+        $middleware = function ($request, $response, $next) {
+        };
 
         $routes = [
             [
@@ -176,8 +184,10 @@ class ConfigInjectionTest extends TestCase
 
     /**
      * @dataProvider configWithRoutesButNoPipeline
+     *
+     * @param array $config
      */
-    public function testProvidingRoutesAndNoPipelineImplicitlyRegistersRoutingAndDispatchMiddleware($config)
+    public function testProvidingRoutesAndNoPipelineImplicitlyRegistersRoutingAndDispatchMiddleware(array $config)
     {
         $this->injectServiceInContainer($this->container, RouterInterface::class, $this->router->reveal());
         $app = $this->createApplication();
@@ -322,8 +332,10 @@ class ConfigInjectionTest extends TestCase
 
     /**
      * @dataProvider specMiddlewareContainingRoutingAndOrDispatchMiddleware
+     *
+     * @param array $pipeline
      */
-    public function testRoutingAndDispatchMiddlewareCanBeComposedWithinArrayStandardSpecification($pipeline)
+    public function testRoutingAndDispatchMiddlewareCanBeComposedWithinArrayStandardSpecification(array $pipeline)
     {
         $expected = $pipeline[0]['middleware'];
         $config = ['middleware_pipeline' => $pipeline];
@@ -336,7 +348,7 @@ class ConfigInjectionTest extends TestCase
         $r->setAccessible(true);
         $appPipeline = $r->getValue($app);
 
-        $this->assertEquals(1, count($appPipeline));
+        $this->assertCount(1, $appPipeline);
 
         $innerMiddleware = $appPipeline->dequeue()->handler;
         $this->assertInstanceOf(MiddlewarePipe::class, $innerMiddleware);

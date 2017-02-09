@@ -1,14 +1,13 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
 
 namespace ZendTest\Expressive;
 
+use Fig\Http\Message\StatusCodeInterface as StatusCode;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
@@ -62,20 +61,20 @@ class IntegrationTest extends TestCase
         $app->run($request, $response);
 
         $this->assertInstanceOf(ResponseInterface::class, $this->response);
-        $this->assertEquals(404, $this->response->getStatusCode());
+        $this->assertEquals(StatusCode::STATUS_NOT_FOUND, $this->response->getStatusCode());
     }
 
     public function testInjectedFinalHandlerCanEmitA404WhenNoMiddlewareMatches()
     {
-        $request      = new ServerRequest([], [], 'https://example.com/foo', 'GET');
-        $response     = new Response();
-        $delegate     = new NotFoundDelegate($response);
-        $app          = new Application(new FastRouteRouter(), null, $delegate, $this->getEmitter());
+        $request  = new ServerRequest([], [], 'https://example.com/foo', 'GET');
+        $response = new Response();
+        $delegate = new NotFoundDelegate($response);
+        $app      = new Application(new FastRouteRouter(), null, $delegate, $this->getEmitter());
 
         $app->run($request, $response);
 
         $this->assertInstanceOf(ResponseInterface::class, $this->response);
-        $this->assertEquals(404, $this->response->getStatusCode());
+        $this->assertEquals(StatusCode::STATUS_NOT_FOUND, $this->response->getStatusCode());
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
 
@@ -52,6 +52,7 @@ class EmitterStack extends SplStack implements EmitterInterface
      *
      * @param mixed $index
      * @param EmitterInterface $emitter
+     * @return void
      * @throws InvalidArgumentException if not an EmitterInterface instance
      */
     public function offsetSet($index, $emitter)
@@ -64,6 +65,7 @@ class EmitterStack extends SplStack implements EmitterInterface
      * Push an emitter to the stack.
      *
      * @param EmitterInterface $emitter
+     * @return void
      * @throws InvalidArgumentException if not an EmitterInterface instance
      */
     public function push($emitter)
@@ -76,6 +78,7 @@ class EmitterStack extends SplStack implements EmitterInterface
      * Unshift an emitter to the stack.
      *
      * @param EmitterInterface $emitter
+     * @return void
      * @throws InvalidArgumentException if not an EmitterInterface instance
      */
     public function unshift($emitter)
@@ -88,6 +91,7 @@ class EmitterStack extends SplStack implements EmitterInterface
      * Validate that an emitter implements EmitterInterface.
      *
      * @param mixed $emitter
+     * @return void
      * @throws InvalidArgumentException for non-emitter instances
      */
     private function validateEmitter($emitter)

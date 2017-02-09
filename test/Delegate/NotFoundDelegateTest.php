@@ -9,16 +9,18 @@ namespace Zend\Expressive\Delegate;
 
 use Fig\Http\Message\RequestMethodInterface as RequestMethod;
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
-use Interop\Http\ServerMiddleware\DelegateInterface;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
-use Zend\Expressive\Delegate\NotFoundDelegate;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
 class NotFoundDelegateTest extends TestCase
 {
+    /** @var ResponseInterface|ObjectProphecy */
+    private $response;
+
     protected function setUp()
     {
         $this->response = $this->prophesize(ResponseInterface::class);

@@ -11,6 +11,7 @@ use Interop\Container\ContainerInterface;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Exception\InvalidMiddlewareException;
@@ -18,6 +19,18 @@ use Zend\Expressive\Middleware\LazyLoadingMiddleware;
 
 class LazyLoadingMiddlewareTest extends TestCase
 {
+    /** @var ContainerInterface|ObjectProphecy */
+    private $container;
+
+    /** @var ResponseInterface|ObjectProphecy */
+    private $response;
+
+    /** @var ServerRequestInterface|ObjectProphecy */
+    private $request;
+
+    /** @var DelegateInterface|ObjectProphecy */
+    private $delegate;
+
     public function setUp()
     {
         $this->container = $this->prophesize(ContainerInterface::class);
@@ -108,6 +121,8 @@ class LazyLoadingMiddlewareTest extends TestCase
 
     /**
      * @dataProvider invalidMiddleware
+     *
+     * @param mixed $middleware
      */
     public function testRaisesExceptionIfMiddlewarePulledFromContainerIsInvalid($middleware)
     {

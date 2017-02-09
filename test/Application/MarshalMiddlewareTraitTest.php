@@ -11,8 +11,8 @@ use Interop\Container\ContainerInterface;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use ReflectionMethod;
 use ReflectionProperty;
 use stdClass;
@@ -20,13 +20,24 @@ use Zend\Expressive\Application;
 use Zend\Expressive\Exception\InvalidMiddlewareException;
 use Zend\Expressive\Middleware;
 use Zend\Expressive\Router\RouterInterface;
-use Zend\Stratigility\Delegate\CallableDelegateDecorator;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\Stratigility\Middleware\CallableInteropMiddlewareWrapper;
 use Zend\Stratigility\Middleware\CallableMiddlewareWrapper;
 
 class MarshalMiddlewareTraitTest extends TestCase
 {
+    /** @var ContainerInterface|ObjectProphecy */
+    private $container;
+
+    /** @var RouterInterface|ObjectProphecy */
+    private $router;
+
+    /** @var ResponseInterface|ObjectProphecy */
+    private $responsePrototype;
+
+    /** @var Application */
+    private $application;
+
     public function setUp()
     {
         $this->container = $this->prophesize(ContainerInterface::class);
@@ -216,7 +227,7 @@ class MarshalMiddlewareTraitTest extends TestCase
 
         $this->expectException(InvalidMiddlewareException::class);
         $this->expectExceptionMessage('second-middleware');
-        $middleware = $this->prepareMiddlewareWithoutContainer($base);
+        $this->prepareMiddlewareWithoutContainer($base);
     }
 
     public function testPreparingServiceBasedMiddlewareReturnsLazyLoadingMiddleware()
@@ -291,6 +302,9 @@ class MarshalMiddlewareTraitTest extends TestCase
 
     /**
      * @dataProvider invalidMiddlewareTypes
+     *
+     * @param mixed $invalid
+     * @param string $expectedMessage
      */
     public function testPreparingUnknownMiddlewareTypeRaisesException($invalid, $expectedMessage)
     {

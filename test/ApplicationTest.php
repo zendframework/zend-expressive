@@ -16,12 +16,12 @@ use InvalidArgumentException;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use ReflectionProperty;
 use RuntimeException;
 use UnexpectedValueException;
-use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Diactoros\ServerRequest as Request;
@@ -40,7 +40,6 @@ use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\Stratigility\Route as StratigilityRoute;
-use ZendTest\Expressive\TestAsset\InvokableMiddleware;
 
 /**
  * @covers Zend\Expressive\Application
@@ -49,6 +48,12 @@ class ApplicationTest extends TestCase
 {
     use ContainerTrait;
     use RouteResultTrait;
+
+    /** @var TestAsset\InteropMiddleware */
+    private $noopMiddleware;
+
+    /** @var RouterInterface|ObjectProphecy */
+    private $router;
 
     public function setUp()
     {
@@ -105,6 +110,8 @@ class ApplicationTest extends TestCase
 
     /**
      * @dataProvider commonHttpMethods
+     *
+     * @param string $method
      */
     public function testCanCallRouteWithHttpMethods($method)
     {
@@ -172,6 +179,8 @@ class ApplicationTest extends TestCase
 
     /**
      * @dataProvider invalidPathTypes
+     *
+     * @param mixed $path
      */
     public function testCallingRouteWithAnInvalidPathTypeRaisesAnException($path)
     {
@@ -182,6 +191,8 @@ class ApplicationTest extends TestCase
 
     /**
      * @dataProvider commonHttpMethods
+     *
+     * @param mixed $method
      */
     public function testCommonHttpMethodsAreExposedAsClassMethodsAndReturnRoutes($method)
     {
@@ -211,10 +222,10 @@ class ApplicationTest extends TestCase
     {
         $this->router->addRoute(Argument::type(Route::class))->shouldBeCalledTimes(1);
         $app   = $this->getApp();
-        $route = $app->get('/foo', $this->noopMiddleware);
+        $app->get('/foo', $this->noopMiddleware);
 
         $this->expectException(DomainException::class);
-        $test = $app->get('/foo', function ($req, $res, $next) {
+        $app->get('/foo', function ($req, $res, $next) {
         });
     }
 
@@ -503,7 +514,11 @@ class ApplicationTest extends TestCase
     /**
      * @runInSeparateProcess
      * @preserveGlobalState disabled
+     *
      * @dataProvider invalidRequestExceptions
+     *
+     * @param string $expectedException
+     * @param string $message
      */
     public function testRunReturnsResponseWithBadRequestStatusWhenServerRequestFactoryRaisesException(
         $expectedException,
@@ -515,7 +530,7 @@ class ApplicationTest extends TestCase
         // lead to closure serialization errors. try/catch allows us to
         // catch those and provide failure assertions.
         try {
-            $requestFactory = Mockery::mock('alias:' . ServerRequestFactory::class)
+            Mockery::mock('alias:' . ServerRequestFactory::class)
                 ->shouldReceive('fromGlobals')
                 ->withNoArgs()
                 ->andThrow($expectedException, $message)
@@ -525,7 +540,7 @@ class ApplicationTest extends TestCase
             $emitter = $this->prophesize(EmitterInterface::class);
             $emitter->emit(Argument::that(function ($response) {
                 $this->assertInstanceOf(ResponseInterface::class, $response, 'Emitter did not receive a response');
-                $this->assertEquals(400, $response->getStatusCode());
+                $this->assertEquals(StatusCode::STATUS_BAD_REQUEST, $response->getStatusCode());
                 return true;
             }))->shouldBeCalled();
 
@@ -558,7 +573,11 @@ class ApplicationTest extends TestCase
      *
      * @runInSeparateProcess
      * @preserveGlobalState disabled
+     *
      * @dataProvider invalidRequestExceptions
+     *
+     * @param string $expectedException
+     * @param string $message
      */
     public function testRunReturnsResponseGeneratedByErrorResponseGeneratorWhenServerRequestFactoryRaisesException(
         $expectedException,
@@ -583,7 +602,7 @@ class ApplicationTest extends TestCase
             $container = $this->mockContainerInterface();
             $this->injectServiceInContainer($container, Middleware\ErrorResponseGenerator::class, $generator);
 
-            $requestFactory = Mockery::mock('alias:' . ServerRequestFactory::class)
+            Mockery::mock('alias:' . ServerRequestFactory::class)
                 ->shouldReceive('fromGlobals')
                 ->withNoArgs()
                 ->andThrow($expectedException, $message)

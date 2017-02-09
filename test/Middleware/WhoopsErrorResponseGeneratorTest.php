@@ -1,13 +1,14 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
+ * @copyright Copyright (c) 2016-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
 
 namespace ZendTest\Expressive\Middleware;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
@@ -19,6 +20,18 @@ use Zend\Expressive\Middleware\WhoopsErrorResponseGenerator;
 
 class WhoopsErrorResponseGeneratorTest extends TestCase
 {
+    /** @var Run|RunInterface|ObjectProphecy */
+    private $whoops;
+
+    /** @var ServerRequestInterface|ObjectProphecy */
+    private $request;
+
+    /** @var ResponseInterface|ObjectProphecy */
+    private $response;
+
+    /** @var StreamInterface|ObjectProphecy */
+    private $stream;
+
     public function setUp()
     {
         // Run is marked final in 2.X, but in that version, we can mock the

@@ -37,7 +37,7 @@ return [
         ],
     ],
     'middleware_pipeline' => [
-        [ 'middleware' => Helper\BodyParams\BodyParamsMiddleware::class, 'priority' => 100],
+        ['middleware' => Helper\BodyParams\BodyParamsMiddleware::class, 'priority' => 100],
         /* ... */
         'routing' => [
             'middleware' => [

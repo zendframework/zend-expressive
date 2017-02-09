@@ -1,14 +1,16 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
+ * @copyright Copyright (c) 2016-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
 
 namespace ZendTest\Expressive\Middleware;
 
+use Fig\Http\Message\StatusCodeInterface as StatusCode;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
@@ -18,6 +20,18 @@ use Zend\Expressive\Template\TemplateRendererInterface;
 
 class ErrorResponseGeneratorTest extends TestCase
 {
+    /** @var ServerRequestInterface|ObjectProphecy */
+    private $request;
+
+    /** @var ResponseInterface|ObjectProphecy */
+    private $response;
+
+    /** @var StreamInterface|ObjectProphecy */
+    private $stream;
+
+    /** @var TemplateRendererInterface|ObjectProphecy */
+    private $renderer;
+
     public function setUp()
     {
         $this->request  = $this->prophesize(ServerRequestInterface::class);
@@ -37,11 +51,11 @@ class ErrorResponseGeneratorTest extends TestCase
 
         $initialResponse
             ->getStatusCode()
-            ->willReturn(200);
+            ->willReturn(StatusCode::STATUS_OK);
         $initialResponse
-            ->withStatus(500)
+            ->withStatus(StatusCode::STATUS_INTERNAL_SERVER_ERROR)
             ->will(function () use ($secondaryResponse) {
-                $secondaryResponse->getStatusCode()->willReturn(500);
+                $secondaryResponse->getStatusCode()->willReturn(StatusCode::STATUS_INTERNAL_SERVER_ERROR);
                 $secondaryResponse->getReasonPhrase()->willReturn('Network Connect Timeout Error');
                 return $secondaryResponse->reveal();
             });
@@ -67,7 +81,7 @@ class ErrorResponseGeneratorTest extends TestCase
 
         $initialResponse
             ->getStatusCode()
-            ->willReturn(200);
+            ->willReturn(StatusCode::STATUS_OK);
         $initialResponse
             ->withStatus(599)
             ->will(function () use ($secondaryResponse) {
@@ -91,7 +105,7 @@ class ErrorResponseGeneratorTest extends TestCase
         $this->assertSame($response, $secondaryResponse->reveal());
     }
 
-    public function testTemplates()
+    public function templates()
     {
         return [
             'default' => [null, 'error::error'],
@@ -100,7 +114,10 @@ class ErrorResponseGeneratorTest extends TestCase
     }
 
     /**
-     * @dataProvider testTemplates
+     * @dataProvider templates
+     *
+     * @param null|string $template
+     * @param string $expected
      */
     public function testRendersTemplateWithoutErrorDetailsWhenRendererPresentAndNotInDebugMode($template, $expected)
     {
@@ -114,7 +131,7 @@ class ErrorResponseGeneratorTest extends TestCase
                 'response' => $secondaryResponse->reveal(),
                 'request'  => $this->request->reveal(),
                 'uri'      => 'https://example.com/foo',
-                'status'   => 500,
+                'status'   => StatusCode::STATUS_INTERNAL_SERVER_ERROR,
                 'reason'   => 'Internal Server Error',
             ])
             ->willReturn('TEMPLATED CONTENTS');
@@ -123,11 +140,11 @@ class ErrorResponseGeneratorTest extends TestCase
 
         $initialResponse
             ->getStatusCode()
-            ->willReturn(200);
+            ->willReturn(StatusCode::STATUS_OK);
         $initialResponse
-            ->withStatus(500)
+            ->withStatus(StatusCode::STATUS_INTERNAL_SERVER_ERROR)
             ->will(function () use ($secondaryResponse) {
-                $secondaryResponse->getStatusCode()->willReturn(500);
+                $secondaryResponse->getStatusCode()->willReturn(StatusCode::STATUS_INTERNAL_SERVER_ERROR);
                 $secondaryResponse->getReasonPhrase()->willReturn('Internal Server Error');
                 return $secondaryResponse->reveal();
             });
@@ -146,7 +163,10 @@ class ErrorResponseGeneratorTest extends TestCase
     }
 
     /**
-     * @dataProvider testTemplates
+     * @dataProvider templates
+     *
+     * @param null|string $template
+     * @param string $expected
      */
     public function testRendersTemplateWithErrorDetailsWhenRendererPresentAndInDebugMode($template, $expected)
     {
@@ -159,11 +179,11 @@ class ErrorResponseGeneratorTest extends TestCase
 
         $initialResponse
             ->getStatusCode()
-            ->willReturn(200);
+            ->willReturn(StatusCode::STATUS_OK);
         $initialResponse
-            ->withStatus(500)
+            ->withStatus(StatusCode::STATUS_INTERNAL_SERVER_ERROR)
             ->will(function () use ($secondaryResponse) {
-                $secondaryResponse->getStatusCode()->willReturn(500);
+                $secondaryResponse->getStatusCode()->willReturn(StatusCode::STATUS_INTERNAL_SERVER_ERROR);
                 $secondaryResponse->getReasonPhrase()->willReturn('Network Connect Timeout Error');
                 return $secondaryResponse->reveal();
             });
@@ -173,7 +193,7 @@ class ErrorResponseGeneratorTest extends TestCase
                 'response' => $secondaryResponse->reveal(),
                 'request'  => $this->request->reveal(),
                 'uri'      => 'https://example.com/foo',
-                'status'   => 500,
+                'status'   => StatusCode::STATUS_INTERNAL_SERVER_ERROR,
                 'reason'   => 'Network Connect Timeout Error',
                 'error'    => $error,
             ])
