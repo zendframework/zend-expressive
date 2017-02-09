@@ -50,7 +50,7 @@ class EmitterStackTest extends TestCase
             'float'      => [1.1],
             'string'     => ['emitter'],
             'array'      => [[$this->prophesize(EmitterInterface::class)->reveal()]],
-            'object'     => [(object)[]],
+            'object'     => [(object) []],
         ];
     }
 

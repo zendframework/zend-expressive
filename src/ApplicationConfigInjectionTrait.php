@@ -91,13 +91,13 @@ trait ApplicationConfigInjectionTrait
         );
 
         foreach ($queue as $spec) {
-            $path  = isset($spec['path']) ? $spec['path'] : '/';
+            $path = isset($spec['path']) ? $spec['path'] : '/';
             $this->pipe($path, $spec['middleware']);
         }
     }
 
     /**
-     * Inject routes from  configuration.
+     * Inject routes from configuration.
      *
      * Introspects the provided configuration for routes to inject in the
      * application instance.

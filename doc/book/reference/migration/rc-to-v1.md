@@ -279,7 +279,7 @@ return [
                     Zend\Expressive\Helper\UrlHelperMiddleware::class,
                 ],
             ],
-            [ 'middleware' => DebugToolbarMiddleware::class ],
+            ['middleware' => DebugToolbarMiddleware::class],
             [
                 'middleware' => ApiMiddleware::class,
                 'path' => '/api',

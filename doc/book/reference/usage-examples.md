@@ -101,7 +101,7 @@ $app->post('/trackback', 'TrackBack');
 // is specific to Aura.Router.)
 $app->put('/post/{id}', 'ReplacePost')
     ->setOptions([
-        'tokens' => [ 'id' => '\d+' ],
+        'tokens' => ['id' => '\d+'],
     ]);
 
 // PATCH
@@ -110,13 +110,13 @@ $app->put('/post/{id}', 'ReplacePost')
 // corresponding to different middleware.
 $app->patch('/post/{id}', 'UpdatePost')
     ->setOptions([
-        'tokens' => [ 'id' => '\d+' ],
+        'tokens' => ['id' => '\d+'],
     ]);
 
 // DELETE
 $app->delete('/post/{id}', 'DeletePost')
     ->setOptions([
-        'tokens' => [ 'id' => '\d+' ],
+        'tokens' => ['id' => '\d+'],
     ]);
 
 // Matching ALL HTTP methods
@@ -129,7 +129,7 @@ $app->delete('/post/{id}', 'DeletePost')
 // further manipulate.
 $app->route('/post/{id}', 'HandlePost')
     ->setOptions([
-        'tokens' => [ 'id' => '\d+' ],
+        'tokens' => ['id' => '\d+'],
     ]);
 
 // Matching multiple HTTP methods
@@ -346,12 +346,12 @@ return [
         [
             'path' => '/',
             'middleware' => \Application\HelloWorldAction::class,
-            'allowed_methods' => [ 'GET' ],
+            'allowed_methods' => ['GET'],
         ],
         [
             'path' => '/ping',
             'middleware' => \Application\PingAction::class,
-            'allowed_methods' => [ 'GET' ],
+            'allowed_methods' => ['GET'],
         ],
     ],
 ];
@@ -460,7 +460,7 @@ return [
         [
             'path' => '/path/to/match',
             'middleware' => 'Middleware Service Name or Callable',
-            'allowed_methods' => [ 'GET', 'POST', 'PATCH' ],
+            'allowed_methods' => ['GET', 'POST', 'PATCH'],
             'options' => [
                 'stuff' => 'to',
                 'pass'  => 'to',

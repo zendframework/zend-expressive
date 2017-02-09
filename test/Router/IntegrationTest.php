@@ -59,9 +59,9 @@ class IntegrationTest extends TestCase
     public function routerAdapters()
     {
         return [
-          'aura'       => [ AuraRouter::class ],
-          'fast-route' => [ FastRouteRouter::class ],
-          'zf2'        => [ ZendRouter::class ],
+          'aura'       => [AuraRouter::class],
+          'fast-route' => [FastRouteRouter::class],
+          'zf2'        => [ZendRouter::class],
         ];
     }
 
@@ -133,12 +133,12 @@ class IntegrationTest extends TestCase
         $delegate->process(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
-        $request = new ServerRequest([ 'REQUEST_METHOD' => 'DELETE' ], [], '/foo', 'DELETE');
+        $request = new ServerRequest(['REQUEST_METHOD' => 'DELETE'], [], '/foo', 'DELETE');
         $result  = $app->process($request, $delegate->reveal());
 
         $this->assertSame(405, $result->getStatusCode());
         $headers = $result->getHeaders();
-        $this->assertSame([ 'GET,POST' ], $headers['Allow']);
+        $this->assertSame(['GET,POST'], $headers['Allow']);
     }
 
     /**
@@ -158,12 +158,12 @@ class IntegrationTest extends TestCase
         $delegate->process(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
-        $request = new ServerRequest([ 'REQUEST_METHOD' => 'GET' ], [], '/foo', 'GET');
+        $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');
         $result  = $app->process($request, $delegate->reveal());
 
         $this->assertEquals('Middleware GET', (string) $result->getBody());
 
-        $request  = new ServerRequest([ 'REQUEST_METHOD' => 'POST' ], [], '/foo', 'POST');
+        $request  = new ServerRequest(['REQUEST_METHOD' => 'POST'], [], '/foo', 'POST');
         $result   = $app->process($request, $delegate->reveal());
 
         $this->assertEquals('Middleware POST', (string) $result->getBody());
@@ -186,12 +186,12 @@ class IntegrationTest extends TestCase
         $delegate->process(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
-        $request = new ServerRequest([ 'REQUEST_METHOD' => 'GET' ], [], '/foo', 'GET');
+        $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');
         $result  = $app->process($request, $delegate->reveal());
 
         $this->assertEquals('Middleware GET', (string) $result->getBody());
 
-        $request = new ServerRequest([ 'REQUEST_METHOD' => 'POST' ], [], '/foo', 'POST');
+        $request = new ServerRequest(['REQUEST_METHOD' => 'POST'], [], '/foo', 'POST');
         $result  = $app->process($request, $delegate->reveal());
 
         $this->assertEquals('Middleware POST', (string) $result->getBody());
@@ -214,12 +214,12 @@ class IntegrationTest extends TestCase
         $delegate->process(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
-        $request = new ServerRequest([ 'REQUEST_METHOD' => 'GET' ], [], '/foo', 'GET');
+        $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');
         $result  = $app->process($request, $delegate->reveal());
 
         $this->assertEquals('Middleware GET', (string) $result->getBody());
 
-        $request = new ServerRequest([ 'REQUEST_METHOD' => 'POST' ], [], '/foo', 'POST');
+        $request = new ServerRequest(['REQUEST_METHOD' => 'POST'], [], '/foo', 'POST');
         $result  = $app->process($request, $delegate->reveal());
 
         $this->assertEquals('Middleware POST', (string) $result->getBody());
@@ -241,12 +241,12 @@ class IntegrationTest extends TestCase
         $delegate->process(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
-        $request = new ServerRequest([ 'REQUEST_METHOD' => 'GET' ], [], '/foo', 'GET');
+        $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');
         $result  = $app->process($request, $delegate->reveal());
 
         $this->assertEquals('Middleware GET', (string) $result->getBody());
 
-        $request = new ServerRequest([ 'REQUEST_METHOD' => 'POST' ], [], '/foo', 'POST');
+        $request = new ServerRequest(['REQUEST_METHOD' => 'POST'], [], '/foo', 'POST');
         $result  = $app->process($request, $delegate->reveal());
 
         $this->assertEquals('Middleware POST', (string) $result->getBody());
@@ -281,15 +281,15 @@ class IntegrationTest extends TestCase
         $delegate->process(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
-        $request = new ServerRequest([ 'REQUEST_METHOD' => 'GET' ], [], '/foo', 'GET');
+        $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');
         $result  = $app->process($request, $delegate->reveal());
         $this->assertEquals('Middleware GET, POST', (string) $result->getBody());
 
-        $request = new ServerRequest([ 'REQUEST_METHOD' => 'POST' ], [], '/foo', 'POST');
+        $request = new ServerRequest(['REQUEST_METHOD' => 'POST'], [], '/foo', 'POST');
         $result  = $app->process($request, $delegate->reveal());
         $this->assertEquals('Middleware GET, POST', (string) $result->getBody());
 
-        $request = new ServerRequest([ 'REQUEST_METHOD' => 'DELETE' ], [], '/foo', 'DELETE');
+        $request = new ServerRequest(['REQUEST_METHOD' => 'DELETE'], [], '/foo', 'DELETE');
         $result  = $app->process($request, $delegate->reveal());
         $this->assertEquals('Middleware DELETE', (string) $result->getBody());
     }
@@ -337,7 +337,7 @@ class IntegrationTest extends TestCase
         $delegate->process(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
-        $request = new ServerRequest([ 'REQUEST_METHOD' => $method ], [], '/foo', $method);
+        $request = new ServerRequest(['REQUEST_METHOD' => $method], [], '/foo', $method);
         $result  = $app->process($request, $delegate->reveal());
         $this->assertEquals('Middleware', (string) $result->getBody());
     }
@@ -490,7 +490,7 @@ class IntegrationTest extends TestCase
         $delegate->process(Argument::type(ServerRequest::class))
             ->willReturn($expected);
 
-        $request = new ServerRequest([ 'REQUEST_METHOD' => 'GET' ], [], '/foo', 'GET');
+        $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');
         $result  = $app->process($request, $delegate->reveal());
         $this->assertSame($expected, $result);
     }
