@@ -71,7 +71,7 @@ use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Response\HtmlResponse;
 
-class HelloAction implements MiddlewareInterface;
+class HelloAction implements MiddlewareInterface
 {
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
@@ -82,7 +82,7 @@ class HelloAction implements MiddlewareInterface;
         return new HtmlResponse(sprintf(
             '<h1>Hello, %s!</h1>',
             $target
-        ))
+        ));
     }
 }
 ```

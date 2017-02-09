@@ -45,7 +45,7 @@ We assume also that:
 >
 > In your `composer.json` file, place the following:
 >
-> ```javascript
+> ```json
 > "autoload": {
 >     "psr-4": {
 >         "Application\\": "src/"
