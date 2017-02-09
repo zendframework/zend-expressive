@@ -8,6 +8,7 @@
 namespace ZendTest\Expressive\Middleware;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -33,6 +34,12 @@ class NotFoundHandlerTest extends TestCase
 
         $this->delegate = $this->prophesize(DelegateInterface::class);
         $this->delegate->process(Argument::type(ServerRequestInterface::class))->shouldNotBeCalled();
+    }
+
+    public function testImplementsInteropMiddleware()
+    {
+        $handler = new NotFoundHandler($this->internal->reveal());
+        $this->assertInstanceOf(MiddlewareInterface::class, $handler);
     }
 
     public function testProxiesToInternalDelegate()
