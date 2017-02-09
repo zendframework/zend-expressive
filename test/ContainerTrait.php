@@ -39,7 +39,6 @@ trait ContainerTrait
      * @param ObjectProphecy $container
      * @param string $serviceName
      * @param mixed $service
-     *
      * @return void
      */
     protected function injectServiceInContainer(ObjectProphecy $container, $serviceName, $service)

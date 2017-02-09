@@ -10,6 +10,7 @@ namespace ZendTest\Expressive\Middleware;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Middleware\RouteMiddleware;
@@ -19,6 +20,21 @@ use Zend\Expressive\Router\RouterInterface;
 
 class RouteMiddlewareTest extends TestCase
 {
+    /** @var RouterInterface|ObjectProphecy */
+    private $router;
+
+    /** @var ResponseInterface|ObjectProphecy */
+    private $response;
+
+    /** @var RouteMiddleware */
+    private $middleware;
+
+    /** @var ServerRequestInterface|ObjectProphecy */
+    private $request;
+
+    /** @var DelegateInterface|ObjectProphecy */
+    private $delegate;
+
     public function setUp()
     {
         $this->router     = $this->prophesize(RouterInterface::class);

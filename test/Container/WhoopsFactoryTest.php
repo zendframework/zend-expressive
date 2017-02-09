@@ -7,6 +7,7 @@
 
 namespace ZendTest\Expressive\Container;
 
+use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use ReflectionProperty;
@@ -23,8 +24,11 @@ class WhoopsFactoryTest extends TestCase
 {
     use ContainerTrait;
 
-    /** @var ObjectProphecy */
-    protected $container;
+    /** @var ContainerInterface|ObjectProphecy */
+    private $container;
+
+    /** @var WhoopsFactory */
+    private $factory;
 
     public function setUp()
     {

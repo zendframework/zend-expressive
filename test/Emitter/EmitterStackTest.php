@@ -56,6 +56,8 @@ class EmitterStackTest extends TestCase
 
     /**
      * @dataProvider nonEmitterValues
+     *
+     * @param mixed $value
      */
     public function testCannotPushNonEmitterToStack($value)
     {
@@ -65,6 +67,8 @@ class EmitterStackTest extends TestCase
 
     /**
      * @dataProvider nonEmitterValues
+     *
+     * @param mixed $value
      */
     public function testCannotUnshiftNonEmitterToStack($value)
     {
@@ -74,6 +78,8 @@ class EmitterStackTest extends TestCase
 
     /**
      * @dataProvider nonEmitterValues
+     *
+     * @param mixed $value
      */
     public function testCannotSetNonEmitterToSpecificIndex($value)
     {

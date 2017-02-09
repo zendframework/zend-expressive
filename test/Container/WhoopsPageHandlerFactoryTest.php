@@ -7,6 +7,7 @@
 
 namespace ZendTest\Expressive\Container;
 
+use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Whoops\Handler\PrettyPageHandler;
@@ -21,8 +22,11 @@ class WhoopsPageHandlerFactoryTest extends TestCase
 {
     use ContainerTrait;
 
-    /** @var ObjectProphecy */
-    protected $container;
+    /** @var ContainerInterface|ObjectProphecy */
+    private $container;
+
+    /** @var WhoopsPageHandlerFactory */
+    private $factory;
 
     public function setUp()
     {
@@ -95,6 +99,8 @@ class WhoopsPageHandlerFactoryTest extends TestCase
 
     /**
      * @dataProvider invalidEditors
+     *
+     * @param mixed $editor
      */
     public function testInvalidEditorWillRaiseException($editor)
     {

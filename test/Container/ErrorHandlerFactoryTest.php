@@ -9,6 +9,7 @@ namespace ZendTest\Expressive\Container;
 
 use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseInterface;
 use Zend\Expressive\Container\ErrorHandlerFactory;
 use Zend\Expressive\Middleware\ErrorResponseGenerator;
@@ -17,6 +18,9 @@ use Zend\Stratigility\Middleware\ErrorResponseGenerator as StratigilityGenerator
 
 class ErrorHandlerFactoryTest extends TestCase
 {
+    /** @var ContainerInterface|ObjectProphecy */
+    private $container;
+
     public function setUp()
     {
         $this->container = $this->prophesize(ContainerInterface::class);

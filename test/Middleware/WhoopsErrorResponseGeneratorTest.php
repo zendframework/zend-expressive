@@ -8,6 +8,7 @@
 namespace ZendTest\Expressive\Middleware;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
@@ -19,6 +20,18 @@ use Zend\Expressive\Middleware\WhoopsErrorResponseGenerator;
 
 class WhoopsErrorResponseGeneratorTest extends TestCase
 {
+    /** @var Run|RunInterface|ObjectProphecy */
+    private $whoops;
+
+    /** @var ServerRequestInterface|ObjectProphecy */
+    private $request;
+
+    /** @var ResponseInterface|ObjectProphecy */
+    private $response;
+
+    /** @var StreamInterface|ObjectProphecy */
+    private $stream;
+
     public function setUp()
     {
         // Run is marked final in 2.X, but in that version, we can mock the

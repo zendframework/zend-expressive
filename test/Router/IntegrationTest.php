@@ -9,6 +9,7 @@ namespace ZendTest\Expressive\Router;
 
 use Fig\Http\Message\RequestMethodInterface as RequestMethod;
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
+use Interop\Container\ContainerInterface;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -28,8 +29,14 @@ class IntegrationTest extends TestCase
 {
     use ContainerTrait;
 
-    /** @var ObjectProphecy */
-    protected $container;
+    /** @var Response */
+    private $response;
+
+    /** @var RouterInterface|ObjectProphecy */
+    private $router;
+
+    /** @var ContainerInterface|ObjectProphecy */
+    private $container;
 
     public function setUp()
     {
@@ -116,6 +123,8 @@ class IntegrationTest extends TestCase
 
     /**
      * @dataProvider routerAdapters
+     *
+     * @param string $adapter
      */
     public function testRoutingDoesNotMatchMethod($adapter)
     {
@@ -135,7 +144,10 @@ class IntegrationTest extends TestCase
     /**
      * @see https://github.com/zendframework/zend-expressive/issues/40
      * @group 40
+     *
      * @dataProvider routerAdapters
+     *
+     * @param string $adapter
      */
     public function testRoutingWithSamePathWithoutName($adapter)
     {
@@ -160,7 +172,10 @@ class IntegrationTest extends TestCase
     /**
      * @see https://github.com/zendframework/zend-expressive/issues/40
      * @group 40
+     *
      * @dataProvider routerAdapters
+     *
+     * @param string $adapter
      */
     public function testRoutingWithSamePathWithName($adapter)
     {
@@ -185,7 +200,10 @@ class IntegrationTest extends TestCase
     /**
      * @see https://github.com/zendframework/zend-expressive/issues/40
      * @group 40
+     *
      * @dataProvider routerAdapters
+     *
+     * @param string $adapter
      */
     public function testRoutingWithSamePathWithRouteWithoutName($adapter)
     {
@@ -209,7 +227,10 @@ class IntegrationTest extends TestCase
 
     /**
      * @see https://github.com/zendframework/zend-expressive/issues/40
+     *
      * @dataProvider routerAdapters
+     *
+     * @param string $adapter
      */
     public function testRoutingWithSamePathWithRouteWithName($adapter)
     {
@@ -234,7 +255,10 @@ class IntegrationTest extends TestCase
     /**
      * @see https://github.com/zendframework/zend-expressive/issues/40
      * @group 40
+     *
      * @dataProvider routerAdapters
+     *
+     * @param string $adapter
      */
     public function testRoutingWithSamePathWithRouteWithMultipleMethods($adapter)
     {
@@ -292,6 +316,9 @@ class IntegrationTest extends TestCase
 
     /**
      * @dataProvider routerAdaptersForHttpMethods
+     *
+     * @param string $adapter
+     * @param string $method
      */
     public function testMatchWithAllHttpMethods($adapter, $method)
     {
@@ -441,8 +468,11 @@ class IntegrationTest extends TestCase
     }
 
     /**
-     * @dataProvider routerAdapters
      * @group 74
+     *
+     * @dataProvider routerAdapters
+     *
+     * @param string $adapter
      */
     public function testWithOnlyRootPathRouteDefinedRoutingToSubPathsShouldDelegate($adapter)
     {

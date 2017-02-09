@@ -9,12 +9,19 @@ namespace ZendTest\Expressive\Container;
 
 use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Zend\Expressive\Container\ErrorResponseGeneratorFactory;
 use Zend\Expressive\Middleware\ErrorResponseGenerator;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
 class ErrorResponseGeneratorFactoryTest extends TestCase
 {
+    /** @var ContainerInterface|ObjectProphecy */
+    private $container;
+
+    /** @var TemplateRendererInterface|ObjectProphecy */
+    private $renderer;
+
     public function setUp()
     {
         $this->container = $this->prophesize(ContainerInterface::class);

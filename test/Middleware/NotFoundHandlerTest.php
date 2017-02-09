@@ -10,12 +10,22 @@ namespace ZendTest\Expressive\Middleware;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Delegate\NotFoundDelegate;
 use Zend\Expressive\Middleware\NotFoundHandler;
 
 class NotFoundHandlerTest extends TestCase
 {
+    /** @var NotFoundDelegate|ObjectProphecy */
+    private $internal;
+
+    /** @var ServerRequestInterface|ObjectProphecy */
+    private $request;
+
+    /** @var DelegateInterface|ObjectProphecy */
+    private $delegate;
+
     public function setUp()
     {
         $this->internal = $this->prophesize(NotFoundDelegate::class);

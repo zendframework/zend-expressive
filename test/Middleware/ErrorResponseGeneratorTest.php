@@ -9,6 +9,7 @@ namespace ZendTest\Expressive\Middleware;
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
@@ -18,6 +19,18 @@ use Zend\Expressive\Template\TemplateRendererInterface;
 
 class ErrorResponseGeneratorTest extends TestCase
 {
+    /** @var ServerRequestInterface|ObjectProphecy */
+    private $request;
+
+    /** @var ResponseInterface|ObjectProphecy */
+    private $response;
+
+    /** @var StreamInterface|ObjectProphecy */
+    private $stream;
+
+    /** @var TemplateRendererInterface|ObjectProphecy */
+    private $renderer;
+
     public function setUp()
     {
         $this->request  = $this->prophesize(ServerRequestInterface::class);
@@ -101,6 +114,9 @@ class ErrorResponseGeneratorTest extends TestCase
 
     /**
      * @dataProvider testTemplates
+     *
+     * @param null|string $template
+     * @param string $expected
      */
     public function testRendersTemplateWithoutErrorDetailsWhenRendererPresentAndNotInDebugMode($template, $expected)
     {
@@ -147,6 +163,9 @@ class ErrorResponseGeneratorTest extends TestCase
 
     /**
      * @dataProvider testTemplates
+     *
+     * @param null|string $template
+     * @param string $expected
      */
     public function testRendersTemplateWithErrorDetailsWhenRendererPresentAndInDebugMode($template, $expected)
     {

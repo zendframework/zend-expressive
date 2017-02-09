@@ -7,6 +7,7 @@
 
 namespace ZendTest\Expressive\Container;
 
+use Interop\Container\ContainerInterface;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
@@ -38,16 +39,19 @@ class ApplicationFactoryTest extends TestCase
 {
     use ContainerTrait;
 
-    /** @var ObjectProphecy */
+    /** @var ContainerInterface|ObjectProphecy */
     protected $container;
 
-    /** @var ObjectProphecy */
+    /** @var ApplicationFactory */
+    private $factory;
+
+    /** @var EmitterInterface|ObjectProphecy */
     protected $emitter;
 
-    /** @var ObjectProphecy */
+    /** @var DelegateInterface|ObjectProphecy */
     protected $delegate;
 
-    /** @var ObjectProphecy */
+    /** @var RouterInterface|ObjectProphecy */
     protected $router;
 
     public function setUp()
@@ -131,6 +135,8 @@ class ApplicationFactoryTest extends TestCase
 
     /**
      * @dataProvider callableMiddlewares
+     *
+     * @param callable $middleware
      */
     public function testFactorySetsUpRoutesFromConfig($middleware)
     {
@@ -402,8 +408,10 @@ class ApplicationFactoryTest extends TestCase
 
     /**
      * @dataProvider configWithRoutesButNoPipeline
+     *
+     * @param array $config
      */
-    public function testProvidingRoutesAndNoPipelineImplicitlyRegistersRoutingAndDispatchMiddleware($config)
+    public function testProvidingRoutesAndNoPipelineImplicitlyRegistersRoutingAndDispatchMiddleware(array $config)
     {
         $this->injectServiceInContainer($this->container, 'config', $config);
         $app = $this->factory->__invoke($this->container->reveal());

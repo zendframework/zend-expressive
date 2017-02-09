@@ -16,6 +16,7 @@ use InvalidArgumentException;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use ReflectionProperty;
@@ -46,6 +47,12 @@ use Zend\Stratigility\Route as StratigilityRoute;
 class ApplicationTest extends TestCase
 {
     use ContainerTrait;
+
+    /** @var TestAsset\InteropMiddleware */
+    private $noopMiddleware;
+
+    /** @var RouterInterface|ObjectProphecy */
+    private $router;
 
     public function setUp()
     {
@@ -102,6 +109,8 @@ class ApplicationTest extends TestCase
 
     /**
      * @dataProvider commonHttpMethods
+     *
+     * @param string $method
      */
     public function testCanCallRouteWithHttpMethods($method)
     {
@@ -169,6 +178,8 @@ class ApplicationTest extends TestCase
 
     /**
      * @dataProvider invalidPathTypes
+     *
+     * @param mixed $path
      */
     public function testCallingRouteWithAnInvalidPathTypeRaisesAnException($path)
     {
@@ -179,6 +190,8 @@ class ApplicationTest extends TestCase
 
     /**
      * @dataProvider commonHttpMethods
+     *
+     * @param mixed $method
      */
     public function testCommonHttpMethodsAreExposedAsClassMethodsAndReturnRoutes($method)
     {
@@ -500,7 +513,11 @@ class ApplicationTest extends TestCase
     /**
      * @runInSeparateProcess
      * @preserveGlobalState disabled
+     *
      * @dataProvider invalidRequestExceptions
+     *
+     * @param string $expectedException
+     * @param string $message
      */
     public function testRunReturnsResponseWithBadRequestStatusWhenServerRequestFactoryRaisesException(
         $expectedException,
@@ -555,7 +572,11 @@ class ApplicationTest extends TestCase
      *
      * @runInSeparateProcess
      * @preserveGlobalState disabled
+     *
      * @dataProvider invalidRequestExceptions
+     *
+     * @param string $expectedException
+     * @param string $message
      */
     public function testRunReturnsResponseGeneratedByErrorResponseGeneratorWhenServerRequestFactoryRaisesException(
         $expectedException,
