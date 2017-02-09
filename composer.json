@@ -62,6 +62,7 @@
     ],
     "scripts": {
         "check": [
+            "@license-check",
             "@cs-check",
             "@test"
         ],
