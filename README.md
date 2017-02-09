@@ -92,9 +92,3 @@ $ mkdocs build
 
 Additionally, public-facing, browseable documentation is available at
 https://docs.zendframework.com/zend-expressive/
-
-## Architecture
-
-Architectural notes are in [NOTES.md](NOTES.md).
-
-Please see the tests for full information on capabilities.
