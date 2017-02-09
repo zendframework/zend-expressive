@@ -30,6 +30,7 @@ use Zend\Stratigility\Route;
 class RouteMiddlewareTest extends TestCase
 {
     use ContainerTrait;
+    use RouteResultTrait;
 
     /** @var ObjectProphecy */
     protected $container;
@@ -141,11 +142,7 @@ class RouteMiddlewareTest extends TestCase
             return $finalResponse;
         };
 
-        $result = RouteResult::fromRouteMatch(
-            '/foo',
-            $middleware,
-            []
-        );
+        $result = $this->getRouteResult('/foo', $middleware, []);
 
         $this->router->match($request)->willReturn($result);
         $request = $request->withAttribute(RouteResult::class, $result);
@@ -164,13 +161,7 @@ class RouteMiddlewareTest extends TestCase
         $request  = new ServerRequest();
         $response = new Response();
 
-        $middleware = (object) [];
-
-        $result = RouteResult::fromRouteMatch(
-            '/foo',
-            false,
-            []
-        );
+        $result = $this->getRouteResult('/foo', false, []);
 
         $this->router->match($request)->willReturn($result);
         $request = $request->withAttribute(RouteResult::class, $result);
@@ -191,11 +182,7 @@ class RouteMiddlewareTest extends TestCase
 
         $middleware = (object) [];
 
-        $result = RouteResult::fromRouteMatch(
-            '/foo',
-            $middleware,
-            []
-        );
+        $result = $this->getRouteResult('/foo', $middleware, []);
 
         $this->router->match($request)->willReturn($result);
         $request = $request->withAttribute(RouteResult::class, $result);
@@ -214,13 +201,7 @@ class RouteMiddlewareTest extends TestCase
         $request  = new ServerRequest();
         $response = new Response();
 
-        $middleware = (object) [];
-
-        $result = RouteResult::fromRouteMatch(
-            '/foo',
-            'not a class',
-            []
-        );
+        $result = $this->getRouteResult('/foo', 'not a class', []);
 
         $this->router->match($request)->willReturn($result);
         $request = $request->withAttribute(RouteResult::class, $result);
@@ -240,11 +221,7 @@ class RouteMiddlewareTest extends TestCase
     {
         $request  = new ServerRequest();
         $response = new Response();
-        $result   = RouteResult::fromRouteMatch(
-            '/foo',
-            __NAMESPACE__ . '\TestAsset\InvokableMiddleware',
-            []
-        );
+        $result   = $this->getRouteResult('/foo', TestAsset\InvokableMiddleware::class, []);
 
         $this->router->match($request)->willReturn($result);
         $request = $request->withAttribute(RouteResult::class, $result);
@@ -270,16 +247,12 @@ class RouteMiddlewareTest extends TestCase
             return $res->withHeader('X-Middleware', 'Invoked');
         };
 
-        $result = RouteResult::fromRouteMatch(
-            '/foo',
-            'TestAsset\Middleware',
-            []
-        );
+        $result = $this->getRouteResult('/foo', TestAsset\Middleware::class, []);
 
         $this->router->match($request)->willReturn($result);
         $request = $request->withAttribute(RouteResult::class, $result);
 
-        $this->injectServiceInContainer($this->container, 'TestAsset\Middleware', $middleware);
+        $this->injectServiceInContainer($this->container, TestAsset\Middleware::class, $middleware);
 
         $app = $this->getApplication();
 
@@ -609,7 +582,7 @@ class RouteMiddlewareTest extends TestCase
 
         $request  = new ServerRequest();
         $response = new Response();
-        $result   = RouteResult::fromRouteMatch('resource', $middleware, $matches);
+        $result   = $this->getRouteResult('resource', $middleware, $matches);
 
         $this->router->match($request)->willReturn($result);
 
