@@ -76,7 +76,7 @@ can recommend the following implementations:
 - [pimple-container-interop](https://github.com/xtreamwayz/pimple-container-interop):
   `composer require xtreamwayz/pimple-container-interop`
 - [Aura.Di](https://github.com/auraphp/Aura.Di):
-  `composer require aura/di:3.0.*@beta`
+  `composer require aura/di`
 
 Additionally, you may optionally want to install a template renderer
 implementation, and/or an error handling integration. These are covered in the
