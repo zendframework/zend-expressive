@@ -76,37 +76,4 @@ class IntegrationTest extends TestCase
         $this->assertInstanceOf(ResponseInterface::class, $this->response);
         $this->assertEquals(StatusCode::STATUS_NOT_FOUND, $this->response->getStatusCode());
     }
-
-    /**
-     * @todo Remove for version 2.0, as that version will remove error middleware support
-     * @group 400
-     */
-    public function testErrorMiddlewareDeprecationErrorHandlerWillNotOverridePreviouslyRegisteredErrorHandler()
-    {
-        $triggered = 0;
-        $this->errorHandler = set_error_handler(function ($errno, $errstr) use (&$triggered) {
-            $triggered++;
-            return true;
-        });
-
-        $expected = new Response();
-        $middleware = function ($request, $response, $next) use ($expected) {
-            trigger_error('Triggered', E_USER_NOTICE);
-            return $expected;
-        };
-
-        $app      = new Application(new FastRouteRouter(), null, null, $this->getEmitter());
-        $app->pipe($middleware);
-
-        $request  = new ServerRequest([], [], 'https://example.com/foo', 'GET');
-        $response = clone $expected;
-
-        $app->run($request, $response);
-
-        trigger_error('Triggered', E_USER_NOTICE);
-
-        restore_error_handler();
-
-        $this->assertSame(2, $triggered);
-    }
 }
