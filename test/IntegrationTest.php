@@ -66,10 +66,10 @@ class IntegrationTest extends TestCase
 
     public function testInjectedFinalHandlerCanEmitA404WhenNoMiddlewareMatches()
     {
-        $request      = new ServerRequest([], [], 'https://example.com/foo', 'GET');
-        $response     = new Response();
-        $delegate     = new NotFoundDelegate($response);
-        $app          = new Application(new FastRouteRouter(), null, $delegate, $this->getEmitter());
+        $request  = new ServerRequest([], [], 'https://example.com/foo', 'GET');
+        $response = new Response();
+        $delegate = new NotFoundDelegate($response);
+        $app      = new Application(new FastRouteRouter(), null, $delegate, $this->getEmitter());
 
         $app->run($request, $response);
 
