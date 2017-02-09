@@ -539,7 +539,7 @@ class ApplicationTest extends TestCase
             $emitter = $this->prophesize(EmitterInterface::class);
             $emitter->emit(Argument::that(function ($response) {
                 $this->assertInstanceOf(ResponseInterface::class, $response, 'Emitter did not receive a response');
-                $this->assertEquals(400, $response->getStatusCode());
+                $this->assertEquals(StatusCode::STATUS_BAD_REQUEST, $response->getStatusCode());
                 return true;
             }))->shouldBeCalled();
 

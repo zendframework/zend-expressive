@@ -7,6 +7,7 @@
 
 namespace ZendTest\Expressive;
 
+use Fig\Http\Message\StatusCodeInterface as StatusCode;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
@@ -60,7 +61,7 @@ class IntegrationTest extends TestCase
         $app->run($request, $response);
 
         $this->assertInstanceOf(ResponseInterface::class, $this->response);
-        $this->assertEquals(404, $this->response->getStatusCode());
+        $this->assertEquals(StatusCode::STATUS_NOT_FOUND, $this->response->getStatusCode());
     }
 
     public function testInjectedFinalHandlerCanEmitA404WhenNoMiddlewareMatches()
@@ -73,7 +74,7 @@ class IntegrationTest extends TestCase
         $app->run($request, $response);
 
         $this->assertInstanceOf(ResponseInterface::class, $this->response);
-        $this->assertEquals(404, $this->response->getStatusCode());
+        $this->assertEquals(StatusCode::STATUS_NOT_FOUND, $this->response->getStatusCode());
     }
 
     /**

@@ -136,7 +136,7 @@ class IntegrationTest extends TestCase
         $request = new ServerRequest(['REQUEST_METHOD' => 'DELETE'], [], '/foo', 'DELETE');
         $result  = $app->process($request, $delegate->reveal());
 
-        $this->assertSame(405, $result->getStatusCode());
+        $this->assertSame(StatusCode::STATUS_METHOD_NOT_ALLOWED, $result->getStatusCode());
         $headers = $result->getHeaders();
         $this->assertSame(['GET,POST'], $headers['Allow']);
     }
@@ -485,7 +485,7 @@ class IntegrationTest extends TestCase
             return $res->withBody($stream);
         }, ['GET']);
 
-        $expected = (new Response())->withStatus(404);
+        $expected = (new Response())->withStatus(StatusCode::STATUS_NOT_FOUND);
         $delegate = $this->prophesize(DelegateInterface::class);
         $delegate->process(Argument::type(ServerRequest::class))
             ->willReturn($expected);

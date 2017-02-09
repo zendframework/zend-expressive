@@ -7,6 +7,7 @@
 
 namespace ZendTest\Expressive\Middleware;
 
+use Fig\Http\Message\StatusCodeInterface as StatusCode;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -50,11 +51,11 @@ class ErrorResponseGeneratorTest extends TestCase
 
         $initialResponse
             ->getStatusCode()
-            ->willReturn(200);
+            ->willReturn(StatusCode::STATUS_OK);
         $initialResponse
-            ->withStatus(500)
+            ->withStatus(StatusCode::STATUS_INTERNAL_SERVER_ERROR)
             ->will(function () use ($secondaryResponse) {
-                $secondaryResponse->getStatusCode()->willReturn(500);
+                $secondaryResponse->getStatusCode()->willReturn(StatusCode::STATUS_INTERNAL_SERVER_ERROR);
                 $secondaryResponse->getReasonPhrase()->willReturn('Network Connect Timeout Error');
                 return $secondaryResponse->reveal();
             });
@@ -80,7 +81,7 @@ class ErrorResponseGeneratorTest extends TestCase
 
         $initialResponse
             ->getStatusCode()
-            ->willReturn(200);
+            ->willReturn(StatusCode::STATUS_OK);
         $initialResponse
             ->withStatus(599)
             ->will(function () use ($secondaryResponse) {
@@ -130,7 +131,7 @@ class ErrorResponseGeneratorTest extends TestCase
                 'response' => $secondaryResponse->reveal(),
                 'request'  => $this->request->reveal(),
                 'uri'      => 'https://example.com/foo',
-                'status'   => 500,
+                'status'   => StatusCode::STATUS_INTERNAL_SERVER_ERROR,
                 'reason'   => 'Internal Server Error',
             ])
             ->willReturn('TEMPLATED CONTENTS');
@@ -139,11 +140,11 @@ class ErrorResponseGeneratorTest extends TestCase
 
         $initialResponse
             ->getStatusCode()
-            ->willReturn(200);
+            ->willReturn(StatusCode::STATUS_OK);
         $initialResponse
-            ->withStatus(500)
+            ->withStatus(StatusCode::STATUS_INTERNAL_SERVER_ERROR)
             ->will(function () use ($secondaryResponse) {
-                $secondaryResponse->getStatusCode()->willReturn(500);
+                $secondaryResponse->getStatusCode()->willReturn(StatusCode::STATUS_INTERNAL_SERVER_ERROR);
                 $secondaryResponse->getReasonPhrase()->willReturn('Internal Server Error');
                 return $secondaryResponse->reveal();
             });
@@ -178,11 +179,11 @@ class ErrorResponseGeneratorTest extends TestCase
 
         $initialResponse
             ->getStatusCode()
-            ->willReturn(200);
+            ->willReturn(StatusCode::STATUS_OK);
         $initialResponse
-            ->withStatus(500)
+            ->withStatus(StatusCode::STATUS_INTERNAL_SERVER_ERROR)
             ->will(function () use ($secondaryResponse) {
-                $secondaryResponse->getStatusCode()->willReturn(500);
+                $secondaryResponse->getStatusCode()->willReturn(StatusCode::STATUS_INTERNAL_SERVER_ERROR);
                 $secondaryResponse->getReasonPhrase()->willReturn('Network Connect Timeout Error');
                 return $secondaryResponse->reveal();
             });
@@ -192,7 +193,7 @@ class ErrorResponseGeneratorTest extends TestCase
                 'response' => $secondaryResponse->reveal(),
                 'request'  => $this->request->reveal(),
                 'uri'      => 'https://example.com/foo',
-                'status'   => 500,
+                'status'   => StatusCode::STATUS_INTERNAL_SERVER_ERROR,
                 'reason'   => 'Network Connect Timeout Error',
                 'error'    => $error,
             ])
