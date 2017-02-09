@@ -73,7 +73,7 @@ class WhoopsPageHandlerFactory
         if (! is_string($editor)) {
             throw new Exception\InvalidServiceException(sprintf(
                 'Whoops editor must be a string editor name, string service name, or callable; received "%s"',
-                (is_object($editor) ? get_class($editor) : gettype($editor))
+                is_object($editor) ? get_class($editor) : gettype($editor)
             ));
         }
 
