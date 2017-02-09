@@ -48,6 +48,7 @@ use ZendTest\Expressive\TestAsset\InvokableMiddleware;
 class ApplicationTest extends TestCase
 {
     use ContainerTrait;
+    use RouteResultTrait;
 
     public function setUp()
     {

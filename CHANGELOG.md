@@ -199,6 +199,10 @@ All notable changes to this project will be documented in this file, in reverse 
   forwards-compatibility measure for the upcoming version 2.0.0. Currently,
   it proxies to `getFinalHandler()`.
 
+- [#435](https://github.com/zendframework/zend-expressive/pull/435) adds support
+  for the 2.X versions of zend-expressive-router and the various router
+  implementations. This change also allows usage of zend-expressive-helpers 3.X.
+
 ### Changed
 
 - [#429](https://github.com/zendframework/zend-expressive/pull/429) updates the
