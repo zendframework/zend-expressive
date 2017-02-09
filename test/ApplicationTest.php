@@ -45,6 +45,7 @@ use ZendTest\Expressive\TestAsset\InvokableMiddleware;
 class ApplicationTest extends TestCase
 {
     use ContainerTrait;
+    use RouteResultTrait;
 
     public function setUp()
     {
@@ -239,7 +240,7 @@ class ApplicationTest extends TestCase
         ];
 
         $request = new ServerRequest([], [], '/', 'GET');
-        $routeResult = RouteResult::fromRouteMatch(__METHOD__, $middleware, []);
+        $routeResult = $this->getRouteResult(__METHOD__, $middleware, []);
         $request = $request->withAttribute(RouteResult::class, $routeResult);
 
         $container = $this->mockContainerInterface();
@@ -266,7 +267,7 @@ class ApplicationTest extends TestCase
     public function testThrowsExceptionWhenDispatchingUncallableMiddleware($middleware)
     {
         $request = new ServerRequest([], [], '/', 'GET');
-        $routeResult = RouteResult::fromRouteMatch(__METHOD__, $middleware, []);
+        $routeResult = $this->getRouteResult(__METHOD__, $middleware, []);
         $request = $request->withAttribute(RouteResult::class, $routeResult);
 
         $this->getApp()->dispatchMiddleware($request, new Response(), function () {
