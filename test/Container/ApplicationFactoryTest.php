@@ -124,19 +124,19 @@ class ApplicationFactoryTest extends TestCase
     public function callableMiddlewares()
     {
         return [
-           ['HelloWorld'],
-           [
+            ['HelloWorld'],
+            [
                 function () {
-                }
-           ],
-           [[InvokableMiddleware::class, 'staticallyCallableMiddleware']],
+                },
+            ],
+            [[InvokableMiddleware::class, 'staticallyCallableMiddleware']],
         ];
     }
 
     /**
      * @dataProvider callableMiddlewares
      *
-     * @param callable $middleware
+     * @param callable|array|string $middleware
      */
     public function testFactorySetsUpRoutesFromConfig($middleware)
     {
@@ -227,11 +227,11 @@ class ApplicationFactoryTest extends TestCase
     {
         $expected = [
             'values' => [
-                'foo' => 'bar'
+                'foo' => 'bar',
             ],
             'tokens' => [
-                'bar' => 'foo'
-            ]
+                'bar' => 'foo',
+            ],
         ];
         $config = [
             'routes' => [
@@ -240,7 +240,7 @@ class ApplicationFactoryTest extends TestCase
                     'middleware' => 'HelloWorld',
                     'name' => 'home',
                     'allowed_methods' => ['GET'],
-                    'options' => $expected
+                    'options' => $expected,
                 ],
             ],
         ];
@@ -314,11 +314,13 @@ class ApplicationFactoryTest extends TestCase
             ['path' => '/dynamic-path', 'middleware' => 'DynamicPath'],
             ['middleware' => $noPath],
             ['middleware' => 'Goodbye'],
-            ['middleware' => [
-                $pipelineFirst,
-                'Hello',
-                $pipelineLast,
-            ]],
+            [
+                'middleware' => [
+                    $pipelineFirst,
+                    'Hello',
+                    $pipelineLast,
+                ],
+            ],
         ];
 
         $config = ['middleware_pipeline' => $pipeline];
@@ -453,11 +455,13 @@ class ApplicationFactoryTest extends TestCase
                 ['path' => '/dynamic-path', 'middleware' => 'DynamicPath'],
                 ['middleware' => $noPath],
                 ['middleware' => 'Goodbye'],
-                ['middleware' => [
-                    $pipelineFirst,
-                    'Hello',
-                    $pipelineLast,
-                ]],
+                [
+                    'middleware' => [
+                        $pipelineFirst,
+                        'Hello',
+                        $pipelineLast,
+                    ],
+                ],
             ],
             'routes' => [
                 [
