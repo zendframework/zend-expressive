@@ -75,11 +75,11 @@ class WhoopsFactory
 
         $handler = new JsonResponseHandler();
 
-        if (isset($config['json_exceptions']['show_trace'])) {
+        if (isset($config['json_exceptions']['show_trace']) && true === $config['json_exceptions']['show_trace']) {
             $handler->addTraceToOutput(true);
         }
 
-        if (isset($config['json_exceptions']['ajax_only'])) {
+        if (isset($config['json_exceptions']['ajax_only']) && true === $config['json_exceptions']['ajax_only']) {
             if (method_exists(\Whoops\Util\Misc::class, 'isAjaxRequest')) {
                 // Whoops 2.x
                 if (! \Whoops\Util\Misc::isAjaxRequest()) {
