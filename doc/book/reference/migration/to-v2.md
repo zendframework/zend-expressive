@@ -4,6 +4,7 @@ Expressive 2.0 should not result in many upgrade problems for users. However,
 starting in this version, we offer a few changes affecting the following that
 you should be aware of, and potentially update your application to adopt:
 
+- [Signature changes](#signature-changes)
 - [Removed functionality](#removed-functionality)
 - [Deprecated functionality](#deprecated-functionality)
 - [Usage of http-interop middleware](#http-interop)
@@ -12,6 +13,15 @@ you should be aware of, and potentially update your application to adopt:
 - [Final handlers become default delegates](#final-handlers-become-default-delegates)
 - [Programmatic middleware pipelines](#programmatic-middleware-pipelines)
 - [Implicit handling of `HEAD` and `OPTIONS` requests](#handling-head-and-options-requests)
+
+## Signature changes
+
+The following signature changes were made that could affect _class extensions_:
+
+- `Zend\Expressive\Application::__call($method, array $args)`: previously, the
+  `$args` argument was not typehinted; it now is. If you are extending this
+  class and overriding that method, you will need to update your method
+  signature accordingly.
 
 ## Removed functionality
 
