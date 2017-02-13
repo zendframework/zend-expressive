@@ -41,6 +41,7 @@ pages:
             - 'Body Parsing Middleware': features/helpers/body-parse.md
         - Emitters: features/emitters.md
     - Cookbook:
+        - 'Autowiring routes and pipeline middleware': cookbook/autowiring-routes-and-pipelines.md
         - 'Prepending a common path to all routes': cookbook/common-prefix-for-routes.md
         - 'Route-specific middleware pipelines': cookbook/route-specific-pipeline.md
         - 'Setting custom 404 page handling': cookbook/custom-404-page-handling.md
