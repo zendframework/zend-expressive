@@ -10,6 +10,7 @@ namespace Zend\Expressive\Container;
 use Interop\Container\ContainerInterface;
 use Whoops\Handler\JsonResponseHandler;
 use Whoops\Run as Whoops;
+use Whoops\Util\Misc as WhoopsUtil;
 
 /**
  * Create and return an instance of the Whoops runner.
@@ -75,14 +76,15 @@ class WhoopsFactory
 
         $handler = new JsonResponseHandler();
 
-        if (isset($config['json_exceptions']['show_trace']) && true === $config['json_exceptions']['show_trace']) {
+        if (! empty($config['json_exceptions']['show_trace'])) {
             $handler->addTraceToOutput(true);
         }
 
-        if (isset($config['json_exceptions']['ajax_only']) && true === $config['json_exceptions']['ajax_only']) {
-            if (method_exists(\Whoops\Util\Misc::class, 'isAjaxRequest')) {
-                // Whoops 2.x
-                if (! \Whoops\Util\Misc::isAjaxRequest()) {
+        if (! empty($config['json_exceptions']['ajax_only'])) {
+            if (method_exists(WhoopsUtil::class, 'isAjaxRequest')) {
+                // Whoops 2.x; don't push handler on stack unless we are in
+                // an XHR request.
+                if (! WhoopsUtil::isAjaxRequest()) {
                     return;
                 }
             } elseif (method_exists($handler, 'onlyForAjaxRequests')) {
