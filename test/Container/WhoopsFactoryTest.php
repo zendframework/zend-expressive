@@ -15,6 +15,7 @@ use Traversable;
 use Whoops\Handler\JsonResponseHandler;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run as Whoops;
+use Whoops\Util\Misc as WhoopsUtil;
 use Zend\Expressive\Container\WhoopsFactory;
 use ZendTest\Expressive\ContainerTrait;
 
@@ -79,8 +80,9 @@ class WhoopsFactoryTest extends TestCase
     }
 
     /**
-     * @depends      testWillInjectJsonResponseHandlerIfConfigurationExpectsIt
-     * @dataProvider provideConfig
+     * @backupGlobals enabled
+     * @depends       testWillInjectJsonResponseHandlerIfConfigurationExpectsIt
+     * @dataProvider  provideConfig
      *
      * @param bool  $showsTrace
      * @param bool  $isAjaxOnly
@@ -112,7 +114,7 @@ class WhoopsFactoryTest extends TestCase
         // If ajax only, not ajax request and Whoops 2, it does not inject JsonResponseHandler
         if ($isAjaxOnly
             && ! $requestIsAjax
-            && method_exists(\Whoops\Util\Misc::class, 'isAjaxRequest')
+            && method_exists(WhoopsUtil::class, 'isAjaxRequest')
         ) {
             $this->assertInstanceOf(PrettyPageHandler::class, $handler);
 
