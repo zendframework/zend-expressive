@@ -105,6 +105,12 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Changes
 
+- [#440](https://github.com/zendframework/zend-expressive/pull/440) changes the
+  `Zend\Expressive\Application::__call($method, array $args)` signature; in
+  previous versions, `$args` did not have a typehint. If you are extending the
+  class and overriding this method, you will need to update your signature
+  accordingly.
+
 - [#428](https://github.com/zendframework/zend-expressive/pull/428) updates
   `Zend\Expressive\Container\ApplicationFactory` to ignore the
   `zend-expressive.raise_throwables` configuration setting; Stratigility 2.X no
