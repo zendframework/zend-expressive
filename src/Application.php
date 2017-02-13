@@ -123,7 +123,7 @@ class Application extends MiddlewarePipe
      * @throws Exception\BadMethodCallException if the $method is not in $httpRouteMethods.
      * @throws Exception\BadMethodCallException if receiving more or less than 2 arguments.
      */
-    public function __call($method, $args)
+    public function __call($method, array $args)
     {
         if (! in_array(strtoupper($method), $this->httpRouteMethods, true)) {
             throw new Exception\BadMethodCallException('Unsupported method');

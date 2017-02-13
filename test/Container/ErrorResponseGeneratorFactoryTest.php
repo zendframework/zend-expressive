@@ -73,11 +73,13 @@ class ErrorResponseGeneratorFactoryTest extends TestCase
     public function testUsesTemplateConfigurationToSetTemplate()
     {
         $this->container->has('config')->willReturn(true);
-        $this->container->get('config')->willReturn(['zend-expressive' => [
-            'error_handler' => [
-                'template_error' => 'error::custom',
+        $this->container->get('config')->willReturn([
+            'zend-expressive' => [
+                'error_handler' => [
+                    'template_error' => 'error::custom',
+                ],
             ],
-        ]]);
+        ]);
         $this->container->has(TemplateRendererInterface::class)->willReturn(false);
         $factory = new ErrorResponseGeneratorFactory();
 

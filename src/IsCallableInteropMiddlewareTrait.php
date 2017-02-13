@@ -16,7 +16,7 @@ trait IsCallableInteropMiddlewareTrait
     /**
      * Is callable middleware interop middleware?
      *
-     * @param callable $middleware
+     * @param mixed $middleware
      * @return bool
      */
     private function isCallableInteropMiddleware($middleware)
