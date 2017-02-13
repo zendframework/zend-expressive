@@ -130,12 +130,15 @@ class WhoopsFactoryTest extends TestCase
      */
     public function provideConfig()
     {
-        yield 'Shows trace' => [true, true, true];
-        yield 'Does not show trace' => [false, true, true];
+        // @codingStandardsIgnoreStart
+        //    test case                        => showsTrace, isAjaxOnly, requestIsAjax
+        yield 'Shows trace'                    => [true,      true,       true];
+        yield 'Does not show trace'            => [false,     true,       true];
 
-        yield 'Ajax only, request is ajax' => [true, true, true];
-        yield 'Ajax only, request is not ajax' => [true, true, false];
+        yield 'Ajax only, request is ajax'     => [true,      true,       true];
+        yield 'Ajax only, request is not ajax' => [true,      true,       false];
 
-        yield 'Not ajax only' => [true, false, false];
+        yield 'Not ajax only'                  => [true,      false,      false];
+        // @codingStandardsIgnoreEnd
     }
 }
