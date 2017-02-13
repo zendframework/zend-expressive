@@ -11,6 +11,7 @@ use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use ReflectionProperty;
+use Traversable;
 use Whoops\Handler\JsonResponseHandler;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run as Whoops;
@@ -78,33 +79,68 @@ class WhoopsFactoryTest extends TestCase
     }
 
     /**
-     * @depends testWillInjectJsonResponseHandlerIfConfigurationExpectsIt
+     * @depends      testWillInjectJsonResponseHandlerIfConfigurationExpectsIt
+     * @dataProvider provideConfig
+     *
+     * @param bool  $showsTrace
+     * @param bool  $isAjaxOnly
+     * @param bool  $requestIsAjax
      */
-    public function testJsonResponseHandlerCanBeConfigured()
+    public function testJsonResponseHandlerCanBeConfigured($showsTrace, $isAjaxOnly, $requestIsAjax)
     {
         // Set for Whoops 2.x json handler detection
-        $_SERVER['HTTP_X_REQUESTED_WITH'] = 'xmlhttprequest';
+        if ($requestIsAjax) {
+            $_SERVER['HTTP_X_REQUESTED_WITH'] = 'xmlhttprequest';
+        }
 
         $config = [
             'whoops' => [
                 'json_exceptions' => [
                     'display'    => true,
-                    'show_trace' => true,
-                    'ajax_only'  => true,
+                    'show_trace' => $showsTrace,
+                    'ajax_only'  => $isAjaxOnly,
                 ],
             ],
         ];
+
         $this->injectServiceInContainer($this->container, 'config', $config);
 
         $factory = $this->factory;
         $whoops  = $factory($this->container->reveal());
+        $handler = $whoops->popHandler();
 
-        $jsonHandler = $whoops->popHandler();
-        $this->assertInstanceOf(JsonResponseHandler::class, $jsonHandler);
-        $this->assertAttributeSame(true, 'returnFrames', $jsonHandler);
+        // If ajax only, not ajax request and Whoops 2, it does not inject JsonResponseHandler
+        if ($isAjaxOnly
+            && ! $requestIsAjax
+            && method_exists(\Whoops\Util\Misc::class, 'isAjaxRequest')
+        ) {
+            $this->assertInstanceOf(PrettyPageHandler::class, $handler);
 
-        if (method_exists($jsonHandler, 'onlyForAjaxRequests')) {
-            $this->assertAttributeSame(true, 'onlyForAjaxRequests', $jsonHandler);
+            // Skip remaining assertions
+            return;
         }
+
+        $this->assertAttributeSame($showsTrace, 'returnFrames', $handler);
+
+        if (method_exists($handler, 'onlyForAjaxRequests')) {
+            $this->assertAttributeSame($isAjaxOnly, 'onlyForAjaxRequests', $handler);
+        }
+    }
+
+    /**
+     * @return Traversable
+     */
+    public function provideConfig()
+    {
+        // @codingStandardsIgnoreStart
+        //    test case                        => showsTrace, isAjaxOnly, requestIsAjax
+        yield 'Shows trace'                    => [true,      true,       true];
+        yield 'Does not show trace'            => [false,     true,       true];
+
+        yield 'Ajax only, request is ajax'     => [true,      true,       true];
+        yield 'Ajax only, request is not ajax' => [true,      true,       false];
+
+        yield 'Not ajax only'                  => [true,      false,      false];
+        // @codingStandardsIgnoreEnd
     }
 }

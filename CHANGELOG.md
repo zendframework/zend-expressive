@@ -261,7 +261,12 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#442](https://github.com/zendframework/zend-expressive/pull/442) fixes how
+  the `WhoopsFactory` disables JSON output for whoops; previously, providing
+  boolean `false` values for either of the configuration flags
+  `json_exceptions.show_trace` or `json_exceptions.ajax_only` would result in
+  enabling the settings; these flags are now correctly evaluated by the
+  `WhoopsFactory`.
 
 ## 1.0.6 - 2017-01-09
 
