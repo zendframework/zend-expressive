@@ -59,9 +59,9 @@ class IntegrationTest extends TestCase
     public function routerAdapters()
     {
         return [
-          'aura'       => [AuraRouter::class],
-          'fast-route' => [FastRouteRouter::class],
-          'zf2'        => [ZendRouter::class],
+            'aura'       => [AuraRouter::class],
+            'fast-route' => [FastRouteRouter::class],
+            'zf2'        => [ZendRouter::class],
         ];
     }
 
@@ -76,7 +76,7 @@ class IntegrationTest extends TestCase
      */
     private function createApplicationWithGetPost($adapter, $getName = null, $postName = null)
     {
-        $app = new Application(new $adapter);
+        $app = new Application(new $adapter());
         $app->pipeRoutingMiddleware();
 
         $app->get('/foo', function ($req, $res, $next) {
@@ -104,7 +104,7 @@ class IntegrationTest extends TestCase
      */
     private function createApplicationWithRouteGetPost($adapter, $getName = null, $postName = null)
     {
-        $app = new Application(new $adapter);
+        $app = new Application(new $adapter());
         $app->pipeRoutingMiddleware();
 
         $app->route('/foo', function ($req, $res, $next) {
@@ -262,7 +262,7 @@ class IntegrationTest extends TestCase
      */
     public function testRoutingWithSamePathWithRouteWithMultipleMethods($adapter)
     {
-        $app = new Application(new $adapter);
+        $app = new Application(new $adapter());
         $app->pipeRoutingMiddleware();
         $app->pipeDispatchMiddleware();
 
@@ -322,7 +322,7 @@ class IntegrationTest extends TestCase
      */
     public function testMatchWithAllHttpMethods($adapter, $method)
     {
-        $app = new Application(new $adapter);
+        $app = new Application(new $adapter());
         $app->pipeRoutingMiddleware();
         $app->pipeDispatchMiddleware();
 
@@ -382,7 +382,7 @@ class IntegrationTest extends TestCase
      */
     public function testAllowedMethodsWhenOnlyPutMethodSet($adapter, $method)
     {
-        $app = new Application(new $adapter);
+        $app = new Application(new $adapter());
         $app->pipeRoutingMiddleware();
         $app->pipe(new Middleware\ImplicitHeadMiddleware());
         $app->pipe(new Middleware\ImplicitOptionsMiddleware());
@@ -414,7 +414,7 @@ class IntegrationTest extends TestCase
      */
     public function testAllowedMethodsWhenNoHttpMethodsSet($adapter, $method)
     {
-        $app = new Application(new $adapter);
+        $app = new Application(new $adapter());
         $app->pipeRoutingMiddleware();
         $app->pipe(new Middleware\ImplicitHeadMiddleware());
         $app->pipe(new Middleware\ImplicitOptionsMiddleware());
@@ -446,7 +446,7 @@ class IntegrationTest extends TestCase
      */
     public function testNotAllowedMethodWhenNoHttpMethodsSet($adapter, $method)
     {
-        $app = new Application(new $adapter);
+        $app = new Application(new $adapter());
         $app->pipeRoutingMiddleware();
         $app->pipeDispatchMiddleware();
 
@@ -476,7 +476,7 @@ class IntegrationTest extends TestCase
      */
     public function testWithOnlyRootPathRouteDefinedRoutingToSubPathsShouldDelegate($adapter)
     {
-        $app = new Application(new $adapter);
+        $app = new Application(new $adapter());
         $app->pipeRoutingMiddleware();
 
         $app->route('/', function ($req, $res, $next) {

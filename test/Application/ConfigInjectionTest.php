@@ -99,19 +99,19 @@ class ConfigInjectionTest extends TestCase
     public function callableMiddlewares()
     {
         return [
-           ['HelloWorld'],
-           [
+            ['HelloWorld'],
+            [
                 function () {
                 },
-           ],
-           [[InvokableMiddleware::class, 'staticallyCallableMiddleware']],
+            ],
+            [[InvokableMiddleware::class, 'staticallyCallableMiddleware']],
         ];
     }
 
     /**
      * @dataProvider callableMiddlewares
      *
-     * @param callable $middleware
+     * @param callable|array|string $middleware
      */
     public function testInjectRoutesFromConfigSetsUpRoutesFromConfig($middleware)
     {
@@ -519,7 +519,7 @@ class ConfigInjectionTest extends TestCase
             'middleware_pipeline' => [
                 [
                     'this' => 'will not work',
-                ]
+                ],
             ],
         ];
         $app = $this->createApplication();
