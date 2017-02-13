@@ -1367,7 +1367,7 @@
         }, 
         {
             "location": "/reference/expressive-projects/", 
-            "text": "Projects powered by zend-expressive\n\n\nzend-expressive can be used for anything. Here are some projects, tutorials and\nthe related source code. Have a look around and see how others have used\nzend-expressive.\n\n\nSample Code \n Tutorials\n\n\n\n\nExpressive Tutorial (WIP) - \nsource\n\n\nAstroSplash\n - \nsource\n\n  (Also, read the \nrelated article on sitepoint\n)\n\n\nphp-ddd-cargo-sample\n - \nsource\n\n\n\n\nPersonal Sites\n\n\n\n\nmwop.net\n - \nsource\n\n\nxtreamwayz.com\n - \nsource\n\n\nalejandrocelaya.com\n - \nsource", 
+            "text": "Projects powered by zend-expressive\n\n\nzend-expressive can be used for anything. Here are some projects, tutorials and\nthe related source code. Have a look around and see how others have used\nzend-expressive.\n\n\nSample Code \n Tutorials\n\n\n\n\nExpressive Tutorial (WIP) - \nsource\n\n\nAstroSplash\n - \nsource\n\n  (Also, read the \nrelated article on sitepoint\n)\n\n\nphp-ddd-cargo-sample\n - \nsource\n\n\n\n\nPersonal Sites\n\n\n\n\nmwop.net\n - \nsource\n\n\nxtreamwayz.com\n - \nsource\n\n\nalejandrocelaya.com\n - \nsource\n\n\nzimuel.it\n - \nsource", 
             "title": "Expressive Projects"
         }, 
         {
@@ -1382,7 +1382,7 @@
         }, 
         {
             "location": "/reference/expressive-projects/#personal-sites", 
-            "text": "mwop.net  -  source  xtreamwayz.com  -  source  alejandrocelaya.com  -  source", 
+            "text": "mwop.net  -  source  xtreamwayz.com  -  source  alejandrocelaya.com  -  source  zimuel.it  -  source", 
             "title": "Personal Sites"
         }, 
         {
