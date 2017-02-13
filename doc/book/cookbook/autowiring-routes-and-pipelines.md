@@ -157,7 +157,8 @@ If you ship with pipeline middleware, we suggest that you:
 
 - Document the middleware, and where you anticipate it being used in the
   middleware pipeline.
-- Document how to add the middleware service to dependency configuration.
+- Document how to add the middleware service to dependency configuration, or
+  provide this via dependency configuration in your `ConfigProvider`.
 
 With regards to routes, there are other considerations:
 
