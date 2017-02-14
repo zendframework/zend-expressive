@@ -1,6 +1,6 @@
 # ImplicitHeadMiddleware and ImplicitOptionsMiddleware
 
-Starting with version 1.1, Expressive offers middleware for implicitly
+Starting with version 2.0, Expressive offers middleware for implicitly
 supporting `HEAD` and `OPTIONS` requests. The HTTP/1.1 specifications indicate
 that all server implementations _must_ support `HEAD` requests for any given
 URI, and that they _should_ support `OPTIONS` requests. To make this possible,
@@ -49,7 +49,7 @@ $app->pipeDispatchMiddleware();
 ```
 
 (Note: if you used the `expressive-pipeline-from-config` tool to create your
-programmatic pipeline, or if you used the Expressive 1.1 skeleton or later, this
+programmatic pipeline, or if you used the Expressive 2.0 skeleton or later, this
 middleware is likely already in your pipeline, as is a dependency entry.)
 
 When in place, it will do the following:
@@ -111,7 +111,7 @@ $app->pipeDispatchMiddleware();
 ```
 
 (Note: if you used the `expressive-pipeline-from-config` tool to create your
-programmatic pipeline, or if you used the Expressive 1.1 skeleton or later, this
+programmatic pipeline, or if you used the Expressive 2.0 skeleton or later, this
 middleware is likely already in your pipeline, as is a dependency entry.)
 
 When in place, it will do the following:
