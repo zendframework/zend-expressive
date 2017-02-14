@@ -178,7 +178,7 @@ class ApplicationFactory
         }
 
         if (empty($config['zend-expressive']['programmatic_pipeline'])) {
-            $this->injectRoutesAndPipeline($app, $config);
+            $this->injectRoutesAndPipeline($app, $container);
         }
 
         return $app;
@@ -188,10 +188,11 @@ class ApplicationFactory
      * Injects routes and the middleware pipeline into the application.
      *
      * @param Application $app
-     * @param array $config
+     * @param ContainerInterface $container
      */
-    private function injectRoutesAndPipeline(Application $app, array $config)
+    private function injectRoutesAndPipeline(Application $app, ContainerInterface $container)
     {
+        $config = $container->has('config') ? $container->get('config') : [];
         $pipelineCreated = false;
 
         if (isset($config['middleware_pipeline']) && is_array($config['middleware_pipeline'])) {
