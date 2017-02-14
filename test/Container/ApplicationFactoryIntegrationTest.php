@@ -9,6 +9,7 @@
 
 namespace ZendTest\Expressive\Container;
 
+use ArrayObject;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ServerRequestInterface;
@@ -50,7 +51,12 @@ class ApplicationFactoryIntegrationTest extends TestCase
         $this->injectServiceInContainer($this->container, EmitterInterface::class, $this->emitter->reveal());
     }
 
-    public function testConfiguredErrorMiddlewarePipeIsExecutedWhenMiddlewareCallsNextWithError()
+    /**
+     * @dataProvider configType
+     *
+     * @param string $type
+     */
+    public function testConfiguredErrorMiddlewarePipeIsExecutedWhenMiddlewareCallsNextWithError($type)
     {
         $always = function ($request, $response, $next) {
             $response = $next($request, $response);
@@ -121,6 +127,11 @@ class ApplicationFactoryIntegrationTest extends TestCase
                 ],
             ],
         ];
+
+        if ($type !== 'array') {
+            $config = new $type($config);
+        }
+
         $this->injectServiceInContainer($this->container, 'config', $config);
 
         $app = $this->factory->__invoke($this->container->reveal());
@@ -139,7 +150,12 @@ class ApplicationFactoryIntegrationTest extends TestCase
         $this->assertEquals('Error middleware called', (string) $response->getBody());
     }
 
-    public function testConfiguredErrorMiddlewareIsExecutedWhenMiddlewareCallsNextWithError()
+    /**
+     * @dataProvider configType
+     *
+     * @param string $type
+     */
+    public function testConfiguredErrorMiddlewareIsExecutedWhenMiddlewareCallsNextWithError($type)
     {
         $always = function ($request, $response, $next) {
             $response = $next($request, $response);
@@ -209,6 +225,11 @@ class ApplicationFactoryIntegrationTest extends TestCase
                 ],
             ],
         ];
+
+        if ($type !== 'array') {
+            $config = new $type($config);
+        }
+
         $this->injectServiceInContainer($this->container, 'config', $config);
 
         $app = $this->factory->__invoke($this->container->reveal());
@@ -225,5 +246,13 @@ class ApplicationFactoryIntegrationTest extends TestCase
         $this->assertTrue($response->hasHeader('X-Route-Result'));
         $this->assertEquals('needs-auth', $response->getHeaderLine('X-Route-Result'));
         $this->assertEquals('Error middleware called', (string) $response->getBody());
+    }
+
+    public function configType()
+    {
+        return [
+            [ArrayObject::class],
+            ['array'],
+        ];
     }
 }

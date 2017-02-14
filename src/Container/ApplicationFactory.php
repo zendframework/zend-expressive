@@ -7,6 +7,7 @@
 
 namespace Zend\Expressive\Container;
 
+use ArrayObject;
 use Interop\Container\ContainerInterface;
 use SplPriorityQueue;
 use Zend\Diactoros\Response\EmitterInterface;
@@ -156,6 +157,7 @@ class ApplicationFactory
     public function __invoke(ContainerInterface $container)
     {
         $config = $container->has('config') ? $container->get('config') : [];
+        $config = $config instanceof ArrayObject ? $config->getArrayCopy() : $config;
 
         $router = $container->has(RouterInterface::class)
             ? $container->get(RouterInterface::class)
@@ -513,10 +515,10 @@ class ApplicationFactory
      * Create default FinalHandler with options configured under the key final_handler.options.
      *
      * @param ContainerInterface $container
-     * @param array|\ArrayObject $config
+     * @param array $config
      * @return callable|FinalHandler
      */
-    private function marshalLegacyFinalHandler(ContainerInterface $container, $config)
+    private function marshalLegacyFinalHandler(ContainerInterface $container, array $config)
     {
         if ($container->has('Zend\Expressive\FinalHandler')) {
             return $container->get('Zend\Expressive\FinalHandler');
