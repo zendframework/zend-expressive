@@ -451,7 +451,7 @@ class ApplicationFactory
             self::ROUTE_RESULT_OBSERVER_MIDDLEWARE
         ];
 
-        return function ($item) use ($app, $pipelineMap, $appMiddlewares) {
+        return function ($item) use ($pipelineMap, $appMiddlewares) {
             if (in_array($item, $appMiddlewares, true)) {
                 return ['middleware' => $pipelineMap($item)];
             }
