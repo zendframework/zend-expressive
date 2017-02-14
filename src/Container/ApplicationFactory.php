@@ -515,10 +515,10 @@ class ApplicationFactory
      * Create default FinalHandler with options configured under the key final_handler.options.
      *
      * @param ContainerInterface $container
-     * @param array|\ArrayObject $config
+     * @param array $config
      * @return callable|FinalHandler
      */
-    private function marshalLegacyFinalHandler(ContainerInterface $container, $config)
+    private function marshalLegacyFinalHandler(ContainerInterface $container, array $config)
     {
         if ($container->has('Zend\Expressive\FinalHandler')) {
             return $container->get('Zend\Expressive\FinalHandler');
