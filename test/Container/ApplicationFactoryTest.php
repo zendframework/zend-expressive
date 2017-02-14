@@ -7,6 +7,7 @@
 
 namespace ZendTest\Expressive\Container;
 
+use ArrayObject;
 use Interop\Container\ContainerInterface;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use PHPUnit\Framework\Assert;
@@ -123,22 +124,33 @@ class ApplicationFactoryTest extends TestCase
 
     public function callableMiddlewares()
     {
-        return [
-            ['HelloWorld'],
-            [
-                function () {
-                },
-            ],
-            [[InvokableMiddleware::class, 'staticallyCallableMiddleware']],
+        $middleware = [
+            'service-name' => 'HelloWorld',
+            'closure' => function () {
+            },
+            'callable' => [InvokableMiddleware::class, 'staticallyCallableMiddleware'],
         ];
+
+        $configTypes = [
+            'array' => null,
+            'array-object' => ArrayObject::class,
+        ];
+
+        foreach ($configTypes as $configType => $config) {
+            foreach ($middleware as $middlewareType => $middleware) {
+                $name = sprintf('%s-%s', $configType, $middlewareType);
+                yield $name => [$middleware, $config];
+            }
+        }
     }
 
     /**
      * @dataProvider callableMiddlewares
      *
      * @param callable|array|string $middleware
+     * @param string $configType
      */
-    public function testFactorySetsUpRoutesFromConfig($middleware)
+    public function testFactorySetsUpRoutesFromConfig($middleware, $configType)
     {
         $config = [
             'routes' => [
@@ -154,6 +166,8 @@ class ApplicationFactoryTest extends TestCase
                 ],
             ],
         ];
+
+        $config = $configType ? new $configType($config) : $config;
 
         $this->injectServiceInContainer($this->container, 'config', $config);
 
@@ -182,10 +196,21 @@ class ApplicationFactoryTest extends TestCase
         $this->assertInstanceOf(NotFoundDelegate::class, $app->getDefaultDelegate());
     }
 
+    public function configTypes()
+    {
+        return [
+            'array'        => [null],
+            'array-object' => [ArrayObject::class],
+        ];
+    }
+
     /**
+     * @dataProvider configTypes
      * @group piping
+     *
+     * @param null|string $configType
      */
-    public function testMiddlewareIsNotAddedIfSpecIsInvalid()
+    public function testMiddlewareIsNotAddedIfSpecIsInvalid($configType)
     {
         $config = [
             'middleware_pipeline' => [
@@ -194,6 +219,8 @@ class ApplicationFactoryTest extends TestCase
             ],
         ];
 
+        $config = $configType ? new $configType($config) : $config;
+
         $this->injectServiceInContainer($this->container, 'config', $config);
 
         $this->expectException(ExpressiveException\InvalidArgumentException::class);
@@ -201,7 +228,12 @@ class ApplicationFactoryTest extends TestCase
         $this->factory->__invoke($this->container->reveal());
     }
 
-    public function testCanSpecifyRouteViaConfigurationWithNoMethods()
+    /**
+     * @dataProvider configTypes
+     *
+     * @param null|string $configType
+     */
+    public function testCanSpecifyRouteViaConfigurationWithNoMethods($configType)
     {
         $config = [
             'routes' => [
@@ -211,6 +243,8 @@ class ApplicationFactoryTest extends TestCase
                 ],
             ],
         ];
+
+        $config = $configType ? new $configType($config) : $config;
 
         $this->injectServiceInContainer($this->container, 'config', $config);
 
@@ -223,7 +257,12 @@ class ApplicationFactoryTest extends TestCase
         }
     }
 
-    public function testCanSpecifyRouteOptionsViaConfiguration()
+    /**
+     * @dataProvider configTypes
+     *
+     * @param null|string $configType
+     */
+    public function testCanSpecifyRouteOptionsViaConfiguration($configType)
     {
         $expected = [
             'values' => [
@@ -245,6 +284,8 @@ class ApplicationFactoryTest extends TestCase
             ],
         ];
 
+        $config = $configType ? new $configType($config) : $config;
+
         $this->injectServiceInContainer($this->container, 'config', $config);
 
         $app = $this->factory->__invoke($this->container->reveal());
@@ -256,7 +297,12 @@ class ApplicationFactoryTest extends TestCase
         $this->assertEquals($expected, $route->getOptions());
     }
 
-    public function testExceptionIsRaisedInCaseOfInvalidRouteMethodsConfiguration()
+    /**
+     * @dataProvider configTypes
+     *
+     * @param null|string $configType
+     */
+    public function testExceptionIsRaisedInCaseOfInvalidRouteMethodsConfiguration($configType)
     {
         $config = [
             'routes' => [
@@ -268,6 +314,8 @@ class ApplicationFactoryTest extends TestCase
             ],
         ];
 
+        $config = $configType ? new $configType($config) : $config;
+
         $this->injectServiceInContainer($this->container, 'config', $config);
 
         $this->expectException(ExpressiveException\InvalidArgumentException::class);
@@ -275,7 +323,12 @@ class ApplicationFactoryTest extends TestCase
         $this->factory->__invoke($this->container->reveal());
     }
 
-    public function testExceptionIsRaisedInCaseOfInvalidRouteOptionsConfiguration()
+    /**
+     * @dataProvider configTypes
+     *
+     * @param null|string $configType
+     */
+    public function testExceptionIsRaisedInCaseOfInvalidRouteOptionsConfiguration($configType)
     {
         $config = [
             'routes' => [
@@ -287,6 +340,8 @@ class ApplicationFactoryTest extends TestCase
             ],
         ];
 
+        $config = $configType ? new $configType($config) : $config;
+
         $this->injectServiceInContainer($this->container, 'config', $config);
 
         $this->expectException(ExpressiveException\InvalidArgumentException::class);
@@ -294,7 +349,12 @@ class ApplicationFactoryTest extends TestCase
         $this->factory->__invoke($this->container->reveal());
     }
 
-    public function testWillCreatePipelineBasedOnMiddlewareConfiguration()
+    /**
+     * @dataProvider configTypes
+     *
+     * @param null|string $configType
+     */
+    public function testWillCreatePipelineBasedOnMiddlewareConfiguration($configType)
     {
         $api = new InteropMiddleware();
 
@@ -324,6 +384,7 @@ class ApplicationFactoryTest extends TestCase
         ];
 
         $config = ['middleware_pipeline' => $pipeline];
+        $config = $configType ? new $configType($config) : $config;
         $this->injectServiceInContainer($this->container, 'config', $config);
 
         $app = $this->factory->__invoke($this->container->reveal());
@@ -401,20 +462,36 @@ class ApplicationFactoryTest extends TestCase
             ],
         ];
 
-        return [
-            'no-pipeline-defined' => [['routes' => $routes]],
-            'empty-pipeline' => [['middleware_pipeline' => [], 'routes' => $routes]],
-            'null-pipeline' => [['middleware_pipeline' => null, 'routes' => $routes]],
+        $configs = [
+            'no-pipeline-defined' => ['routes' => $routes],
+            'empty-pipeline'      => ['middleware_pipeline' => [], 'routes' => $routes],
+            'null-pipeline'       => ['middleware_pipeline' => null, 'routes' => $routes],
         ];
+
+        $configTypes = [
+            'array'        => null,
+            'array-object' => ArrayObject::class,
+        ];
+
+        foreach ($configTypes as $configName => $configType) {
+            foreach ($configs as $name => $config) {
+                $caseName = sprintf('%s-%s', $configName, $name);
+                yield $caseName => [$config, $configType];
+            }
+        }
     }
 
     /**
      * @dataProvider configWithRoutesButNoPipeline
      *
      * @param array $config
+     * @param string|null $configType
      */
-    public function testProvidingRoutesAndNoPipelineImplicitlyRegistersRoutingAndDispatchMiddleware(array $config)
-    {
+    public function testProvidingRoutesAndNoPipelineImplicitlyRegistersRoutingAndDispatchMiddleware(
+        array $config,
+        $configType
+    ) {
+        $config = $configType ? new $configType($config) : $config;
         $this->injectServiceInContainer($this->container, 'config', $config);
         $app = $this->factory->__invoke($this->container->reveal());
         $this->assertAttributeSame(true, 'routeMiddlewareIsRegistered', $app);
@@ -436,9 +513,12 @@ class ApplicationFactoryTest extends TestCase
     }
 
     /**
+     * @dataProvider configTypes
      * @group programmatic
+     *
+     * @param null|string $configType
      */
-    public function testWillNotInjectConfiguredRoutesOrPipelineIfProgrammaticPipelineFlagEnabled()
+    public function testWillNotInjectConfiguredRoutesOrPipelineIfProgrammaticPipelineFlagEnabled($configType)
     {
         $api = new InteropMiddleware();
 
@@ -476,6 +556,8 @@ class ApplicationFactoryTest extends TestCase
                 'programmatic_pipeline' => true,
             ],
         ];
+
+        $config = $configType ? new $configType($config) : $config;
 
         $this->injectServiceInContainer($this->container, 'DynamicPath', $dynamicPath);
         $this->injectServiceInContainer($this->container, 'Goodbye', $goodbye);

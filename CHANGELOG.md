@@ -168,6 +168,27 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
+## 1.1.1 - 2017-02-14
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#447](https://github.com/zendframework/zend-expressive/pull/447) fixes an
+  error in the `ApplicationFactory` that occurs when the `config` service is an
+  `ArrayObject`. Prior to the fix, `ArrayObject` configurations would cause a
+  fatal error when injecting the pipeline and/or routes.
+
 ## 1.1.0 - 2017-02-13
 
 ### Added
