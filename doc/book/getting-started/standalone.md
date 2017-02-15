@@ -34,7 +34,7 @@ $ composer require zendframework/zend-expressive zendframework/zend-expressive-f
 > they allow you to define dependencies for your middleware, as well as to lazy
 > load your middleware only when it needs to be executed. We suggest
 > zend-servicemanager in the quick start, but you can also use any container
-> supporting [container-interop](https://github.com/container-interop/container-interop).
+> supporting [PSR-11 Container](https://github.com/php-fig/container).
 
 ## 3. Create a web root directory
 
