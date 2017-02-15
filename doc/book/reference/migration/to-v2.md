@@ -7,6 +7,7 @@ you should be aware of, and potentially update your application to adopt:
 - [Signature changes](#signature-changes)
 - [Removed functionality](#removed-functionality)
 - [Deprecated functionality](#deprecated-functionality)
+- [PSR-11 support](#psr-11-support)
 - [Usage of http-interop middleware](#http-interop)
 - [Original request and response messages](#original-messages)
 - [Error handling](#error-handling)
@@ -22,6 +23,37 @@ The following signature changes were made that could affect _class extensions_:
   `$args` argument was not typehinted; it now is. If you are extending this
   class and overriding that method, you will need to update your method
   signature accordingly.
+
+Additionally, a number of signatures change due to updating Expressive to
+support [PSR-11](http://www.php-fig.org/psr/psr-11/) instead of
+[container-interop](https://github.com/container-interop/container-interop)
+(which was the basis for PSR-11). Essentially, these were a matter of updating
+typehints on `Interop\Container\ContainerInterface` to
+`Psr\Container\ContainerInterface`. Signatures affected include:
+
+- `Zend\Expressive\AppFactory::create()`
+- `Zend\Expressive\Application::__construct()`
+- `Zend\Expressive\Container\ApplicationFactory::__invoke()`
+- `Zend\Expressive\Container\ErrorHandlerFactory::__invoke()`
+- `Zend\Expressive\Container\ErrorResponseGeneratorFactory::__invoke()`
+- `Zend\Expressive\Container\NotFoundDelegateFactory::__invoke()`
+- `Zend\Expressive\Container\NotFoundHandlerFactory::__invoke()`
+- `Zend\Expressive\Container\WhoopsErrorResponseGeneratorFactory::__invoke()`
+- `Zend\Expressive\Container\WhoopsFactory::__invoke()`
+- `Zend\Expressive\Container\WhoopsPageHandlerFactory::__invoke()`
+
+In each of the above cases, updating your import statements from
+`Interop\Container\ContainerInterface` to `Psr\Container\ContainerInterface`
+will make your code work again.
+
+The following exceptions now implement PSR-11 exception interfaces instead of container-interop variants:
+
+- `Zend\Expressive\Container\Exception\InvalidServiceException`
+
+In the above case, if you were previously catching the container-interop
+exception on which it was based, your code should still work so long as you
+have container-interop installed. You should likely update it to catch the more
+general `Psr\Container\ContainerExceptionInterface` instead, however.
 
 ## Removed functionality
 
@@ -76,6 +108,37 @@ release:
   method a no-op, as exceptions are no longer caught by the middleware
   dispatcher. As such, the `raise_throwables` configuration argument now is no
   longer used, either.
+
+## PSR-11 support
+
+In previous versions of Expressive, we consumed
+[container-interop](https://github.com/container-interop/container-interop),
+which provides `Interop\Container\ContainerInterface`, a shared interface for
+dependency injection containers. container-interop served as a working group for the 
+[PSR-11](http://www.php-fig.org/psr/psr-11/) specification.
+
+In the weeks prior to the Expressive 2.0 release, PSR-11 was formally accepted,
+and the package `psr/container` was released. As such, we have updated
+Expressive to consume the interfaces PSR-11 exposes.
+
+No supported implementations currently directly implement PSR-11, however.
+Fortunately, the container-interop 1.2.0 release acts as a
+forwards-compatibility measure by altering every interface it exposes to extend
+those from PSR-11, making existing container-interop implementations _de facto_
+PSR-11 implementations!
+
+The result is a (mostly) transparent upgrade for users of Expressive. As newer
+versions of container implementations are released supporting PSR-11 directly,
+you will be able to upgrade immediately; we will also periodically update the
+skeleton to pick up these new versions when present. (The one caveat to
+upgrading is [signature changes](#signature-changes) within Expressive classes
+based on the new psr/container interface names.)
+
+As long as you have container-interop 1.2.0 installed, your existing factories
+that typehint against its interface will continue to work. However, we
+recommend updating them to instead typehint against PSR-11, which will allow
+you to drop the container-interop requirement once your chosen container
+implementation no longer requires it.
 
 ## http-interop
 
