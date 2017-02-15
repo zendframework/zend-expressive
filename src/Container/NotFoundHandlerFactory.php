@@ -7,7 +7,7 @@
 
 namespace Zend\Expressive\Container;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Expressive\Delegate\NotFoundDelegate;
 use Zend\Expressive\Middleware\NotFoundHandler;
 

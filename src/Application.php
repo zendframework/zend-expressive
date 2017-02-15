@@ -8,9 +8,9 @@
 namespace Zend\Expressive;
 
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
-use Interop\Container\ContainerInterface;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use InvalidArgumentException;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use UnexpectedValueException;

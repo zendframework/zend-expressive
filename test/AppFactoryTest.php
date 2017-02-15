@@ -7,8 +7,8 @@
 
 namespace ZendTest\Expressive;
 
-use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use ReflectionProperty;
 use Zend\Diactoros\Response\SapiEmitter;

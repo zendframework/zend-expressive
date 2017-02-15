@@ -7,8 +7,8 @@
 
 namespace ZendTest\Expressive\Container;
 
-use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
 use Zend\Expressive\Container\NotFoundHandlerFactory;
 use Zend\Expressive\Delegate\NotFoundDelegate;
 use Zend\Expressive\Middleware\NotFoundHandler;

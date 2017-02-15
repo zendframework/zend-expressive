@@ -7,9 +7,9 @@
 
 namespace ZendTest\Expressive\Container;
 
-use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Container\ContainerInterface;
 use Whoops\Run;
 use Whoops\RunInterface;
 use Zend\Expressive\Container\WhoopsErrorResponseGeneratorFactory;
