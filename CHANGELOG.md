@@ -6,6 +6,10 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
+- [#450](https://github.com/zendframework/zend-expressive/pull/450) adds support
+  for [PSR-11](http://www.php-fig.org/psr/psr-11/); Expressive is now a PSR-11
+  consumer.
+
 - [#428](https://github.com/zendframework/zend-expressive/pull/428) updates the
   zend-stratigility dependency to require `^2.0`; this allows usage of both
   the new middleare-based error handling system introduced in zend-stratigility
@@ -130,6 +134,27 @@ All notable changes to this project will be documented in this file, in reverse 
   previously a nullable callable `$finalHandler`; it is now a nullable
   `Interop\Http\ServerMiddleware\DelegateInterface` with the name
   `$defaultDelegate`.
+
+- [#450](https://github.com/zendframework/zend-expressive/pull/450) modifies the
+  signatures in several classes to typehint against [PSR-11](http://www.php-fig.org/psr/psr-11/)
+  instead of [container-interop](https://github.com/container-interop/container-interop);
+  these include:
+
+  - `Zend\Expressive\AppFactory::create()`
+  - `Zend\Expressive\Application::__construct()`
+  - `Zend\Expressive\Container\ApplicationFactory::__invoke()`
+  - `Zend\Expressive\Container\ErrorHandlerFactory::__invoke()`
+  - `Zend\Expressive\Container\ErrorResponseGeneratorFactory::__invoke()`
+  - `Zend\Expressive\Container\NotFoundDelegateFactory::__invoke()`
+  - `Zend\Expressive\Container\NotFoundHandlerFactory::__invoke()`
+  - `Zend\Expressive\Container\WhoopsErrorResponseGeneratorFactory::__invoke()`
+  - `Zend\Expressive\Container\WhoopsFactory::__invoke()`
+  - `Zend\Expressive\Container\WhoopsPageHandlerFactory::__invoke()`
+
+- [#450](https://github.com/zendframework/zend-expressive/pull/450) changes the
+  interface inheritance of `Zend\Expressive\Container\Exception\InvalidServiceException`
+  to extend `Psr\Container\ContainerExceptionInterface` instead of
+  `Interop\Container\Exception\ContainerException`.
 
 ### Deprecated
 
