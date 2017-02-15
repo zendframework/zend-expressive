@@ -7,11 +7,11 @@
 
 namespace ZendTest\Expressive\Container;
 
-use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
-use Zend\Expressive\Container\NotFoundDelegateFactory;
+use Psr\Container\ContainerInterface;
 use Zend\Diactoros\Response;
+use Zend\Expressive\Container\NotFoundDelegateFactory;
 use Zend\Expressive\Delegate\NotFoundDelegate;
 use Zend\Expressive\Template\TemplateRendererInterface;
 

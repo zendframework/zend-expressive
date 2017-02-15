@@ -155,7 +155,7 @@ $app->route($route);
 
 ## Hello World using a Container
 
-Expressive works with [container-interop](https://github.com/container-interop/container-interop),
+Expressive works with [PSR-11 Container](https://github.com/php-fig/container),
 though it's an optional feature. By default, if you use the `AppFactory`, it
 will use [zend-servicemanager](https://github.com/zendframework/zend-servicemanager)
 so long as that package is installed.

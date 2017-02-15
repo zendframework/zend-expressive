@@ -7,11 +7,11 @@
 
 namespace ZendTest\Expressive\Application;
 
-use Interop\Container\ContainerInterface;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use ReflectionMethod;
 use ReflectionProperty;
@@ -20,9 +20,9 @@ use Zend\Expressive\Application;
 use Zend\Expressive\Exception\InvalidMiddlewareException;
 use Zend\Expressive\Middleware;
 use Zend\Expressive\Router\RouterInterface;
-use Zend\Stratigility\MiddlewarePipe;
 use Zend\Stratigility\Middleware\CallableInteropMiddlewareWrapper;
 use Zend\Stratigility\Middleware\CallableMiddlewareWrapper;
+use Zend\Stratigility\MiddlewarePipe;
 
 class MarshalMiddlewareTraitTest extends TestCase
 {

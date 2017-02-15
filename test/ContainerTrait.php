@@ -7,12 +7,12 @@
 
 namespace ZendTest\Expressive;
 
-use Interop\Container\ContainerInterface;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Container\ContainerInterface;
 
 /**
- * Helper methods for mock Interop\Container\ContainerInterface.
+ * Helper methods for mock Psr\Container\ContainerInterface.
  */
 trait ContainerTrait
 {

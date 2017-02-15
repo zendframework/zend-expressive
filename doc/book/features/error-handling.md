@@ -409,8 +409,8 @@ within a container-based application.
 ### Container Factories and Configuration
 
 The above may feel like a bit much when creating your application. As such, we provide several
-factories that work with [container-interop](https://github.com/container-interop/container-interop)-compatible
-container implementations to simplify setup.
+factories that work with [PSR-11 Container](https://github.com/php-fig/container)
+implementations to simplify setup.
 
 In each case, you should register the selected error handler's factory as the service
 `Zend\Expressive\FinalHandler`.

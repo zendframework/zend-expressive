@@ -7,9 +7,9 @@
 
 namespace ZendTest\Expressive\Container;
 
-use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Container\ContainerInterface;
 use Whoops\Handler\PrettyPageHandler;
 use Zend\Expressive\Container\Exception\InvalidServiceException;
 use Zend\Expressive\Container\WhoopsPageHandlerFactory;

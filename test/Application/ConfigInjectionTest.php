@@ -7,10 +7,10 @@
 
 namespace ZendTest\Expressive\Application;
 
-use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Container\ContainerInterface;
 use ReflectionProperty;
 use SplQueue;
 use Zend\Expressive\Application;

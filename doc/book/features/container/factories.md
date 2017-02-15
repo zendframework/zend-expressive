@@ -1,13 +1,14 @@
 # Provided Factories
 
-Expressive provides several factories compatible with container-interop to
-facilitate setting up common dependencies. The following is a list of provided
+Expressive provides several factories compatible with
+[PSR-11 Container](https://github.com/php-fig/container) to facilitate 
+setting up common dependencies. The following is a list of provided
 containers, what they will create, the suggested service name, and any
 additional dependencies they may require.
 
 All factories, unless noted otherwise, are in the `Zend\Expressive\Container`
 namespace, and define an `__invoke()` method that accepts an
-`Interop\Container\ContainerInterface` instance as the sole argument.
+`Psr\Container\ContainerInterface` instance as the sole argument.
 
 ## ApplicationFactory
 

@@ -7,14 +7,14 @@
 
 namespace Zend\Expressive\Container\Exception;
 
-use Interop\Container\Exception\ContainerException;
+use Psr\Container\ContainerExceptionInterface;
 use RuntimeException;
 
 /**
  * Exception indicating a service type is invalid or un-fetchable.
  */
 class InvalidServiceException extends RuntimeException implements
-    ContainerException,
+    ContainerExceptionInterface,
     ExceptionInterface
 {
 }

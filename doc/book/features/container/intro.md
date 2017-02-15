@@ -16,7 +16,7 @@ middleware when ready to dispatch it; this encourages the idea of defining
 middleware-specific dependencies, and factories for ensuring they are injected.
 
 To facilitate this and allow you as a developer to choose the container you
-prefer, zend-expressive typehints against [container-interop](https://github.com/container-interop/container-interop),
+prefer, zend-expressive typehints against [PSR-11 Container](https://github.com/php-fig/container),
 and throughout this manual, we attempt to show using a variety of containers in
 examples.
 

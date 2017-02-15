@@ -38,7 +38,7 @@ following constructor:
   ```php
   /**
    * @param Zend\Expressive\Router\RouterInterface $router
-   * @param null|Interop\Container\ContainerInterface $container IoC container from which to pull services, if any.
+   * @param null|Psr\Container\ContainerInterface $container IoC container from which to pull services, if any.
    * @param null|Interop\Http\ServerMiddleware\DelegateInterface $defaultDelegate
    *     Delegate to invoke when the internal middleware pipeline is exhausted
    *     without returning a response.
@@ -47,7 +47,7 @@ following constructor:
    */
   public function __construct(
       Zend\Expressive\Router\RouterInterface $router,
-      Interop\Container\ContainerInterface $container = null,
+      Psr\Container\ContainerInterface $container = null,
       Interop\Http\ServerMiddleware\DelegateInterface $defaultDelegate = null,
       Zend\Diactoros\Response\EmitterInterface $emitter = null
   );
@@ -58,7 +58,7 @@ following constructor:
   ```php
   /**
    * @param Zend\Expressive\Router\RouterInterface $router
-   * @param null|Interop\Container\ContainerInterface $container IoC container from which to pull services, if any.
+   * @param null|Psr\Container\ContainerInterface $container IoC container from which to pull services, if any.
    * @param null|callable $finalHandler Final handler to use when $out is not
    *     provided on invocation.
    * @param null|Zend\Diactoros\Response\EmitterInterface $emitter Emitter to use when `run()` is
@@ -66,7 +66,7 @@ following constructor:
    */
   public function __construct(
       Zend\Expressive\Router\RouterInterface $router,
-      Interop\Container\ContainerInterface $container = null,
+      Psr\Container\ContainerInterface $container = null,
       callable $finalHandler = null,
       Zend\Diactoros\Response\EmitterInterface $emitter = null
   );
@@ -84,7 +84,7 @@ to use. It has the following signature:
 
 ```php
 AppFactory::create(
-    Interop\Container\ContainerInterface $container = null,
+    Psr\Container\ContainerInterface $container = null,
     Zend\Expressive\Router\RouterInterface $router = null
 );
 ```

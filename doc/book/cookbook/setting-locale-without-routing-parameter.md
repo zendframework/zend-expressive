@@ -73,7 +73,7 @@ Then you will need a factory for the `SetLocaleMiddleware` to inject the
 <?php
 namespace Application\I18n;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Expressive\Helper\UrlHelper;
 
 class SetLocaleMiddlewareFactory
@@ -217,7 +217,7 @@ following would work for the above middleware:
 ```php
 namespace Application\Action;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Expressive\Helper\UrlHelper;
 
 class RedirectActionFactory

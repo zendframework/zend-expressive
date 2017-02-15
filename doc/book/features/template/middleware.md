@@ -45,7 +45,7 @@ This will necessitate having a factory for your middleware:
 namespace Acme\Blog\Container;
 
 use Acme\Blog\EntryMiddleware;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
 class EntryMiddlewareFactory
