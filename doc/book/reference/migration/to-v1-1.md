@@ -411,7 +411,7 @@ this response generator as follows:
 namespace Acme\Container;
 
 use Acme\TemplatedErrorResponseGenerator;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Diactoros\Response;
 use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Stratigility\Middleware\ErrorHandler;
@@ -519,7 +519,7 @@ for this:
 namespace Acme\Container;
 
 use Acme\TemplatedNotFoundHandler;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
 class TemplatedNotFoundHandlerFactory

@@ -9,11 +9,11 @@ namespace ZendTest\Expressive\Router;
 
 use Fig\Http\Message\RequestMethodInterface as RequestMethod;
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
-use Interop\Container\ContainerInterface;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Container\ContainerInterface;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Stream;

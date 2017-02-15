@@ -43,10 +43,10 @@ features it provides include:
   routing library that best fits the project needs. By default, we provide
   wrappers for Aura.Router, FastRoute, and the zend-mvc router.
 
-- **container-interop**
+- **PSR-11 Container**
 
   Expressive encourages the use of Dependency Injection, and defines its
-  `Application` class to compose a container-interop `ContainerInterface`
+  `Application` class to compose a PSR-11 `ContainerInterface`
   instance. The container is used to lazy-load middleware, whether it is
   piped (Stratigility interface) or routed (Expressive).
 

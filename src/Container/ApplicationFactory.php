@@ -8,7 +8,7 @@
 namespace Zend\Expressive\Container;
 
 use ArrayObject;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Expressive\Application;
 use Zend\Expressive\Delegate;

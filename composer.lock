@@ -4,36 +4,9 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b7a91951f94a3dbb23f97aac85349ff9",
-    "content-hash": "f4defaa7c5eba4c4ea168e821366bb92",
+    "hash": "87f2d88cd8c125e7be9062a988b50c08",
+    "content-hash": "ca948afbc1a571b96ceb6c9e0784fc12",
     "packages": [
-        {
-            "name": "container-interop/container-interop",
-            "version": "1.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/container-interop/container-interop.git",
-                "reference": "fc08354828f8fd3245f77a66b9e23a6bca48297e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/container-interop/container-interop/zipball/fc08354828f8fd3245f77a66b9e23a6bca48297e",
-                "reference": "fc08354828f8fd3245f77a66b9e23a6bca48297e",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Interop\\Container\\": "src/Interop/Container/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Promoting the interoperability of container objects (DIC, SL, etc.)",
-            "time": "2014-12-30 15:22:37"
-        },
         {
             "name": "fig/http-message-util",
             "version": "1.1.2",
@@ -135,6 +108,55 @@
                 "response"
             ],
             "time": "2017-01-14 15:23:42"
+        },
+        {
+            "name": "psr/container",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/container.git",
+                "reference": "b7ce3b176482dbbc1245ebf52b181af44c2cf55f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/container/zipball/b7ce3b176482dbbc1245ebf52b181af44c2cf55f",
+                "reference": "b7ce3b176482dbbc1245ebf52b181af44c2cf55f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Container\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Common Container Interface (PHP FIG PSR-11)",
+            "homepage": "https://github.com/php-fig/container",
+            "keywords": [
+                "PSR-11",
+                "container",
+                "container-interface",
+                "container-interop",
+                "psr"
+            ],
+            "time": "2017-02-14 16:28:37"
         },
         {
             "name": "psr/http-message",
@@ -488,6 +510,37 @@
                 "routing"
             ],
             "time": "2016-10-03 21:48:40"
+        },
+        {
+            "name": "container-interop/container-interop",
+            "version": "1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/container-interop/container-interop.git",
+                "reference": "79cbf1341c22ec75643d841642dd5d6acd83bdb8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/container-interop/container-interop/zipball/79cbf1341c22ec75643d841642dd5d6acd83bdb8",
+                "reference": "79cbf1341c22ec75643d841642dd5d6acd83bdb8",
+                "shasum": ""
+            },
+            "require": {
+                "psr/container": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Interop\\Container\\": "src/Interop/Container/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Promoting the interoperability of container objects (DIC, SL, etc.)",
+            "homepage": "https://github.com/container-interop/container-interop",
+            "time": "2017-02-14 19:40:03"
         },
         {
             "name": "doctrine/instantiator",
@@ -2308,53 +2361,6 @@
             "time": "2016-11-14 01:06:16"
         },
         {
-            "name": "symfony/yaml",
-            "version": "v2.1.0",
-            "target-dir": "Symfony/Component/Yaml",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/yaml.git",
-                "reference": "f18e004fc975707bb4695df1dbbe9b0d8c8b7715"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/f18e004fc975707bb4695df1dbbe9b0d8c8b7715",
-                "reference": "f18e004fc975707bb4695df1dbbe9b0d8c8b7715",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.1-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Symfony\\Component\\Yaml": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                },
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                }
-            ],
-            "description": "Symfony Yaml Component",
-            "homepage": "http://symfony.com",
-            "time": "2012-08-22 13:48:41"
-        },
-        {
             "name": "webmozart/assert",
             "version": "1.2.0",
             "source": {
@@ -2801,16 +2807,16 @@
         },
         {
             "name": "zendframework/zend-servicemanager",
-            "version": "3.2.0",
+            "version": "3.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-servicemanager.git",
-                "reference": "596a2cde85a92c3366514ae0f55ea32ef59536ac"
+                "reference": "fe608d85457449889750fc6bf8d0859af59f56ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-servicemanager/zipball/596a2cde85a92c3366514ae0f55ea32ef59536ac",
-                "reference": "596a2cde85a92c3366514ae0f55ea32ef59536ac",
+                "url": "https://api.github.com/repos/zendframework/zend-servicemanager/zipball/fe608d85457449889750fc6bf8d0859af59f56ec",
+                "reference": "fe608d85457449889750fc6bf8d0859af59f56ec",
                 "shasum": ""
             },
             "require": {
@@ -2825,7 +2831,7 @@
                 "mikey179/vfsstream": "^1.6",
                 "ocramius/proxy-manager": "^1.0 || ^2.0",
                 "phpbench/phpbench": "^0.10.0",
-                "phpunit/phpunit": "^4.6 || ^5.2.10",
+                "phpunit/phpunit": "^5.7 || ^6.0.6",
                 "zendframework/zend-coding-standard": "~1.0.0"
             },
             "suggest": {
@@ -2858,7 +2864,7 @@
                 "servicemanager",
                 "zf"
             ],
-            "time": "2016-12-19 20:04:51"
+            "time": "2017-02-15 15:29:48"
         },
         {
             "name": "zendframework/zend-stdlib",

@@ -8,11 +8,11 @@
 namespace ZendTest\Expressive\Container;
 
 use ArrayObject;
-use Interop\Container\ContainerInterface;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Container\ContainerInterface;
 use ReflectionProperty;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;

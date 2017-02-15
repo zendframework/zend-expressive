@@ -47,7 +47,7 @@ zend-form component (or whichever other components you wish to use).
 ```php
 namespace Your\Application;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\ServiceManager\Config;
 use Zend\View\HelperPluginManager;
 
@@ -96,7 +96,7 @@ You'll first need to create a delegator factory:
 ```php
 namespace Your\Application;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\ServiceManager\Config;
 use Zend\ServiceManager\DelegatorFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;

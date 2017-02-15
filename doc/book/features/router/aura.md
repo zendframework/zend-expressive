@@ -107,7 +107,7 @@ A factory would look like this:
 // in src/Application/Container/RouterFactory.php
 namespace Application\Container;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Expressive\Router\AuraRouter;
 
 class RouterFactory
@@ -165,7 +165,7 @@ Sound difficult? It's not; we've essentially done it above already!
 namespace Application\Container;
 
 use Aura\Router\RouterFactory;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 
 class AuraRouterFactory
 {
@@ -188,7 +188,7 @@ class AuraRouterFactory
 // in src/Application/Container/RouterFactory.php
 namespace Application\Container;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Expressive\Router\AuraRouter as AuraBridge;
 
 class RouterFactory

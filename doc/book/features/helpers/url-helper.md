@@ -69,7 +69,8 @@ Each method will raise an exception if:
 In order to use the helper, you will need to instantiate it with the current
 `RouterInterface`. The factory `Zend\Expressive\Helper\UrlHelperFactory` has
 been provided for this purpose, and can be used trivially with most
-dependency injection containers implementing container-interop. Additionally,
+dependency injection containers implementing 
+[PSR-11 Container](https://github.com/php-fig/container). Additionally,
 it is most useful when injected with the current results of routing, which
 requires registering middleware with the application that can inject the route
 result. The following steps should be followed to register and configure the helper:

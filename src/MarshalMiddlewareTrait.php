@@ -7,12 +7,12 @@
 
 namespace Zend\Expressive;
 
-use Interop\Container\ContainerInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
-use Zend\Stratigility\MiddlewarePipe;
 use Zend\Stratigility\Middleware\CallableInteropMiddlewareWrapper;
 use Zend\Stratigility\Middleware\CallableMiddlewareWrapper;
+use Zend\Stratigility\MiddlewarePipe;
 
 /**
  * Trait defining methods for verifying and/or generating middleware to pipe to

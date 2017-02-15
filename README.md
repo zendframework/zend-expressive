@@ -13,7 +13,7 @@ features:
     - [Aura.Router](https://github.com/auraphp/Aura.Router)
     - [FastRoute](https://github.com/nikic/FastRoute)
     - [zend-router](https://github.com/zendframework/zend-expressive-router)
-- DI Containers, via [container-interop](https://github.com/container-interop/container-interop).
+- DI Containers, via [PSR-11 Container](https://github.com/php-fig/container).
   Middleware matched via routing is retrieved from the composed container.
 - Optionally, templating. We support:
     - [Plates](http://platesphp.com/)
@@ -68,7 +68,7 @@ We currently support and provide the following routing integrations:
   `composer require zendframework/zend-expressive-zendrouter`
 
 We recommend using a dependency injection container, and typehint against
-[container-interop](https://github.com/container-interop/container-interop). We
+[PSR-11 Container](https://github.com/php-fig/container). We
 can recommend the following implementations:
 
 - [zend-servicemanager](https://github.com/zendframework/zend-servicemanager):

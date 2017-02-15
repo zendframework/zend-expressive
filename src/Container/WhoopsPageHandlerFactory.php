@@ -7,7 +7,7 @@
 
 namespace Zend\Expressive\Container;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Whoops\Handler\PrettyPageHandler;
 
 /**

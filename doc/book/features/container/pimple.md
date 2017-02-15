@@ -13,9 +13,10 @@ Pimple only supports programmatic creation at this time.
 ## Installing Pimple
 
 Pimple does not currently (as of v3) implement
-[container-interop](https://github.com/container-interop/container-interop); as
+[PSR-11 Container](https://github.com/php-fig/container); as
 such, you need to install the `xtreamwayz/pimple-container-interop` project,
-which provides a container-interop wrapper around Pimple v3:
+which provides a [PSR-11 Container](https://github.com/php-fig/container)
+wrapper around Pimple v3:
 
 ```bash
 $ composer require xtreamwayz/pimple-container-interop

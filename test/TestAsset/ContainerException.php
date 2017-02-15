@@ -7,9 +7,9 @@
 
 namespace ZendTest\Expressive\TestAsset;
 
-use Interop\Container\Exception\ContainerException as BaseException;
+use Psr\Container\ContainerExceptionInterface;
 use RuntimeException;
 
-class ContainerException extends RuntimeException implements BaseException
+class ContainerException extends RuntimeException implements ContainerExceptionInterface
 {
 }
