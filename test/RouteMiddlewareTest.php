@@ -537,6 +537,126 @@ class RouteMiddlewareTest extends TestCase
         $this->assertEquals('Middleware', (string) $result->getBody());
     }
 
+    public function allowedMethod()
+    {
+        return [
+            'aura-head'          => [AuraRouter::class, 'HEAD'],
+            'aura-options'       => [AuraRouter::class, 'OPTIONS'],
+            'fast-route-head'    => [FastRouteRouter::class, 'HEAD'],
+            'fast-route-options' => [FastRouteRouter::class, 'OPTIONS'],
+            'fast-route-get'     => [FastRouteRouter::class, 'GET'],
+            'zf2-head'           => [ZendRouter::class, 'HEAD'],
+            'zf2-options'        => [ZendRouter::class, 'OPTIONS'],
+        ];
+    }
+
+    public function notAllowedMethod()
+    {
+        return [
+            'aura-get'          => [AuraRouter::class, 'GET'],
+            'aura-post'         => [AuraRouter::class, 'POST'],
+            'aura-put'          => [AuraRouter::class, 'PUT'],
+            'aura-delete'       => [AuraRouter::class, 'DELETE'],
+            'aura-patch'        => [AuraRouter::class, 'PATCH'],
+            'fast-route-post'   => [FastRouteRouter::class, 'POST'],
+            'fast-route-put'    => [FastRouteRouter::class, 'PUT'],
+            'fast-route-delete' => [FastRouteRouter::class, 'DELETE'],
+            'fast-route-patch'  => [FastRouteRouter::class, 'PATCH'],
+            'zf2-get'           => [ZendRouter::class, 'GET'],
+            'zf2-post'          => [ZendRouter::class, 'POST'],
+            'zf2-put'           => [ZendRouter::class, 'PUT'],
+            'zf2-delete'        => [ZendRouter::class, 'DELETE'],
+            'zf2-patch'         => [ZendRouter::class, 'PATCH'],
+        ];
+    }
+
+    /**
+     * @dataProvider allowedMethod
+     *
+     * @param string $adapter
+     * @param string $method
+     */
+    public function testAllowedMethodsWhenOnlyPutMethodSet($adapter, $method)
+    {
+        $app = new Application(new $adapter);
+
+        // Add a PUT route
+        $app->put('/foo', function ($req, $res, $next) {
+            $res->getBody()->write('Middleware');
+            return $res;
+        });
+
+        $next = function ($req, $res) {
+            return $res;
+        };
+
+        $request  = new ServerRequest(['REQUEST_METHOD' => $method], [], '/foo', $method);
+        $response = new Response();
+        $result   = $app->routeMiddleware($request, $response, function ($request, $response) use ($app, $next) {
+            return $app->dispatchMiddleware($request, $response, $next);
+        });
+        $this->assertEquals(200, $result->getStatusCode());
+        $this->assertEquals('Middleware', (string) $result->getBody());
+    }
+
+    /**
+     * @dataProvider allowedMethod
+     *
+     * @param string $adapter
+     * @param string $method
+     */
+    public function testAllowedMethodsWhenNoHttpMethodsSet($adapter, $method)
+    {
+        $app = new Application(new $adapter);
+
+        // Add a route with empty array - NO HTTP methods
+        $app->route('/foo', function ($req, $res, $next) {
+            $res->getBody()->write('Middleware');
+            return $res;
+        }, []);
+
+        $next = function ($req, $res) {
+            return $res;
+        };
+
+        $request  = new ServerRequest(['REQUEST_METHOD' => $method], [], '/foo', $method);
+        $response = new Response();
+        $result   = $app->routeMiddleware($request, $response, function ($request, $response) use ($app, $next) {
+            return $app->dispatchMiddleware($request, $response, $next);
+        });
+        $this->assertEquals(200, $result->getStatusCode());
+        $this->assertEquals('Middleware', (string) $result->getBody());
+    }
+
+    /**
+     * @dataProvider notAllowedMethod
+     *
+     * @param string $adapter
+     * @param string $method
+     */
+    public function testNotAllowedMethodWhenNoHttpMethodsSet($adapter, $method)
+    {
+        $app = new Application(new $adapter);
+
+        // Add a route with empty array - NO HTTP methods
+        $app->route('/foo', function ($req, $res, $next) {
+            $res->getBody()->write('Middleware');
+            return $res;
+        }, []);
+
+        $next = function ($req, $res) {
+            return $res;
+        };
+
+        $request  = new ServerRequest(['REQUEST_METHOD' => $method], [], '/foo', $method);
+        $response = new Response();
+        $result   = $app->routeMiddleware($request, $response, function ($request, $response) use ($app, $next) {
+            return $app->dispatchMiddleware($request, $response, $next);
+        });
+        $this->assertEquals(405, $result->getStatusCode());
+        $this->assertNotContains('Middleware', (string) $result->getBody());
+    }
+
     /**
      * @dataProvider routerAdapters
      * @group 74
