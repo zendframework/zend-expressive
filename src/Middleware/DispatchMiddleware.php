@@ -9,6 +9,7 @@ namespace Zend\Expressive\Middleware;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Router\RouteResult;
@@ -27,6 +28,16 @@ use Zend\Expressive\Router\RouteResult;
 class DispatchMiddleware implements ServerMiddlewareInterface
 {
     /**
+     * @var null|ContainerInterface
+     */
+    private $container;
+
+    public function __construct(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+    }
+
+    /**
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
      * @return ResponseInterface
@@ -39,6 +50,14 @@ class DispatchMiddleware implements ServerMiddlewareInterface
         }
 
         $middleware = $routeResult->getMatchedMiddleware();
+
+        if (is_callable($middleware)) {
+            $middleware = $middleware();
+        }
+
+        if (is_string($middleware) && $this->container && $this->container->has($middleware)) {
+            $middleware = $this->container->get($middleware);
+        }
 
         return $middleware->process($request, $delegate);
     }
