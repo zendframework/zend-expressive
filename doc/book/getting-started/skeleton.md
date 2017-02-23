@@ -44,12 +44,27 @@ $ composer serve
 This starts up a web server on localhost port 8080; browse to
 http://localhost:8080/ to see if your application responds correctly!
 
+> ### Setting a timeout
+>
+> Composer commands time out after 300 seconds (5 minutes). On Linux-based
+> systems, the `php -S` command that `composer serve` spawns continues running
+> as a background process, but on other systems halts when the timeout occurs.
+>
+> If you want the server to live longer, you can use the
+> `COMPOSER_PROCESS_TIMEOUT` environment variable when executing `composer
+> serve` to extend the timeout. As an example, the following will extend it
+> to a full day:
+>
+> ```bash
+> $ COMPOSER_PROCESS_TIMEOUT=86400 composer serve
+> ```
+
 ## Next Steps
 
 The skeleton makes the assumption that you will be writing your middleware as
 classes, and using configuration to map routes to middleware. It also provides a
 default structure for templates, if you choose to use them. Let's see how you
-can create first vanilla middleware, and then templated middleware.
+can create your first vanilla middleware, and templated middleware.
 
 ### Creating middleware
 
@@ -93,7 +108,6 @@ provide a message, which is then returned in an HTML response.
 Now we need to inform the application of this middleware, and indicate what
 path will invoke it. Open the file `config/autoload/dependencies.global.php`.
 Edit that file to add an _invokable_ entry for the new middleware:
-that file, e
 
 ```php
 return [
@@ -182,8 +196,8 @@ The above modifies the class to accept a renderer to the constructor, and then
 calls on it to render a template. Note that we no longer need to escape our
 target; the template takes care of that for us.
 
-How does the template renderer get into the action, however? The answer is
-dependency injection.
+How does the template renderer get into the action? The answer is dependency 
+injection.
 
 For the next part of the example, we'll be creating and wiring a factory for
 creating the `HelloAction` instance; the example assumes you used the default
