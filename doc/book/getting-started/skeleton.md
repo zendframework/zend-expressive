@@ -59,6 +59,42 @@ http://localhost:8080/ to see if your application responds correctly!
 > $ COMPOSER_PROCESS_TIMEOUT=86400 composer serve
 > ```
 
+## Development Tools
+
+With skeleton version 2 we are shipping some tools to make development easier.
+
+### Development Mode
+
+[zf-development-mode](https://github.com/zfcampus/zf-development-mode) allows 
+you to enable and disable development mode from your cli.
+
+```bash
+$ composer development-enable  # enable development mode
+$ composer development-disable # disable development mode
+$ composer development-status  # show development status
+```
+
+The development configuration is set in `config/autoload/development.local.php.dist`.
+It also allows you to specify configuration and modules that should only be enabled 
+when in development, and not when in production.
+
+### Testing Your Code
+
+[PHPUnit](https://github.com/sebastianbergmann/phpunit) and 
+[PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) are installed. To
+execute tests and detect coding standards violations run this composer command: 
+
+```bash
+$ composer check
+```
+
+### Security Advisories
+
+We have included [security-advisories](https://github.com/Roave/SecurityAdvisories)
+to notify you about installed dependencies with known security vulnerabilities.
+Each time you run `composer update` or `composer install` it prevents installation of
+software with known and documented security issues.
+
 ## Next Steps
 
 The skeleton makes the assumption that you will be writing your middleware as
