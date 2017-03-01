@@ -78,6 +78,16 @@ The development configuration is set in `config/autoload/development.local.php.d
 It also allows you to specify configuration and modules that should only be enabled 
 when in development, and not when in production.
 
+### Clear config cache
+
+Production settings are the default, which means enabling the configuration cache. 
+However, it must be easy for developers to clear the configuration cache. That's
+what this command does.
+
+```bash
+$ composer clear-config-cache
+```
+
 ### Testing Your Code
 
 [PHPUnit](https://github.com/sebastianbergmann/phpunit) and 
