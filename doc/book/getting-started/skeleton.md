@@ -6,7 +6,7 @@ The skeleton provides a generic structure for creating your applications, and
 prompts you to choose a router, dependency injection container, template
 renderer, and error handler from the outset.
 
-## 1. Create a new project
+## Create a new project
 
 First, we'll create a new project, using Composer's `create-project` command:
 
@@ -29,7 +29,7 @@ This will prompt you to choose:
 - An error handler. Whoops is a very nice option for development, as it gives
   you extensive, browseable information for exceptions and errors raised.
 
-## 2. Start a web server
+## Start a web server
 
 The Skeleton + Installer creates a full application structure that's ready-to-go
 when complete. You can test it out using [built-in web
@@ -136,7 +136,7 @@ namespace App\Action;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Expressive\Response\HtmlResponse;
+use Zend\Diactoros\Response\HtmlResponse;
 
 class HelloAction implements MiddlewareInterface
 {
