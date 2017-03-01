@@ -97,19 +97,125 @@ execute tests and detect coding standards violations run this composer command:
 $ composer check
 ```
 
-### Component Installer
-
-The [zend-component-installer](https://zendframework.github.io/zend-component-installer/)
-is included by default. Whenever you add a component or module that exposes itself 
-as such, the plugin will prompt you, asking if and where you want to inject its
-configuration. This ensures that components are wired automatically for you.
-
 ### Security Advisories
 
 We have included [security-advisories](https://github.com/Roave/SecurityAdvisories)
 to notify you about installed dependencies with known security vulnerabilities.
 Each time you run `composer update` or `composer install` it prevents installation of
 software with known and documented security issues.
+
+## Modules
+
+Support for modules is available with Config Aggregator and the Component Installer.
+
+### Component Installer
+
+Whenever you add a component or module that exposes itself as such, the 
+[zend-component-installer](https://zendframework.github.io/zend-component-installer/) 
+will prompt you, asking if and where you want to inject its configuration. This 
+ensures that components are wired automatically for you.
+
+### Config Aggregator
+
+The [zend-config-aggregator](https://github.com/zendframework/zend-config-aggregator)
+library collects and merges configuration from different sources. It also supports 
+configuration caching.
+
+```php
+<?php // config/config.php
+
+$aggregator = new ConfigAggregator([
+    // Module configuration
+    App\ConfigProvider::class,
+    BlogModule\ConfigProvider::class,
+    UserModule\ConfigProvider::class,
+
+    // Load application config in a pre-defined order in such a way that local settings
+    // overwrite global settings. (Loaded as first to last):
+    //   - `global.php`
+    //   - `*.global.php`
+    //   - `local.php`
+    //   - `*.local.php`
+    new PhpFileProvider('config/autoload/{{,*.}global,{,*.}local}.php'),
+
+    // Load development config if it exists
+    new PhpFileProvider('config/development.config.php'),
+], 'data/config-cache.php');
+
+return $aggregator->getMergedConfig();
+```
+
+The configuration is merged in the same order as it is passed, with later entries 
+having precedence.
+
+### Config Providers
+
+`ConfigAggregator` works by aggregating "Config Providers" passed to its 
+constructor. Each provider should be a callable, returning a configuration array 
+(or a PHP generator) to be merged.
+
+Libraries or modules can have configuration providers that provide default values 
+for a library or module. For the `UserModule\ConfigProvider` class loaded in the
+`ConfigAggregator` above, the `ConfigProvider` might look like this:
+
+```php
+<?php
+
+namespace UserModule;
+
+class ConfigProvider
+{
+    /**
+     * Returns the configuration array
+     *
+     * To add some sort of a structure, each section is defined in a separate
+     * method which returns an array with its configuration.
+     *
+     * @return array
+     */
+    public function __invoke()
+    {
+        return [
+            'dependencies' => $this->getDependencies(),
+            'users'        => $this->getConfig(),
+        ];
+    }
+
+    /**
+     * Returns the container dependencies
+     *
+     * @return array
+     */
+    public function getDependencies()
+    {
+        return [
+            'factories'  => [
+                Action\LoginAction::class =>
+                    Factory\Action\LoginActionFactory::class,
+
+                Middleware\AuthenticationMiddleware::class =>
+                    Factory\Middleware\AuthenticationMiddlewareFactory::class,
+            ],
+        ];
+    }
+
+    /**
+     * Returns the default module configuration
+     *
+     * @return array
+     */
+    public function getConfig()
+    {
+        return [
+            'paths' => [
+                'enable_registration' => true,
+                'enable_username'     => false,
+                'enable_display_name' => true,
+            ],
+        ];
+    }
+}
+```
 
 ## Next Steps
 
