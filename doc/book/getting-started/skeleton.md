@@ -217,12 +217,113 @@ class ConfigProvider
 }
 ```
 
-## Next Steps
+## Adding Middleware
 
 The skeleton makes the assumption that you will be writing your middleware as
-classes, and using configuration to map routes to middleware. It also provides a
-default structure for templates, if you choose to use them. Let's see how you
-can create your first vanilla middleware, and templated middleware.
+classes, and uses [piping and routing](../features/router/piping.md) to add 
+your middleware.
+
+### Piping
+
+[Piping](../features/router/piping.md#piping) is a foundation feature of the 
+underlying zend-stratigility implementation. You can setup the middleware 
+pipeline in `config/pipeline.php`. A basic pipeline might look like this:
+
+The error handler should be the first (most outer) middleware to catch all 
+Exceptions.
+
+```php
+$app->pipe(ErrorHandler::class);
+$app->pipe(ServerUrlMiddleware::class);  
+```
+
+After the `ErrorHandler` you can pipe more middleware that you want to execute 
+on every request like: bootstrapping, pre-conditions and modifications to 
+outgoing responses.
+
+Piped Middleware may be either callables or service names. Middleware may also 
+be passed as an array; each item in the array must resolve to middleware 
+eventually (i.e., callable or service name).
+
+Middleware can be attached to specific paths, allowing you to mix and match
+applications under a common domain. The handlers in each middleware attached 
+this way will see a URI with the **MATCHED PATH SEGMENT REMOVED!!!**
+
+```php
+$app->pipe('/api', $apiMiddleware);
+$app->pipe('/docs', $apiDocMiddleware);
+$app->pipe('/files', $filesMiddleware);    
+```
+
+Registering the routing middleware in the middleware pipeline.
+
+```php
+$app->pipeRoutingMiddleware();
+$app->pipe(ImplicitHeadMiddleware::class);
+$app->pipe(ImplicitOptionsMiddleware::class);
+$app->pipe(UrlHelperMiddleware::class);
+```
+
+Add more middleware that needs to introspect the routing results; this might 
+include:
+- route-based authentication
+- route-based validation
+- etc.
+
+Register the dispatch middleware in the middleware pipeline:
+
+```php
+$app->pipeDispatchMiddleware();
+```
+
+At this point, if no Response is return by any middleware, the `NotFoundHandler` 
+kicks in; alternately, you can provide other fallback middleware to execute.
+
+```php
+$app->pipe(NotFoundHandler::class);
+```
+
+### Routing
+  
+[Routing](../features/router/piping.md#routing) is an additional feature
+provided by zend-expressive. Routing is setup in `config/routes.php`.
+
+Setup routes with a single request method:
+
+```php
+$app->get('/', App\Action\HomePageAction::class, 'home');
+$app->post('/album', App\Action\AlbumCreateAction::class, 'album.create');
+$app->put('/album/:id', App\Action\AlbumUpdateAction::class, 'album.put');
+$app->patch('/album/:id', App\Action\AlbumUpdateAction::class, 'album.patch');
+$app->delete('/album/:id', App\Action\AlbumDeleteAction::class, 'album.delete');
+```
+
+Or with multiple request methods:
+
+```php
+$app->route('/contact', App\Action\ContactAction::class, ['GET', 'POST', ...], 'contact');
+```
+
+Or handling all request methods:
+
+```php
+$app->route('/contact', App\Action\ContactAction::class)->setName('contact');
+```
+
+Or:
+```php
+$app->route(
+  '/contact',
+  App\Action\ContactAction::class,
+  Zend\Expressive\Router\Route::HTTP_METHOD_ANY,
+  'contact'
+);  
+```
+
+## Next Steps
+
+The skeleton provides a default structure for templates, if you choose to use them. 
+Let's see how you can create your first vanilla middleware, and templated middleware.
 
 ### Creating middleware
 
