@@ -52,7 +52,7 @@ trait MarshalMiddlewareTrait
         }
 
         if ($middleware === Application::DISPATCH_MIDDLEWARE) {
-            return new Middleware\DispatchMiddleware();
+            return new Middleware\DispatchMiddleware($router, $responsePrototype, $container);
         }
 
         if ($middleware instanceof ServerMiddlewareInterface) {
