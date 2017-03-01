@@ -97,6 +97,13 @@ execute tests and detect coding standards violations run this composer command:
 $ composer check
 ```
 
+### Component Installer
+
+The [zend-component-installer](https://zendframework.github.io/zend-component-installer/)
+is included by default. Whenever you add a component or module that exposes itself 
+as such, the plugin will prompt you, asking if and where you want to inject its
+configuration. This ensures that components are wired automatically for you.
+
 ### Security Advisories
 
 We have included [security-advisories](https://github.com/Roave/SecurityAdvisories)
