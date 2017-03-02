@@ -20,12 +20,16 @@ This will prompt you to choose:
   application structure (all code under `src/`), or a modular structure
   (directories under `src/` are modules, each with source code and potentially
   templates, configuration, assets, etc.).
+
 - A dependency injection container. We recommend using the default, Zend
   ServiceManager.
+
 - A router. We recommend using the default, FastRoute.
+-
 - A template renderer. You can ignore this when creating an API project, but if
   you will be creating any HTML pages, we recommend installing one. We prefer
   Plates.
+
 - An error handler. Whoops is a very nice option for development, as it gives
   you extensive, browseable information for exceptions and errors raised.
 
@@ -50,17 +54,24 @@ http://localhost:8080/ to see if your application responds correctly!
 > systems, the `php -S` command that `composer serve` spawns continues running
 > as a background process, but on other systems halts when the timeout occurs.
 >
-> If you want the server to live longer, you can set the global composer 
-> process-timeout (NOTE: This does affect all composer commands). As an example, 
-> the following will extend it to 8 hours:
+> If you want the server to live longer, you can set the composer
+> `process-timeout` configuration, which can be specified either local to your
+> project, or globally. As examples, each of the following set the timeout to 8
+> hours:
 >
 > ```bash
+> # Local to your project:
+> $ composer config process-timeout 28800
+> # Globally (all projects):
 > $ composer config -g process-timeout 28800
 > ```
+>
+> NOTE: This setting affects _all_ composer commands, including install, update,
+> and require operations, so be careful about resetting it, particularly globally.
 
 ## Development Tools
 
-With skeleton version 2 we are shipping some tools to make development easier.
+Starting in version 2 of the skeleton, we ship tools to make development easier.
 
 ### Development Mode
 
@@ -90,8 +101,9 @@ $ composer clear-config-cache
 ### Testing Your Code
 
 [PHPUnit](https://github.com/sebastianbergmann/phpunit) and 
-[PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) are installed. To
-execute tests and detect coding standards violations run this composer command: 
+[PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) are now
+installed by default. To execute tests and detect coding standards violations,
+run the following command: 
 
 ```bash
 $ composer check
@@ -99,27 +111,49 @@ $ composer check
 
 ### Security Advisories
 
-We have included [security-advisories](https://github.com/Roave/SecurityAdvisories)
-to notify you about installed dependencies with known security vulnerabilities.
-Each time you run `composer update` or `composer install` it prevents installation of
-software with known and documented security issues.
+We have included the [security-advisories](https://github.com/Roave/SecurityAdvisories)
+package to notify you about installed dependencies with known security
+vulnerabilities. Each time you run `composer update`, `composer install`, or
+`composer require`, it prevents installation of software with known and
+documented security issues.
 
 ## Modules
 
-Support for modules is available with Config Aggregator and the Component Installer.
+Composer will prompt you during installation to ask if you want a
+minimal application (no structure or default middleware provided), flat
+application (all source code under the same tree, and the default selection), or
+modular application. This latter option is new in the version 2 series, and
+allows you to segregate discrete areas of application functionality into
+_modules_, which can contain source code, templates, assets, and more; these can
+later be repackaged for re-use if desired.
+
+Support for modules is available via the
+[zend-component-installer](https://github.com/zendframework/zend-component-installer)
+and [zend-config-aggregator](https://github.com/zendframework/zend-config-aggregator)
+packages; the [zend-expressive-tooling](https://github.com/zendframework/zend-expressive-tooling).
+package provides tools for creating and manipulating modules in your
+application.
 
 ### Component Installer
 
 Whenever you add a component or module that exposes itself as such, the 
 [zend-component-installer](https://zendframework.github.io/zend-component-installer/) 
-will prompt you, asking if and where you want to inject its configuration. This 
-ensures that components are wired automatically for you.
+composer plugin will prompt you, asking if and where you want to inject its
+configuration. This ensures that components are wired automatically for you.
+
+In most cases, you will choose to inject in the `config/config.php` file; for
+tools intended only for usage during development, choose
+`config/development.config.php.dist`.
 
 ### Config Aggregator
 
 The [zend-config-aggregator](https://github.com/zendframework/zend-config-aggregator)
 library collects and merges configuration from different sources. It also supports 
 configuration caching.
+
+As an example, your `config/config.php` file might read as follows in order to
+aggregate configuration from development mode settings, application
+configuration, and theoretical `User`, `Blog`, and `App` modules:
 
 ```php
 <?php // config/config.php
@@ -150,9 +184,10 @@ having precedence.
 
 ### Config Providers
 
-`ConfigAggregator` works by aggregating "Config Providers" passed to its 
-constructor. Each provider should be a callable, returning a configuration array 
-(or a PHP generator) to be merged.
+`ConfigAggregator` works by aggregating "Config Providers" passed to its
+constructor. Each provider should be a callable class that requires no
+constructor parameters, where invocation returns a configuration array (or a PHP
+generator) to be merged.
 
 Libraries or modules can have configuration providers that provide default values 
 for a library or module. For the `UserModule\ConfigProvider` class loaded in the
@@ -217,6 +252,29 @@ class ConfigProvider
 }
 ```
 
+### expressive-module command
+
+To aid in the creation, registration, and deregistration of modules in your
+application, the installer will add the [zendframework/zend-expressive-tooling](https://github.com/zendframework/zend-expressive-tooling)
+as a development requirement when you choose the modular application layout.
+
+The tool is available from your application root directory via
+`./vendor/bin/expressive-module`. For brevity, we will only reference the tool's
+name, `expressive-module`, when describing its capabilities.
+
+This tool provides the following functionality:
+
+- `expressive-module create <modulename>` will create the default directory
+  structure for the named module, create a `ConfigProvider` for the module, add
+  an autoloading rule to `composer.json`, and register the `ConfigProvider` with
+  the application configuration.
+- `expressive-module register <modulename>` will add an autoloading rule to
+  `composer.json` for the module, and register its `ConfigProvider`, if found,
+  with the application configuration.
+- `expressive-module deregister <modulename>` will remove any autoloading rules
+  for the module from `composer.json`, and deregister its `ConfigProvider`, if
+  found, from the application configuration.
+
 ## Adding Middleware
 
 The skeleton makes the assumption that you will be writing your middleware as
@@ -226,11 +284,13 @@ your middleware.
 ### Piping
 
 [Piping](../features/router/piping.md#piping) is a foundation feature of the 
-underlying zend-stratigility implementation. You can setup the middleware 
-pipeline in `config/pipeline.php`. A basic pipeline might look like this:
+underlying [zend-stratigility](https://docs.zendframework.com/zend-stratigility/)
+implementation. You can setup the middleware pipeline in `config/pipeline.php`.
+In this section, we'll demonstrate setting up a basic pipeline that includes
+error handling, segregated applications, routing, middleware dispatch, and more.
 
 The error handler should be the first (most outer) middleware to catch all 
-Exceptions.
+exceptions.
 
 ```php
 $app->pipe(ErrorHandler::class);
@@ -238,12 +298,18 @@ $app->pipe(ServerUrlMiddleware::class);
 ```
 
 After the `ErrorHandler` you can pipe more middleware that you want to execute 
-on every request like: bootstrapping, pre-conditions and modifications to 
-outgoing responses.
+on every request, such as bootstrapping, pre-conditions, and modifications to 
+outgoing responses:
 
-Piped Middleware may be either callables or service names. Middleware may also 
+```php
+$app->pipe(ServerUrlMiddleware::class);  
+```
+
+Piped middleware may be either callables or service names. Middleware may also 
 be passed as an array; each item in the array must resolve to middleware 
-eventually (i.e., callable or service name).
+eventually (i.e., callable or service name); underneath, Expressive creates
+`Zend\Stratigility\MiddlewarePipe` instances with each of the middleware listed
+piped to it.
 
 Middleware can be attached to specific paths, allowing you to mix and match
 applications under a common domain. The handlers in each middleware attached 
@@ -255,40 +321,77 @@ $app->pipe('/docs', $apiDocMiddleware);
 $app->pipe('/files', $filesMiddleware);    
 ```
 
-Registering the routing middleware in the middleware pipeline.
+Next, you should register the routing middleware in the middleware pipeline:
 
 ```php
 $app->pipeRoutingMiddleware();
+```
+
+Add more middleware that needs to introspect the routing results; this might 
+include:
+
+- handling for HTTP `HEAD` requests
+- handling for HTTP `OPTIONS` requests
+- middleware for handling URI generation
+- route-based authentication
+- route-based validation
+- etc.
+
+```php
 $app->pipe(ImplicitHeadMiddleware::class);
 $app->pipe(ImplicitOptionsMiddleware::class);
 $app->pipe(UrlHelperMiddleware::class);
 ```
 
-Add more middleware that needs to introspect the routing results; this might 
-include:
-- route-based authentication
-- route-based validation
-- etc.
-
-Register the dispatch middleware in the middleware pipeline:
+Next, register the dispatch middleware in the middleware pipeline:
 
 ```php
 $app->pipeDispatchMiddleware();
 ```
 
-At this point, if no Response is return by any middleware, the `NotFoundHandler` 
-kicks in; alternately, you can provide other fallback middleware to execute.
+At this point, if no response is return by any middleware, we need to provide a
+way of notifying the user of this; by default, we use the `NotFoundHandler`, but
+you can provide any other fallback middleware you wish:
 
 ```php
+$app->pipe(NotFoundHandler::class);
+```
+
+The full example then looks something like this:
+
+```php
+// In config/pipeline.php:
+
+use Zend\Expressive\Helper\ServerUrlMiddleware;
+use Zend\Expressive\Helper\UrlHelperMiddleware;
+use Zend\Expressive\Middleware\ImplicitHeadMiddleware;
+use Zend\Expressive\Middleware\ImplicitOptionsMiddleware;
+use Zend\Expressive\Middleware\NotFoundHandler;
+use Zend\Stratigility\Middleware\ErrorHandler;
+
+$app->pipe(ErrorHandler::class);
+$app->pipe(ServerUrlMiddleware::class);
+
+// These assume that the variables listed are defined in this scope:
+$app->pipe('/api', $apiMiddleware);
+$app->pipe('/docs', $apiDocMiddleware);
+$app->pipe('/files', $filesMiddleware);
+
+$app->pipeRoutingMiddleware();
+$app->pipe(ImplicitHeadMiddleware::class);
+$app->pipe(ImplicitOptionsMiddleware::class);
+$app->pipe(UrlHelperMiddleware::class);
+$app->pipeDispatchMiddleware();
+
 $app->pipe(NotFoundHandler::class);
 ```
 
 ### Routing
   
 [Routing](../features/router/piping.md#routing) is an additional feature
-provided by zend-expressive. Routing is setup in `config/routes.php`.
+provided by Expressive. Routing is setup in `config/routes.php`.
 
-Setup routes with a single request method:
+You can setup routes with a single request method:
 
 ```php
 $app->get('/', App\Action\HomePageAction::class, 'home');
@@ -310,7 +413,8 @@ Or handling all request methods:
 $app->route('/contact', App\Action\ContactAction::class)->setName('contact');
 ```
 
-Or:
+Alternately, to be explicit, the above could be written as:
+
 ```php
 $app->route(
   '/contact',
@@ -320,6 +424,9 @@ $app->route(
 );  
 ```
 
+We recommend a single middleware class per combination of route and request
+method.
+
 ## Next Steps
 
 The skeleton provides a default structure for templates, if you choose to use them. 
@@ -327,11 +434,50 @@ Let's see how you can create your first vanilla middleware, and templated middle
 
 ### Creating middleware
 
-The easiest way to create middleware is to create a class that defines an
-`__invoke()` method accepting a request, response, and callable "next" argument
-(for invoking the "next" middleware in the queue). The skeleton defines an `App`
-namespace for you, and suggests placing middleware under the namespace
-`App\Action`.
+To create middleware, create a class implementing
+`Interop\Http\ServerMiddleware\MiddlewareInterface`. This interface defines a
+single method, `process()`, which accepts a
+`Psr\Http\Message\ServerRequestInterface` instance and an
+`Interop\Http\ServerMiddleware\DelegateInterface` instance.
+
+> ### Legacy double-pass middleware
+>
+> Prior to Expressive 2.0, the default middleware style was what is termed
+> "double-pass", for the fact that it passes both the request and response between
+> layers. This middleware did not require an interface, and relied on a
+> conventional definition of:
+> 
+> ```php
+> use Psr\Http\Message;
+> 
+> function (
+>   Message\ServerRequestInterface $request,
+>   Message\ResponseInterface $response,
+>   callable $next
+> ) : Message\ResponseInterface
+> ```
+> 
+> While this style of middleware is still quite wide-spread and used in a number
+> of projects, it has some flaws. Chief among them is the fact that middleware
+> should not rely on the `$response` instance provided to them (as it may have
+> modifications unacceptable for the current context), and that a response
+> returned from inner layers may not be based off the `$response` provided to them
+> (as inner layers may create and return a completely different response).
+> 
+> Starting in Expressive 2.0, we add support for
+> [http-interop/http-middleware](https://github.com/http-interop/http-middleware),
+> which is a working group of [PHP-FIG](http://www.php-fig.org/) dedicated to
+> creating a common middleware standard. This middleware uses what is termed
+> a "single-pass" or "lambda" architecture, whereby only the request instance is
+> passed between layers. We now recommend writing middleware using the
+> http-middleware interfaces for all new middleware.
+> 
+> Middleware using the double-pass style is still accepted by Expressive, but
+> support for it will be discontinued once http-middleware is formally approved
+> by PHP-FIG.
+
+The skeleton defines an `App` namespace for you, and suggests placing middleware
+under the namespace `App\Action`.
 
 Let's create a "Hello" action. Place the following in
 `src/App/Action/HelloAction.php`:
@@ -349,8 +495,13 @@ class HelloAction implements MiddlewareInterface
 {
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
+        // On all PHP versions:
         $query  = $request->getQueryParams();
         $target = isset($query['target']) ? $query['target'] : 'World';
+
+        // Or, on PHP 7+:
+        $target = $request->getQueryParams()['target'] ?? 'World';
+
         $target = htmlspecialchars($target, ENT_HTML5, 'UTF-8');
 
         return new HtmlResponse(sprintf(
@@ -441,8 +592,12 @@ class HelloAction implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
+        // On all PHP versions:
         $query  = $request->getQueryParams();
         $target = isset($query['target']) ? $query['target'] : 'World';
+
+        // Or, on PHP 7+:
+        $target = $request->getQueryParams()['target'] ?? 'World';
 
         return new HtmlResponse(
             $this->renderer->render('app::hello-world', ['target' => $target])
