@@ -6,7 +6,7 @@ The skeleton provides a generic structure for creating your applications, and
 prompts you to choose a router, dependency injection container, template
 renderer, and error handler from the outset.
 
-## 1. Create a new project
+## Create a new project
 
 First, we'll create a new project, using Composer's `create-project` command:
 
@@ -29,7 +29,7 @@ This will prompt you to choose:
 - An error handler. Whoops is a very nice option for development, as it gives
   you extensive, browseable information for exceptions and errors raised.
 
-## 2. Start a web server
+## Start a web server
 
 The Skeleton + Installer creates a full application structure that's ready-to-go
 when complete. You can test it out using [built-in web
@@ -44,12 +44,286 @@ $ composer serve
 This starts up a web server on localhost port 8080; browse to
 http://localhost:8080/ to see if your application responds correctly!
 
-## Next Steps
+> ### Setting a timeout
+>
+> Composer commands time out after 300 seconds (5 minutes). On Linux-based
+> systems, the `php -S` command that `composer serve` spawns continues running
+> as a background process, but on other systems halts when the timeout occurs.
+>
+> If you want the server to live longer, you can set the global composer 
+> process-timeout (NOTE: This does affect all composer commands). As an example, 
+> the following will extend it to 8 hours:
+>
+> ```bash
+> $ composer config -g process-timeout 28800
+> ```
+
+## Development Tools
+
+With skeleton version 2 we are shipping some tools to make development easier.
+
+### Development Mode
+
+[zf-development-mode](https://github.com/zfcampus/zf-development-mode) allows 
+you to enable and disable development mode from your cli.
+
+```bash
+$ composer development-enable  # enable development mode
+$ composer development-disable # disable development mode
+$ composer development-status  # show development status
+```
+
+The development configuration is set in `config/autoload/development.local.php.dist`.
+It also allows you to specify configuration and modules that should only be enabled 
+when in development, and not when in production.
+
+### Clear config cache
+
+Production settings are the default, which means enabling the configuration cache. 
+However, it must be easy for developers to clear the configuration cache. That's
+what this command does.
+
+```bash
+$ composer clear-config-cache
+```
+
+### Testing Your Code
+
+[PHPUnit](https://github.com/sebastianbergmann/phpunit) and 
+[PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) are installed. To
+execute tests and detect coding standards violations run this composer command: 
+
+```bash
+$ composer check
+```
+
+### Security Advisories
+
+We have included [security-advisories](https://github.com/Roave/SecurityAdvisories)
+to notify you about installed dependencies with known security vulnerabilities.
+Each time you run `composer update` or `composer install` it prevents installation of
+software with known and documented security issues.
+
+## Modules
+
+Support for modules is available with Config Aggregator and the Component Installer.
+
+### Component Installer
+
+Whenever you add a component or module that exposes itself as such, the 
+[zend-component-installer](https://zendframework.github.io/zend-component-installer/) 
+will prompt you, asking if and where you want to inject its configuration. This 
+ensures that components are wired automatically for you.
+
+### Config Aggregator
+
+The [zend-config-aggregator](https://github.com/zendframework/zend-config-aggregator)
+library collects and merges configuration from different sources. It also supports 
+configuration caching.
+
+```php
+<?php // config/config.php
+
+$aggregator = new ConfigAggregator([
+    // Module configuration
+    App\ConfigProvider::class,
+    BlogModule\ConfigProvider::class,
+    UserModule\ConfigProvider::class,
+
+    // Load application config in a pre-defined order in such a way that local settings
+    // overwrite global settings. (Loaded as first to last):
+    //   - `global.php`
+    //   - `*.global.php`
+    //   - `local.php`
+    //   - `*.local.php`
+    new PhpFileProvider('config/autoload/{{,*.}global,{,*.}local}.php'),
+
+    // Load development config if it exists
+    new PhpFileProvider('config/development.config.php'),
+], 'data/config-cache.php');
+
+return $aggregator->getMergedConfig();
+```
+
+The configuration is merged in the same order as it is passed, with later entries 
+having precedence.
+
+### Config Providers
+
+`ConfigAggregator` works by aggregating "Config Providers" passed to its 
+constructor. Each provider should be a callable, returning a configuration array 
+(or a PHP generator) to be merged.
+
+Libraries or modules can have configuration providers that provide default values 
+for a library or module. For the `UserModule\ConfigProvider` class loaded in the
+`ConfigAggregator` above, the `ConfigProvider` might look like this:
+
+```php
+<?php
+
+namespace UserModule;
+
+class ConfigProvider
+{
+    /**
+     * Returns the configuration array
+     *
+     * To add some sort of a structure, each section is defined in a separate
+     * method which returns an array with its configuration.
+     *
+     * @return array
+     */
+    public function __invoke()
+    {
+        return [
+            'dependencies' => $this->getDependencies(),
+            'users'        => $this->getConfig(),
+        ];
+    }
+
+    /**
+     * Returns the container dependencies
+     *
+     * @return array
+     */
+    public function getDependencies()
+    {
+        return [
+            'factories'  => [
+                Action\LoginAction::class =>
+                    Factory\Action\LoginActionFactory::class,
+
+                Middleware\AuthenticationMiddleware::class =>
+                    Factory\Middleware\AuthenticationMiddlewareFactory::class,
+            ],
+        ];
+    }
+
+    /**
+     * Returns the default module configuration
+     *
+     * @return array
+     */
+    public function getConfig()
+    {
+        return [
+            'paths' => [
+                'enable_registration' => true,
+                'enable_username'     => false,
+                'enable_display_name' => true,
+            ],
+        ];
+    }
+}
+```
+
+## Adding Middleware
 
 The skeleton makes the assumption that you will be writing your middleware as
-classes, and using configuration to map routes to middleware. It also provides a
-default structure for templates, if you choose to use them. Let's see how you
-can create first vanilla middleware, and then templated middleware.
+classes, and uses [piping and routing](../features/router/piping.md) to add 
+your middleware.
+
+### Piping
+
+[Piping](../features/router/piping.md#piping) is a foundation feature of the 
+underlying zend-stratigility implementation. You can setup the middleware 
+pipeline in `config/pipeline.php`. A basic pipeline might look like this:
+
+The error handler should be the first (most outer) middleware to catch all 
+Exceptions.
+
+```php
+$app->pipe(ErrorHandler::class);
+$app->pipe(ServerUrlMiddleware::class);  
+```
+
+After the `ErrorHandler` you can pipe more middleware that you want to execute 
+on every request like: bootstrapping, pre-conditions and modifications to 
+outgoing responses.
+
+Piped Middleware may be either callables or service names. Middleware may also 
+be passed as an array; each item in the array must resolve to middleware 
+eventually (i.e., callable or service name).
+
+Middleware can be attached to specific paths, allowing you to mix and match
+applications under a common domain. The handlers in each middleware attached 
+this way will see a URI with the **MATCHED PATH SEGMENT REMOVED!!!**
+
+```php
+$app->pipe('/api', $apiMiddleware);
+$app->pipe('/docs', $apiDocMiddleware);
+$app->pipe('/files', $filesMiddleware);    
+```
+
+Registering the routing middleware in the middleware pipeline.
+
+```php
+$app->pipeRoutingMiddleware();
+$app->pipe(ImplicitHeadMiddleware::class);
+$app->pipe(ImplicitOptionsMiddleware::class);
+$app->pipe(UrlHelperMiddleware::class);
+```
+
+Add more middleware that needs to introspect the routing results; this might 
+include:
+- route-based authentication
+- route-based validation
+- etc.
+
+Register the dispatch middleware in the middleware pipeline:
+
+```php
+$app->pipeDispatchMiddleware();
+```
+
+At this point, if no Response is return by any middleware, the `NotFoundHandler` 
+kicks in; alternately, you can provide other fallback middleware to execute.
+
+```php
+$app->pipe(NotFoundHandler::class);
+```
+
+### Routing
+  
+[Routing](../features/router/piping.md#routing) is an additional feature
+provided by zend-expressive. Routing is setup in `config/routes.php`.
+
+Setup routes with a single request method:
+
+```php
+$app->get('/', App\Action\HomePageAction::class, 'home');
+$app->post('/album', App\Action\AlbumCreateAction::class, 'album.create');
+$app->put('/album/:id', App\Action\AlbumUpdateAction::class, 'album.put');
+$app->patch('/album/:id', App\Action\AlbumUpdateAction::class, 'album.patch');
+$app->delete('/album/:id', App\Action\AlbumDeleteAction::class, 'album.delete');
+```
+
+Or with multiple request methods:
+
+```php
+$app->route('/contact', App\Action\ContactAction::class, ['GET', 'POST', ...], 'contact');
+```
+
+Or handling all request methods:
+
+```php
+$app->route('/contact', App\Action\ContactAction::class)->setName('contact');
+```
+
+Or:
+```php
+$app->route(
+  '/contact',
+  App\Action\ContactAction::class,
+  Zend\Expressive\Router\Route::HTTP_METHOD_ANY,
+  'contact'
+);  
+```
+
+## Next Steps
+
+The skeleton provides a default structure for templates, if you choose to use them. 
+Let's see how you can create your first vanilla middleware, and templated middleware.
 
 ### Creating middleware
 
@@ -69,7 +343,7 @@ namespace App\Action;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Expressive\Response\HtmlResponse;
+use Zend\Diactoros\Response\HtmlResponse;
 
 class HelloAction implements MiddlewareInterface
 {
@@ -93,7 +367,6 @@ provide a message, which is then returned in an HTML response.
 Now we need to inform the application of this middleware, and indicate what
 path will invoke it. Open the file `config/autoload/dependencies.global.php`.
 Edit that file to add an _invokable_ entry for the new middleware:
-that file, e
 
 ```php
 return [
@@ -182,8 +455,8 @@ The above modifies the class to accept a renderer to the constructor, and then
 calls on it to render a template. Note that we no longer need to escape our
 target; the template takes care of that for us.
 
-How does the template renderer get into the action, however? The answer is
-dependency injection.
+How does the template renderer get into the action? The answer is dependency 
+injection.
 
 For the next part of the example, we'll be creating and wiring a factory for
 creating the `HelloAction` instance; the example assumes you used the default

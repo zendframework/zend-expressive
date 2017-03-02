@@ -125,6 +125,20 @@ http://localhost:8080/ to see if your application responds correctly!
 > ```bash
 > $ composer serve
 > ```
+>
+> ### Setting a timeout
+>
+> Composer commands time out after 300 seconds (5 minutes). On Linux-based
+> systems, the `php -S` command that `composer serve` spawns continues running
+> as a background process, but on other systems halts when the timeout occurs.
+>
+> If you want the server to live longer, you can set the global composer 
+> process-timeout (NOTE: This does affect all composer commands). As an example, 
+> the following will extend it to 8 hours:
+>
+> ```bash
+> $ composer config -g process-timeout 28800
+> ```
 
 ## Next steps
 
