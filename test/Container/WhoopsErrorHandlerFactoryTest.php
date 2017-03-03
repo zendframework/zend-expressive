@@ -28,7 +28,7 @@ class WhoopsErrorHandlerFactoryTest extends TestCase
     /** @var ObjectProphecy */
     protected $container;
 
-    public function setUp()
+    protected function setUp()
     {
         $whoops          = new Whoops();
         $pageHandler     = $this->prophesize(PrettyPageHandler::class);

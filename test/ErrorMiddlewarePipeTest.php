@@ -20,7 +20,7 @@ use Zend\Stratigility\MiddlewarePipe;
 
 class ErrorMiddlewarePipeTest extends TestCase
 {
-    public function setUp()
+    protected function setUp()
     {
         $this->internalPipe = new MiddlewarePipe();
         $this->errorPipe = new ErrorMiddlewarePipe($this->internalPipe);

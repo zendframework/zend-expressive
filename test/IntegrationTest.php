@@ -24,7 +24,7 @@ class IntegrationTest extends TestCase
     public $errorHandler;
     public $response;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->response = null;
         $this->errorHandler = null;

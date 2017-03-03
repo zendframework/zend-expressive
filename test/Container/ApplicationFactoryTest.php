@@ -54,7 +54,7 @@ class ApplicationFactoryTest extends TestCase
     /** @var ObjectProphecy */
     protected $router;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->container = $this->mockContainerInterface();
         $this->factory   = new ApplicationFactory();
