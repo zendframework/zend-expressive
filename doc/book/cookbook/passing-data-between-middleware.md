@@ -71,7 +71,7 @@ class ReceivingDataMiddleware implements MiddlewareInterface
 }
 ```
 
-In stead of passing data to other middleware you can also use the data in 
+Instead of passing data to other middleware you can also use the data in 
 actions. It's the same concept since an action class is middleware itself. In
 the `ExampleAction` the data is subtracted from the request and passed to the
 template renderer to create a HtmlResponse.
