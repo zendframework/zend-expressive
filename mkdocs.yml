@@ -12,6 +12,7 @@ pages:
         - Containers:
             - Introduction: features/container/intro.md
             - 'Container Factories': features/container/factories.md
+            - 'Delegator Factories': features/container/delegator-factories.md
             - 'Using zend-servicemanager': features/container/zend-servicemanager.md
             - 'Using Pimple': features/container/pimple.md
             - 'Using Aura.Di': features/container/aura-di.md
@@ -57,6 +58,7 @@ pages:
         - 'Passing data between middleware': cookbook/passing-data-between-middleware.md
     - Reference:
         - "Why choose Expressive?": why-expressive.md
+        - "CLI Tooling": reference/cli-tooling.md
         - Examples: reference/usage-examples.md
         - 'Expressive Projects': reference/expressive-projects.md
         - Migration:

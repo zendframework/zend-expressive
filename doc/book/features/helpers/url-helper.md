@@ -64,6 +64,12 @@ Each method will raise an exception if:
   represents a matching failure.
 - The given `$routeName` is not defined in the router.
 
+> ### Signature changes
+>
+> The signature listed above is current as of version 3.0.0 of
+> zendframework/zend-expressive-helpers. Prior to that version, the helper only
+> accepted the route name and route parameters.
+
 ## Creating an instance
 
 In order to use the helper, you will need to instantiate it with the current

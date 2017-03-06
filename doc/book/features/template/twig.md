@@ -127,3 +127,8 @@ return [
     ],
 ];
 ```
+
+When specifying the `twig.extensions` values, always use fully qualified class
+names or actual extension instances to ensure compatibility with any version of
+Twig used. Version 2 of Twig _requires_ that a fully qualified class name is
+used, and not a short-name alias.

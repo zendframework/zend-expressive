@@ -137,6 +137,93 @@ return [
 > `config/autoload/*.local.php` file with the above configuration whenever you
 > want to enable whoops.
 
+## Listening for errors
+
+When errors occur, you may want to _listen_ for them in order to provide
+features such as logging. `Zend\Stratigility\Middleware\ErrorHandler` provides
+the ability to do so via its `attachListener()` method.
+
+This method accepts a callable with the following signature:
+
+```php
+function (
+    Throwable|Exception $error,
+    ServerRequestInterface $request,
+    ResponseInterface $response
+) : void
+```
+
+The response provided is the response returned by your error response generator,
+allowing the listener the ability to introspect the generated response as well.
+
+As an example, you could create a logging listener as follows:
+
+```php
+namespace Acme;
+
+use Exception;
+use Psr\Log\LoggerInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Throwable;
+
+class LoggingErrorListener
+{
+    /**
+     * Log format for messages:
+     *
+     * STATUS [METHOD] path: message
+     */
+    const LOG_FORMAT = '%d [%s] %s: %s';
+
+    private $logger;
+
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    public function __invoke($error, ServerRequestInterface $request, ResponseInterface $response)
+    {
+        $this->logger->error(sprintf(
+            self::LOG_FORMAT,
+            $response->getStatusCode(),
+            $request->getMethod(),
+            (string) $request->getUri(),
+            $error->getMessage()
+        ));
+    }
+}
+```
+
+You could then use a [delegator factory](container/delegator-factories.md) to
+create your logger listener and attach it to your error handler:
+
+```php
+namespace Acme;
+
+use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
+use Zend\Stratigility\Middleware\ErrorHandler;
+
+class LoggerErrorListenerDelegatorFactory
+{
+    /**
+     * @param ContainerInterface $container
+     * @param string $name
+     * @param callable $callback
+     * @return ErrorHandler
+     */
+    public function __invoke(ContainerInterface $container, $name, callable $callback)
+    {
+        $listener = new LoggerErrorListener($container->get(LoggerInterface::class));
+        $errorHandler = $callback();
+        $errorHandler->attachListener($listener);
+        return $errorHandler;
+    }
+}
+```
+
 ## Handling more specific error types
 
 You could also write more specific error handlers. As an example, you might want

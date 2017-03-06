@@ -92,6 +92,10 @@ for doing so:
 In each case, the zend-view implementation will do a depth-first, recursive
 render in order to provide content within the selected layout.
 
+- Since 1.3: You may also pass a boolean `false` value to either
+  `addDefaultParam()` or via the template variables for the `layout` key; doing
+  so will disable the layout.
+
 ### Layout name passed to constructor
 
 ```php

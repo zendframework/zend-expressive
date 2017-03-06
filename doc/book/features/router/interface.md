@@ -76,6 +76,21 @@ Implementors should also read the following sections detailing the `Route` and
 `RouteResult` classes, to ensure that their implementations interoperate
 correctly.
 
+> ### generateUri() signature change in 2.0
+>
+> Prior to zendframework/zend-expressive-router 2.0.0, the signature of
+> `generateUri()` was:
+>
+> ```php
+> public function generateUri(
+>     string $name,
+>     array $substitutions = []
+> ) : string
+> ```
+> 
+> If you are targeting that version, you may still provide the `$options`
+> argument, but it will not be invoked.
+
 ## Routes
 
 Routes are defined via `Zend\Expressive\Router\Route`, and aggregate the

@@ -14,6 +14,10 @@ you should be aware of, and potentially update your application to adopt:
 - [Final handlers become default delegates](#final-handlers-become-default-delegates)
 - [Programmatic middleware pipelines](#programmatic-middleware-pipelines)
 - [Implicit handling of `HEAD` and `OPTIONS` requests](#handling-head-and-options-requests)
+- [RouterInterface changes](#router-interface-changes)
+- [URL helper changes](#url-helper-changes)
+- [zend-view renderer changes](#zend-view-renderer-changes)
+- [Twig renderer changes](#twig-renderer-changes)
 
 ## Signature changes
 
@@ -738,3 +742,70 @@ entries for each will be injected into your generated pipeline.
 
 Please see the [chapter on the implicit methods middleware](../../features/middleware/implicit-methods-middleware.md)
 for more information on each.
+
+## Router interface changes
+
+Expressive 2.0 uses zendframework/zend-expressive-router 2.1+. Version 2.0 of
+that package introduced a change to the `Zend\Expressive\Router\RouterInterface::generateUri()`
+method; it now accepts an additional, optional, third argument, `array $options = []`,
+which can be used to pass router-specific options when generating a URI. As an
+example, the implementation that uses zendframework/zend-router might use these
+options to pass a translator instance in order to translate a path segment to
+the currently selected locale.
+
+For consumers, his represents no backwards-incompatible change; consumers may
+opt-in to the new argument at will. For those implementing the interface,
+upgrading will require updating your router implementation's signature to match
+the new interface:
+
+```php
+public function generateUri(
+    string $name,
+    array $substitutions = [],
+    array $options = []
+) : string
+```
+
+## URL helper changes
+
+Expressive 2.0 uses zendframework/zend-expressive-helpers version 3.0+. This new
+version updates the signature of the `Zend\Expressive\Helper\UrlHelper` from:
+
+```php
+function (
+    $routeName,
+    array $routeParams = []
+) : string
+```
+
+to:
+
+```php
+function (
+    $routeName,
+    array $routeParams = [],
+    $queryParams = [],
+    $fragmentIdentifier = null,
+    array $options = []
+) : string
+```
+
+For consumers, this should represent a widening of features, and will not
+require any changes, unless you wish to opt-in to the new arguments. See the
+[UrlHelper documentation](../../features/helpers/url-helper.md) for information
+on each argument.
+
+For any users who were _extending_ the class, you will need to update your
+extension accordingly.
+
+## zend-view renderer changes
+
+Expressive 2.0 will use zend-expressive-zendviewrenderer 1.3+ if that renderer
+is chosen. Starting with 1.3.0 of that renderer, you may now pass a boolean
+`false` value for the `layout` variable when calling either `addDefaultParam()`
+or `render()` on the renderer instance in order to disable the layout.
+
+## Twig renderer changes
+
+Expressive 2.0 will use zend-expressive-twigrenderer 1.3+ if that renderer
+is chosen. Starting with 1.3.0 of that renderer, Twig 2.1+ is now supported.
