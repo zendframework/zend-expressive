@@ -54,6 +54,7 @@ pages:
         - 'Enabling debug toolbars': cookbook/debug-toolbars.md
         - 'Handling multiple routes in a single class': cookbook/using-routed-middleware-class-as-controller.md
         - 'Flash Messengers': cookbook/flash-messengers.md
+        - 'Passing data between middleware': cookbook/passing-data-between-middleware.md
     - Reference:
         - "Why choose Expressive?": why-expressive.md
         - Examples: reference/usage-examples.md
