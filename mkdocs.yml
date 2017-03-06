@@ -57,6 +57,7 @@ pages:
         - 'Passing data between middleware': cookbook/passing-data-between-middleware.md
     - Reference:
         - "Why choose Expressive?": why-expressive.md
+        - "CLI Tooling": reference/cli-tooling.md
         - Examples: reference/usage-examples.md
         - 'Expressive Projects': reference/expressive-projects.md
         - Migration:

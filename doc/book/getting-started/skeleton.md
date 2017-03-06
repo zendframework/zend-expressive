@@ -275,6 +275,9 @@ This tool provides the following functionality:
   for the module from `composer.json`, and deregister its `ConfigProvider`, if
   found, from the application configuration.
 
+You can find out more about its features in the [command line tooling
+documentation](../reference/cli-tooling.md#modules).
+
 ## Adding Middleware
 
 The skeleton makes the assumption that you will be writing your middleware as
