@@ -793,3 +793,10 @@ on each argument.
 
 For any users who were _extending_ the class, you will need to update your
 extension accordingly.
+
+## zend-view renderer changes
+
+Expressive 2.0 will use zend-expressive-zendviewrenderer 1.3+ if that renderer
+is chosen. Starting with 1.3.0 of that renderer, you may now pass a boolean
+`false` value for the `layout` variable when calling either `addDefaultParam()`
+or `render()` on the renderer instance in order to disable the layout.
