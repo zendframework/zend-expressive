@@ -14,6 +14,10 @@ you should be aware of, and potentially update your application to adopt:
 - [Final handlers become default delegates](#final-handlers-become-default-delegates)
 - [Programmatic middleware pipelines](#programmatic-middleware-pipelines)
 - [Implicit handling of `HEAD` and `OPTIONS` requests](#handling-head-and-options-requests)
+- [RouterInterface changes](#router-interface-changes)
+- [URL helper changes](#url-helper-changes)
+- [zend-view renderer changes](#zend-view-renderer-changes)
+- [Twig renderer changes](#twig-renderer-changes)
 
 ## Signature changes
 
