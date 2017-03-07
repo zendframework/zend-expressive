@@ -110,6 +110,12 @@
                         
                             
 <li >
+    <a href="../../middleware-types/">Middleware Types</a>
+</li>
+
+                        
+                            
+<li >
     <a href="../../application/">Applications</a>
 </li>
 
@@ -128,6 +134,12 @@
             
 <li >
     <a href="../../container/factories/">Container Factories</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../container/delegator-factories/">Delegator Factories</a>
 </li>
 
         
@@ -256,6 +268,27 @@
 
                         
                             
+<li >
+    <a href="../../modular-applications/">Modular Applications</a>
+</li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Middleware</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../middleware/implicit-methods-middleware/">Implicit HEAD and OPTIONS Middleware</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
   <li class="dropdown-submenu">
     <a tabindex="-1" href="">Helpers</a>
     <ul class="dropdown-menu">
@@ -302,6 +335,12 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cookbook <b class="caret"></b></a>
                         <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../../cookbook/autowiring-routes-and-pipelines/">Autowiring routes and pipeline middleware</a>
+</li>
+
                         
                             
 <li >
@@ -375,6 +414,12 @@
 </li>
 
                         
+                            
+<li >
+    <a href="../../../cookbook/passing-data-between-middleware/">Passing data between middleware</a>
+</li>
+
+                        
                         </ul>
                     </li>
                 
@@ -387,6 +432,12 @@
                             
 <li >
     <a href="../../../why-expressive/">Why choose Expressive?</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../reference/cli-tooling/">CLI Tooling</a>
 </li>
 
                         
@@ -416,6 +467,12 @@
             
 <li >
     <a href="../../../reference/migration/to-v1-1/">To Expressive 1.1</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../../reference/migration/to-v2/">To Expressive 2.0</a>
 </li>
 
         
@@ -522,7 +579,13 @@ $url = $helper('resource', ['id' =&gt; 'sha1']);</code></pre>
 
 
 <p>The signature for both is:</p>
-<pre class="codehilite"><code class="language-php">function ($routeName, array $params = []) : string</code></pre>
+<pre class="codehilite"><code class="language-php">function (
+    $routeName,
+    array $routeParams = [],
+    $queryParams = [],
+    $fragmentIdentifier = null,
+    array $options = []
+) : string</code></pre>
 
 
 <p>Where:</p>
@@ -530,7 +593,7 @@ $url = $helper('resource', ['id' =&gt; 'sha1']);</code></pre>
 <li><code>$routeName</code> is the name of a route defined in the composed router. You may
   omit this argument if you want to generate the path for the currently matched
   request.</li>
-<li><code>$params</code> is an array of substitutions to use for the provided route, with the
+<li><code>$rotueParams</code> is an array of substitutions to use for the provided route, with the
   following behavior:</li>
 <li>If a <code>RouteResult</code> is composed in the helper, and the <code>$routeName</code> matches
     it, the provided <code>$params</code> will be merged with any matched parameters, with
@@ -544,6 +607,12 @@ $url = $helper('resource', ['id' =&gt; 'sha1']);</code></pre>
 <li>If no <code>$params</code> are provided, and the <code>$routeName</code> does not match the
     currently matched route, or if no route result is present, then no
     substitutions will be made.</li>
+<li><code>$queryParams</code> is an array of query string arguments to include in the
+  generated URI.</li>
+<li><code>$fragmentIdentifier</code> is a string to use as the URI fragment.</li>
+<li><code>$options</code> is an array of options to provide to the router for purposes of
+  controlling URI generation. As an example, zend-router can consume "translator"
+  and "text_domain" options in order to provide translated URIs.</li>
 </ul>
 <p>Each method will raise an exception if:</p>
 <ul>
@@ -552,11 +621,18 @@ $url = $helper('resource', ['id' =&gt; 'sha1']);</code></pre>
   represents a matching failure.</li>
 <li>The given <code>$routeName</code> is not defined in the router.</li>
 </ul>
+<blockquote>
+<h3 id="signature-changes">Signature changes</h3>
+<p>The signature listed above is current as of version 3.0.0 of
+zendframework/zend-expressive-helpers. Prior to that version, the helper only
+accepted the route name and route parameters.</p>
+</blockquote>
 <h2 id="creating-an-instance">Creating an instance</h2>
 <p>In order to use the helper, you will need to instantiate it with the current
 <code>RouterInterface</code>. The factory <code>Zend\Expressive\Helper\UrlHelperFactory</code> has
 been provided for this purpose, and can be used trivially with most
-dependency injection containers implementing container-interop. Additionally,
+dependency injection containers implementing 
+<a href="https://github.com/php-fig/container">PSR-11 Container</a>. Additionally,
 it is most useful when injected with the current results of routing, which
 requires registering middleware with the application that can inject the route
 result. The following steps should be followed to register and configure the helper:</p>
@@ -619,9 +695,9 @@ $app-&gt;pipeDispatchMiddleware();
 // [
 //     'middleware_pipeline' =&gt; [
 //         /* ... */
-//         Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+//         Zend\Expressive\Application::ROUTING_MIDDLEWARE,
 //         ['middleware' =&gt; UrlHelperMiddleware::class],
-//         Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+//         Zend\Expressive\Application::DISPATCH_MIDDLEWARE,
 //         /* ... */
 //     ],
 // ]
@@ -633,9 +709,9 @@ $app-&gt;pipeDispatchMiddleware();
 //         /* ... */
 //         'routing' =&gt; [
 //             'middleware' =&gt; [
-//                 Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+//                 Zend\Expressive\Application::ROUTING_MIDDLEWARE,
 //                 UrlHelperMiddleware::class
-//                 Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+//                 Zend\Expressive\Application::DISPATCH_MIDDLEWARE,
 //             ],
 //             'priority' =&gt; 1,
 //         ],
@@ -654,9 +730,9 @@ Expressive skeleton:</p>
         ],
     ],
     'middleware_pipeline' =&gt; [
-        Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+        Zend\Expressive\Application::ROUTING_MIDDLEWARE,
         ['middleware' =&gt; UrlHelperMiddleware::class],
-        Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+        Zend\Expressive\Application::DISPATCH_MIDDLEWARE,
     ],
 ];
 
@@ -671,9 +747,9 @@ return [
     'middleware_pipeline' =&gt; [
         'routing' =&gt; [
             'middleware' =&gt; [
-                Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+                Zend\Expressive\Application::ROUTING_MIDDLEWARE,
                 UrlHelperMiddleware::class,
-                Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+                Zend\Expressive\Application::DISPATCH_MIDDLEWARE,
             ],
             'priority' =&gt; 1,
         ],
@@ -722,10 +798,13 @@ present, it will be prepended to the path generated by the router.</p>
 prefix in the URL; this middleware could then inject the <code>UrlHelper</code> with the
 detected language, before stripping it off the request URI instance to pass on
 to the router:</p>
-<pre class="codehilite"><code class="language-php">use Locale;
+<pre class="codehilite"><code class="language-php">use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Locale;
+use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Helper\UrlHelper;
 
-class LocaleMiddleware
+class LocaleMiddleware implements MiddlewareInterface
 {
     private $helper;
 
@@ -734,24 +813,21 @@ class LocaleMiddleware
         $this-&gt;helper = $helper;
     }
 
-    public function __invoke($request, $response, $next)
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $uri = $request-&gt;getUri();
         $path = $uri-&gt;getPath();
         if (! preg_match('#^/(?P&lt;locale&gt;[a-z]{2,3}([-_][a-zA-Z]{2}|))/#', $path, $matches)) {
-            return $next($request, $response);
+            return $delegate-&gt;process($request);
         }
 
         $locale = $matches['locale'];
         Locale::setDefault(Locale::canonicalize($locale));
         $this-&gt;helper-&gt;setBasePath($locale);
 
-        return $next(
-            $request-&gt;withUri(
-                $uri-&gt;withPath(substr($path, (strlen($locale) + 1)))
-            ),
-            $response
-        );
+        return $delegate-&gt;process($request-&gt;withUri(
+            $uri-&gt;withPath(substr($path, (strlen($locale) + 1)))
+        ));
     }
 }</code></pre>
 

@@ -110,6 +110,12 @@
                         
                             
 <li >
+    <a href="../../middleware-types/">Middleware Types</a>
+</li>
+
+                        
+                            
+<li >
     <a href="../../application/">Applications</a>
 </li>
 
@@ -128,6 +134,12 @@
             
 <li >
     <a href="../factories/">Container Factories</a>
+</li>
+
+        
+            
+<li >
+    <a href="../delegator-factories/">Delegator Factories</a>
 </li>
 
         
@@ -256,6 +268,27 @@
 
                         
                             
+<li >
+    <a href="../../modular-applications/">Modular Applications</a>
+</li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Middleware</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../middleware/implicit-methods-middleware/">Implicit HEAD and OPTIONS Middleware</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
   <li class="dropdown-submenu">
     <a tabindex="-1" href="">Helpers</a>
     <ul class="dropdown-menu">
@@ -302,6 +335,12 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cookbook <b class="caret"></b></a>
                         <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../../cookbook/autowiring-routes-and-pipelines/">Autowiring routes and pipeline middleware</a>
+</li>
+
                         
                             
 <li >
@@ -375,6 +414,12 @@
 </li>
 
                         
+                            
+<li >
+    <a href="../../../cookbook/passing-data-between-middleware/">Passing data between middleware</a>
+</li>
+
+                        
                         </ul>
                     </li>
                 
@@ -387,6 +432,12 @@
                             
 <li >
     <a href="../../../why-expressive/">Why choose Expressive?</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../reference/cli-tooling/">CLI Tooling</a>
 </li>
 
                         
@@ -416,6 +467,12 @@
             
 <li >
     <a href="../../../reference/migration/to-v1-1/">To Expressive 1.1</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../../reference/migration/to-v2/">To Expressive 2.0</a>
 </li>
 
         
@@ -513,9 +570,10 @@ features:</p>
 <p>Pimple only supports programmatic creation at this time.</p>
 <h2 id="installing-pimple">Installing Pimple</h2>
 <p>Pimple does not currently (as of v3) implement
-<a href="https://github.com/container-interop/container-interop">container-interop</a>; as
+<a href="https://github.com/php-fig/container">PSR-11 Container</a>; as
 such, you need to install the <code>xtreamwayz/pimple-container-interop</code> project,
-which provides a container-interop wrapper around Pimple v3:</p>
+which provides a <a href="https://github.com/php-fig/container">PSR-11 Container</a>
+wrapper around Pimple v3:</p>
 <pre class="codehilite"><code class="language-bash">$ composer require xtreamwayz/pimple-container-interop</code></pre>
 
 
@@ -542,6 +600,14 @@ $container['Zend\Expressive\Router\RouterInterface'] = function ($container) {
     return new Router\Aura();
 };
 
+// Expressive 2.X: We'll provide a default delegate:
+$delegateFactory = new Container\NotFoundDelegateFactory();
+$container['Zend\Expressive\Delegate\DefaultDelegate'] = $delegateFactory;
+$container['Zend\Expressive\Delegate\NotFoundDelegate'] = $delegateFactory;
+
+// Expressive 2.X: We'll provide a not found handler:
+$container['Zend\Expressive\Middleware\NotFoundHandler'] = new Container\NotFoundHandlerFactory();
+
 // Templating
 // In most cases, you can instantiate the template renderer you want to use
 // without using a factory:
@@ -549,17 +615,30 @@ $container[TemplateRendererInterface::class] = function ($container) {
     return new PlatesRenderer();
 };
 
-// These next two can be added in any environment; they won't be used unless
-// you add the WhoopsErrorHandler as the FinalHandler implementation:
+// These next two can be added in any environment; they won't be used unless:
+// - (Expressive 1.X): you add the WhoopsErrorHandler as the FinalHandler
+//   implementation:
+// - (Expressive 2.X): you add the WhoopsErrorResponseGenerator as the
+//   ErrorResponseGenerator implementation
 $container['Zend\Expressive\Whoops'] = new Container\WhoopsFactory();
 $container['Zend\Expressive\WhoopsPageHandler'] = new Container\WhoopsPageHandlerFactory();
 
 // Error Handling
+
+// - In Expressive 2.X, all environments:
+$container['Zend\Expressive\Middleware\ErrorHandler'] = new Container\ErrorHandlerFactory();
+
 // If in development:
+// - Expressive 1.X:
 $container['Zend\Expressive\FinalHandler'] = new Container\WhoopsErrorHandlerFactory();
+// - Expressive 2.X:
+$container['Zend\Expressive\Middleware\ErrorResponseGenerator'] = new Container\WhoopsErrorResponseGeneratorFactory();
 
 // If in production:
+// - Expressive 1.X:
 $container['Zend\Expressive\FinalHandler'] = new Container\TemplatedErrorHandlerFactory();
+// - Expressive 2.X:
+$container['Zend\Expressive\Middleware\ErrorResponseGenerator'] = new Container\ErrorResponseGeneratorFactory();
 
 return $container;</code></pre>
 
@@ -568,15 +647,23 @@ return $container;</code></pre>
 <pre class="codehilite"><code class="language-php">chdir(dirname(__DIR__));
 $container = require 'config/services.php';
 $app = $container-&gt;get('Zend\Expressive\Application');
+
+// In Expressive 2.X:
+require 'config/pipeline.php';
+require 'config/routes.php';
+
+// All versions:
 $app-&gt;run();</code></pre>
 
 
 <blockquote>
 <h3 id="environments">Environments</h3>
-<p>In the example above, we provide two alternate definitions for the service
-<code>Zend\Expressive\FinalHandler</code>, one for development and one for production.
-You will need to add logic to your file to determine which definition to
-provide; this could be accomplished via an environment variable.</p>
+<p>In the example above, we provide two alternate definitions for
+either the service <code>Zend\Expressive\FinalHandler</code> (Expressive 1.X) or the
+service <code>Zend\Expressive\Middleware\ErrorResponseGenerator</code> (Expressive 2.X),
+one for development and one for production. You will need to add logic to
+your file to determine which definition to provide; this could be accomplished
+via an environment variable.</p>
 </blockquote>
 
 <hr />

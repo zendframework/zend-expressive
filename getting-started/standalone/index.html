@@ -110,6 +110,12 @@
                         
                             
 <li >
+    <a href="../../features/middleware-types/">Middleware Types</a>
+</li>
+
+                        
+                            
+<li >
     <a href="../../features/application/">Applications</a>
 </li>
 
@@ -128,6 +134,12 @@
             
 <li >
     <a href="../../features/container/factories/">Container Factories</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../features/container/delegator-factories/">Delegator Factories</a>
 </li>
 
         
@@ -256,6 +268,27 @@
 
                         
                             
+<li >
+    <a href="../../features/modular-applications/">Modular Applications</a>
+</li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Middleware</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../features/middleware/implicit-methods-middleware/">Implicit HEAD and OPTIONS Middleware</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
   <li class="dropdown-submenu">
     <a tabindex="-1" href="">Helpers</a>
     <ul class="dropdown-menu">
@@ -302,6 +335,12 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cookbook <b class="caret"></b></a>
                         <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../cookbook/autowiring-routes-and-pipelines/">Autowiring routes and pipeline middleware</a>
+</li>
+
                         
                             
 <li >
@@ -375,6 +414,12 @@
 </li>
 
                         
+                            
+<li >
+    <a href="../../cookbook/passing-data-between-middleware/">Passing data between middleware</a>
+</li>
+
+                        
                         </ul>
                     </li>
                 
@@ -387,6 +432,12 @@
                             
 <li >
     <a href="../../why-expressive/">Why choose Expressive?</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../reference/cli-tooling/">CLI Tooling</a>
 </li>
 
                         
@@ -416,6 +467,12 @@
             
 <li >
     <a href="../../reference/migration/to-v1-1/">To Expressive 1.1</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../reference/migration/to-v2/">To Expressive 2.0</a>
 </li>
 
         
@@ -531,7 +588,7 @@ currently choose from Aura.Router and zend-router.</p>
 they allow you to define dependencies for your middleware, as well as to lazy
 load your middleware only when it needs to be executed. We suggest
 zend-servicemanager in the quick start, but you can also use any container
-supporting <a href="https://github.com/container-interop/container-interop">container-interop</a>.</p>
+supporting <a href="https://github.com/php-fig/container">PSR-11 Container</a>.</p>
 </blockquote>
 <h2 id="3-create-a-web-root-directory">3. Create a web root directory</h2>
 <p>You'll need a directory from which to serve your application, and for security
@@ -546,6 +603,8 @@ environment, setup the application, and invoke it. This needs to be in our web
 root, and we want it to intercept any incoming request; as such, we'll use
 <code>public/index.php</code>:</p>
 <pre class="codehilite"><code class="language-php">&lt;?php
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Zend\Diactoros\Response\TextResponse;
 use Zend\Expressive\AppFactory;
 
 chdir(dirname(__DIR__));
@@ -553,9 +612,8 @@ require 'vendor/autoload.php';
 
 $app = AppFactory::create();
 
-$app-&gt;get('/', function ($request, $response, $next) {
-    $response-&gt;getBody()-&gt;write('Hello, world!');
-    return $response;
+$app-&gt;get('/', function ($request, DelegateInterface $delegate) {
+    return new TextResponse('Hello, world!');
 });
 
 $app-&gt;pipeRoutingMiddleware();
@@ -603,6 +661,22 @@ http://localhost:8080/ to see if your application responds correctly!</p>
 <pre class="codehilite"><code class="language-bash">$ composer serve</code></pre>
 
 
+<h3 id="setting-a-timeout">Setting a timeout</h3>
+<p>Composer commands time out after 300 seconds (5 minutes). On Linux-based
+systems, the <code>php -S</code> command that <code>composer serve</code> spawns continues running
+as a background process, but on other systems halts when the timeout occurs.</p>
+<p>If you want the server to live longer, you can set the composer
+<code>process-timeout</code> configuration, which can be specified either local to your
+project, or globally. As examples, each of the following set the timeout to 8
+hours:</p>
+<pre class="codehilite"><code class="language-bash"># Local to your project:
+$ composer config process-timeout 28800
+# Globally (all projects):
+$ composer config -g process-timeout 28800</code></pre>
+
+
+<p>NOTE: This setting affects <em>all</em> composer commands, including install, update,
+and require operations, so be careful about resetting it, particularly globally.</p>
 </blockquote>
 <h2 id="next-steps">Next steps</h2>
 <p>At this point, you have a working zend-expressive application, that responds to

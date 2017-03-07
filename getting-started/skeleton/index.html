@@ -110,6 +110,12 @@
                         
                             
 <li >
+    <a href="../../features/middleware-types/">Middleware Types</a>
+</li>
+
+                        
+                            
+<li >
     <a href="../../features/application/">Applications</a>
 </li>
 
@@ -128,6 +134,12 @@
             
 <li >
     <a href="../../features/container/factories/">Container Factories</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../features/container/delegator-factories/">Delegator Factories</a>
 </li>
 
         
@@ -256,6 +268,27 @@
 
                         
                             
+<li >
+    <a href="../../features/modular-applications/">Modular Applications</a>
+</li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Middleware</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../features/middleware/implicit-methods-middleware/">Implicit HEAD and OPTIONS Middleware</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
   <li class="dropdown-submenu">
     <a tabindex="-1" href="">Helpers</a>
     <ul class="dropdown-menu">
@@ -302,6 +335,12 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cookbook <b class="caret"></b></a>
                         <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../cookbook/autowiring-routes-and-pipelines/">Autowiring routes and pipeline middleware</a>
+</li>
+
                         
                             
 <li >
@@ -375,6 +414,12 @@
 </li>
 
                         
+                            
+<li >
+    <a href="../../cookbook/passing-data-between-middleware/">Passing data between middleware</a>
+</li>
+
+                        
                         </ul>
                     </li>
                 
@@ -387,6 +432,12 @@
                             
 <li >
     <a href="../../why-expressive/">Why choose Expressive?</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../reference/cli-tooling/">CLI Tooling</a>
 </li>
 
                         
@@ -416,6 +467,12 @@
             
 <li >
     <a href="../../reference/migration/to-v1-1/">To Expressive 1.1</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../reference/migration/to-v2/">To Expressive 2.0</a>
 </li>
 
         
@@ -465,9 +522,17 @@
     
         <li class="main active"><a href="#quick-start-using-the-skeleton-installer">Quick Start: Using the Skeleton + Installer</a></li>
         
-            <li><a href="#1-create-a-new-project">1. Create a new project</a></li>
+            <li><a href="#create-a-new-project">Create a new project</a></li>
         
-            <li><a href="#2-start-a-web-server">2. Start a web server</a></li>
+            <li><a href="#-a-router-we-recommend-using-the-default-fastroute">- A router. We recommend using the default, FastRoute.</a></li>
+        
+            <li><a href="#start-a-web-server">Start a web server</a></li>
+        
+            <li><a href="#development-tools">Development Tools</a></li>
+        
+            <li><a href="#modules">Modules</a></li>
+        
+            <li><a href="#adding-middleware">Adding Middleware</a></li>
         
             <li><a href="#next-steps">Next Steps</a></li>
         
@@ -482,7 +547,7 @@
         <a rel="prev" href="../standalone/"><i class="fa fa-arrow-left"></i> Previous</a>
       </li>
       <li class="next">
-        <a rel="next" href="../../features/application/">Next <i class="fa fa-arrow-right"></i></a>
+        <a rel="next" href="../../features/middleware-types/">Next <i class="fa fa-arrow-right"></i></a>
       </li>
     </ul>
     
@@ -507,23 +572,37 @@ application and installer</a>.
 The skeleton provides a generic structure for creating your applications, and
 prompts you to choose a router, dependency injection container, template
 renderer, and error handler from the outset.</p>
-<h2 id="1-create-a-new-project">1. Create a new project</h2>
+<h2 id="create-a-new-project">Create a new project</h2>
 <p>First, we'll create a new project, using Composer's <code>create-project</code> command:</p>
 <pre class="codehilite"><code class="language-bash">$ composer create-project zendframework/zend-expressive-skeleton expressive</code></pre>
 
 
 <p>This will prompt you to choose:</p>
 <ul>
-<li>A router. We recommend using the default, FastRoute.</li>
-<li>A dependency injection container. We recommend using the default, Zend
-  ServiceManager.</li>
-<li>A template renderer. You can ignore this when creating an API project, but if
-  you will be creating any HTML pages, we recommend installing one. We prefer
-  Plates.</li>
-<li>An error handler. Whoops is a very nice option for development, as it gives
-  you extensive, browseable information for exceptions and errors raised.</li>
+<li>
+<p>Whether to install a minimal skeleton (no default middleware), a flat
+  application structure (all code under <code>src/</code>), or a modular structure
+  (directories under <code>src/</code> are modules, each with source code and potentially
+  templates, configuration, assets, etc.).</p>
+</li>
+<li>
+<p>A dependency injection container. We recommend using the default, Zend
+  ServiceManager.</p>
+</li>
 </ul>
-<h2 id="2-start-a-web-server">2. Start a web server</h2>
+<h2 id="-a-router-we-recommend-using-the-default-fastroute">- A router. We recommend using the default, FastRoute.</h2>
+<ul>
+<li>
+<p>A template renderer. You can ignore this when creating an API project, but if
+  you will be creating any HTML pages, we recommend installing one. We prefer
+  Plates.</p>
+</li>
+<li>
+<p>An error handler. Whoops is a very nice option for development, as it gives
+  you extensive, browseable information for exceptions and errors raised.</p>
+</li>
+</ul>
+<h2 id="start-a-web-server">Start a web server</h2>
 <p>The Skeleton + Installer creates a full application structure that's ready-to-go
 when complete. You can test it out using <a href="http://php.net/manual/en/features.commandline.webserver.php">built-in web
 server</a>.</p>
@@ -533,38 +612,391 @@ server</a>.</p>
 
 <p>This starts up a web server on localhost port 8080; browse to
 http://localhost:8080/ to see if your application responds correctly!</p>
-<h2 id="next-steps">Next Steps</h2>
+<blockquote>
+<h3 id="setting-a-timeout">Setting a timeout</h3>
+<p>Composer commands time out after 300 seconds (5 minutes). On Linux-based
+systems, the <code>php -S</code> command that <code>composer serve</code> spawns continues running
+as a background process, but on other systems halts when the timeout occurs.</p>
+<p>If you want the server to live longer, you can set the composer
+<code>process-timeout</code> configuration, which can be specified either local to your
+project, or globally. As examples, each of the following set the timeout to 8
+hours:</p>
+<pre class="codehilite"><code class="language-bash"># Local to your project:
+$ composer config process-timeout 28800
+# Globally (all projects):
+$ composer config -g process-timeout 28800</code></pre>
+
+
+<p>NOTE: This setting affects <em>all</em> composer commands, including install, update,
+and require operations, so be careful about resetting it, particularly globally.</p>
+</blockquote>
+<h2 id="development-tools">Development Tools</h2>
+<p>Starting in version 2 of the skeleton, we ship tools to make development easier.</p>
+<h3 id="development-mode">Development Mode</h3>
+<p><a href="https://github.com/zfcampus/zf-development-mode">zf-development-mode</a> allows 
+you to enable and disable development mode from your cli.</p>
+<pre class="codehilite"><code class="language-bash">$ composer development-enable  # enable development mode
+$ composer development-disable # disable development mode
+$ composer development-status  # show development status</code></pre>
+
+
+<p>The development configuration is set in <code>config/autoload/development.local.php.dist</code>.
+It also allows you to specify configuration and modules that should only be enabled 
+when in development, and not when in production.</p>
+<h3 id="clear-config-cache">Clear config cache</h3>
+<p>Production settings are the default, which means enabling the configuration cache. 
+However, it must be easy for developers to clear the configuration cache. That's
+what this command does.</p>
+<pre class="codehilite"><code class="language-bash">$ composer clear-config-cache</code></pre>
+
+
+<h3 id="testing-your-code">Testing Your Code</h3>
+<p><a href="https://github.com/sebastianbergmann/phpunit">PHPUnit</a> and 
+<a href="https://github.com/squizlabs/PHP_CodeSniffer">PHP_CodeSniffer</a> are now
+installed by default. To execute tests and detect coding standards violations,
+run the following command: </p>
+<pre class="codehilite"><code class="language-bash">$ composer check</code></pre>
+
+
+<h3 id="security-advisories">Security Advisories</h3>
+<p>We have included the <a href="https://github.com/Roave/SecurityAdvisories">security-advisories</a>
+package to notify you about installed dependencies with known security
+vulnerabilities. Each time you run <code>composer update</code>, <code>composer install</code>, or
+<code>composer require</code>, it prevents installation of software with known and
+documented security issues.</p>
+<h2 id="modules">Modules</h2>
+<p>Composer will prompt you during installation to ask if you want a
+minimal application (no structure or default middleware provided), flat
+application (all source code under the same tree, and the default selection), or
+modular application. This latter option is new in the version 2 series, and
+allows you to segregate discrete areas of application functionality into
+<em>modules</em>, which can contain source code, templates, assets, and more; these can
+later be repackaged for re-use if desired.</p>
+<p>Support for modules is available via the
+<a href="https://github.com/zendframework/zend-component-installer">zend-component-installer</a>
+and <a href="https://github.com/zendframework/zend-config-aggregator">zend-config-aggregator</a>
+packages; the <a href="https://github.com/zendframework/zend-expressive-tooling">zend-expressive-tooling</a>.
+package provides tools for creating and manipulating modules in your
+application.</p>
+<h3 id="component-installer">Component Installer</h3>
+<p>Whenever you add a component or module that exposes itself as such, the 
+<a href="https://zendframework.github.io/zend-component-installer/">zend-component-installer</a> 
+composer plugin will prompt you, asking if and where you want to inject its
+configuration. This ensures that components are wired automatically for you.</p>
+<p>In most cases, you will choose to inject in the <code>config/config.php</code> file; for
+tools intended only for usage during development, choose
+<code>config/development.config.php.dist</code>.</p>
+<h3 id="config-aggregator">Config Aggregator</h3>
+<p>The <a href="https://github.com/zendframework/zend-config-aggregator">zend-config-aggregator</a>
+library collects and merges configuration from different sources. It also supports 
+configuration caching.</p>
+<p>As an example, your <code>config/config.php</code> file might read as follows in order to
+aggregate configuration from development mode settings, application
+configuration, and theoretical <code>User</code>, <code>Blog</code>, and <code>App</code> modules:</p>
+<pre class="codehilite"><code class="language-php">&lt;?php // config/config.php
+
+$aggregator = new ConfigAggregator([
+    // Module configuration
+    App\ConfigProvider::class,
+    BlogModule\ConfigProvider::class,
+    UserModule\ConfigProvider::class,
+
+    // Load application config in a pre-defined order in such a way that local settings
+    // overwrite global settings. (Loaded as first to last):
+    //   - `global.php`
+    //   - `*.global.php`
+    //   - `local.php`
+    //   - `*.local.php`
+    new PhpFileProvider('config/autoload/{{,*.}global,{,*.}local}.php'),
+
+    // Load development config if it exists
+    new PhpFileProvider('config/development.config.php'),
+], 'data/config-cache.php');
+
+return $aggregator-&gt;getMergedConfig();</code></pre>
+
+
+<p>The configuration is merged in the same order as it is passed, with later entries 
+having precedence.</p>
+<h3 id="config-providers">Config Providers</h3>
+<p><code>ConfigAggregator</code> works by aggregating "Config Providers" passed to its
+constructor. Each provider should be a callable class that requires no
+constructor parameters, where invocation returns a configuration array (or a PHP
+generator) to be merged.</p>
+<p>Libraries or modules can have configuration providers that provide default values 
+for a library or module. For the <code>UserModule\ConfigProvider</code> class loaded in the
+<code>ConfigAggregator</code> above, the <code>ConfigProvider</code> might look like this:</p>
+<pre class="codehilite"><code class="language-php">&lt;?php
+
+namespace UserModule;
+
+class ConfigProvider
+{
+    /**
+     * Returns the configuration array
+     *
+     * To add some sort of a structure, each section is defined in a separate
+     * method which returns an array with its configuration.
+     *
+     * @return array
+     */
+    public function __invoke()
+    {
+        return [
+            'dependencies' =&gt; $this-&gt;getDependencies(),
+            'users'        =&gt; $this-&gt;getConfig(),
+        ];
+    }
+
+    /**
+     * Returns the container dependencies
+     *
+     * @return array
+     */
+    public function getDependencies()
+    {
+        return [
+            'factories'  =&gt; [
+                Action\LoginAction::class =&gt;
+                    Factory\Action\LoginActionFactory::class,
+
+                Middleware\AuthenticationMiddleware::class =&gt;
+                    Factory\Middleware\AuthenticationMiddlewareFactory::class,
+            ],
+        ];
+    }
+
+    /**
+     * Returns the default module configuration
+     *
+     * @return array
+     */
+    public function getConfig()
+    {
+        return [
+            'paths' =&gt; [
+                'enable_registration' =&gt; true,
+                'enable_username'     =&gt; false,
+                'enable_display_name' =&gt; true,
+            ],
+        ];
+    }
+}</code></pre>
+
+
+<h3 id="expressive-module-command">expressive-module command</h3>
+<p>To aid in the creation, registration, and deregistration of modules in your
+application, the installer will add the <a href="https://github.com/zendframework/zend-expressive-tooling">zendframework/zend-expressive-tooling</a>
+as a development requirement when you choose the modular application layout.</p>
+<p>The tool is available from your application root directory via
+<code>./vendor/bin/expressive-module</code>. For brevity, we will only reference the tool's
+name, <code>expressive-module</code>, when describing its capabilities.</p>
+<p>This tool provides the following functionality:</p>
+<ul>
+<li><code>expressive-module create &lt;modulename&gt;</code> will create the default directory
+  structure for the named module, create a <code>ConfigProvider</code> for the module, add
+  an autoloading rule to <code>composer.json</code>, and register the <code>ConfigProvider</code> with
+  the application configuration.</li>
+<li><code>expressive-module register &lt;modulename&gt;</code> will add an autoloading rule to
+  <code>composer.json</code> for the module, and register its <code>ConfigProvider</code>, if found,
+  with the application configuration.</li>
+<li><code>expressive-module deregister &lt;modulename&gt;</code> will remove any autoloading rules
+  for the module from <code>composer.json</code>, and deregister its <code>ConfigProvider</code>, if
+  found, from the application configuration.</li>
+</ul>
+<p>You can find out more about its features in the <a href="../../reference/cli-tooling/#modules">command line tooling
+documentation</a>.</p>
+<h2 id="adding-middleware">Adding Middleware</h2>
 <p>The skeleton makes the assumption that you will be writing your middleware as
-classes, and using configuration to map routes to middleware. It also provides a
-default structure for templates, if you choose to use them. Let's see how you
-can create first vanilla middleware, and then templated middleware.</p>
+classes, and uses <a href="../../features/router/piping/">piping and routing</a> to add 
+your middleware.</p>
+<h3 id="piping">Piping</h3>
+<p><a href="../../features/router/piping/#piping">Piping</a> is a foundation feature of the 
+underlying <a href="https://docs.zendframework.com/zend-stratigility/">zend-stratigility</a>
+implementation. You can setup the middleware pipeline in <code>config/pipeline.php</code>.
+In this section, we'll demonstrate setting up a basic pipeline that includes
+error handling, segregated applications, routing, middleware dispatch, and more.</p>
+<p>The error handler should be the first (most outer) middleware to catch all 
+exceptions.</p>
+<pre class="codehilite"><code class="language-php">$app-&gt;pipe(ErrorHandler::class);
+$app-&gt;pipe(ServerUrlMiddleware::class);  </code></pre>
+
+
+<p>After the <code>ErrorHandler</code> you can pipe more middleware that you want to execute 
+on every request, such as bootstrapping, pre-conditions, and modifications to 
+outgoing responses:</p>
+<pre class="codehilite"><code class="language-php">$app-&gt;pipe(ServerUrlMiddleware::class);  </code></pre>
+
+
+<p>Piped middleware may be either callables or service names. Middleware may also 
+be passed as an array; each item in the array must resolve to middleware 
+eventually (i.e., callable or service name); underneath, Expressive creates
+<code>Zend\Stratigility\MiddlewarePipe</code> instances with each of the middleware listed
+piped to it.</p>
+<p>Middleware can be attached to specific paths, allowing you to mix and match
+applications under a common domain. The handlers in each middleware attached 
+this way will see a URI with the <strong>MATCHED PATH SEGMENT REMOVED!!!</strong></p>
+<pre class="codehilite"><code class="language-php">$app-&gt;pipe('/api', $apiMiddleware);
+$app-&gt;pipe('/docs', $apiDocMiddleware);
+$app-&gt;pipe('/files', $filesMiddleware);    </code></pre>
+
+
+<p>Next, you should register the routing middleware in the middleware pipeline:</p>
+<pre class="codehilite"><code class="language-php">$app-&gt;pipeRoutingMiddleware();</code></pre>
+
+
+<p>Add more middleware that needs to introspect the routing results; this might 
+include:</p>
+<ul>
+<li>handling for HTTP <code>HEAD</code> requests</li>
+<li>handling for HTTP <code>OPTIONS</code> requests</li>
+<li>middleware for handling URI generation</li>
+<li>route-based authentication</li>
+<li>route-based validation</li>
+<li>etc.</li>
+</ul>
+<pre class="codehilite"><code class="language-php">$app-&gt;pipe(ImplicitHeadMiddleware::class);
+$app-&gt;pipe(ImplicitOptionsMiddleware::class);
+$app-&gt;pipe(UrlHelperMiddleware::class);</code></pre>
+
+
+<p>Next, register the dispatch middleware in the middleware pipeline:</p>
+<pre class="codehilite"><code class="language-php">$app-&gt;pipeDispatchMiddleware();</code></pre>
+
+
+<p>At this point, if no response is return by any middleware, we need to provide a
+way of notifying the user of this; by default, we use the <code>NotFoundHandler</code>, but
+you can provide any other fallback middleware you wish:</p>
+<pre class="codehilite"><code class="language-php">$app-&gt;pipe(NotFoundHandler::class);</code></pre>
+
+
+<p>The full example then looks something like this:</p>
+<pre class="codehilite"><code class="language-php">// In config/pipeline.php:
+
+use Zend\Expressive\Helper\ServerUrlMiddleware;
+use Zend\Expressive\Helper\UrlHelperMiddleware;
+use Zend\Expressive\Middleware\ImplicitHeadMiddleware;
+use Zend\Expressive\Middleware\ImplicitOptionsMiddleware;
+use Zend\Expressive\Middleware\NotFoundHandler;
+use Zend\Stratigility\Middleware\ErrorHandler;
+
+$app-&gt;pipe(ErrorHandler::class);
+$app-&gt;pipe(ServerUrlMiddleware::class);
+
+// These assume that the variables listed are defined in this scope:
+$app-&gt;pipe('/api', $apiMiddleware);
+$app-&gt;pipe('/docs', $apiDocMiddleware);
+$app-&gt;pipe('/files', $filesMiddleware);
+
+$app-&gt;pipeRoutingMiddleware();
+$app-&gt;pipe(ImplicitHeadMiddleware::class);
+$app-&gt;pipe(ImplicitOptionsMiddleware::class);
+$app-&gt;pipe(UrlHelperMiddleware::class);
+$app-&gt;pipeDispatchMiddleware();
+
+$app-&gt;pipe(NotFoundHandler::class);</code></pre>
+
+
+<h3 id="routing">Routing</h3>
+<p><a href="../../features/router/piping/#routing">Routing</a> is an additional feature
+provided by Expressive. Routing is setup in <code>config/routes.php</code>.</p>
+<p>You can setup routes with a single request method:</p>
+<pre class="codehilite"><code class="language-php">$app-&gt;get('/', App\Action\HomePageAction::class, 'home');
+$app-&gt;post('/album', App\Action\AlbumCreateAction::class, 'album.create');
+$app-&gt;put('/album/:id', App\Action\AlbumUpdateAction::class, 'album.put');
+$app-&gt;patch('/album/:id', App\Action\AlbumUpdateAction::class, 'album.patch');
+$app-&gt;delete('/album/:id', App\Action\AlbumDeleteAction::class, 'album.delete');</code></pre>
+
+
+<p>Or with multiple request methods:</p>
+<pre class="codehilite"><code class="language-php">$app-&gt;route('/contact', App\Action\ContactAction::class, ['GET', 'POST', ...], 'contact');</code></pre>
+
+
+<p>Or handling all request methods:</p>
+<pre class="codehilite"><code class="language-php">$app-&gt;route('/contact', App\Action\ContactAction::class)-&gt;setName('contact');</code></pre>
+
+
+<p>Alternately, to be explicit, the above could be written as:</p>
+<pre class="codehilite"><code class="language-php">$app-&gt;route(
+  '/contact',
+  App\Action\ContactAction::class,
+  Zend\Expressive\Router\Route::HTTP_METHOD_ANY,
+  'contact'
+);  </code></pre>
+
+
+<p>We recommend a single middleware class per combination of route and request
+method.</p>
+<h2 id="next-steps">Next Steps</h2>
+<p>The skeleton provides a default structure for templates, if you choose to use them. 
+Let's see how you can create your first vanilla middleware, and templated middleware.</p>
 <h3 id="creating-middleware">Creating middleware</h3>
-<p>The easiest way to create middleware is to create a class that defines an
-<code>__invoke()</code> method accepting a request, response, and callable "next" argument
-(for invoking the "next" middleware in the queue). The skeleton defines an <code>App</code>
-namespace for you, and suggests placing middleware under the namespace
-<code>App\Action</code>.</p>
+<p>To create middleware, create a class implementing
+<code>Interop\Http\ServerMiddleware\MiddlewareInterface</code>. This interface defines a
+single method, <code>process()</code>, which accepts a
+<code>Psr\Http\Message\ServerRequestInterface</code> instance and an
+<code>Interop\Http\ServerMiddleware\DelegateInterface</code> instance.</p>
+<blockquote>
+<h3 id="legacy-double-pass-middleware">Legacy double-pass middleware</h3>
+<p>Prior to Expressive 2.0, the default middleware style was what is termed
+"double-pass", for the fact that it passes both the request and response between
+layers. This middleware did not require an interface, and relied on a
+conventional definition of:</p>
+<pre class="codehilite"><code class="language-php">use Psr\Http\Message;
+
+function (
+  Message\ServerRequestInterface $request,
+  Message\ResponseInterface $response,
+  callable $next
+) : Message\ResponseInterface</code></pre>
+
+
+<p>While this style of middleware is still quite wide-spread and used in a number
+of projects, it has some flaws. Chief among them is the fact that middleware
+should not rely on the <code>$response</code> instance provided to them (as it may have
+modifications unacceptable for the current context), and that a response
+returned from inner layers may not be based off the <code>$response</code> provided to them
+(as inner layers may create and return a completely different response).</p>
+<p>Starting in Expressive 2.0, we add support for
+<a href="https://github.com/http-interop/http-middleware">http-interop/http-middleware</a>,
+which is a working group of <a href="http://www.php-fig.org/">PHP-FIG</a> dedicated to
+creating a common middleware standard. This middleware uses what is termed
+a "single-pass" or "lambda" architecture, whereby only the request instance is
+passed between layers. We now recommend writing middleware using the
+http-middleware interfaces for all new middleware.</p>
+<p>Middleware using the double-pass style is still accepted by Expressive, but
+support for it will be discontinued once http-middleware is formally approved
+by PHP-FIG.</p>
+</blockquote>
+<p>The skeleton defines an <code>App</code> namespace for you, and suggests placing middleware
+under the namespace <code>App\Action</code>.</p>
 <p>Let's create a "Hello" action. Place the following in
 <code>src/App/Action/HelloAction.php</code>:</p>
 <pre class="codehilite"><code class="language-php">&lt;?php
 namespace App\Action;
 
-use Psr\Http\Message\ResponseInterface;
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Response\HtmlResponse;
 
-class HelloAction
+class HelloAction implements MiddlewareInterface
 {
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
+        // On all PHP versions:
         $query  = $request-&gt;getQueryParams();
         $target = isset($query['target']) ? $query['target'] : 'World';
+
+        // Or, on PHP 7+:
+        $target = $request-&gt;getQueryParams()['target'] ?? 'World';
+
         $target = htmlspecialchars($target, ENT_HTML5, 'UTF-8');
 
-        $response-&gt;getBody()-&gt;write(sprintf(
+        return new HtmlResponse(sprintf(
             '&lt;h1&gt;Hello, %s!&lt;/h1&gt;',
             $target
         ));
-        return $response-&gt;withHeader('Content-Type', 'text/html');
     }
 }</code></pre>
 
@@ -572,34 +1004,26 @@ class HelloAction
 <p>The above looks for a query string parameter "target", and uses its value to
 provide a message, which is then returned in an HTML response.</p>
 <p>Now we need to inform the application of this middleware, and indicate what
-path will invoke it. Open the file <code>config/autoload/routes.global.php</code>. Inside
-that file, you should have a structure similar to the following:</p>
+path will invoke it. Open the file <code>config/autoload/dependencies.global.php</code>.
+Edit that file to add an <em>invokable</em> entry for the new middleware:</p>
 <pre class="codehilite"><code class="language-php">return [
     'dependencies' =&gt; [
         /* ... */
-    ],
-    'routes' =&gt; [
-        /* ... */
-    ],
-];</code></pre>
-
-
-<p>We're going to add an entry under <code>routes</code>:</p>
-<pre class="codehilite"><code class="language-php">return [
-    /* ... */
-    'routes' =&gt; [
-        /* ... */
-        [
-            'name' =&gt; 'hello',
-            'path' =&gt; '/hello',
-            'middleware' =&gt; App\Action\HelloAction::class,
-            'allowed_methods' =&gt; ['GET'],
+        'invokables' =&gt; [
+            App\Action\HelloAction::class =&gt; App\Action\HelloAction::class,
+            /* ... */
         ],
+        /* ... */
     ],
 ];</code></pre>
 
 
-<p>Once you've added the above entry, give it a try by going to each of the
+<p>Now open the file <code>config/routes.php</code>, and add the following at the bottom of
+the file:</p>
+<pre class="codehilite"><code class="language-php">$app-&gt;get('/hello', App\Action\HelloAction::class, 'hello');</code></pre>
+
+
+<p>Once you've completed the above, give it a try by going to each of the
 following URIs:</p>
 <ul>
 <li>http://localhost:8080/hello</li>
@@ -628,12 +1052,13 @@ following contents:</p>
 <pre class="codehilite"><code class="language-php">&lt;?php
 namespace App\Action;
 
-use Psr\Http\Message\ResponseInterface;
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
-class HelloAction
+class HelloAction implements MiddlewareInterface
 {
     private $renderer;
 
@@ -642,10 +1067,14 @@ class HelloAction
         $this-&gt;renderer = $renderer;
     }
 
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
+        // On all PHP versions:
         $query  = $request-&gt;getQueryParams();
         $target = isset($query['target']) ? $query['target'] : 'World';
+
+        // Or, on PHP 7+:
+        $target = $request-&gt;getQueryParams()['target'] ?? 'World';
 
         return new HtmlResponse(
             $this-&gt;renderer-&gt;render('app::hello-world', ['target' =&gt; $target])
@@ -655,64 +1084,33 @@ class HelloAction
 
 
 <p>The above modifies the class to accept a renderer to the constructor, and then
-calls on it to render a template. A few things to note:</p>
-<ul>
-<li>We no longer need to escape our target; the template takes care of that for us.</li>
-<li>We're using a specific response type here, from
-  <a href="https://github.com/zendframework/zend-diactoros">Diactoros</a>, which is the
-  default PSR-7 implementation Expressive uses. This response type simplifies
-  our response creation.</li>
-</ul>
-<p>How does the template renderer get into the action, however? The answer is
-dependency injection.</p>
+calls on it to render a template. Note that we no longer need to escape our
+target; the template takes care of that for us.</p>
+<p>How does the template renderer get into the action? The answer is dependency 
+injection.</p>
 <p>For the next part of the example, we'll be creating and wiring a factory for
 creating the <code>HelloAction</code> instance; the example assumes you used the default
-selection for a dependency injection container, Zend ServiceManager.</p>
-<p>Let's create a factory. Create the file <code>src/App/Action/HelloActionFactory.php</code> with
-the following contents:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
-namespace App\Action;
-
-use Interop\Container\ContainerInterface;
-use Zend\Expressive\Template\TemplateRendererInterface;
-
-class HelloActionFactory
-{
-    public function __invoke(ContainerInterface $container)
-    {
-        return new HelloAction(
-            $container-&gt;get(TemplateRendererInterface::class)
-        );
-    }
-}</code></pre>
+selection for a dependency injection container, zend-servicemanager.</p>
+<p>zend-servicemanager provides a tool for generating factories based on
+reflecting a class; we'll use that to generate our factory:</p>
+<pre class="codehilite"><code class="language-bash">$ ./vendor/bin/generate-factory-for-class &quot;App\\Action\\HelloAction&quot; &gt; src/App/Action/HelloActionFactory.php</code></pre>
 
 
 <p>With that in place, we'll now update our configuration. Open the file
-<code>config/autoload/routes.global.php</code>; it should have a structure similar to
-the following:</p>
+<code>config/autoload/dependencies.global.php</code>; we'll remove the <code>invokables</code> entry
+we created previously, and add a <code>factories</code> entry:</p>
 <pre class="codehilite"><code class="language-php">return [
     'dependencies' =&gt; [
+        /* ... */
         'invokables' =&gt; [
-            /* ... */
+            // Remove this entry:
+            App\Action\HelloAction::class =&gt; App\Action\HelloAction::class,
         ],
-    ],
-    'routes' =&gt; [
-        /* ... */
-    ],
-];</code></pre>
-
-
-<p>We're going to tell our application that we have a <em>factory</em> for our
-<code>HelloAction</code> class:</p>
-<pre class="codehilite"><code class="language-php">return [
-    'dependencies' =&gt; [
-        /* ... */
         'factories' =&gt; [
             /* ... */
+            // Add this:
             App\Action\HelloAction::class =&gt; App\Action\HelloActionFactory::class,
         ],
-    ],
-    'routes' =&gt; [
         /* ... */
     ],
 ];</code></pre>
@@ -745,7 +1143,7 @@ Expressive:</p>
       <a rel="prev" href="../standalone/"><i class="fa fa-arrow-left"></i> Previous</a>
     </li>
     <li class="next">
-      <a rel="next" href="../../features/application/">Next <i class="fa fa-arrow-right"></i></a>
+      <a rel="next" href="../../features/middleware-types/">Next <i class="fa fa-arrow-right"></i></a>
     </li>
   </ul>
 </nav>

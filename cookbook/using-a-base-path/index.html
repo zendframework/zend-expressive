@@ -110,6 +110,12 @@
                         
                             
 <li >
+    <a href="../../features/middleware-types/">Middleware Types</a>
+</li>
+
+                        
+                            
+<li >
     <a href="../../features/application/">Applications</a>
 </li>
 
@@ -128,6 +134,12 @@
             
 <li >
     <a href="../../features/container/factories/">Container Factories</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../features/container/delegator-factories/">Delegator Factories</a>
 </li>
 
         
@@ -256,6 +268,27 @@
 
                         
                             
+<li >
+    <a href="../../features/modular-applications/">Modular Applications</a>
+</li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Middleware</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../features/middleware/implicit-methods-middleware/">Implicit HEAD and OPTIONS Middleware</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
   <li class="dropdown-submenu">
     <a tabindex="-1" href="">Helpers</a>
     <ul class="dropdown-menu">
@@ -302,6 +335,12 @@
                     <li class="dropdown active">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cookbook <b class="caret"></b></a>
                         <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../autowiring-routes-and-pipelines/">Autowiring routes and pipeline middleware</a>
+</li>
+
                         
                             
 <li >
@@ -375,6 +414,12 @@
 </li>
 
                         
+                            
+<li >
+    <a href="../passing-data-between-middleware/">Passing data between middleware</a>
+</li>
+
+                        
                         </ul>
                     </li>
                 
@@ -387,6 +432,12 @@
                             
 <li >
     <a href="../../why-expressive/">Why choose Expressive?</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../reference/cli-tooling/">CLI Tooling</a>
 </li>
 
                         
@@ -416,6 +467,12 @@
             
 <li >
     <a href="../../reference/migration/to-v1-1/">To Expressive 1.1</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../reference/migration/to-v2/">To Expressive 2.0</a>
 </li>
 
         
@@ -570,7 +627,7 @@ configuration.</p>
 
 
 <p>To configure it, update the file <code>config/autoload/middleware-pipeline.global.php</code>,
-with the following contents:</p>
+or <code>config/autoload/dependencies.global.php</code> to map the middleware to its factory:</p>
 <pre class="codehilite"><code class="language-php">return [
     'dependencies' =&gt; [
         'factories' =&gt; [
@@ -579,20 +636,19 @@ with the following contents:</p>
         ],
         /* ... */
     ],
-    'middleware_pipeline' =&gt; [
-        [ 'middleware' =&gt; [ Blast\BaseUrl\BaseUrlMiddleware::class ], 'priority' =&gt; 1000 ],
-        /* ... */
-        'routing' =&gt; [
-            'middleware' =&gt; [
-                Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
-                Zend\Expressive\Helper\UrlHelperMiddleware::class,
-                Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
-            ],
-            'priority' =&gt; 1,
-        ],
-        /* ... */
-    ],
 ];</code></pre>
+
+
+<p>If using programmatic pipelines, pipe the middleware early in your pipeline:</p>
+<pre class="codehilite"><code class="language-php">$app-&gt;pipe(\Blast\BaseUrl\BaseUrlMiddleware::class);</code></pre>
+
+
+<p>For configuration-driven pipelines, add an entry in your
+<code>config/autoload/middleware-pipeline.global.php</code> file:</p>
+<pre class="codehilite"><code class="language-php">'middleware_pipeline' =&gt; [
+    ['middleware' =&gt; [Blast\BaseUrl\BaseUrlMiddleware::class], 'priority' =&gt; 1000],
+    /* ... */
+],</code></pre>
 
 
 <p>At this point, the middleware will take care of the rewriting for you. No

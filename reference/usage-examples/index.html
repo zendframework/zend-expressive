@@ -110,6 +110,12 @@
                         
                             
 <li >
+    <a href="../../features/middleware-types/">Middleware Types</a>
+</li>
+
+                        
+                            
+<li >
     <a href="../../features/application/">Applications</a>
 </li>
 
@@ -128,6 +134,12 @@
             
 <li >
     <a href="../../features/container/factories/">Container Factories</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../features/container/delegator-factories/">Delegator Factories</a>
 </li>
 
         
@@ -256,6 +268,27 @@
 
                         
                             
+<li >
+    <a href="../../features/modular-applications/">Modular Applications</a>
+</li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Middleware</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../features/middleware/implicit-methods-middleware/">Implicit HEAD and OPTIONS Middleware</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
   <li class="dropdown-submenu">
     <a tabindex="-1" href="">Helpers</a>
     <ul class="dropdown-menu">
@@ -302,6 +335,12 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cookbook <b class="caret"></b></a>
                         <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../cookbook/autowiring-routes-and-pipelines/">Autowiring routes and pipeline middleware</a>
+</li>
+
                         
                             
 <li >
@@ -375,6 +414,12 @@
 </li>
 
                         
+                            
+<li >
+    <a href="../../cookbook/passing-data-between-middleware/">Passing data between middleware</a>
+</li>
+
+                        
                         </ul>
                     </li>
                 
@@ -387,6 +432,12 @@
                             
 <li >
     <a href="../../why-expressive/">Why choose Expressive?</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../cli-tooling/">CLI Tooling</a>
 </li>
 
                         
@@ -416,6 +467,12 @@
             
 <li >
     <a href="../migration/to-v1-1/">To Expressive 1.1</a>
+</li>
+
+        
+            
+<li >
+    <a href="../migration/to-v2/">To Expressive 2.0</a>
 </li>
 
         
@@ -483,7 +540,7 @@
     
     <ul class="pager hidden-print">
       <li class="previous">
-        <a rel="prev" href="../../why-expressive/"><i class="fa fa-arrow-left"></i> Previous</a>
+        <a rel="prev" href="../cli-tooling/"><i class="fa fa-arrow-left"></i> Previous</a>
       </li>
       <li class="next">
         <a rel="next" href="../expressive-projects/">Next <i class="fa fa-arrow-right"></i></a>
@@ -523,8 +580,10 @@ managing an application.</p>
 <ul>
 <li>You have installed zend-expressive per the <a href="../..#installation">installation instructions</a>.</li>
 <li><code>public/</code> will be the document root of your application.</li>
-<li>Your own classes are under <code>src/</code> with the top-level namespace <code>Application</code>,
-  and you have configured <a href="https://getcomposer.org/doc/01-basic-usage.md#autoloading">autoloading</a> in your <code>composer.json</code> for those classes.</li>
+<li>Your own classes are under <code>src/</code> with the top-level namespace <code>App</code>,
+  and you have configured <a href="https://getcomposer.org/doc/01-basic-usage.md#autoloading">autoloading</a>
+  in your <code>composer.json</code> for those classes (this should be done for you during
+  installation).</li>
 </ul>
 <blockquote>
 <h2 id="using-the-built-in-web-server">Using the built-in web server</h2>
@@ -540,7 +599,7 @@ the following is equivalent:</p>
 
 <h2 id="setting-up-autoloading-for-the-application-namespace">Setting up autoloading for the Application namespace</h2>
 <p>In your <code>composer.json</code> file, place the following:</p>
-<pre class="codehilite"><code class="language-javascript">&quot;autoload&quot;: {
+<pre class="codehilite"><code class="language-json">&quot;autoload&quot;: {
     &quot;psr-4&quot;: {
         &quot;Application\\&quot;: &quot;src/&quot;
     }
@@ -575,13 +634,13 @@ specify additional options to associate with the route (e.g., for specifying
 criteria, default values to match, etc.).</p>
 <p>As examples:</p>
 <pre class="codehilite"><code class="language-php">// GET
-// This demonstrates passing a callable middleware (assuming $helloWorld is
-// callable).
+// This demonstrates passing a middleware instance (assuming $helloWorld is
+// valid middleware)
 $app-&gt;get('/', $helloWorld);
 
 // POST
-// This example specifies the middleware as a service name instead of as a
-// callable.
+// This example specifies the middleware as a service name instead of as
+// actual executable middleware.
 $app-&gt;post('/trackback', 'TrackBack');
 
 // PUT
@@ -590,7 +649,7 @@ $app-&gt;post('/trackback', 'TrackBack');
 // is specific to Aura.Router.)
 $app-&gt;put('/post/{id}', 'ReplacePost')
     -&gt;setOptions([
-        'tokens' =&gt; [ 'id' =&gt; '\d+' ],
+        'tokens' =&gt; ['id' =&gt; '\d+'],
     ]);
 
 // PATCH
@@ -599,13 +658,13 @@ $app-&gt;put('/post/{id}', 'ReplacePost')
 // corresponding to different middleware.
 $app-&gt;patch('/post/{id}', 'UpdatePost')
     -&gt;setOptions([
-        'tokens' =&gt; [ 'id' =&gt; '\d+' ],
+        'tokens' =&gt; ['id' =&gt; '\d+'],
     ]);
 
 // DELETE
 $app-&gt;delete('/post/{id}', 'DeletePost')
     -&gt;setOptions([
-        'tokens' =&gt; [ 'id' =&gt; '\d+' ],
+        'tokens' =&gt; ['id' =&gt; '\d+'],
     ]);
 
 // Matching ALL HTTP methods
@@ -618,7 +677,7 @@ $app-&gt;delete('/post/{id}', 'DeletePost')
 // further manipulate.
 $app-&gt;route('/post/{id}', 'HandlePost')
     -&gt;setOptions([
-        'tokens' =&gt; [ 'id' =&gt; '\d+' ],
+        'tokens' =&gt; ['id' =&gt; '\d+'],
     ]);
 
 // Matching multiple HTTP methods
@@ -641,13 +700,16 @@ $app-&gt;route($route);</code></pre>
 
 
 <h2 id="hello-world-using-a-container">Hello World using a Container</h2>
-<p>Expressive works with <a href="https://github.com/container-interop/container-interop">container-interop</a>,
+<p>Expressive works with <a href="https://github.com/php-fig/container">PSR-11 Container</a>,
 though it's an optional feature. By default, if you use the <code>AppFactory</code>, it
-will use <a href="https://github.com/zendframework/zend-servicemanager">zend-servicemanager</a>.</p>
+will use <a href="https://github.com/zendframework/zend-servicemanager">zend-servicemanager</a>
+so long as that package is installed.</p>
 <p>In the following example, we'll populate the container with our middleware, and
 the application will pull it from there when matched.</p>
 <p>Edit your <code>public/index.php</code> to read as follows:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Diactoros\Response\JsonResponse;
+<pre class="codehilite"><code class="language-php">use Interop\Http\ServerMiddleware\DelegateInterface;
+use Zend\Diactoros\Response\JsonResponse;
+use Zend\Diactoros\Response\TextResponse;
 use Zend\Expressive\AppFactory;
 use Zend\ServiceManager\ServiceManager;
 
@@ -656,14 +718,13 @@ require __DIR__ . '/../vendor/autoload.php';
 $container = new ServiceManager();
 
 $container-&gt;setFactory('HelloWorld', function ($container) {
-    return function ($req, $res, $next) {
-        $res-&gt;getBody()-&gt;write('Hello, world!');
-        return $res;
+    return function ($request, DelegateInterface $delegate) {
+        return new TextResponse('Hello, world!');
     };
 });
 
 $container-&gt;setFactory('Ping', function ($container) {
-    return function ($req, $res, $next) {
+    return function ($request, DelegateInterface $delegate) {
         return new JsonResponse(['ack' =&gt; time()]);
     };
 });
@@ -802,12 +863,12 @@ return [
         [
             'path' =&gt; '/',
             'middleware' =&gt; \Application\HelloWorldAction::class,
-            'allowed_methods' =&gt; [ 'GET' ],
+            'allowed_methods' =&gt; ['GET'],
         ],
         [
             'path' =&gt; '/ping',
             'middleware' =&gt; \Application\PingAction::class,
-            'allowed_methods' =&gt; [ 'GET' ],
+            'allowed_methods' =&gt; ['GET'],
         ],
     ],
 ];</code></pre>
@@ -873,9 +934,8 @@ together.</p>
 <p>Fortunately, you can mix the two. Building on the example above, we'll add a new
 route and middleware. Between pulling the application from the container and
 calling <code>$app-&gt;run()</code>, add the following in your <code>public/index.php</code>:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;post('/post', function ($req, $res, $next) {
-    $res-&gt;getBody()-&gt;write('IN POST!');
-    return $res;
+<pre class="codehilite"><code class="language-php">$app-&gt;post('/post', function ($request, \Interop\Http\ServerMiddleware\DelegateInterface $delegate) {
+    return new \Zend\Diactoros\Response\TextResponse('IN POST!');
 });</code></pre>
 
 
@@ -896,7 +956,7 @@ return [
         [
             'path' =&gt; '/path/to/match',
             'middleware' =&gt; 'Middleware Service Name or Callable',
-            'allowed_methods' =&gt; [ 'GET', 'POST', 'PATCH' ],
+            'allowed_methods' =&gt; ['GET', 'POST', 'PATCH'],
             'options' =&gt; [
                 'stuff' =&gt; 'to',
                 'pass'  =&gt; 'to',
@@ -920,7 +980,6 @@ order specified.</p>
     'middleware' =&gt; 'Name of middleware service, or a callable',
     // optional:
     'path'  =&gt; '/path/to/match',
-    'error' =&gt; true,
     'priority' =&gt; 1, // Integer
 ]</code></pre>
 
@@ -933,23 +992,23 @@ are low priority</em>. Items of the same priority are executed in the order in w
 they are attached.</p>
 <p>The default priority is 1, and this priority is used by the routing and dispatch
 middleware. To indicate that middleware should execute <em>before</em> these, use a
-priority higher than 1. For error middleware, use a priority less than 1.</p>
+priority higher than 1.</p>
 <p>The above specification can be used for all middleware, with one exception:
 registration of the <em>routing</em> and/or <em>dispatch</em> middleware that Expressive
 provides. In these cases, use the following constants, which will be caught by
 the factory and expanded:</p>
 <ul>
-<li><code>Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE</code> for the
+<li><code>Zend\Expressive\Application::ROUTING_MIDDLEWARE</code> for the
   routing middleware; this should always come before the dispatch middleware.</li>
-<li><code>Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE</code> for the
+<li><code>Zend\Expressive\Application::DISPATCH_MIDDLEWARE</code> for the
   dispatch middleware.</li>
 </ul>
 <p>As an example:</p>
 <pre class="codehilite"><code class="language-php">return [
     'middleware_pipeline' =&gt; [
         [ /* ... */ ],
-        Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
-        Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+        Zend\Expressive\Application::ROUTING_MIDDLEWARE,
+        Zend\Expressive\Application::DISPATCH_MIDDLEWARE,
         [ /* ... */ ],
     ],
 ];</code></pre>
@@ -966,26 +1025,19 @@ the application (such as injection of the <code>ServerUrlHelper</code>),
 utilities for injecting common response headers (such as CORS support), etc.
 Make sure these middleware specifications include the <code>priority</code> key, and that
 the value of this key is greater than 1.</p>
-<p>Place <em>error</em> middleware <em>after</em> the routing middleware. This is middleware
-that should only execute if routing fails or routed middleware cannot complete
-the response. These specifications should also include the <code>priority</code> key, and
-the value of that key for such middleware should be less than 1 or negative.</p>
 <p>Use priority to shape the specific workflow you want for your middleware.</p>
 </blockquote>
-<p>Middleware items may be any callable, <code>Zend\Stratigility\MiddlewareInterface</code>
-implementation, or a service name that resolves to one of the two. Additionally,
-you can specify an array of such values; these will be composed in a single
-<code>Zend\Stratigility\MiddlewarePipe</code> instance, allowing layering of middleware.
-In fact, you can specify the various <code>ApplicationFactory::*_MIDDLEWARE</code>
-constants in such arrays as well:</p>
+<p>Middleware items may be any <a href="../../features/middleware-types/">valid middleware</a>,
+including <em>arrays</em> of middleware, which indicate a nested middleware pipeline;
+these may even contain the routing and dispatch middleware constants:</p>
 <pre class="codehilite"><code class="language-php">return [
     'middleware_pipeline' =&gt; [
         [ /* ... */ ],
         'routing' =&gt; [
             'middleware' =&gt; [
-                Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+                Zend\Expressive\Application::ROUTING_MIDDLEWARE,
                 /* ... middleware that introspects routing results ... */
-                Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+                Zend\Expressive\Application::DISPATCH_MIDDLEWARE,
             ],
             'priority' =&gt; 1,
         ],
@@ -1007,44 +1059,6 @@ that array after merging. If order is critical, define a middleware spec with
 <p>The path, if specified, can only be a literal path to match, and is typically
 used for segregating middleware applications or applying rules to subsets of an
 application that match a common path root.</p>
-<p><code>error</code> indicates whether or not the middleware represents error middleware;
-this is done to ensure that lazy-loading of error middleware works as expected.</p>
-<blockquote>
-<h4 id="lazy-loaded-middleware">Lazy-loaded Middleware</h4>
-<p>One feature of the <code>middleware_pipeline</code> is that any middleware service pulled
-from the container is actually wrapped in a closure:</p>
-<pre class="codehilite"><code class="language-php">function ($request, $response, $next = null) use ($container, $middleware) {
-    $invokable = $container-&gt;get($middleware);
-    if (! is_callable($invokable)) {
-        throw new Exception\InvalidMiddlewareException(sprintf(
-            'Lazy-loaded middleware &quot;%s&quot; is not invokable',
-            $middleware
-        ));
-    }
-    return $invokable($request, $response, $next);
-};</code></pre>
-
-
-<p>If the <code>error</code> flag is specified and is truthy, the closure looks like this
-instead, to ensure the middleware is treated by Stratigility as error
-middleware:</p>
-<pre class="codehilite"><code class="language-php">function ($error, $request, $response, $next) use ($container, $middleware) {
-    $invokable = $container-&gt;get($middleware);
-    if (! is_callable($invokable)) {
-        throw new Exception\InvalidMiddlewareException(sprintf(
-            'Lazy-loaded middleware &quot;%s&quot; is not invokable',
-            $middleware
-        ));
-    }
-    return $invokable($error, $request, $response, $next);
-};</code></pre>
-
-
-<p>This implements <em>lazy-loading</em> for middleware pipeline services, delaying
-retrieval from the container until the middleware is actually invoked.</p>
-<p>This also means that if the service specified is not valid middleware, you
-will not find out until the application attempts to invoke it.</p>
-</blockquote>
 <h2 id="segregating-your-application-to-a-subpath">Segregating your application to a subpath</h2>
 <p>One benefit of a middleware-based application is the ability to compose
 middleware and segregate them by paths. <code>Zend\Expressive\Application</code> is itself
@@ -1086,7 +1100,7 @@ together to create a website.</p>
 <nav>
   <ul class="pager hidden-print">
     <li class="previous">
-      <a rel="prev" href="../../why-expressive/"><i class="fa fa-arrow-left"></i> Previous</a>
+      <a rel="prev" href="../cli-tooling/"><i class="fa fa-arrow-left"></i> Previous</a>
     </li>
     <li class="next">
       <a rel="next" href="../expressive-projects/">Next <i class="fa fa-arrow-right"></i></a>

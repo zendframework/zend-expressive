@@ -110,6 +110,12 @@
                         
                             
 <li >
+    <a href="../../middleware-types/">Middleware Types</a>
+</li>
+
+                        
+                            
+<li >
     <a href="../../application/">Applications</a>
 </li>
 
@@ -128,6 +134,12 @@
             
 <li >
     <a href="../factories/">Container Factories</a>
+</li>
+
+        
+            
+<li >
+    <a href="../delegator-factories/">Delegator Factories</a>
 </li>
 
         
@@ -256,6 +268,27 @@
 
                         
                             
+<li >
+    <a href="../../modular-applications/">Modular Applications</a>
+</li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Middleware</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../middleware/implicit-methods-middleware/">Implicit HEAD and OPTIONS Middleware</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
   <li class="dropdown-submenu">
     <a tabindex="-1" href="">Helpers</a>
     <ul class="dropdown-menu">
@@ -302,6 +335,12 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cookbook <b class="caret"></b></a>
                         <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../../cookbook/autowiring-routes-and-pipelines/">Autowiring routes and pipeline middleware</a>
+</li>
+
                         
                             
 <li >
@@ -375,6 +414,12 @@
 </li>
 
                         
+                            
+<li >
+    <a href="../../../cookbook/passing-data-between-middleware/">Passing data between middleware</a>
+</li>
+
+                        
                         </ul>
                     </li>
                 
@@ -387,6 +432,12 @@
                             
 <li >
     <a href="../../../why-expressive/">Why choose Expressive?</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../reference/cli-tooling/">CLI Tooling</a>
 </li>
 
                         
@@ -416,6 +467,12 @@
             
 <li >
     <a href="../../../reference/migration/to-v1-1/">To Expressive 1.1</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../../reference/migration/to-v2/">To Expressive 2.0</a>
 </li>
 
         
@@ -514,9 +571,9 @@ injection container with the following features:</p>
 <li>optional auto-resolution of typehinted constructor parameter values.</li>
 </ul>
 <h2 id="installing-auradi">Installing Aura.Di</h2>
-<p>Aura.Di only implements <a href="https://github.com/container-interop/container-interop">container-interop</a>
-as of version 3 (in beta at the time of writing).</p>
-<pre class="codehilite"><code class="language-bash">$ composer require &quot;aura/di:3.0.*@beta&quot;</code></pre>
+<p>Aura.Di implements <a href="https://github.com/container-interop/container-interop">container-interop</a>
+as of version 3.</p>
+<pre class="codehilite"><code class="language-bash">$ composer require aura/di</code></pre>
 
 
 <h2 id="configuration">Configuration</h2>
@@ -549,7 +606,9 @@ use Aura\Router\RouteFactory;
 use Aura\Router\Router;
 use Zend\Escaper\Escaper;
 use Zend\Expressive\Application;
-use Zend\Expressive\Container;
+use Zend\Expressive\Container as ExpressiveContainer;
+use Zend\Expressive\Delegate;
+use Zend\Expressive\Middleware;
 use Zend\Expressive\Plates\PlatesRenderer;
 use Zend\Expressive\Router\AuraRouter;
 use Zend\Expressive\Router\Route;
@@ -569,8 +628,14 @@ class Common extends ContainerConfig
         );
         $di-&gt;params[AuraRouter::class]['router'] = $di-&gt;lazyNew(Router::class);
         $di-&gt;set(RouterInterface::class, $di-&gt;lazyNew(AuraRouter::class));
-        $di-&gt;set(Container\ApplicationFactory::class, $di-&gt;lazyNew(Container\ApplicationFactory::class));
-        $di-&gt;set(Application::class, $di-&gt;lazyGetCall(Container\ApplicationFactory::class, '__invoke', $di));
+        $di-&gt;set(Container\NotFoundDelegateFactory::class, $di-&gt;lazyNew(ExpressiveContainer\NotFoundDelegateFactory::class));
+        $di-&gt;set(Delegate\NotFoundDelegate::class, $di-&gt;lazyGetCall(ExpressiveContainer\NotFoundDelegateFactory::class, '__invoke', $di));
+        $di-&gt;set(Delegate\DefaultDelegate::class, $di-&gt;lazyGetCall(ExpressiveContainer\NotFoundDelegateFactory::class, '__invoke', $di));
+        $di-&gt;set(Container\ApplicationFactory::class, $di-&gt;lazyNew(ExpressiveContainer\ApplicationFactory::class));
+        $di-&gt;set(Application::class, $di-&gt;lazyGetCall(ExpressiveContainer\ApplicationFactory::class, '__invoke', $di));
+
+        // Not Found handler
+        $di-&gt;set(Middleware\NotFoundHandler::class, $di-&gt;lazyGetCall(ExpressiveContainer\NotFoundHandlerFactory::class, '__invoke', $di));
 
         // Templating
         // In most cases, you can instantiate the template renderer you want to use
@@ -578,20 +643,21 @@ class Common extends ContainerConfig
         $di-&gt;set(TemplateRendererInterface::class, $di-&gt;lazyNew(PlatesRenderer::class));
 
         // These next two can be added in any environment; they won't be used unless
-        // you add the WhoopsErrorHandler as the FinalHandler implementation:
-        $di-&gt;set(Container\WhoopsFactory::class, $di-&gt;lazyNew(Container\WhoopsFactory::class));
-        $di-&gt;set('Zend\Expressive\Whoops', $di-&gt;lazyGetCall(Container\WhoopsFactory::class, '__invoke', $di));
-        $di-&gt;set(Container\WhoopsPageHandlerFactory::class, $di-&gt;lazyNew(Container\WhoopsPageHandlerFactory::class));
-        $di-&gt;set('Zend\Expressive\WhoopsPageHandler', $di-&gt;lazyGetCall(Container\WhoopsPageHandlerFactory::class, '__invoke', $di));
+        // you add the WhoopsErrorResponseGenerator as the ErrorResponseGenerator implementation:
+        $di-&gt;set(ExpressiveContainer\WhoopsFactory::class, $di-&gt;lazyNew(ExpressiveContainer\WhoopsFactory::class));
+        $di-&gt;set('Zend\Expressive\Whoops', $di-&gt;lazyGetCall(ExpressiveContainer\WhoopsFactory::class, '__invoke', $di));
+        $di-&gt;set(ExpressiveContainer\WhoopsPageHandlerFactory::class, $di-&gt;lazyNew(ExpressiveContainer\WhoopsPageHandlerFactory::class));
+        $di-&gt;set('Zend\Expressive\WhoopsPageHandler', $di-&gt;lazyGetCall(ExpressiveContainer\WhoopsPageHandlerFactory::class, '__invoke', $di));
 
         // Error Handling
+        $di-&gt;set('Zend\Stratigility\Middleware\ErrorHandler', $di-&gt;lazyGetCall(ExpressiveContainer\ErrorHandlerFactory::class, '__invoke', $di));
 
         // If in development:
-        $di-&gt;set(Container\WhoopsErrorHandlerFactory::class, $di-&gt;lazyNew(Container\WhoopsErrorHandlerFactory::class));
-        $di-&gt;set('Zend\Expressive\FinalHandler', $di-&gt;lazyGetCall(Container\WhoopsErrorHandlerFactory::class, '__invoke', $di));
+        $di-&gt;set(ExpressiveContainer\WhoopsErrorResponseGeneratorFactory::class, $di-&gt;lazyNew(ExpressiveContainer\WhoopsErrorResponseGeneratorFactory::class));
+        $di-&gt;set(Middleware\ErrorResponseGenerator::class, $di-&gt;lazyGetCall(ExpressiveContainer\WhoopsErrorResponseGeneratorFactory::class, '__invoke', $di));
 
         // If in production:
-        // $di-&gt;set('Zend\Expressive\FinalHandler', $di-&gt;lazyGetCall(Container\TemplatedErrorHandlerFactory::class, '__invoke', $di));
+        // $di-&gt;set(Middleware\ErrorResponseGenerator::class, $di-&gt;lazyGetCall(Container\ErrorResponseGeneratorFactory::class, '__invoke', $di));
     }
 
     public function modify(Container $di)
@@ -613,7 +679,9 @@ class Common extends ContainerConfig
 <pre class="codehilite"><code class="language-php">chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
 $container = require 'config/services.php';
-$app = $container-&gt;get('Zend\Expressive\Application');
+$app = $container-&gt;get(Zend\Expressive\Application::class);
+require 'config/pipeline.php';
+require 'config/routes.php';
 $app-&gt;run();</code></pre>
 
 <hr />

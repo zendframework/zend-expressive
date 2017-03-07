@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">  
     <link rel="shortcut icon" href="../../../img/favicon.ico">
 
-    <title>Using zend-servicemanager - Expressive</title>
+    <title>Delegator Factories - Expressive</title>
 
     <link href="../../../css/bootstrap-custom.min.css" rel="stylesheet">
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
@@ -138,14 +138,14 @@
 
         
             
-<li >
-    <a href="../delegator-factories/">Delegator Factories</a>
+<li class="active">
+    <a href="./">Delegator Factories</a>
 </li>
 
         
             
-<li class="active">
-    <a href="./">Using zend-servicemanager</a>
+<li >
+    <a href="../zend-servicemanager/">Using zend-servicemanager</a>
 </li>
 
         
@@ -520,11 +520,7 @@
         <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
     
-        <li class="main active"><a href="#using-zend-servicemanager">Using zend-servicemanager</a></li>
-        
-            <li><a href="#installing-zend-servicemanager">Installing zend-servicemanager</a></li>
-        
-            <li><a href="#configuring-zend-servicemanager">Configuring zend-servicemanager</a></li>
+        <li class="main active"><a href="#delegator-factories">Delegator Factories</a></li>
         
     
     </ul>
@@ -532,10 +528,10 @@
     
     <ul class="pager hidden-print">
       <li class="previous">
-        <a rel="prev" href="../delegator-factories/"><i class="fa fa-arrow-left"></i> Previous</a>
+        <a rel="prev" href="../factories/"><i class="fa fa-arrow-left"></i> Previous</a>
       </li>
       <li class="next">
-        <a rel="next" href="../pimple/">Next <i class="fa fa-arrow-right"></i></a>
+        <a rel="next" href="../zend-servicemanager/">Next <i class="fa fa-arrow-right"></i></a>
       </li>
     </ul>
     
@@ -555,308 +551,68 @@
       
     
   
-  <li class="active">Using zend-servicemanager</li>
+  <li class="active">Delegator Factories</li>
 </ol>
 
-<h1 id="using-zend-servicemanager">Using zend-servicemanager</h1>
-<p><a href="https://github.com/zendframework/zend-servicemanager">zend-servicemanager</a> is a
-code-driven dependency injection container provided as a standalone component by
-Zend Framework. It features:</p>
+<h1 id="delegator-factories">Delegator Factories</h1>
 <ul>
-<li>lazy-loading of invokable (constructor-less) classes.</li>
-<li>ability to define factories for specific classes.</li>
-<li>ability to define generalized factories for classes with identical
-  construction patterns (aka <em>abstract factories</em>).</li>
-<li>ability to create lazy-loading proxies.</li>
-<li>ability to intercept before or after instantiation to alter the construction
-  workflow (aka <em>delegator factories</em>).</li>
-<li>interface injection (via <em>initializers</em>).</li>
+<li>Since 2.0.</li>
 </ul>
-<p>zend-servicemanager may either be created and populated programmatically, or via
-configuration. Configuration uses the following structure:</p>
-<pre class="codehilite"><code class="language-php">[
-    'services' =&gt; [
-        'service name' =&gt; $serviceInstance,
-    ],
-    'invokables' =&gt; [
-        'service name' =&gt; 'class to instantiate',
-    ],
-    'factories' =&gt; [
-        'service name' =&gt; 'callable, Zend\ServiceManager\FactoryInterface instance, or name of factory class returning the service',
-    ],
-    'abstract_factories' =&gt; [
-        'class name of Zend\ServiceManager\AbstractFactoryInterface implementation',
-    ],
+<p>Starting with the 2.0 version of the Expressive skeleton, we now support the
+concept of <em>delegator factories</em>, which allow decoration of services created by
+your dependency injection container, across all dependency injection containers
+supported by Expressive.</p>
+<p><em>Delegator factories</em> accept the following arguments:</p>
+<ul>
+<li>The container itself;</li>
+<li>The name of the service whose creation is being decrorated;</li>
+<li>A callback that will produce the service being decorated.</li>
+</ul>
+<p>As an example, let's say we have a <code>UserRepository</code> class that composes some sort of
+event manager. We might want to attach listeners to that event manager, but not
+wish to alter the basic creation logic for the repository itself. As such, we
+might write a <em>delegator factory</em> as follows:</p>
+<pre class="codehilite"><code class="language-php">namespace Acme;
+
+use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
+
+class UserRepositoryListenerDelegatorFactory
+{
+    /**
+     * @param ContainerInterface $container
+     * @param string $name
+     * @param callable $callback
+     * @return UserRepository
+     */
+    public function __invoke(ContainerInterface $container, $name, callable $callback)
+    {
+        $listener = new LoggerListener($container-&gt;get(LoggerInterface::class));
+        $repository = $callback();
+        $repository-&gt;getEventManager()-&gt;attach($listener);
+        return $repository;
+    }
+}</code></pre>
+
+
+<p>To notify the container about this delegator factory, we would add the following
+configuration to our application:</p>
+<pre class="codehilite"><code class="language-php">'dependencies' =&gt; [
     'delegators' =&gt; [
-        'service name' =&gt; [
-            'class name of Zend\ServiceManager\DelegatorFactoryInterface implementation',
+        Acme\UserRepository::class =&gt; [
+            Acme\UserRepositoryListenerDelegatorFactory::class,
         ],
     ],
-    'lazy_services' =&gt; [
-        'class_map' =&gt; [
-            'service name' =&gt; 'Class\Name\Of\Service',
-        ],
-    ],
-    'initializers' =&gt; [
-        'callable, Zend\ServiceManager\InitializerInterface implementation, or name of initializer class',
-    ],
-]</code></pre>
+],</code></pre>
 
 
-<p>Read more about zend-servicemanager in <a href="https://docs.zendframework.com/zend-servicemanager/">its documentation</a>.</p>
-<h2 id="installing-zend-servicemanager">Installing zend-servicemanager</h2>
-<p>To use zend-servicemanager with zend-expressive, you can install it via
-composer:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-servicemanager</code></pre>
-
-
-<h2 id="configuring-zend-servicemanager">Configuring zend-servicemanager</h2>
-<p>You can configure zend-servicemanager either programmatically or via
-configuration. We'll show you both methods.</p>
-<h3 id="programmatically">Programmatically</h3>
-<p>To use zend-servicemanager programatically, you'll need to create a
-<code>Zend\ServiceManager\ServiceManager</code> instance, and then start populating it.</p>
-<p>For this example, we'll assume your application configuration (used by several
-factories to configure instances) is in <code>config/config.php</code>, and that that file
-returns an array.</p>
-<p>We'll create a <code>config/services.php</code> file that creates and returns a
-<code>Zend\ServiceManager\ServiceManager</code> instance as follows:</p>
-<pre class="codehilite"><code class="language-php">use Zend\ServiceManager\ServiceManager;
-
-$container = new ServiceManager();
-
-// Application and configuration
-$container-&gt;setService('config', include 'config/config.php');
-$container-&gt;setFactory(
-    'Zend\Expressive\Application',
-    'Zend\Expressive\Container\ApplicationFactory'
-);
-
-// Routing
-// In most cases, you can instantiate the router you want to use without using a
-// factory:
-$container-&gt;setInvokableClass(
-    'Zend\Expressive\Router\RouterInterface',
-    'Zend\Expressive\Router\AuraRouter'
-);
-
-// Templating
-// In most cases, you can instantiate the template renderer you want to use
-// without using a factory:
-$container-&gt;setInvokableClass(
-    'Zend\Expressive\Template\TemplateRendererInterface',
-    'Zend\Expressive\Plates\PlatesRenderer'
-);
-
-// These next two can be added in any environment; they won't be used unless
-// you add the WhoopsErrorHandler as the FinalHandler implementation
-// (Expressive 1.X) or the WhoopsErrorResponseGenerator as the
-// ErrorResponseGenerator implementation (Expressive 2.X):
-$container-&gt;setFactory(
-    'Zend\Expressive\Whoops',
-    'Zend\Expressive\Container\WhoopsFactory'
-);
-$container-&gt;setFactory(
-    'Zend\Expressive\WhoopsPageHandler',
-    'Zend\Expressive\Container\WhoopsPageHandlerFactory'
-);
-
-// Error Handling
-
-// - Expressive 2.X, all environments:
-$container-&gt;setFactory(
-    'Zend\Expressive\Middleware\ErrorHandler',
-    'Zend\Expressive\Container\ErrorHandlerFactory'
-);
-
-// If in development:
-// - Expressive 1.X:
-$container-&gt;setFactory(
-    'Zend\Expressive\FinalHandler',
-    'Zend\Expressive\Container\WhoopsErrorHandlerFactory'
-);
-// - Expressive 2.X:
-$container-&gt;setFactory(
-    'Zend\Expressive\Middleware\ErrorResponseGenerator',
-    'Zend\Expressive\Container\WhoopsErrorResponseGeneratorFactory'
-);
-
-// If in production:
-// - Expressive 1.X:
-$container-&gt;setFactory(
-    'Zend\Expressive\FinalHandler',
-    'Zend\Expressive\Container\TemplatedErrorHandlerFactory'
-);
-// - Expressive 2.X:
-$container-&gt;setFactory(
-    'Zend\Expressive\Middleware\ErrorResponseGenerator',
-    'Zend\Expressive\Container\ErrorResponseGeneratorFactory'
-);
-
-return $container;</code></pre>
-
-
-<p>Your bootstrap (typically <code>public/index.php</code>) will then look like this:</p>
-<pre class="codehilite"><code class="language-php">chdir(dirname(__DIR__));
-require 'vendor/autoload.php';
-$container = require 'config/services.php';
-$app = $container-&gt;get('Zend\Expressive\Application');
-
-// Expressive 2.X:
-require 'config/pipeline.php';
-require 'config/routes.php';
-
-// All versions:
-$app-&gt;run();</code></pre>
-
-
-<h3 id="configuration-driven-container">Configuration-Driven Container</h3>
-<p>Alternately, you can use a configuration file to define the container. As
-before, we'll define our configuration in <code>config/config.php</code>, and our
-<code>config/services.php</code> file will still return our service manager instance; we'll
-define the service configuration in <code>config/dependencies.php</code>:</p>
-<pre class="codehilite"><code class="language-php">return [
-    'services' =&gt; [
-        'config' =&gt; include __DIR__ . '/config.php',
-    ],
-    'aliases' =&gt; [
-        // Expressive 2.0:
-        'Zend\Expressive\Delegate\DefaultDelegate' =&gt; 'Zend\Expressive\Delegate\NotFoundDelegate',
-    ],
-    'invokables' =&gt; [
-        'Zend\Expressive\Router\RouterInterface'     =&gt; 'Zend\Expressive\Router\AuraRouter',
-        'Zend\Expressive\Template\TemplateRendererInterface' =&gt; 'Zend\Expressive\Plates\PlatesRenderer'
-    ],
-    'factories' =&gt; [
-        'Zend\Expressive\Application'       =&gt; 'Zend\Expressive\Container\ApplicationFactory',
-        'Zend\Expressive\Whoops'            =&gt; 'Zend\Expressive\Container\WhoopsFactory',
-        'Zend\Expressive\WhoopsPageHandler' =&gt; 'Zend\Expressive\Container\WhoopsPageHandlerFactory',
-
-        // Expressive 2.0:
-        'Zend\Expressive\Middleware\ErrorHandler'    =&gt; 'Zend\Expressive\Container\ErrorHandlerFactory',
-        'Zend\Expressive\Delegate\NotFoundDelegate'  =&gt; 'Zend\Expressive\Container\NotFoundDelegateFactory',
-        'Zend\Expressive\Middleware\NotFoundHandler' =&gt; 'Zend\Expressive\Container\NotFoundHandlerFactory',
-    ],
-];</code></pre>
-
-
-<p><code>config/services.php</code> becomes:</p>
-<pre class="codehilite"><code class="language-php">use Zend\ServiceManager\Config;
-use Zend\ServiceManager\ServiceManager;
-
-return new ServiceManager(new Config(include 'config/dependencies.php'));</code></pre>
-
-
-<p>There is one problem, however: in both Expressive 1.X and 2.X, you may want to
-vary error handling strategies based on whether or not you're in production:
-You have two choices on how to approach this:</p>
-<ul>
-<li>Selectively inject the factory in the bootstrap.</li>
-<li>Define the final handler service in an environment specific file and use file
-  globbing to merge files.</li>
-</ul>
-<p>In the first case, you would change the <code>config/services.php</code> example to look
-like this:</p>
-<pre class="codehilite"><code class="language-php">use Zend\ServiceManager\Config;
-use Zend\ServiceManager\ServiceManager;
-
-$container = new ServiceManager(new Config(include 'config/services.php'));
-switch ($variableOrConstantIndicatingEnvironment) {
-    case 'development':
-        // Expressive 1.X:
-        $container-&gt;setFactory(
-            'Zend\Expressive\FinalHandler',
-            'Zend\Expressive\Container\WhoopsErrorHandlerFactory'
-        );
-
-        // Expressive 2.X:
-        $container-&gt;setFactory(
-            'Zend\Expressive\Middleware\ErrorResponseGenerator',
-            'Zend\Expressive\Container\WhoopsErrorResponseGeneratorFactory'
-        );
-        break;
-    case 'production':
-    default:
-        // Expressive 1.X:
-        $container-&gt;setFactory(
-            'Zend\Expressive\FinalHandler',
-            'Zend\Expressive\Container\TemplatedErrorHandlerFactory'
-        );
-
-        // Expressive 2.X:
-        $container-&gt;setFactory(
-            'Zend\Expressive\Middleware\ErrorResponseGenerator',
-            'Zend\Expressive\Container\ErrorResponseGeneratorFactory'
-        );
-}
-return $container;</code></pre>
-
-
-<p>In the second case, you will need to install zend-config:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-config</code></pre>
-
-
-<p>Then, create the directory <code>config/autoload/</code>, and create two files,
-<code>dependencies.global.php</code> and <code>dependencies.local.php</code>. In your <code>.gitignore</code>,
-add an entry for <code>config/autoload/*local.php</code> to ensure "local"
-(environment-specific) files are excluded from the repository.</p>
-<p><code>config/dependencies.php</code> will look like this:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Config\Factory as ConfigFactory;
-
-return ConfigFactory::fromFiles(
-    glob('config/autoload/dependencies.{global,local}.php', GLOB_BRACE)
-);</code></pre>
-
-
-<p><code>config/autoload/dependencies.global.php</code> will look like this:</p>
-<pre class="codehilite"><code class="language-php">return [
-    'services' =&gt; [
-        'config' =&gt; include __DIR__ . '/config.php',
-    ],
-    'aliases' =&gt; [
-        // Expressive 2.0:
-        'Zend\Expressive\Delegate\DefaultDelegate' =&gt; 'Zend\Expressive\Delegate\NotFoundDelegate',
-    ],
-    'invokables' =&gt; [
-        'Zend\Expressive\Router\RouterInterface'     =&gt; 'Zend\Expressive\Router\AuraRouter',
-        'Zend\Expressive\Template\TemplateRendererInterface' =&gt; 'Zend\Expressive\Plates\PlatesRenderer'
-    ],
-    'factories' =&gt; [
-        'Zend\Expressive\Application'       =&gt; 'Zend\Expressive\Container\ApplicationFactory',
-        'Zend\Expressive\Whoops'            =&gt; 'Zend\Expressive\Container\WhoopsFactory',
-        'Zend\Expressive\WhoopsPageHandler' =&gt; 'Zend\Expressive\Container\WhoopsPageHandlerFactory',
-
-        // Expressive 1.X:
-        'Zend\Expressive\FinalHandler'      =&gt; 'Zend\Expressive\Container\TemplatedErrorHandlerFactory',
-
-        // Expressive 2.X:
-        'Zend\Expressive\Middleware\ErrorResponseGenerator' =&gt; 'Zend\Expressive\Container\ErrorResponseGeneratorFactory',
-        'Zend\Expressive\Middleware\ErrorHandler'    =&gt; 'Zend\Expressive\Container\ErrorHandlerFactory',
-        'Zend\Expressive\Delegate\NotFoundDelegate'  =&gt; 'Zend\Expressive\Container\NotFoundDelegateFactory',
-        'Zend\Expressive\Middleware\NotFoundHandler' =&gt; 'Zend\Expressive\Container\NotFoundHandlerFactory',
-    ],
-];</code></pre>
-
-
-<p><code>config/autoload/dependencies.local.php</code> on your development machine can look
-like this:</p>
-<pre class="codehilite"><code class="language-php">return [
-    'factories' =&gt; [
-        'Zend\Expressive\Whoops'            =&gt; 'Zend\Expressive\Container\WhoopsFactory',
-        'Zend\Expressive\WhoopsPageHandler' =&gt; 'Zend\Expressive\Container\WhoopsPageHandlerFactory',
-
-        // Expressive 1.X:
-        'Zend\Expressive\FinalHandler'      =&gt; 'Zend\Expressive\Container\WhoopsErrorHandlerFactory',
-
-        // Expressive 2.X:
-        'Zend\Expressive\Middleware\ErrorResponseGenerator' =&gt; 'Zend\Expressive\Container\WhoopsErrorResponseGeneratorFactory',
-    ],
-];</code></pre>
-
-
-<p>Using the above approach allows you to keep the bootstrap file minimal and
-agnostic of environment. (Note: you can take a similar approach with
-the application configuration.)</p>
+<p>Note that you specify delegator factories using the service name being decorated
+as the key, with an <em>array</em> of delegator factories as a value. <strong>You may attach
+multiple delegator factories to any given service</strong>, which can be a very
+powerful feature.</p>
+<p>At the time of writing, this feature works for each of the Aura.Di, Pimple, and
+zend-servicemanager container implementations. Delegator factories have been
+supported with Pimple and zend-servicemanager since the 1.X series.</p>
 
 <hr />
 
@@ -864,10 +620,10 @@ the application configuration.)</p>
 <nav>
   <ul class="pager hidden-print">
     <li class="previous">
-      <a rel="prev" href="../delegator-factories/"><i class="fa fa-arrow-left"></i> Previous</a>
+      <a rel="prev" href="../factories/"><i class="fa fa-arrow-left"></i> Previous</a>
     </li>
     <li class="next">
-      <a rel="next" href="../pimple/">Next <i class="fa fa-arrow-right"></i></a>
+      <a rel="next" href="../zend-servicemanager/">Next <i class="fa fa-arrow-right"></i></a>
     </li>
   </ul>
 </nav>

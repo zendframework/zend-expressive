@@ -110,6 +110,12 @@
                         
                             
 <li >
+    <a href="../../middleware-types/">Middleware Types</a>
+</li>
+
+                        
+                            
+<li >
     <a href="../../application/">Applications</a>
 </li>
 
@@ -128,6 +134,12 @@
             
 <li >
     <a href="../../container/factories/">Container Factories</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../container/delegator-factories/">Delegator Factories</a>
 </li>
 
         
@@ -256,6 +268,27 @@
 
                         
                             
+<li >
+    <a href="../../modular-applications/">Modular Applications</a>
+</li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Middleware</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../middleware/implicit-methods-middleware/">Implicit HEAD and OPTIONS Middleware</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
   <li class="dropdown-submenu">
     <a tabindex="-1" href="">Helpers</a>
     <ul class="dropdown-menu">
@@ -302,6 +335,12 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cookbook <b class="caret"></b></a>
                         <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../../cookbook/autowiring-routes-and-pipelines/">Autowiring routes and pipeline middleware</a>
+</li>
+
                         
                             
 <li >
@@ -375,6 +414,12 @@
 </li>
 
                         
+                            
+<li >
+    <a href="../../../cookbook/passing-data-between-middleware/">Passing data between middleware</a>
+</li>
+
+                        
                         </ul>
                     </li>
                 
@@ -387,6 +432,12 @@
                             
 <li >
     <a href="../../../why-expressive/">Why choose Expressive?</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../reference/cli-tooling/">CLI Tooling</a>
 </li>
 
                         
@@ -416,6 +467,12 @@
             
 <li >
     <a href="../../../reference/migration/to-v1-1/">To Expressive 1.1</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../../reference/migration/to-v2/">To Expressive 2.0</a>
 </li>
 
         
@@ -505,7 +562,9 @@
 <p>One aspect of the <code>Zend\Expressive\Router\RouterInterface</code> is that it provides a
 <code>generateUri()</code> method. This method accepts a route name, and optionally an
 associative array of substitutions to use in the generated URI (e.g., if the URI
-has any named placeholders).</p>
+has any named placeholders). Starting in zend-expressive-router 2.0, shipped
+with Expressive 2.0, you may also pass router-specific options to use during
+URI generation as a third argument.</p>
 <h2 id="naming-routes">Naming routes</h2>
 <p>By default, routes use a combination of the path and HTTP methods supported as
 the name:</p>

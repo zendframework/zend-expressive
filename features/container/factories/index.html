@@ -110,6 +110,12 @@
                         
                             
 <li >
+    <a href="../../middleware-types/">Middleware Types</a>
+</li>
+
+                        
+                            
+<li >
     <a href="../../application/">Applications</a>
 </li>
 
@@ -128,6 +134,12 @@
             
 <li class="active">
     <a href="./">Container Factories</a>
+</li>
+
+        
+            
+<li >
+    <a href="../delegator-factories/">Delegator Factories</a>
 </li>
 
         
@@ -256,6 +268,27 @@
 
                         
                             
+<li >
+    <a href="../../modular-applications/">Modular Applications</a>
+</li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Middleware</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../middleware/implicit-methods-middleware/">Implicit HEAD and OPTIONS Middleware</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
   <li class="dropdown-submenu">
     <a tabindex="-1" href="">Helpers</a>
     <ul class="dropdown-menu">
@@ -302,6 +335,12 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cookbook <b class="caret"></b></a>
                         <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../../cookbook/autowiring-routes-and-pipelines/">Autowiring routes and pipeline middleware</a>
+</li>
+
                         
                             
 <li >
@@ -375,6 +414,12 @@
 </li>
 
                         
+                            
+<li >
+    <a href="../../../cookbook/passing-data-between-middleware/">Passing data between middleware</a>
+</li>
+
+                        
                         </ul>
                     </li>
                 
@@ -387,6 +432,12 @@
                             
 <li >
     <a href="../../../why-expressive/">Why choose Expressive?</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../reference/cli-tooling/">CLI Tooling</a>
 </li>
 
                         
@@ -416,6 +467,12 @@
             
 <li >
     <a href="../../../reference/migration/to-v1-1/">To Expressive 1.1</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../../reference/migration/to-v2/">To Expressive 2.0</a>
 </li>
 
         
@@ -467,9 +524,19 @@
         
             <li><a href="#applicationfactory">ApplicationFactory</a></li>
         
+            <li><a href="#errorhandlerfactory">ErrorHandlerFactory</a></li>
+        
+            <li><a href="#errorresponsegeneratorfactory">ErrorResponseGeneratorFactory</a></li>
+        
+            <li><a href="#notfounddelegatefactory">NotFoundDelegateFactory</a></li>
+        
+            <li><a href="#notfoundhandlerfactory">NotFoundHandlerFactory</a></li>
+        
             <li><a href="#templatederrorhandlerfactory">TemplatedErrorHandlerFactory</a></li>
         
             <li><a href="#whoopserrorhandlerfactory">WhoopsErrorHandlerFactory</a></li>
+        
+            <li><a href="#whoopserrorresponsegeneratorfactory">WhoopsErrorResponseGeneratorFactory</a></li>
         
             <li><a href="#whoopsfactory">WhoopsFactory</a></li>
         
@@ -490,7 +557,7 @@
         <a rel="prev" href="../intro/"><i class="fa fa-arrow-left"></i> Previous</a>
       </li>
       <li class="next">
-        <a rel="next" href="../zend-servicemanager/">Next <i class="fa fa-arrow-right"></i></a>
+        <a rel="next" href="../delegator-factories/">Next <i class="fa fa-arrow-right"></i></a>
       </li>
     </ul>
     
@@ -514,13 +581,14 @@
 </ol>
 
 <h1 id="provided-factories">Provided Factories</h1>
-<p>Expressive provides several factories compatible with container-interop to
-facilitate setting up common dependencies. The following is a list of provided
+<p>Expressive provides several factories compatible with
+<a href="https://github.com/php-fig/container">PSR-11 Container</a> to facilitate 
+setting up common dependencies. The following is a list of provided
 containers, what they will create, the suggested service name, and any
 additional dependencies they may require.</p>
 <p>All factories, unless noted otherwise, are in the <code>Zend\Expressive\Container</code>
 namespace, and define an <code>__invoke()</code> method that accepts an
-<code>Interop\Container\ContainerInterface</code> instance as the sole argument.</p>
+<code>Psr\Container\ContainerInterface</code> instance as the sole argument.</p>
 <h2 id="applicationfactory">ApplicationFactory</h2>
 <ul>
 <li><strong>Provides</strong>: <code>Zend\Expressive\Application</code></li>
@@ -530,15 +598,16 @@ namespace, and define an <code>__invoke()</code> method that accepts an
 <li><code>Zend\Expressive\Router\RouterInterface</code>. When provided, the service will
   be used to construct the <code>Application</code> instance; otherwise, an FastRoute router
   implementation will be used.</li>
-<li><code>Zend\Expressive\FinalHandler</code>. This is a meta-service, as the only concrete
-  type required is a callable that can be used as a final middleware in the
-  case that the stack is exhausted before execution ends. By default, an
-  instance of <code>Zend\Stratigility\FinalHandler</code> will be used.</li>
+<li><code>Zend\Expressive\Delegate\DefaultDelegate</code>. This should return an
+  <code>Interop\Http\ServerMiddleware\DelegateInterface</code> instance to process
+  when the middleware pipeline is exhausted without returning a response;
+  by default, this will be a <code>Zend\Expressive\Delegate\NotFoundDelegate</code>
+  instance.</li>
 <li><code>Zend\Diactoros\Response\EmitterInterface</code>. If none is provided, an instance
   of <code>Zend\Expressive\Emitter\EmitterStack</code> composing a
   <code>Zend\Diactoros\Response\SapiEmitter</code> instance will be used.</li>
-<li><code>config</code>, an array or <code>ArrayAccess</code> instance. This will be used to seed the
-  application instance with pre/post pipeline middleware and/or routed
+<li><code>config</code>, an array or <code>ArrayAccess</code> instance. This <em>may</em> be used to seed the
+  application instance with pipeline middleware and/or routed
   middleware (see more below).</li>
 </ul>
 </li>
@@ -548,13 +617,32 @@ instance.</p>
 <p>When the <code>config</code> service is present, the factory can utilize several keys in
 order to seed the <code>Application</code> instance:</p>
 <ul>
-<li><code>middleware_pipeline</code> can be used to seed the middleware pipeline:</li>
+<li>
+<p><code>programmatic_pipeline</code> (bool) (Since 1.1.0): when enabled,
+  <code>middleware_pipeline</code> and <code>routes</code> configuration are ignored, and the factory
+  will assume that these are injected programmatically elsewhere.</p>
+</li>
+<li>
+<p><code>raise_throwables</code> (bool) (Since 1.1.0; obsolete as of 2.0.0): when enabled, 
+  this flag will prevent the Stratigility middleware dispatcher from catching
+  exceptions, and instead allow them to bubble outwards.</p>
+</li>
+<li>
+<p><code>middleware_pipeline</code> can be used to seed the middleware pipeline:</p>
+</li>
 </ul>
 <pre class="codehilite"><code class="language-php">'middleware_pipeline' =&gt; [
     // An array of middleware to register.
     [ /* ... */ ],
+
+    // Expressive 1.0:
     Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
     Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+
+    // Expressive 1.1 and above (above constants will still work, though):
+    Zend\Expressive\Application::ROUTING_MIDDLEWARE,
+    Zend\Expressive\Application::DISPATCH_MIDDLEWARE,
+
     [ /* ... */ ],
 ],</code></pre>
 
@@ -563,22 +651,25 @@ order to seed the <code>Application</code> instance:</p>
   middleware, must be an array itself, with the following structure:</p>
 <pre class="codehilite"><code class="language-php">[
     // required:
-    'middleware' =&gt; 'Name of middleware service, or a callable',
+    'middleware' =&gt; 'Name of middleware service, valid middleware, or an array of these',
     // optional:
     'path'  =&gt; '/path/to/match',
-    'error' =&gt; true,
     'priority' =&gt; 1, // Integer
+
+    // optional under Expressive 1.X; ignored under 2.X:
+    'error' =&gt; false, // boolean
 ],</code></pre>
 
 
 <p>The <code>middleware</code> key itself is the middleware to execute, and must be a
-  callable or the name of another defined service. If the <code>path</code> key is present,
-  that key will be used to segregate the middleware to a specific matched path
-  (in other words, it will not execute if the path is not matched). If the
-  <code>error</code> key is present and boolean <code>true</code>, then the middleware will be
-  registered as error middleware. (This is necessary due to the fact that the
-  factory defines a callable wrapper around middleware to enable lazy-loading of
-  middleware.) The <code>priority</code> defaults to 1, and follows the semantics of
+  service name resolving to valid middleware, middleware instances (either
+  http-interop middleware or callable double-pass middleware), or an array of
+  these values. If an array is provided, the specified middleware will be
+  composed into a <code>Zend\Stratigility\MiddlewarePipe</code> instance. </p>
+<p>If the <code>path</code> key is present, that key will be used to segregate the
+  middleware to a specific matched path (in other words, it will not execute if
+  the path is not matched).</p>
+<p>The <code>priority</code> defaults to 1, and follows the semantics of
   <a href="http://php.net/SplPriorityQueue">SplPriorityQueue</a>: higher integer values
   indicate higher priority (will execute earlier), while lower/negative integer
   values indicate lower priority (will execute last). Default priority is 1; use
@@ -587,6 +678,11 @@ order to seed the <code>Application</code> instance:</p>
 <p>You <em>can</em> specify keys for each middleware specification. These will be
   ignored by the factory, but can be useful when merging several configurations
   into one for the application.</p>
+<p>Under Expressive 1.X, if the <code>error</code> key is present and boolean <code>true</code>, then
+  the middleware will be registered as error middleware. (This is necessary due
+  to the fact that the factory defines a callable wrapper around middleware to
+  enable lazy-loading of middleware.) We recommend <em>not</em> using this feature;
+  see the chapter on <a href="../../error-handling/">error handling</a> for details.</p>
 <ul>
 <li><code>routes</code> is used to define routed middleware. The value must be an array,
   consisting of arrays defining each middleware:</li>
@@ -594,8 +690,8 @@ order to seed the <code>Application</code> instance:</p>
 <pre class="codehilite"><code class="language-php">'routes' =&gt; [
     [
         'path' =&gt; '/path/to/match',
-        'middleware' =&gt; 'Middleware Service Name or Callable',
-        'allowed_methods' =&gt; [ 'GET', 'POST', 'PATCH' ],
+        'middleware' =&gt; 'Middleware service name, valid middleware, or array of these values',
+        'allowed_methods' =&gt; ['GET', 'POST', 'PATCH'],
         'options' =&gt; [
             'stuff' =&gt; 'to',
             'pass'  =&gt; 'to',
@@ -610,8 +706,11 @@ order to seed the <code>Application</code> instance:</p>
 <pre class="codehilite"><code>- `path`: the path to match. Format will be based on the router you choose for
   your project.
 
-- `middleware`: a callable or a service name for the middleware to execute
-  when the route matches.</code></pre>
+- `middleware`: a service name resolving to valid middleware, valid
+  middleware (either http-interop middleware or callable double-pass
+  middleware), or an array of such values (which will be composed into
+  a `Zend\Stratigility\MiddlewarePipe` instance); this middleware will be
+  dispatched when the route matches.</code></pre>
 
 
 <p>Optionally, the route definition may provide:</p>
@@ -626,7 +725,91 @@ order to seed the <code>Application</code> instance:</p>
   passing constraints or default values.)</code></pre>
 
 
+<h2 id="errorhandlerfactory">ErrorHandlerFactory</h2>
+<p><strong>Since version 2.0</strong></p>
+<ul>
+<li><strong>Provides</strong>: <code>Zend\Stratigility\Middleware\ErrorHandler</code></li>
+<li><strong>Suggested Name</strong>: <code>Zend\Stratigility\Middleware\ErrorHandler</code></li>
+<li><strong>Requires</strong>: no additional services are required.</li>
+<li><strong>Optional</strong>:<ul>
+<li><code>Zend\Expressive\Middleware\ErrorResponseGenerator</code>. If not provided, the error
+  handler will not compose an error response generator, making it largely
+  useless other than to provide an empty response.</li>
+</ul>
+</li>
+</ul>
+<h2 id="errorresponsegeneratorfactory">ErrorResponseGeneratorFactory</h2>
+<p><strong>Since version 2.0</strong></p>
+<ul>
+<li><strong>Provides</strong>: <code>Zend\Expressive\Middleware\ErrorResponseGenerator</code></li>
+<li><strong>Suggested Name</strong>: <code>Zend\Stratigility\Middleware\ErrorResponseGenerator</code></li>
+<li><strong>Requires</strong>: no additional services are required.</li>
+<li><strong>Optional</strong>:<ul>
+<li><code>Zend\Expressive\Template\TemplateRendererInterface</code>. If not provided, the
+  error response generator will provide a plain text response instead of a
+  templated one.</li>
+<li><code>config</code>, an array or <code>ArrayAccess</code> instance. This will be used to seed the
+  <code>ErrorResponseGenerator</code> instance with a template name to use for errors (see
+  more below), and/or a "debug" flag value.</li>
+</ul>
+</li>
+</ul>
+<p>When the <code>config</code> service is present, the factory can utilize two values:</p>
+<ul>
+<li><code>debug</code>, a flag indicating whether or not to provide debug information when
+  creating an error response.</li>
+<li><code>zend-expressive.error_handler.template_error</code>, a name of an alternate
+  template to use (instead of the default represented in the
+  <code>Zend\Expressive\Middleware\ErrorResponseGenerator::TEMPLATE_DEFAULT</code>
+  constant).</li>
+</ul>
+<p>As an example:</p>
+<pre class="codehilite"><code class="language-php">'debug' =&gt; true,
+'zend-expressive' =&gt; [
+    'error_handler' =&gt; [
+        'template_error' =&gt; 'name of error template',
+    ],
+],</code></pre>
+
+
+<h2 id="notfounddelegatefactory">NotFoundDelegateFactory</h2>
+<p><strong>Since version 2.0</strong></p>
+<ul>
+<li><strong>Provides</strong>: <code>Zend\Expressive\Delegate\NotFoundDelegate</code></li>
+<li><strong>Suggested Name</strong>: <code>Zend\Expressive\Delegate\NotFoundDelegate</code>, and aliased
+  to <code>Zend\Expressive\Delegate\DefaultDelegate</code>.</li>
+<li><strong>Requires</strong>: no additional services are required.</li>
+<li><strong>Optional</strong>:<ul>
+<li><code>Zend\Expressive\Template\TemplateRendererInterface</code>. If not provided, the
+  delegate will provide a plain text response instead of a templated one.</li>
+<li><code>config</code>, an array or <code>ArrayAccess</code> instance. This will be used to seed the
+  <code>NotFoundDelegate</code> instance with a template name to use.</li>
+</ul>
+</li>
+</ul>
+<p>When the <code>config</code> service is present, the factory can utilize two values:</p>
+<ul>
+<li><code>zend-expressive.error_handler.template_404</code>, a name of an alternate
+  template to use (instead of the default represented in the
+  <code>Zend\Expressive\Delegate\NotFoundDelegate::TEMPLATE_DEFAULT</code> constant).</li>
+</ul>
+<p>As an example:</p>
+<pre class="codehilite"><code class="language-php">'zend-expressive' =&gt; [
+    'error_handler' =&gt; [
+        'template_404' =&gt; 'name of 404 template',
+    ],
+],</code></pre>
+
+
+<h2 id="notfoundhandlerfactory">NotFoundHandlerFactory</h2>
+<p><strong>Since version 2.0</strong></p>
+<ul>
+<li><strong>Provides</strong>: <code>Zend\Expressive\Middleware\NotFoundHandler</code></li>
+<li><strong>Suggested Name</strong>: <code>Zend\Expressive\Middleware\NotFoundHandler</code></li>
+<li><strong>Requires</strong>: <code>Zend\Expressive\Delegate\DefaultDelegate</code></li>
+</ul>
 <h2 id="templatederrorhandlerfactory">TemplatedErrorHandlerFactory</h2>
+<p><strong>Removed in version 2.0</strong></p>
 <ul>
 <li><strong>Provides</strong>: <code>Zend\Expressive\TemplatedErrorHandler</code></li>
 <li><strong>Suggested Name</strong>: <code>Zend\Expressive\FinalHandler</code></li>
@@ -652,6 +835,7 @@ seed the <code>Templated</code> instance:</p>
 
 
 <h2 id="whoopserrorhandlerfactory">WhoopsErrorHandlerFactory</h2>
+<p><strong>Removed in version 2.0.</strong></p>
 <ul>
 <li><strong>Provides</strong>: <code>Zend\Expressive\TemplatedErrorHandler</code></li>
 <li><strong>Suggested Name</strong>: <code>Zend\Expressive\FinalHandler</code></li>
@@ -671,6 +855,14 @@ seed the <code>Templated</code> instance:</p>
 </ul>
 <p>This factory uses <code>config</code> in the same way as the
 <code>TemplatedErrorHandlerFactory</code>.</p>
+<h2 id="whoopserrorresponsegeneratorfactory">WhoopsErrorResponseGeneratorFactory</h2>
+<p><strong>Since version 2.0</strong></p>
+<ul>
+<li><strong>Provides</strong>: <code>Zend\Expressive\Middleware\WhoopsErrorResponseGenerator</code></li>
+<li><strong>Suggested Name</strong>: <code>Zend\Expressive\Middleware\ErrorResponseGenerator</code></li>
+<li><strong>Requires</strong>: <code>Zend\Expressive\Whoops</code> (see <a href="#whoopsfactory">WhoopsFactory</a>,
+below)</li>
+</ul>
 <h2 id="whoopsfactory">WhoopsFactory</h2>
 <ul>
 <li><strong>Provides</strong>: <code>Whoops\Run</code></li>
@@ -835,7 +1027,7 @@ serverurl helpers, <code>Zend\Expressive\ZendView\UrlHelper</code> and
       <a rel="prev" href="../intro/"><i class="fa fa-arrow-left"></i> Previous</a>
     </li>
     <li class="next">
-      <a rel="next" href="../zend-servicemanager/">Next <i class="fa fa-arrow-right"></i></a>
+      <a rel="next" href="../delegator-factories/">Next <i class="fa fa-arrow-right"></i></a>
     </li>
   </ul>
 </nav>

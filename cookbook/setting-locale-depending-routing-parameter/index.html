@@ -110,6 +110,12 @@
                         
                             
 <li >
+    <a href="../../features/middleware-types/">Middleware Types</a>
+</li>
+
+                        
+                            
+<li >
     <a href="../../features/application/">Applications</a>
 </li>
 
@@ -128,6 +134,12 @@
             
 <li >
     <a href="../../features/container/factories/">Container Factories</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../features/container/delegator-factories/">Delegator Factories</a>
 </li>
 
         
@@ -256,6 +268,27 @@
 
                         
                             
+<li >
+    <a href="../../features/modular-applications/">Modular Applications</a>
+</li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Middleware</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../features/middleware/implicit-methods-middleware/">Implicit HEAD and OPTIONS Middleware</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
   <li class="dropdown-submenu">
     <a tabindex="-1" href="">Helpers</a>
     <ul class="dropdown-menu">
@@ -302,6 +335,12 @@
                     <li class="dropdown active">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cookbook <b class="caret"></b></a>
                         <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../autowiring-routes-and-pipelines/">Autowiring routes and pipeline middleware</a>
+</li>
+
                         
                             
 <li >
@@ -375,6 +414,12 @@
 </li>
 
                         
+                            
+<li >
+    <a href="../passing-data-between-middleware/">Passing data between middleware</a>
+</li>
+
+                        
                         </ul>
                     </li>
                 
@@ -387,6 +432,12 @@
                             
 <li >
     <a href="../../why-expressive/">Why choose Expressive?</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../reference/cli-tooling/">CLI Tooling</a>
 </li>
 
                         
@@ -416,6 +467,12 @@
             
 <li >
     <a href="../../reference/migration/to-v1-1/">To Expressive 1.1</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../reference/migration/to-v2/">To Expressive 2.0</a>
 </li>
 
         
@@ -504,7 +561,7 @@
 based on a routing parameter, the session, or a specialized sub-domain.
 In this recipe we will concentrate on using a routing parameter.</p>
 <blockquote>
-<h2 id="routing-parameters">Routing parameters</h2>
+<h3 id="routing-parameters">Routing parameters</h3>
 <p>Using the approach in this chapter requires that you add a <code>/:locale</code> (or
 similar) segment to each and every route that can be localized, and, depending
 on the router used, may also require additional options for specifying
@@ -515,21 +572,40 @@ on <a href="../setting-locale-without-routing-parameter/">setting the locale wit
 <h2 id="setting-up-the-route">Setting up the route</h2>
 <p>If you want to set the locale depending on an routing parameter, you first have
 to add a locale parameter to each route that requires localization.</p>
-<p>In this example we use the <code>locale</code> parameter, which should consist of two
-lowercase alphabetical characters:</p>
-<pre class="codehilite"><code class="language-php">return [
+<p>In the following examples, we use the <code>locale</code> parameter, which should consist
+of two lowercase alphabetical characters.</p>
+<h3 id="dependency-configuration">Dependency configuration</h3>
+<p>The examples assume the following middleware dependency configuration:</p>
+<pre class="codehilite"><code class="language-php">use Application\Action;
+
+return [
     'dependencies' =&gt; [
-        'invokables' =&gt; [
-            Zend\Expressive\Router\RouterInterface::class =&gt;
-                Zend\Expressive\Router\ZendRouter::class,
-        ],
         'factories' =&gt; [
-            Application\Action\HomePageAction::class =&gt;
-                Application\Action\HomePageFactory::class,
-            Application\Action\ContactPageAction::class =&gt;
-                Application\Action\ContactPageFactory::class,
+            Action\HomePageAction::class    =&gt; Action\HomePageFactory::class,
+            Action\ContactPageAction::class =&gt; Action\ContactPageFactory::class,
         ],
     ],
+];</code></pre>
+
+
+<h3 id="programmatic-routes">Programmatic routes</h3>
+<p>The following describes routing configuration for use when using a
+programmatic application.</p>
+<pre class="codehilite"><code class="language-php">use Application\Action\ContactPageAction;
+use Application\Action\HomePageAction;
+
+$localeOptions = ['locale' =&gt; '[a-z]{2,3}([-_][a-zA-Z]{2}|)'];
+
+$app-&gt;get('/:locale', HomePageAction::class, 'home')
+    -&gt;setOptions($localeOptions);
+$app-&gt;get('/:locale/contact', ContactPageAction::class, 'contact')
+    -&gt;setOptions($localeOptions);</code></pre>
+
+
+<h3 id="configuration-based-routes">Configuration-based routes</h3>
+<p>The following describes routing configuration for use when using a
+configuration-driven application.</p>
+<pre class="codehilite"><code class="language-php">return [
     'routes' =&gt; [
         [
             'name' =&gt; 'home',
@@ -598,26 +674,27 @@ registered in the pipeline immediately following the routing middleware.</p>
 
 namespace Application\I18n;
 
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Locale;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class LocalizationMiddleware
+class LocalizationMiddleware implements MiddlewareInterface
 {
     const LOCALIZATION_ATTRIBUTE = 'locale';
 
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         // Get locale from route, fallback to the user's browser preference
         $locale = $request-&gt;getAttribute(
             'locale',
             Locale::acceptFromHttp(
-                isset($request-&gt;getServerParams()['HTTP_ACCEPT_LANGUAGE']) ? $request-&gt;getServerParams()['HTTP_ACCEPT_LANGUAGE'] : 'en_US'
+                $request-&gt;getServerParams()['HTTP_ACCEPT_LANGUAGE'] ?? 'en_US'
             )
         );
 
         // Store the locale as a request attribute
-        return $next($request-&gt;withAttribute(self::LOCALIZATION_ATTRIBUTE, $locale), $response);
+        return $delegate-&gt;process($request-&gt;withAttribute(self::LOCALIZATION_ATTRIBUTE, $locale));
     }
 }</code></pre>
 
@@ -630,9 +707,8 @@ overwriting the value, and thus lead to unexpected results for your users.</p>
 <p>Use a request parameter as detailed above instead, as the request is created
 specific to each process.</p>
 </blockquote>
-<p>In your <code>config/autoload/middleware-pipeline.global.php</code>, you'd register the
-dependency, and inject the middleware into the pipeline following the routing
-middleware:</p>
+<p>Register this new middleware in either <code>config/autoload/middleware-pipeline.global.php</code>
+or <code>config/autoload/dependencies.global.php</code>:</p>
 <pre class="codehilite"><code class="language-php">return [
     'dependencies' =&gt; [
         'invokables' =&gt; [
@@ -641,6 +717,22 @@ middleware:</p>
         ],
         /* ... */
     ],
+];</code></pre>
+
+
+<p>If using a programmatic pipeline, pipe it immediately after your routing middleware:</p>
+<pre class="codehilite"><code class="language-php">use Application\I18n\LocalizationMiddleware;
+
+/* ... */
+$app-&gt;pipeRoutingMiddleware();
+$app-&gt;pipe(LocalizationMiddleware::class);
+/* ... */</code></pre>
+
+
+<p>If using a configuration-driven application, register it within your 
+<code>config/autoload/middleware-pipeline.global.php</code> file, injecting it
+into the pipeline following the routing middleware:</p>
+<pre class="codehilite"><code class="language-php">return [
     'middleware_pipeline' =&gt; [
         /* ... */
         [

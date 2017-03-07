@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <link rel="shortcut icon" href="../../../img/favicon.ico">
+
+    <title>To Expressive 2.0 - Expressive</title>
+
+    <link href="../../../css/bootstrap-custom.min.css" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.018/css/hack.min.css">
+    <link href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic&subset=latin-ext,latin" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Libre+Baskerville:400,400italic,700&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+    <link href="../../../css/base.css" rel="stylesheet">
+    <link href="../../../css/zf.css" rel="stylesheet">
+    <link href="../../../css/prism-zf.css" rel="stylesheet">
+
+
+    <link href="../../../css/zend-expressive.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js"></script>
+    <script>
+    WebFont.load({
+        google: {
+            families: ['Open Sans', 'PT Sans']
+        }
+    });
+    </script>
+
+    
+</head>
+
+<body>
+
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+            <span class="navbar-brand">
+              <a class="logo-link" href="http://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Zend Framework"><img src="../../../img/zf-logo-mark.png" height="28" alt="Zend Framework" /></a>
+              <a href="../../..">Expressive</a>
+            </span>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="../../..">Home</a>
+                    </li>
+                
+                
+                
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Getting Started <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../../getting-started/features/">Overview and Features</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../getting-started/standalone/">Quick Start: Standalone</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../getting-started/skeleton/">Quick Start: Skeleton Installer</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Features <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../../features/middleware-types/">Middleware Types</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../features/application/">Applications</a>
+</li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Containers</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../../features/container/intro/">Introduction</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../../features/container/factories/">Container Factories</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../../features/container/delegator-factories/">Delegator Factories</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../../features/container/zend-servicemanager/">Using zend-servicemanager</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../../features/container/pimple/">Using Pimple</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../../features/container/aura-di/">Using Aura.Di</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Routing Adapters</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../../features/router/intro/">Introduction</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../../features/router/interface/">Routing Interface</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../../features/router/uri-generation/">URI Generation</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../../features/router/piping/">Routing vs Piping</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../../features/router/aura/">Using Aura</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../../features/router/fast-route/">Using FastRoute</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../../features/router/zf2/">Using the ZF2 Router</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Templating</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../../features/template/intro/">Introduction</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../../features/template/interface/">Template Renderer Interface</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../../features/template/middleware/">Templated Middleware</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../../features/template/plates/">Using Plates</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../../features/template/twig/">Using Twig</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../../features/template/zend-view/">Using zend-view</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
+<li >
+    <a href="../../../features/error-handling/">Error Handling</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../features/modular-applications/">Modular Applications</a>
+</li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Middleware</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../../features/middleware/implicit-methods-middleware/">Implicit HEAD and OPTIONS Middleware</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Helpers</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../../features/helpers/intro/">Introduction</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../../features/helpers/url-helper/">UrlHelper</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../../features/helpers/server-url-helper/">ServerUrlHelper</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../../features/helpers/body-parse/">Body Parsing Middleware</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
+<li >
+    <a href="../../../features/emitters/">Emitters</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cookbook <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../../cookbook/autowiring-routes-and-pipelines/">Autowiring routes and pipeline middleware</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/common-prefix-for-routes/">Prepending a common path to all routes</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/route-specific-pipeline/">Route-specific middleware pipelines</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/custom-404-page-handling/">Setting custom 404 page handling</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/using-custom-view-helpers/">Registering custom view helpers when using zend-view</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/using-zend-form-view-helpers/">Using zend-form view helpers</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/using-a-base-path/">Using Expressive from a subdirectory</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/modular-layout/">Building modular applications</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/setting-locale-depending-routing-parameter/">Setting a locale based on a routing parameter</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/setting-locale-without-routing-parameter/">Setting a locale without a routing parameter</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/debug-toolbars/">Enabling debug toolbars</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/using-routed-middleware-class-as-controller/">Handling multiple routes in a single class</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/flash-messengers/">Flash Messengers</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../cookbook/passing-data-between-middleware/">Passing data between middleware</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reference <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../../why-expressive/">Why choose Expressive?</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../cli-tooling/">CLI Tooling</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../usage-examples/">Examples</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../expressive-projects/">Expressive Projects</a>
+</li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Migration</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../rc-to-v1/">From RC5 and Earlier</a>
+</li>
+
+        
+            
+<li >
+    <a href="../to-v1-1/">To Expressive 1.1</a>
+</li>
+
+        
+            
+<li class="active">
+    <a href="./">To Expressive 2.0</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                </ul>
+            
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" class="component-toggle" data-toggle="tooltip" data-placement="bottom" title="Show component list">
+                        <i class="fa fa-book"></i> Components
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                
+                    <li>
+                        <a href="https://github.com/zendframework/zend-expressive">
+                            
+                                <i class="fa fa-github"></i>
+                            
+                            GitHub
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+    <!-- content:begin -->
+    <div class="container">
+        
+        <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#migration-to-expressive-20">Migration to Expressive 2.0</a></li>
+        
+            <li><a href="#signature-changes">Signature changes</a></li>
+        
+            <li><a href="#removed-functionality">Removed functionality</a></li>
+        
+            <li><a href="#deprecated-functionality">Deprecated functionality</a></li>
+        
+            <li><a href="#psr-11-support">PSR-11 support</a></li>
+        
+            <li><a href="#http-interop">http-interop</a></li>
+        
+            <li><a href="#original-messages">Original messages</a></li>
+        
+            <li><a href="#error-handling">Error handling</a></li>
+        
+            <li><a href="#final-handlers-become-default-delegates">Final handlers become default delegates</a></li>
+        
+            <li><a href="#programmatic-middleware-pipelines">Programmatic middleware pipelines</a></li>
+        
+            <li><a href="#handling-head-and-options-requests">Handling HEAD and OPTIONS requests</a></li>
+        
+            <li><a href="#router-interface-changes">Router interface changes</a></li>
+        
+            <li><a href="#url-helper-changes">URL helper changes</a></li>
+        
+            <li><a href="#zend-view-renderer-changes">zend-view renderer changes</a></li>
+        
+            <li><a href="#twig-renderer-changes">Twig renderer changes</a></li>
+        
+    
+    </ul>
+
+    
+    <ul class="pager hidden-print">
+      <li class="previous">
+        <a rel="prev" href="../to-v1-1/"><i class="fa fa-arrow-left"></i> Previous</a>
+      </li>
+      <li class="next disabled ">
+        <a rel="next" >Next <i class="fa fa-arrow-right"></i></a>
+      </li>
+    </ul>
+    
+</div></div>
+        <div class="col-md-9" role="main">
+
+<ol class="breadcrumb" role="navigation" aria-label="breadcrumbs navigation">
+  <li><a href="../../..">Docs</a> &raquo;</li>
+  
+    
+      
+        <li>Reference &raquo;</li>
+      
+    
+      
+        <li>Migration &raquo;</li>
+      
+    
+  
+  <li class="active">To Expressive 2.0</li>
+</ol>
+
+<h1 id="migration-to-expressive-20">Migration to Expressive 2.0</h1>
+<p>Expressive 2.0 should not result in many upgrade problems for users. However,
+starting in this version, we offer a few changes affecting the following that
+you should be aware of, and potentially update your application to adopt:</p>
+<ul>
+<li><a href="#signature-changes">Signature changes</a></li>
+<li><a href="#removed-functionality">Removed functionality</a></li>
+<li><a href="#deprecated-functionality">Deprecated functionality</a></li>
+<li><a href="#psr-11-support">PSR-11 support</a></li>
+<li><a href="#http-interop">Usage of http-interop middleware</a></li>
+<li><a href="#original-messages">Original request and response messages</a></li>
+<li><a href="#error-handling">Error handling</a></li>
+<li><a href="#final-handlers-become-default-delegates">Final handlers become default delegates</a></li>
+<li><a href="#programmatic-middleware-pipelines">Programmatic middleware pipelines</a></li>
+<li><a href="#handling-head-and-options-requests">Implicit handling of <code>HEAD</code> and <code>OPTIONS</code> requests</a></li>
+<li><a href="#router-interface-changes">RouterInterface changes</a></li>
+<li><a href="#url-helper-changes">URL helper changes</a></li>
+<li><a href="#zend-view-renderer-changes">zend-view renderer changes</a></li>
+<li><a href="#twig-renderer-changes">Twig renderer changes</a></li>
+</ul>
+<h2 id="signature-changes">Signature changes</h2>
+<p>The following signature changes were made that could affect <em>class extensions</em>:</p>
+<ul>
+<li><code>Zend\Expressive\Application::__call($method, array $args)</code>: previously, the
+  <code>$args</code> argument was not typehinted; it now is. If you are extending this
+  class and overriding that method, you will need to update your method
+  signature accordingly.</li>
+</ul>
+<p>Additionally, a number of signatures change due to updating Expressive to
+support <a href="http://www.php-fig.org/psr/psr-11/">PSR-11</a> instead of
+<a href="https://github.com/container-interop/container-interop">container-interop</a>
+(which was the basis for PSR-11). Essentially, these were a matter of updating
+typehints on <code>Interop\Container\ContainerInterface</code> to
+<code>Psr\Container\ContainerInterface</code>. Signatures affected include:</p>
+<ul>
+<li><code>Zend\Expressive\AppFactory::create()</code></li>
+<li><code>Zend\Expressive\Application::__construct()</code></li>
+<li><code>Zend\Expressive\Container\ApplicationFactory::__invoke()</code></li>
+<li><code>Zend\Expressive\Container\ErrorHandlerFactory::__invoke()</code></li>
+<li><code>Zend\Expressive\Container\ErrorResponseGeneratorFactory::__invoke()</code></li>
+<li><code>Zend\Expressive\Container\NotFoundDelegateFactory::__invoke()</code></li>
+<li><code>Zend\Expressive\Container\NotFoundHandlerFactory::__invoke()</code></li>
+<li><code>Zend\Expressive\Container\WhoopsErrorResponseGeneratorFactory::__invoke()</code></li>
+<li><code>Zend\Expressive\Container\WhoopsFactory::__invoke()</code></li>
+<li><code>Zend\Expressive\Container\WhoopsPageHandlerFactory::__invoke()</code></li>
+</ul>
+<p>In each of the above cases, updating your import statements from
+<code>Interop\Container\ContainerInterface</code> to <code>Psr\Container\ContainerInterface</code>
+will make your code work again.</p>
+<p>The following exceptions now implement PSR-11 exception interfaces instead of container-interop variants:</p>
+<ul>
+<li><code>Zend\Expressive\Container\Exception\InvalidServiceException</code></li>
+</ul>
+<p>In the above case, if you were previously catching the container-interop
+exception on which it was based, your code should still work so long as you
+have container-interop installed. You should likely update it to catch the more
+general <code>Psr\Container\ContainerExceptionInterface</code> instead, however.</p>
+<h2 id="removed-functionality">Removed functionality</h2>
+<p>The following classes and/or methods were removed for the Expressive 2.0
+release:</p>
+<ul>
+<li>
+<p><code>Zend\Expressive\Application::pipeErrorHandler()</code>. Stratigility 2.0 dropped
+  its <code>ErrorMiddlewareInterface</code> and the concept of error middleware (middleware
+  supporting an additional <code>$error</code> argument in its signature); this method was
+  thus no longer relevant.</p>
+</li>
+<li>
+<p><code>Zend\Expressive\Application::routeMiddleware()</code>. Routing middleware was
+  extracted to the class <code>Zend\Expressive\Middleware\RouteMiddleware</code>.</p>
+</li>
+<li>
+<p><code>Zend\Expressive\Application::dispatchMiddleware()</code>. Dispatch middleware was
+  extracted to the class <code>Zend\Expressive\Middleware\DispatchMiddleware</code>.</p>
+</li>
+<li>
+<p><code>Zend\Expressive\Application::getFinalHandler()</code>. Stratigility 2 supports the
+  http-interop/http-middleware project, and now uses <em>delegates</em>. This method
+  was renamed to <code>getDefaultDelegate()</code>, and now returns an
+  <code>Interop\Http\ServerMiddleware\DelegateInterface</code> instance.</p>
+</li>
+<li>
+<p><code>Zend\Expressive\Container\Exception\InvalidArgumentException</code>. This exception
+  was thrown by <code>Zend\Expressive\Container\ApplicationFactory</code> previously; that
+  class now throws <code>Zend\Expressive\Exception\InvalidArgumentException</code> instead.</p>
+</li>
+<li>
+<p><code>Zend\Expressive\Container\Exception\NotFoundException</code>. This exception type
+  was never used internally.</p>
+</li>
+<li>
+<p><code>Zend\Expressive\ErrorMiddlewarePipe</code>. With the removal of Stratigility 1
+  error middleware, this specialized <code>MiddlewarePipe</code> no longer has any use.</p>
+</li>
+<li>
+<p><code>Zend\Expressive\Container\TemplatedErrorHandlerFactory</code>. See the section on
+  <a href="#final-handlers-become-default-delegates">final handler changes</a> for more
+  information.</p>
+</li>
+<li>
+<p><code>Zend\Expressive\Container\WhoopsErrorHandlerFactory</code>. See the section on
+  <a href="#final-handlers-become-default-delegates">final handler changes</a> for more
+  information.</p>
+</li>
+<li>
+<p><code>Zend\Expressive\TemplatedErrorHandler</code>. See the section on
+  <a href="#final-handlers-become-default-delegates">final handler changes</a> for more
+  information.</p>
+</li>
+<li>
+<p><code>Zend\Expressive\WhoopsErrorHandler</code>. See the section on
+  <a href="#final-handlers-become-default-delegates">final handler changes</a> for more
+  information.</p>
+</li>
+</ul>
+<h2 id="deprecated-functionality">Deprecated functionality</h2>
+<ul>
+<li><code>Zend\Expressive\Application::raiseThrowables()</code>. Stratigility 2.0 makes the
+  method a no-op, as exceptions are no longer caught by the middleware
+  dispatcher. As such, the <code>raise_throwables</code> configuration argument now is no
+  longer used, either.</li>
+</ul>
+<h2 id="psr-11-support">PSR-11 support</h2>
+<p>In previous versions of Expressive, we consumed
+<a href="https://github.com/container-interop/container-interop">container-interop</a>,
+which provides <code>Interop\Container\ContainerInterface</code>, a shared interface for
+dependency injection containers. container-interop served as a working group for the 
+<a href="http://www.php-fig.org/psr/psr-11/">PSR-11</a> specification.</p>
+<p>In the weeks prior to the Expressive 2.0 release, PSR-11 was formally accepted,
+and the package <code>psr/container</code> was released. As such, we have updated
+Expressive to consume the interfaces PSR-11 exposes.</p>
+<p>No supported implementations currently directly implement PSR-11, however.
+Fortunately, the container-interop 1.2.0 release acts as a
+forwards-compatibility measure by altering every interface it exposes to extend
+those from PSR-11, making existing container-interop implementations <em>de facto</em>
+PSR-11 implementations!</p>
+<p>The result is a (mostly) transparent upgrade for users of Expressive. As newer
+versions of container implementations are released supporting PSR-11 directly,
+you will be able to upgrade immediately; we will also periodically update the
+skeleton to pick up these new versions when present. (The one caveat to
+upgrading is <a href="#signature-changes">signature changes</a> within Expressive classes
+based on the new psr/container interface names.)</p>
+<p>As long as you have container-interop 1.2.0 installed, your existing factories
+that typehint against its interface will continue to work. However, we
+recommend updating them to instead typehint against PSR-11, which will allow
+you to drop the container-interop requirement once your chosen container
+implementation no longer requires it.</p>
+<h2 id="http-interop">http-interop</h2>
+<p>Stratigility 2.0 provides the ability to work with <a href="https://github.com/http-interop/http-middleware/tree/0.4.1">http-interop middleware
+0.4.1</a>.</p>
+<p>This specification, which is being developed as the basis of
+<a href="https://github.com/php-fig/fig-standards/tree/master/proposed/http-middleware">PSR-15</a>,
+defines what is known as <em>lambda</em> or <em>single-pass</em> middleware, vs the
+<em>double-pass</em> middleware traditionally used by Stratigility and Expressive.</p>
+<p>Double-pass refers to the fact that two arguments are passed to the delegation
+function <code>$next</code>: the request and response. Lambda or single-pass middleware
+only pass a single argument, the request.</p>
+<p>Stratigility 2.0 provides support for dispatching either style of middleware.</p>
+<p>Specifically, your middleware can now implement:</p>
+<ul>
+<li><code>Interop\Http\ServerMiddleware\MiddlewareInterface</code>, which defines a single
+  method, <code>process(Psr\Http\Message\ServerRequestInterface $request,
+  Interop\Http\ServerMiddleware\Interface $delegate)</code>.</li>
+<li>Callable middleware that follows the above signature (the typehint for the
+  request argument is optional).</li>
+</ul>
+<p>Both styles of middleware may be piped directly to the middleware pipeline or as
+routed middleware within Expressive. In each case, you can invoke the
+next middleware layer using <code>$delegate-&gt;process($request)</code>.</p>
+<p>In Expressive 2.0, <code>Application</code> will continue to accept the legacy double-pass
+signature, but will require that you either:</p>
+<ul>
+<li>Provide a <code>$responsePrototype</code> (a <code>ResponseInterface</code> instance) to the
+  <code>Application</code> instance prior to piping or routing such middleware.</li>
+<li>Decorate the middleware in a <code>Zend\Stratigility\Middleware\CallableMiddlewareWrapper</code>
+  instance (which also requires a <code>$responsePrototype</code>).</li>
+</ul>
+<p>If you use <code>Zend\Expressive\Container\ApplicationFactory</code> to create your
+<code>Application</code> instance, a response prototype will be injected for you from the
+outset.</p>
+<p>We recommend that you begin writing middleware to follow the http-interop
+standard at this time. As an example:</p>
+<pre class="codehilite"><code class="language-php">namespace App\Middleware;
+
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
+class XClacksOverheadMiddleware implements MiddlewareInterface
+{
+    /**
+     * {@inheritDoc}
+     */
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
+        $response = $delegate-&gt;process($request);
+        return $response-&gt;withHeader('X-Clacks-Overhead', 'GNU Terry Pratchett');
+    }
+}</code></pre>
+
+
+<p>Alternately, you can write this as a callable:</p>
+<pre class="codehilite"><code class="language-php">namespace App\Middleware;
+
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
+class XClacksOverheadMiddleware
+{
+    /**
+     * @param ServerRequestInterface $request
+     * @param DelegateInterface $delegate
+     * @return ResponseInterface
+     */
+    public function __invoke(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
+        $response = $delegate-&gt;process($request);
+        return $response-&gt;withHeader('X-Clacks-Overhead', 'GNU Terry Pratchett');
+    }
+}</code></pre>
+
+
+<h2 id="original-messages">Original messages</h2>
+<p>In the <a href="../to-v1-1/">migration to version 1.1 guide</a>, we detail the fact that
+Stratigility 1.3 deprecated its internal request and response decorators.
+Stratigility 2.0, on which Expressive 2.0 is based, removes them entirely.</p>
+<p>If your code relied on the various <code>getOriginal*()</code> methods those decorators
+exposed, you will need to update your code in two ways:</p>
+<ul>
+<li>You will need to add <code>Zend\Stratigility\Middleware\OriginalMessages</code> to your
+  middleware pipeline, as the outermost (or close to outermost) layer.</li>
+<li>You will need to update your code to call on the request instance's
+  <code>getAttribute()</code> method with one of <code>originalRequest</code>, <code>originalUri</code>, or
+  <code>originalResponse</code> to retrieve the values.</li>
+</ul>
+<p>To address the first point, see the <a href="../to-v1-1/#original-messages">Expressive 1.1 migration
+documentation</a>, which details how to update your
+configuration or programmatic pipeline.</p>
+<p>For the second point, we provide a tool via the
+<a href="https://github.com/zendframework/zend-expressive-tooling">zendframework/zend-expressive-tooling</a>
+package which will help you in this latter part of the migration. Install it as
+a development requirement via composer:</p>
+<pre class="codehilite"><code class="language-bash">$ composer require --dev zendframework/zend-expressive-tooling</code></pre>
+
+
+<p>And then execute it via:</p>
+<pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive-migrate-original-messages</code></pre>
+
+
+<p>This tool will update calls to <code>getOriginalRequest()</code> and <code>getOriginalUri()</code> to
+instead use the new request attributes that the <code>OriginalMessages</code> middleware
+injects:</p>
+<ul>
+<li><code>getOriginalRequest()</code> becomes <code>getAttribute('originalRequest', $request)</code></li>
+<li><code>getOriginalUri()</code> becomes <code>getAttribute('originalUri', $request-&gt;getUri())</code></li>
+</ul>
+<p>In both cases, <code>$request</code> will be replaced with whatever variable name you used
+for the request instance.</p>
+<p>For <code>getOriginalResponse()</code> calls, which happen on the response instance, the
+tool will instead tell you what files had such calls, and detail how you can
+update those calls to use the <code>originalResponse</code> request attribute.</p>
+<h2 id="error-handling">Error handling</h2>
+<p>As noted in the <a href="../to-v1-1/#error-handling">Expressive 1.1 migration docs</a>,
+Stratigility 1.3 introduced the ability to tell it to no longer catch exceptions
+internally, paving the way for middleware-based error handling. Additionally, it
+deprecated its own <code>ErrorMiddlewareInterface</code> and duck-typed implementations of
+the interface in favor of middleware-based error handling. Finally, it
+deprecated the <code>$e</code>/<code>$error</code> argument to "final handlers", as that argument
+would be used only when attempting to invoke <code>ErrorMiddlewareInterface</code>
+instances.</p>
+<p>Stratigility 2.0, on which Expressive 2.0 is based, no longer catches exceptions
+internally, removes the <code>ErrorMiddlewareInterface</code> entirely, and thus the
+<code>$e</code>/<code>$error</code> argument to final handlers.</p>
+<p>As such, you <strong>MUST</strong> provide your own error handling with Expressive 2.0.</p>
+<p>Error handling middleware will typically introduce a try/catch block:</p>
+<pre class="codehilite"><code class="language-php">function (
+    ServerRequestInterface $request,
+    ResponseInterface $response,
+    callable $next
+) {
+    try {
+        $response = $next($request, $response);
+        return $response;
+    } catch (\Throwable $exception) {
+        // caught PHP 7 throwable
+    } catch (\Exception $exception) {
+        // caught PHP 5 exception
+    }
+
+    // ... 
+    // do something with $exception and generate a response
+    // ...
+
+    return $response;
+}</code></pre>
+
+
+<p>Additionally, you will need middleware registered as your innermost layer that
+is guaranteed to return a response. Generally, if you hit that layer, no other
+middleware is capable of handling the request, indicating a 400 (Bad Request) or
+404 (Not Found) HTTP status. With the combination of an error handler at the
+outermost layer, and a "not found" handler at the innermost layer, you can
+handle any error in your application.</p>
+<p>Stratigility 1.3 and 2.0 provide an error handler implementation via
+<code>Zend\Stratigility\Middleware\ErrorHandler</code>. In addition to the try/catch block,
+it also sets up a PHP error handler that will catch any PHP error types in the
+current <code>error_reporting</code> mask; the error handler will raise exceptions of the
+type <code>ErrorException</code> with the PHP error details.</p>
+<p><code>ErrorHandler</code> allows injection of an "error response generator", which allows
+you to alter how the error response is generated based on the current
+environment. Error response generators are callables with the signature:</p>
+<pre class="codehilite"><code class="language-php">function (
+    Throwable|Exception $e,
+    ServerRequestInterface $request,
+    ResponseInterface $response
+) : ResponseInterface</code></pre>
+
+
+<p>Expressive 2.0 provides the following functionality to assist with your error
+handling needs:</p>
+<ul>
+<li>
+<p><code>Zend\Expressive\Middleware\ErrorResponseGenerator</code> will output a canned
+  plain/text message, or use a supplied template renderer to generate content
+  for the response. It accepts the following arguments to its constructor:</p>
+<ul>
+<li>
+<p><code>$isDevelopmentMode = false</code>: whether or not the application is in
+  development mode. If so, it will output stack traces when no template
+  renderer is used (see below), or supply the exception to the template via
+  the <code>error</code> variable if a renderer is present.</p>
+</li>
+<li>
+<p><code>Zend\Expressive\Template\TemplateRendererInterface $renderer</code>: if
+  supplied, the results of rendering a template will be injected into
+  the response. Templates are passed the following variables:</p>
+<ul>
+<li><code>response</code>: the response at the time of rendering</li>
+<li><code>request</code>: the request at the time of rendering</li>
+<li><code>uri</code>: the URI at the time of rendering</li>
+<li><code>status</code>: the response status code</li>
+<li><code>reason</code>: the response reason phrase</li>
+<li><code>error</code>: the exception; this is only provided when in development mode.</li>
+</ul>
+</li>
+<li>
+<p><code>$template = 'error::error'</code>: the template to render, with a default value
+  if none is provided.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>Zend\Expressive\Container\ErrorResponseGeneratorFactory</code> can create an
+  instance of the <code>ErrorResponseGenerator</code> using the following:</p>
+<ul>
+<li>
+<p>The <code>debug</code> top-level configuration value is used to set the
+  <code>$isDevelopmentMode</code> flag.</p>
+</li>
+<li>
+<p>If a <code>Zend\Expressive\Template\TemplateRendererInterface</code> service is
+  registered, it will be provided to the constructor.</p>
+</li>
+<li>
+<p>The value of <code>zend-expressive.error_handler.template_error</code>, if present,
+  will be used to seed the <code>$template</code> argument.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>Zend\Expressive\Middleware\WhoopsErrorResponseGenerator</code> uses Whoops to 
+  generate the error response. Its constructor takes a single argument, a
+  <code>Whoops\Run</code> instance. If a <code>Whoops\Handler\PrettyPageHandler</code> is registered
+  with the instance, it will add a data table with request details derived from
+  the <code>ServerRequestInterface</code> instance.<br/><br/>
+  <code>Zend\Expressive\Container\WhoopsErrorResponseGeneratorFactory</code> can create an
+  instance, and will use the <code>Zend\Expressive\Whoops</code> service to seed the
+  <code>Whoops\Run</code> argument.</p>
+</li>
+<li>
+<p><code>Zend\Expressive\Middleware\NotFoundHandler</code> can be used as the innermost
+  layer of your pipeline in order to return a 404 response. (Typically, if you
+  get to the innermost layer, no middleware was able to handle the request,
+  indicating a 404.) By default, it will produce a canned plaintext response.
+  However, you can also provide an optional <code>TemplateRendererInterface</code> instance
+  and <code>$template</code> in order to provided templated content.<br/><br/>
+  The constructor arguments are:</p>
+<ul>
+<li>
+<p><code>ResponseInterface $responsePrototype</code>: this is an empty response on which
+  to set the 404 status and inject the 404 content.</p>
+</li>
+<li>
+<p><code>TemplateRendererInterface $renderer</code>: optionally, you may provide a
+  renderer to use in order to provide templated response content.</p>
+</li>
+<li>
+<p>$template = 'error::404'`: optionally, you may provide a
+  template to render; if none is provided, a sane default is used.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>Zend\Expressive\Container\NotFoundHandlerFactory</code> can create an instance of
+  the <code>NotFoundHandler</code> for you, and will use the following to do so:</p>
+<ul>
+<li>
+<p>The <code>Zend\Expressive\Template\TemplateRendererInterface</code> service, if
+  available.</p>
+</li>
+<li>
+<p>The <code>zend-expressive.error_handler.template_404</code> configuration value, if
+  available, will be used for the <code>$template</code>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>Zend\Expressive\Container\ErrorHandlerFactory</code> will create an instance of
+  <code>Zend\Stratigility\Middleware\ErrorHandler</code>, and use the
+  <code>Zend\Stratigility\Middleware\ErrorResponseGenerator</code> service to seed
+  it.<br/><br/>
+  As such, register one of the following as a factory for the
+  <code>Zend\Stratigility\Middleware\ErrorResponseGenerator</code> service:</p>
+<ul>
+<li><code>Zend\Expressive\Container\ErrorResponseGeneratorFactory</code></li>
+<li><code>Zend\Expressive\Container\WhoopsErrorResponseGeneratorFactory</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="error-handler-configuration-example">Error handler configuration example</h3>
+<p>If you are using configuration-driven middleware, your middleware pipeline
+configuration may look like this in order to make use of the new error handling
+facilities:</p>
+<pre class="codehilite"><code class="language-php">// config/autoload/middleware-pipeline.global.php
+
+use Zend\Expressive\Application;
+use Zend\Expressive\Container;
+use Zend\Expressive\Helper;
+use Zend\Expressive\Middleware;
+use Zend\Stratigility\Middleware\ErrorHandler;
+use Zend\Stratigility\Middleware\OriginalMessages;
+
+return [
+    // Add the following section to enable the new error handling:
+    'zend-expressive' =&gt; [
+        'raise_throwables' =&gt; true,
+    ],
+
+    'dependencies' =&gt; [
+        'invokables' =&gt; [
+            // See above section on &quot;Original messages&quot;:
+            OriginalMessages::class =&gt; OriginalMessages::class,
+        ],
+        'factories' =&gt; [
+            Helper\ServerUrlMiddleware::class =&gt; Helper\ServerUrlMiddlewareFactory::class,
+            Helper\UrlHelperMiddleware::class =&gt; Helper\UrlHelperMiddlewareFactory::class,
+
+            // Add the following three entries:
+            ErrorHandler::class =&gt; Container\ErrorHandlerFactory::class,
+            Middleware\ErrorResponseGenerator::class =&gt; Container\ErrorResponseGeneratorFactory::class,
+            Middleware\NotFoundHandler::class =&gt; Container\NotFoundHandlerFactory::class,
+        ],
+    ],
+
+    'middleware_pipeline' =&gt; [
+        'always' =&gt; [
+            'middleware' =&gt; [
+                OriginalMessages::class,
+                Helper\ServerUrlMiddleware::class,
+                ErrorHandler::class,
+                /* ... */
+            ],
+            'priority' =&gt; 10000,
+        ],
+
+        'routing' =&gt; [
+            'middleware' =&gt; [
+                Application::ROUTING_MIDDLEWARE,
+                Helper\UrlHelperMiddleware::class,
+                Application::DISPATCH_MIDDLEWARE,
+            ],
+            'priority' =&gt; 1,
+        ],
+
+        'not-found' =&gt; [
+            'middleware' =&gt; Middleware\NotFoundHandler::class,
+            'priority' =&gt; 0,
+        ],
+
+        // Remove the section &quot;error&quot;&quot;
+    ],
+];</code></pre>
+
+
+<p>If you are defining a programmatic pipeline (see more below on this), the
+pipeline might look like:</p>
+<pre class="codehilite"><code class="language-php">$app-&gt;pipe(OriginalMessages::class);
+$app-&gt;pipe(Helper\ServerUrlMiddleware::class);
+$app-&gt;pipe(ErrorHandler::class);
+$app-&gt;pipeRoutingMiddleware();
+$app-&gt;pipe(Helper\UrlHelperMiddleware::class);
+$app-&gt;pipeDispatchMiddleware();
+$app-&gt;pipe(Middleware\NotFoundHandler::class);</code></pre>
+
+
+<h3 id="error-handling-and-php-errors">Error handling and PHP errors</h3>
+<p>As noted above, <code>Zend\Stratigility\Middleware\ErrorHandler</code> also creates a PHP
+error handler that casts PHP errors to <code>ErrorException</code> instances. More
+specifically, it uses the current <code>error_reporting</code> value to determine <em>which</em>
+errors it should cast this way.</p>
+<p>This can be problematic when deprecation errors are triggered.  If they are cast
+to exceptions, code that would normally run will now result in error pages.</p>
+<p>We recommend adding the following line to your <code>public/index.php</code> towards the
+top of the file:</p>
+<pre class="codehilite"><code class="language-php">error_reporting(error_reporting() &amp; ~E_USER_DEPRECATED);</code></pre>
+
+
+<p>This will prevent the error handler from casting deprecation notices to
+exceptions, while keeping the rest of your error reporting mask intact.</p>
+<h3 id="removing-legacy-error-middleware">Removing legacy error middleware</h3>
+<p>Stratigility version 1-style error middleware (middleware implementing
+<code>Zend\Stratigility\ErrorMiddlewareInterface</code>, or duck-typing its signature,
+which included an <code>$error</code> argument as the first argument to the middleware) is
+no longer supported with Stratigility version 2 and Expressive 2.0. You will
+need to find any instances of them in your application, or cases where your
+middleware invokes error middleware via the third argument to <code>$next()</code>.</p>
+<p>We provide a tool to assist you with that via the package 
+<a href="https://github.com/zendframework/zend-expressive-tooling">zendframework/zend-expressive-tooling</a>:
+<code>vendor/bin/expressive-scan-for-error-middleware</code>. Run the command from your
+project root, optionally passing the <code>help</code>, <code>--help</code>, or <code>-h</code> commands for
+usage. The tool will detect each of these for you, flagging them for you to
+update or remove.</p>
+<h2 id="final-handlers-become-default-delegates">Final handlers become default delegates</h2>
+<p>One ramification of supporting <a href="#http-interop">http-interop middleware</a> is that
+the concept of "final handlers" changes. In Stratigility 1.X and Expressive 1.X,
+a "final handler" was invoked when the middleware pipeline was exhausted;
+however, due to how Stratigility caught exceptions, this also meant that the
+final handler often acted as the application error handler, reporting errors to
+end users.</p>
+<p>With the <a href="#error-handling">error handling changes noted above</a>, error handling
+is moved to dedicated middleware. However, there is still a need to have
+something that can execute once the middleware pipeline is exhausted. Such a
+situation typically indicates no middleware was able to handle the request, or
+that the request was somehow malformed.</p>
+<p>In Expressive 2.0, we have removed final handlers, and replaced them with the
+concept of "default delegates". <em>Delegates</em> are
+<code>Interop\Http\ServerMiddleware\DelegateInterface</code> instances, which are invoked
+by middleware when they wish to <em>delegate</em> processing of the request to
+something else. Internally, Stratigility 2.0 and Expressive 2.0 use a delegate
+to iterate through the middleware pipeline. For Expressive 2.0, a <em>default
+delegate</em> is a delegate executed when the application's internal middleware
+pipeline is exhausted.</p>
+<p>The ramifications for end users are as follows:</p>
+<ul>
+<li>
+<p>The <code>$finalHandler</code> argument to <code>Application</code>'s constructor, which previously
+  was a <code>callable</code>, is now called <code>$defaultDelegate</code>, and needs to be a
+  <code>DelegateInterface</code> instance.</p>
+</li>
+<li>
+<p><code>getFinalHandler()</code> no longer exists; we have <em>added</em> <code>getDefaultDelegate()</code>.</p>
+</li>
+<li>
+<p>The service <code>Zend\Expressive\FinalHandler</code> is no longer used. A new service,
+  <code>Zend\Expressive\Delegate\DefaultDelegate</code>, is used by <code>ApplicationFactory</code>,
+  and, if present, will be used to inject the <code>$defaultDelegate</code> argument of the
+  <code>Application</code> constructor.</p>
+</li>
+<li>
+<p>We have removed the following classes, which either provided final handlers,
+  or acted as factories for them:</p>
+</li>
+<li><code>Zend\Expressive\TemplatedErrorHandler</code></li>
+<li><code>Zend\Expressive\WhoopsErrorHandler</code></li>
+<li><code>Zend\Expressive\Container\TemplatedErrorHandlerFactory</code></li>
+<li><code>Zend\Expressive\Container\WhoopsErrorHandlerFactory</code></li>
+</ul>
+<p>If you use the <code>vendor/bin/expressive-pipeline-from-config</code> tool to migrate your
+application to programmatic pipelines, as described below, the <code>DefaultDelegate</code>
+service will be mapped to <code>Zend\Expressive\Container\NotFoundDelegateFactory</code>,
+which will provide an instance of <code>Zend\Expressive\Delegate\NotFoundDelegate</code>.
+This new class will produce a 404 response, using a template if the
+<code>Zend\Expressive\Template\TemplateRendererInterface</code> service is present, but
+otherwise producing a plain text response.</p>
+<p>Application's built using the 2.0 version of the skeleton application will have
+these features enabled by default.</p>
+<blockquote>
+<h3 id="notfounddelegate-and-notfoundhandler">NotFoundDelegate and NotFoundHandler</h3>
+<p><code>Zend\Expressive\Middleware\NotFoundHandler</code>, which is intended as innermost
+middleware for producing a 404 response, composes and proxies to a
+<code>NotFoundDelegate</code> instance to produce its response.</p>
+</blockquote>
+<h2 id="programmatic-middleware-pipelines">Programmatic middleware pipelines</h2>
+<p>Starting with Expressive 1.1, we recommended <em>programmatic creation of
+pipelines and routing</em>; the <a href="../to-v1-1/#programmatic-middleware-pipelines">Expressive 1.1 migration
+guide</a> provides more detail.</p>
+<p>With Expressive 2.0, this is now the <em>default</em> option shipped in the skeleton.</p>
+<p>If you are upgrading from version 1 and are not currently using programmatic
+pipelines, we provide a migration tool that will convert your application to do
+so. The tool is available via the package
+<a href="https://github.com/zendframework/zend-expressive-tooling">zendframework/zend-expressive-tooling</a>.
+You may install this package in one of the following ways:</p>
+<ul>
+<li>Via the vendor binary <code>./vendor/bin/expressive-tooling</code>:</li>
+</ul>
+<pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive-tooling        # install
+$ ./vendor/bin/expressive-tooling remove # uninstall</code></pre>
+
+
+<ul>
+<li>Using Composer:</li>
+</ul>
+<pre class="codehilite"><code class="language-bash">$ composer require --dev zendframework/zend-expressive-tooling # install
+$ composer remove --dev zendframework/zend-expressive-tooling  # uninstall</code></pre>
+
+
+<p>Once installed, you will use the <code>vendor/bin/expressive-pipeline-from-config</code>
+command.</p>
+<p>This command does the following:</p>
+<ul>
+<li>
+<p>Reads your <code>middleware_pipeline</code> configuration, and generates a programmatic
+  pipeline for you, which is then stored in <code>config/pipeline.php</code>. The generated
+  pipeline contains the following additions:</p>
+<ul>
+<li>
+<p>The first middleware in the pipeline is <code>Zend\Stratigility\Middleware\OriginalMessages</code>,
+  which injects the incoming request, URI, and response as the request
+  attributes <code>originalRequest</code>, <code>originalUri</code>, and <code>originalResponse</code>,
+  respectively. (This can aid URI generation in nested middleware later.)</p>
+</li>
+<li>
+<p>The second middleware in the pipeline is <code>Zend\Stratigility\Middleware\ErrorHandler</code>.</p>
+</li>
+<li>
+<p>The last middleware in the pipeline is <code>Zend\Expressive\Middleware\NotFoundHandler</code>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Reads your <code>routes</code> configuration, and generates a programmatic
+  routing table for you, which is then stored in <code>config/routes.php</code>.</p>
+</li>
+<li>
+<p>Adds a new configuration file, <code>config/autoload/programmatic-pipeline.global.php</code>, 
+  which enables the <code>programmatic_pipelines</code> configuration flag. Additionally,
+  it adds dependency configuration for the new error handlers.</p>
+</li>
+<li>
+<p>Inserts two lines before the <code>$app-&gt;run()</code> statement of your
+  <code>public/index.php</code>, one each to require <code>config/pipeline.php</code> and
+  <code>config/routes.php</code>.</p>
+</li>
+</ul>
+<p>Your <code>middleware_pipeline</code> and <code>routes</code> configuration are not removed at this
+time, to allow you to test and verify your application first; however, due to
+the configuration in <code>config/autoload/programmatic-pipeline.global.php</code>, these
+are now ignored.</p>
+<p>If you wish to use Whoops in your development environment, you may add the
+following to a local configuration file (e.g., <code>config/autoload/local.php</code>):</p>
+<pre class="codehilite"><code class="language-php">use Zend\Expressive\Container\WhoopsErrorResponseGeneratorFactory;
+use Zend\Expressive\Middleware\ErrorResponseGenerator;
+
+return [
+    'dependencies' =&gt; [
+        'factories' =&gt; [
+            ErrorResponseGenerator::class =&gt; WhoopsErrorResponseGeneratorFactory::class,
+        ],
+    ],
+];</code></pre>
+
+
+<p>Other things you may want to do:</p>
+<ul>
+<li>
+<p>The <code>ErrorHandler</code> entry could potentially be moved inwards a few layers. As
+  an example, the <code>ServerUrlMiddleware</code> has no possibility of raising an
+  exception or error, and could be moved outwards; you could do similarly for
+  any middleware that only injects additional response headers.</p>
+</li>
+<li>
+<p>Remove any Stratigility-style error middleware (middleware expecting an error
+  as the first argument). If any specialized error handling should occur, add
+  additional middleware into the pipeline that can catch exceptions, and have
+  that middleware re-throw for exceptions it cannot handle. (Use the
+  <code>vendor/bin/expressive-scan-for-error-middleware</code> command from
+  zendframework/zend-expressive-tooling to assist in this.)</p>
+</li>
+<li>
+<p>Consider providing your own <code>Zend\Stratigility\NoopFinalHandler</code>
+  implementation; this will now only be invoked if the queue is exhausted, and
+  could return a generic 404 page, raise an exception, etc.</p>
+</li>
+</ul>
+<h2 id="handling-head-and-options-requests">Handling HEAD and OPTIONS requests</h2>
+<p>Prior to 2.0, it was possible to route middleware that could not handle <code>HEAD</code>
+and/or <code>OPTIONS</code> requests. Per <a href="https://tools.ietf.org/html/rfc7231#section-4.1">RFC 7231, section 4.1</a>,
+"all general-purpose servers MUST support the methods GET and HEAD. All other
+methods are OPTIONAL." Additionally, most servers and implementors agree that
+<code>OPTIONS</code> <em>should</em> be supported for any given resource, so that consumers can
+determine what methods are allowed for the given resource.</p>
+<p>To make this happen, the Expressive project implemented several features.</p>
+<p>First, zend-expressive-router 1.3.0 introduced several features in both
+<code>Zend\Expressive\Router\Route</code> and <code>Zend\Expressive\Router\RouteResult</code> to help
+consumers implement support for <code>HEAD</code> and <code>OPTIONS</code> in an automated way. The
+<code>Route</code> class now has two new methods, <code>implicitHead()</code> and <code>implicitOptions()</code>;
+these each return a boolean <code>true</code> value if support for those methods is
+<em>implicit</em> &mdash; i.e., not defined explicitly for the route. The <code>RouteResult</code>
+class now introduces a new factory method, <code>fromRoute()</code>, that will create an
+instance from a <code>Route</code> instance; this then allows consumers of a <code>RouteResult</code>
+to query the <code>Route</code> to see if a matched <code>HEAD</code> or <code>OPTIONS</code> request needs
+automated handling. Each of the supported router implementations were updated to
+use this method, as well as to return a successful routing result if <code>HEAD</code>
+and/or <code>OPTIONS</code> requests are submitted, but the route does not explicitly
+support the method.</p>
+<p>Within Expressive itself, we now offer two new middleware to provide this
+automation:</p>
+<ul>
+<li><code>Zend\Expressive\Middleware\ImplicitHeadMiddleware</code></li>
+<li><code>Zend\Expressive\Middleware\ImplicitOptionsMiddleware</code></li>
+</ul>
+<p>If you want to support these methods automatically, each of these should be
+enabled between the routing and dispatch middleware. If you use the
+<code>expressive-pipeline-from-config</code> tool as documented in the
+<a href="#migrate-to-programmatic-pipelines">programmatic pipeline migration section</a>,
+entries for each will be injected into your generated pipeline.</p>
+<p>Please see the <a href="../../../features/middleware/implicit-methods-middleware/">chapter on the implicit methods middleware</a>
+for more information on each.</p>
+<h2 id="router-interface-changes">Router interface changes</h2>
+<p>Expressive 2.0 uses zendframework/zend-expressive-router 2.1+. Version 2.0 of
+that package introduced a change to the <code>Zend\Expressive\Router\RouterInterface::generateUri()</code>
+method; it now accepts an additional, optional, third argument, <code>array $options = []</code>,
+which can be used to pass router-specific options when generating a URI. As an
+example, the implementation that uses zendframework/zend-router might use these
+options to pass a translator instance in order to translate a path segment to
+the currently selected locale.</p>
+<p>For consumers, his represents no backwards-incompatible change; consumers may
+opt-in to the new argument at will. For those implementing the interface,
+upgrading will require updating your router implementation's signature to match
+the new interface:</p>
+<pre class="codehilite"><code class="language-php">public function generateUri(
+    string $name,
+    array $substitutions = [],
+    array $options = []
+) : string</code></pre>
+
+
+<h2 id="url-helper-changes">URL helper changes</h2>
+<p>Expressive 2.0 uses zendframework/zend-expressive-helpers version 3.0+. This new
+version updates the signature of the <code>Zend\Expressive\Helper\UrlHelper</code> from:</p>
+<pre class="codehilite"><code class="language-php">function (
+    $routeName,
+    array $routeParams = []
+) : string</code></pre>
+
+
+<p>to:</p>
+<pre class="codehilite"><code class="language-php">function (
+    $routeName,
+    array $routeParams = [],
+    $queryParams = [],
+    $fragmentIdentifier = null,
+    array $options = []
+) : string</code></pre>
+
+
+<p>For consumers, this should represent a widening of features, and will not
+require any changes, unless you wish to opt-in to the new arguments. See the
+<a href="../../../features/helpers/url-helper/">UrlHelper documentation</a> for information
+on each argument.</p>
+<p>For any users who were <em>extending</em> the class, you will need to update your
+extension accordingly.</p>
+<h2 id="zend-view-renderer-changes">zend-view renderer changes</h2>
+<p>Expressive 2.0 will use zend-expressive-zendviewrenderer 1.3+ if that renderer
+is chosen. Starting with 1.3.0 of that renderer, you may now pass a boolean
+<code>false</code> value for the <code>layout</code> variable when calling either <code>addDefaultParam()</code>
+or <code>render()</code> on the renderer instance in order to disable the layout.</p>
+<h2 id="twig-renderer-changes">Twig renderer changes</h2>
+<p>Expressive 2.0 will use zend-expressive-twigrenderer 1.3+ if that renderer
+is chosen. Starting with 1.3.0 of that renderer, Twig 2.1+ is now supported.</p>
+
+<hr />
+
+
+<nav>
+  <ul class="pager hidden-print">
+    <li class="previous">
+      <a rel="prev" href="../to-v1-1/"><i class="fa fa-arrow-left"></i> Previous</a>
+    </li>
+    <li class="next disabled ">
+      <a rel="next" >Next <i class="fa fa-arrow-right"></i></a>
+    </li>
+  </ul>
+</nav>
+</div>
+        
+    </div>
+    <!-- content:end -->
+
+    <footer class="col-md-12 text-center">
+        <hr>
+        <p>
+        <small>Copyright (c) 2016 <a href="http://www.zend.com/">Zend Technologies USA Inc.</a><br></small>
+        </p>
+        <p><small><a href="http://framework.zend.com">Learn more about Zend Framework</a></small></p>
+    </footer>
+
+    <script src="../../../js/jquery-1.10.2.min.js"></script>
+    <script src="../../../js/bootstrap-3.0.3.min.js"></script>
+    <script src="../../../js/prism-zf.js"></script>
+
+    <script>var base_url = '../../..';</script>
+    <script data-main="../../../mkdocs/js/search.js" src="../../../mkdocs/js/require.js"></script>
+    <script src="../../../js/base.js"></script>
+
+    <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        From here you can search these documents. Enter your search terms below.
+                    </p>
+                    <form role="form">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                        </div>
+                    </form>
+                    <div id="mkdocs-search-results"></div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="zf-components">
+  <div class="zf-components-grid">
+    <div class="zf-logo">
+      <a href="http://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Go to the ZF homepage"><img src="http://framework.zend.com/images/logos/zf-logo-mark.png" alt="Zend Framework" width="250" /></a>
+    </div>
+
+    <div class="component-list"></div>
+
+    <p class="zf-components-rollup"><a href="#">Hide list</a></p>
+  </div>
+</div>
+
+    <script>
+  // Prepare the component list dropdown for display
+  $(function () {
+    var components = $(".zf-components"),
+        componentList = components.find(".component-list"),
+        sidebar = $(".bs-sidebar.affix"),
+        sidebarInitialPos = sidebar.css("position"),
+        hidden,
+        componentToggle = $(".component-toggle"),
+        navbar = $(".navbar-fixed-top"),
+        rollUpLink = $(".zf-components-rollup a");
+
+    // Initial setup on document load
+    components.insertBefore(navbar);
+    $(".zf-logo a").tooltip();
+    componentToggle.tooltip();
+    rollUpLink.attr({ href: "#", alt: "Hide component list" });
+
+    // Cast initial sidebar position value
+    if (undefined === sidebarInitialPos) {
+      sidebarInitialPos = "fixed";
+    }
+
+    // Setup onclick events to toggle list
+    componentToggle.click(toggleComponentList);
+    rollUpLink.click(toggleComponentList);
+
+    // Toggle the component list display
+    function toggleComponentList(event) {
+      event.preventDefault();
+
+      if (hidden === undefined) {
+        // Not loaded yet; load and display.
+        loadComponentList();
+        return;
+      }
+
+      if (hidden) {
+        // Hidden; display.
+        showComponentList();
+        return;
+      }
+
+      // Currently visible; hide
+      hideComponentList();
+    }
+
+    // Show the component list
+    function showComponentList() {
+      navbar.css({position: "relative"});
+      sidebar.css({position: "relative"});
+      components
+        .css({"margin-top": "-" + components.outerHeight() + "px"})
+        .show()
+        .animate({"margin-top": 0}, {
+          complete: function () {
+            componentToggle
+              .data("placement", "top")
+              .attr("data-original-title", "Hide component list");
+            hidden = false;
+          },
+          queue: false
+        });
+    }
+
+    // Hide the component list
+    function hideComponentList() {
+      components.animate({"margin-top": "-" + components.outerHeight() + "px"}, {
+        complete: function () {
+          navbar.css({position: "fixed"});
+          sidebar.css({position: sidebarInitialPos});
+          componentToggle
+            .data("placement", "bottom")
+            .attr("data-original-title", "Show component list");
+          components.hide();
+          hidden = true;
+        },
+        queue: false
+      });
+      sidebar.animate({ top: sidebarInitialTop + "px" }, { queue: false});
+    }
+
+    // Inject a component into the componet list DOM.
+    function injectComponent(index, component) {
+      componentList.append('<div class="component"><h4><a href="' + component.url + '">' + component.name + '</a></h4><p>' + component.description + '</p></div>');
+    }
+
+    // Parse the component list, build the DOM, and display it.
+    function parseComponentList(components) {
+      $.each(components, injectComponent);
+      showComponentList();
+    }
+
+    // Fetch the component list and display it.
+    function loadComponentList () {
+      $.ajax({
+        url: "//zendframework.github.io/zf-mkdoc-theme/scripts/zf-component-list.json",
+        dataType: "text json",
+        success: parseComponentList,
+        error: function (e) {
+          console.log("Error occurred with XHR call", e);
+        }
+      });
+    }
+  });
+</script>
+    </body>
+
+</html>

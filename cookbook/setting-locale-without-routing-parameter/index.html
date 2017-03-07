@@ -110,6 +110,12 @@
                         
                             
 <li >
+    <a href="../../features/middleware-types/">Middleware Types</a>
+</li>
+
+                        
+                            
+<li >
     <a href="../../features/application/">Applications</a>
 </li>
 
@@ -128,6 +134,12 @@
             
 <li >
     <a href="../../features/container/factories/">Container Factories</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../features/container/delegator-factories/">Delegator Factories</a>
 </li>
 
         
@@ -256,6 +268,27 @@
 
                         
                             
+<li >
+    <a href="../../features/modular-applications/">Modular Applications</a>
+</li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Middleware</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../features/middleware/implicit-methods-middleware/">Implicit HEAD and OPTIONS Middleware</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
   <li class="dropdown-submenu">
     <a tabindex="-1" href="">Helpers</a>
     <ul class="dropdown-menu">
@@ -302,6 +335,12 @@
                     <li class="dropdown active">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cookbook <b class="caret"></b></a>
                         <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../autowiring-routes-and-pipelines/">Autowiring routes and pipeline middleware</a>
+</li>
+
                         
                             
 <li >
@@ -375,6 +414,12 @@
 </li>
 
                         
+                            
+<li >
+    <a href="../passing-data-between-middleware/">Passing data between middleware</a>
+</li>
+
+                        
                         </ul>
                     </li>
                 
@@ -387,6 +432,12 @@
                             
 <li >
     <a href="../../why-expressive/">Why choose Expressive?</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../reference/cli-tooling/">CLI Tooling</a>
 </li>
 
                         
@@ -416,6 +467,12 @@
             
 <li >
     <a href="../../reference/migration/to-v1-1/">To Expressive 1.1</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../reference/migration/to-v2/">To Expressive 2.0</a>
 </li>
 
         
@@ -502,7 +559,7 @@
 </ol>
 
 <h1 id="how-can-i-setup-the-locale-without-routing-parameters">How can I setup the locale without routing parameters?</h1>
-<p>Localized web applications often set the locale (and therefor the language)
+<p>Localized web applications often set the locale (and therefore the language)
 based on a routing parameter, the session, or a specialized sub-domain.
 In this recipe we will concentrate on introspecting the URI path via middleware,
 which allows you to have a global mechanism for detecting the locale without
@@ -524,12 +581,16 @@ from the request URI's path. If if doesn't find one, it sets a default.</p>
 <li>amends the request with a truncated path (removing the locale segment).</li>
 <li>adds the locale segment as the base path of the <code>UrlHelper</code>.</li>
 </ul>
-<pre class="codehilite"><code class="language-php">namespace Application\I18n;
+<pre class="codehilite"><code class="language-php">&lt;?php
+namespace Application\I18n;
 
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Locale;
+use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Helper\UrlHelper;
 
-class SetLocaleMiddleware
+class SetLocaleMiddleware implements MiddlewareInterface
 {
     private $helper;
 
@@ -538,7 +599,7 @@ class SetLocaleMiddleware
         $this-&gt;helper = $helper;
     }
 
-    public function __invoke($request, $response, callable $next)
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $uri = $request-&gt;getUri();
 
@@ -546,28 +607,26 @@ class SetLocaleMiddleware
 
         if (! preg_match('#^/(?P&lt;locale&gt;[a-z]{2,3}([-_][a-zA-Z]{2}|))/#', $path, $matches)) {
             Locale::setDefault('de_DE');
-            return $next($request, $response);
+            return $delegate-&gt;process($request);
         }
 
         $locale = $matches['locale'];
         Locale::setDefault(Locale::canonicalize($locale));
         $this-&gt;helper-&gt;setBasePath($locale);
 
-        return $next(
-            $request-&gt;withUri(
-                $uri-&gt;withPath(substr($path, 3))
-            ),
-            $response
-        );
+        return $delegate-&gt;process($request-&gt;withUri(
+            $uri-&gt;withPath(substr($path, 3))
+        ));
     }
 }</code></pre>
 
 
 <p>Then you will need a factory for the <code>SetLocaleMiddleware</code> to inject the
 <code>UrlHelper</code> instance.</p>
-<pre class="codehilite"><code class="language-php">namespace Application\I18n;
+<pre class="codehilite"><code class="language-php">&lt;?php
+namespace Application\I18n;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Expressive\Helper\UrlHelper;
 
 class SetLocaleMiddlewareFactory
@@ -581,19 +640,41 @@ class SetLocaleMiddlewareFactory
 }</code></pre>
 
 
-<p>Afterwards, you need to configure the <code>SetLocaleMiddleware</code> in your 
-<code>/config/autoload/middleware-pipeline.global.php</code> file so that it is executed 
-on every request.</p>
-<pre class="codehilite"><code class="language-php">return [
+<p>Next, map the middleware to its factory in either
+<code>/config/autoload/dependencies.global.php</code> or
+<code>/config/autoload/middleware-pipeline.global.php</code>:</p>
+<pre class="codehilite"><code class="language-php">use Application\I18n\SetLocaleMiddleware;
+use Application\I18n\SetLocaleMiddlewareFactory;
+
+return [
     'dependencies' =&gt; [
         /* ... */
         'factories' =&gt; [
-            Application\I18n\SetLocaleMiddleware::class =&gt;
-                Application\I18n\SetLocaleMiddlewareFactory::class,
+            SetLocaleMiddleware::class =&gt; SetLocaleMiddlewareFactory::class,
             /* ... */
         ],
-    ]
+    ],
+];</code></pre>
 
+
+<p>Finally, you will need to configure your middleware pipeline to ensure this
+middleware is executed on every request.</p>
+<p>If using a programmatic pipeline:</p>
+<pre class="codehilite"><code class="language-php">use Application\I18n\SetLocaleMiddleware;
+use Zend\Expressive\Helper\UrlHelperMiddleware;
+
+/* ... */
+$app-&gt;pipe(SetLocaleMiddleware::class);
+/* ... */
+$app-&gt;pipeRoutingMiddleware();
+$app-&gt;pipe(UrlHelperMiddleware::class);
+$app-&gt;pipeDispatchMiddleware();
+/* ... */</code></pre>
+
+
+<p>If using a configuration-driven application, update
+<code>/config/autoload/middleware-pipeline.global.php</code> to add the middleware:</p>
+<pre class="codehilite"><code class="language-php">return [
     'middleware_pipeline' =&gt; [
         [
             'middleware' =&gt; [
@@ -635,14 +716,16 @@ Twig and Plates.</p>
 <p>If you want to add the locale parameter when creating URIs within your 
 action middleware, you just need to inject the <code>UrlHelper</code> into your 
 middleware and use it for URL generation:</p>
-<pre class="codehilite"><code class="language-php">namespace Application\Action;
+<pre class="codehilite"><code class="language-php">&lt;?php
+namespace Application\Action;
 
-use Psr\Http\Message\ResponseInterface;
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Expressive\Helper\UrlHelper;
 
-class RedirectAction
+class RedirectAction implements MiddlewareInterface
 {
     private $helper;
 
@@ -653,16 +736,11 @@ class RedirectAction
 
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
-     * @param callable|null          $next
-     *
+     * @param DelegateInterface      $delegate
      * @return RedirectResponse
      */
-    public function __invoke(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        callable $next = null
-    ) {
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
         $routeParams = [ /* ... */ ];
 
         return new RedirectResponse(
@@ -677,7 +755,7 @@ middleware have a factory that manages the injection. As an example, the
 following would work for the above middleware:</p>
 <pre class="codehilite"><code class="language-php">namespace Application\Action;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Expressive\Helper\UrlHelper;
 
 class RedirectActionFactory

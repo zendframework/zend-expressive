@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">  
     <link rel="shortcut icon" href="../../img/favicon.ico">
 
-    <title>Applications - Expressive</title>
+    <title>Middleware Types - Expressive</title>
 
     <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
@@ -109,14 +109,14 @@
                         <ul class="dropdown-menu">
                         
                             
-<li >
-    <a href="../middleware-types/">Middleware Types</a>
+<li class="active">
+    <a href="./">Middleware Types</a>
 </li>
 
                         
                             
-<li class="active">
-    <a href="./">Applications</a>
+<li >
+    <a href="../application/">Applications</a>
 </li>
 
                         
@@ -520,15 +520,17 @@
         <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
     
-        <li class="main active"><a href="#applications">Applications</a></li>
+        <li class="main active"><a href="#middleware-types">Middleware Types</a></li>
         
-            <li><a href="#instantiation">Instantiation</a></li>
+            <li><a href="#http-interophttp-middleware">http-interop/http-middleware</a></li>
         
-            <li><a href="#adding-routable-middleware">Adding routable middleware</a></li>
+            <li><a href="#callable-http-middleware">Callable http-middleware</a></li>
         
-            <li><a href="#retrieving-dependencies">Retrieving dependencies</a></li>
+            <li><a href="#double-pass-middleware">Double-pass middleware</a></li>
         
-            <li><a href="#executing-the-application-run">Executing the application: run()</a></li>
+            <li><a href="#service-based-middleware">Service-based middleware</a></li>
+        
+            <li><a href="#middleware-pipelines">Middleware pipelines</a></li>
         
     
     </ul>
@@ -536,10 +538,10 @@
     
     <ul class="pager hidden-print">
       <li class="previous">
-        <a rel="prev" href="../middleware-types/"><i class="fa fa-arrow-left"></i> Previous</a>
+        <a rel="prev" href="../../getting-started/skeleton/"><i class="fa fa-arrow-left"></i> Previous</a>
       </li>
       <li class="next">
-        <a rel="next" href="../container/intro/">Next <i class="fa fa-arrow-right"></i></a>
+        <a rel="next" href="../application/">Next <i class="fa fa-arrow-right"></i></a>
       </li>
     </ul>
     
@@ -555,232 +557,141 @@
       
     
   
-  <li class="active">Applications</li>
+  <li class="active">Middleware Types</li>
 </ol>
 
-<h1 id="applications">Applications</h1>
-<p>In zend-expressive, you define a <code>Zend\Expressive\Application</code> instance and
-execute it. The <code>Application</code> instance is itself <a href="https://github.com/zendframework/zend-stratigility/blob/master/doc/book/middleware.md">middleware</a>
-that composes:</p>
+<h1 id="middleware-types">Middleware Types</h1>
+<p>Expressive allows you to compose applications out of <em>pipeline</em> and <em>routed</em>
+middleware.</p>
+<p><strong>Pipeline</strong> middleware is middleware that defines the workflow of your
+application. These generally run on every execution of the application, and
+include such aspects as:</p>
 <ul>
-<li>a <a href="../router/intro/">router</a>, for dynamically routing requests to middleware.</li>
-<li>a <a href="../container/intro/">dependency injection container</a>, for retrieving
-  middleware to dispatch.</li>
-<li>a <a href="../error-handling/#default-delegates">default delegate</a> (Expressive 2.X)
-  or <a href="../error-handling/#version-1-error-handling">final handler</a></li>
-<li>an <a href="https://github.com/zendframework/zend-diactoros/blob/master/doc/book/emitting-responses.md">emitter</a>,
-  for emitting the response when application execution is complete.</li>
+<li>Error handling</li>
+<li>Locale detection</li>
+<li>Session setup</li>
+<li>Authentication and authorization</li>
 </ul>
-<p>You can define the <code>Application</code> instance in several ways:</p>
+<p><strong>Routed</strong> middleware is middleware that responds only to specific URI paths and
+HTTP methods. As an example, you might want middleware that only responds to
+HTTP POST requests to the path <code>/users</code>.</p>
+<p>Expressive allows you to define middleware using any of the following:</p>
 <ul>
-<li>Direct instantiation, which requires providing several dependencies.</li>
-<li>The <code>AppFactory</code>, which will use some common defaults, but allows injecting alternate
-  container and/or router implementations.</li>
-<li>Via a dependency injection container; we provide a factory for setting up all
-  aspects of the instance via configuration and other defined services.</li>
+<li><a href="https://github.com/http-interop/http-middleware/tree/0.4.1">http-interop/http-middleware</a>
+  instances (starting in Expressive 2.X).</li>
+<li>Callable middleware that implements the http-interop/http-middleware signature
+  (starting in Expressive 2.X).</li>
+<li>Callable "double-pass" middleware (as used in Expressive 1.X, and supported in
+  Expressive 2.X).</li>
+<li>Service names resolving to one of the above middleware types.</li>
+<li>Middleware pipelines expressed as arrays of the above middleware types.</li>
 </ul>
-<p>Regardless of how you setup the instance, there are several methods you will
-likely interact with at some point or another.</p>
-<h2 id="instantiation">Instantiation</h2>
-<p>As noted at the start of this document, we provide several ways to create an
-<code>Application</code> instance.</p>
-<h3 id="constructor">Constructor</h3>
-<p>If you wish to manually instantiate the <code>Application</code> instance, it has the
-following constructor:</p>
-<ul>
-<li>Expressive 2.X:</li>
-</ul>
-<pre class="codehilite"><code class="language-php">/**
- * @param Zend\Expressive\Router\RouterInterface $router
- * @param null|Psr\Container\ContainerInterface $container IoC container from which to pull services, if any.
- * @param null|Interop\Http\ServerMiddleware\DelegateInterface $defaultDelegate
- *     Delegate to invoke when the internal middleware pipeline is exhausted
- *     without returning a response.
- * @param null|Zend\Diactoros\Response\EmitterInterface $emitter Emitter to use when `run()` is
- *     invoked.
- */
-public function __construct(
-    Zend\Expressive\Router\RouterInterface $router,
-    Psr\Container\ContainerInterface $container = null,
-    Interop\Http\ServerMiddleware\DelegateInterface $defaultDelegate = null,
-    Zend\Diactoros\Response\EmitterInterface $emitter = null
-);</code></pre>
+<h2 id="http-interophttp-middleware">http-interop/http-middleware</h2>
+<p>The http-interop/http-middleware project is the basis for the proposed PSR-15
+specification, which covers HTTP Server Middleware that consumes
+<a href="http://www.php-fig.org/psr/psr-7/">PSR-7</a> HTTP messages. The project defines two
+interfaces, <code>Interop\Http\ServerMiddleware\MiddlewareInterface</code> and 
+<code>Interop\Http\ServerMiddleware\DelegateInterface</code>. Expressive accepts middleware
+that implements the <code>MiddlewareInterface</code>. As an example:</p>
+<pre class="codehilite"><code class="language-php">use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
+class SomeMiddleware implements MiddlewareInterface
+{
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
+        // do something and return a response, or
+        // delegate to another handler capable of
+        // returning a response via:
+        //
+        // return $delegate-&gt;process($request);
+    }
+}</code></pre>
 
 
-<ul>
-<li>Expressive 1.X:</li>
-</ul>
-<pre class="codehilite"><code class="language-php">/**
- * @param Zend\Expressive\Router\RouterInterface $router
- * @param null|Psr\Container\ContainerInterface $container IoC container from which to pull services, if any.
- * @param null|callable $finalHandler Final handler to use when $out is not
- *     provided on invocation.
- * @param null|Zend\Diactoros\Response\EmitterInterface $emitter Emitter to use when `run()` is
- *     invoked.
- */
-public function __construct(
-    Zend\Expressive\Router\RouterInterface $router,
-    Psr\Container\ContainerInterface $container = null,
-    callable $finalHandler = null,
-    Zend\Diactoros\Response\EmitterInterface $emitter = null
-);</code></pre>
+<p>If you are using PHP 7 or above, you could also implement such middleware via an
+anonymous class.</p>
+<h2 id="callable-http-middleware">Callable http-middleware</h2>
+<p>Sometimes you may not want to create a class for one-off middleware. As such,
+Expressive allows you to provide a PHP callable that uses the same signature as
+<code>Interop\Http\ServerMiddleware\MiddlewareInterface</code>:</p>
+<pre class="codehilite"><code class="language-php">use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
+function (ServerRequestInterface $request, DelegateInterface $delegate)
+{
+    // do something and return a response, or
+    // delegate to another handler capable of
+    // returning a response via:
+    //
+    // return $delegate-&gt;process($request);
+}</code></pre>
 
 
-<p>If no container is provided at instantiation, then all routed and piped
-middleware <strong>must</strong> be provided as callables.</p>
-<h3 id="appfactory">AppFactory</h3>
-<p><code>Zend\Expressive\AppFactory</code> provides a convenience layer for creating an
-<code>Application</code> instance; it makes the assumption that you will use defaults in
-most situations, and likely only change which container and/or router you wish
-to use. It has the following signature:</p>
-<pre class="codehilite"><code class="language-php">AppFactory::create(
-    Psr\Container\ContainerInterface $container = null,
-    Zend\Expressive\Router\RouterInterface $router = null
-);</code></pre>
+<p>One note: the <code>$request</code> argument does not require a typehint, and examples
+throughout the manual will omit the typehint when demonstrating callable
+middleware.</p>
+<h2 id="double-pass-middleware">Double-pass middleware</h2>
+<p>Expressive 1.X was based on Stratigility 1.X, which allowed middleware with the
+following signature:</p>
+<pre class="codehilite"><code class="language-php">&lt;?php
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
+function(
+    ServerRequestInterface $request,
+    ResponseInterface $response,
+    callable $next
+) {
+    // Process the request and return a response,
+    // or delegate to another process to handle
+    // the request via:
+    //
+    // return $next($request, $response);
+}</code></pre>
 
 
-<p>When no container or router are provided, it defaults to:</p>
-<ul>
-<li>zend-servicemanager for the container.</li>
-<li>FastRoute for the router.</li>
-</ul>
-<h3 id="container-factory">Container factory</h3>
-<p>We also provide a factory that can be consumed by a
-<a href="https://github.com/container-interop/container-interop">container-interop</a>
-dependency injection container; see the <a href="../container/factories/">container factories documentation</a>
-for details.</p>
-<h2 id="adding-routable-middleware">Adding routable middleware</h2>
-<p>We <a href="../router/piping/">discuss routing vs piping elsewhere</a>; routing is the act
-of dynamically matching an incoming request against criteria, and it is one of
-the primary features of zend-expressive.</p>
-<p>Regardless of which <a href="../router/interface/">router implementation</a> you use, you
-can use the following methods to provide routable middleware:</p>
-<h3 id="route">route()</h3>
-<p><code>route()</code> has the following signature:</p>
-<pre class="codehilite"><code class="language-php">public function route(
-    $pathOrRoute,
-    $middleware = null,
-    array $methods = null,
-    $name = null
-) : Zend\Expressive\Router\Route</code></pre>
+<p>This middleware is called "double-pass" due to the fact that it requires both
+the request and response arguments.</p>
+<p>In such middleware, no typehints are <em>required</em>, but they are <em>encouraged</em>.
+Additionally, we encourage users to <em>never</em> use the provided <code>$response</code>
+argument, but instead create a concrete response to return, or manipulate the
+response returned by <code>$next</code>; this prevents a number of potential error
+conditions that may otherwise occur due to incomplete or mutated response state.</p>
+<p>This middleware is still supported in Expressive 2.X, but we encourage users to
+adopt http-interop/http-middleware signatures, as we will be deprecating
+double-pass middleware eventually.</p>
+<h2 id="service-based-middleware">Service-based middleware</h2>
+<p>We encourage the use of a dependency injection container for providing your
+middleware. As such, Expressive also allows you to use <em>service names</em> for both
+pipeline and routed middleware. Generally, service names will be the specific
+middleware class names, but can be any valid string that resolves to a service.</p>
+<p>When Expressive is provided a service name for middleware, it internally
+decorates the middleware in a <code>Zend\Expressive\Middleware\LazyLoadingMiddleware</code>
+instance, allowing it to be loaded only when dispatched.</p>
+<h2 id="middleware-pipelines">Middleware pipelines</h2>
+<p>Expressive allows any pipeline or routed middleware to be self-contained
+<a href="https://docs.zendframework.com/zend-stratigility/api/#middleware">middleware pipelines</a>.
+To prevent the need for instantiating a <code>Zend\Stratigility\MiddlewarePipe</code> or
+<code>Zend\Expressive\Application</code> instance when defining the pipeline, Expressive
+allows you to provide an array of middleware:</p>
+<pre class="codehilite"><code class="language-php">// Pipeline middleware:
+$app-&gt;pipe([
+    FirstMiddleware::class,
+    SecondMiddleware::class,
+]);
+
+// Routed middleware:
+$app-&gt;get([
+    FirstMiddleware::class,
+    SecondMiddleware::class,
+]);</code></pre>
 
 
-<p>where:</p>
-<ul>
-<li><code>$pathOrRoute</code> may be either a string path to match, or a
-  <code>Zend\Expressive\Router\Route</code> instance.</li>
-<li><code>$middleware</code> <strong>must</strong> be present if <code>$pathOrRoute</code> is a string path, and
-  <strong>must</strong> be:</li>
-<li>a callable;</li>
-<li>a service name that resolves to valid middleware in the container;</li>
-<li>a fully qualified class name of a constructor-less class;</li>
-<li>an array of any of the above; these will be composed in order into a
-    <code>Zend\Stratigility\MiddlewarePipe</code> instance.</li>
-<li><code>$methods</code> must be an array of HTTP methods valid for the given path and
-  middleware. If null, it assumes any method is valid.</li>
-<li><code>$name</code> is the optional name for the route, and is used when generating a URI
-  from known routes. See the section on <a href="../router/uri-generation/#generating-uris">route naming</a>
-  for details.</li>
-</ul>
-<p>This method is typically only used if you want a single middleware to handle
-multiple HTTP request methods.</p>
-<h3 id="get-post-put-patch-delete-any">get(), post(), put(), patch(), delete(), any()</h3>
-<p>Each of the methods <code>get()</code>, <code>post()</code>, <code>put()</code>, <code>patch()</code>, <code>delete()</code>, and <code>any()</code>
-proxies to <code>route()</code> and has the signature:</p>
-<pre class="codehilite"><code class="language-php">function (
-    $pathOrRoute,
-    $middleware = null,
-    $name = null
-) : Zend\Expressive\Router\Route</code></pre>
-
-
-<p>Essentially, each calls <code>route()</code> and specifies an array consisting solely of
-the corresponding HTTP method for the <code>$methods</code> argument.</p>
-<h3 id="piping">Piping</h3>
-<p>Because zend-expressive builds on <a href="https://github.com/zendframework/zend-stratigility">zend-stratigility</a>,
-and, more specifically, its <code>MiddlewarePipe</code> definition, you can also pipe
-(queue) middleware to the application. This is useful for adding middleware that
-should execute on each request, defining error handlers, and/or segregating
-applications by subpath.</p>
-<p>The signature of <code>pipe()</code> is:</p>
-<pre class="codehilite"><code class="language-php">public function pipe($pathOrMiddleware, $middleware = null)</code></pre>
-
-
-<p>where:</p>
-<ul>
-<li><code>$pathOrMiddleware</code> is either a string URI path (for path segregation), a
-  callable middleware, or the service name for a middleware to fetch from the
-  composed container.</li>
-<li><code>$middleware</code> is required if <code>$pathOrMiddleware</code> is a string URI path. It can
-  be one of:</li>
-<li>a callable;</li>
-<li>a service name that resolves to valid middleware in the container;</li>
-<li>a fully qualified class name of a constructor-less class;</li>
-<li>an array of any of the above; these will be composed in order into a
-    <code>Zend\Stratigility\MiddlewarePipe</code> instance.</li>
-</ul>
-<p>Unlike <code>Zend\Stratigility\MiddlewarePipe</code>, <code>Application::pipe()</code> <em>allows
-fetching middleware by service name</em>. This facility allows lazy-loading of
-middleware only when it is invoked. Internally, it wraps the call to fetch and
-dispatch the middleware inside a closure.</p>
-<p>Additionally, we define a new method, <code>pipeErrorHandler()</code>, with the following
-signature:</p>
-<pre class="codehilite"><code class="language-php">public function pipeErrorHandler($pathOrMiddleware, $middleware = null)</code></pre>
-
-
-<p>It acts just like <code>pipe()</code> except when the middleware specified is a service
-name; in that particular case, when it wraps the middleware in a closure, it
-uses the error handler signature:</p>
-<pre class="codehilite"><code class="language-php">function ($error, ServerRequestInterface $request, ResponseInterface $response, callable $next);</code></pre>
-
-
-<p>Read the section on <a href="../router/piping/">piping vs routing</a> for more information.</p>
-<h3 id="registering-routing-and-dispatch-middleware">Registering routing and dispatch middleware</h3>
-<p>Routing is accomplished via a dedicated middleware method,
-<code>Application::routeMiddleware()</code>; similarly, dispatching of routed middleware
-has a corresponding instance middleware method, <code>Application::dispatchMiddleware()</code>.
-Each can be piped/registered with other middleware platforms if desired.</p>
-<p>These methods <strong>MUST</strong> be piped to the application so that the application will
-route and dispatch routed middleware. This is done using the following methods:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;pipeRoutingMiddleware();
-$app-&gt;pipeDispatchMiddleware();</code></pre>
-
-
-<p>See the section on <a href="../router/piping/">piping</a> to see how you can register
-non-routed middleware and create layered middleware applications.</p>
-<h2 id="retrieving-dependencies">Retrieving dependencies</h2>
-<p>As noted in the intro, the <code>Application</code> class has several dependencies. Some of
-these may allow further configuration, or may be useful on their own, and have
-methods for retrieving them. They include:</p>
-<ul>
-<li><code>getContainer()</code>: returns the composed <a href="https://github.com/container-interop/container-interop">container-interop</a>
-  instance (used to retrieve routed middleware).</li>
-<li><code>getEmitter()</code>: returns the composed
-  <a href="https://github.com/zendframework/zend-diactoros/blob/master/doc/book/emitting-responses.md">emitter</a>,
-  typically a <code>Zend\Expressive\Emitter\EmitterStack</code> instance.</li>
-<li><code>getDefaultDelegate()</code>: (Since 2.0) retrieves the default delegate to use when the internal middleware pipeline is exhausted without returning a response. If none is provided at instantiation, this method will do one of the following:</li>
-<li>If no container is composed, instanatiates a
-    <code>Zend\Expressive\Delegate\NotFoundDelegate</code> using the composed response
-    prototype only.</li>
-<li>If a container is composed, but does not have the
-    <code>Zend\Expressive\Delegate\DefaultDelegate</code> service, it creates and invokes an
-    instance of <code>Zend\Expressive\Container\NotFoundDelegateFactory</code>, passing it
-    the composed container, and uses the value created.</li>
-<li>If a container is composed and contains the <code>Zend\Expressive\Delegate\DefaultDelegate</code>
-    service, it returns that.</li>
-<li><code>getFinalHandler(ResponseInterface $response = null)</code>: (<strong>REMOVED in version 2.0</strong>)
-  retrieves the final handler instance. This is middleware with the signature
-  <code>function ($request, $response, $error = null)</code>, and it is invoked when the
-  middleware pipeline queue is depleted and no response has been returned.</li>
-</ul>
-<h2 id="executing-the-application-run">Executing the application: run()</h2>
-<p>When the application is completely setup, you can execute it with the <code>run()</code>
-method. The method may be called with no arguments, but has the following
-signature:</p>
-<pre class="codehilite"><code class="language-php">public function run(
-    ServerRequestInterface $request = null,
-    ResponseInterface $response = null
-);</code></pre>
+<p>The values in these arrays may be any valid middleware type as defined in this
+chapter.</p>
 
 <hr />
 
@@ -788,10 +699,10 @@ signature:</p>
 <nav>
   <ul class="pager hidden-print">
     <li class="previous">
-      <a rel="prev" href="../middleware-types/"><i class="fa fa-arrow-left"></i> Previous</a>
+      <a rel="prev" href="../../getting-started/skeleton/"><i class="fa fa-arrow-left"></i> Previous</a>
     </li>
     <li class="next">
-      <a rel="next" href="../container/intro/">Next <i class="fa fa-arrow-right"></i></a>
+      <a rel="next" href="../application/">Next <i class="fa fa-arrow-right"></i></a>
     </li>
   </ul>
 </nav>

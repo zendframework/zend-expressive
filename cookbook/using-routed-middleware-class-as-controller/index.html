@@ -110,6 +110,12 @@
                         
                             
 <li >
+    <a href="../../features/middleware-types/">Middleware Types</a>
+</li>
+
+                        
+                            
+<li >
     <a href="../../features/application/">Applications</a>
 </li>
 
@@ -128,6 +134,12 @@
             
 <li >
     <a href="../../features/container/factories/">Container Factories</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../features/container/delegator-factories/">Delegator Factories</a>
 </li>
 
         
@@ -256,6 +268,27 @@
 
                         
                             
+<li >
+    <a href="../../features/modular-applications/">Modular Applications</a>
+</li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Middleware</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../features/middleware/implicit-methods-middleware/">Implicit HEAD and OPTIONS Middleware</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
   <li class="dropdown-submenu">
     <a tabindex="-1" href="">Helpers</a>
     <ul class="dropdown-menu">
@@ -302,6 +335,12 @@
                     <li class="dropdown active">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cookbook <b class="caret"></b></a>
                         <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../autowiring-routes-and-pipelines/">Autowiring routes and pipeline middleware</a>
+</li>
+
                         
                             
 <li >
@@ -375,6 +414,12 @@
 </li>
 
                         
+                            
+<li >
+    <a href="../passing-data-between-middleware/">Passing data between middleware</a>
+</li>
+
+                        
                         </ul>
                     </li>
                 
@@ -387,6 +432,12 @@
                             
 <li >
     <a href="../../why-expressive/">Why choose Expressive?</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../reference/cli-tooling/">CLI Tooling</a>
 </li>
 
                         
@@ -416,6 +467,12 @@
             
 <li >
     <a href="../../reference/migration/to-v1-1/">To Expressive 1.1</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../reference/migration/to-v2/">To Expressive 2.0</a>
 </li>
 
         
@@ -467,8 +524,6 @@
         
             <li><a href="#routing-definitions-may-vary">Routing definitions may vary</a></li>
         
-            <li><a href="#invoking-the-error-stack">Invoking the error stack</a></li>
-        
             <li><a href="#or-use-a-trait">Or use a trait</a></li>
         
     
@@ -509,7 +564,7 @@ classes:</p>
 <li>AlbumPageAdd</li>
 </ul>
 <p>If you are familiar with frameworks that provide controllers capable of handling
-multiple "actions", such as those found in Zend Framework 1 and 2, Symfony,
+multiple "actions", such as those found in Zend Framework's MVC layer, Symfony,
 CodeIgniter, CakePHP, and other popular frameworks, you may want to apply a
 similar pattern when using Expressive.</p>
 <p>In other words, what if we want to use only one middleware class to facilitate
@@ -517,21 +572,27 @@ all three of the above?</p>
 <p>In the following example, we'll use an <code>action</code> routing parameter which our
 middleware class will use in order to determine which internal method to invoke.</p>
 <p>Consider the following route configuration:</p>
-<p><pre class="codehilite"><code class="language-php">return [
+<p><pre class="codehilite"><code class="language-php">use Album\Action\AlbumPage;
+
+// Programmatic:
+$app-&gt;get('/album[/{action:add|edit}[/{id}]]', AlbumPage::class, 'album');
+
+// Config-driven:
+return [
     /* ... */
     'routes' =&gt; [
         /* ... */
         [
-            'name' =&gt; 'album',
-            'path' =&gt; '/album[/{action:add|edit}[/{id}]]',
-            'middleware' =&gt; Album\Action\AlbumPage::class,
+            'name'            =&gt; 'album',
+            'path'            =&gt; '/album[/{action:add|edit}[/{id}]]',
+            'middleware'      =&gt; AlbumPage::class,
             'allowed_methods' =&gt; ['GET'],
         ],
         /* ... */
     ],
 ];</code></pre>
 
-The above defines a route that will match any of the following:</p>
+The above each define a route that will match any of the following:</p>
 <ul>
 <li><code>/album</code></li>
 <li><code>/album/add</code></li>
@@ -546,14 +607,18 @@ definition may differ. The above example uses the default <code>FastRoute</code>
 implementation.</p>
 </blockquote>
 <p>We might then implement <code>Album\Action\AlbumPage</code> as follows:</p>
-<pre class="codehilite"><code class="language-php">namespace Album\Action;
+<pre class="codehilite"><code class="language-php">&lt;?php
+namespace Album\Action;
 
-use Psr\Http\Message\ResponseInterface;
+use Fig\Http\Message\StatusCodeInterface as StatusCode;
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Response\EmptyResponse;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
-class AlbumPage
+class AlbumPage implements MiddlewareInterface
 {
     private $template;    
 
@@ -562,45 +627,33 @@ class AlbumPage
         $this-&gt;template = $template;
     }
 
-    public function __invoke(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        callable $next = null
-    ) {
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
         switch ($request-&gt;getAttribute('action', 'index')) {
             case 'index':
-                return $this-&gt;indexAction($request, $response, $next);
+                return $this-&gt;indexAction($request, $delegate);
             case 'add':
-                return $this-&gt;addAction($request, $response, $next);
+                return $this-&gt;addAction($request, $delegate);
             case 'edit':
-                return $this-&gt;editAction($request, $response, $next);
+                return $this-&gt;editAction($request, $delegate);
             default:
                 // Invalid; thus, a 404!
-                return $response-&gt;withStatus(404);
+                return new EmptyResponse(StatusCode::STATUS_NOT_FOUND);
         }
     }
 
-    public function indexAction(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        callable $next = null
-    ) {
+    public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
         return new HtmlResponse($this-&gt;template-&gt;render('album::album-page'));
     }
 
-    public function addAction(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        callable $next = null
-    ) {
+    public function addAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
         return new HtmlResponse($this-&gt;template-&gt;render('album::album-page-add'));
     }
 
-    public function editAction(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        callable $next = null
-    ) {
+    public function editAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
         $id = $request-&gt;getAttribute('id', false);
         if (! $id) {
             throw new \InvalidArgumentException('id parameter must be provided');
@@ -615,28 +668,29 @@ class AlbumPage
 
 <p>This allows us to have the same dependencies for a set of related actions, and,
 if desired, even have common internal methods each can utilize.</p>
-<p>This approach is reasonable, but requires that I create a similar <code>__invoke()</code>
+<p>This approach is reasonable, but requires that I create a similar <code>process()</code>
 implementation every time I want to accomplish a similar workflow. Let's create
 a generic implementation, via an <code>AbstractPage</code> class:</p>
-<pre class="codehilite"><code class="language-php">namespace App\Action;
+<pre class="codehilite"><code class="language-php">&lt;?php
+namespace App\Action;
 
-use Psr\Http\Message\ResponseInterface;
+use Fig\Http\Message\StatusCodeInterface as StatusCode;
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Response\EmptyResponse;
 
-abstract class AbstractPage
+abstract class AbstractPage implements MiddlewareInterface
 {
-    public function __invoke(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        callable $next = null
-    ) {
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
         $action = $request-&gt;getAttribute('action', 'index') . 'Action';
 
         if (! method_exists($this, $action)) {
-            return $response-&gt;withStatus(404);
+            return new EmptyResponse(StatusCode::STATUS_NOT_FOUND);
         }
 
-        return $this-&gt;$action($request, $response, $next);
+        return $this-&gt;$action($request, $delegate);
     }
 }</code></pre>
 
@@ -644,23 +698,13 @@ abstract class AbstractPage
 <p>The above abstract class pulls the <code>action</code> attribute on invocation, and
 concatenates it with the word <code>Action</code>. It then uses this value to determine if
 a corresponding method exists in the current class, and, if so, calls it with
-the arguments it received; otherwise, it returns a 404 response.</p>
-<blockquote>
-<h2 id="invoking-the-error-stack">Invoking the error stack</h2>
-<p>Instead of returning a 404 response, you could also invoke <code>$next()</code> with an
-error:</p>
-<pre class="codehilite"><code class="language-php">return $next($request, $response, new NotFoundError());</code></pre>
-
-
-<p>This will then invoke the first error handler middleware capable of handling
-the error.</p>
-</blockquote>
+the arguments it received; otherwise, it returns an empty 404 response.</p>
 <p>Our original <code>AlbumPage</code> implementation could then be modified to extend
 <code>AbstractPage</code>:</p>
 <pre class="codehilite"><code class="language-php">namespace Album\Action;
 
 use App\Action\AbstractPage;
-use Psr\Http\Message\ResponseInterface;
+use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Template\TemplateRendererInterface;
@@ -684,36 +728,34 @@ class AlbumPage extends AbstractPage
 <h2 id="or-use-a-trait">Or use a trait</h2>
 <p>As an alternative to an abstract class, you could define the <code>__invoke()</code>
 logic in a trait, which you then compose into your middleware:</p>
-<pre class="codehilite"><code class="language-php">namespace App\Action;
+<pre class="codehilite"><code class="language-php">&lt;?php
+namespace App\Action;
 
-use Psr\Http\Message\ResponseInterface;
+use Fig\Http\Message\StatusCodeInterface as StatusCode;
+use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Response\EmptyResponse;
 
 trait ActionBasedInvocation
 {
-    public function __invoke(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        callable $next = null
-    ) {
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
         $action = $request-&gt;getAttribute('action', 'index') . 'Action';
 
         if (! method_exists($this, $action)) {
-            return $response-&gt;withStatus(404);
+            return new EmptyResponse(StatusCode::STATUS_NOT_FOUND);
         }
 
-        return $this-&gt;$action($request, $response, $next);
+        return $this-&gt;$action($request, $delegate);
     }
 }</code></pre>
 
 
 <p>You would then compose it into a class as follows:</p>
-<pre class="codehilite"><code class="language-php">namespace Album\Action;
+<pre class="codehilite"><code class="language-php">&lt;?php
+namespace Album\Action;
 
 use App\Action\ActionBasedInvocation;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
 class AlbumPage

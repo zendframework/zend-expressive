@@ -110,6 +110,12 @@
                         
                             
 <li >
+    <a href="../../features/middleware-types/">Middleware Types</a>
+</li>
+
+                        
+                            
+<li >
     <a href="../../features/application/">Applications</a>
 </li>
 
@@ -128,6 +134,12 @@
             
 <li >
     <a href="../../features/container/factories/">Container Factories</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../features/container/delegator-factories/">Delegator Factories</a>
 </li>
 
         
@@ -256,6 +268,27 @@
 
                         
                             
+<li >
+    <a href="../../features/modular-applications/">Modular Applications</a>
+</li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Middleware</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../features/middleware/implicit-methods-middleware/">Implicit HEAD and OPTIONS Middleware</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
   <li class="dropdown-submenu">
     <a tabindex="-1" href="">Helpers</a>
     <ul class="dropdown-menu">
@@ -302,6 +335,12 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cookbook <b class="caret"></b></a>
                         <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../cookbook/autowiring-routes-and-pipelines/">Autowiring routes and pipeline middleware</a>
+</li>
+
                         
                             
 <li >
@@ -375,6 +414,12 @@
 </li>
 
                         
+                            
+<li >
+    <a href="../../cookbook/passing-data-between-middleware/">Passing data between middleware</a>
+</li>
+
+                        
                         </ul>
                     </li>
                 
@@ -387,6 +432,12 @@
                             
 <li >
     <a href="../../why-expressive/">Why choose Expressive?</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../reference/cli-tooling/">CLI Tooling</a>
 </li>
 
                         
@@ -416,6 +467,12 @@
             
 <li >
     <a href="../../reference/migration/to-v1-1/">To Expressive 1.1</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../reference/migration/to-v2/">To Expressive 2.0</a>
 </li>
 
         
@@ -535,10 +592,10 @@ features it provides include:</p>
   routing library that best fits the project needs. By default, we provide
   wrappers for Aura.Router, FastRoute, and the zend-mvc router.</p>
 <ul>
-<li><strong>container-interop</strong></li>
+<li><strong>PSR-11 Container</strong></li>
 </ul>
 <p>Expressive encourages the use of Dependency Injection, and defines its
-  <code>Application</code> class to compose a container-interop <code>ContainerInterface</code>
+  <code>Application</code> class to compose a PSR-11 <code>ContainerInterface</code>
   instance. The container is used to lazy-load middleware, whether it is
   piped (Stratigility interface) or routed (Expressive).</p>
 <ul>
@@ -553,23 +610,20 @@ features it provides include:</p>
 </ul>
 <p>Applications should handle errors gracefully, but also handle them differently
   in development versus production. Expressive provides both basic error
-  handling via Stratigility's own <code>FinalHandler</code> implementation, as well as
-  more advanced error handling via two specialized error handlers: a templated
-  error handler for production, and a Whoops-based error handler for development.</p>
+  handling via Stratigility's own <code>ErrorHandler</code> implementation, providing
+  specialized error response generators that can perform templating or use
+  Whoops.</p>
 <h2 id="flow-overview">Flow Overview</h2>
 <p>Below is a diagram detailing the workflow used by Expressive.</p>
 <p><img alt="Expressive Architectural Flow" src="../../images/architecture.png" class="img-responsive"/></p>
 <p>The <code>Application</code> acts as an "onion"; in the diagram above, the top is the
 outer-most layer of the onion, while the bottom is the inner-most.</p>
-<p>The <code>Application</code> dispatches each middleware. Each middleware accepts a
-<em>request</em>, a <em>response</em>, and the <em>next</em> middleware to dispatch. Internally,
-it's actually receiving the middleware stack itself, which knows which
-middleware to invoke next.</p>
+<p>The <code>Application</code> dispatches each middleware. Each middleware receives a request
+and a delegate for handing off processing of the request should the middleware
+not be able to fully process it itself. Internally, the delegate composes a
+queue of middleware, and invokes the next in the queue when invoked.</p>
 <p>Any given middleware can return a <em>response</em>, at which point execution winds
-its way back out the onion. Additionally, any given middleware can indicate an
-error occurred, at which point it can call on the next <em>error handling
-middleware</em>. These act like regular middleware, but accept an additional error
-argument to act on.</p>
+its way back out the onion.</p>
 <blockquote>
 <h3 id="pipelines">Pipelines</h3>
 <p>The terminology "pipeline" is often used to describe the onion. One way of
@@ -579,10 +633,63 @@ and this invokes the next, and so on (and hence the "next" terminology). When
 looked at from this perspective:</p>
 <ul>
 <li>In most cases, the entire queue <em>will not</em> be traversed.</li>
-<li>The inner-most layer of the onion represents the last item in the queue.</li>
+<li>The inner-most layer of the onion represents the last item in the queue, and
+  should be guaranteed to return a response; usually this is indicative of
+  a malformed request (HTTP 400 response status) and/or inability to route
+  the middleware to a handler (HTTP 404 response status).</li>
 <li>Responses are returned back <em>through</em> the pipeline, in reverse order of
   traversal.</li>
 </ul>
+<h3 id="double-pass-middleware">Double pass middleware</h3>
+<p>The system described above is what is known as <em>lambda middleware</em>. Each
+middleware receives the request and the delegate, and you pass only the
+request to the delegate when wanting to hand off processing:</p>
+<pre class="codehilite"><code class="language-php">function (ServerRequestInterface $request, DelegateInterface $delegate)
+{
+    $response = $delegate-&gt;process($request);
+    return $response-&gt;withHeader('X-Test', time());
+}</code></pre>
+
+
+<p>In Expressive 1.X, the default middleware style was what is known as <em>double
+pass</em> middleware. Double pass middleware receives both the request and a
+response in addition to the delegate, and passes both the request and response
+to the delegate when invoking it:</p>
+<pre class="codehilite"><code class="language-php">function (ServerRequestInterface $request, ResponseInterface $response, callable $next)
+{
+    $response = $next($request, $response);
+    return $response-&gt;withHeader('X-Test', time());
+}</code></pre>
+
+
+<p>It is termed "double pass" because you pass both the request and response when
+delegating to the next layer.</p>
+<p>Expressive 2.X still supports double-pass middleware, though we recommend the
+lambda style.</p>
+<h3 id="stratigility-1x-error-middleware">Stratigility 1.X Error Middleware</h3>
+<p>The Expressive 1.X series was based on Stratigility 1.X, which had a concept
+of <em>error middleware</em>. This was middleware that either implemented
+<code>Zend\Stratigility\ErrorMiddlewareInterface</code>, or the "error middleware"
+signature of:</p>
+<pre class="codehilite"><code class="language-php">function (
+    $error,
+    ServerRequestInterface $request,
+    ResponseInterface $response,
+    callable $next
+)</code></pre>
+
+
+<p>Such middleware would be invoked by calling <code>$next()</code> with a third argument
+representing the error:</p>
+<pre class="codehilite"><code class="language-php">return $next($request, $response, $error);</code></pre>
+
+
+<p>Because this middleware would only be invoked in these special conditions,
+we recommended piping such middleware <em>last</em> in the queue.</p>
+<p>Starting with Expressive 1.1, this feature was deprecated, in favor of
+using standard middleware with try/catch blocks internally for error
+handling. As such, we still document it, for our 1.X users, but recommend
+migrating to the suggested error handling practices.</p>
 </blockquote>
 <p>The <code>Application</code> allows arbitrary middleware to be injected, with each being
 executed in the order in which they are attached; returning a response from
@@ -593,9 +700,11 @@ will specify a priority integer to dictate the order in which middleware should
 be attached.  Middleware specifying high integer prioritiess are attached (and
 thus executed) earlier, while those specifying lower and/or negative integers
 are attached later. The default priority is 1.</p>
-<p>Expressive provides a default implementation of "routing" and "dispatch"
+<p>Expressive provides default implementations of "routing" and "dispatch"
 middleware, which you either attach to the middleware pipeline manually, or via
-configuration.</p>
+configuration. These are implemented as the classes
+<code>Zend\Expressive\Middleware\RouteMiddleware</code> and
+<code>Zend\Expressive\Middleware\DispatchMiddleware</code>, respectively.</p>
 <p>Routing within Expressive consists of decomposing the request to match it to
 middleware that can handle that given request. This typically consists of a
 combination of matching the requested URI path along with allowed HTTP methods:</p>
@@ -630,20 +739,8 @@ will execute in one of two conditions:</p>
 <li>routing failed</li>
 <li>routed middleware called on the next middleware instead of returning a response.</li>
 </ul>
-<p>As such, the largest use case for such middleware is for error handling.
-One possibility is for <a href="../../cookbook/custom-404-page-handling/">providing custom 404 handling</a>,
-or handling application-specific error conditions (such as authentication or
-authorization failures).</p>
-<p>Another possibility is to provide post-processing on the response before
-returning it. However, this is typically better handled via middleware piped
-early, by capturing the response before returning it:</p>
-<pre class="codehilite"><code class="language-php">function ($request, $response, $next)
-{
-    $response = $next($request, $response);
-    return $response-&gt;withHeader('X-Clacks-Overhead', 'GNU Terry Pratchett');
-}</code></pre>
-
-
+<p>As such, the largest use case for such middleware is to provide a "default"
+error response for your application, ucually as an HTTP 404 Not Found response.</p>
 <p>The main points to remember are:</p>
 <ul>
 <li>The application is a queue, and operates in FIFO order.</li>

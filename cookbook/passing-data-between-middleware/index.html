@@ -5,22 +5,22 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">  
-    <link rel="shortcut icon" href="../../../img/favicon.ico">
+    <link rel="shortcut icon" href="../../img/favicon.ico">
 
-    <title>Using zend-view - Expressive</title>
+    <title>Passing data between middleware - Expressive</title>
 
-    <link href="../../../css/bootstrap-custom.min.css" rel="stylesheet">
+    <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.018/css/hack.min.css">
     <link href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic&subset=latin-ext,latin" rel="stylesheet" type="text/css">
     <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin" rel="stylesheet" type="text/css">
     <link href="//fonts.googleapis.com/css?family=Libre+Baskerville:400,400italic,700&subset=latin,latin-ext" rel="stylesheet" type="text/css">
-    <link href="../../../css/base.css" rel="stylesheet">
-    <link href="../../../css/zf.css" rel="stylesheet">
-    <link href="../../../css/prism-zf.css" rel="stylesheet">
+    <link href="../../css/base.css" rel="stylesheet">
+    <link href="../../css/zf.css" rel="stylesheet">
+    <link href="../../css/prism-zf.css" rel="stylesheet">
 
 
-    <link href="../../../css/zend-expressive.css" rel="stylesheet">
+    <link href="../../css/zend-expressive.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -59,8 +59,8 @@
 
             <!-- Main title -->
             <span class="navbar-brand">
-              <a class="logo-link" href="http://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Zend Framework"><img src="../../../img/zf-logo-mark.png" height="28" alt="Zend Framework" /></a>
-              <a href="../../..">Expressive</a>
+              <a class="logo-link" href="http://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Zend Framework"><img src="../../img/zf-logo-mark.png" height="28" alt="Zend Framework" /></a>
+              <a href="../..">Expressive</a>
             </span>
         </div>
 
@@ -72,7 +72,7 @@
                 
                 
                     <li >
-                        <a href="../../..">Home</a>
+                        <a href="../..">Home</a>
                     </li>
                 
                 
@@ -83,19 +83,19 @@
                         
                             
 <li >
-    <a href="../../../getting-started/features/">Overview and Features</a>
+    <a href="../../getting-started/features/">Overview and Features</a>
 </li>
 
                         
                             
 <li >
-    <a href="../../../getting-started/standalone/">Quick Start: Standalone</a>
+    <a href="../../getting-started/standalone/">Quick Start: Standalone</a>
 </li>
 
                         
                             
 <li >
-    <a href="../../../getting-started/skeleton/">Quick Start: Skeleton Installer</a>
+    <a href="../../getting-started/skeleton/">Quick Start: Skeleton Installer</a>
 </li>
 
                         
@@ -104,19 +104,19 @@
                 
                 
                 
-                    <li class="dropdown active">
+                    <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Features <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                         
                             
 <li >
-    <a href="../../middleware-types/">Middleware Types</a>
+    <a href="../../features/middleware-types/">Middleware Types</a>
 </li>
 
                         
                             
 <li >
-    <a href="../../application/">Applications</a>
+    <a href="../../features/application/">Applications</a>
 </li>
 
                         
@@ -127,37 +127,37 @@
         
             
 <li >
-    <a href="../../container/intro/">Introduction</a>
+    <a href="../../features/container/intro/">Introduction</a>
 </li>
 
         
             
 <li >
-    <a href="../../container/factories/">Container Factories</a>
+    <a href="../../features/container/factories/">Container Factories</a>
 </li>
 
         
             
 <li >
-    <a href="../../container/delegator-factories/">Delegator Factories</a>
+    <a href="../../features/container/delegator-factories/">Delegator Factories</a>
 </li>
 
         
             
 <li >
-    <a href="../../container/zend-servicemanager/">Using zend-servicemanager</a>
+    <a href="../../features/container/zend-servicemanager/">Using zend-servicemanager</a>
 </li>
 
         
             
 <li >
-    <a href="../../container/pimple/">Using Pimple</a>
+    <a href="../../features/container/pimple/">Using Pimple</a>
 </li>
 
         
             
 <li >
-    <a href="../../container/aura-di/">Using Aura.Di</a>
+    <a href="../../features/container/aura-di/">Using Aura.Di</a>
 </li>
 
         
@@ -172,43 +172,43 @@
         
             
 <li >
-    <a href="../../router/intro/">Introduction</a>
+    <a href="../../features/router/intro/">Introduction</a>
 </li>
 
         
             
 <li >
-    <a href="../../router/interface/">Routing Interface</a>
+    <a href="../../features/router/interface/">Routing Interface</a>
 </li>
 
         
             
 <li >
-    <a href="../../router/uri-generation/">URI Generation</a>
+    <a href="../../features/router/uri-generation/">URI Generation</a>
 </li>
 
         
             
 <li >
-    <a href="../../router/piping/">Routing vs Piping</a>
+    <a href="../../features/router/piping/">Routing vs Piping</a>
 </li>
 
         
             
 <li >
-    <a href="../../router/aura/">Using Aura</a>
+    <a href="../../features/router/aura/">Using Aura</a>
 </li>
 
         
             
 <li >
-    <a href="../../router/fast-route/">Using FastRoute</a>
+    <a href="../../features/router/fast-route/">Using FastRoute</a>
 </li>
 
         
             
 <li >
-    <a href="../../router/zf2/">Using the ZF2 Router</a>
+    <a href="../../features/router/zf2/">Using the ZF2 Router</a>
 </li>
 
         
@@ -223,37 +223,37 @@
         
             
 <li >
-    <a href="../intro/">Introduction</a>
+    <a href="../../features/template/intro/">Introduction</a>
 </li>
 
         
             
 <li >
-    <a href="../interface/">Template Renderer Interface</a>
+    <a href="../../features/template/interface/">Template Renderer Interface</a>
 </li>
 
         
             
 <li >
-    <a href="../middleware/">Templated Middleware</a>
+    <a href="../../features/template/middleware/">Templated Middleware</a>
 </li>
 
         
             
 <li >
-    <a href="../plates/">Using Plates</a>
+    <a href="../../features/template/plates/">Using Plates</a>
 </li>
 
         
             
 <li >
-    <a href="../twig/">Using Twig</a>
+    <a href="../../features/template/twig/">Using Twig</a>
 </li>
 
         
             
-<li class="active">
-    <a href="./">Using zend-view</a>
+<li >
+    <a href="../../features/template/zend-view/">Using zend-view</a>
 </li>
 
         
@@ -263,13 +263,13 @@
                         
                             
 <li >
-    <a href="../../error-handling/">Error Handling</a>
+    <a href="../../features/error-handling/">Error Handling</a>
 </li>
 
                         
                             
 <li >
-    <a href="../../modular-applications/">Modular Applications</a>
+    <a href="../../features/modular-applications/">Modular Applications</a>
 </li>
 
                         
@@ -280,7 +280,7 @@
         
             
 <li >
-    <a href="../../middleware/implicit-methods-middleware/">Implicit HEAD and OPTIONS Middleware</a>
+    <a href="../../features/middleware/implicit-methods-middleware/">Implicit HEAD and OPTIONS Middleware</a>
 </li>
 
         
@@ -295,25 +295,25 @@
         
             
 <li >
-    <a href="../../helpers/intro/">Introduction</a>
+    <a href="../../features/helpers/intro/">Introduction</a>
 </li>
 
         
             
 <li >
-    <a href="../../helpers/url-helper/">UrlHelper</a>
+    <a href="../../features/helpers/url-helper/">UrlHelper</a>
 </li>
 
         
             
 <li >
-    <a href="../../helpers/server-url-helper/">ServerUrlHelper</a>
+    <a href="../../features/helpers/server-url-helper/">ServerUrlHelper</a>
 </li>
 
         
             
 <li >
-    <a href="../../helpers/body-parse/">Body Parsing Middleware</a>
+    <a href="../../features/helpers/body-parse/">Body Parsing Middleware</a>
 </li>
 
         
@@ -323,7 +323,7 @@
                         
                             
 <li >
-    <a href="../../emitters/">Emitters</a>
+    <a href="../../features/emitters/">Emitters</a>
 </li>
 
                         
@@ -332,91 +332,91 @@
                 
                 
                 
-                    <li class="dropdown">
+                    <li class="dropdown active">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cookbook <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                         
                             
 <li >
-    <a href="../../../cookbook/autowiring-routes-and-pipelines/">Autowiring routes and pipeline middleware</a>
+    <a href="../autowiring-routes-and-pipelines/">Autowiring routes and pipeline middleware</a>
 </li>
 
                         
                             
 <li >
-    <a href="../../../cookbook/common-prefix-for-routes/">Prepending a common path to all routes</a>
+    <a href="../common-prefix-for-routes/">Prepending a common path to all routes</a>
 </li>
 
                         
                             
 <li >
-    <a href="../../../cookbook/route-specific-pipeline/">Route-specific middleware pipelines</a>
+    <a href="../route-specific-pipeline/">Route-specific middleware pipelines</a>
 </li>
 
                         
                             
 <li >
-    <a href="../../../cookbook/custom-404-page-handling/">Setting custom 404 page handling</a>
+    <a href="../custom-404-page-handling/">Setting custom 404 page handling</a>
 </li>
 
                         
                             
 <li >
-    <a href="../../../cookbook/using-custom-view-helpers/">Registering custom view helpers when using zend-view</a>
+    <a href="../using-custom-view-helpers/">Registering custom view helpers when using zend-view</a>
 </li>
 
                         
                             
 <li >
-    <a href="../../../cookbook/using-zend-form-view-helpers/">Using zend-form view helpers</a>
+    <a href="../using-zend-form-view-helpers/">Using zend-form view helpers</a>
 </li>
 
                         
                             
 <li >
-    <a href="../../../cookbook/using-a-base-path/">Using Expressive from a subdirectory</a>
+    <a href="../using-a-base-path/">Using Expressive from a subdirectory</a>
 </li>
 
                         
                             
 <li >
-    <a href="../../../cookbook/modular-layout/">Building modular applications</a>
+    <a href="../modular-layout/">Building modular applications</a>
 </li>
 
                         
                             
 <li >
-    <a href="../../../cookbook/setting-locale-depending-routing-parameter/">Setting a locale based on a routing parameter</a>
+    <a href="../setting-locale-depending-routing-parameter/">Setting a locale based on a routing parameter</a>
 </li>
 
                         
                             
 <li >
-    <a href="../../../cookbook/setting-locale-without-routing-parameter/">Setting a locale without a routing parameter</a>
+    <a href="../setting-locale-without-routing-parameter/">Setting a locale without a routing parameter</a>
 </li>
 
                         
                             
 <li >
-    <a href="../../../cookbook/debug-toolbars/">Enabling debug toolbars</a>
+    <a href="../debug-toolbars/">Enabling debug toolbars</a>
 </li>
 
                         
                             
 <li >
-    <a href="../../../cookbook/using-routed-middleware-class-as-controller/">Handling multiple routes in a single class</a>
+    <a href="../using-routed-middleware-class-as-controller/">Handling multiple routes in a single class</a>
 </li>
 
                         
                             
 <li >
-    <a href="../../../cookbook/flash-messengers/">Flash Messengers</a>
+    <a href="../flash-messengers/">Flash Messengers</a>
 </li>
 
                         
                             
-<li >
-    <a href="../../../cookbook/passing-data-between-middleware/">Passing data between middleware</a>
+<li class="active">
+    <a href="./">Passing data between middleware</a>
 </li>
 
                         
@@ -431,25 +431,25 @@
                         
                             
 <li >
-    <a href="../../../why-expressive/">Why choose Expressive?</a>
+    <a href="../../why-expressive/">Why choose Expressive?</a>
 </li>
 
                         
                             
 <li >
-    <a href="../../../reference/cli-tooling/">CLI Tooling</a>
+    <a href="../../reference/cli-tooling/">CLI Tooling</a>
 </li>
 
                         
                             
 <li >
-    <a href="../../../reference/usage-examples/">Examples</a>
+    <a href="../../reference/usage-examples/">Examples</a>
 </li>
 
                         
                             
 <li >
-    <a href="../../../reference/expressive-projects/">Expressive Projects</a>
+    <a href="../../reference/expressive-projects/">Expressive Projects</a>
 </li>
 
                         
@@ -460,19 +460,19 @@
         
             
 <li >
-    <a href="../../../reference/migration/rc-to-v1/">From RC5 and Earlier</a>
+    <a href="../../reference/migration/rc-to-v1/">From RC5 and Earlier</a>
 </li>
 
         
             
 <li >
-    <a href="../../../reference/migration/to-v1-1/">To Expressive 1.1</a>
+    <a href="../../reference/migration/to-v1-1/">To Expressive 1.1</a>
 </li>
 
         
             
 <li >
-    <a href="../../../reference/migration/to-v2/">To Expressive 2.0</a>
+    <a href="../../reference/migration/to-v2/">To Expressive 2.0</a>
 </li>
 
         
@@ -520,17 +520,7 @@
         <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
     
-        <li class="main active"><a href="#using-zend-view">Using zend-view</a></li>
-        
-            <li><a href="#installing-zend-view">Installing zend-view</a></li>
-        
-            <li><a href="#using-the-wrapper">Using the wrapper</a></li>
-        
-            <li><a href="#layouts">Layouts</a></li>
-        
-            <li><a href="#helpers">Helpers</a></li>
-        
-            <li><a href="#recommendations">Recommendations</a></li>
+        <li class="main active"><a href="#passing-data-between-middleware">Passing Data Between Middleware</a></li>
         
     
     </ul>
@@ -538,10 +528,10 @@
     
     <ul class="pager hidden-print">
       <li class="previous">
-        <a rel="prev" href="../twig/"><i class="fa fa-arrow-left"></i> Previous</a>
+        <a rel="prev" href="../flash-messengers/"><i class="fa fa-arrow-left"></i> Previous</a>
       </li>
       <li class="next">
-        <a rel="next" href="../../error-handling/">Next <i class="fa fa-arrow-right"></i></a>
+        <a rel="next" href="../../why-expressive/">Next <i class="fa fa-arrow-right"></i></a>
       </li>
     </ul>
     
@@ -549,178 +539,113 @@
         <div class="col-md-9" role="main">
 
 <ol class="breadcrumb" role="navigation" aria-label="breadcrumbs navigation">
-  <li><a href="../../..">Docs</a> &raquo;</li>
+  <li><a href="../..">Docs</a> &raquo;</li>
   
     
       
-        <li>Features &raquo;</li>
-      
-    
-      
-        <li>Templating &raquo;</li>
+        <li>Cookbook &raquo;</li>
       
     
   
-  <li class="active">Using zend-view</li>
+  <li class="active">Passing data between middleware</li>
 </ol>
 
-<h1 id="using-zend-view">Using zend-view</h1>
-<p><a href="https://github.com/zendframework/zend-view">zend-view</a> provides a native PHP
-template system via its <code>PhpRenderer</code>, and is maintained by Zend Framework. It
-provides:</p>
-<ul>
-<li>Layout facilities.</li>
-<li>Helpers for escaping, and the ability to provide custom helper extensions.</li>
-</ul>
-<p>We provide a <a href="../interface/">TemplateRendererInterface</a> wrapper for zend-view's
-<code>PhpRenderer</code> via <code>Zend\Expressive\ZendView\ZendViewRenderer</code>.</p>
-<h2 id="installing-zend-view">Installing zend-view</h2>
-<p>To use the zend-view wrapper, you must first install the zend-view integration:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-expressive-zendviewrenderer</code></pre>
+<h1 id="passing-data-between-middleware">Passing Data Between Middleware</h1>
+<p>A frequently asked question is how to pass data between middleware.</p>
+<p>The answer is present in every middleware: via request object attributes.</p>
+<p>Middleware is always executed in the order in which it is piped to the
+application. This way you can ensure the request object in middleware receiving
+data contains an attribute containing data passed by outer middleware.</p>
+<p>In the following example, <code>PassingDataMiddleware</code> prepares data to pass as a
+request attribute to nested middleware. We use the fully qualified class name
+for the attribute name to ensure uniqueness, but you can name it anything you
+want.</p>
+<pre class="codehilite"><code class="language-php">namespace App\Middleware;
+
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
+class PassingDataMiddleware implements MiddlewareInterface
+{
+    // ...
+
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
+        // Step 1: Do something first
+        $data = [
+            'foo' =&gt; 'bar',  
+        ];
+
+        // Step 2: Inject data into the request, call the next middleware and wait for the response
+        $response = $delegate-&gt;process($request-&gt;withAttribute(self::class, $data));
+
+        // Step 3: Optionally, do something (with the response) before returning the response
+
+        // Step 4: Return the response
+        return $response;
+    }
+}</code></pre>
 
 
-<h2 id="using-the-wrapper">Using the wrapper</h2>
-<p>If instantiated without arguments, <code>Zend\Expressive\ZendView\ZendViewRenderer</code> will create
-an instance of the <code>PhpRenderer</code>, which it will then proxy to.</p>
-<pre class="codehilite"><code class="language-php">use Zend\Expressive\ZendView\ZendViewRenderer;
+<p>Later, <code>ReceivingDataMiddleware</code> grabs the data and processes it:</p>
+<pre class="codehilite"><code class="language-php">namespace App\Middleware;
 
-$renderer = new ZendViewRenderer();</code></pre>
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
+class ReceivingDataMiddleware implements MiddlewareInterface
+{
+    // ...
 
-<p>Alternately, you can instantiate and configure the engine yourself, and pass it
-to the <code>Zend\Expressive\ZendView\ZendViewRenderer</code> constructor:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Expressive\ZendView\ZendViewRenderer;
-use Zend\View\Renderer\PhpRenderer;
-use Zend\View\Resolver;
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
+        // Step 1: Grab the data from the request and use it
+        $data = $request-&gt;getAttribute(PassingDataMiddleware::class);
 
-// Create the engine instance:
-$renderer = new PhpRenderer();
+        // Step 2: Call the next middleware and wait for the response
+        $response = $delegate-&gt;process($request);
 
-// Configure it:
-$resolver = new Resolver\AggregateResolver();
-$resolver-&gt;attach(
-    new Resolver\TemplateMapResolver(include 'config/templates.php'),
-    100
-);
-$resolver-&gt;attach(
-    (new Resolver\TemplatePathStack())
-    -&gt;setPaths(include 'config/template_paths.php')
-);
-$renderer-&gt;setResolver($resolver);
+        // Step 3: Optionally, do something (with the response) before returning the response
 
-// Inject:
-$renderer = new ZendViewRenderer($renderer);</code></pre>
+        // Step 4: Return the response
+        return $response;
+    }
+}</code></pre>
 
 
-<blockquote>
-<h3 id="namespaced-path-resolving">Namespaced path resolving</h3>
-<p>Expressive defines a custom zend-view resolver,
-<code>Zend\Expressive\ZendView\NamespacedPathStackResolver</code>. This resolver
-provides the ability to segregate paths by namespace, and later resolve a
-template according to the namespace, using the <code>namespace::template</code> notation
-required of <code>TemplateRendererInterface</code> implementations.</p>
-<p>The <code>ZendView</code> adapter ensures that:</p>
-<ul>
-<li>An <code>AggregateResolver</code> is registered with the renderer. If the registered
-  resolver is not an <code>AggregateResolver</code>, it creates one and adds the original
-  resolver to it.</li>
-<li>A <code>NamespacedPathStackResolver</code> is registered with the <code>AggregateResolver</code>, at
-  a low priority (0), ensuring attempts to resolve hit it later.</li>
-</ul>
-<p>With resolvers such as the <code>TemplateMapResolver</code>, you can also resolve
-namespaced templates, mapping them directly to the template on the filesystem
-that matches; adding such a resolver can be a nice performance boost!</p>
-</blockquote>
-<h2 id="layouts">Layouts</h2>
-<p>Unlike the other supported template engines, zend-view does not support layouts
-out-of-the-box. Expressive abstracts this fact away, providing two facilities
-for doing so:</p>
-<ul>
-<li>You may pass a layout template name or <code>Zend\View\Model\ModelInterface</code>
-  instance representing the layout as the second argument to the constructor.</li>
-<li>You may pass a "layout" parameter during rendering, with a value of either a
-  layout template name or a <code>Zend\View\Model\ModelInterface</code>
-  instance representing the layout. Passing a layout this way will override any
-  layout provided to the constructor.</li>
-</ul>
-<p>In each case, the zend-view implementation will do a depth-first, recursive
-render in order to provide content within the selected layout.</p>
-<ul>
-<li>Since 1.3: You may also pass a boolean <code>false</code> value to either
-  <code>addDefaultParam()</code> or via the template variables for the <code>layout</code> key; doing
-  so will disable the layout.</li>
-</ul>
-<h3 id="layout-name-passed-to-constructor">Layout name passed to constructor</h3>
-<pre class="codehilite"><code class="language-php">use Zend\Expressive\ZendView\ZendViewRenderer;
+<p>Of course, you could also use the data in routed middleware, which is usually at
+the innermost layer of your application. The <code>ExampleAction</code> below takes that
+information and passes it to the template renderer to create an <code>HtmlResponse</code>:</p>
+<pre class="codehilite"><code class="language-php">namespace App\Action;
 
-// Create the engine instance with a layout name:
-$renderer = new ZendViewRenderer(null, 'layout::layout');</code></pre>
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Response\HtmlResponse;
 
+class ExampleAction implements MiddlewareInterface
+{
+    // ...
 
-<h3 id="layout-view-model-passed-to-constructor">Layout view model passed to constructor</h3>
-<pre class="codehilite"><code class="language-php">use Zend\Expressive\ZendView\ZendViewRenderer;
-use Zend\View\Model\ViewModel;
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
+        // Step 1: Grab the data from the request
+        $data = $request-&gt;getAttribute(PassingDataMiddleware::class);
+        $id = $request-&gt;getAttribute('id');
 
-// Create the layout view model:
-$layout = new ViewModel([
-    'encoding' =&gt; 'utf-8',
-    'cssPath'  =&gt; '/css/prod/',
-]);
-$layout-&gt;setTemplate('layout::layout');
+        // Step 2: Do some more stuff
 
-// Create the engine instance with the layout:
-$renderer = new ZendViewRenderer(null, $layout);</code></pre>
-
-
-<h3 id="provide-a-layout-name-when-rendering">Provide a layout name when rendering</h3>
-<pre class="codehilite"><code class="language-php">$content = $renderer-&gt;render('blog/entry', [
-    'layout' =&gt; 'layout::blog',
-    'entry'  =&gt; $entry,
-]);</code></pre>
-
-
-<h3 id="provide-a-layout-view-model-when-rendering">Provide a layout view model when rendering</h3>
-<pre class="codehilite"><code class="language-php">use Zend\View\Model\ViewModel;
-
-// Create the layout view model:
-$layout = new ViewModel([
-    'encoding' =&gt; 'utf-8',
-    'cssPath'  =&gt; '/css/blog/',
-]);
-$layout-&gt;setTemplate('layout::layout');
-
-$content = $renderer-&gt;render('blog/entry', [
-    'layout' =&gt; $layout,
-    'entry'  =&gt; $entry,
-]);</code></pre>
-
-
-<h2 id="helpers">Helpers</h2>
-<p>Expressive provides overrides of specific view helpers in order to better
-integrate with PSR-7. These include:</p>
-<ul>
-<li><code>Zend\Expressive\ZendView\UrlHelper</code>. This helper consumes the
-  application's <code>Zend\Expressive\Router\RouterInterface</code> instance in order
-  to generate URIs. Its signature is:
-  <code>url($routeName, array $routeParams = [], array $queryParams = [], $fragmentIdentifier = null, array $options = [])</code></li>
-<li><code>Zend\Expressive\ZendView\ServerUrlHelper</code>. This helper consumes the
-  URI from the application's request in order to provide fully qualified URIs.
-  Its signature is: <code>serverUrl($path = null)</code>.</li>
-</ul>
-<p>To use this particular helper, you will need to inject it with the request URI
-  somewhere within your application:</p>
-<pre class="codehilite"><code class="language-php">$serverUrlHelper-&gt;setUri($request-&gt;getUri());</code></pre>
-
-
-<p>We recommend doing this within a pre-pipeline middleware.</p>
-<h2 id="recommendations">Recommendations</h2>
-<p>We recommend the following practices when using the zend-view adapter:</p>
-<ul>
-<li>If using a layout, create a factory to return the layout view model as a
-  service; this allows you to inject it into middleware and add variables to it.</li>
-<li>While we support passing the layout as a rendering parameter, be aware that if
-  you change engines, this may not be supported.</li>
-</ul>
+        // Step 3: Return a Response
+        return new HtmlResponse(
+            $this-&gt;templateRenderer-&gt;render('blog::entry', [
+                'data' =&gt; $data,
+                'id' =&gt; $id,
+            ])
+        );
+    }
+}</code></pre>
 
 <hr />
 
@@ -728,10 +653,10 @@ integrate with PSR-7. These include:</p>
 <nav>
   <ul class="pager hidden-print">
     <li class="previous">
-      <a rel="prev" href="../twig/"><i class="fa fa-arrow-left"></i> Previous</a>
+      <a rel="prev" href="../flash-messengers/"><i class="fa fa-arrow-left"></i> Previous</a>
     </li>
     <li class="next">
-      <a rel="next" href="../../error-handling/">Next <i class="fa fa-arrow-right"></i></a>
+      <a rel="next" href="../../why-expressive/">Next <i class="fa fa-arrow-right"></i></a>
     </li>
   </ul>
 </nav>
@@ -748,13 +673,13 @@ integrate with PSR-7. These include:</p>
         <p><small><a href="http://framework.zend.com">Learn more about Zend Framework</a></small></p>
     </footer>
 
-    <script src="../../../js/jquery-1.10.2.min.js"></script>
-    <script src="../../../js/bootstrap-3.0.3.min.js"></script>
-    <script src="../../../js/prism-zf.js"></script>
+    <script src="../../js/jquery-1.10.2.min.js"></script>
+    <script src="../../js/bootstrap-3.0.3.min.js"></script>
+    <script src="../../js/prism-zf.js"></script>
 
-    <script>var base_url = '../../..';</script>
-    <script data-main="../../../mkdocs/js/search.js" src="../../../mkdocs/js/require.js"></script>
-    <script src="../../../js/base.js"></script>
+    <script>var base_url = '../..';</script>
+    <script data-main="../../mkdocs/js/search.js" src="../../mkdocs/js/require.js"></script>
+    <script src="../../js/base.js"></script>
 
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
         <div class="modal-dialog">

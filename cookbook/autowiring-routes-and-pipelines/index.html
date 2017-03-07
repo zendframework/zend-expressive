@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">  
     <link rel="shortcut icon" href="../../img/favicon.ico">
 
-    <title>Using zend-form view helpers - Expressive</title>
+    <title>Autowiring routes and pipeline middleware - Expressive</title>
 
     <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
@@ -337,8 +337,8 @@
                         <ul class="dropdown-menu">
                         
                             
-<li >
-    <a href="../autowiring-routes-and-pipelines/">Autowiring routes and pipeline middleware</a>
+<li class="active">
+    <a href="./">Autowiring routes and pipeline middleware</a>
 </li>
 
                         
@@ -367,8 +367,8 @@
 
                         
                             
-<li class="active">
-    <a href="./">Using zend-form view helpers</a>
+<li >
+    <a href="../using-zend-form-view-helpers/">Using zend-form view helpers</a>
 </li>
 
                         
@@ -520,15 +520,15 @@
         <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
     
-        <li class="main active"><a href="#how-can-i-use-zend-form-view-helpers">How can I use zend-form view helpers?</a></li>
+        <li class="main active"><a href="#how-can-i-autowire-routes-and-pipelines">How can I autowire routes and pipelines?</a></li>
         
-            <li><a href="#replacing-the-helperpluginmanager-factory">Replacing the HelperPluginManager factory</a></li>
+            <li><a href="#delegator-factories">Delegator Factories</a></li>
         
-            <li><a href="#delegator-factoriesservice-extension">Delegator factories/service extension</a></li>
+            <li><a href="#caution-pipelines">Caution: pipelines</a></li>
         
-            <li><a href="#pipeline-middleware">Pipeline middleware</a></li>
+            <li><a href="#caution-third-party-distributed-modules">Caution: third-party, distributed modules</a></li>
         
-            <li><a href="#registering-more-helpers">Registering more helpers</a></li>
+            <li><a href="#synopsis">Synopsis</a></li>
         
     
     </ul>
@@ -536,10 +536,10 @@
     
     <ul class="pager hidden-print">
       <li class="previous">
-        <a rel="prev" href="../using-custom-view-helpers/"><i class="fa fa-arrow-left"></i> Previous</a>
+        <a rel="prev" href="../../features/emitters/"><i class="fa fa-arrow-left"></i> Previous</a>
       </li>
       <li class="next">
-        <a rel="next" href="../using-a-base-path/">Next <i class="fa fa-arrow-right"></i></a>
+        <a rel="next" href="../common-prefix-for-routes/">Next <i class="fa fa-arrow-right"></i></a>
       </li>
     </ul>
     
@@ -555,275 +555,203 @@
       
     
   
-  <li class="active">Using zend-form view helpers</li>
+  <li class="active">Autowiring routes and pipeline middleware</li>
 </ol>
 
-<h1 id="how-can-i-use-zend-form-view-helpers">How can I use zend-form view helpers?</h1>
-<p>If you've selected zend-view as your preferred template renderer, you'll likely
-want to use the various view helpers available in other components, such as:</p>
-<ul>
-<li>zend-form</li>
-<li>zend-i18n</li>
-<li>zend-navigation</li>
-</ul>
-<p>By default, only the view helpers directly available in zend-view are available;
-how can you add the others?</p>
-<p>To add the zend-form view helpers create a file <code>config/autoload/zend-form.global.php</code>
-with the contents:</p>
+<h1 id="how-can-i-autowire-routes-and-pipelines">How can I autowire routes and pipelines?</h1>
+<p>Expressive 2.0 switches to <em>programmatic</em> piplines and routes, versus
+<em>configuration-driven</em> pipelines and routing. One drawback is that with
+configuration-driven approaches, users could provide configuration via a module
+<code>ConfigProvider</code>, and automatically expose new pipeline middleware or routes;
+with a programmatic approach, this is no longer possible.</p>
+<p>Or is it?</p>
+<h2 id="delegator-factories">Delegator Factories</h2>
+<p>One possibility, available since the Expressive 2.X skeleton application, is to
+use <em>delegator factories</em> on the <code>Zend\Expressive\Application</code> instance in order
+to inject these items.</p>
+<p>A <em>delegator factory</em> is a factory that <em>delegates</em> creation of an instance to a
+callback, and then operates on that instance for the purpose of altering the
+instance or providing a replacement (e.g., a decorator or proxy). The delegate
+callback usually wraps a service factory, or, because delegator factories
+<em>also</em> return an instance, additional delegator factories. As such, you assign
+delegator <em>factories</em>, plural, to instances, allowing multiple delegator
+factories to intercept processing of the service initialization.</p>
+<p>For the purposes of this particular example, we will use delegator factories to
+both <em>pipe</em> middleware as well as <em>route</em> middleware.</p>
+<p>To demonstrate, we'll take the default pipeline and routing from the skeleton
+application, and provide it via a delegator factory instead.</p>
+<p>First, we'll create the class <code>App\Factory\PipelineAndRoutesDelegator</code>, with
+the following contents:</p>
 <pre class="codehilite"><code class="language-php">&lt;?php
-use Zend\Form\ConfigProvider;
 
-$provider = new ConfigProvider();
-return $provider();</code></pre>
+namespace App\Factory;
 
-
-<p>and that will essentially do everything needed.</p>
-<p>If you installed Expressive via the skeleton, the service
-<code>Zend\View\HelperPluginManager</code> is registered for you, and represents the helper
-plugin manager injected into the <code>PhpRenderer</code> instance. As such, you only need
-to configure this. The question is: where?</p>
-<p>You have three options:</p>
-<ul>
-<li>Replace the <code>HelperPluginManager</code> factory with your own; or</li>
-<li>Add a delegator factory to or extend the <code>HelperPluginManager</code> service to
-  inject the additional helper configuration; or</li>
-<li>Add pipeline middleware that composes the <code>HelperPluginManager</code> and configures
-  it.</li>
-</ul>
-<h2 id="replacing-the-helperpluginmanager-factory">Replacing the HelperPluginManager factory</h2>
-<p>The zend-view integration provides <code>Zend\Expressive\ZendView\HelperPluginManagerFactory</code>,
-and the Expressive skeleton registers it be default. The simplest solution for
-adding other helpers is to replace it with your own. In your own factory, you
-will <em>also</em> configure the plugin manager with the configuration from the
-zend-form component (or whichever other components you wish to use).</p>
-<pre class="codehilite"><code class="language-php">namespace Your\Application;
-
+use App\Action;
 use Psr\Container\ContainerInterface;
-use Zend\ServiceManager\Config;
-use Zend\View\HelperPluginManager;
+use Zend\Expressive\Application;
+use Zend\Expressive\Helper\ServerUrlMiddleware;
+use Zend\Expressive\Helper\UrlHelperMiddleware;
+use Zend\Expressive\Middleware\ImplicitHeadMiddleware;
+use Zend\Expressive\Middleware\ImplicitOptionsMiddleware;
+use Zend\Expressive\Middleware\NotFoundHandler;
+use Zend\Stratigility\Middleware\ErrorHandler;
 
-class HelperPluginManagerFactory
+class PipelineAndRoutesDelegator
 {
-    public function __invoke(ContainerInterface $container)
+    /**
+     * @param ContainerInterface $container
+     * @param string $serviceName Name of the service being created.
+     * @param callable $callback Creates and returns the service.
+     * @return Application
+     */
+    public function __invoke(ContainerInterface $container, $serviceName, callable $callback)
     {
-        $manager = new HelperPluginManager($container);
+        /** @var $app Application */
+        $app = $callback();
 
-        $config = $container-&gt;has('config') ? $container-&gt;get('config') : [];
-        $config = isset($config['view_helpers']) ? $config['view_helpers'] : [];
-        (new Config($config))-&gt;configureServiceManager($manager);
+        // Setup pipeline:
+        $app-&gt;pipe(ErrorHandler::class);
+        $app-&gt;pipe(ServerUrlMiddleware::class);
+        $app-&gt;pipeRoutingMiddleware();
+        $app-&gt;pipe(ImplicitHeadMiddleware::class);
+        $app-&gt;pipe(ImplicitOptionsMiddleware::class);
+        $app-&gt;pipe(UrlHelperMiddleware::class);
+        $app-&gt;pipeDispatchMiddleware();
+        $app-&gt;pipe(NotFoundHandler::class);
 
-        return $manager;
+        // Setup routes:
+        $app-&gt;get('/', Action\HomePageAction::class, 'home');
+        $app-&gt;get('/api/ping', Action\PingAction::class, 'api.ping');
+
+        return $app;
     }
 }</code></pre>
 
 
-<p>In your <code>config/autoload/templates.global.php</code> file, change the line that reads:</p>
-<pre class="codehilite"><code class="language-php">Zend\View\HelperPluginManager::class =&gt; Zend\Expressive\ZendView\HelperPluginManagerFactory::class,</code></pre>
-
-
-<p>to instead read as:</p>
-<pre class="codehilite"><code class="language-php">Zend\View\HelperPluginManager::class =&gt; Your\Application\HelperPluginManagerFactory::class,</code></pre>
-
-
-<p>This approach will work for any of the various containers supported.</p>
-<h2 id="delegator-factoriesservice-extension">Delegator factories/service extension</h2>
-<p><a href="https://docs.zendframework.com/zend-servicemanager/delegators/">Delegator factories</a>
-and <a href="https://github.com/silexphp/Pimple/tree/1.1#modifying-services-after-creation">service extension</a>
-operate on the same principle: they intercept after the original factory was
-called, and then operate on the generated instance, either modifying or
-replacing it. We'll demonstrate this for zend-servicemanager and Pimple; at the
-time of writing, we're unaware of a mechanism for doing so in Aura.Di.</p>
-<h3 id="zend-servicemanager">zend-servicemanager</h3>
-<p>You'll first need to create a delegator factory:</p>
-<pre class="codehilite"><code class="language-php">namespace Your\Application;
-
-use Psr\Container\ContainerInterface;
-use Zend\ServiceManager\Config;
-use Zend\ServiceManager\DelegatorFactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
-
-class FormHelpersDelegatorFactory
+<blockquote>
+<h3 id="where-to-put-the-factory">Where to put the factory</h3>
+<p>You will place the factory class in one of the following locations:</p>
+<ul>
+<li><code>src/App/Factory/PipelineAndRoutesDelegator.php</code> if using the default, flat,
+  application structure.</li>
+<li><code>src/App/src/Factory/PipelineAndRoutesDelegator.php</code> if using the
+  recommended, modular, application structure.</li>
+</ul>
+</blockquote>
+<p>Once you've created this, edit the class <code>App\ConfigProvider</code>; in it, we'll
+update the <code>getDependencies()</code> method to add the delegator factory:</p>
+<pre class="codehilite"><code class="language-php">public function getDependencies()
 {
-    /**
-     * zend-servicemanager v3 support
-     */
-    public function __invoke(
-        ContainerInterface $container,
-        $name,
-        callable $callback,
-        array $options = null
-    ) {
-        $helpers = $callback();
-
-        $config = $container-&gt;has('config') ? $container-&gt;get('config') : [];
-        $config = new Config($config['view_helpers']);
-        $config-&gt;configureServiceManager($helpers);
-        return $helpers;
-    }
-
-    /**
-     * zend-servicemanager v2 support
-     */
-    public function createDelegatorWithName(
-        ServiceLocatorInterface $container,
-        $name,
-        $requestedName,
-        $callback
-    ) {
-        return $this($container, $name, $callback);
-    }
-}</code></pre>
-
-
-<p>The above creates an instance of <code>Zend\ServiceManager\Config</code>, uses it to
-configure the already created <code>Zend\View\HelperPluginManager</code> instance, and then
-returns the plugin manager instance.</p>
-<p>From here, you'll add a <code>delegators</code> configuration key in your
-<code>config/autoload/templates.global.php</code> file:</p>
-<pre class="codehilite"><code class="language-php">return [
-    'dependencies' =&gt; [
+    return [
+        /* . . . */
         'delegators' =&gt; [
-            Zend\View\HelperPluginManager::class =&gt; [
-                Your\Application\FormHelpersDelegatorFactory::class,
+            \Zend\Expressive\Application::class =&gt; [
+                Factory\PipelineAndRoutesDelegator::class,
             ],
         ],
-        /* ... */
-    ],
-    'templates' =&gt; [
-        /* ... */
-    ],
-    'view_helpers' =&gt; [
-        /* ... */
-    ],
-];</code></pre>
-
-
-<p>Note: delegator factories are keyed by the service they modify, and the value is
-an <em>array</em> of delegator factories, to allow multiple such factories to be in
-use.</p>
-<h3 id="pimple">Pimple</h3>
-<p>For Pimple, we don't currently support configuration of service extensions, so
-you'll need to edit the main container configuration file,
-<code>config/container.php</code>. Place the following anywhere after the factories and
-invokables are defined:</p>
-<pre class="codehilite"><code class="language-php">// The following assumes you've added the following import statements to
-// the start of the file:
-// use Zend\ServiceManager\Config as ServiceConfig;
-// use Zend\View\HelperPluginManager;
-$container[HelperPluginManager::class] = $container-&gt;extend(
-    HelperPluginManager::class,
-    function ($helpers, $container) {
-        $config = isset($container['config']) ? $container['config'] : [];
-        $config = new ServiceConfig($config['view_helpers']);
-        $config-&gt;configureServiceManager($helpers);
-        return $helpers;
-    }
-);</code></pre>
-
-
-<h2 id="pipeline-middleware">Pipeline middleware</h2>
-<p>Another option is to use pipeline middleware. This approach will
-require that the middleware execute on every request, which introduces (very
-slight) performance overhead. However, it's a portable method that works
-regardless of the container implementation you choose.</p>
-<p>First, define the middleware:</p>
-<pre class="codehilite"><code class="language-php">namespace Your\Application
-
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Zend\Form\View\HelperConfig as FormHelperConfig;
-use Zend\View\HelperPluginManager;
-
-class FormHelpersMiddleware implements MiddlewareInterface
-{
-    private $helpers;
-
-    public function __construct(HelperPluginManager $helpers)
-    {
-        $this-&gt;helpers = $helpers;
-    }
-
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
-    {
-        $config = new FormHelperConfig();
-        $config-&gt;configureServiceManager($this-&gt;helpers);
-        return $delegate-&gt;process($request);
-    }
+    ];
 }</code></pre>
 
 
-<p>You'll also need a factory for the middleware, to ensure it receives the
-<code>HelperPluginManager</code>:</p>
-<pre class="codehilite"><code class="language-php">namespace Your\Application
-
-use Zend\View\HelperPluginManager;
-
-class FormHelpersMiddlewareFactory
-{
-    public function __invoke($container)
-    {
-        return new FormHelpersMiddleware(
-            $container-&gt;get(HelperPluginManager::class)
-        );
-    }
-}</code></pre>
-
-
-<p>Next, register the middleware with its factory in one of
-<code>config/autoload/middleware-pipeline.global.php</code> or
-<code>config/autoload/dependencies.global.php</code>:</p>
-<pre class="codehilite"><code class="language-php">return [
-    'dependencies' =&gt; [
-        'factories' =&gt; [
-            Your\Application\FormHelpersMiddleware::class =&gt; Your\Application\FormHelpersMiddlewareFactory::class
-            /* ... */
-        ],
-        /* ... */
-    ],
-];</code></pre>
-
-
-<p>If using programmatic pipelines, pipe the middleware in an appropriate location
-in your pipeline:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;pipe(FormHelpersMiddleware::class);
-
-// or, perhaps, in a route-specific middleware pipeline:
-$app-&gt;post('/register', [
-    FormHelpersMiddleware::class,
-    RegisterMiddleware::class,
-], 'register');</code></pre>
-
-
-<p>If using configuration-driven pipelines or routing:</p>
-<pre class="codehilite"><code>// Via the middleware pipeline:
-'middleware_pipeline' =&gt; [
-    ['middleware' =&gt; Your\Application\FormHelpersMiddleware::class, 'priority' =&gt; 1000],
-],
-
-// Or via routes:
-'routes' =&gt; [
-    [
-        'name'            =&gt; 'register',
-        'path'            =&gt; '/register',
-        'middleware'      =&gt; [
-            FormHelpersMiddleware::class,
-            RegisterMiddleware::class,
-        ],
-        'allowed_methods' =&gt; ['POST'],
-    ]
-]</code></pre>
-
-
-<p>At that point, you're all set!</p>
-<h2 id="registering-more-helpers">Registering more helpers</h2>
-<p>What if you need to register helpers from multiple components?</p>
-<p>You can do so using the same technique above. Better yet, do them all at once!</p>
+<blockquote>
+<h3 id="where-is-the-configprovider-class">Where is the ConfigProvider class?</h3>
+<p>The <code>ConfigProvider</code> class is in one of the following locations:</p>
 <ul>
-<li>If you chose to use delegator factories/service extension, do all helper
-  configuration registrations for all components in the same factory.</li>
-<li>If you chose to use middleware, do all helper configuration registrations for
-  all components in the same middleware.</li>
+<li><code>src/App/ConfigProvider.php</code> if using the default, flat, application
+  structure.</li>
+<li><code>src/App/src/ConfigProvider.php</code> using the recommended, modular, application
+  structure.</li>
+</ul>
+<h3 id="why-is-an-array-assigned">Why is an array assigned?</h3>
+<p>As noted above in the description of delegator factories, since each delegator
+factory returns an instance, you can nest multiple delegator factories in
+order to shape initialization of a service. As such, they are assigned as an
+<em>array</em> to the service.</p>
+</blockquote>
+<p>Once you've done this, you can remove:</p>
+<ul>
+<li><code>config/pipeline.php</code></li>
+<li><code>config/routes.php</code></li>
+<li>The following lines from <code>public/index.php</code>:</li>
+</ul>
+<pre class="codehilite"><code class="language-php">// Import programmatic/declarative middleware pipeline and routing
+// configuration statements
+require 'config/pipeline.php';
+require 'config/routes.php';</code></pre>
+
+
+<p>If you reload your application at this point, you should see that everything
+continues to work as expected!</p>
+<h2 id="caution-pipelines">Caution: pipelines</h2>
+<p>Using delegator factories is a nice way to keep your routing and pipeline
+configuration close to the modules in which they are defined. However, there is
+a caveat: you likely should <strong>not</strong> register pipeline middleware in a delegator
+factory <em>other than within your root application module</em>.</p>
+<p>The reason for this is simple: pipelines are linear, and specific to your
+application. If one module pipes in middleware, there's no guarantee it will be
+piped before or after your main pipeline, and no way to pipe the middleware at a
+position in the middle of the pipeline!</p>
+<p>As such:</p>
+<ul>
+<li>Use a <code>config/pipeline.php</code> file for your pipeline, <strong>OR</strong></li>
+<li>Ensure you only define the pipeline in a <strong>single</strong> delegator factory on your
+  <code>Application</code> instance.</li>
+</ul>
+<h2 id="caution-third-party-distributed-modules">Caution: third-party, distributed modules</h2>
+<p>If you are developing a module to distribute as a package via
+<a href="https://getcomposer.org/">Composer</a>, <strong>you should not autowire any delegator
+factories that inject pipeline middleware or routes in the <code>Application</code></strong>.</p>
+<p>Why?</p>
+<p>As noted in the above section, pipelines should be created exactly once, at
+the application level. Registering pipeline middleware within a distributable
+package will very likely not have the intended consequences.</p>
+<p>If you ship with pipeline middleware, we suggest that you:</p>
+<ul>
+<li>Document the middleware, and where you anticipate it being used in the
+  middleware pipeline.</li>
+<li>Document how to add the middleware service to dependency configuration, or
+  provide the dependency configuration via your module's <code>ConfigProvider</code>.</li>
+</ul>
+<p>With regards to routes, there are other considerations:</p>
+<ul>
+<li>
+<p>Routes defined by the package might conflict with the application, or with
+  other packages used by the application.</p>
+</li>
+<li>
+<p>Routing definitions are typically highly specific to the router implementation
+  in use. As an example, each of the currently supported router implementations
+  has a different syntax for placeholders:</p>
+</li>
+<li>
+<p><code>/user/:id</code> + "constraints" configuration to define constraints (zend-router)</p>
+</li>
+<li><code>/user/{id}</code> + "tokens" configuration to define constraints (Aura.Router)</li>
+<li>
+<p><code>/user/{id:\d+}</code> (FastRoute)</p>
+</li>
+<li>
+<p>Your application may have specific routing considerations or design.</p>
+</li>
+</ul>
+<p>You could, of course, detect what router is in use, and provide routing for each
+known, supported router implementation within your delegator factory. We even
+recommend doing exactly that. However, we note that such an approach does not
+solve the other two points above.</p>
+<p>However, we still recommend <em>shipping</em> a delegator factory that would register
+your routes, since routes <em>are</em> often a part of module design; just <strong>do not
+autowire</strong> that delegator factory. This way, end-users who <em>can</em> use the
+defaults do not need to cut-and-paste routing definitions from your
+documentation into their own applications; they will instead opt-in to your
+delegator factory by wiring it into their own configuration.</p>
+<h2 id="synopsis">Synopsis</h2>
+<ul>
+<li>We recommend using delegator factories for the purpose of autowiring routes,
+  and, with caveats, pipeline middleware:</li>
+<li>The pipeline should be created exactly once, so calls to <code>pipe()</code> should
+    occur in exactly <em>one</em> delegator factory.</li>
+<li>Distributable packages should create a delegator factory for <em>routes only</em>,
+  but <em>should not</em> register the delegator factory by default.</li>
 </ul>
 
 <hr />
@@ -832,10 +760,10 @@ $app-&gt;post('/register', [
 <nav>
   <ul class="pager hidden-print">
     <li class="previous">
-      <a rel="prev" href="../using-custom-view-helpers/"><i class="fa fa-arrow-left"></i> Previous</a>
+      <a rel="prev" href="../../features/emitters/"><i class="fa fa-arrow-left"></i> Previous</a>
     </li>
     <li class="next">
-      <a rel="next" href="../using-a-base-path/">Next <i class="fa fa-arrow-right"></i></a>
+      <a rel="next" href="../common-prefix-for-routes/">Next <i class="fa fa-arrow-right"></i></a>
     </li>
   </ul>
 </nav>

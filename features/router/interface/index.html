@@ -110,6 +110,12 @@
                         
                             
 <li >
+    <a href="../../middleware-types/">Middleware Types</a>
+</li>
+
+                        
+                            
+<li >
     <a href="../../application/">Applications</a>
 </li>
 
@@ -128,6 +134,12 @@
             
 <li >
     <a href="../../container/factories/">Container Factories</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../container/delegator-factories/">Delegator Factories</a>
 </li>
 
         
@@ -256,6 +268,27 @@
 
                         
                             
+<li >
+    <a href="../../modular-applications/">Modular Applications</a>
+</li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Middleware</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../middleware/implicit-methods-middleware/">Implicit HEAD and OPTIONS Middleware</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
   <li class="dropdown-submenu">
     <a tabindex="-1" href="">Helpers</a>
     <ul class="dropdown-menu">
@@ -302,6 +335,12 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cookbook <b class="caret"></b></a>
                         <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../../cookbook/autowiring-routes-and-pipelines/">Autowiring routes and pipeline middleware</a>
+</li>
+
                         
                             
 <li >
@@ -375,6 +414,12 @@
 </li>
 
                         
+                            
+<li >
+    <a href="../../../cookbook/passing-data-between-middleware/">Passing data between middleware</a>
+</li>
+
+                        
                         </ul>
                     </li>
                 
@@ -387,6 +432,12 @@
                             
 <li >
     <a href="../../../why-expressive/">Why choose Expressive?</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../reference/cli-tooling/">CLI Tooling</a>
 </li>
 
                         
@@ -416,6 +467,12 @@
             
 <li >
     <a href="../../../reference/migration/to-v1-1/">To Expressive 1.1</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../../reference/migration/to-v2/">To Expressive 2.0</a>
 </li>
 
         
@@ -464,6 +521,8 @@
     <ul class="nav bs-sidenav">
     
         <li class="main active"><a href="#routing-interface">Routing Interface</a></li>
+        
+            <li><a href="#generateuri-signature-change-in-20">generateUri() signature change in 2.0</a></li>
         
             <li><a href="#routes">Routes</a></li>
         
@@ -557,10 +616,12 @@ interface RouterInterface
      * @see http://framework.zend.com/manual/current/en/modules/zend.mvc.routing.html
      * @param string $name
      * @param array $substitutions
+     * @param array $options Since zend-expressive-router 2.0/zend-expressive 2.0;
+     *     not defined in earlier versions.
      * @return string
      * @throws Exception\RuntimeException if unable to generate the given URI.
      */
-    public function generateUri($name, array $substitutions = []);
+    public function generateUri($name, array $substitutions = [], array $options = []);
 }</code></pre>
 
 
@@ -571,6 +632,19 @@ factories provided by zend-expressive will receive your custom service.</p>
 <p>Implementors should also read the following sections detailing the <code>Route</code> and
 <code>RouteResult</code> classes, to ensure that their implementations interoperate
 correctly.</p>
+<blockquote>
+<h3 id="generateuri-signature-change-in-20">generateUri() signature change in 2.0</h3>
+<p>Prior to zendframework/zend-expressive-router 2.0.0, the signature of
+<code>generateUri()</code> was:</p>
+<pre class="codehilite"><code class="language-php">public function generateUri(
+    string $name,
+    array $substitutions = []
+) : string</code></pre>
+
+
+<p>If you are targeting that version, you may still provide the <code>$options</code>
+argument, but it will not be invoked.</p>
+</blockquote>
 <h2 id="routes">Routes</h2>
 <p>Routes are defined via <code>Zend\Expressive\Router\Route</code>, and aggregate the
 following information:</p>
@@ -584,6 +658,8 @@ following information:</p>
 <p>The <code>Route</code> class has the following signature:</p>
 <pre class="codehilite"><code class="language-php">namespace Zend\Expressive\Router;
 
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
+
 class Route
 {
     const HTTP_METHOD_ANY = 0xff;
@@ -591,7 +667,9 @@ class Route
 
     /**
      * @param string $path Path to match.
-     * @param string|callable $middleware Middleware to use when this route is matched.
+     * @param string|callable|MiddlewareInterface $middleware Middleware to use
+     *     when this route is matched. MiddlewareInterface is supported starting
+     *     in zend-expressive-router 2.1.0.
      * @param int|array Allowed HTTP methods; defaults to HTTP_METHOD_ANY.
      * @param string|null $name the route name
      * @throws Exception\InvalidArgumentException for invalid path type.
@@ -618,7 +696,8 @@ class Route
     public function getName();
 
     /**
-     * @return string|callable
+     * @return string|callable|MiddlewareInterface MiddlewareInterface is supported
+     *     starting in zend-expressive-router 2.1.0.
      */
     public function getMiddleware();
 
@@ -650,7 +729,9 @@ class Route
 <p>Typically, developers will use <code>Zend\Expressive\Application::route()</code> (or one of
 the HTTP-specific routing methods) to create routes, and will not need to
 interact with <code>Route</code> instances. However, that method can <em>also</em> accept <code>Route</code>
-instances, allowing more flexibility in defining and configuring them.</p>
+instances, allowing more flexibility in defining and configuring them;
+additionally, when working with <code>RouteResult</code> instances, you may pull the
+<code>Route</code> instance from that in order to obtain data about the matched route.</p>
 <h2 id="matching-and-routeresults">Matching and RouteResults</h2>
 <p>Internally, <code>Zend\Expressive\Application</code> calls on <code>RouterInterface::match()</code>,
 passing it the current request instance. This allows implementations to pull
@@ -673,6 +754,9 @@ class RouteResult
     /**
      * Create an instance representing a route success.
      *
+     * This method is removed starting in zend-expressive-router 2.0; use
+     * fromRoute() instead.
+     *
      * @param string $name Name of matched route.
      * @param callable|string $middleware Middleware associated with the
      *     matched route.
@@ -680,6 +764,19 @@ class RouteResult
      * @return static
      */
     public static function fromRouteMatch($name, $middleware, array $params);
+
+    /**
+     * Create an instance representing a route success from a Route instance.
+     *
+     * This method was introduced in zend-expressive-router 1.3, and should
+     * be used for generating an instance indicating a route success from
+     * that version forward.
+     *
+     * @param Route $route
+     * @param array $params Parameters associated with the matched route.
+     * @return static
+     */
+    public static function fromRoute(Route $route, array $params = []);
 
     /**
      * Create an instance representing a route failure.
@@ -695,6 +792,18 @@ class RouteResult
      * @return bool
      */
     public function isSuccess();
+
+    /**
+     * Retrieve the matched route, if possible.
+     *
+     * If this result represents a failure, return false; otherwise, return the
+     * matched route instance.
+     *
+     * Available starting in zend-expressive-router 1.3.0.
+     *
+     * @return Route
+     */
+    public function getMatchedRoute();
 
     /**
      * Retrieve the matched route name, if possible.

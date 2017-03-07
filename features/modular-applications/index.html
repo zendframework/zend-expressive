@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">  
     <link rel="shortcut icon" href="../../img/favicon.ico">
 
-    <title>Applications - Expressive</title>
+    <title>Modular Applications - Expressive</title>
 
     <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
@@ -115,8 +115,8 @@
 
                         
                             
-<li class="active">
-    <a href="./">Applications</a>
+<li >
+    <a href="../application/">Applications</a>
 </li>
 
                         
@@ -268,8 +268,8 @@
 
                         
                             
-<li >
-    <a href="../modular-applications/">Modular Applications</a>
+<li class="active">
+    <a href="./">Modular Applications</a>
 </li>
 
                         
@@ -520,15 +520,19 @@
         <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
     
-        <li class="main active"><a href="#applications">Applications</a></li>
+        <li class="main active"><a href="#modular-applications">Modular applications</a></li>
         
-            <li><a href="#instantiation">Instantiation</a></li>
+            <li><a href="#making-your-application-modular">Making your application modular</a></li>
         
-            <li><a href="#adding-routable-middleware">Adding routable middleware</a></li>
+            <li><a href="#updating-your-expressive-1x-application-to-accept-modules">Updating your Expressive 1.X application to accept modules</a></li>
         
-            <li><a href="#retrieving-dependencies">Retrieving dependencies</a></li>
+            <li><a href="#module-structure">Module structure</a></li>
         
-            <li><a href="#executing-the-application-run">Executing the application: run()</a></li>
+            <li><a href="#creating-and-enabling-a-module">Creating and enabling a module</a></li>
+        
+            <li><a href="#caching-configuration">Caching configuration</a></li>
+        
+            <li><a href="#final-notes">Final notes</a></li>
         
     
     </ul>
@@ -536,10 +540,10 @@
     
     <ul class="pager hidden-print">
       <li class="previous">
-        <a rel="prev" href="../middleware-types/"><i class="fa fa-arrow-left"></i> Previous</a>
+        <a rel="prev" href="../error-handling/"><i class="fa fa-arrow-left"></i> Previous</a>
       </li>
       <li class="next">
-        <a rel="next" href="../container/intro/">Next <i class="fa fa-arrow-right"></i></a>
+        <a rel="next" href="../middleware/implicit-methods-middleware/">Next <i class="fa fa-arrow-right"></i></a>
       </li>
     </ul>
     
@@ -555,232 +559,236 @@
       
     
   
-  <li class="active">Applications</li>
+  <li class="active">Modular Applications</li>
 </ol>
 
-<h1 id="applications">Applications</h1>
-<p>In zend-expressive, you define a <code>Zend\Expressive\Application</code> instance and
-execute it. The <code>Application</code> instance is itself <a href="https://github.com/zendframework/zend-stratigility/blob/master/doc/book/middleware.md">middleware</a>
-that composes:</p>
+<h1 id="modular-applications">Modular applications</h1>
+<p>Zend Framework 2 applications have a concept of <em>modules</em>, independent units that
+can provide configuration, services, and hooks into its MVC lifecycle. This
+functionality is provided by zend-modulemanager.</p>
+<p>Starting with Expressive 2.0, we provide similar functionality by incorporating
+two packages within the default skeleton application:</p>
 <ul>
-<li>a <a href="../router/intro/">router</a>, for dynamically routing requests to middleware.</li>
-<li>a <a href="../container/intro/">dependency injection container</a>, for retrieving
-  middleware to dispatch.</li>
-<li>a <a href="../error-handling/#default-delegates">default delegate</a> (Expressive 2.X)
-  or <a href="../error-handling/#version-1-error-handling">final handler</a></li>
-<li>an <a href="https://github.com/zendframework/zend-diactoros/blob/master/doc/book/emitting-responses.md">emitter</a>,
-  for emitting the response when application execution is complete.</li>
+<li><a href="https://github.com/zendframework/zend-config-aggregator">zendframework/zend-config-aggregator</a>,
+  which provides features for aggregating configuration from a variety of
+  sources, including:</li>
+<li>PHP files globbed from the filesystem that return an array of configuration.</li>
+<li><a href="https://docs.zendframework.com/zend-config">zend-config</a>-compatible
+    configuration files globbed from the filesystem.</li>
+<li>Configuration provider classes; these are invokable classes which return an
+    array of configuration.</li>
+<li><a href="https://github.com/zendframework/zend-component-installer">zendframework/zend-component-installer</a>,
+  a Composer plugin that looks for an <code>extra.zf.config-provider</code> entry in a
+  package to install, and, if found, adds an entry for that provider to the
+  <code>config/config.php</code> file (if it uses zend-config-aggregator).</li>
 </ul>
-<p>You can define the <code>Application</code> instance in several ways:</p>
+<p>These features allow you to install packages via composer and expose their
+configuration &mdash; which may include dependency information &mdash; to your
+application.</p>
+<h2 id="making-your-application-modular">Making your application modular</h2>
+<p>When using the Expressive 2.X installer, the first question asked is the
+installation type, which includes the options:</p>
 <ul>
-<li>Direct instantiation, which requires providing several dependencies.</li>
-<li>The <code>AppFactory</code>, which will use some common defaults, but allows injecting alternate
-  container and/or router implementations.</li>
-<li>Via a dependency injection container; we provide a factory for setting up all
-  aspects of the instance via configuration and other defined services.</li>
+<li>Minimal (no default middleware, templates, or assets; configuration only)</li>
+<li>Flat (flat source code structure; default selection)</li>
+<li>Modular (modular source code structure; recommended)</li>
 </ul>
-<p>Regardless of how you setup the instance, there are several methods you will
-likely interact with at some point or another.</p>
-<h2 id="instantiation">Instantiation</h2>
-<p>As noted at the start of this document, we provide several ways to create an
-<code>Application</code> instance.</p>
-<h3 id="constructor">Constructor</h3>
-<p>If you wish to manually instantiate the <code>Application</code> instance, it has the
-following constructor:</p>
+<p>We recommend choosing the "Modular" option from the outset.</p>
+<p>If you do not, you can still create and use modules in your application;
+however, the initial "App" module will not be modular.</p>
+<h2 id="updating-your-expressive-1x-application-to-accept-modules">Updating your Expressive 1.X application to accept modules</h2>
+<p>If you are upgrading from a previous Expressive version (1.X), and wish to use
+these new features, you will need to install the following packages:</p>
 <ul>
-<li>Expressive 2.X:</li>
+<li>zendframework/zend-config-aggregator</li>
+<li>zendframework/zend-component-installer</li>
 </ul>
-<pre class="codehilite"><code class="language-php">/**
- * @param Zend\Expressive\Router\RouterInterface $router
- * @param null|Psr\Container\ContainerInterface $container IoC container from which to pull services, if any.
- * @param null|Interop\Http\ServerMiddleware\DelegateInterface $defaultDelegate
- *     Delegate to invoke when the internal middleware pipeline is exhausted
- *     without returning a response.
- * @param null|Zend\Diactoros\Response\EmitterInterface $emitter Emitter to use when `run()` is
- *     invoked.
- */
-public function __construct(
-    Zend\Expressive\Router\RouterInterface $router,
-    Psr\Container\ContainerInterface $container = null,
-    Interop\Http\ServerMiddleware\DelegateInterface $defaultDelegate = null,
-    Zend\Diactoros\Response\EmitterInterface $emitter = null
-);</code></pre>
+<p>As an example:</p>
+<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-config-aggregator \
+&gt; zendframework/zend-component-installer</code></pre>
 
 
+<p>Once installed, you should update your <code>config/config.php</code> file to read as
+follows:</p>
+<pre class="codehilite"><code class="language-php">&lt;?php
+
+use Zend\ConfigAggregator\ArrayProvider;
+use Zend\ConfigAggregator\ConfigAggregator;
+use Zend\ConfigAggregator\PhpFileProvider;
+
+// To enable or disable caching, set the `ConfigAggregator::ENABLE_CACHE` boolean in
+// `config/autoload/local.php`.
+$cacheConfig = [
+    'config_cache_path' =&gt; 'data/config-cache.php',
+];
+
+$aggregator = new ConfigAggregator([
+    // Include cache configuration
+    new ArrayProvider($cacheConfig),
+
+    // Default App module config
+    App\ConfigProvider::class,
+
+    // Load application config in a pre-defined order in such a way that local settings
+    // overwrite global settings. (Loaded as first to last):
+    //   - `global.php`
+    //   - `*.global.php`
+    //   - `local.php`
+    //   - `*.local.php`
+    new PhpFileProvider('config/autoload/{{,*.}global,{,*.}local}.php'),
+
+    // Load development config if it exists
+    new PhpFileProvider('config/development.config.php'),
+], $cacheConfig['config_cache_path']);
+
+return $aggregator-&gt;getMergedConfig();</code></pre>
+
+
+<p>The above should mimic what you already had in place; if it does not, check to
+see if there are additional paths you were globbing previously.</p>
+<h2 id="module-structure">Module structure</h2>
+<p>Expressive does not force you to use any particular structure for your
+module; its only requirement is to expose default configuration using a "config
+provider", which is simply an invokable class that returns a configuration
+array.</p>
+<p>We generally recommend that a module have a <a href="http://www.php-fig.org/psr/psr-4/">PSR-4</a>
+structure, and that the module contain a <code>src/</code> directory at the minimum, along
+with directories for other module-specific content, such as templates, tests, and
+assets:</p>
+<pre class="codehilite"><code class="language-text">src/
+  Acme/
+    src/
+      ConfigProvider.php
+      Container/
+        VerifyUserFactory.php
+      Helper/
+        AuthorizationHelper.php
+      Middleware/
+        VerifyUser.php
+    templates/
+      verify-user.php
+    test/
+      Helper/
+        AuthorizationHelperTest.php
+      Middleware/
+        VerifyUserTest.php</code></pre>
+
+
+<p>If you use the above structure, you would then add an entry in your
+<code>composer.json</code> file to provide autoloading:</p>
+<pre class="codehilite"><code class="language-json">&quot;autoload&quot;: {
+    &quot;psr-4&quot;: {
+        &quot;Acme\\&quot;: &quot;src/Acme/src/&quot;
+    }
+}</code></pre>
+
+
+<p>Don't forget to execute <code>composer dump-autoload</code> after making the change!</p>
+<h2 id="creating-and-enabling-a-module">Creating and enabling a module</h2>
+<p>The only <em>requirement</em> for creating a module is that you define a "config
+provider", which is simply an invokable class that returns a configuration
+array.</p>
+<p>Generally, a config provider will return dependency information, and
+module-specific configuration:</p>
+<pre class="codehilite"><code class="language-php">namespace Acme;
+
+class ConfigProvider
+{
+    public function __invoke()
+    {
+        return [
+            'dependencies' =&gt; $this-&gt;getDependencies(),
+            'acme' =&gt; [
+                'some-setting' =&gt; 'default value',
+            ],
+            'templates' =&gt; [
+                'paths' =&gt; [
+                    'acme' =&gt; [__DIR__ . '/../templates'],
+                ],
+            ]
+        ];
+    }
+
+    public function getDependencies()
+    {
+        return [
+            'invokables' =&gt; [
+                Helper\AuthorizationHelper::class =&gt; Helper\AuthorizationHelper::class,
+            ],
+            'factories' =&gt; [
+                Middleware\VerifyUser::class =&gt; Container\VerifyUserFactory::class,
+            ],
+        ];
+    }
+}</code></pre>
+
+
+<p>You would then add the config provider to the top (or towards the top) of your
+<code>config/config.php</code>:</p>
+<pre class="codehilite"><code class="language-php">$aggregator = new ConfigAggregator([
+    Acme\ConfigProvider::class,
+    /* ... */</code></pre>
+
+
+<p>This approach allows your <code>config/autoload/*</code> files to take precedence over the
+module configuration, allowing you to override the values.</p>
+<h2 id="caching-configuration">Caching configuration</h2>
+<p>In order to provide configuration caching, two things must occur:</p>
 <ul>
-<li>Expressive 1.X:</li>
+<li>First, you must define a <code>config_cache_enabled</code> key in your configuration
+  somewhere.</li>
+<li>Second, you must pass a second argument to the <code>ConfigManager</code>, the location
+  of the cache file to use.</li>
 </ul>
-<pre class="codehilite"><code class="language-php">/**
- * @param Zend\Expressive\Router\RouterInterface $router
- * @param null|Psr\Container\ContainerInterface $container IoC container from which to pull services, if any.
- * @param null|callable $finalHandler Final handler to use when $out is not
- *     provided on invocation.
- * @param null|Zend\Diactoros\Response\EmitterInterface $emitter Emitter to use when `run()` is
- *     invoked.
- */
-public function __construct(
-    Zend\Expressive\Router\RouterInterface $router,
-    Psr\Container\ContainerInterface $container = null,
-    callable $finalHandler = null,
-    Zend\Diactoros\Response\EmitterInterface $emitter = null
-);</code></pre>
-
-
-<p>If no container is provided at instantiation, then all routed and piped
-middleware <strong>must</strong> be provided as callables.</p>
-<h3 id="appfactory">AppFactory</h3>
-<p><code>Zend\Expressive\AppFactory</code> provides a convenience layer for creating an
-<code>Application</code> instance; it makes the assumption that you will use defaults in
-most situations, and likely only change which container and/or router you wish
-to use. It has the following signature:</p>
-<pre class="codehilite"><code class="language-php">AppFactory::create(
-    Psr\Container\ContainerInterface $container = null,
-    Zend\Expressive\Router\RouterInterface $router = null
-);</code></pre>
-
-
-<p>When no container or router are provided, it defaults to:</p>
+<p>The <code>config_cache_enabled</code> key can be defined in any of your configuration
+providers, including the autoloaded configuration files. We recommend defining
+them in two locations:</p>
 <ul>
-<li>zend-servicemanager for the container.</li>
-<li>FastRoute for the router.</li>
+<li><code>config/autoload/global.php</code> should define the value to <code>true</code>, as the
+  production setting.</li>
+<li><code>config/autoload/local.php</code> should also define the setting, and use a value
+  appropriate to the current environment. In development, for instance, this
+  would be <code>false</code>.</li>
 </ul>
-<h3 id="container-factory">Container factory</h3>
-<p>We also provide a factory that can be consumed by a
-<a href="https://github.com/container-interop/container-interop">container-interop</a>
-dependency injection container; see the <a href="../container/factories/">container factories documentation</a>
-for details.</p>
-<h2 id="adding-routable-middleware">Adding routable middleware</h2>
-<p>We <a href="../router/piping/">discuss routing vs piping elsewhere</a>; routing is the act
-of dynamically matching an incoming request against criteria, and it is one of
-the primary features of zend-expressive.</p>
-<p>Regardless of which <a href="../router/interface/">router implementation</a> you use, you
-can use the following methods to provide routable middleware:</p>
-<h3 id="route">route()</h3>
-<p><code>route()</code> has the following signature:</p>
-<pre class="codehilite"><code class="language-php">public function route(
-    $pathOrRoute,
-    $middleware = null,
-    array $methods = null,
-    $name = null
-) : Zend\Expressive\Router\Route</code></pre>
+<pre class="codehilite"><code class="language-php">// config/autoload/global.php
+
+return [
+    'config_cache_enabled' =&gt; true,
+    /* ... */
+];
+
+// config/autoload/local.php
+
+return [
+    'config_cache_enabled' =&gt; false, // &lt;- development!
+    /* ... */
+];</code></pre>
 
 
-<p>where:</p>
+<p>You would then alter your <code>config/config.php</code> file to add the second argument.
+The following example builds on the previous, and demonstrates having the
+<code>AppConfig</code> entry enabled. The configuration will be cached to
+<code>data/config-cache.php</code> in the application root:</p>
+<pre class="codehilite"><code class="language-php">$configManager = new ConfigManager([
+    App\AppConfig::class,
+    new PhpFileProvider('config/autoload/{{,*.}global,{,*.}local}.php'),
+], 'data/config-cache.php');</code></pre>
+
+
+<p>When the configuration cache path is present, if the <code>config_cache_enabled</code> flag
+is enabled, then configuration will be read from the cached configuration,
+instead of parsing and merging the various configuration sources.</p>
+<h2 id="final-notes">Final notes</h2>
+<p>This approach may look simple, but it is flexible and powerful:</p>
 <ul>
-<li><code>$pathOrRoute</code> may be either a string path to match, or a
-  <code>Zend\Expressive\Router\Route</code> instance.</li>
-<li><code>$middleware</code> <strong>must</strong> be present if <code>$pathOrRoute</code> is a string path, and
-  <strong>must</strong> be:</li>
-<li>a callable;</li>
-<li>a service name that resolves to valid middleware in the container;</li>
-<li>a fully qualified class name of a constructor-less class;</li>
-<li>an array of any of the above; these will be composed in order into a
-    <code>Zend\Stratigility\MiddlewarePipe</code> instance.</li>
-<li><code>$methods</code> must be an array of HTTP methods valid for the given path and
-  middleware. If null, it assumes any method is valid.</li>
-<li><code>$name</code> is the optional name for the route, and is used when generating a URI
-  from known routes. See the section on <a href="../router/uri-generation/#generating-uris">route naming</a>
-  for details.</li>
+<li>You pass a list of config providers to the <code>ConfigAggregator</code> constructor.</li>
+<li>Configuration is merged in the same order as it is passed, with later entries
+  having precedence.</li>
+<li>You can override module configuration using <code>*.global.php</code> and <code>*.local.php</code> files.</li>
+<li>If cached config is found, <code>ConfigAggregator</code> does not iterate over provider list.</li>
 </ul>
-<p>This method is typically only used if you want a single middleware to handle
-multiple HTTP request methods.</p>
-<h3 id="get-post-put-patch-delete-any">get(), post(), put(), patch(), delete(), any()</h3>
-<p>Each of the methods <code>get()</code>, <code>post()</code>, <code>put()</code>, <code>patch()</code>, <code>delete()</code>, and <code>any()</code>
-proxies to <code>route()</code> and has the signature:</p>
-<pre class="codehilite"><code class="language-php">function (
-    $pathOrRoute,
-    $middleware = null,
-    $name = null
-) : Zend\Expressive\Router\Route</code></pre>
-
-
-<p>Essentially, each calls <code>route()</code> and specifies an array consisting solely of
-the corresponding HTTP method for the <code>$methods</code> argument.</p>
-<h3 id="piping">Piping</h3>
-<p>Because zend-expressive builds on <a href="https://github.com/zendframework/zend-stratigility">zend-stratigility</a>,
-and, more specifically, its <code>MiddlewarePipe</code> definition, you can also pipe
-(queue) middleware to the application. This is useful for adding middleware that
-should execute on each request, defining error handlers, and/or segregating
-applications by subpath.</p>
-<p>The signature of <code>pipe()</code> is:</p>
-<pre class="codehilite"><code class="language-php">public function pipe($pathOrMiddleware, $middleware = null)</code></pre>
-
-
-<p>where:</p>
-<ul>
-<li><code>$pathOrMiddleware</code> is either a string URI path (for path segregation), a
-  callable middleware, or the service name for a middleware to fetch from the
-  composed container.</li>
-<li><code>$middleware</code> is required if <code>$pathOrMiddleware</code> is a string URI path. It can
-  be one of:</li>
-<li>a callable;</li>
-<li>a service name that resolves to valid middleware in the container;</li>
-<li>a fully qualified class name of a constructor-less class;</li>
-<li>an array of any of the above; these will be composed in order into a
-    <code>Zend\Stratigility\MiddlewarePipe</code> instance.</li>
-</ul>
-<p>Unlike <code>Zend\Stratigility\MiddlewarePipe</code>, <code>Application::pipe()</code> <em>allows
-fetching middleware by service name</em>. This facility allows lazy-loading of
-middleware only when it is invoked. Internally, it wraps the call to fetch and
-dispatch the middleware inside a closure.</p>
-<p>Additionally, we define a new method, <code>pipeErrorHandler()</code>, with the following
-signature:</p>
-<pre class="codehilite"><code class="language-php">public function pipeErrorHandler($pathOrMiddleware, $middleware = null)</code></pre>
-
-
-<p>It acts just like <code>pipe()</code> except when the middleware specified is a service
-name; in that particular case, when it wraps the middleware in a closure, it
-uses the error handler signature:</p>
-<pre class="codehilite"><code class="language-php">function ($error, ServerRequestInterface $request, ResponseInterface $response, callable $next);</code></pre>
-
-
-<p>Read the section on <a href="../router/piping/">piping vs routing</a> for more information.</p>
-<h3 id="registering-routing-and-dispatch-middleware">Registering routing and dispatch middleware</h3>
-<p>Routing is accomplished via a dedicated middleware method,
-<code>Application::routeMiddleware()</code>; similarly, dispatching of routed middleware
-has a corresponding instance middleware method, <code>Application::dispatchMiddleware()</code>.
-Each can be piped/registered with other middleware platforms if desired.</p>
-<p>These methods <strong>MUST</strong> be piped to the application so that the application will
-route and dispatch routed middleware. This is done using the following methods:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;pipeRoutingMiddleware();
-$app-&gt;pipeDispatchMiddleware();</code></pre>
-
-
-<p>See the section on <a href="../router/piping/">piping</a> to see how you can register
-non-routed middleware and create layered middleware applications.</p>
-<h2 id="retrieving-dependencies">Retrieving dependencies</h2>
-<p>As noted in the intro, the <code>Application</code> class has several dependencies. Some of
-these may allow further configuration, or may be useful on their own, and have
-methods for retrieving them. They include:</p>
-<ul>
-<li><code>getContainer()</code>: returns the composed <a href="https://github.com/container-interop/container-interop">container-interop</a>
-  instance (used to retrieve routed middleware).</li>
-<li><code>getEmitter()</code>: returns the composed
-  <a href="https://github.com/zendframework/zend-diactoros/blob/master/doc/book/emitting-responses.md">emitter</a>,
-  typically a <code>Zend\Expressive\Emitter\EmitterStack</code> instance.</li>
-<li><code>getDefaultDelegate()</code>: (Since 2.0) retrieves the default delegate to use when the internal middleware pipeline is exhausted without returning a response. If none is provided at instantiation, this method will do one of the following:</li>
-<li>If no container is composed, instanatiates a
-    <code>Zend\Expressive\Delegate\NotFoundDelegate</code> using the composed response
-    prototype only.</li>
-<li>If a container is composed, but does not have the
-    <code>Zend\Expressive\Delegate\DefaultDelegate</code> service, it creates and invokes an
-    instance of <code>Zend\Expressive\Container\NotFoundDelegateFactory</code>, passing it
-    the composed container, and uses the value created.</li>
-<li>If a container is composed and contains the <code>Zend\Expressive\Delegate\DefaultDelegate</code>
-    service, it returns that.</li>
-<li><code>getFinalHandler(ResponseInterface $response = null)</code>: (<strong>REMOVED in version 2.0</strong>)
-  retrieves the final handler instance. This is middleware with the signature
-  <code>function ($request, $response, $error = null)</code>, and it is invoked when the
-  middleware pipeline queue is depleted and no response has been returned.</li>
-</ul>
-<h2 id="executing-the-application-run">Executing the application: run()</h2>
-<p>When the application is completely setup, you can execute it with the <code>run()</code>
-method. The method may be called with no arguments, but has the following
-signature:</p>
-<pre class="codehilite"><code class="language-php">public function run(
-    ServerRequestInterface $request = null,
-    ResponseInterface $response = null
-);</code></pre>
+<p>For more details, please refer to the <a href="https://github.com/zendframework/zend-config-aggregator">zend-config-aggregator
+documentation</a>.</p>
 
 <hr />
 
@@ -788,10 +796,10 @@ signature:</p>
 <nav>
   <ul class="pager hidden-print">
     <li class="previous">
-      <a rel="prev" href="../middleware-types/"><i class="fa fa-arrow-left"></i> Previous</a>
+      <a rel="prev" href="../error-handling/"><i class="fa fa-arrow-left"></i> Previous</a>
     </li>
     <li class="next">
-      <a rel="next" href="../container/intro/">Next <i class="fa fa-arrow-right"></i></a>
+      <a rel="next" href="../middleware/implicit-methods-middleware/">Next <i class="fa fa-arrow-right"></i></a>
     </li>
   </ul>
 </nav>

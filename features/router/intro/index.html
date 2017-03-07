@@ -110,6 +110,12 @@
                         
                             
 <li >
+    <a href="../../middleware-types/">Middleware Types</a>
+</li>
+
+                        
+                            
+<li >
     <a href="../../application/">Applications</a>
 </li>
 
@@ -128,6 +134,12 @@
             
 <li >
     <a href="../../container/factories/">Container Factories</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../container/delegator-factories/">Delegator Factories</a>
 </li>
 
         
@@ -256,6 +268,27 @@
 
                         
                             
+<li >
+    <a href="../../modular-applications/">Modular Applications</a>
+</li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Middleware</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../middleware/implicit-methods-middleware/">Implicit HEAD and OPTIONS Middleware</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
   <li class="dropdown-submenu">
     <a tabindex="-1" href="">Helpers</a>
     <ul class="dropdown-menu">
@@ -302,6 +335,12 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cookbook <b class="caret"></b></a>
                         <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../../cookbook/autowiring-routes-and-pipelines/">Autowiring routes and pipeline middleware</a>
+</li>
+
                         
                             
 <li >
@@ -375,6 +414,12 @@
 </li>
 
                         
+                            
+<li >
+    <a href="../../../cookbook/passing-data-between-middleware/">Passing data between middleware</a>
+</li>
+
+                        
                         </ul>
                     </li>
                 
@@ -387,6 +432,12 @@
                             
 <li >
     <a href="../../../why-expressive/">Why choose Expressive?</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../../reference/cli-tooling/">CLI Tooling</a>
 </li>
 
                         
@@ -416,6 +467,12 @@
             
 <li >
     <a href="../../../reference/migration/to-v1-1/">To Expressive 1.1</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../../reference/migration/to-v2/">To Expressive 2.0</a>
 </li>
 
         
@@ -538,26 +595,30 @@ matched:</p>
 class name as the attribute name. The <code>RouteResult</code> instance provides you access
 to the following:</p>
 <ul>
-<li>The matched route name, via <code>$result-&gt;getMatchedRouteName()</code>.</li>
-<li>The matched middleware, via <code>$result-&gt;getMatchedMiddleware()</code>.</li>
+<li>The matched <code>Zend\Expressive\Router\Route</code> instance, via <code>$result-&gt;getMatchedRoute()</code>.</li>
+<li>The matched route name, via <code>$result-&gt;getMatchedRouteName()</code> (or via
+  <code>$result-&gt;getMatchedRoute()-&gt;getName()</code>).</li>
+<li>The matched middleware, via <code>$result-&gt;getMatchedMiddleware()</code> (or via
+  <code>$result-&gt;getMatchedRoute()-&gt;getMiddleware()</code>).</li>
 <li>Matched parameters, via <code>$result-&gt;getMatchedParams()</code> (as noted above, these
   are also each injected as discrete request attributes).</li>
 <li>Allowed HTTP methods, via <code>$result-&gt;getAllowedMethods()</code>.</li>
 </ul>
 <p>As an example, you could use middleware similar to the following to return a 403
 response if routing was successful, but no <code>Authorization</code> header is present:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Diactoros\Response\EmptyResponse;
+<pre class="codehilite"><code class="language-php">use Interop\Http\ServerMiddleware\DelegateInterface;
+use Zend\Diactoros\Response\EmptyResponse;
 use Zend\Expressive\Router\RouteResult;
 
-function ($request, $response, $next) use ($routesRequiringAuthorization, $validator) {
+function ($request, DelegateInterface $delegate) use ($routesRequiringAuthorization, $validator) {
     if (! ($result = $request-&gt;getAttribute(RouteResult::class, false))) {
         // No route matched; delegate to next middleware
-        return $next($request, $response);
+        return $delegate-&gt;process($request);
     }
 
     if (! in_array($result-&gt;getMatchedRouteName(), $routesRequiringAuthorization, true)) {
         // Not a route requiring authorization
-        return $next($request, $response);
+        return $delegate-&gt;process($request);
     }
 
     $header = $request-&gt;getHeaderLine('Authorization');
@@ -565,7 +626,7 @@ function ($request, $response, $next) use ($routesRequiringAuthorization, $valid
         return new EmptyResponse(403);
     }
 
-    return $next($request, $response);
+    return $delegate-&gt;process($request);
 }</code></pre>
 
 
@@ -582,6 +643,16 @@ compatible implementation of its own.</p>
 <p>At it's most basic level, you call the <code>generateUri()</code> method with a route name
 and any substitutions you want to make:</p>
 <pre class="codehilite"><code class="language-php">$uri = $router-&gt;generateUri('book', ['id' =&gt; 'zend-expressive']);</code></pre>
+
+
+<p>Some routers may support providing <em>options</em> during URI generation. Starting in
+zend-expressive-router 2.0, which ships with Expressive starting with version
+2.0, you may also pass a third argument to <code>generateUri()</code>, an array of router
+options:</p>
+<pre class="codehilite"><code class="language-php">$uri = $router-&gt;generateUri('book', ['id' =&gt; 'zend-expressive'], [
+    'translator'  =&gt; $translator,
+    'text_domain' =&gt; $currentLocale,
+]);</code></pre>
 
 
 <h2 id="supported-implementations">Supported implementations</h2>

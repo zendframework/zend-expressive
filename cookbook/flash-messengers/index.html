@@ -110,6 +110,12 @@
                         
                             
 <li >
+    <a href="../../features/middleware-types/">Middleware Types</a>
+</li>
+
+                        
+                            
+<li >
     <a href="../../features/application/">Applications</a>
 </li>
 
@@ -128,6 +134,12 @@
             
 <li >
     <a href="../../features/container/factories/">Container Factories</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../features/container/delegator-factories/">Delegator Factories</a>
 </li>
 
         
@@ -256,6 +268,27 @@
 
                         
                             
+<li >
+    <a href="../../features/modular-applications/">Modular Applications</a>
+</li>
+
+                        
+                            
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Middleware</a>
+    <ul class="dropdown-menu">
+        
+            
+<li >
+    <a href="../../features/middleware/implicit-methods-middleware/">Implicit HEAD and OPTIONS Middleware</a>
+</li>
+
+        
+    </ul>
+  </li>
+
+                        
+                            
   <li class="dropdown-submenu">
     <a tabindex="-1" href="">Helpers</a>
     <ul class="dropdown-menu">
@@ -302,6 +335,12 @@
                     <li class="dropdown active">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cookbook <b class="caret"></b></a>
                         <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../autowiring-routes-and-pipelines/">Autowiring routes and pipeline middleware</a>
+</li>
+
                         
                             
 <li >
@@ -375,6 +414,12 @@
 </li>
 
                         
+                            
+<li >
+    <a href="../passing-data-between-middleware/">Passing data between middleware</a>
+</li>
+
+                        
                         </ul>
                     </li>
                 
@@ -387,6 +432,12 @@
                             
 <li >
     <a href="../../why-expressive/">Why choose Expressive?</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../../reference/cli-tooling/">CLI Tooling</a>
 </li>
 
                         
@@ -416,6 +467,12 @@
             
 <li >
     <a href="../../reference/migration/to-v1-1/">To Expressive 1.1</a>
+</li>
+
+        
+            
+<li >
+    <a href="../../reference/migration/to-v2/">To Expressive 2.0</a>
 </li>
 
         
@@ -478,7 +535,7 @@
         <a rel="prev" href="../using-routed-middleware-class-as-controller/"><i class="fa fa-arrow-left"></i> Previous</a>
       </li>
       <li class="next">
-        <a rel="next" href="../../why-expressive/">Next <i class="fa fa-arrow-right"></i></a>
+        <a rel="next" href="../passing-data-between-middleware/">Next <i class="fa fa-arrow-right"></i></a>
       </li>
     </ul>
     
@@ -523,39 +580,59 @@ used in Expressive. It uses PHP's native session support.</p>
 <pre class="codehilite"><code class="language-bash">$ composer require slim/flash</code></pre>
 
 
-<p>Once you have, you'll need to create a factory to return middleware that will
-add the flash message provider to the request:</p>
-<pre class="codehilite"><code class="language-php">namespace App;
+<p>Second, create middleware that will add the flash message provider to the request:</p>
+<pre class="codehilite"><code class="language-php">&lt;?php
+namespace App;
 
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Slim\Flash\Messages;
 
-class SlimFlashMiddlewareFactory
+class SlimFlashMiddleware implements MiddlewareInterface
 {
-    public function __invoke($container)
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        return function ($request, $response, $next) {
-            // Start the session whenever we use this!
-            session_start();
+        // Start the session whenever we use this!
+        session_start();
 
-            return $next(
-                $request-&gt;withAttribute('flash', new Messages()),
-                $response
-            );
-        };
+        return $delegate-&gt;process(
+            $request-&gt;withAttribute('flash', new Messages())
+        );
     }
 }</code></pre>
 
 
-<p>Now, let's register it with our middleware pipeline. In
-<code>config/autoload/middleware-pipeline.global.php</code>, make the following additions:</p>
+<p>Third, we will register the new middleware with our container as an invokable.
+Edit either the file <code>config/autoload/dependencies.global.php</code> or
+<code>config/autoload/middleware-pipeline.global.php</code> to add the following:</p>
 <pre class="codehilite"><code class="language-php">return [
     'dependencies' =&gt; [
-        'factories' =&gt; [
-            'App\SlimFlashMiddleware' =&gt; App\SlimFlashMiddlewareFactory::class,
+        'invokables' =&gt; [
+            App\SlimFlashMiddleware::class =&gt; App\SlimFlashMiddleware::class,
             /* ... */
         ],
         /* ... */
     ],
+];</code></pre>
+
+
+<p>Finally, let's register it with our middleware pipeline. For programmatic
+pipelines, pipe the middleware somewhere, generally before the routing middleware:</p>
+<pre class="codehilite"><code class="language-php">$app-&gt;pipe(App\SlimFlashMiddleware::class);</code></pre>
+
+
+<p>Or as part of a routed middleware pipeline:</p>
+<pre class="codehilite"><code class="language-php">$app-&gt;post('/form/handler', [
+    App\SlimFlashMiddleware::class,
+    FormHandlerMiddleware::class,
+]);</code></pre>
+
+
+<p>If using configuration-driven pipelines, edit
+<code>config/autoload/middleware-pipeline.global.php</code> to make the following
+additions:</p>
+<pre class="codehilite"><code class="language-php">return [
     'middleware_pipeline' =&gt; [
         'always' =&gt; [
             'middleware' =&gt; [
@@ -573,13 +650,15 @@ class SlimFlashMiddlewareFactory
 <h3 id="where-to-register-the-flash-middleware">Where to register the flash middleware</h3>
 <p>Sessions can sometimes be expensive. As such, you may not want the flash
 middleware enabled for every request. If this is the case, add the flash
-middleware as part of a route-specific pipeline instead.</p>
+middleware as part of a route-specific pipeline instead, as demonstrated
+in the programmatic pipelines above.</p>
 </blockquote>
 <p>From here, you can add and read messages by accessing the request's flash
 attribute. As an example, middleware generating messages might read as follows:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Diactoros\Response\RedirectResponse;
+<pre class="codehilite"><code class="language-php">use Interop\Http\ServerMiddleware\DelegateInterface;
+use Zend\Diactoros\Response\RedirectResponse;
 
-public function __invoke($request, $response, $next)
+function($request, DelegateInterface $delegate)
 {
     $flash = $request-&gt;getAttribute('flash');
     $flash-&gt;addMessage('message', 'Hello World!');
@@ -589,7 +668,9 @@ public function __invoke($request, $response, $next)
 
 
 <p>And middleware consuming the message might read:</p>
-<pre class="codehilite"><code class="language-php">public function __invoke($request, $response, $next)
+<pre class="codehilite"><code class="language-php">use Interop\Http\ServerMiddleware\DelegateInterface;
+
+function($request, DelegateInterface $delegate)
 {
     $flash = $request-&gt;getAttribute('flash');
     $messages = $flash-&gt;getMessages();
@@ -619,8 +700,9 @@ provides flash messaging capabilities as part of its featureset.</p>
 ];</code></pre>
 
 
-<p>In <code>config/autoload/middleware-pipeline.global.php</code>, add a factory entry for the
-<code>damess/expressive-session-middleware</code>, and add it to the middleware pipeline:</p>
+<p>In either <code>config/autoload/dependencies.global.php</code> or
+<code>config/autoload/middleware-pipeline.global.php</code>, add a factory entry for the
+<code>damess/expressive-session-middleware</code>:</p>
 <pre class="codehilite"><code class="language-php">return [
     'dependencies' =&gt; [
         'factories' =&gt; [
@@ -629,6 +711,19 @@ provides flash messaging capabilities as part of its featureset.</p>
         ],
         /* ... */
     ],
+];</code></pre>
+
+
+<p>Finally, add it to your middleware pipeline. For programmatic pipelines:</p>
+<pre class="codehilite"><code class="language-php">use DaMess\Http\SessionMiddleware;
+
+$app-&gt;pipe(SessionMiddleware::class);
+/* ... */</code></pre>
+
+
+<p>If using configuration-driven pipelines, edit <code>config/autoload/middleware-pipeline.global.php</code>
+and add an entry for the new middleware:</p>
+<pre class="codehilite"><code class="language-php">return [
     'middleware_pipeline' =&gt; [
         'always' =&gt; [
             'middleware' =&gt; [
@@ -658,9 +753,10 @@ middleware using the following:</p>
 <a href="https://github.com/auraphp/Aura.Session#flash-values">flash values</a>. As
 an example, the middleware that is processing a POST request might set a flash
 message:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Diactoros\Response\RedirectResponse;
+<pre class="codehilite"><code class="language-php">use Interop\Http\ServerMiddleware\DelegateInterface;
+use Zend\Diactoros\Response\RedirectResponse;
 
-public function __invoke($request, $response, $next)
+function($request, DelegateInterface $delegate)
 {
     $session = $request-&gt;getAttribute('session');
     $session-&gt;getSegment(__NAMESPACE__)
@@ -672,7 +768,9 @@ public function __invoke($request, $response, $next)
 
 <p>Another middleware, to which the original middleware redirects, might look like
 this:</p>
-<pre class="codehilite"><code class="language-php">public function __invoke($request, $response, $next)
+<pre class="codehilite"><code class="language-php">use Interop\Http\ServerMiddleware\DelegateInterface;
+
+function($request, DelegateInterface $delegate)
 {
     $session = $request-&gt;getAttribute('session');
     $message = $session-&gt;getSegment(__NAMESPACE__)
@@ -692,7 +790,7 @@ this:</p>
       <a rel="prev" href="../using-routed-middleware-class-as-controller/"><i class="fa fa-arrow-left"></i> Previous</a>
     </li>
     <li class="next">
-      <a rel="next" href="../../why-expressive/">Next <i class="fa fa-arrow-right"></i></a>
+      <a rel="next" href="../passing-data-between-middleware/">Next <i class="fa fa-arrow-right"></i></a>
     </li>
   </ul>
 </nav>
