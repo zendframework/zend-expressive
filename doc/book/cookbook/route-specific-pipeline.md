@@ -25,7 +25,7 @@ You can do this programmatically within a container factory, assuming you are
 using a container that supports factories.
 
 ```php
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Stratigility\MiddlewarePipe;
 
 class ApiResourcePipelineFactory
@@ -58,7 +58,7 @@ middleware in order to change the instance or return an alternate instance. In
 this case, we'd do the latter. The following is an example:
 
 ```php
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\ServiceManager\DelegatorFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Stratigility\MiddlewarePipe;
@@ -168,7 +168,8 @@ $app->route('/api/resource[/{id:[a-f0-9]{32}}]', [
 When either of these approaches are used, the individual middleware listed
 **MUST** be one of the following:
 
-- a callable middleware;
+- an instance of `Interop\Http\ServerMiddleware\MiddlewareInterface`;
+- a callable middleware (will be decorated as interop middleware);
 - a service name of middleware available in the container;
 - a fully qualified class name of a directly instantiable (no constructor
   arguments) middleware class.

@@ -1,21 +1,21 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
 
 namespace ZendTest\Expressive\Container;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Container\ContainerInterface;
 use ReflectionProperty;
 use Traversable;
 use Whoops\Handler\JsonResponseHandler;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run as Whoops;
+use Whoops\Util\Misc as WhoopsUtil;
 use Zend\Expressive\Container\WhoopsFactory;
 use ZendTest\Expressive\ContainerTrait;
 
@@ -26,8 +26,11 @@ class WhoopsFactoryTest extends TestCase
 {
     use ContainerTrait;
 
-    /** @var ObjectProphecy */
-    protected $container;
+    /** @var ContainerInterface|ObjectProphecy */
+    private $container;
+
+    /** @var WhoopsFactory */
+    private $factory;
 
     public function setUp()
     {
@@ -40,7 +43,7 @@ class WhoopsFactoryTest extends TestCase
 
     public function assertWhoopsContainsHandler($type, Whoops $whoops, $message = null)
     {
-        $message = $message ?: sprintf("Failed to assert whoops runtime composed handler of type %s", $type);
+        $message = $message ?: sprintf('Failed to assert whoops runtime composed handler of type %s', $type);
         $r       = new ReflectionProperty($whoops, 'handlerStack');
         $r->setAccessible(true);
         $stack = $r->getValue($whoops);
@@ -77,8 +80,9 @@ class WhoopsFactoryTest extends TestCase
     }
 
     /**
-     * @depends      testWillInjectJsonResponseHandlerIfConfigurationExpectsIt
-     * @dataProvider provideConfig
+     * @backupGlobals enabled
+     * @depends       testWillInjectJsonResponseHandlerIfConfigurationExpectsIt
+     * @dataProvider  provideConfig
      *
      * @param bool  $showsTrace
      * @param bool  $isAjaxOnly
@@ -110,7 +114,7 @@ class WhoopsFactoryTest extends TestCase
         // If ajax only, not ajax request and Whoops 2, it does not inject JsonResponseHandler
         if ($isAjaxOnly
             && ! $requestIsAjax
-            && method_exists(\Whoops\Util\Misc::class, 'isAjaxRequest')
+            && method_exists(WhoopsUtil::class, 'isAjaxRequest')
         ) {
             $this->assertInstanceOf(PrettyPageHandler::class, $handler);
 

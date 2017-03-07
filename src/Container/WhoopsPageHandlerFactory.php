@@ -7,7 +7,7 @@
 
 namespace Zend\Expressive\Container;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Whoops\Handler\PrettyPageHandler;
 
 /**
@@ -33,7 +33,7 @@ class WhoopsPageHandlerFactory
 {
     /**
      * @param ContainerInterface $container
-     * @returns PrettyPageHandler
+     * @return PrettyPageHandler
      */
     public function __invoke(ContainerInterface $container)
     {
@@ -54,6 +54,7 @@ class WhoopsPageHandlerFactory
      * @param PrettyPageHandler $handler
      * @param array|\ArrayAccess $config
      * @param ContainerInterface $container
+     * @return void
      * @throws Exception\InvalidServiceException for an invalid editor definition.
      */
     private function injectEditor(PrettyPageHandler $handler, $config, ContainerInterface $container)
@@ -72,7 +73,7 @@ class WhoopsPageHandlerFactory
         if (! is_string($editor)) {
             throw new Exception\InvalidServiceException(sprintf(
                 'Whoops editor must be a string editor name, string service name, or callable; received "%s"',
-                (is_object($editor) ? get_class($editor) : gettype($editor))
+                is_object($editor) ? get_class($editor) : gettype($editor)
             ));
         }
 

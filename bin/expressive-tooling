@@ -1,0 +1,90 @@
+#!/usr/bin/env php
+<?php // @codingStandardsIgnoreFile
+/**
+ * Script for migrating configuration-driven pipelines/routes to programmatic usage.
+ *
+ * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
+ * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
+ */
+
+namespace Zend\Expressive;
+
+if (false === ($paths = getenv('PATH'))) {
+    fwrite(STDERR, "No PATH environment provided; cannot execute.\n");
+    fwrite(STDERR, "Please manually run 'composer require --dev zendframework/zend-expressive-tooling'\n");
+    fwrite(STDERR, "or 'composer remove zendframework/zend-expressive-tooling'.\n");
+    exit(1);
+}
+
+$paths    = explode(PATH_SEPARATOR, $paths);
+$bins     = ['composer', 'composer.bat', 'composer.cmd', 'composer.phar'];
+$composer = false;
+
+foreach ($paths as $path) {
+    foreach ($bins as $bin) {
+        $try = sprintf('%s%s%s', $path, DIRECTORY_SEPARATOR, $bin);
+        if (file_exists($try)) {
+            $composer = $try;
+            break 2;
+        }
+    }
+}
+
+if (! $composer) {
+    fwrite(STDERR, "Unable to find composer, composer.bat, or composer.phar in your PATH.\n");
+    fwrite(STDERR, "Please manually run 'composer require --dev zendframework/zend-expressive-tooling'\n");
+    fwrite(STDERR, "or 'composer remove zendframework/zend-expressive-tooling', using the\n");
+    fwrite(STDERR, "appropriate path to your composer binary.\n");
+    exit(1);
+}
+
+$command = $argc > 1 ? $argv[1] : '';
+$remove  = false;
+
+switch (strtolower($command)) {
+    case 'remove':
+        echo "Removing zend-expressive-tooling\n";
+        $remove  = true;
+        $command = sprintf('%s remove --dev zendframework/zend-expressive-tooling', $composer);
+        break;
+    default:
+        echo "Installing zend-expressive-tooling\n";
+        $command = sprintf('%s require --dev zendframework/zend-expressive-tooling', $composer);
+        break;
+}
+
+system($command, $return);
+
+if ($return !== 0) {
+    fwrite(STDERR, "\n\nRequested installation/removal failed; please check the logs above.\n");
+    exit($return);
+}
+
+if ($remove) {
+    exit(0);
+}
+
+$toolingPackage = sprintf('%s/vendor/zendframework/zend-expressive-tooling/composer.json', getcwd());
+
+if (! file_exists($toolingPackage)) {
+    fwrite(STDERR, "\n\nInstalled tooling package, but unable to locate script information.\n");
+    fwrite(STDERR, "Check your installation, and follow the migration documentation to use the tooling.\n");
+    exit(1);
+}
+
+$composer = json_decode(file_get_contents($toolingPackage), true);
+if (! isset($composer['bin'])) {
+    fwrite(STDERR, "\n\nInstalled tooling package, but package does not contain script information?\n");
+    fwrite(STDERR, "Check your installation, and follow the migration documentation to use the tooling.\n");
+    exit(1);
+}
+
+echo "\n\nTooling installed!\n";
+echo "The following migration and development tools are now available:\n";
+
+array_walk($composer['bin'], function ($script) {
+    printf("- ./vendor/%s\n", $script);
+});
+
+exit(0);

@@ -59,28 +59,20 @@ First, install the middleware in your application:
 $ composer require php-middleware/php-debug-bar
 ```
 
-This package provides a config provider. You can add it to your application in
-one of two ways:
+This package supplies a config provider, which could be added to your
+`config/config.php` when using zend-config-aggregator or
+expressive-config-manager. However, because it should only be enabled in
+development, we recommend creating a "local" configuration file (e.g.,
+`config/autoload/php-debugbar.local.php`) when you need to enable it, with the
+following contents:
 
-- If you are using the [ConfigManager](modular-layout.md), add an entry for it:
+```php
+<?php
+use PhpMiddleware\PhpDebugBar\ConfigProvider;
 
-  ```php
-  $configManager = new Zend\Expressive\ConfigManager\ConfigManager([
-      PhpMiddleware\PhpDebugBar\ConfigProvider::class,
-      new Zend\Expressive\ConfigManager\PhpFileProvider('config/autoload/{{,*.}global,{,*.}local}.php'),
-  ]);
-  ```
-
-- If you are not using the ConfigManager, create a new configuration file,
-  `config/autoload/php-debugbar.global.php`, with the following contents:
-
-  ```php
-  <?php
-  use PhpMiddleware\PhpDebugBar\ConfigProvider;
-
-  $provider = new ConfigProvider();
-  return $provider();
-  ```
+$provider = new ConfigProvider();
+return $provider();
+```
 
 > ### Use locally!
 >

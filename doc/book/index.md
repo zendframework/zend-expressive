@@ -8,7 +8,7 @@ framework for PHP, with the following features:
     - [Aura.Router](https://github.com/auraphp/Aura.Router)
     - [FastRoute](https://github.com/nikic/FastRoute)
     - [zend-router](https://github.com/zendframework/zend-expressive-router)
-- DI Containers, via [container-interop](https://github.com/container-interop/container-interop).
+- DI Containers, via [PSR-11 Container](https://github.com/php-fig/container).
   All middleware composed in Expressive may be retrieved from the composed
   container.
 - Optionally, templating. We support:

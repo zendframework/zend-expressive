@@ -411,7 +411,7 @@ this response generator as follows:
 namespace Acme\Container;
 
 use Acme\TemplatedErrorResponseGenerator;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Diactoros\Response;
 use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Stratigility\Middleware\ErrorHandler;
@@ -519,7 +519,7 @@ for this:
 namespace Acme\Container;
 
 use Acme\TemplatedNotFoundHandler;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
 class TemplatedNotFoundHandlerFactory
@@ -738,3 +738,4 @@ a way as to utilize these shipped implementations. In the meantime, however, you
 can adopt programmatic pipelines and the new error handling paradigm within the
 version 1 series using the configuration flags and guidelines listed above in
 order to make your application forwards-compatible.
+

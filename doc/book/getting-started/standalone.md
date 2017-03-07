@@ -34,7 +34,7 @@ $ composer require zendframework/zend-expressive zendframework/zend-expressive-f
 > they allow you to define dependencies for your middleware, as well as to lazy
 > load your middleware only when it needs to be executed. We suggest
 > zend-servicemanager in the quick start, but you can also use any container
-> supporting [container-interop](https://github.com/container-interop/container-interop).
+> supporting [PSR-11 Container](https://github.com/php-fig/container).
 
 ## 3. Create a web root directory
 
@@ -55,6 +55,8 @@ root, and we want it to intercept any incoming request; as such, we'll use
 
 ```php
 <?php
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Zend\Diactoros\Response\TextResponse;
 use Zend\Expressive\AppFactory;
 
 chdir(dirname(__DIR__));
@@ -62,9 +64,8 @@ require 'vendor/autoload.php';
 
 $app = AppFactory::create();
 
-$app->get('/', function ($request, $response, $next) {
-    $response->getBody()->write('Hello, world!');
-    return $response;
+$app->get('/', function ($request, DelegateInterface $delegate) {
+    return new TextResponse('Hello, world!');
 });
 
 $app->pipeRoutingMiddleware();
@@ -124,6 +125,27 @@ http://localhost:8080/ to see if your application responds correctly!
 > ```bash
 > $ composer serve
 > ```
+
+> ### Setting a timeout
+>
+> Composer commands time out after 300 seconds (5 minutes). On Linux-based
+> systems, the `php -S` command that `composer serve` spawns continues running
+> as a background process, but on other systems halts when the timeout occurs.
+>
+> If you want the server to live longer, you can set the composer
+> `process-timeout` configuration, which can be specified either local to your
+> project, or globally. As examples, each of the following set the timeout to 8
+> hours:
+>
+> ```bash
+> # Local to your project:
+> $ composer config process-timeout 28800
+> # Globally (all projects):
+> $ composer config -g process-timeout 28800
+> ```
+>
+> NOTE: This setting affects _all_ composer commands, including install, update,
+> and require operations, so be careful about resetting it, particularly globally.
 
 ## Next steps
 

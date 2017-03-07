@@ -54,7 +54,6 @@ that when creating your `Application` instance.
 
 ```php
 <?php
-use FastRoute;
 use FastRoute\Dispatcher\GroupPosBased as FastRouteDispatcher;
 use FastRoute\RouteCollector;
 use FastRoute\RouteGenerator;
@@ -104,7 +103,7 @@ A factory would look like this:
 // in src/Application/Container/RouterFactory.php
 namespace Application\Container;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Expressive\Router\FastRouteRouter;
 
 class RouterFactory
@@ -167,7 +166,7 @@ namespace Application\Container;
 use FastRoute\RouteCollector;
 use FastRoute\RouteGenerator;
 use FastRoute\RouteParser\Std as RouteParser;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 
 class FastRouteCollectorFactory
 {
@@ -188,7 +187,7 @@ class FastRouteCollectorFactory
 namespace Application\Container;
 
 use FastRoute\Dispatcher\GroupPosBased as FastRouteDispatcher;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 
 class FastRouteDispatcherFactory
 {
@@ -207,7 +206,7 @@ class FastRouteDispatcherFactory
 // in src/Application/Container/RouterFactory.php
 namespace Application\Container;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Expressive\Router\FastRouteRouter as FastRouteBridge;
 
 class RouterFactory
@@ -220,7 +219,7 @@ class RouterFactory
     {
         return new FastRouteBridge(
             $container->get('FastRoute\RouteCollector'),
-            $container->get('FastRoute\DispatcherFactory'),
+            $container->get('FastRoute\DispatcherFactory')
         );
     }
 }

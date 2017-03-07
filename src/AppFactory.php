@@ -7,7 +7,7 @@
 
 namespace Zend\Expressive;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\ServiceManager\ServiceManager;
 

@@ -1,13 +1,13 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
 
 namespace Zend\Expressive\Container;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Whoops\Handler\JsonResponseHandler;
 use Whoops\Run as Whoops;
 use Whoops\Util\Misc as WhoopsUtil;
@@ -65,12 +65,11 @@ class WhoopsFactory
      *
      * @param Whoops $whoops
      * @param array|\ArrayAccess $config
+     * @return void
      */
     private function registerJsonHandler(Whoops $whoops, $config)
     {
-        if (! isset($config['json_exceptions']['display'])
-            || empty($config['json_exceptions']['display'])
-        ) {
+        if (empty($config['json_exceptions']['display'])) {
             return;
         }
 

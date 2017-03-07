@@ -43,10 +43,10 @@ features it provides include:
   routing library that best fits the project needs. By default, we provide
   wrappers for Aura.Router, FastRoute, and the zend-mvc router.
 
-- **container-interop**
+- **PSR-11 Container**
 
   Expressive encourages the use of Dependency Injection, and defines its
-  `Application` class to compose a container-interop `ContainerInterface`
+  `Application` class to compose a PSR-11 `ContainerInterface`
   instance. The container is used to lazy-load middleware, whether it is
   piped (Stratigility interface) or routed (Expressive).
 
@@ -61,9 +61,9 @@ features it provides include:
 
   Applications should handle errors gracefully, but also handle them differently
   in development versus production. Expressive provides both basic error
-  handling via Stratigility's own `FinalHandler` implementation, as well as
-  more advanced error handling via two specialized error handlers: a templated
-  error handler for production, and a Whoops-based error handler for development.
+  handling via Stratigility's own `ErrorHandler` implementation, providing
+  specialized error response generators that can perform templating or use
+  Whoops.
 
 ## Flow Overview
 
@@ -74,16 +74,13 @@ Below is a diagram detailing the workflow used by Expressive.
 The `Application` acts as an "onion"; in the diagram above, the top is the
 outer-most layer of the onion, while the bottom is the inner-most.
 
-The `Application` dispatches each middleware. Each middleware accepts a
-*request*, a *response*, and the *next* middleware to dispatch. Internally,
-it's actually receiving the middleware stack itself, which knows which
-middleware to invoke next.
+The `Application` dispatches each middleware. Each middleware receives a request
+and a delegate for handing off processing of the request should the middleware
+not be able to fully process it itself. Internally, the delegate composes a
+queue of middleware, and invokes the next in the queue when invoked.
 
 Any given middleware can return a *response*, at which point execution winds
-its way back out the onion. Additionally, any given middleware can indicate an
-error occurred, at which point it can call on the next *error handling
-middleware*. These act like regular middleware, but accept an additional error
-argument to act on.
+its way back out the onion.
 
 > ### Pipelines
 > 
@@ -94,9 +91,76 @@ argument to act on.
 > looked at from this perspective:
 > 
 > - In most cases, the entire queue *will not* be traversed.
-> - The inner-most layer of the onion represents the last item in the queue.
+> - The inner-most layer of the onion represents the last item in the queue, and
+>   should be guaranteed to return a response; usually this is indicative of
+>   a malformed request (HTTP 400 response status) and/or inability to route
+>   the middleware to a handler (HTTP 404 response status).
 > - Responses are returned back *through* the pipeline, in reverse order of
 >   traversal.
+
+> ### Double pass middleware
+>
+> The system described above is what is known as _lambda middleware_. Each
+> middleware receives the request and the delegate, and you pass only the
+> request to the delegate when wanting to hand off processing:
+>
+> ```php
+> function (ServerRequestInterface $request, DelegateInterface $delegate)
+> {
+>     $response = $delegate->process($request);
+>     return $response->withHeader('X-Test', time());
+> }
+> ```
+>
+> In Expressive 1.X, the default middleware style was what is known as _double
+> pass_ middleware. Double pass middleware receives both the request and a
+> response in addition to the delegate, and passes both the request and response
+> to the delegate when invoking it:
+>
+> ```php
+> function (ServerRequestInterface $request, ResponseInterface $response, callable $next)
+> {
+>     $response = $next($request, $response);
+>     return $response->withHeader('X-Test', time());
+> }
+> ```
+>
+> It is termed "double pass" because you pass both the request and response when
+> delegating to the next layer.
+> 
+> Expressive 2.X still supports double-pass middleware, though we recommend the
+> lambda style.
+
+> ### Stratigility 1.X Error Middleware
+>
+> The Expressive 1.X series was based on Stratigility 1.X, which had a concept
+> of _error middleware_. This was middleware that either implemented
+> `Zend\Stratigility\ErrorMiddlewareInterface`, or the "error middleware"
+> signature of:
+>
+> ```php
+> function (
+>     $error,
+>     ServerRequestInterface $request,
+>     ResponseInterface $response,
+>     callable $next
+> )
+> ```
+>
+> Such middleware would be invoked by calling `$next()` with a third argument
+> representing the error:
+>
+> ```php
+> return $next($request, $response, $error);
+> ```
+>
+> Because this middleware would only be invoked in these special conditions,
+> we recommended piping such middleware _last_ in the queue.
+>
+> Starting with Expressive 1.1, this feature was deprecated, in favor of
+> using standard middleware with try/catch blocks internally for error
+> handling. As such, we still document it, for our 1.X users, but recommend
+> migrating to the suggested error handling practices.
 
 The `Application` allows arbitrary middleware to be injected, with each being
 executed in the order in which they are attached; returning a response from
@@ -109,9 +173,11 @@ be attached.  Middleware specifying high integer prioritiess are attached (and
 thus executed) earlier, while those specifying lower and/or negative integers
 are attached later. The default priority is 1.
 
-Expressive provides a default implementation of "routing" and "dispatch"
+Expressive provides default implementations of "routing" and "dispatch"
 middleware, which you either attach to the middleware pipeline manually, or via
-configuration.
+configuration. These are implemented as the classes
+`Zend\Expressive\Middleware\RouteMiddleware` and
+`Zend\Expressive\Middleware\DispatchMiddleware`, respectively.
 
 Routing within Expressive consists of decomposing the request to match it to
 middleware that can handle that given request. This typically consists of a
@@ -150,22 +216,8 @@ will execute in one of two conditions:
 - routing failed
 - routed middleware called on the next middleware instead of returning a response.
 
-As such, the largest use case for such middleware is for error handling.
-One possibility is for [providing custom 404 handling](../cookbook/custom-404-page-handling.md),
-or handling application-specific error conditions (such as authentication or
-authorization failures).
-
-Another possibility is to provide post-processing on the response before
-returning it. However, this is typically better handled via middleware piped
-early, by capturing the response before returning it:
-
-```php
-function ($request, $response, $next)
-{
-    $response = $next($request, $response);
-    return $response->withHeader('X-Clacks-Overhead', 'GNU Terry Pratchett');
-}
-```
+As such, the largest use case for such middleware is to provide a "default"
+error response for your application, ucually as an HTTP 404 Not Found response.
 
 The main points to remember are:
 
