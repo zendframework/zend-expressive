@@ -585,10 +585,10 @@ The ramifications for end users are as follows:
 
 - We have removed the following classes, which either provided final handlers,
   or acted as factories for them:
-  - `Zend\Expressive\TemplatedErrorHandler`
-  - `Zend\Expressive\WhoopsErrorHandler`
-  - `Zend\Expressive\Container\TemplatedErrorHandlerFactory`
-  - `Zend\Expressive\Container\WhoopsErrorHandlerFactory`
+    - `Zend\Expressive\TemplatedErrorHandler`
+    - `Zend\Expressive\WhoopsErrorHandler`
+    - `Zend\Expressive\Container\TemplatedErrorHandlerFactory`
+    - `Zend\Expressive\Container\WhoopsErrorHandlerFactory`
 
 If you use the `vendor/bin/expressive-pipeline-from-config` tool to migrate your
 application to programmatic pipelines, as described below, the `DefaultDelegate`

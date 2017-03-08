@@ -38,18 +38,18 @@ Where:
   request.
 - `$rotueParams` is an array of substitutions to use for the provided route, with the
   following behavior:
-  - If a `RouteResult` is composed in the helper, and the `$routeName` matches
-    it, the provided `$params` will be merged with any matched parameters, with
-    those provided taking precedence.
-  - If a `RouteResult` is not composed, or if the composed result does not match
-    the provided `$routeName`, then only the `$params` provided will be used 
-    for substitutions.
-  - If no `$params` are provided, and the `$routeName` matches the currently
-    matched route, then any matched parameters found will be used.
-    parameters found will be used.
-  - If no `$params` are provided, and the `$routeName` does not match the
-    currently matched route, or if no route result is present, then no
-    substitutions will be made.
+    - If a `RouteResult` is composed in the helper, and the `$routeName` matches
+      it, the provided `$params` will be merged with any matched parameters, with
+      those provided taking precedence.
+    - If a `RouteResult` is not composed, or if the composed result does not match
+      the provided `$routeName`, then only the `$params` provided will be used
+      for substitutions.
+    - If no `$params` are provided, and the `$routeName` matches the currently
+      matched route, then any matched parameters found will be used.
+      parameters found will be used.
+    - If no `$params` are provided, and the `$routeName` does not match the
+      currently matched route, or if no route result is present, then no
+      substitutions will be made.
 - `$queryParams` is an array of query string arguments to include in the
   generated URI.
 - `$fragmentIdentifier` is a string to use as the URI fragment.
