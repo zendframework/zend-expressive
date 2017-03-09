@@ -129,11 +129,11 @@ where:
   `Zend\Expressive\Router\Route` instance.
 - `$middleware` **must** be present if `$pathOrRoute` is a string path, and
   **must** be:
-  - a callable;
-  - a service name that resolves to valid middleware in the container;
-  - a fully qualified class name of a constructor-less class;
-  - an array of any of the above; these will be composed in order into a
-    `Zend\Stratigility\MiddlewarePipe` instance.
+    - a callable;
+    - a service name that resolves to valid middleware in the container;
+    - a fully qualified class name of a constructor-less class;
+    - an array of any of the above; these will be composed in order into a
+      `Zend\Stratigility\MiddlewarePipe` instance.
 - `$methods` must be an array of HTTP methods valid for the given path and
   middleware. If null, it assumes any method is valid.
 - `$name` is the optional name for the route, and is used when generating a URI
@@ -180,11 +180,11 @@ where:
   composed container.
 - `$middleware` is required if `$pathOrMiddleware` is a string URI path. It can
   be one of:
-  - a callable;
-  - a service name that resolves to valid middleware in the container;
-  - a fully qualified class name of a constructor-less class;
-  - an array of any of the above; these will be composed in order into a
-    `Zend\Stratigility\MiddlewarePipe` instance.
+    - a callable;
+    - a service name that resolves to valid middleware in the container;
+    - a fully qualified class name of a constructor-less class;
+    - an array of any of the above; these will be composed in order into a
+      `Zend\Stratigility\MiddlewarePipe` instance.
 
 Unlike `Zend\Stratigility\MiddlewarePipe`, `Application::pipe()` *allows
 fetching middleware by service name*. This facility allows lazy-loading of
@@ -238,15 +238,15 @@ methods for retrieving them. They include:
   [emitter](https://github.com/zendframework/zend-diactoros/blob/master/doc/book/emitting-responses.md),
   typically a `Zend\Expressive\Emitter\EmitterStack` instance.
 - `getDefaultDelegate()`: (Since 2.0) retrieves the default delegate to use when the internal middleware pipeline is exhausted without returning a response. If none is provided at instantiation, this method will do one of the following:
-  - If no container is composed, instanatiates a
-    `Zend\Expressive\Delegate\NotFoundDelegate` using the composed response
-    prototype only.
-  - If a container is composed, but does not have the
-    `Zend\Expressive\Delegate\DefaultDelegate` service, it creates and invokes an
-    instance of `Zend\Expressive\Container\NotFoundDelegateFactory`, passing it
-    the composed container, and uses the value created.
-  - If a container is composed and contains the `Zend\Expressive\Delegate\DefaultDelegate`
-    service, it returns that.
+    - If no container is composed, instanatiates a
+      `Zend\Expressive\Delegate\NotFoundDelegate` using the composed response
+      prototype only.
+    - If a container is composed, but does not have the
+      `Zend\Expressive\Delegate\DefaultDelegate` service, it creates and invokes an
+      instance of `Zend\Expressive\Container\NotFoundDelegateFactory`, passing it
+      the composed container, and uses the value created.
+    - If a container is composed and contains the `Zend\Expressive\Delegate\DefaultDelegate`
+      service, it returns that.
 - `getFinalHandler(ResponseInterface $response = null)`: (**REMOVED in version 2.0**)
   retrieves the final handler instance. This is middleware with the signature
   `function ($request, $response, $error = null)`, and it is invoked when the
