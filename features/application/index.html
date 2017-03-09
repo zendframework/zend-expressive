@@ -667,12 +667,14 @@ can use the following methods to provide routable middleware:</p>
 <li><code>$pathOrRoute</code> may be either a string path to match, or a
   <code>Zend\Expressive\Router\Route</code> instance.</li>
 <li><code>$middleware</code> <strong>must</strong> be present if <code>$pathOrRoute</code> is a string path, and
-  <strong>must</strong> be:</li>
+  <strong>must</strong> be:<ul>
 <li>a callable;</li>
 <li>a service name that resolves to valid middleware in the container;</li>
 <li>a fully qualified class name of a constructor-less class;</li>
 <li>an array of any of the above; these will be composed in order into a
-    <code>Zend\Stratigility\MiddlewarePipe</code> instance.</li>
+  <code>Zend\Stratigility\MiddlewarePipe</code> instance.</li>
+</ul>
+</li>
 <li><code>$methods</code> must be an array of HTTP methods valid for the given path and
   middleware. If null, it assumes any method is valid.</li>
 <li><code>$name</code> is the optional name for the route, and is used when generating a URI
@@ -707,12 +709,14 @@ applications by subpath.</p>
   callable middleware, or the service name for a middleware to fetch from the
   composed container.</li>
 <li><code>$middleware</code> is required if <code>$pathOrMiddleware</code> is a string URI path. It can
-  be one of:</li>
+  be one of:<ul>
 <li>a callable;</li>
 <li>a service name that resolves to valid middleware in the container;</li>
 <li>a fully qualified class name of a constructor-less class;</li>
 <li>an array of any of the above; these will be composed in order into a
-    <code>Zend\Stratigility\MiddlewarePipe</code> instance.</li>
+  <code>Zend\Stratigility\MiddlewarePipe</code> instance.</li>
+</ul>
+</li>
 </ul>
 <p>Unlike <code>Zend\Stratigility\MiddlewarePipe</code>, <code>Application::pipe()</code> <em>allows
 fetching middleware by service name</em>. This facility allows lazy-loading of
@@ -750,16 +754,18 @@ methods for retrieving them. They include:</p>
 <li><code>getEmitter()</code>: returns the composed
   <a href="https://github.com/zendframework/zend-diactoros/blob/master/doc/book/emitting-responses.md">emitter</a>,
   typically a <code>Zend\Expressive\Emitter\EmitterStack</code> instance.</li>
-<li><code>getDefaultDelegate()</code>: (Since 2.0) retrieves the default delegate to use when the internal middleware pipeline is exhausted without returning a response. If none is provided at instantiation, this method will do one of the following:</li>
+<li><code>getDefaultDelegate()</code>: (Since 2.0) retrieves the default delegate to use when the internal middleware pipeline is exhausted without returning a response. If none is provided at instantiation, this method will do one of the following:<ul>
 <li>If no container is composed, instanatiates a
-    <code>Zend\Expressive\Delegate\NotFoundDelegate</code> using the composed response
-    prototype only.</li>
+  <code>Zend\Expressive\Delegate\NotFoundDelegate</code> using the composed response
+  prototype only.</li>
 <li>If a container is composed, but does not have the
-    <code>Zend\Expressive\Delegate\DefaultDelegate</code> service, it creates and invokes an
-    instance of <code>Zend\Expressive\Container\NotFoundDelegateFactory</code>, passing it
-    the composed container, and uses the value created.</li>
+  <code>Zend\Expressive\Delegate\DefaultDelegate</code> service, it creates and invokes an
+  instance of <code>Zend\Expressive\Container\NotFoundDelegateFactory</code>, passing it
+  the composed container, and uses the value created.</li>
 <li>If a container is composed and contains the <code>Zend\Expressive\Delegate\DefaultDelegate</code>
-    service, it returns that.</li>
+  service, it returns that.</li>
+</ul>
+</li>
 <li><code>getFinalHandler(ResponseInterface $response = null)</code>: (<strong>REMOVED in version 2.0</strong>)
   retrieves the final handler instance. This is middleware with the signature
   <code>function ($request, $response, $error = null)</code>, and it is invoked when the

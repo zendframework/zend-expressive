@@ -572,12 +572,14 @@ two packages within the default skeleton application:</p>
 <ul>
 <li><a href="https://github.com/zendframework/zend-config-aggregator">zendframework/zend-config-aggregator</a>,
   which provides features for aggregating configuration from a variety of
-  sources, including:</li>
+  sources, including:<ul>
 <li>PHP files globbed from the filesystem that return an array of configuration.</li>
 <li><a href="https://docs.zendframework.com/zend-config">zend-config</a>-compatible
-    configuration files globbed from the filesystem.</li>
+  configuration files globbed from the filesystem.</li>
 <li>Configuration provider classes; these are invokable classes which return an
-    array of configuration.</li>
+  array of configuration.</li>
+</ul>
+</li>
 <li><a href="https://github.com/zendframework/zend-component-installer">zendframework/zend-component-installer</a>,
   a Composer plugin that looks for an <code>extra.zf.config-provider</code> entry in a
   package to install, and, if found, adds an entry for that provider to the

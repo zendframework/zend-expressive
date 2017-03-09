@@ -593,19 +593,21 @@ $url = $helper('resource', ['id' =&gt; 'sha1']);</code></pre>
   omit this argument if you want to generate the path for the currently matched
   request.</li>
 <li><code>$rotueParams</code> is an array of substitutions to use for the provided route, with the
-  following behavior:</li>
+  following behavior:<ul>
 <li>If a <code>RouteResult</code> is composed in the helper, and the <code>$routeName</code> matches
-    it, the provided <code>$params</code> will be merged with any matched parameters, with
-    those provided taking precedence.</li>
+  it, the provided <code>$params</code> will be merged with any matched parameters, with
+  those provided taking precedence.</li>
 <li>If a <code>RouteResult</code> is not composed, or if the composed result does not match
-    the provided <code>$routeName</code>, then only the <code>$params</code> provided will be used 
-    for substitutions.</li>
+  the provided <code>$routeName</code>, then only the <code>$params</code> provided will be used
+  for substitutions.</li>
 <li>If no <code>$params</code> are provided, and the <code>$routeName</code> matches the currently
-    matched route, then any matched parameters found will be used.
-    parameters found will be used.</li>
+  matched route, then any matched parameters found will be used.
+  parameters found will be used.</li>
 <li>If no <code>$params</code> are provided, and the <code>$routeName</code> does not match the
-    currently matched route, or if no route result is present, then no
-    substitutions will be made.</li>
+  currently matched route, or if no route result is present, then no
+  substitutions will be made.</li>
+</ul>
+</li>
 <li><code>$queryParams</code> is an array of query string arguments to include in the
   generated URI.</li>
 <li><code>$fragmentIdentifier</code> is a string to use as the URI fragment.</li>

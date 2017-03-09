@@ -1146,11 +1146,13 @@ pipeline is exhausted.</p>
 <li>
 <p>We have removed the following classes, which either provided final handlers,
   or acted as factories for them:</p>
-</li>
+<ul>
 <li><code>Zend\Expressive\TemplatedErrorHandler</code></li>
 <li><code>Zend\Expressive\WhoopsErrorHandler</code></li>
 <li><code>Zend\Expressive\Container\TemplatedErrorHandlerFactory</code></li>
 <li><code>Zend\Expressive\Container\WhoopsErrorHandlerFactory</code></li>
+</ul>
+</li>
 </ul>
 <p>If you use the <code>vendor/bin/expressive-pipeline-from-config</code> tool to migrate your
 application to programmatic pipelines, as described below, the <code>DefaultDelegate</code>

@@ -720,13 +720,11 @@ package will very likely not have the intended consequences.</p>
 <p>Routing definitions are typically highly specific to the router implementation
   in use. As an example, each of the currently supported router implementations
   has a different syntax for placeholders:</p>
-</li>
-<li>
-<p><code>/user/:id</code> + "constraints" configuration to define constraints (zend-router)</p>
-</li>
+<ul>
+<li><code>/user/:id</code> + "constraints" configuration to define constraints (zend-router)</li>
 <li><code>/user/{id}</code> + "tokens" configuration to define constraints (Aura.Router)</li>
-<li>
-<p><code>/user/{id:\d+}</code> (FastRoute)</p>
+<li><code>/user/{id:\d+}</code> (FastRoute)</li>
+</ul>
 </li>
 <li>
 <p>Your application may have specific routing considerations or design.</p>
@@ -745,9 +743,11 @@ delegator factory by wiring it into their own configuration.</p>
 <h2 id="synopsis">Synopsis</h2>
 <ul>
 <li>We recommend using delegator factories for the purpose of autowiring routes,
-  and, with caveats, pipeline middleware:</li>
+  and, with caveats, pipeline middleware:<ul>
 <li>The pipeline should be created exactly once, so calls to <code>pipe()</code> should
-    occur in exactly <em>one</em> delegator factory.</li>
+  occur in exactly <em>one</em> delegator factory.</li>
+</ul>
+</li>
 <li>Distributable packages should create a delegator factory for <em>routes only</em>,
   but <em>should not</em> register the delegator factory by default.</li>
 </ul>
