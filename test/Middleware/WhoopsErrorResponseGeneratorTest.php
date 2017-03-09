@@ -13,6 +13,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use RuntimeException;
+use Whoops\Handler\JsonResponseHandler;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run;
 use Whoops\RunInterface;
@@ -103,6 +104,42 @@ class WhoopsErrorResponseGeneratorTest extends TestCase
         $this->response->getBody()->will([$this->stream, 'reveal']);
 
         $this->stream->write('WHOOPS')->shouldBeCalled();
+
+        $generator = new WhoopsErrorResponseGenerator($this->whoops->reveal());
+
+        $this->assertSame(
+            $this->response->reveal(),
+            $generator($error, $this->request->reveal(), $this->response->reveal())
+        );
+    }
+
+    public function testJsonContentTypeResponseWithJsonResponseHandler()
+    {
+        $error = new RuntimeException();
+
+        $handler = $this->prophesize(JsonResponseHandler::class);
+
+        if (method_exists(JsonResponseHandler::class, 'contentType')) {
+            $handler->contentType()->willReturn('application/json');
+        }
+
+        $this->whoops->getHandlers()->willReturn([$handler->reveal()]);
+        $this->whoops->handleException($error)->willReturn('error');
+
+        $this->request->getAttribute('originalUri', false)->willReturn('https://example.com/foo');
+        $this->request->getAttribute('originalRequest', false)->will([$this->request, 'reveal']);
+        $this->request->getMethod()->willReturn('POST');
+        $this->request->getServerParams()->willReturn(['SCRIPT_NAME' => __FILE__]);
+        $this->request->getHeaders()->willReturn([]);
+        $this->request->getCookieParams()->willReturn([]);
+        $this->request->getAttributes()->willReturn([]);
+        $this->request->getQueryParams()->willReturn([]);
+        $this->request->getParsedBody()->willReturn([]);
+
+        $this->response->withHeader('Content-Type', 'application/json')->will([$this->response, 'reveal']);
+        $this->response->getBody()->will([$this->stream, 'reveal']);
+
+        $this->stream->write('error')->shouldBeCalled();
 
         $generator = new WhoopsErrorResponseGenerator($this->whoops->reveal());
 
