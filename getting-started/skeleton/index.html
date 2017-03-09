@@ -574,8 +574,7 @@ prompts you to choose a router, dependency injection container, template
 renderer, and error handler from the outset.</p>
 <h2 id="create-a-new-project">Create a new project</h2>
 <p>First, we'll create a new project, using Composer's <code>create-project</code> command:</p>
-<pre class="codehilite"><code class="language-bash">$ composer create-project zendframework/zend-expressive-skeleton expressive</code></pre>
-
+<pre class="codehilite"><code class="language-bash linenums">$ composer create-project zendframework/zend-expressive-skeleton expressive</code></pre>
 
 <p>This will prompt you to choose:</p>
 <ul>
@@ -607,8 +606,7 @@ renderer, and error handler from the outset.</p>
 when complete. You can test it out using <a href="http://php.net/manual/en/features.commandline.webserver.php">built-in web
 server</a>.</p>
 <p>From the project root directory, execute the following:</p>
-<pre class="codehilite"><code class="language-bash">$ composer serve</code></pre>
-
+<pre class="codehilite"><code class="language-bash linenums">$ composer serve</code></pre>
 
 <p>This starts up a web server on localhost port 8080; browse to
 http://localhost:8080/ to see if your application responds correctly!</p>
@@ -621,11 +619,10 @@ as a background process, but on other systems halts when the timeout occurs.</p>
 <code>process-timeout</code> configuration, which can be specified either local to your
 project, or globally. As examples, each of the following set the timeout to 8
 hours:</p>
-<pre class="codehilite"><code class="language-bash"># Local to your project:
+<pre class="codehilite"><code class="language-bash linenums"># Local to your project:
 $ composer config process-timeout 28800
 # Globally (all projects):
 $ composer config -g process-timeout 28800</code></pre>
-
 
 <p>NOTE: This setting affects <em>all</em> composer commands, including install, update,
 and require operations, so be careful about resetting it, particularly globally.</p>
@@ -635,10 +632,9 @@ and require operations, so be careful about resetting it, particularly globally.
 <h3 id="development-mode">Development Mode</h3>
 <p><a href="https://github.com/zfcampus/zf-development-mode">zf-development-mode</a> allows 
 you to enable and disable development mode from your cli.</p>
-<pre class="codehilite"><code class="language-bash">$ composer development-enable  # enable development mode
+<pre class="codehilite"><code class="language-bash linenums">$ composer development-enable  # enable development mode
 $ composer development-disable # disable development mode
 $ composer development-status  # show development status</code></pre>
-
 
 <p>The development configuration is set in <code>config/autoload/development.local.php.dist</code>.
 It also allows you to specify configuration and modules that should only be enabled 
@@ -647,16 +643,14 @@ when in development, and not when in production.</p>
 <p>Production settings are the default, which means enabling the configuration cache. 
 However, it must be easy for developers to clear the configuration cache. That's
 what this command does.</p>
-<pre class="codehilite"><code class="language-bash">$ composer clear-config-cache</code></pre>
-
+<pre class="codehilite"><code class="language-bash linenums">$ composer clear-config-cache</code></pre>
 
 <h3 id="testing-your-code">Testing Your Code</h3>
 <p><a href="https://github.com/sebastianbergmann/phpunit">PHPUnit</a> and 
 <a href="https://github.com/squizlabs/PHP_CodeSniffer">PHP_CodeSniffer</a> are now
 installed by default. To execute tests and detect coding standards violations,
 run the following command: </p>
-<pre class="codehilite"><code class="language-bash">$ composer check</code></pre>
-
+<pre class="codehilite"><code class="language-bash linenums">$ composer check</code></pre>
 
 <h3 id="security-advisories">Security Advisories</h3>
 <p>We have included the <a href="https://github.com/Roave/SecurityAdvisories">security-advisories</a>
@@ -693,7 +687,7 @@ configuration caching.</p>
 <p>As an example, your <code>config/config.php</code> file might read as follows in order to
 aggregate configuration from development mode settings, application
 configuration, and theoretical <code>User</code>, <code>Blog</code>, and <code>App</code> modules:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php // config/config.php
+<pre class="codehilite"><code class="language-php linenums">&lt;?php // config/config.php
 
 $aggregator = new ConfigAggregator([
     // Module configuration
@@ -715,7 +709,6 @@ $aggregator = new ConfigAggregator([
 
 return $aggregator-&gt;getMergedConfig();</code></pre>
 
-
 <p>The configuration is merged in the same order as it is passed, with later entries 
 having precedence.</p>
 <h3 id="config-providers">Config Providers</h3>
@@ -726,7 +719,7 @@ generator) to be merged.</p>
 <p>Libraries or modules can have configuration providers that provide default values 
 for a library or module. For the <code>UserModule\ConfigProvider</code> class loaded in the
 <code>ConfigAggregator</code> above, the <code>ConfigProvider</code> might look like this:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<pre class="codehilite"><code class="language-php linenums">&lt;?php
 
 namespace UserModule;
 
@@ -783,7 +776,6 @@ class ConfigProvider
     }
 }</code></pre>
 
-
 <h3 id="expressive-module-command">expressive-module command</h3>
 <p>To aid in the creation, registration, and deregistration of modules in your
 application, the installer will add the <a href="https://github.com/zendframework/zend-expressive-tooling">zendframework/zend-expressive-tooling</a>
@@ -818,15 +810,13 @@ In this section, we'll demonstrate setting up a basic pipeline that includes
 error handling, segregated applications, routing, middleware dispatch, and more.</p>
 <p>The error handler should be the first (most outer) middleware to catch all 
 exceptions.</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;pipe(ErrorHandler::class);
+<pre class="codehilite"><code class="language-php linenums">$app-&gt;pipe(ErrorHandler::class);
 $app-&gt;pipe(ServerUrlMiddleware::class);  </code></pre>
-
 
 <p>After the <code>ErrorHandler</code> you can pipe more middleware that you want to execute 
 on every request, such as bootstrapping, pre-conditions, and modifications to 
 outgoing responses:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;pipe(ServerUrlMiddleware::class);  </code></pre>
-
+<pre class="codehilite"><code class="language-php linenums">$app-&gt;pipe(ServerUrlMiddleware::class);  </code></pre>
 
 <p>Piped middleware may be either callables or service names. Middleware may also 
 be passed as an array; each item in the array must resolve to middleware 
@@ -836,14 +826,12 @@ piped to it.</p>
 <p>Middleware can be attached to specific paths, allowing you to mix and match
 applications under a common domain. The handlers in each middleware attached 
 this way will see a URI with the <strong>MATCHED PATH SEGMENT REMOVED!!!</strong></p>
-<pre class="codehilite"><code class="language-php">$app-&gt;pipe('/api', $apiMiddleware);
+<pre class="codehilite"><code class="language-php linenums">$app-&gt;pipe('/api', $apiMiddleware);
 $app-&gt;pipe('/docs', $apiDocMiddleware);
 $app-&gt;pipe('/files', $filesMiddleware);    </code></pre>
 
-
 <p>Next, you should register the routing middleware in the middleware pipeline:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;pipeRoutingMiddleware();</code></pre>
-
+<pre class="codehilite"><code class="language-php linenums">$app-&gt;pipeRoutingMiddleware();</code></pre>
 
 <p>Add more middleware that needs to introspect the routing results; this might 
 include:</p>
@@ -855,23 +843,20 @@ include:</p>
 <li>route-based validation</li>
 <li>etc.</li>
 </ul>
-<pre class="codehilite"><code class="language-php">$app-&gt;pipe(ImplicitHeadMiddleware::class);
+<pre class="codehilite"><code class="language-php linenums">$app-&gt;pipe(ImplicitHeadMiddleware::class);
 $app-&gt;pipe(ImplicitOptionsMiddleware::class);
 $app-&gt;pipe(UrlHelperMiddleware::class);</code></pre>
 
-
 <p>Next, register the dispatch middleware in the middleware pipeline:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;pipeDispatchMiddleware();</code></pre>
-
+<pre class="codehilite"><code class="language-php linenums">$app-&gt;pipeDispatchMiddleware();</code></pre>
 
 <p>At this point, if no response is return by any middleware, we need to provide a
 way of notifying the user of this; by default, we use the <code>NotFoundHandler</code>, but
 you can provide any other fallback middleware you wish:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;pipe(NotFoundHandler::class);</code></pre>
-
+<pre class="codehilite"><code class="language-php linenums">$app-&gt;pipe(NotFoundHandler::class);</code></pre>
 
 <p>The full example then looks something like this:</p>
-<pre class="codehilite"><code class="language-php">// In config/pipeline.php:
+<pre class="codehilite"><code class="language-php linenums">// In config/pipeline.php:
 
 use Zend\Expressive\Helper\ServerUrlMiddleware;
 use Zend\Expressive\Helper\UrlHelperMiddleware;
@@ -896,34 +881,29 @@ $app-&gt;pipeDispatchMiddleware();
 
 $app-&gt;pipe(NotFoundHandler::class);</code></pre>
 
-
 <h3 id="routing">Routing</h3>
 <p><a href="../../features/router/piping/#routing">Routing</a> is an additional feature
 provided by Expressive. Routing is setup in <code>config/routes.php</code>.</p>
 <p>You can setup routes with a single request method:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;get('/', App\Action\HomePageAction::class, 'home');
+<pre class="codehilite"><code class="language-php linenums">$app-&gt;get('/', App\Action\HomePageAction::class, 'home');
 $app-&gt;post('/album', App\Action\AlbumCreateAction::class, 'album.create');
 $app-&gt;put('/album/:id', App\Action\AlbumUpdateAction::class, 'album.put');
 $app-&gt;patch('/album/:id', App\Action\AlbumUpdateAction::class, 'album.patch');
 $app-&gt;delete('/album/:id', App\Action\AlbumDeleteAction::class, 'album.delete');</code></pre>
 
-
 <p>Or with multiple request methods:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;route('/contact', App\Action\ContactAction::class, ['GET', 'POST', ...], 'contact');</code></pre>
-
+<pre class="codehilite"><code class="language-php linenums">$app-&gt;route('/contact', App\Action\ContactAction::class, ['GET', 'POST', ...], 'contact');</code></pre>
 
 <p>Or handling all request methods:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;route('/contact', App\Action\ContactAction::class)-&gt;setName('contact');</code></pre>
-
+<pre class="codehilite"><code class="language-php linenums">$app-&gt;route('/contact', App\Action\ContactAction::class)-&gt;setName('contact');</code></pre>
 
 <p>Alternately, to be explicit, the above could be written as:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;route(
+<pre class="codehilite"><code class="language-php linenums">$app-&gt;route(
   '/contact',
   App\Action\ContactAction::class,
   Zend\Expressive\Router\Route::HTTP_METHOD_ANY,
   'contact'
 );  </code></pre>
-
 
 <p>We recommend a single middleware class per combination of route and request
 method.</p>
@@ -942,14 +922,13 @@ single method, <code>process()</code>, which accepts a
 "double-pass", for the fact that it passes both the request and response between
 layers. This middleware did not require an interface, and relied on a
 conventional definition of:</p>
-<pre class="codehilite"><code class="language-php">use Psr\Http\Message;
+<pre class="codehilite"><code class="language-php linenums">use Psr\Http\Message;
 
 function (
   Message\ServerRequestInterface $request,
   Message\ResponseInterface $response,
   callable $next
 ) : Message\ResponseInterface</code></pre>
-
 
 <p>While this style of middleware is still quite wide-spread and used in a number
 of projects, it has some flaws. Chief among them is the fact that middleware
@@ -972,7 +951,7 @@ by PHP-FIG.</p>
 under the namespace <code>App\Action</code>.</p>
 <p>Let's create a "Hello" action. Place the following in
 <code>src/App/Action/HelloAction.php</code>:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<pre class="codehilite"><code class="language-php linenums">&lt;?php
 namespace App\Action;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
@@ -1000,13 +979,12 @@ class HelloAction implements MiddlewareInterface
     }
 }</code></pre>
 
-
 <p>The above looks for a query string parameter "target", and uses its value to
 provide a message, which is then returned in an HTML response.</p>
 <p>Now we need to inform the application of this middleware, and indicate what
 path will invoke it. Open the file <code>config/autoload/dependencies.global.php</code>.
 Edit that file to add an <em>invokable</em> entry for the new middleware:</p>
-<pre class="codehilite"><code class="language-php">return [
+<pre class="codehilite"><code class="language-php linenums">return [
     'dependencies' =&gt; [
         /* ... */
         'invokables' =&gt; [
@@ -1017,11 +995,9 @@ Edit that file to add an <em>invokable</em> entry for the new middleware:</p>
     ],
 ];</code></pre>
 
-
 <p>Now open the file <code>config/routes.php</code>, and add the following at the bottom of
 the file:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;get('/hello', App\Action\HelloAction::class, 'hello');</code></pre>
-
+<pre class="codehilite"><code class="language-php linenums">$app-&gt;get('/hello', App\Action\HelloAction::class, 'hello');</code></pre>
 
 <p>Once you've completed the above, give it a try by going to each of the
 following URIs:</p>
@@ -1038,10 +1014,9 @@ templates. This particular exercise assumes you chose to use the
 register the template namespace <code>app</code> to correspond with the <code>templates/app</code>
 subdirectory. Create the file <code>templates/app/hello-world.phtml</code> with the
 following contents:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php $this-&gt;layout('layout::default', ['title' =&gt; 'Greetings']) ?&gt;
+<pre class="codehilite"><code class="language-php linenums">&lt;?php $this-&gt;layout('layout::default', ['title' =&gt; 'Greetings']) ?&gt;
 
 &lt;h2&gt;Hello, &lt;?= $this-&gt;e($target) ?&gt;&lt;/h2&gt;</code></pre>
-
 
 <p>Now that we have a template, we need to:</p>
 <ul>
@@ -1049,7 +1024,7 @@ following contents:</p>
 <li>Use the renderer to render the contents.</li>
 </ul>
 <p>Replace your <code>src/App/Action/HelloAction.php</code> file with the following contents:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<pre class="codehilite"><code class="language-php linenums">&lt;?php
 namespace App\Action;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
@@ -1082,7 +1057,6 @@ class HelloAction implements MiddlewareInterface
     }
 }</code></pre>
 
-
 <p>The above modifies the class to accept a renderer to the constructor, and then
 calls on it to render a template. Note that we no longer need to escape our
 target; the template takes care of that for us.</p>
@@ -1093,13 +1067,12 @@ creating the <code>HelloAction</code> instance; the example assumes you used the
 selection for a dependency injection container, zend-servicemanager.</p>
 <p>zend-servicemanager provides a tool for generating factories based on
 reflecting a class; we'll use that to generate our factory:</p>
-<pre class="codehilite"><code class="language-bash">$ ./vendor/bin/generate-factory-for-class &quot;App\\Action\\HelloAction&quot; &gt; src/App/Action/HelloActionFactory.php</code></pre>
-
+<pre class="codehilite"><code class="language-bash linenums">$ ./vendor/bin/generate-factory-for-class &quot;App\\Action\\HelloAction&quot; &gt; src/App/Action/HelloActionFactory.php</code></pre>
 
 <p>With that in place, we'll now update our configuration. Open the file
 <code>config/autoload/dependencies.global.php</code>; we'll remove the <code>invokables</code> entry
 we created previously, and add a <code>factories</code> entry:</p>
-<pre class="codehilite"><code class="language-php">return [
+<pre class="codehilite"><code class="language-php linenums">return [
     'dependencies' =&gt; [
         /* ... */
         'invokables' =&gt; [
@@ -1114,7 +1087,6 @@ we created previously, and add a <code>factories</code> entry:</p>
         /* ... */
     ],
 ];</code></pre>
-
 
 <p>Save that file, and now re-visit the URIs:</p>
 <ul>

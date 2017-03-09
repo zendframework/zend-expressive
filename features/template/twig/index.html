@@ -574,20 +574,18 @@ as a standalone component by SensioLabs. It provides:</p>
 <code>Zend\Expressive\Twig\TwigRenderer</code>.</p>
 <h2 id="installing-twig">Installing Twig</h2>
 <p>To use the Twig wrapper, you must first install the Twig integration:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-expressive-twigrenderer</code></pre>
-
+<pre class="codehilite"><code class="language-bash linenums">$ composer require zendframework/zend-expressive-twigrenderer</code></pre>
 
 <h2 id="using-the-wrapper">Using the wrapper</h2>
 <p>If instantiated without arguments, <code>Zend\Expressive\Twig\TwigRenderer</code> will create
 an instance of the Twig engine, which it will then proxy to.</p>
-<pre class="codehilite"><code class="language-php">use Zend\Expressive\Twig\TwigRenderer;
+<pre class="codehilite"><code class="language-php linenums">use Zend\Expressive\Twig\TwigRenderer;
 
 $renderer = new TwigRenderer();</code></pre>
 
-
 <p>Alternately, you can instantiate and configure the engine yourself, and pass it
 to the <code>Zend\Expressive\Twig\TwigRenderer</code> constructor:</p>
-<pre class="codehilite"><code class="language-php">use Twig_Environment;
+<pre class="codehilite"><code class="language-php linenums">use Twig_Environment;
 use Twig_Loader_Array;
 use Zend\Expressive\Twig\TwigRenderer;
 
@@ -602,7 +600,6 @@ $twig-&gt;loadExtension(new CustomExtension();
 // Inject:
 $renderer = new TwigRenderer($twig);</code></pre>
 
-
 <h2 id="included-extensions-and-functions">Included extensions and functions</h2>
 <p>The included Twig extension adds support for url generation. The extension is
 automatically activated if the <a href="../../helpers/url-helper/">UrlHelper</a> and
@@ -613,43 +610,38 @@ container.</p>
 <li><code>path</code>: Render the relative path for a given route and parameters. If there
   is no route, it returns the current path.</li>
 </ul>
-<pre class="codehilite"><code class="language-twig">{{ path('article_show', {'id': '3'}) }}
+<pre class="codehilite"><code class="language-twig linenums">{{ path('article_show', {'id': '3'}) }}
 Generates: /article/3</code></pre>
-
 
 <ul>
 <li><code>url</code>: Render the absolute url for a given route with its route parameters,
   query string arguments, and fragment. If there is no route, it returns the
   current url.</li>
 </ul>
-<pre class="codehilite"><code class="language-twig">{{ url('article_show', {'id': '3'}, {'foo': 'bar'}, 'fragment') }}
+<pre class="codehilite"><code class="language-twig linenums">{{ url('article_show', {'id': '3'}, {'foo': 'bar'}, 'fragment') }}
 Generates: http://example.com/article/3?foo=bar#fragment</code></pre>
-
 
 <ul>
 <li><code>absolute_url</code>: Render the absolute url from a given path. If the path is
   empty, it returns the current url.</li>
 </ul>
-<pre class="codehilite"><code class="language-twig">{{ absolute_url('path/to/something') }}
+<pre class="codehilite"><code class="language-twig linenums">{{ absolute_url('path/to/something') }}
 Generates: http://example.com/path/to/something</code></pre>
-
 
 <ul>
 <li><code>asset</code> Render an (optionally versioned) asset url.</li>
 </ul>
-<pre class="codehilite"><code class="language-twig">{{ asset('path/to/asset/name.ext', version=3) }}
+<pre class="codehilite"><code class="language-twig linenums">{{ asset('path/to/asset/name.ext', version=3) }}
 Generates: path/to/asset/name.ext?v=3</code></pre>
 
-
 <p>To get the absolute url for an asset:</p>
-<pre class="codehilite"><code class="language-twig">{{ absolute_url(asset('path/to/asset/name.ext', version=3)) }}
+<pre class="codehilite"><code class="language-twig linenums">{{ absolute_url(asset('path/to/asset/name.ext', version=3)) }}
 Generates: http://example.com/path/to/asset/name.ext?v=3</code></pre>
-
 
 <h2 id="configuration">Configuration</h2>
 <p>The following details configuration specific to Twig, as consumed by the
 <code>TwigRendererFactory</code>:</p>
-<pre class="codehilite"><code class="language-php">return [
+<pre class="codehilite"><code class="language-php linenums">return [
     'templates' =&gt; [
         'extension' =&gt; 'file extension used by templates; defaults to html.twig',
         'paths' =&gt; [
@@ -672,7 +664,6 @@ Generates: http://example.com/path/to/asset/name.ext?v=3</code></pre>
         ],
     ],
 ];</code></pre>
-
 
 <p>When specifying the <code>twig.extensions</code> values, always use fully qualified class
 names or actual extension instances to ensure compatibility with any version of

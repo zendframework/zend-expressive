@@ -582,7 +582,7 @@ both <em>pipe</em> middleware as well as <em>route</em> middleware.</p>
 application, and provide it via a delegator factory instead.</p>
 <p>First, we'll create the class <code>App\Factory\PipelineAndRoutesDelegator</code>, with
 the following contents:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<pre class="codehilite"><code class="language-php linenums">&lt;?php
 
 namespace App\Factory;
 
@@ -627,7 +627,6 @@ class PipelineAndRoutesDelegator
     }
 }</code></pre>
 
-
 <blockquote>
 <h3 id="where-to-put-the-factory">Where to put the factory</h3>
 <p>You will place the factory class in one of the following locations:</p>
@@ -640,7 +639,7 @@ class PipelineAndRoutesDelegator
 </blockquote>
 <p>Once you've created this, edit the class <code>App\ConfigProvider</code>; in it, we'll
 update the <code>getDependencies()</code> method to add the delegator factory:</p>
-<pre class="codehilite"><code class="language-php">public function getDependencies()
+<pre class="codehilite"><code class="language-php linenums">public function getDependencies()
 {
     return [
         /* . . . */
@@ -651,7 +650,6 @@ update the <code>getDependencies()</code> method to add the delegator factory:</
         ],
     ];
 }</code></pre>
-
 
 <blockquote>
 <h3 id="where-is-the-configprovider-class">Where is the ConfigProvider class?</h3>
@@ -674,11 +672,10 @@ order to shape initialization of a service. As such, they are assigned as an
 <li><code>config/routes.php</code></li>
 <li>The following lines from <code>public/index.php</code>:</li>
 </ul>
-<pre class="codehilite"><code class="language-php">// Import programmatic/declarative middleware pipeline and routing
+<pre class="codehilite"><code class="language-php linenums">// Import programmatic/declarative middleware pipeline and routing
 // configuration statements
 require 'config/pipeline.php';
 require 'config/routes.php';</code></pre>
-
 
 <p>If you reload your application at this point, you should see that everything
 continues to work as expected!</p>

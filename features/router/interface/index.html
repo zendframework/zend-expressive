@@ -567,7 +567,7 @@ dynamic routing capabilities to middleware. The interface serves as an
 abstraction to allow routers with varying capabilities to be used with an
 application.</p>
 <p>The interface is defined as follows:</p>
-<pre class="codehilite"><code class="language-php">namespace Zend\Expressive\Router;
+<pre class="codehilite"><code class="language-php linenums">namespace Zend\Expressive\Router;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -624,7 +624,6 @@ interface RouterInterface
     public function generateUri($name, array $substitutions = [], array $options = []);
 }</code></pre>
 
-
 <p>Developers may create and use their own implementations. We recommend
 registering your implementation as the service
 <code>Zend\Expressive\Router\RouterInterface</code> in your container to ensure other
@@ -636,11 +635,10 @@ correctly.</p>
 <h3 id="generateuri-signature-change-in-20">generateUri() signature change in 2.0</h3>
 <p>Prior to zendframework/zend-expressive-router 2.0.0, the signature of
 <code>generateUri()</code> was:</p>
-<pre class="codehilite"><code class="language-php">public function generateUri(
+<pre class="codehilite"><code class="language-php linenums">public function generateUri(
     string $name,
     array $substitutions = []
 ) : string</code></pre>
-
 
 <p>If you are targeting that version, you may still provide the <code>$options</code>
 argument, but it will not be invoked.</p>
@@ -656,7 +654,7 @@ following information:</p>
 <li>Optionally, a name by which to reference the route.</li>
 </ul>
 <p>The <code>Route</code> class has the following signature:</p>
-<pre class="codehilite"><code class="language-php">namespace Zend\Expressive\Router;
+<pre class="codehilite"><code class="language-php linenums">namespace Zend\Expressive\Router;
 
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 
@@ -725,7 +723,6 @@ class Route
     public function getOptions();
 }</code></pre>
 
-
 <p>Typically, developers will use <code>Zend\Expressive\Application::route()</code> (or one of
 the HTTP-specific routing methods) to create routes, and will not need to
 interact with <code>Route</code> instances. However, that method can <em>also</em> accept <code>Route</code>
@@ -747,7 +744,7 @@ failure was due to inability to match, or usage of a disallowed HTTP method; in
 the former case, it proceeds to the next middleware in the stack, and in the
 latter, returns a 405 response.</p>
 <p>The <code>RouteResult</code> signature is as follows:</p>
-<pre class="codehilite"><code class="language-php">namespace Zend\Expressive\Router;
+<pre class="codehilite"><code class="language-php linenums">namespace Zend\Expressive\Router;
 
 class RouteResult
 {
@@ -853,7 +850,6 @@ class RouteResult
      */
     public function getAllowedMethods();
 }</code></pre>
-
 
 <p>Typically, only those implementing routers will interact with this class.</p>
 

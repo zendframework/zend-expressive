@@ -574,11 +574,10 @@ priority to enable us to distinguish between failure to match the path and
 failure to match the HTTP method.</p>
 <p>If you instantiate it with no arguments, it will create an empty
 <code>TreeRouteStack</code>. Thus, the simplest way to start with this router is:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Expressive\AppFactory;
+<pre class="codehilite"><code class="language-php linenums">use Zend\Expressive\AppFactory;
 use Zend\Expressive\Router\ZendRouter;
 
 $app = AppFactory::create(null, new ZendRouter());</code></pre>
-
 
 <p>The <code>TreeRouteStack</code> offers some unique features:</p>
 <ul>
@@ -597,23 +596,21 @@ programmatically, or via a factory to use in conjunction with your container
 instance.</p>
 <h2 id="installing-the-zf2-router">Installing the ZF2 Router</h2>
 <p>To use the ZF2 router, you will need to install the zend-mvc router integration:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-expressive-zendrouter</code></pre>
-
+<pre class="codehilite"><code class="language-bash linenums">$ composer require zendframework/zend-expressive-zendrouter</code></pre>
 
 <h2 id="quick-start">Quick Start</h2>
 <p>At its simplest, you can instantiate a <code>Zend\Expressive\Router\ZendRouter</code> instance
 with no arguments; it will create the underlying zend-mvc routing objects
 required and compose them for you:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Expressive\Router\ZendRouter;
+<pre class="codehilite"><code class="language-php linenums">use Zend\Expressive\Router\ZendRouter;
 
 $router = new ZendRouter();</code></pre>
-
 
 <h2 id="programmatic-creation">Programmatic Creation</h2>
 <p>If you need greater control over the zend-mvc router setup and configuration,
 you can create the instances necessary and inject them into
 <code>Zend\Expressive\Router\ZendRouter</code> during instantiation.</p>
-<pre class="codehilite"><code class="language-php">use Zend\Expressive\AppFactory;
+<pre class="codehilite"><code class="language-php linenums">use Zend\Expressive\AppFactory;
 use Zend\Expressive\Router\ZendRouter as Zf2Bridge;
 use Zend\Mvc\Router\Http\TreeRouteStack;
 
@@ -626,7 +623,6 @@ $router = new Zf2Bridge($zendRouter);
 // First argument is the container to use, if not using the default;
 // second is the router.
 $app = AppFactory::create(null, $router);</code></pre>
-
 
 <blockquote>
 <h3 id="piping-the-route-middleware">Piping the route middleware</h3>
@@ -645,7 +641,7 @@ two strategies for creating your zend-mvc router implementation.</p>
 instantiate and return an instance of <code>Zend\Expressive\Router\ZendRouter</code> for the
 service name <code>Zend\Expressive\Router\RouterInterface</code>.</p>
 <p>A factory would look like this:</p>
-<pre class="codehilite"><code class="language-php">// in src/Application/Container/RouterFactory.php
+<pre class="codehilite"><code class="language-php linenums">// in src/Application/Container/RouterFactory.php
 namespace Application\Container;
 
 use Psr\Container\ContainerInterface;
@@ -663,25 +659,21 @@ class RouterFactory
     }
 }</code></pre>
 
-
 <p>You would register this with zend-servicemanager using:</p>
-<pre class="codehilite"><code class="language-php">$container-&gt;setFactory(
+<pre class="codehilite"><code class="language-php linenums">$container-&gt;setFactory(
     'Zend\Expressive\Router\RouterInterface',
     'Application\Container\RouterFactory'
 );</code></pre>
 
-
 <p>And in Pimple:</p>
-<pre class="codehilite"><code class="language-php">$pimple['Zend\Expressive\Router\RouterInterface'] = new Application\Container\RouterFactory();</code></pre>
-
+<pre class="codehilite"><code class="language-php linenums">$pimple['Zend\Expressive\Router\RouterInterface'] = new Application\Container\RouterFactory();</code></pre>
 
 <p>For zend-servicemanager, you can omit the factory entirely, and register the
 class as an invokable:</p>
-<pre class="codehilite"><code class="language-php">$container-&gt;setInvokableClass(
+<pre class="codehilite"><code class="language-php linenums">$container-&gt;setInvokableClass(
     'Zend\Expressive\Router\RouterInterface',
     'Zend\Expressive\Router\ZendRouter'
 );</code></pre>
-
 
 <h3 id="advanced-configuration">Advanced Configuration</h3>
 <p>If you want to provide custom setup or configuration, you can do so. In this
@@ -694,7 +686,7 @@ example, we will be defining two factories:</p>
   <code>Zend\Mvc\Router\Http\TreeRouteStack</code> instance.</li>
 </ul>
 <p>Sound difficult? It's not; we've essentially done it above already!</p>
-<pre class="codehilite"><code class="language-php">// in src/Application/Container/TreeRouteStackFactory.php:
+<pre class="codehilite"><code class="language-php linenums">// in src/Application/Container/TreeRouteStackFactory.php:
 namespace Application\Container;
 
 use Psr\Container\ContainerInterface;
@@ -734,10 +726,9 @@ class RouterFactory
     }
 }</code></pre>
 
-
 <p>From here, you will need to register your factories with your IoC container.</p>
 <p>If you are using zend-servicemanager, this will look like:</p>
-<pre class="codehilite"><code class="language-php">// Programmatically:
+<pre class="codehilite"><code class="language-php linenums">// Programmatically:
 use Zend\ServiceManager\ServiceManager;
 
 $container = new ServiceManager();
@@ -758,9 +749,8 @@ return [
     ],
 ];</code></pre>
 
-
 <p>For Pimple, configuration looks like:</p>
-<pre class="codehilite"><code class="language-php">use Application\Container\TreeRouteStackFactory;
+<pre class="codehilite"><code class="language-php linenums">use Application\Container\TreeRouteStackFactory;
 use Application\Container\ZfRouterFactory;
 use Interop\Container\Pimple\PimpleInterop;
 

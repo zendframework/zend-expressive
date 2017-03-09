@@ -584,14 +584,13 @@ provide its own services (with factories), default configuration, and routes. </
 a lightweight library that aggregates and merges configuration, optionally caching it.</p>
 <h2 id="install-the-configuration-manager">Install the configuration manager</h2>
 <p>The configuration manager is available in Packagist:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require mtymek/expressive-config-manager</code></pre>
-
+<pre class="codehilite"><code class="language-bash linenums">$ composer require mtymek/expressive-config-manager</code></pre>
 
 <h2 id="generate-your-config">Generate your config</h2>
 <p>The default Expressive skeleton installs a <code>config/config.php</code> file, which
 aggregates all configuration. When using the configuration manager, you will
 need to replace the contents of that file with the following code: </p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<pre class="codehilite"><code class="language-php linenums">&lt;?php
 
 use Zend\Expressive\ConfigManager\ConfigManager;
 use Zend\Expressive\ConfigManager\PhpFileProvider;
@@ -602,7 +601,6 @@ $configManager = new ConfigManager([
 
 return new ArrayObject($configManager-&gt;getMergedConfig());</code></pre>
 
-
 <p>If you open your application in a browser, it should still work in exactly the
 same way as it was before. Now you can start adding your modules.</p>
 <h2 id="first-module">First module</h2>
@@ -611,7 +609,7 @@ module; its only requirement is to expose default configuration using a "config
 provider", which is simply an invokable class that returns a configuration
 array.</p>
 <p>For instance, this is how your module could provide its own routes:</p>
-<pre class="codehilite"><code class="language-php">namespace MyModule;
+<pre class="codehilite"><code class="language-php linenums">namespace MyModule;
 
 class ModuleConfig
 {
@@ -636,16 +634,14 @@ class ModuleConfig
     }
 }</code></pre>
 
-
 <h2 id="enabling-the-module">Enabling the module</h2>
 <p>Finally, you can enable your module by adding a reference to your config class
 within the arguments of the <code>ConfigManager</code> constructor in the <code>config/config.php</code>
 file:</p>
-<pre class="codehilite"><code class="language-php">$configManager = new ConfigManager([
+<pre class="codehilite"><code class="language-php linenums">$configManager = new ConfigManager([
     MyModule\ModuleConfig::class,
     new PhpFileProvider('config/autoload/{{,*.}global,{,*.}local}.php'),
 ]);</code></pre>
-
 
 <h2 id="caching-configuration">Caching configuration</h2>
 <p>In order to provide configuration caching, two things must occur:</p>
@@ -665,7 +661,7 @@ them in two locations:</p>
   appropriate to the current environment. In development, for instance, this
   would be <code>false</code>.</li>
 </ul>
-<pre class="codehilite"><code class="language-php">// config/autoload/global.php
+<pre class="codehilite"><code class="language-php linenums">// config/autoload/global.php
 
 return [
     'config_cache_enabled' =&gt; true,
@@ -679,16 +675,14 @@ return [
     /* ... */
 ];</code></pre>
 
-
 <p>You would then alter your <code>config/config.php</code> file to add the second argument.
 The following example builds on the previous, and demonstrates having the
 <code>AppConfig</code> entry enabled. The configuration will be cached to
 <code>data/config-cache.php</code> in the application root:</p>
-<pre class="codehilite"><code class="language-php">$configManager = new ConfigManager([
+<pre class="codehilite"><code class="language-php linenums">$configManager = new ConfigManager([
     App\AppConfig::class,
     new PhpFileProvider('config/autoload/{{,*.}global,{,*.}local}.php'),
 ], 'data/config-cache.php');</code></pre>
-
 
 <p>When the configuration cache path is present, if the <code>config_cache_enabled</code> flag
 is enabled, then configuration will be read from the cached configuration,

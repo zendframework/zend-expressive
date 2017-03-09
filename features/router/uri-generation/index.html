@@ -572,21 +572,18 @@ the name:</p>
 <li>If you call <code>route()</code> with no HTTP methods, the name is the literal path with
   no changes.</li>
 </ul>
-<pre class="codehilite"><code class="language-php">$app-&gt;route('/foo', $middleware); // &quot;foo&quot;</code></pre>
-
+<pre class="codehilite"><code class="language-php linenums">$app-&gt;route('/foo', $middleware); // &quot;foo&quot;</code></pre>
 
 <ul>
 <li>If you call <code>get()</code>, <code>post()</code>, <code>put()</code>, <code>patch()</code>, or <code>delete()</code>, the name
   will be the literal path, followed by a caret (<code>^</code>), followed by the
   uppercase HTTP method name:</li>
 </ul>
-<pre class="codehilite"><code class="language-php">$app-&gt;get('/foo', $middleware); // &quot;foo^GET&quot;</code></pre>
-
+<pre class="codehilite"><code class="language-php linenums">$app-&gt;get('/foo', $middleware); // &quot;foo^GET&quot;</code></pre>
 
 <p>Alternately, these methods return a <code>Route</code> instance, and you can set the
   name on it:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;get('/foo', $middleware)-&gt;setName('foo'); // &quot;foo&quot;</code></pre>
-
+<pre class="codehilite"><code class="language-php linenums">$app-&gt;get('/foo', $middleware)-&gt;setName('foo'); // &quot;foo&quot;</code></pre>
 
 <ul>
 <li>If you call <code>route()</code> and specify a list of HTTP methods accepted, the name
@@ -594,37 +591,32 @@ the name:</p>
   (<code>:</code>)-separated list of the uppercase HTTP method names, in the order in which
   they were added.</li>
 </ul>
-<pre class="codehilite"><code class="language-php">$app-&gt;route('/foo', $middleware, ['GET', 'POST']); // &quot;foo^GET:POST&quot;</code></pre>
-
+<pre class="codehilite"><code class="language-php linenums">$app-&gt;route('/foo', $middleware, ['GET', 'POST']); // &quot;foo^GET:POST&quot;</code></pre>
 
 <p>Like the HTTP-specific methods, <code>route()</code> also returns a <code>Route</code> instance,
   and you can set the name on it:</p>
-<pre class="codehilite"><code class="language-php">$route = $app-&gt;route('/foo', $middleware, ['GET', 'POST']); // &quot;foo^GET:POST&quot;
+<pre class="codehilite"><code class="language-php linenums">$route = $app-&gt;route('/foo', $middleware, ['GET', 'POST']); // &quot;foo^GET:POST&quot;
 $route-&gt;setName('foo'); // &quot;foo&quot;</code></pre>
-
 
 <p>Clearly, this can become difficult to remember. As such, Expressive offers the
 ability to specify a custom string for the route name as an additional, optional
 argument to any of the above:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;route('/foo', $middleware, 'foo'); // 'foo'
+<pre class="codehilite"><code class="language-php linenums">$app-&gt;route('/foo', $middleware, 'foo'); // 'foo'
 $app-&gt;get('/foo/:id', $middleware, 'foo-item'); // 'foo-item'
 $app-&gt;route('/foo', $middleware, ['GET', 'POST'], 'foo-collection'); // 'foo-collection'</code></pre>
-
 
 <p>As noted above, these methods also return <code>Route</code> instances, allowing you to
 set the name after-the-fact; this is particularly useful with the <code>route()</code>
 method, where you may want to omit the HTTP methods if any HTTP method is
 allowed:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;route('/foo', $middleware)-&gt;setName('foo'); // 'foo'</code></pre>
-
+<pre class="codehilite"><code class="language-php linenums">$app-&gt;route('/foo', $middleware)-&gt;setName('foo'); // 'foo'</code></pre>
 
 <p>We recommend that if you plan on generating URIs for given routes, you provide a
 custom name.</p>
 <h2 id="generating-uris">Generating URIs</h2>
 <p>Once you know the name of a URI you wish to generate, you can do so from the
 router instance:</p>
-<pre class="codehilite"><code class="language-php">$uri = $router-&gt;generateUri('foo-item', ['id' =&gt; 'bar']); // &quot;/foo/bar&quot;</code></pre>
-
+<pre class="codehilite"><code class="language-php linenums">$uri = $router-&gt;generateUri('foo-item', ['id' =&gt; 'bar']); // &quot;/foo/bar&quot;</code></pre>
 
 <p>You can omit the second argument if no substitutions are necessary.</p>
 <blockquote>

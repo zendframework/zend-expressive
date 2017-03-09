@@ -582,10 +582,9 @@ enables optional, development-specific configuration in your application by:</p>
 </ul>
 <p>The package provides the tooling via <code>vendor/bin/zf-development-mode</code>. If you
 are using the Expressive skeleton, it provides aliases via Composer:</p>
-<pre class="codehilite"><code class="language-php">$ composer development-enable
+<pre class="codehilite"><code class="language-php linenums">$ composer development-enable
 $ composer development-disable
 $ composer development-status</code></pre>
-
 
 <p>Add settings to your <code>development.*.php.dist</code> files, and commit those files to
 your repository; always toggle out of and into development mode after making
@@ -602,22 +601,19 @@ layout</a>.</p>
 <h3 id="adding-tooling-to-existing-applications">Adding tooling to existing applications</h3>
 <p>If you have upgraded from Expressive 1.X, you can install
 zendframework/zend-expressive-tooling via Composer:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require --dev zendframework/zend-expressive-tooling</code></pre>
-
+<pre class="codehilite"><code class="language-bash linenums">$ composer require --dev zendframework/zend-expressive-tooling</code></pre>
 
 </blockquote>
 <p>For instance, if you wish to create a new module for managing users, you might
 execute the following:</p>
-<pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive-module create User</code></pre>
-
+<pre class="codehilite"><code class="language-bash linenums">$ ./vendor/bin/expressive-module create User</code></pre>
 
 <p>Which would create the following tree:</p>
-<pre class="codehilite"><code class="language-text">src/
+<pre class="codehilite"><code class="language-text linenums">src/
   User/
     src/
       ConfigProvider.php
     templates/</code></pre>
-
 
 <p>It would also create an autoloading rule within your <code>composer.json</code> for the
 <code>User</code> namespace, pointing it at the <code>src/User/src/</code> tree (and updating the
@@ -629,12 +625,10 @@ within your <code>config/config.php</code>.</p>
 <li>Add an entry for the module's <code>ConfigProvider</code> class to your
   <code>config/config.php</code>, if possible.</li>
 </ul>
-<pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive-module register Account</code></pre>
-
+<pre class="codehilite"><code class="language-bash linenums">$ ./vendor/bin/expressive-module register Account</code></pre>
 
 <p>The <code>deregister</code> command does the opposite of <code>register</code>.</p>
-<pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive-module deregister Account</code></pre>
-
+<pre class="codehilite"><code class="language-bash linenums">$ ./vendor/bin/expressive-module deregister Account</code></pre>
 
 <h2 id="migrate-to-programmatic-pipelines">Migrate to programmatic pipelines</h2>
 <ul>
@@ -655,12 +649,10 @@ generate:</p>
 </ul>
 <p>To use this feature, you will need to first install
 zendframework/zend-expressive-tooling:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require --dev zendframework/zend-expressive-tooling</code></pre>
-
+<pre class="codehilite"><code class="language-bash linenums">$ composer require --dev zendframework/zend-expressive-tooling</code></pre>
 
 <p>Invoke it as follows:</p>
-<pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive-pipeline-from-config generate</code></pre>
-
+<pre class="codehilite"><code class="language-bash linenums">$ ./vendor/bin/expressive-pipeline-from-config generate</code></pre>
 
 <p>The tool will notify you of any errors, including whether or not it found (and
 skipped) Stratigility v1-style "error middleware".</p>
@@ -691,10 +683,9 @@ decorates double-pass middleware using a wrapper that composes a response, the
 instance.) This should be registered as the outermost middleware layer.
 Middleware that needs access to these instances can then use the following
 syntax to retrieve them:</p>
-<pre class="codehilite"><code class="language-php">$originalRequest = $request-&gt;getAttribute('originalRequest', $request);
+<pre class="codehilite"><code class="language-php linenums">$originalRequest = $request-&gt;getAttribute('originalRequest', $request);
 $originalUri = $request-&gt;getAttribute('originalUri', $request-&gt;getUri();
 $originalResponse = $request-&gt;getAttribute('originalResponse') ?: new Response();</code></pre>
-
 
 <blockquote>
 <h3 id="original-response-is-not-trustworthy">Original response is not trustworthy</h3>
@@ -706,12 +697,10 @@ or creating a new instance on-the-fly.</p>
 <p>To aid you in migrating your existing code to use the new <code>getAttribute()</code>
 syntax, zendframework/zend-expressive-tooling provides a binary,
 <code>vendor/bin/expressive-migrate-original-messages</code>. First, install that package:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require --dev zendframework/zend-expressive-tooling</code></pre>
-
+<pre class="codehilite"><code class="language-bash linenums">$ composer require --dev zendframework/zend-expressive-tooling</code></pre>
 
 <p>Then invoke it as follows:</p>
-<pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive-migrate-original-messages scan</code></pre>
-
+<pre class="codehilite"><code class="language-bash linenums">$ ./vendor/bin/expressive-migrate-original-messages scan</code></pre>
 
 <p>This script will update any <code>getOriginalRequest()</code> and <code>getOriginalUri()</code> calls,
 and notify you of any <code>getOriginalResponse()</code> calls, providing you with details
@@ -741,12 +730,10 @@ features</a>. However, you may find that:</p>
 <p>To help you identify such instances, zendframework/zend-expressive-tooling
 provides the script <code>vendor/bin/expressive-scan-for-error-middleware</code>. First,
 install that package:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require --dev zendframework/zend-expressive-tooling</code></pre>
-
+<pre class="codehilite"><code class="language-bash linenums">$ composer require --dev zendframework/zend-expressive-tooling</code></pre>
 
 <p>Then invoke it as follows:</p>
-<pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive-scan-for-error-middleware scan</code></pre>
-
+<pre class="codehilite"><code class="language-bash linenums">$ ./vendor/bin/expressive-scan-for-error-middleware scan</code></pre>
 
 <p>The script will notify you of any places where it finds either use case, and
 provide feedback on how to update your application.</p>

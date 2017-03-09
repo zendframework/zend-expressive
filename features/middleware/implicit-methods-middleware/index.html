@@ -575,7 +575,7 @@ middleware.</p>
 provide a response instance to use by default to the constructor if you need to
 craft special headers, status code, etc.</p>
 <p>Register the dependency via <code>dependencies</code> configuration:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Expressive\Middleware\ImplicitHeadMiddleware;
+<pre class="codehilite"><code class="language-php linenums">use Zend\Expressive\Middleware\ImplicitHeadMiddleware;
 
 return [
     'dependencies' =&gt; [
@@ -590,14 +590,12 @@ return [
     ],
 ];</code></pre>
 
-
 <p>Within your application pipeline, add the middleware between the routing and
 dispatch middleware:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;pipeRoutingMiddleware();
+<pre class="codehilite"><code class="language-php linenums">$app-&gt;pipeRoutingMiddleware();
 $app-&gt;pipe(ImplicitHeadMiddleware::class);
 // ...
 $app-&gt;pipeDispatchMiddleware();</code></pre>
-
 
 <p>(Note: if you used the <code>expressive-pipeline-from-config</code> tool to create your
 programmatic pipeline, or if you used the Expressive 2.0 skeleton or later, this
@@ -627,7 +625,7 @@ registered <em>between</em> the routing and dispatch middleware.</p>
 provide a response prototype instance to use by default to the constructor if
 you need to craft special headers, status code, etc.</p>
 <p>Register the dependency via <code>dependencies</code> configuration:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Expressive\Middleware\ImplicitOptionsMiddleware;
+<pre class="codehilite"><code class="language-php linenums">use Zend\Expressive\Middleware\ImplicitOptionsMiddleware;
 
 return [
     'dependencies' =&gt; [
@@ -642,14 +640,12 @@ return [
     ],
 ];</code></pre>
 
-
 <p>Within your application pipeline, add the middleware between the routing and
 dispatch middleware:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;pipeRoutingMiddleware();
+<pre class="codehilite"><code class="language-php linenums">$app-&gt;pipeRoutingMiddleware();
 $app-&gt;pipe(ImplicitOptionsMiddleware::class);
 // ...
 $app-&gt;pipeDispatchMiddleware();</code></pre>
-
 
 <p>(Note: if you used the <code>expressive-pipeline-from-config</code> tool to create your
 programmatic pipeline, or if you used the Expressive 2.0 skeleton or later, this

@@ -576,20 +576,18 @@ provides:</p>
 <code>PhpRenderer</code> via <code>Zend\Expressive\ZendView\ZendViewRenderer</code>.</p>
 <h2 id="installing-zend-view">Installing zend-view</h2>
 <p>To use the zend-view wrapper, you must first install the zend-view integration:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-expressive-zendviewrenderer</code></pre>
-
+<pre class="codehilite"><code class="language-bash linenums">$ composer require zendframework/zend-expressive-zendviewrenderer</code></pre>
 
 <h2 id="using-the-wrapper">Using the wrapper</h2>
 <p>If instantiated without arguments, <code>Zend\Expressive\ZendView\ZendViewRenderer</code> will create
 an instance of the <code>PhpRenderer</code>, which it will then proxy to.</p>
-<pre class="codehilite"><code class="language-php">use Zend\Expressive\ZendView\ZendViewRenderer;
+<pre class="codehilite"><code class="language-php linenums">use Zend\Expressive\ZendView\ZendViewRenderer;
 
 $renderer = new ZendViewRenderer();</code></pre>
 
-
 <p>Alternately, you can instantiate and configure the engine yourself, and pass it
 to the <code>Zend\Expressive\ZendView\ZendViewRenderer</code> constructor:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Expressive\ZendView\ZendViewRenderer;
+<pre class="codehilite"><code class="language-php linenums">use Zend\Expressive\ZendView\ZendViewRenderer;
 use Zend\View\Renderer\PhpRenderer;
 use Zend\View\Resolver;
 
@@ -610,7 +608,6 @@ $renderer-&gt;setResolver($resolver);
 
 // Inject:
 $renderer = new ZendViewRenderer($renderer);</code></pre>
-
 
 <blockquote>
 <h3 id="namespaced-path-resolving">Namespaced path resolving</h3>
@@ -651,14 +648,13 @@ render in order to provide content within the selected layout.</p>
   so will disable the layout.</li>
 </ul>
 <h3 id="layout-name-passed-to-constructor">Layout name passed to constructor</h3>
-<pre class="codehilite"><code class="language-php">use Zend\Expressive\ZendView\ZendViewRenderer;
+<pre class="codehilite"><code class="language-php linenums">use Zend\Expressive\ZendView\ZendViewRenderer;
 
 // Create the engine instance with a layout name:
 $renderer = new ZendViewRenderer(null, 'layout::layout');</code></pre>
 
-
 <h3 id="layout-view-model-passed-to-constructor">Layout view model passed to constructor</h3>
-<pre class="codehilite"><code class="language-php">use Zend\Expressive\ZendView\ZendViewRenderer;
+<pre class="codehilite"><code class="language-php linenums">use Zend\Expressive\ZendView\ZendViewRenderer;
 use Zend\View\Model\ViewModel;
 
 // Create the layout view model:
@@ -671,16 +667,14 @@ $layout-&gt;setTemplate('layout::layout');
 // Create the engine instance with the layout:
 $renderer = new ZendViewRenderer(null, $layout);</code></pre>
 
-
 <h3 id="provide-a-layout-name-when-rendering">Provide a layout name when rendering</h3>
-<pre class="codehilite"><code class="language-php">$content = $renderer-&gt;render('blog/entry', [
+<pre class="codehilite"><code class="language-php linenums">$content = $renderer-&gt;render('blog/entry', [
     'layout' =&gt; 'layout::blog',
     'entry'  =&gt; $entry,
 ]);</code></pre>
 
-
 <h3 id="provide-a-layout-view-model-when-rendering">Provide a layout view model when rendering</h3>
-<pre class="codehilite"><code class="language-php">use Zend\View\Model\ViewModel;
+<pre class="codehilite"><code class="language-php linenums">use Zend\View\Model\ViewModel;
 
 // Create the layout view model:
 $layout = new ViewModel([
@@ -693,7 +687,6 @@ $content = $renderer-&gt;render('blog/entry', [
     'layout' =&gt; $layout,
     'entry'  =&gt; $entry,
 ]);</code></pre>
-
 
 <h2 id="helpers">Helpers</h2>
 <p>Expressive provides overrides of specific view helpers in order to better
@@ -709,8 +702,7 @@ integrate with PSR-7. These include:</p>
 </ul>
 <p>To use this particular helper, you will need to inject it with the request URI
   somewhere within your application:</p>
-<pre class="codehilite"><code class="language-php">$serverUrlHelper-&gt;setUri($request-&gt;getUri());</code></pre>
-
+<pre class="codehilite"><code class="language-php linenums">$serverUrlHelper-&gt;setUri($request-&gt;getUri());</code></pre>
 
 <p>We recommend doing this within a pre-pipeline middleware.</p>
 <h2 id="recommendations">Recommendations</h2>

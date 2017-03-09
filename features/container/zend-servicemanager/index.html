@@ -574,7 +574,7 @@ Zend Framework. It features:</p>
 </ul>
 <p>zend-servicemanager may either be created and populated programmatically, or via
 configuration. Configuration uses the following structure:</p>
-<pre class="codehilite"><code class="language-php">[
+<pre class="codehilite"><code class="language-php linenums">[
     'services' =&gt; [
         'service name' =&gt; $serviceInstance,
     ],
@@ -602,13 +602,11 @@ configuration. Configuration uses the following structure:</p>
     ],
 ]</code></pre>
 
-
 <p>Read more about zend-servicemanager in <a href="https://docs.zendframework.com/zend-servicemanager/">its documentation</a>.</p>
 <h2 id="installing-zend-servicemanager">Installing zend-servicemanager</h2>
 <p>To use zend-servicemanager with zend-expressive, you can install it via
 composer:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-servicemanager</code></pre>
-
+<pre class="codehilite"><code class="language-bash linenums">$ composer require zendframework/zend-servicemanager</code></pre>
 
 <h2 id="configuring-zend-servicemanager">Configuring zend-servicemanager</h2>
 <p>You can configure zend-servicemanager either programmatically or via
@@ -621,7 +619,7 @@ factories to configure instances) is in <code>config/config.php</code>, and that
 returns an array.</p>
 <p>We'll create a <code>config/services.php</code> file that creates and returns a
 <code>Zend\ServiceManager\ServiceManager</code> instance as follows:</p>
-<pre class="codehilite"><code class="language-php">use Zend\ServiceManager\ServiceManager;
+<pre class="codehilite"><code class="language-php linenums">use Zend\ServiceManager\ServiceManager;
 
 $container = new ServiceManager();
 
@@ -695,9 +693,8 @@ $container-&gt;setFactory(
 
 return $container;</code></pre>
 
-
 <p>Your bootstrap (typically <code>public/index.php</code>) will then look like this:</p>
-<pre class="codehilite"><code class="language-php">chdir(dirname(__DIR__));
+<pre class="codehilite"><code class="language-php linenums">chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
 $container = require 'config/services.php';
 $app = $container-&gt;get('Zend\Expressive\Application');
@@ -709,13 +706,12 @@ require 'config/routes.php';
 // All versions:
 $app-&gt;run();</code></pre>
 
-
 <h3 id="configuration-driven-container">Configuration-Driven Container</h3>
 <p>Alternately, you can use a configuration file to define the container. As
 before, we'll define our configuration in <code>config/config.php</code>, and our
 <code>config/services.php</code> file will still return our service manager instance; we'll
 define the service configuration in <code>config/dependencies.php</code>:</p>
-<pre class="codehilite"><code class="language-php">return [
+<pre class="codehilite"><code class="language-php linenums">return [
     'services' =&gt; [
         'config' =&gt; include __DIR__ . '/config.php',
     ],
@@ -739,13 +735,11 @@ define the service configuration in <code>config/dependencies.php</code>:</p>
     ],
 ];</code></pre>
 
-
 <p><code>config/services.php</code> becomes:</p>
-<pre class="codehilite"><code class="language-php">use Zend\ServiceManager\Config;
+<pre class="codehilite"><code class="language-php linenums">use Zend\ServiceManager\Config;
 use Zend\ServiceManager\ServiceManager;
 
 return new ServiceManager(new Config(include 'config/dependencies.php'));</code></pre>
-
 
 <p>There is one problem, however: in both Expressive 1.X and 2.X, you may want to
 vary error handling strategies based on whether or not you're in production:
@@ -757,7 +751,7 @@ You have two choices on how to approach this:</p>
 </ul>
 <p>In the first case, you would change the <code>config/services.php</code> example to look
 like this:</p>
-<pre class="codehilite"><code class="language-php">use Zend\ServiceManager\Config;
+<pre class="codehilite"><code class="language-php linenums">use Zend\ServiceManager\Config;
 use Zend\ServiceManager\ServiceManager;
 
 $container = new ServiceManager(new Config(include 'config/services.php'));
@@ -791,25 +785,22 @@ switch ($variableOrConstantIndicatingEnvironment) {
 }
 return $container;</code></pre>
 
-
 <p>In the second case, you will need to install zend-config:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-config</code></pre>
-
+<pre class="codehilite"><code class="language-bash linenums">$ composer require zendframework/zend-config</code></pre>
 
 <p>Then, create the directory <code>config/autoload/</code>, and create two files,
 <code>dependencies.global.php</code> and <code>dependencies.local.php</code>. In your <code>.gitignore</code>,
 add an entry for <code>config/autoload/*local.php</code> to ensure "local"
 (environment-specific) files are excluded from the repository.</p>
 <p><code>config/dependencies.php</code> will look like this:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Config\Factory as ConfigFactory;
+<pre class="codehilite"><code class="language-php linenums">use Zend\Config\Factory as ConfigFactory;
 
 return ConfigFactory::fromFiles(
     glob('config/autoload/dependencies.{global,local}.php', GLOB_BRACE)
 );</code></pre>
 
-
 <p><code>config/autoload/dependencies.global.php</code> will look like this:</p>
-<pre class="codehilite"><code class="language-php">return [
+<pre class="codehilite"><code class="language-php linenums">return [
     'services' =&gt; [
         'config' =&gt; include __DIR__ . '/config.php',
     ],
@@ -837,10 +828,9 @@ return ConfigFactory::fromFiles(
     ],
 ];</code></pre>
 
-
 <p><code>config/autoload/dependencies.local.php</code> on your development machine can look
 like this:</p>
-<pre class="codehilite"><code class="language-php">return [
+<pre class="codehilite"><code class="language-php linenums">return [
     'factories' =&gt; [
         'Zend\Expressive\Whoops'            =&gt; 'Zend\Expressive\Container\WhoopsFactory',
         'Zend\Expressive\WhoopsPageHandler' =&gt; 'Zend\Expressive\Container\WhoopsPageHandlerFactory',
@@ -852,7 +842,6 @@ like this:</p>
         'Zend\Expressive\Middleware\ErrorResponseGenerator' =&gt; 'Zend\Expressive\Container\WhoopsErrorResponseGeneratorFactory',
     ],
 ];</code></pre>
-
 
 <p>Using the above approach allows you to keep the bootstrap file minimal and
 agnostic of environment. (Note: you can take a similar approach with

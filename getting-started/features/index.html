@@ -644,23 +644,21 @@ looked at from this perspective:</p>
 <p>The system described above is what is known as <em>lambda middleware</em>. Each
 middleware receives the request and the delegate, and you pass only the
 request to the delegate when wanting to hand off processing:</p>
-<pre class="codehilite"><code class="language-php">function (ServerRequestInterface $request, DelegateInterface $delegate)
+<pre class="codehilite"><code class="language-php linenums">function (ServerRequestInterface $request, DelegateInterface $delegate)
 {
     $response = $delegate-&gt;process($request);
     return $response-&gt;withHeader('X-Test', time());
 }</code></pre>
 
-
 <p>In Expressive 1.X, the default middleware style was what is known as <em>double
 pass</em> middleware. Double pass middleware receives both the request and a
 response in addition to the delegate, and passes both the request and response
 to the delegate when invoking it:</p>
-<pre class="codehilite"><code class="language-php">function (ServerRequestInterface $request, ResponseInterface $response, callable $next)
+<pre class="codehilite"><code class="language-php linenums">function (ServerRequestInterface $request, ResponseInterface $response, callable $next)
 {
     $response = $next($request, $response);
     return $response-&gt;withHeader('X-Test', time());
 }</code></pre>
-
 
 <p>It is termed "double pass" because you pass both the request and response when
 delegating to the next layer.</p>
@@ -671,18 +669,16 @@ lambda style.</p>
 of <em>error middleware</em>. This was middleware that either implemented
 <code>Zend\Stratigility\ErrorMiddlewareInterface</code>, or the "error middleware"
 signature of:</p>
-<pre class="codehilite"><code class="language-php">function (
+<pre class="codehilite"><code class="language-php linenums">function (
     $error,
     ServerRequestInterface $request,
     ResponseInterface $response,
     callable $next
 )</code></pre>
 
-
 <p>Such middleware would be invoked by calling <code>$next()</code> with a third argument
 representing the error:</p>
-<pre class="codehilite"><code class="language-php">return $next($request, $response, $error);</code></pre>
-
+<pre class="codehilite"><code class="language-php linenums">return $next($request, $response, $error);</code></pre>
 
 <p>Because this middleware would only be invoked in these special conditions,
 we recommended piping such middleware <em>last</em> in the queue.</p>

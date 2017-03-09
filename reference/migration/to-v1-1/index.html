@@ -654,7 +654,7 @@ available starting with version 1.0.3.</p>
 <p>We recommend adding the <code>OriginalMessages</code> middleware as the outermost (first)
 middleware in your pipeline. Using configuration-driven middleware, that would
 look like this:</p>
-<pre class="codehilite"><code class="language-php">// config/autoload/middleware-pipeline.global.php
+<pre class="codehilite"><code class="language-php linenums">// config/autoload/middleware-pipeline.global.php
 /* ... */
 use Zend\Expressive\Helper;
 use Zend\Stratigility\Middleware\OriginalMessages;
@@ -680,12 +680,10 @@ return [
     ],
 ];</code></pre>
 
-
 <p>If you are <a href="https://mwop.net/blog/2016-05-16-programmatic-expressive.html">programmatically creating your pipeline</a>,
 use the following:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;pipe(OriginalMessages::class);
+<pre class="codehilite"><code class="language-php linenums">$app-&gt;pipe(OriginalMessages::class);
 /* all other middleware */</code></pre>
-
 
 <h3 id="identifying-and-fixing-getoriginal-calls">Identifying and fixing getOriginal calls</h3>
 <p>To help you identify and update calls in your own code to the <code>getOriginal*()</code>
@@ -693,12 +691,10 @@ methods, we provide a tool via the <a href="https://github.com/zendframework/zen
 package, <code>vendor/bin/expressive-migrate-original-messages</code>.</p>
 <p>First, install the tooling package; since the tooling it provides is only
 useful during development, install it as a development requirement:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require --dev zendframework/zend-expressive-tooling</code></pre>
-
+<pre class="codehilite"><code class="language-bash linenums">$ composer require --dev zendframework/zend-expressive-tooling</code></pre>
 
 <p>Once installed,  you can execute the tool using:</p>
-<pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive-migrate-original-messages</code></pre>
-
+<pre class="codehilite"><code class="language-bash linenums">$ ./vendor/bin/expressive-migrate-original-messages</code></pre>
 
 <p>Passing the arguments <code>help</code>, <code>--help</code>, or <code>-h</code> will provide usage information;
 in most cases, it will assume sane defaults in order to run its scans.</p>
@@ -745,14 +741,13 @@ pipelines and routing</em>.</p>
 </li>
 </ul>
 <p>As an example pipeline:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;pipe(OriginalMessages::class);
+<pre class="codehilite"><code class="language-php linenums">$app-&gt;pipe(OriginalMessages::class);
 $app-&gt;pipe(Helper\ServerUrlMiddleware::class);
 $app-&gt;pipe(ErrorHandler::class);
 $app-&gt;pipeRoutingMiddleware();
 $app-&gt;pipe(Helper\UrlHelperMiddleware::class);
 $app-&gt;pipeDispatchMiddleware();
 $app-&gt;pipe(NotFoundHandler::class);</code></pre>
-
 
 <p>Expressive also provides methods for specifying routed middleware. These
 include:</p>
@@ -766,17 +761,15 @@ include:</p>
 </ul>
 <p>Each returns a <code>Zend\Expressive\Router\Route</code> instance; this is useful if you
 wish to provide additional options to your route:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;get('/api/ping', Ping::class)
+<pre class="codehilite"><code class="language-php linenums">$app-&gt;get('/api/ping', Ping::class)
     -&gt;setOptions([
         'timestamp' =&gt; date(),
     ]);</code></pre>
 
-
 <p>As an example, the default routes defined in the skeleton application can be
 written as follows:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;get('/', \App\Action\HomePageAction::class, 'home');
+<pre class="codehilite"><code class="language-php linenums">$app-&gt;get('/', \App\Action\HomePageAction::class, 'home');
 $app-&gt;get('/api/ping', \App\Action\PingAction::class, 'api.ping');</code></pre>
-
 
 <p>We recommend rewriting your middleware pipeline and routing configuration into
 programmatic/declarative statements. Specifically:</p>
@@ -790,12 +783,11 @@ your application:</p>
 <li>First, enable the <code>zend-expressive.programmatic_pipeline</code> configuration flag.
   This can be done in any <code>config/autoload/*.global.php</code> file:</li>
 </ul>
-<pre class="codehilite"><code class="language-php">return [
+<pre class="codehilite"><code class="language-php linenums">return [
     'zend-expressive' =&gt; [
         'programmatic_pipeline' =&gt; true,
     ],
 ];</code></pre>
-
 
 <p>Once enabled, any <code>middleware_pipeline</code> or <code>routes</code> configuration will be
   ignored when creating the <code>Application</code> instance.</p>
@@ -803,9 +795,8 @@ your application:</p>
 <li>Second, update your <code>public/index.php</code> to add the following lines immediately
   prior to calling <code>$app-&gt;run();</code>:</li>
 </ul>
-<pre class="codehilite"><code class="language-php">require 'config/pipeline.php';
+<pre class="codehilite"><code class="language-php linenums">require 'config/pipeline.php';
 require 'config/routes.php';</code></pre>
-
 
 <p>Once this has been done, the application will use your new programmatic
 pipelines instead of configuration. You can remove the <code>middleware_pipeline</code> and
@@ -845,12 +836,11 @@ in a try/catch block, and provides a flag for disabling that behavior entirely,
 <code>raise_throwables</code>.</p>
 <p>Starting in Expressive 1.1, you can set the <code>raise_throwables</code> flag in your
 configuration:</p>
-<pre class="codehilite"><code class="language-php">return [
+<pre class="codehilite"><code class="language-php linenums">return [
     'zend-expressive' =&gt; [
         'raise_throwables' =&gt; true,
     ],
 ];</code></pre>
-
 
 <p>When enabled, the internal dispatcher will no longer catch exceptions.</p>
 <p>This both allows you to, and <em>requires</em> you to, write your own error handling
@@ -866,7 +856,7 @@ middleware. This will require two things:</p>
 <p>The below sections detail approaches to each.</p>
 <h3 id="error-handling-middleware">Error handling middleware</h3>
 <p>Error handling middleware generally will look something like this:</p>
-<pre class="codehilite"><code class="language-php">function (
+<pre class="codehilite"><code class="language-php linenums">function (
     ServerRequestInterface $request,
     ResponseInterface $response,
     callable $next
@@ -887,7 +877,6 @@ middleware. This will require two things:</p>
     return $response;
 }</code></pre>
 
-
 <p>Stratigility 1.3 provides such an implementation via its
 <code>Zend\Stratigility\Middleware\ErrorHandler</code>. In addition to the try/catch block,
 it also sets up a PHP error handler that will catch any PHP error types in the
@@ -896,17 +885,16 @@ type <code>ErrorException</code> with the PHP error details.</p>
 <p>Stratigility's <code>ErrorHandler</code> allows injection of an "error response generator",
 which allows you to alter how the error response is generated based on the
 current environment. Error response generators are callables with the signature:</p>
-<pre class="codehilite"><code class="language-php">function (
+<pre class="codehilite"><code class="language-php linenums">function (
     Throwable|Exception $e,
     ServerRequestInterface $request,
     ResponseInterface $response
 ) : ResponseInterface</code></pre>
 
-
 <p>We recommend using the Stratigility <code>ErrorHandler</code> and writing and attaching a
 custom error response generator. As a simple example, the following details a
 generator that will use a template to display an error page:</p>
-<pre class="codehilite"><code class="language-php">namespace Acme;
+<pre class="codehilite"><code class="language-php linenums">namespace Acme;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -941,10 +929,9 @@ class TemplatedErrorResponseGenerator
     }
 }</code></pre>
 
-
 <p>You might then create a factory for generating the <code>ErrorHandler</code> and attaching
 this response generator as follows:</p>
-<pre class="codehilite"><code class="language-php">namespace Acme\Container;
+<pre class="codehilite"><code class="language-php linenums">namespace Acme\Container;
 
 use Acme\TemplatedErrorResponseGenerator;
 use Psr\Container\ContainerInterface;
@@ -964,9 +951,8 @@ class ErrorHandlerFactory
     }
 }</code></pre>
 
-
 <p>Once that is created you can tell your middleware configuration about it:</p>
-<pre class="codehilite"><code class="language-php">// in config/autoload/middleware-pipeline.global.php
+<pre class="codehilite"><code class="language-php linenums">// in config/autoload/middleware-pipeline.global.php
 use Acme\Container\ErrorHandlerFactory;
 use Zend\Stratigility\Middleware\ErrorHandler;
 
@@ -991,14 +977,12 @@ return [
     ],
 ];</code></pre>
 
-
 <p>Alternately, if using a programmatic pipeline, as detailed in the previous
 section, you can use the following:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Stratigility\Middleware\ErrorHandler;
+<pre class="codehilite"><code class="language-php linenums">use Zend\Stratigility\Middleware\ErrorHandler;
 
 $app-&gt;pipe(ErrorHandler::class);
 // add all other middleware after it</code></pre>
-
 
 <h3 id="not-found-middleware">Not Found middleware</h3>
 <p>At the innermost layer of your application, you need middleware guaranteed to
@@ -1006,7 +990,7 @@ return a response; typically, this indicates a failure to route the request,
 and, as such, an HTTP 404 response.  <code>Zend\Stratigility\Middleware\NotFoundHandler</code>
 provides an implementation, but is written such that the response body remains
 empty. As such, you might write a custom, templated handler:</p>
-<pre class="codehilite"><code class="language-php">namespace Acme;
+<pre class="codehilite"><code class="language-php linenums">namespace Acme;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -1040,10 +1024,9 @@ class TemplatedNotFoundHandler
     }
 }</code></pre>
 
-
 <p>Similar to the discussion of the <code>ErrorHandler</code> above, we'll create a factory
 for this:</p>
-<pre class="codehilite"><code class="language-php">namespace Acme\Container;
+<pre class="codehilite"><code class="language-php linenums">namespace Acme\Container;
 
 use Acme\TemplatedNotFoundHandler;
 use Psr\Container\ContainerInterface;
@@ -1059,9 +1042,8 @@ class TemplatedNotFoundHandlerFactory
     }
 }</code></pre>
 
-
 <p>We can then register it in our pipeline:</p>
-<pre class="codehilite"><code class="language-php">// in config/autoload/middleware-pipeline.global.php
+<pre class="codehilite"><code class="language-php linenums">// in config/autoload/middleware-pipeline.global.php
 use Acme\Container\NotFoundHandlerFactory;
 use Acme\TemplatedNotFoundHandler;
 
@@ -1088,13 +1070,11 @@ return [
     ],
 ];</code></pre>
 
-
 <p>If you are using programmatic pipelines, as described in the previous section:</p>
-<pre class="codehilite"><code class="language-php">use Acme\TemplatedNotFoundHandler;
+<pre class="codehilite"><code class="language-php linenums">use Acme\TemplatedNotFoundHandler;
 
 // all other pipeline directives, and then:
 $app-&gt;pipe(TemplatedNotFoundHandler::class);</code></pre>
-
 
 <h3 id="detecting-error-middleware-usage">Detecting error middleware usage</h3>
 <p>If you use the new error handling paradigm, we recommend that you also audit
@@ -1103,8 +1083,7 @@ of error middleware. To do this, we provide a tool via the
 <a href="https://github.com/zendframework/zend-expressive-tooling">zendframework/zend-expressive-tooling</a>
 package, <code>vendor/bin/expressive-scan-for-error-middleware</code>.</p>
 <p>First, install the tooling as a development requirement:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require --dev zendframework/zend-expressive-tooling</code></pre>
-
+<pre class="codehilite"><code class="language-bash linenums">$ composer require --dev zendframework/zend-expressive-tooling</code></pre>
 
 <p>The tool will scan the <code>src/</code> directory by default, but allows you to scan other
 directories via the <code>--dir</code> flag. It will detect and report files with any of
@@ -1115,10 +1094,9 @@ the following:</p>
 <li>Methods accepting <code>$next</code> that invoke it with an error argument.</li>
 </ul>
 <p>As an example running it:</p>
-<pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive-scan-for-error-middleware scan
+<pre class="codehilite"><code class="language-bash linenums">$ ./vendor/bin/expressive-scan-for-error-middleware scan
 # or, with a directory argument:
 $ ./vendor/bin/expressive-scan-for-error-middleware scan --dir ./lib</code></pre>
-
 
 <p>You may also call the tool using its <code>help</code> command, or either of the <code>--help</code>
 or <code>-h</code> flags to get full usage information.</p>
@@ -1132,7 +1110,7 @@ handling</a> &mdash; might look like the following examples.</p>
 <p>First, we'll tell Expressive to use programmatic pipelines, and to enable the
 new error handling (by telling it to "raise throwables", instead of catching
 them):</p>
-<pre class="codehilite"><code class="language-php">// In config/autoload/zend-expressive.global.php:
+<pre class="codehilite"><code class="language-php linenums">// In config/autoload/zend-expressive.global.php:
 return [
     /* ... */
     'zend-expressive' =&gt; [
@@ -1142,10 +1120,9 @@ return [
     ],
 ];</code></pre>
 
-
 <p>Next, we'll update <code>config/autoload/middleware-pipeline.global.php</code> to list only
 dependencies:</p>
-<pre class="codehilite"><code class="language-php">use Acme\Container;
+<pre class="codehilite"><code class="language-php linenums">use Acme\Container;
 use Acme\TemplatedNotFoundHandler;
 use Zend\Expressive\Container\ApplicationFactory;
 use Zend\Expressive\Helper;
@@ -1166,11 +1143,10 @@ return [
     ],
 ];</code></pre>
 
-
 <p>We'll also update <code>config/autoload/routes.global.php</code> to only list dependencies;
 in the following example, we list only the middleware shipped by default with
 the skeleton application:</p>
-<pre class="codehilite"><code class="language-php">use App\Action;
+<pre class="codehilite"><code class="language-php linenums">use App\Action;
 use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\RouterInterface;
 
@@ -1186,9 +1162,8 @@ return [
     ],
 ];</code></pre>
 
-
 <p>To create our pipeline, we will create the file <code>config/pipeline.php</code>:</p>
-<pre class="codehilite"><code class="language-php">use Acme\TemplatedNotFoundHandler;
+<pre class="codehilite"><code class="language-php linenums">use Acme\TemplatedNotFoundHandler;
 use Zend\Expressive\Container\ApplicationFactory;
 use Zend\Expressive\Helper;
 use Zend\Stratigility\Middleware\ErrorHandler;
@@ -1204,27 +1179,24 @@ $app-&gt;pipe([
 ]);
 $app-&gt;pipe(TemplatedNotFoundHandler::class);</code></pre>
 
-
 <p>Note that you can use <em>arrays</em> of middleware just like you did in the
 configuration; this allows you to separate middleware into logical groups if
 desired!</p>
 <p>To provide our routed middleware, we will create the file
 <code>config/pipeline.php</code>:</p>
-<pre class="codehilite"><code class="language-php">use App\Action;
+<pre class="codehilite"><code class="language-php linenums">use App\Action;
 
 $app-&gt;get('/', Action\HomePageAction::class, 'home');
 $app-&gt;get('/api/ping', Action\PingAction::class, 'api.ping');</code></pre>
-
 
 <p>The above exercises the various routing methods of the <code>Application</code> class.</p>
 <p>Finally, we will need to update our <code>public/index.php</code>, to tell it to require
 our new pipeline and routing files; we'll do that between retrieving the
 application from the container, and running the application:</p>
-<pre class="codehilite"><code class="language-php">$app = $container-&gt;get(\Zend\Expressive\Application::class);
+<pre class="codehilite"><code class="language-php linenums">$app = $container-&gt;get(\Zend\Expressive\Application::class);
 require 'config/pipeline.php';
 require 'config/routes.php';
 $app-&gt;run();</code></pre>
-
 
 <p>With these changes in place, your application should continue to run as it did
 previously!</p>

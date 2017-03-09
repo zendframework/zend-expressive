@@ -574,11 +574,10 @@ you a flexible approach that can grow with your accepted content types.</p>
 </ul>
 <h2 id="registering-the-middleware">Registering the middleware</h2>
 <p>You can register it programmatically:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;pipe(BodyParamsMiddleware::class);</code></pre>
-
+<pre class="codehilite"><code class="language-php linenums">$app-&gt;pipe(BodyParamsMiddleware::class);</code></pre>
 
 <p>Alternately, register it via configuration, if using configuration-based applications:</p>
-<pre class="codehilite"><code class="language-php">// config/autoload/middleware-pipeline.global.php
+<pre class="codehilite"><code class="language-php linenums">// config/autoload/middleware-pipeline.global.php
 use Zend\Expressive\Helper;
 
 return [
@@ -606,17 +605,15 @@ return [
     ],
 ];</code></pre>
 
-
 <p>Since body parsing does not necessarily need to happen for every request, you
 can also choose to incorporate it in route-specific middleware pipelines:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;post('/login', [
+<pre class="codehilite"><code class="language-php linenums">$app-&gt;post('/login', [
     BodyParamsMiddleware::class,
     LoginMiddleware::class,
 ]);</code></pre>
 
-
 <p>If using a configuration-based application:</p>
-<pre class="codehilite"><code class="language-php">// config/autoload/routes.global.php
+<pre class="codehilite"><code class="language-php linenums">// config/autoload/routes.global.php
 use Zend\Expressive\Helper\BodyParams\BodyParamsMiddleware;
 
 return [
@@ -642,7 +639,6 @@ return [
     ],
 ];</code></pre>
 
-
 <p>Using route-based middleware pipelines has the advantage of ensuring that the
 body parsing middleware only executes for routes that require the processing.
 While the middleware has some checks to ensure it only triggers for HTTP
@@ -652,7 +648,7 @@ can accomplish that.</p>
 <h2 id="strategies">Strategies</h2>
 <p>If you want to intercept and parse other payload types, you can add <em>strategies</em>
 to the middleware. Strategies implement <code>Zend\Expressive\Helper\BodyParams\StrategyInterface</code>:</p>
-<pre class="codehilite"><code class="language-php">namespace Zend\Expressive\Helper\BodyParams;
+<pre class="codehilite"><code class="language-php linenums">namespace Zend\Expressive\Helper\BodyParams;
 
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -675,16 +671,14 @@ interface StrategyInterface
     public function parse(ServerRequestInterface $request);
 }</code></pre>
 
-
 <p>You then register them with the middleware using the <code>addStrategy()</code> method:</p>
-<pre class="codehilite"><code class="language-php">$bodyParams-&gt;addStrategy(new MyCustomBodyParamsStrategy());</code></pre>
-
+<pre class="codehilite"><code class="language-php linenums">$bodyParams-&gt;addStrategy(new MyCustomBodyParamsStrategy());</code></pre>
 
 <p>To automate the registration, we recommend writing a factory for the
 <code>BodyParamsMiddleware</code>, and replacing the <code>invokables</code> registration with a
 registration in the <code>factories</code> section of the <code>middleware-pipeline.config.php</code>
 file:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Expressive\Helper\BodyParams\BodyParamsMiddleware;
+<pre class="codehilite"><code class="language-php linenums">use Zend\Expressive\Helper\BodyParams\BodyParamsMiddleware;
 
 class MyCustomBodyParamsStrategyFactory
 {
@@ -714,7 +708,6 @@ return [
     ],
 ];</code></pre>
 
-
 <h2 id="removing-the-default-strategies">Removing the default strategies</h2>
 <p>By default, <code>BodyParamsMiddleware</code> composes the following strategies:</p>
 <ul>
@@ -727,8 +720,7 @@ operate in the order they do to ensure the most common content type &mdash;
 delegates parsing to the first match.</p>
 <p>If you do not want to use these default strategies, you can clear them from the
 middleware using <code>clearStrategies()</code>:</p>
-<pre class="codehilite"><code class="language-php">$bodyParamsMiddleware-&gt;clearStrategies();</code></pre>
-
+<pre class="codehilite"><code class="language-php linenums">$bodyParamsMiddleware-&gt;clearStrategies();</code></pre>
 
 <p>Note: if you do this, <strong>all</strong> strategies will be removed! As such, we recommend
 doing this only immediately before registering any custom strategies you might

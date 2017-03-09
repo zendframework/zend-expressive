@@ -593,7 +593,7 @@ specification, which covers HTTP Server Middleware that consumes
 interfaces, <code>Interop\Http\ServerMiddleware\MiddlewareInterface</code> and 
 <code>Interop\Http\ServerMiddleware\DelegateInterface</code>. Expressive accepts middleware
 that implements the <code>MiddlewareInterface</code>. As an example:</p>
-<pre class="codehilite"><code class="language-php">use Interop\Http\ServerMiddleware\DelegateInterface;
+<pre class="codehilite"><code class="language-php linenums">use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -609,14 +609,13 @@ class SomeMiddleware implements MiddlewareInterface
     }
 }</code></pre>
 
-
 <p>If you are using PHP 7 or above, you could also implement such middleware via an
 anonymous class.</p>
 <h2 id="callable-http-middleware">Callable http-middleware</h2>
 <p>Sometimes you may not want to create a class for one-off middleware. As such,
 Expressive allows you to provide a PHP callable that uses the same signature as
 <code>Interop\Http\ServerMiddleware\MiddlewareInterface</code>:</p>
-<pre class="codehilite"><code class="language-php">use Interop\Http\ServerMiddleware\DelegateInterface;
+<pre class="codehilite"><code class="language-php linenums">use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -629,14 +628,13 @@ function (ServerRequestInterface $request, DelegateInterface $delegate)
     // return $delegate-&gt;process($request);
 }</code></pre>
 
-
 <p>One note: the <code>$request</code> argument does not require a typehint, and examples
 throughout the manual will omit the typehint when demonstrating callable
 middleware.</p>
 <h2 id="double-pass-middleware">Double-pass middleware</h2>
 <p>Expressive 1.X was based on Stratigility 1.X, which allowed middleware with the
 following signature:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<pre class="codehilite"><code class="language-php linenums">&lt;?php
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -651,7 +649,6 @@ function(
     //
     // return $next($request, $response);
 }</code></pre>
-
 
 <p>This middleware is called "double-pass" due to the fact that it requires both
 the request and response arguments.</p>
@@ -677,7 +674,7 @@ instance, allowing it to be loaded only when dispatched.</p>
 To prevent the need for instantiating a <code>Zend\Stratigility\MiddlewarePipe</code> or
 <code>Zend\Expressive\Application</code> instance when defining the pipeline, Expressive
 allows you to provide an array of middleware:</p>
-<pre class="codehilite"><code class="language-php">// Pipeline middleware:
+<pre class="codehilite"><code class="language-php linenums">// Pipeline middleware:
 $app-&gt;pipe([
     FirstMiddleware::class,
     SecondMiddleware::class,
@@ -688,7 +685,6 @@ $app-&gt;get([
     FirstMiddleware::class,
     SecondMiddleware::class,
 ]);</code></pre>
-
 
 <p>The values in these arrays may be any valid middleware type as defined in this
 chapter.</p>
