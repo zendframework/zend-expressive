@@ -55,6 +55,11 @@ class WhoopsErrorResponseGenerator
             if ($handler instanceof PrettyPageHandler) {
                 $this->prepareWhoopsHandler($request, $handler);
             }
+            
+            // Set Json content type header
+            if ($handler instanceof JsonResponseHandler) {
+                $response = $response->withHeader('Content-Type', $handler->contentType());
+            }
         }
 
         $response
