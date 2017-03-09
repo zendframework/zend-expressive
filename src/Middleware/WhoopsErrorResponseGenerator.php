@@ -10,6 +10,7 @@ namespace Zend\Expressive\Middleware;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Whoops\Handler\JsonResponseHandler;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run;
 use Whoops\RunInterface;
@@ -54,6 +55,18 @@ class WhoopsErrorResponseGenerator
             // Add fancy data for the PrettyPageHandler
             if ($handler instanceof PrettyPageHandler) {
                 $this->prepareWhoopsHandler($request, $handler);
+            }
+
+            // Set Json content type header
+            if ($handler instanceof JsonResponseHandler) {
+                $contentType = 'application/json';
+
+                // Whoops < 2.1.5 does not provide contentType method
+                if (method_exists($handler, 'contentType')) {
+                    $contentType = $handler->contentType();
+                }
+
+                $response = $response->withHeader('Content-Type', $contentType);
             }
         }
 
