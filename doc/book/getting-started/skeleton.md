@@ -25,7 +25,7 @@ This will prompt you to choose:
   ServiceManager.
 
 - A router. We recommend using the default, FastRoute.
--
+
 - A template renderer. You can ignore this when creating an API project, but if
   you will be creating any HTML pages, we recommend installing one. We prefer
   Plates.
