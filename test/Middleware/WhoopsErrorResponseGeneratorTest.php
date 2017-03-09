@@ -118,7 +118,10 @@ class WhoopsErrorResponseGeneratorTest extends TestCase
         $error = new RuntimeException();
 
         $handler = $this->prophesize(JsonResponseHandler::class);
-        $handler->contentType()->willReturn('application/json');
+
+        if (method_exists(JsonResponseHandler::class, 'contentType')) {
+            $handler->contentType()->willReturn('application/json');
+        }
 
         $this->whoops->getHandlers()->willReturn([$handler->reveal()]);
         $this->whoops->handleException($error)->willReturn('error');
