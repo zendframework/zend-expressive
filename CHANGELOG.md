@@ -36,7 +36,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#464](https://github.com/zendframework/zend-expressive/pull/464) fixes the
+  `WhoopsErrorResponseGenerator` to provide a correct `Content-Type` header to
+  the response when a JSON request occurs.
 
 ## 2.0.0 - 2017-03-07
 
