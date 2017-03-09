@@ -10,6 +10,7 @@ namespace Zend\Expressive\Middleware;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Whoops\Handler\JsonResponseHandler;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run;
 use Whoops\RunInterface;
