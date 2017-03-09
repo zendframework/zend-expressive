@@ -10,11 +10,11 @@ two packages within the default skeleton application:
 - [zendframework/zend-config-aggregator](https://github.com/zendframework/zend-config-aggregator),
   which provides features for aggregating configuration from a variety of
   sources, including:
-  - PHP files globbed from the filesystem that return an array of configuration.
-  - [zend-config](https://docs.zendframework.com/zend-config)-compatible
-    configuration files globbed from the filesystem.
-  - Configuration provider classes; these are invokable classes which return an
-    array of configuration.
+    - PHP files globbed from the filesystem that return an array of configuration.
+    - [zend-config](https://docs.zendframework.com/zend-config)-compatible
+      configuration files globbed from the filesystem.
+    - Configuration provider classes; these are invokable classes which return an
+      array of configuration.
 - [zendframework/zend-component-installer](https://github.com/zendframework/zend-component-installer),
   a Composer plugin that looks for an `extra.zf.config-provider` entry in a
   package to install, and, if found, adds an entry for that provider to the

@@ -182,9 +182,9 @@ With regards to routes, there are other considerations:
   in use. As an example, each of the currently supported router implementations
   has a different syntax for placeholders:
 
-  - `/user/:id` + "constraints" configuration to define constraints (zend-router)
-  - `/user/{id}` + "tokens" configuration to define constraints (Aura.Router)
-  - `/user/{id:\d+}` (FastRoute)
+    - `/user/:id` + "constraints" configuration to define constraints (zend-router)
+    - `/user/{id}` + "tokens" configuration to define constraints (Aura.Router)
+    - `/user/{id:\d+}` (FastRoute)
 
 - Your application may have specific routing considerations or design.
 
@@ -204,7 +204,7 @@ delegator factory by wiring it into their own configuration.
 
 - We recommend using delegator factories for the purpose of autowiring routes,
   and, with caveats, pipeline middleware:
-  - The pipeline should be created exactly once, so calls to `pipe()` should
-    occur in exactly _one_ delegator factory.
+    - The pipeline should be created exactly once, so calls to `pipe()` should
+      occur in exactly _one_ delegator factory.
 - Distributable packages should create a delegator factory for _routes only_,
   but _should not_ register the delegator factory by default.
