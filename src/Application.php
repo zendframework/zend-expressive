@@ -398,7 +398,7 @@ class Application extends MiddlewarePipe
      *
      * If no default delegate is present, attempts the following:
      *
-     * - If a container is composed, and it has the Delegate\DefaultDelegate
+     * - If a container is composed, and it has the 'Zend\Expressive\Delegate\DefaultDelegate'
      *   service, pulls that service, assigns it, and returns it.
      * - If no container is composed, creates an instance of Delegate\NotFoundDelegate
      *   using the current response prototype only (i.e., no templating).
@@ -411,8 +411,8 @@ class Application extends MiddlewarePipe
             return $this->defaultDelegate;
         }
 
-        if ($this->container && $this->container->has(Delegate\DefaultDelegate::class)) {
-            $this->defaultDelegate = $this->container->get(Delegate\DefaultDelegate::class);
+        if ($this->container && $this->container->has('Zend\Expressive\Delegate\DefaultDelegate')) {
+            $this->defaultDelegate = $this->container->get('Zend\Expressive\Delegate\DefaultDelegate');
             return $this->defaultDelegate;
         }
 
