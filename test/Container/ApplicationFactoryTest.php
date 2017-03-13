@@ -18,7 +18,6 @@ use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Expressive\Application;
 use Zend\Expressive\Container\ApplicationFactory;
-use Zend\Expressive\Delegate\DefaultDelegate;
 use Zend\Expressive\Delegate\NotFoundDelegate;
 use Zend\Expressive\Emitter\EmitterStack;
 use Zend\Expressive\Exception as ExpressiveException;
@@ -66,7 +65,7 @@ class ApplicationFactoryTest extends TestCase
 
         $this->injectServiceInContainer($this->container, RouterInterface::class, $this->router->reveal());
         $this->injectServiceInContainer($this->container, EmitterInterface::class, $this->emitter->reveal());
-        $this->injectServiceInContainer($this->container, DefaultDelegate::class, $this->delegate);
+        $this->injectServiceInContainer($this->container, 'Zend\Expressive\Delegate\DefaultDelegate', $this->delegate);
     }
 
     public static function assertRoute($spec, array $routes)
