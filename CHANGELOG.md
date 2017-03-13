@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 2.0.2 - TBD
+## 2.0.2 - 2017-03-13
 
 ### Added
 
@@ -18,7 +18,12 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#467](https://github.com/zendframework/zend-expressive/pull/467) fixes an
+  issue when passing invokable, duck-typed, interop middleware to the
+  application without registering it with the container. Prior to the patch, it
+  was incorrectly being decorated by
+  `Zend\Stratigility\Middleware\CallableMiddlewareWrapper` instead of
+  `Zend\Stratigility\Middleware\CallableInteropMiddlewareWrapper`.
 
 ## 2.0.1 - 2017-03-09
 
