@@ -4,7 +4,7 @@
     
     <url>
      <loc>/</loc>
-     <lastmod>2017-03-09</lastmod>
+     <lastmod>2017-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -13,19 +13,19 @@
         
     <url>
      <loc>/getting-started/features/</loc>
-     <lastmod>2017-03-09</lastmod>
+     <lastmod>2017-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/getting-started/standalone/</loc>
-     <lastmod>2017-03-09</lastmod>
+     <lastmod>2017-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/getting-started/skeleton/</loc>
-     <lastmod>2017-03-09</lastmod>
+     <lastmod>2017-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -35,13 +35,13 @@
         
     <url>
      <loc>/features/middleware-types/</loc>
-     <lastmod>2017-03-09</lastmod>
+     <lastmod>2017-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/features/application/</loc>
-     <lastmod>2017-03-09</lastmod>
+     <lastmod>2017-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -65,13 +65,13 @@
         
     <url>
      <loc>/features/error-handling/</loc>
-     <lastmod>2017-03-09</lastmod>
+     <lastmod>2017-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/features/modular-applications/</loc>
-     <lastmod>2017-03-09</lastmod>
+     <lastmod>2017-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -89,7 +89,7 @@
         
     <url>
      <loc>/features/emitters/</loc>
-     <lastmod>2017-03-09</lastmod>
+     <lastmod>2017-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -99,85 +99,85 @@
         
     <url>
      <loc>/cookbook/autowiring-routes-and-pipelines/</loc>
-     <lastmod>2017-03-09</lastmod>
+     <lastmod>2017-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/cookbook/common-prefix-for-routes/</loc>
-     <lastmod>2017-03-09</lastmod>
+     <lastmod>2017-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/cookbook/route-specific-pipeline/</loc>
-     <lastmod>2017-03-09</lastmod>
+     <lastmod>2017-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/cookbook/custom-404-page-handling/</loc>
-     <lastmod>2017-03-09</lastmod>
+     <lastmod>2017-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/cookbook/using-custom-view-helpers/</loc>
-     <lastmod>2017-03-09</lastmod>
+     <lastmod>2017-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/cookbook/using-zend-form-view-helpers/</loc>
-     <lastmod>2017-03-09</lastmod>
+     <lastmod>2017-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/cookbook/using-a-base-path/</loc>
-     <lastmod>2017-03-09</lastmod>
+     <lastmod>2017-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/cookbook/modular-layout/</loc>
-     <lastmod>2017-03-09</lastmod>
+     <lastmod>2017-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/cookbook/setting-locale-depending-routing-parameter/</loc>
-     <lastmod>2017-03-09</lastmod>
+     <lastmod>2017-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/cookbook/setting-locale-without-routing-parameter/</loc>
-     <lastmod>2017-03-09</lastmod>
+     <lastmod>2017-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/cookbook/debug-toolbars/</loc>
-     <lastmod>2017-03-09</lastmod>
+     <lastmod>2017-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/cookbook/using-routed-middleware-class-as-controller/</loc>
-     <lastmod>2017-03-09</lastmod>
+     <lastmod>2017-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/cookbook/flash-messengers/</loc>
-     <lastmod>2017-03-09</lastmod>
+     <lastmod>2017-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/cookbook/passing-data-between-middleware/</loc>
-     <lastmod>2017-03-09</lastmod>
+     <lastmod>2017-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -187,25 +187,25 @@
         
     <url>
      <loc>/why-expressive/</loc>
-     <lastmod>2017-03-09</lastmod>
+     <lastmod>2017-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/reference/cli-tooling/</loc>
-     <lastmod>2017-03-09</lastmod>
+     <lastmod>2017-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/reference/usage-examples/</loc>
-     <lastmod>2017-03-09</lastmod>
+     <lastmod>2017-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/reference/expressive-projects/</loc>
-     <lastmod>2017-03-09</lastmod>
+     <lastmod>2017-03-13</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
