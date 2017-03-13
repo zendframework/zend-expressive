@@ -144,6 +144,16 @@ recommend updating them to instead typehint against PSR-11, which will allow
 you to drop the container-interop requirement once your chosen container
 implementation no longer requires it.
 
+> ### Do not update blindly!
+>
+> If you are implementing interfaces from other packages in your factory
+> implementations, be sure to check and see if those interfaces update to PSR-11
+> before making changes.
+>
+> As an example, zend-servicemanager v3 does not update
+> `Zend\ServiceManager\Factory\FactoryInterface` and siblings to typehint
+> against PSR-11, as doing so would break backwards compatibility.
+
 ## http-interop
 
 Stratigility 2.0 provides the ability to work with [http-interop middleware
