@@ -8,8 +8,12 @@
 namespace ZendTest\Expressive;
 
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmitterInterface;
@@ -75,5 +79,38 @@ class IntegrationTest extends TestCase
 
         $this->assertInstanceOf(ResponseInterface::class, $this->response);
         $this->assertEquals(StatusCode::STATUS_NOT_FOUND, $this->response->getStatusCode());
+    }
+
+    public function testCallableClassInteropMiddlewareNotRegisteredWithContainerCanBeComposedSuccessfully()
+    {
+        $response = new Response();
+        $routedMiddleware = $this->prophesize(MiddlewareInterface::class);
+        $routedMiddleware
+            ->process(
+                Argument::type(ServerRequestInterface::class),
+                Argument::type(DelegateInterface::class)
+            )
+            ->willReturn($response);
+
+        $container = $this->prophesize(ContainerInterface::class);
+        $container->has('RoutedMiddleware')->willReturn(true);
+        $container->get('RoutedMiddleware')->will([$routedMiddleware, 'reveal']);
+        $container->has(TestAsset\CallableInteropMiddleware::class)->willReturn(false);
+
+        $delegate = new NotFoundDelegate($response);
+        $app      = new Application(new FastRouteRouter(), $container->reveal(), $delegate, $this->getEmitter());
+
+        $app->pipe(TestAsset\CallableInteropMiddleware::class);
+        $app->get('/', 'RoutedMiddleware');
+
+        $request  = new ServerRequest([], [], 'https://example.com/foo', 'GET');
+        $app->run($request, new Response());
+
+        $this->assertInstanceOf(ResponseInterface::class, $this->response);
+        $this->assertTrue($this->response->hasHeader('X-Callable-Interop-Middleware'));
+        $this->assertEquals(
+            TestAsset\CallableInteropMiddleware::class,
+            $this->response->getHeaderLine('X-Callable-Interop-Middleware')
+        );
     }
 }

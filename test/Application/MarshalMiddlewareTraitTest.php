@@ -256,7 +256,7 @@ class MarshalMiddlewareTraitTest extends TestCase
 
         $middleware = $this->prepareMiddleware($base);
 
-        $this->assertInstanceOf(CallableMiddlewareWrapper::class, $middleware);
+        $this->assertInstanceOf(CallableInteropMiddlewareWrapper::class, $middleware);
         $this->assertAttributeInstanceOf(TestAsset\CallableInteropMiddleware::class, 'middleware', $middleware);
     }
 

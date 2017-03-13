@@ -148,6 +148,10 @@ trait MarshalMiddlewareTrait
             return $instance;
         }
 
+        if ($this->isCallableInteropMiddleware($instance)) {
+            return new CallableInteropMiddlewareWrapper($instance);
+        }
+
         if (! is_callable($instance)) {
             throw new Exception\InvalidMiddlewareException(sprintf(
                 'Middleware of class "%s" is invalid; neither invokable nor %s',
