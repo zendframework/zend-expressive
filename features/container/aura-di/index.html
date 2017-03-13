@@ -629,7 +629,7 @@ class Common extends ContainerConfig
         $di-&gt;set(RouterInterface::class, $di-&gt;lazyNew(AuraRouter::class));
         $di-&gt;set(Container\NotFoundDelegateFactory::class, $di-&gt;lazyNew(ExpressiveContainer\NotFoundDelegateFactory::class));
         $di-&gt;set(Delegate\NotFoundDelegate::class, $di-&gt;lazyGetCall(ExpressiveContainer\NotFoundDelegateFactory::class, '__invoke', $di));
-        $di-&gt;set(Delegate\DefaultDelegate::class, $di-&gt;lazyGetCall(ExpressiveContainer\NotFoundDelegateFactory::class, '__invoke', $di));
+        $di-&gt;set('Zend\Expressive\Delegate\DefaultDelegate', $di-&gt;lazyGetCall(ExpressiveContainer\NotFoundDelegateFactory::class, '__invoke', $di));
         $di-&gt;set(Container\ApplicationFactory::class, $di-&gt;lazyNew(ExpressiveContainer\ApplicationFactory::class));
         $di-&gt;set(Application::class, $di-&gt;lazyGetCall(ExpressiveContainer\ApplicationFactory::class, '__invoke', $di));
 

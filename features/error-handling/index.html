@@ -808,7 +808,7 @@ use Zend\Expressive\Delegate;
 return [
     'dependencies' =&gt; [
         'aliases' =&gt; [
-            Delegate\DefaultDelegate::class =&gt; Delegate\NotFoundDelegate::class,
+            'Zend\Expressive\Delegate\DefaultDelegate' =&gt; Delegate\NotFoundDelegate::class,
         ],
         'factories' =&gt; [
             Delegate\NotFoundDelegate::class =&gt; Container\NotFoundDelegateFactory::class,
