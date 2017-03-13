@@ -632,7 +632,7 @@ class ApplicationTest extends TestCase
     {
         $delegate = $this->prophesize(DelegateInterface::class)->reveal();
         $container = $this->mockContainerInterface();
-        $this->injectServiceInContainer($container, Delegate\DefaultDelegate::class, $delegate);
+        $this->injectServiceInContainer($container, 'Zend\Expressive\Delegate\DefaultDelegate', $delegate);
 
         $app = new Application($this->router->reveal(), $container->reveal());
 
@@ -644,7 +644,7 @@ class ApplicationTest extends TestCase
     public function testWillCreateAndConsumeNotFoundDelegateFactoryToCreateDelegateIfNoDelegateInContainer()
     {
         $container = $this->mockContainerInterface();
-        $container->has(Delegate\DefaultDelegate::class)->willReturn(false);
+        $container->has('Zend\Expressive\Delegate\DefaultDelegate')->willReturn(false);
         $container->has(TemplateRendererInterface::class)->willReturn(false);
         $app = new Application($this->router->reveal(), $container->reveal());
 
@@ -663,7 +663,7 @@ class ApplicationTest extends TestCase
     public function testWillUseConfiguredTemplateRendererWhenCreatingDelegateFromNotFoundDelegateFactory()
     {
         $container = $this->mockContainerInterface();
-        $container->has(Delegate\DefaultDelegate::class)->willReturn(false);
+        $container->has('Zend\Expressive\Delegate\DefaultDelegate')->willReturn(false);
 
         $renderer = $this->prophesize(TemplateRendererInterface::class)->reveal();
         $this->injectServiceInContainer($container, TemplateRendererInterface::class, $renderer);

@@ -11,7 +11,6 @@ use ArrayObject;
 use Psr\Container\ContainerInterface;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Expressive\Application;
-use Zend\Expressive\Delegate;
 use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\RouterInterface;
 
@@ -66,8 +65,8 @@ class ApplicationFactory
             ? $container->get(RouterInterface::class)
             : new FastRouteRouter();
 
-        $delegate = $container->has(Delegate\DefaultDelegate::class)
-            ? $container->get(Delegate\DefaultDelegate::class)
+        $delegate = $container->has('Zend\Expressive\Delegate\DefaultDelegate')
+            ? $container->get('Zend\Expressive\Delegate\DefaultDelegate')
             : null;
 
         $emitter = $container->has(EmitterInterface::class)

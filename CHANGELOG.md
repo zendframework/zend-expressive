@@ -26,6 +26,13 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
+### Changed
+
+- [#468](https://github.com/zendframework/zend-expressive/pull/468) updates
+  references to `DefaultDelegate::class` to instead use the string
+  `'Zend\Expressive\Delegate\DefaultDelegate'`; using the string makes it clear
+  that the service name does not resolve to an actual class.
+
 ### Deprecated
 
 - Nothing.
