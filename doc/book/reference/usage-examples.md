@@ -38,7 +38,7 @@ We assume also that:
 > the following is equivalent:
 >
 > ```bash
-> $ composer serve
+> $ composer run --timeout=0 serve
 > ```
 
 > ## Setting up autoloading for the Application namespace
