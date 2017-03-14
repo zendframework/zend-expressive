@@ -658,17 +658,14 @@ http://localhost:8080/ to see if your application responds correctly!</p>
 <p>Composer commands time out after 300 seconds (5 minutes). On Linux-based
 systems, the <code>php -S</code> command that <code>composer serve</code> spawns continues running
 as a background process, but on other systems halts when the timeout occurs.</p>
-<p>If you want the server to live longer, you can set the composer
-<code>process-timeout</code> configuration, which can be specified either local to your
-project, or globally. As examples, each of the following set the timeout to 8
-hours:</p>
-<pre class="codehilite"><code class="language-bash linenums"># Local to your project:
-$ composer config process-timeout 28800
-# Globally (all projects):
-$ composer config -g process-timeout 28800</code></pre>
+<p>As such, we recommend running the <code>serve</code> script using a timeout. This can
+be done by using <code>composer run</code> to execute the <code>serve</code> script, with a
+<code>--timeout</code> option. When set to <code>0</code>, as in the previous example, no timeout
+will be used, and it will run until you cancel the process (usually via
+<code>Ctrl-C</code>). Alternately, you can specify a finite timeout; as an example,
+the following will extend the timeout to a full day:</p>
+<pre class="codehilite"><code class="language-bash linenums">$ composer run --timeout=86400 serve</code></pre>
 
-<p>NOTE: This setting affects <em>all</em> composer commands, including install, update,
-and require operations, so be careful about resetting it, particularly globally.</p>
 </blockquote>
 <h2 id="next-steps">Next steps</h2>
 <p>At this point, you have a working zend-expressive application, that responds to
