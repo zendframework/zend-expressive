@@ -206,7 +206,7 @@ use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Zend\Stratigility\Middleware\ErrorHandler;
 
-class LoggerErrorListenerDelegatorFactory
+class LoggingErrorListenerDelegatorFactory
 {
     /**
      * @param ContainerInterface $container
