@@ -206,7 +206,7 @@ use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Zend\Stratigility\Middleware\ErrorHandler;
 
-class LoggerErrorListenerDelegatorFactory
+class LoggingErrorListenerDelegatorFactory
 {
     /**
      * @param ContainerInterface $container
@@ -216,7 +216,7 @@ class LoggerErrorListenerDelegatorFactory
      */
     public function __invoke(ContainerInterface $container, $name, callable $callback)
     {
-        $listener = new LoggerErrorListener($container->get(LoggerInterface::class));
+        $listener = new LoggingErrorListener($container->get(LoggerInterface::class));
         $errorHandler = $callback();
         $errorHandler->attachListener($listener);
         return $errorHandler;
