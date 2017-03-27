@@ -7,6 +7,7 @@
 
 namespace ZendTest\Expressive\Middleware;
 
+use Fig\Http\Message\StatusCodeInterface as StatusCode;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseInterface;
@@ -58,7 +59,9 @@ class WhoopsErrorResponseGeneratorTest extends TestCase
         $this->request->getAttribute('originalUri', false)->shouldNotBeCalled();
         $this->request->getAttribute('originalRequest', false)->shouldNotBeCalled();
 
+        $this->response->withStatus(StatusCode::STATUS_INTERNAL_SERVER_ERROR)->will([$this->response, 'reveal']);
         $this->response->getBody()->will([$this->stream, 'reveal']);
+        $this->response->getStatusCode()->willReturn(StatusCode::STATUS_INTERNAL_SERVER_ERROR);
 
         $this->stream->write('WHOOPS')->shouldBeCalled();
 
@@ -101,6 +104,8 @@ class WhoopsErrorResponseGeneratorTest extends TestCase
         $this->request->getQueryParams()->willReturn([]);
         $this->request->getParsedBody()->willReturn([]);
 
+        $this->response->withStatus(StatusCode::STATUS_INTERNAL_SERVER_ERROR)->will([$this->response, 'reveal']);
+        $this->response->getStatusCode()->willReturn(StatusCode::STATUS_INTERNAL_SERVER_ERROR);
         $this->response->getBody()->will([$this->stream, 'reveal']);
 
         $this->stream->write('WHOOPS')->shouldBeCalled();
@@ -137,6 +142,8 @@ class WhoopsErrorResponseGeneratorTest extends TestCase
         $this->request->getParsedBody()->willReturn([]);
 
         $this->response->withHeader('Content-Type', 'application/json')->will([$this->response, 'reveal']);
+        $this->response->withStatus(StatusCode::STATUS_INTERNAL_SERVER_ERROR)->will([$this->response, 'reveal']);
+        $this->response->getStatusCode()->willReturn(StatusCode::STATUS_INTERNAL_SERVER_ERROR);
         $this->response->getBody()->will([$this->stream, 'reveal']);
 
         $this->stream->write('error')->shouldBeCalled();
