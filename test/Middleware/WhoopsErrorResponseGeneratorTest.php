@@ -142,11 +142,32 @@ class WhoopsErrorResponseGeneratorTest extends TestCase
         $this->request->getParsedBody()->willReturn([]);
 
         $this->response->withHeader('Content-Type', 'application/json')->will([$this->response, 'reveal']);
-        $this->response->withStatus(StatusCode::STATUS_INTERNAL_SERVER_ERROR)->will([$this->response, 'reveal']);
-        $this->response->getStatusCode()->willReturn(StatusCode::STATUS_INTERNAL_SERVER_ERROR);
+        $this->response->withStatus(StatusCode::STATUS_IM_A_TEAPOT)->will([$this->response, 'reveal']);
+        $this->response->getStatusCode()->willReturn(StatusCode::STATUS_IM_A_TEAPOT);
         $this->response->getBody()->will([$this->stream, 'reveal']);
 
         $this->stream->write('error')->shouldBeCalled();
+
+        $generator = new WhoopsErrorResponseGenerator($this->whoops->reveal());
+
+        $this->assertSame(
+            $this->response->reveal(),
+            $generator($error, $this->request->reveal(), $this->response->reveal())
+        );
+    }
+
+    public function testNonErrorStatusCodeIsSetTo500()
+    {
+        $error = new RuntimeException();
+
+        $this->whoops->getHandlers()->willReturn([]);
+        $this->whoops->handleException($error)->willReturn('WHOOPS');
+
+        $this->response->withStatus(StatusCode::STATUS_INTERNAL_SERVER_ERROR)->will([$this->response, 'reveal']);
+        $this->response->getBody()->will([$this->stream, 'reveal']);
+        $this->response->getStatusCode()->willReturn(StatusCode::STATUS_MOVED_PERMANENTLY);
+
+        $this->stream->write('WHOOPS')->shouldBeCalled();
 
         $generator = new WhoopsErrorResponseGenerator($this->whoops->reveal());
 
