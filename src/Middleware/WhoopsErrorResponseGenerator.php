@@ -14,6 +14,7 @@ use Whoops\Handler\JsonResponseHandler;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run;
 use Whoops\RunInterface;
+use Zend\Stratigility\Utils;
 
 class WhoopsErrorResponseGenerator
 {
@@ -69,6 +70,8 @@ class WhoopsErrorResponseGenerator
                 $response = $response->withHeader('Content-Type', $contentType);
             }
         }
+
+        $response = $response->withStatus(Utils::getStatusCode($e, $response));
 
         $response
             ->getBody()

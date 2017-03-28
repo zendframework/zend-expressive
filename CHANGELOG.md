@@ -43,7 +43,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#476](https://github.com/zendframework/zend-expressive/pull/476) fixes the
+  `WhoopsErrorResponseGenerator` to ensure it returns a proper error status
+  code, instead of using a `200 OK` status.
 
 ## 2.0.2 - 2017-03-13
 
