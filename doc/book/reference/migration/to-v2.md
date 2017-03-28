@@ -174,7 +174,7 @@ Specifically, your middleware can now implement:
 
 - `Interop\Http\ServerMiddleware\MiddlewareInterface`, which defines a single
   method, `process(Psr\Http\Message\ServerRequestInterface $request,
-  Interop\Http\ServerMiddleware\Interface $delegate)`.
+  Interop\Http\ServerMiddleware\DelegateInterface $delegate)`.
 - Callable middleware that follows the above signature (the typehint for the
   request argument is optional).
   
