@@ -754,7 +754,7 @@ only pass a single argument, the request.</p>
 <ul>
 <li><code>Interop\Http\ServerMiddleware\MiddlewareInterface</code>, which defines a single
   method, <code>process(Psr\Http\Message\ServerRequestInterface $request,
-  Interop\Http\ServerMiddleware\Interface $delegate)</code>.</li>
+  Interop\Http\ServerMiddleware\DelegateInterface $delegate)</code>.</li>
 <li>Callable middleware that follows the above signature (the typehint for the
   request argument is optional).</li>
 </ul>
