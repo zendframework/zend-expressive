@@ -525,6 +525,8 @@
         
             <li><a href="#development-mode">Development Mode</a></li>
         
+            <li><a href="#expressive-command-line-tool">Expressive command-line tool</a></li>
+        
             <li><a href="#modules">Modules</a></li>
         
             <li><a href="#migrate-to-programmatic-pipelines">Migrate to programmatic pipelines</a></li>
@@ -590,9 +592,76 @@ $ composer development-status</code></pre>
 <p>Add settings to your <code>development.*.php.dist</code> files, and commit those files to
 your repository; always toggle out of and into development mode after making
 changes, to ensure they pick up in your development environment.</p>
+<h2 id="expressive-command-line-tool">Expressive command-line tool</h2>
+<ul>
+<li>Since zend-expressive-tooling 0.4.0 and zend-expressive-skeleton 2.0.2</li>
+</ul>
+<p>The package <a href="https://github.com/zendframework/zend-expressive-tooling">zendframework/zend-expressive-tooling</a>
+provides the script <code>vendor/bin/expressive</code>, which contains a number of commands
+related to migration, modules, and middleware.</p>
+<p>You can install it if it is not already present in your application:</p>
+<pre class="codehilite"><code class="language-bash linenums">$ composer require --dev zendframework/zend-expressive-tooling</code></pre>
+
+<p>If you installed the Expressive skeleton prior to version 2.0.2, you will want
+to update the tooling to get the latest release, which contains the <code>expressive</code>
+binary, as follows:</p>
+<pre class="codehilite"><code class="language-bash linenums">$ composer require --dev &quot;zendframework/zend-expressive-tooling:^0.4.1&quot;</code></pre>
+
+<p>Once installed, invoking the binary without arguments will give a listing of
+available tools:</p>
+<pre class="codehilite"><code class="language-bash linenums">$ ./vendor/bin/expressive</code></pre>
+
+<p>Commands supported include:</p>
+<ul>
+<li>
+<p><strong><code>middleware:create &lt;middleware&gt;</code></strong>: Create a class file for the named
+  middleware class. The class <em>must</em> use a namespace already declared in your
+  application, and will be created relative to the path associated with that
+  namespace.</p>
+</li>
+<li>
+<p><strong><code>migrate:error-middleware-scanner [--dir|-d]</code></strong>: Scan the associated
+  directory (defaults to <code>src</code>) for declarations of legacy Stratigility v1 error
+  middleware, or invocations of <code>$next()</code> that provide an error argument. See
+  the <a href="#detect-usage-of-legacy-error-middleware">section on detecting legacy error middleware</a>
+  for more details.</p>
+</li>
+<li>
+<p><strong><code>migrate:original-messages [--src|-s]</code></strong>: Scan the associated source directory
+  (defaults to <code>src</code>) for <code>getOriginal*()</code> method calls and replace them with
+  <code>getAttribute()</code> calls. See the <a href="#detect-usage-of-legacy-getoriginal-calls">section on detecting legacy
+  calls</a> for more details.</p>
+</li>
+<li>
+<p><strong><code>migrate:pipeline [--config-file|-c]</code></strong>: Convert configuration-driven
+  pipelines and routing to programmatic declarations. See the <a href="#migrate-to-programmatic-pipelines">section on
+  migrating to programmatic pipelines</a> for
+  more details.</p>
+</li>
+<li>
+<p><strong><code>module:create [--composer|-c] [--modules-path|-p] &lt;module&gt;</code></strong>: Create the
+  named module, add and generate autoloading rules for it, and register the
+  module's <code>ConfigProvider</code> with your application.</p>
+</li>
+<li>
+<p><strong><code>module:register [--composer|-c] [--modules-path|-p] &lt;module&gt;</code></strong>: Add and
+  generate autoloading rules for the named module,  and register the module's
+  <code>ConfigProvider</code> with your application.</p>
+</li>
+<li>
+<p><strong><code>module:deregister [--composer|-c] [--modules-path|-p] &lt;module&gt;</code></strong>: Remove
+  autoloading rules for the named module and regenerate autoloading rules;
+  remove the module's <code>ConfigProvider</code> from the application configuration.</p>
+</li>
+</ul>
+<p>You may obtain full help for each command by invoking:</p>
+<pre class="codehilite"><code class="language-bash linenums">$ ./vendor/bin/expressive help &lt;command&gt;</code></pre>
+
 <h2 id="modules">Modules</h2>
 <ul>
 <li>Since 2.0.</li>
+<li>Deprecated since zend-expressive-tooling 0.4.0; see the <a href="#expressive-command-line-tool">Expressive CLI tool
+  section above</a>.</li>
 </ul>
 <p>The package <a href="https://github.com/zendframework/zend-expressive-tooling">zendframework/zend-expressive-tooling</a>
 provides the binary <code>vendor/bin/expressive-module</code>, which allows you to create,
@@ -634,6 +703,8 @@ within your <code>config/config.php</code>.</p>
 <h2 id="migrate-to-programmatic-pipelines">Migrate to programmatic pipelines</h2>
 <ul>
 <li>Since 2.0.</li>
+<li>Deprecated since zend-expressive-tooling 0.4.0; see the <a href="#expressive-command-line-tool">Expressive CLI tool
+  section above</a>.</li>
 </ul>
 <p>Starting in 2.0, we recommend using <em>programmatic pipelines</em>, versus
 configuration-defined pipelines. For those upgrading their applications from 1.X
@@ -660,6 +731,8 @@ skipped) Stratigility v1-style "error middleware".</p>
 <h2 id="detect-usage-of-legacy-getoriginal-calls">Detect usage of legacy getOriginal*() calls</h2>
 <ul>
 <li>Since 2.0.</li>
+<li>Deprecated since zend-expressive-tooling 0.4.0; see the <a href="#expressive-command-line-tool">Expressive CLI tool
+  section above</a>.</li>
 </ul>
 <p>When upgrading to version 2.0, you will also receive an upgrade to
 zendframework/zend-stratigility 2.0. That version eliminates internal decorator
@@ -709,6 +782,8 @@ on how to correct those manually.</p>
 <h2 id="detect-usage-of-legacy-error-middleware">Detect usage of legacy error middleware</h2>
 <ul>
 <li>Since 2.0.</li>
+<li>Deprecated since zend-expressive-tooling 0.4.0; see the <a href="#expressive-command-line-tool">Expressive CLI tool
+  section above</a>.</li>
 </ul>
 <p>When upgrading to version 2.0, you will also receive an upgrade to
 zendframework/zend-stratigility 2.0. That version eliminates what was known as
