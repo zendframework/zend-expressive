@@ -33,9 +33,81 @@ Add settings to your `development.*.php.dist` files, and commit those files to
 your repository; always toggle out of and into development mode after making
 changes, to ensure they pick up in your development environment.
 
+## Expressive command-line tool
+
+- Since zend-expressive-tooling 0.4.0 and zend-expressive-skeleton 2.0.2
+
+The package [zendframework/zend-expressive-tooling](https://github.com/zendframework/zend-expressive-tooling)
+provides the script `vendor/bin/expressive`, which contains a number of commands
+related to migration, modules, and middleware.
+
+You can install it if it is not already present in your application:
+
+```bash
+$ composer require --dev zendframework/zend-expressive-tooling
+```
+
+If you installed the Expressive skeleton prior to version 2.0.2, you will want
+to update the tooling to get the latest release, which contains the `expressive`
+binary, as follows:
+
+```bash
+$ composer require --dev "zendframework/zend-expressive-tooling:^0.4.1"
+```
+
+Once installed, invoking the binary without arguments will give a listing of
+available tools:
+
+```bash
+$ ./vendor/bin/expressive
+```
+
+Commands supported include:
+
+- **`middleware:create <middleware>`**: Create a class file for the named
+  middleware class. The class _must_ use a namespace already declared in your
+  application, and will be created relative to the path associated with that
+  namespace.
+
+- **`migrate:error-middleware-scanner [--dir|-d]`**: Scan the associated
+  directory (defaults to `src`) for declarations of legacy Stratigility v1 error
+  middleware, or invocations of `$next()` that provide an error argument. See
+  the [section on detecting legacy error middleware](#detect-usage-of-legacy-error-middleware)
+  for more details.
+
+- **`migrate:original-messages [--src|-s]`**: Scan the associated source directory
+  (defaults to `src`) for `getOriginal*()` method calls and replace them with
+  `getAttribute()` calls. See the [section on detecting legacy
+  calls](#detect-usage-of-legacy-getoriginal-calls) for more details.
+
+- **`migrate:pipeline [--config-file|-c]`**: Convert configuration-driven
+  pipelines and routing to programmatic declarations. See the [section on
+  migrating to programmatic pipelines](#migrate-to-programmatic-pipelines) for
+  more details.
+
+- **`module:create [--composer|-c] [--modules-path|-p] <module>`**: Create the
+  named module, add and generate autoloading rules for it, and register the
+  module's `ConfigProvider` with your application.
+
+- **`module:register [--composer|-c] [--modules-path|-p] <module>`**: Add and
+  generate autoloading rules for the named module,  and register the module's
+  `ConfigProvider` with your application.
+
+- **`module:deregister [--composer|-c] [--modules-path|-p] <module>`**: Remove
+  autoloading rules for the named module and regenerate autoloading rules;
+  remove the module's `ConfigProvider` from the application configuration.
+
+You may obtain full help for each command by invoking:
+
+```bash
+$ ./vendor/bin/expressive help <command>
+```
+
 ## Modules
 
 - Since 2.0.
+- Deprecated since zend-expressive-tooling 0.4.0; see the [Expressive CLI tool
+  section above](#expressive-command-line-tool).
 
 The package [zendframework/zend-expressive-tooling](https://github.com/zendframework/zend-expressive-tooling)
 provides the binary `vendor/bin/expressive-module`, which allows you to create,
@@ -92,6 +164,8 @@ $ ./vendor/bin/expressive-module deregister Account
 ## Migrate to programmatic pipelines
 
 - Since 2.0.
+- Deprecated since zend-expressive-tooling 0.4.0; see the [Expressive CLI tool
+  section above](#expressive-command-line-tool).
 
 Starting in 2.0, we recommend using _programmatic pipelines_, versus
 configuration-defined pipelines. For those upgrading their applications from 1.X
@@ -125,6 +199,8 @@ skipped) Stratigility v1-style "error middleware".
 ## Detect usage of legacy getOriginal*() calls
 
 - Since 2.0.
+- Deprecated since zend-expressive-tooling 0.4.0; see the [Expressive CLI tool
+  section above](#expressive-command-line-tool).
 
 When upgrading to version 2.0, you will also receive an upgrade to
 zendframework/zend-stratigility 2.0. That version eliminates internal decorator
@@ -186,6 +262,8 @@ on how to correct those manually.
 ## Detect usage of legacy error middleware
 
 - Since 2.0.
+- Deprecated since zend-expressive-tooling 0.4.0; see the [Expressive CLI tool
+  section above](#expressive-command-line-tool).
 
 When upgrading to version 2.0, you will also receive an upgrade to
 zendframework/zend-stratigility 2.0. That version eliminates what was known as
