@@ -19,7 +19,7 @@ use Zend\Stratigility\Utils;
 class WhoopsErrorResponseGenerator
 {
     /**
-     * @var RunInterface
+     * @var Run|RunInterface
      */
     private $whoops;
 
