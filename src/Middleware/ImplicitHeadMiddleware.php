@@ -87,9 +87,11 @@ class ImplicitHeadMiddleware implements ServerMiddlewareInterface
         if (! $route->allowsMethod(RequestMethod::METHOD_GET)) {
             return $this->getResponse();
         }
-
+        
         $response = $delegate->process(
-            $request->withMethod(RequestMethod::METHOD_GET)
+            $request
+                ->withMethod(RequestMethod::METHOD_GET)
+                ->withAttribute('forwarded_http_method', RequestMethod::METHOD_HEAD)
         );
 
         return $response->withBody(new Stream('php://temp/', 'wb+'));
