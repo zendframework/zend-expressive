@@ -44,7 +44,7 @@ class Application extends MiddlewarePipe
     private $container;
 
     /**
-     * @var callable
+     * @var DelegateInterface
      */
     private $defaultDelegate;
 
