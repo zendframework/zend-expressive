@@ -169,7 +169,7 @@ class ImplicitHeadMiddlewareTest extends TestCase
         $response = new Response\JsonResponse(['some_data' => true], 400);
 
         $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->process(Argument::that(function(ServerRequestInterface $request) {
+        $delegate->process(Argument::that(function (ServerRequestInterface $request) {
             $this->assertSame('HEAD', $request->getAttribute('forwarded_http_method'));
             return true;
         }))->willReturn($response);
