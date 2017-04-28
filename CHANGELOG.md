@@ -18,7 +18,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#482](https://github.com/zendframework/zend-expressive/pull/482) fixes the
+  `Application::$defaultDelegate` dockblock Type.
 
 ## 2.0.3 - 2017-03-28
 
@@ -186,7 +187,7 @@ All notable changes to this project will be documented in this file, in reverse 
   `Zend\Expressive\Delegate\NotFoundDelegate`.
 
 - [#428](https://github.com/zendframework/zend-expressive/pull/428) adds the
-  constants `DISPATCH_MIDDLEWARE` and `ROUTING_MIDDLEWARE` to 
+  constants `DISPATCH_MIDDLEWARE` and `ROUTING_MIDDLEWARE` to
   `Zend\Expressive\Application`; they have identical values to the constants
   previously defined in `Zend\Expressive\Container\ApplicationFactory`.
 
