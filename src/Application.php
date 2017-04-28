@@ -44,7 +44,7 @@ class Application extends MiddlewarePipe
     private $container;
 
     /**
-     * @var callable
+     * @var null|DelegateInterface
      */
     private $defaultDelegate;
 
@@ -55,7 +55,7 @@ class Application extends MiddlewarePipe
     private $dispatchMiddlewareIsRegistered = false;
 
     /**
-     * @var EmitterInterface
+     * @var null|EmitterInterface
      */
     private $emitter;
 
