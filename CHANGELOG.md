@@ -18,7 +18,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#482](https://github.com/zendframework/zend-expressive/pull/482) fixes the
+  `Application::$defaultDelegate` dockblock Type.
 
 ## 2.0.4 - TBD
 
