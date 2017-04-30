@@ -44,7 +44,7 @@ $configManager = new ConfigManager([
     new PhpFileProvider('config/autoload/{{,*.}global,{,*.}local}.php'),
 ]);
 
-return new ArrayObject($configManager->getMergedConfig());
+return $configManager->getMergedConfig();
 ```
 
 If you open your application in a browser, it should still work in exactly the
