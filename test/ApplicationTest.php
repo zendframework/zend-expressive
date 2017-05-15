@@ -17,12 +17,10 @@ use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use ReflectionProperty;
 use RuntimeException;
-use SplQueue;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Diactoros\ServerRequest as Request;
-use Zend\Diactoros\ServerRequest;
 use Zend\Expressive\Application;
 use Zend\Expressive\Emitter\EmitterStack;
 use Zend\Expressive\Exception;
@@ -34,6 +32,7 @@ use Zend\Expressive\Router\RouterInterface;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\Stratigility\Route as StratigilityRoute;
 use ZendTest\Expressive\TestAsset\InvokableMiddleware;
+
 
 /**
  * @covers Zend\Expressive\Application
@@ -234,7 +233,7 @@ class ApplicationTest extends TestCase
             InvokableMiddleware::class,
         ];
 
-        $request = new ServerRequest([], [], '/', 'GET');
+        $request = new Request([], [], '/', 'GET');
         $routeResult = RouteResult::fromRouteMatch(__METHOD__, $middleware, []);
         $request = $request->withAttribute(RouteResult::class, $routeResult);
 
@@ -246,6 +245,33 @@ class ApplicationTest extends TestCase
         $app->dispatchMiddleware($request, new Response(), function () {
         });
     }
+
+    public function testDispatchMiddlewareCanDispatchArrayOfMiddlewareAsMiddlewareExpressiveVersionTwoPipe()
+    {
+        $middleware = [
+            function () {
+            },
+            'FooBar',
+            [InvokableMiddleware::class, 'staticallyCallableMiddleware'],
+            InvokableMiddleware::class,
+            ];
+
+        $middlewareNew = function ($req, $res, $next) {
+        };
+
+        $request = new Request([], [], '/', 'GET');
+        $routeResult = RouteResult::fromRoute(new Route('/', $middlewareNew),$middleware);
+        $request = $request->withAttribute(RouteResult::class, $routeResult);
+
+        $container = $this->mockContainerInterface();
+        $this->injectServiceInContainer($container, 'FooBar', function () {
+        });
+
+            $app = new Application($this->router->reveal(), $container->reveal());
+            $app->dispatchMiddleware($request, new Response(), function () {
+            });
+    }
+
 
     public function uncallableMiddleware()
     {
@@ -261,7 +287,7 @@ class ApplicationTest extends TestCase
      */
     public function testThrowsExceptionWhenDispatchingUncallableMiddleware($middleware)
     {
-        $request = new ServerRequest([], [], '/', 'GET');
+        $request = new Request([], [], '/', 'GET');
         $routeResult = RouteResult::fromRouteMatch(__METHOD__, $middleware, []);
         $request = $request->withAttribute(RouteResult::class, $routeResult);
 
