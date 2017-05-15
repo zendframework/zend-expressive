@@ -18,7 +18,7 @@ If you instantiate it with no arguments, it will create an empty
 use Zend\Expressive\AppFactory;
 use Zend\Expressive\Router\ZendRouter;
 
-$app = AppFactory(null, new ZendRouter());
+$app = AppFactory::create(null, new ZendRouter());
 ```
 
 The `TreeRouteStack` offers some unique features:
@@ -106,7 +106,7 @@ A factory would look like this:
 // in src/Application/Container/RouterFactory.php
 namespace Application\Container;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Expressive\Router\ZendRouter;
 
 class RouterFactory
@@ -164,7 +164,7 @@ Sound difficult? It's not; we've essentially done it above already!
 // in src/Application/Container/TreeRouteStackFactory.php:
 namespace Application\Container;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Http\Mvc\Router\TreeRouteStack;
 
 class TreeRouteStackFactory
@@ -186,7 +186,7 @@ class TreeRouteStackFactory
 // in src/Application/Container/RouterFactory.php
 namespace Application\Container;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Expressive\Router\ZendRouter as Zf2Bridge;
 
 class RouterFactory

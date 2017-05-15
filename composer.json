@@ -11,27 +11,33 @@
     ],
     "extra": {
         "branch-alias": {
-            "dev-master": "1.0-dev",
-            "dev-develop": "1.1-dev"
+            "dev-master": "2.0-dev",
+            "dev-develop": "2.1-dev"
         }
     },
     "require": {
-        "php": "^5.5 || ^7.0",
-        "container-interop/container-interop": "^1.1",
-        "psr/http-message": "^1.0",
-        "zendframework/zend-diactoros": "^1.1",
-        "zendframework/zend-expressive-router": "^1.1",
-        "zendframework/zend-expressive-template": "^1.0.1",
-        "zendframework/zend-stratigility": "^1.1"
+        "php": "^5.6 || ^7.0",
+        "fig/http-message-util": "^1.1.2",
+        "psr/container": "^1.0",
+        "psr/http-message": "^1.0.1",
+        "zendframework/zend-diactoros": "^1.3.10",
+        "zendframework/zend-expressive-router": "^2.1",
+        "zendframework/zend-expressive-template": "^1.0.4",
+        "zendframework/zend-stratigility": "^2.0.1"
     },
     "require-dev": {
-        "filp/whoops": "^1.1",
-        "phpunit/phpunit": "^4.7",
-        "squizlabs/php_codesniffer": "^2.3",
-        "zendframework/zend-expressive-aurarouter": "^1.0",
-        "zendframework/zend-expressive-fastroute": "^1.0",
-        "zendframework/zend-expressive-zendrouter": "^1.0",
-        "zendframework/zend-servicemanager": "^2.6"
+        "filp/whoops": "^2.1.6 || ^1.1.10",
+        "malukenho/docheader": "^0.1.5",
+        "mockery/mockery": "^0.9.5",
+        "phpunit/phpunit": "^6.0.8 || ^5.7.15",
+        "zendframework/zend-coding-standard": "~1.0.0",
+        "zendframework/zend-expressive-aurarouter": "^2.0",
+        "zendframework/zend-expressive-fastroute": "^2.0",
+        "zendframework/zend-expressive-zendrouter": "^2.0.1",
+        "zendframework/zend-servicemanager": "^3.3 || ^2.7.8"
+    },
+    "conflict": {
+        "container-interop/container-interop": "<1.2.0"
     },
     "autoload": {
       "psr-4": {
@@ -41,30 +47,33 @@
     "autoload-dev": {
       "psr-4": {
         "ZendTest\\Expressive\\": "test/"
-      }
+      },
+      "files": [
+        "test/class_exists.php"
+      ]
     },
     "suggest": {
-        "filp/whoops": "^1.1 to use the Whoops error handler",
-        "zendframework/zend-expressive-helpers": "^1.0 for its UrlHelper, ServerUrlHelper, and BodyParseMiddleware",
-        "zendframework/zend-expressive-aurarouter": "^1.0 to use the Aura.Router routing adapter",
-        "zendframework/zend-expressive-fastroute": "^1.0 to use the FastRoute routing adapter",
-        "zendframework/zend-expressive-zendrouter": "^1.0 to use the zend-mvc routing adapter",
-        "zendframework/zend-expressive-platesrenderer": "^1.0 to use the Plates template renderer",
-        "zendframework/zend-expressive-twigrenderer": "^1.0 to use the Twig template renderer",
-        "zendframework/zend-expressive-zendviewrenderer": "^1.0 to use the zend-view PhpRenderer template renderer",
-        "aura/di": "3.0.*@beta to make use of Aura.Di dependency injection container",
+        "filp/whoops": "^2.1 to use the Whoops error handler",
+        "zendframework/zend-expressive-helpers": "^3.0 for its UrlHelper, ServerUrlHelper, and BodyParseMiddleware",
+        "aura/di": "^3.2 to make use of Aura.Di dependency injection container",
         "xtreamwayz/pimple-container-interop": "^1.0 to use Pimple for dependency injection",
-        "zendframework/zend-servicemanager": "^2.5 to use zend-servicemanager for dependency injection"
+        "zendframework/zend-expressive-tooling": "For migration and development tools; require it with the --dev flag",
+        "zendframework/zend-servicemanager": "^3.3 to use zend-servicemanager for dependency injection"
     },
+    "bin": [
+        "bin/expressive-tooling"
+    ],
     "scripts": {
         "check": [
-            "@cs",
+            "@license-check",
+            "@cs-check",
             "@test"
         ],
-        "coveralls": "coveralls",
-        "cs": "phpcs",
+        "upload-coverage": "coveralls -v",
+        "cs-check": "phpcs",
         "cs-fix": "phpcbf",
-        "test": "phpunit",
-        "test-coverage": "phpunit --coverage-clover clover.xml"
+        "test": "phpunit --colors=always",
+        "test-coverage": "phpunit --coverage-clover clover.xml",
+        "license-check": "vendor/bin/docheader check src/ test/"
     }
 }

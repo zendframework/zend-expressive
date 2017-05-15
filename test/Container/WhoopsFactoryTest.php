@@ -1,21 +1,21 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
 
 namespace ZendTest\Expressive\Container;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
-use ReflectionFunction;
+use Psr\Container\ContainerInterface;
 use ReflectionProperty;
+use Traversable;
 use Whoops\Handler\JsonResponseHandler;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run as Whoops;
+use Whoops\Util\Misc as WhoopsUtil;
 use Zend\Expressive\Container\WhoopsFactory;
 use ZendTest\Expressive\ContainerTrait;
 
@@ -26,22 +26,25 @@ class WhoopsFactoryTest extends TestCase
 {
     use ContainerTrait;
 
-    /** @var ObjectProphecy */
-    protected $container;
+    /** @var ContainerInterface|ObjectProphecy */
+    private $container;
+
+    /** @var WhoopsFactory */
+    private $factory;
 
     public function setUp()
     {
-        $pageHandler = $this->prophesize(PrettyPageHandler::class);
+        $pageHandler     = $this->prophesize(PrettyPageHandler::class);
         $this->container = $this->mockContainerInterface();
         $this->injectServiceInContainer($this->container, 'Zend\Expressive\WhoopsPageHandler', $pageHandler->reveal());
 
-        $this->factory   = new WhoopsFactory();
+        $this->factory = new WhoopsFactory();
     }
 
     public function assertWhoopsContainsHandler($type, Whoops $whoops, $message = null)
     {
-        $message = $message ?: sprintf("Failed to assert whoops runtime composed handler of type %s", $type);
-        $r = new ReflectionProperty($whoops, 'handlerStack');
+        $message = $message ?: sprintf('Failed to assert whoops runtime composed handler of type %s', $type);
+        $r       = new ReflectionProperty($whoops, 'handlerStack');
         $r->setAccessible(true);
         $stack = $r->getValue($whoops);
 
@@ -77,23 +80,69 @@ class WhoopsFactoryTest extends TestCase
     }
 
     /**
-     * @depends testWillInjectJsonResponseHandlerIfConfigurationExpectsIt
+     * @backupGlobals enabled
+     * @depends       testWillInjectJsonResponseHandlerIfConfigurationExpectsIt
+     * @dataProvider  provideConfig
+     *
+     * @param bool  $showsTrace
+     * @param bool  $isAjaxOnly
+     * @param bool  $requestIsAjax
      */
-    public function testJsonResponseHandlerCanBeConfigured()
+    public function testJsonResponseHandlerCanBeConfigured($showsTrace, $isAjaxOnly, $requestIsAjax)
     {
-        $config = ['whoops' => ['json_exceptions' => [
-            'display'    => true,
-            'show_trace' => true,
-            'ajax_only'  => true,
-        ]]];
+        // Set for Whoops 2.x json handler detection
+        if ($requestIsAjax) {
+            $_SERVER['HTTP_X_REQUESTED_WITH'] = 'xmlhttprequest';
+        }
+
+        $config = [
+            'whoops' => [
+                'json_exceptions' => [
+                    'display'    => true,
+                    'show_trace' => $showsTrace,
+                    'ajax_only'  => $isAjaxOnly,
+                ],
+            ],
+        ];
+
         $this->injectServiceInContainer($this->container, 'config', $config);
 
         $factory = $this->factory;
         $whoops  = $factory($this->container->reveal());
+        $handler = $whoops->popHandler();
 
-        $jsonHandler = $whoops->popHandler();
-        $this->assertInstanceOf(JsonResponseHandler::class, $jsonHandler);
-        $this->assertAttributeSame(true, 'returnFrames', $jsonHandler);
-        $this->assertAttributeSame(true, 'onlyForAjaxRequests', $jsonHandler);
+        // If ajax only, not ajax request and Whoops 2, it does not inject JsonResponseHandler
+        if ($isAjaxOnly
+            && ! $requestIsAjax
+            && method_exists(WhoopsUtil::class, 'isAjaxRequest')
+        ) {
+            $this->assertInstanceOf(PrettyPageHandler::class, $handler);
+
+            // Skip remaining assertions
+            return;
+        }
+
+        $this->assertAttributeSame($showsTrace, 'returnFrames', $handler);
+
+        if (method_exists($handler, 'onlyForAjaxRequests')) {
+            $this->assertAttributeSame($isAjaxOnly, 'onlyForAjaxRequests', $handler);
+        }
+    }
+
+    /**
+     * @return Traversable
+     */
+    public function provideConfig()
+    {
+        // @codingStandardsIgnoreStart
+        //    test case                        => showsTrace, isAjaxOnly, requestIsAjax
+        yield 'Shows trace'                    => [true,      true,       true];
+        yield 'Does not show trace'            => [false,     true,       true];
+
+        yield 'Ajax only, request is ajax'     => [true,      true,       true];
+        yield 'Ajax only, request is not ajax' => [true,      true,       false];
+
+        yield 'Not ajax only'                  => [true,      false,      false];
+        // @codingStandardsIgnoreEnd
     }
 }

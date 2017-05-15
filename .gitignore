@@ -1,8 +1,8 @@
 doc/html/
 vendor/
+phpunit.xml
 zf-mkdoc-theme/
 clover.xml
-composer.lock
 coveralls-upload.json
 zf-mkdoc-theme.tgz
 /.settings/

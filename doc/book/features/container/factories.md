@@ -1,13 +1,14 @@
 # Provided Factories
 
-Expressive provides several factories compatible with container-interop to
-facilitate setting up common dependencies. The following is a list of provided
+Expressive provides several factories compatible with
+[PSR-11 Container](https://github.com/php-fig/container) to facilitate 
+setting up common dependencies. The following is a list of provided
 containers, what they will create, the suggested service name, and any
 additional dependencies they may require.
 
-All containers, unless noted otherwise, are in the `Zend\Expressive\Container`
+All factories, unless noted otherwise, are in the `Zend\Expressive\Container`
 namespace, and define an `__invoke()` method that accepts an
-`Interop\Container\ContainerInterface` instance as the sole argument.
+`Psr\Container\ContainerInterface` instance as the sole argument.
 
 ## ApplicationFactory
 
@@ -18,15 +19,16 @@ namespace, and define an `__invoke()` method that accepts an
     - `Zend\Expressive\Router\RouterInterface`. When provided, the service will
       be used to construct the `Application` instance; otherwise, an FastRoute router
       implementation will be used.
-    - `Zend\Expressive\FinalHandler`. This is a meta-service, as the only concrete
-      type required is a callable that can be used as a final middleware in the
-      case that the stack is exhausted before execution ends. By default, an
-      instance of `Zend\Stratigility\FinalHandler` will be used.
+    - `Zend\Expressive\Delegate\DefaultDelegate`. This should return an
+      `Interop\Http\ServerMiddleware\DelegateInterface` instance to process
+      when the middleware pipeline is exhausted without returning a response;
+      by default, this will be a `Zend\Expressive\Delegate\NotFoundDelegate`
+      instance.
     - `Zend\Diactoros\Response\EmitterInterface`. If none is provided, an instance
       of `Zend\Expressive\Emitter\EmitterStack` composing a
       `Zend\Diactoros\Response\SapiEmitter` instance will be used.
-    - `config`, an array or `ArrayAccess` instance. This will be used to seed the
-      application instance with pre/post pipeline middleware and/or routed
+    - `config`, an array or `ArrayAccess` instance. This _may_ be used to seed the
+      application instance with pipeline middleware and/or routed
       middleware (see more below).
 
 Additionally, the container instance itself is injected into the `Application`
@@ -35,14 +37,29 @@ instance.
 When the `config` service is present, the factory can utilize several keys in
 order to seed the `Application` instance:
 
+- `programmatic_pipeline` (bool) (Since 1.1.0): when enabled,
+  `middleware_pipeline` and `routes` configuration are ignored, and the factory
+  will assume that these are injected programmatically elsewhere.
+
+- `raise_throwables` (bool) (Since 1.1.0; obsolete as of 2.0.0): when enabled, 
+  this flag will prevent the Stratigility middleware dispatcher from catching
+  exceptions, and instead allow them to bubble outwards.
+
 - `middleware_pipeline` can be used to seed the middleware pipeline:
 
   ```php
   'middleware_pipeline' => [
       // An array of middleware to register.
       [ /* ... */ ],
+
+      // Expressive 1.0:
       Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
       Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+
+      // Expressive 1.1 and above (above constants will still work, though):
+      Zend\Expressive\Application::ROUTING_MIDDLEWARE,
+      Zend\Expressive\Application::DISPATCH_MIDDLEWARE,
+
       [ /* ... */ ],
   ],
   ```
@@ -53,22 +70,27 @@ order to seed the `Application` instance:
   ```php
   [
       // required:
-      'middleware' => 'Name of middleware service, or a callable',
+      'middleware' => 'Name of middleware service, valid middleware, or an array of these',
       // optional:
       'path'  => '/path/to/match',
-      'error' => true,
       'priority' => 1, // Integer
+
+      // optional under Expressive 1.X; ignored under 2.X:
+      'error' => false, // boolean
   ],
   ```
 
   The `middleware` key itself is the middleware to execute, and must be a
-  callable or the name of another defined service. If the `path` key is present,
-  that key will be used to segregate the middleware to a specific matched path
-  (in other words, it will not execute if the path is not matched). If the
-  `error` key is present and boolean `true`, then the middleware will be
-  registered as error middleware. (This is necessary due to the fact that the
-  factory defines a callable wrapper around middleware to enable lazy-loading of
-  middleware.) The `priority` defaults to 1, and follows the semantics of
+  service name resolving to valid middleware, middleware instances (either
+  http-interop middleware or callable double-pass middleware), or an array of
+  these values. If an array is provided, the specified middleware will be
+  composed into a `Zend\Stratigility\MiddlewarePipe` instance. 
+  
+  If the `path` key is present, that key will be used to segregate the
+  middleware to a specific matched path (in other words, it will not execute if
+  the path is not matched).
+  
+  The `priority` defaults to 1, and follows the semantics of
   [SplPriorityQueue](http://php.net/SplPriorityQueue): higher integer values
   indicate higher priority (will execute earlier), while lower/negative integer
   values indicate lower priority (will execute last). Default priority is 1; use
@@ -78,6 +100,12 @@ order to seed the `Application` instance:
   You *can* specify keys for each middleware specification. These will be
   ignored by the factory, but can be useful when merging several configurations
   into one for the application.
+  
+  Under Expressive 1.X, if the `error` key is present and boolean `true`, then
+  the middleware will be registered as error middleware. (This is necessary due
+  to the fact that the factory defines a callable wrapper around middleware to
+  enable lazy-loading of middleware.) We recommend _not_ using this feature;
+  see the chapter on [error handling](../error-handling.md) for details.
 
 - `routes` is used to define routed middleware. The value must be an array,
   consisting of arrays defining each middleware:
@@ -86,8 +114,8 @@ order to seed the `Application` instance:
   'routes' => [
       [
           'path' => '/path/to/match',
-          'middleware' => 'Middleware Service Name or Callable',
-          'allowed_methods' => [ 'GET', 'POST', 'PATCH' ],
+          'middleware' => 'Middleware service name, valid middleware, or array of these values',
+          'allowed_methods' => ['GET', 'POST', 'PATCH'],
           'options' => [
               'stuff' => 'to',
               'pass'  => 'to',
@@ -103,8 +131,11 @@ order to seed the `Application` instance:
     - `path`: the path to match. Format will be based on the router you choose for
       your project.
   
-    - `middleware`: a callable or a service name for the middleware to execute
-      when the route matches.
+    - `middleware`: a service name resolving to valid middleware, valid
+      middleware (either http-interop middleware or callable double-pass
+      middleware), or an array of such values (which will be composed into
+      a `Zend\Stratigility\MiddlewarePipe` instance); this middleware will be
+      dispatched when the route matches.
 
   Optionally, the route definition may provide:
 
@@ -118,7 +149,94 @@ order to seed the `Application` instance:
       router implementation for the given route. (Typical use cases include
       passing constraints or default values.)
 
+## ErrorHandlerFactory
+
+**Since version 2.0**
+
+- **Provides**: `Zend\Stratigility\Middleware\ErrorHandler`
+- **Suggested Name**: `Zend\Stratigility\Middleware\ErrorHandler`
+- **Requires**: no additional services are required.
+- **Optional**:
+    - `Zend\Expressive\Middleware\ErrorResponseGenerator`. If not provided, the error
+      handler will not compose an error response generator, making it largely
+      useless other than to provide an empty response.
+
+## ErrorResponseGeneratorFactory
+
+**Since version 2.0**
+
+- **Provides**: `Zend\Expressive\Middleware\ErrorResponseGenerator`
+- **Suggested Name**: `Zend\Stratigility\Middleware\ErrorResponseGenerator`
+- **Requires**: no additional services are required.
+- **Optional**:
+    - `Zend\Expressive\Template\TemplateRendererInterface`. If not provided, the
+      error response generator will provide a plain text response instead of a
+      templated one.
+    - `config`, an array or `ArrayAccess` instance. This will be used to seed the
+      `ErrorResponseGenerator` instance with a template name to use for errors (see
+      more below), and/or a "debug" flag value.
+
+When the `config` service is present, the factory can utilize two values:
+
+- `debug`, a flag indicating whether or not to provide debug information when
+  creating an error response.
+- `zend-expressive.error_handler.template_error`, a name of an alternate
+  template to use (instead of the default represented in the
+  `Zend\Expressive\Middleware\ErrorResponseGenerator::TEMPLATE_DEFAULT`
+  constant).
+
+As an example:
+
+```php
+'debug' => true,
+'zend-expressive' => [
+    'error_handler' => [
+        'template_error' => 'name of error template',
+    ],
+],
+```
+
+## NotFoundDelegateFactory
+
+**Since version 2.0**
+
+- **Provides**: `Zend\Expressive\Delegate\NotFoundDelegate`
+- **Suggested Name**: `Zend\Expressive\Delegate\NotFoundDelegate`, and aliased
+  to `Zend\Expressive\Delegate\DefaultDelegate`.
+- **Requires**: no additional services are required.
+- **Optional**:
+    - `Zend\Expressive\Template\TemplateRendererInterface`. If not provided, the
+      delegate will provide a plain text response instead of a templated one.
+    - `config`, an array or `ArrayAccess` instance. This will be used to seed the
+      `NotFoundDelegate` instance with a template name to use.
+
+When the `config` service is present, the factory can utilize two values:
+
+- `zend-expressive.error_handler.template_404`, a name of an alternate
+  template to use (instead of the default represented in the
+  `Zend\Expressive\Delegate\NotFoundDelegate::TEMPLATE_DEFAULT` constant).
+
+As an example:
+
+```php
+'zend-expressive' => [
+    'error_handler' => [
+        'template_404' => 'name of 404 template',
+    ],
+],
+```
+
+## NotFoundHandlerFactory
+
+**Since version 2.0**
+
+- **Provides**: `Zend\Expressive\Middleware\NotFoundHandler`
+- **Suggested Name**: `Zend\Expressive\Middleware\NotFoundHandler`
+- **Requires**: `Zend\Expressive\Delegate\DefaultDelegate`
+
 ## TemplatedErrorHandlerFactory
+
+**Removed in version 2.0**
 
 - **Provides**: `Zend\Expressive\TemplatedErrorHandler`
 - **Suggested Name**: `Zend\Expressive\FinalHandler`
@@ -145,6 +263,8 @@ seed the `Templated` instance:
 
 ## WhoopsErrorHandlerFactory
 
+**Removed in version 2.0.**
+
 - **Provides**: `Zend\Expressive\TemplatedErrorHandler`
 - **Suggested Name**: `Zend\Expressive\FinalHandler`
 - **Requires**:
@@ -159,6 +279,15 @@ seed the `Templated` instance:
 
 This factory uses `config` in the same way as the
 `TemplatedErrorHandlerFactory`.
+
+## WhoopsErrorResponseGeneratorFactory
+
+**Since version 2.0**
+
+- **Provides**: `Zend\Expressive\Middleware\WhoopsErrorResponseGenerator`
+- **Suggested Name**: `Zend\Expressive\Middleware\ErrorResponseGenerator`
+- **Requires**: `Zend\Expressive\Whoops` (see [WhoopsFactory](#whoopsfactory),
+below)
 
 ## WhoopsFactory
 
@@ -273,7 +402,7 @@ It consumes the following `config` structure:
 ]
 ```
 
-Whe `debug` is true, it disables caching, enables debug mode, enables strict
+When `debug` is true, it disables caching, enables debug mode, enables strict
 variables, and enables auto reloading. The `assets_*` values are used to seed
 the `TwigExtension` instance (assuming the router was found).
 

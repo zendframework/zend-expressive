@@ -1,18 +1,15 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
 
 namespace ZendTest\Expressive\Container;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
-use ReflectionFunction;
-use ReflectionProperty;
+use Psr\Container\ContainerInterface;
 use Whoops\Handler\PrettyPageHandler;
 use Zend\Expressive\Container\Exception\InvalidServiceException;
 use Zend\Expressive\Container\WhoopsPageHandlerFactory;
@@ -25,8 +22,11 @@ class WhoopsPageHandlerFactoryTest extends TestCase
 {
     use ContainerTrait;
 
-    /** @var ObjectProphecy */
-    protected $container;
+    /** @var ContainerInterface|ObjectProphecy */
+    private $container;
+
+    /** @var WhoopsPageHandlerFactory */
+    private $factory;
 
     public function setUp()
     {
@@ -48,15 +48,19 @@ class WhoopsPageHandlerFactoryTest extends TestCase
         $this->injectServiceInContainer($this->container, 'config', $config);
 
         $factory = $this->factory;
-        $result = $factory($this->container->reveal());
+        $result  = $factory($this->container->reveal());
         $this->assertInstanceOf(PrettyPageHandler::class, $result);
         $this->assertAttributeEquals($config['whoops']['editor'], 'editor', $result);
     }
 
     public function testWillInjectCallableEditor()
     {
-        $config = ['whoops' => ['editor' => function () {
-        }]];
+        $config = [
+            'whoops' => [
+                'editor' => function () {
+                },
+            ],
+        ];
         $this->injectServiceInContainer($this->container, 'config', $config);
         $factory = $this->factory;
 
@@ -74,7 +78,7 @@ class WhoopsPageHandlerFactoryTest extends TestCase
         $this->injectServiceInContainer($this->container, 'custom', $editor);
 
         $factory = $this->factory;
-        $result = $factory($this->container->reveal());
+        $result  = $factory($this->container->reveal());
         $this->assertInstanceOf(PrettyPageHandler::class, $result);
         $this->assertAttributeSame($editor, 'editor', $result);
     }
@@ -95,6 +99,8 @@ class WhoopsPageHandlerFactoryTest extends TestCase
 
     /**
      * @dataProvider invalidEditors
+     *
+     * @param mixed $editor
      */
     public function testInvalidEditorWillRaiseException($editor)
     {
@@ -103,7 +109,7 @@ class WhoopsPageHandlerFactoryTest extends TestCase
 
         $factory = $this->factory;
 
-        $this->setExpectedException(InvalidServiceException::class);
+        $this->expectException(InvalidServiceException::class);
         $factory($this->container->reveal());
     }
 }

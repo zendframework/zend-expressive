@@ -3,7 +3,9 @@
 One aspect of the `Zend\Expressive\Router\RouterInterface` is that it provides a
 `generateUri()` method. This method accepts a route name, and optionally an
 associative array of substitutions to use in the generated URI (e.g., if the URI
-has any named placeholders).
+has any named placeholders). Starting in zend-expressive-router 2.0, shipped
+with Expressive 2.0, you may also pass router-specific options to use during
+URI generation as a third argument.
 
 ## Naming routes
 

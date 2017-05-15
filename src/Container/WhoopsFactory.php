@@ -1,17 +1,16 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
 
 namespace Zend\Expressive\Container;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Whoops\Handler\JsonResponseHandler;
 use Whoops\Run as Whoops;
+use Whoops\Util\Misc as WhoopsUtil;
 
 /**
  * Create and return an instance of the Whoops runner.
@@ -66,23 +65,31 @@ class WhoopsFactory
      *
      * @param Whoops $whoops
      * @param array|\ArrayAccess $config
+     * @return void
      */
     private function registerJsonHandler(Whoops $whoops, $config)
     {
-        if (! isset($config['json_exceptions']['display'])
-            || empty($config['json_exceptions']['display'])
-        ) {
+        if (empty($config['json_exceptions']['display'])) {
             return;
         }
 
         $handler = new JsonResponseHandler();
 
-        if (isset($config['json_exceptions']['show_trace'])) {
+        if (! empty($config['json_exceptions']['show_trace'])) {
             $handler->addTraceToOutput(true);
         }
 
-        if (isset($config['json_exceptions']['ajax_only'])) {
-            $handler->onlyForAjaxRequests(true);
+        if (! empty($config['json_exceptions']['ajax_only'])) {
+            if (method_exists(WhoopsUtil::class, 'isAjaxRequest')) {
+                // Whoops 2.x; don't push handler on stack unless we are in
+                // an XHR request.
+                if (! WhoopsUtil::isAjaxRequest()) {
+                    return;
+                }
+            } elseif (method_exists($handler, 'onlyForAjaxRequests')) {
+                // Whoops 1.x
+                $handler->onlyForAjaxRequests(true);
+            }
         }
 
         $whoops->pushHandler($handler);

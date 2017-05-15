@@ -66,12 +66,13 @@ The following template functions are exposed:
   Generates: /article/3
   ```
 
-- ``url``: Render the absolute url for a given route and parameters. If there is
-  no route, it returns the current url.
+- ``url``: Render the absolute url for a given route with its route parameters,
+  query string arguments, and fragment. If there is no route, it returns the
+  current url.
 
   ```twig
-  {{ url('article_show', {'slug': 'article.slug'}) }}
-  Generates: http://example.com/article/article.slug
+  {{ url('article_show', {'id': '3'}, {'foo': 'bar'}, 'fragment') }}
+  Generates: http://example.com/article/3?foo=bar#fragment
   ```
 
 - ``absolute_url``: Render the absolute url from a given path. If the path is
@@ -126,3 +127,8 @@ return [
     ],
 ];
 ```
+
+When specifying the `twig.extensions` values, always use fully qualified class
+names or actual extension instances to ensure compatibility with any version of
+Twig used. Version 2 of Twig _requires_ that a fully qualified class name is
+used, and not a short-name alias.

@@ -58,10 +58,12 @@ interface RouterInterface
      * @see http://framework.zend.com/manual/current/en/modules/zend.mvc.routing.html
      * @param string $name
      * @param array $substitutions
+     * @param array $options Since zend-expressive-router 2.0/zend-expressive 2.0;
+     *     not defined in earlier versions.
      * @return string
      * @throws Exception\RuntimeException if unable to generate the given URI.
      */
-    public function generateUri($name, array $substitutions = []);
+    public function generateUri($name, array $substitutions = [], array $options = []);
 }
 ```
 
@@ -73,6 +75,21 @@ factories provided by zend-expressive will receive your custom service.
 Implementors should also read the following sections detailing the `Route` and
 `RouteResult` classes, to ensure that their implementations interoperate
 correctly.
+
+> ### generateUri() signature change in 2.0
+>
+> Prior to zendframework/zend-expressive-router 2.0.0, the signature of
+> `generateUri()` was:
+>
+> ```php
+> public function generateUri(
+>     string $name,
+>     array $substitutions = []
+> ) : string
+> ```
+> 
+> If you are targeting that version, you may still provide the `$options`
+> argument, but it will not be invoked.
 
 ## Routes
 
@@ -90,6 +107,8 @@ The `Route` class has the following signature:
 ```php
 namespace Zend\Expressive\Router;
 
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
+
 class Route
 {
     const HTTP_METHOD_ANY = 0xff;
@@ -97,7 +116,9 @@ class Route
 
     /**
      * @param string $path Path to match.
-     * @param string|callable $middleware Middleware to use when this route is matched.
+     * @param string|callable|MiddlewareInterface $middleware Middleware to use
+     *     when this route is matched. MiddlewareInterface is supported starting
+     *     in zend-expressive-router 2.1.0.
      * @param int|array Allowed HTTP methods; defaults to HTTP_METHOD_ANY.
      * @param string|null $name the route name
      * @throws Exception\InvalidArgumentException for invalid path type.
@@ -124,7 +145,8 @@ class Route
     public function getName();
 
     /**
-     * @return string|callable
+     * @return string|callable|MiddlewareInterface MiddlewareInterface is supported
+     *     starting in zend-expressive-router 2.1.0.
      */
     public function getMiddleware();
 
@@ -156,7 +178,9 @@ class Route
 Typically, developers will use `Zend\Expressive\Application::route()` (or one of
 the HTTP-specific routing methods) to create routes, and will not need to
 interact with `Route` instances. However, that method can *also* accept `Route`
-instances, allowing more flexibility in defining and configuring them.
+instances, allowing more flexibility in defining and configuring them;
+additionally, when working with `RouteResult` instances, you may pull the
+`Route` instance from that in order to obtain data about the matched route.
 
 ## Matching and RouteResults
 
@@ -185,6 +209,9 @@ class RouteResult
     /**
      * Create an instance representing a route success.
      *
+     * This method is removed starting in zend-expressive-router 2.0; use
+     * fromRoute() instead.
+     *
      * @param string $name Name of matched route.
      * @param callable|string $middleware Middleware associated with the
      *     matched route.
@@ -192,6 +219,19 @@ class RouteResult
      * @return static
      */
     public static function fromRouteMatch($name, $middleware, array $params);
+
+    /**
+     * Create an instance representing a route success from a Route instance.
+     *
+     * This method was introduced in zend-expressive-router 1.3, and should
+     * be used for generating an instance indicating a route success from
+     * that version forward.
+     *
+     * @param Route $route
+     * @param array $params Parameters associated with the matched route.
+     * @return static
+     */
+    public static function fromRoute(Route $route, array $params = []);
 
     /**
      * Create an instance representing a route failure.
@@ -207,6 +247,18 @@ class RouteResult
      * @return bool
      */
     public function isSuccess();
+
+    /**
+     * Retrieve the matched route, if possible.
+     *
+     * If this result represents a failure, return false; otherwise, return the
+     * matched route instance.
+     *
+     * Available starting in zend-expressive-router 1.3.0.
+     *
+     * @return Route
+     */
+    public function getMatchedRoute();
 
     /**
      * Retrieve the matched route name, if possible.

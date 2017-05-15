@@ -31,6 +31,55 @@ matched:
 $id = $request->getAttribute('id');
 ```
 
+## Retrieving the matched route
+
+When routing is successful, the routing middleware injects a
+`Zend\Expressive\Router\RouteResult` instance as a request attribute, using that
+class name as the attribute name. The `RouteResult` instance provides you access
+to the following:
+
+- The matched `Zend\Expressive\Router\Route` instance, via `$result->getMatchedRoute()`.
+- The matched route name, via `$result->getMatchedRouteName()` (or via
+  `$result->getMatchedRoute()->getName()`).
+- The matched middleware, via `$result->getMatchedMiddleware()` (or via
+  `$result->getMatchedRoute()->getMiddleware()`).
+- Matched parameters, via `$result->getMatchedParams()` (as noted above, these
+  are also each injected as discrete request attributes).
+- Allowed HTTP methods, via `$result->getAllowedMethods()`.
+
+As an example, you could use middleware similar to the following to return a 403
+response if routing was successful, but no `Authorization` header is present:
+
+```php
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Zend\Diactoros\Response\EmptyResponse;
+use Zend\Expressive\Router\RouteResult;
+
+function ($request, DelegateInterface $delegate) use ($routesRequiringAuthorization, $validator) {
+    if (! ($result = $request->getAttribute(RouteResult::class, false))) {
+        // No route matched; delegate to next middleware
+        return $delegate->process($request);
+    }
+
+    if (! in_array($result->getMatchedRouteName(), $routesRequiringAuthorization, true)) {
+        // Not a route requiring authorization
+        return $delegate->process($request);
+    }
+
+    $header = $request->getHeaderLine('Authorization');
+    if (! $validator($header)) {
+        return new EmptyResponse(403);
+    }
+
+    return $delegate->process($request);
+}
+```
+
+Note that the first step is to determine if we have a `RouteResult`; if we do
+not have one, we should either delegate to the next middleware, or return some
+sort of response (generally a 404). In the case of Expressive, a later
+middleware will generate the 404 response for us, so we can safely delegate.
+
 ## URI generation
 
 Because routers have knowledge of the various paths they can match, they are
@@ -44,6 +93,18 @@ and any substitutions you want to make:
 
 ```php
 $uri = $router->generateUri('book', ['id' => 'zend-expressive']);
+```
+
+Some routers may support providing _options_ during URI generation. Starting in
+zend-expressive-router 2.0, which ships with Expressive starting with version
+2.0, you may also pass a third argument to `generateUri()`, an array of router
+options:
+
+```php
+$uri = $router->generateUri('book', ['id' => 'zend-expressive'], [
+    'translator'  => $translator,
+    'text_domain' => $currentLocale,
+]);
 ```
 
 ## Supported implementations

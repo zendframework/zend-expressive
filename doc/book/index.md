@@ -7,8 +7,8 @@ framework for PHP, with the following features:
 - Routing. Choose your own router; we support:
     - [Aura.Router](https://github.com/auraphp/Aura.Router)
     - [FastRoute](https://github.com/nikic/FastRoute)
-    - [ZF2's MVC router](https://github.com/zendframework/zend-mvc)
-- DI Containers, via [container-interop](https://github.com/container-interop/container-interop).
+    - [zend-router](https://github.com/zendframework/zend-expressive-router)
+- DI Containers, via [PSR-11 Container](https://github.com/php-fig/container).
   All middleware composed in Expressive may be retrieved from the composed
   container.
 - Optionally, templating. We support:
@@ -26,5 +26,8 @@ framework for PHP, with the following features:
 Essentially, Expressive allows *you* to develop using the tools *you* prefer,
 and provides minimal structure and facilities to ease your development.
 
-[Keep reading](getting-started/features.md), and get started writing your first
-middleware application today!
+Should I choose it over Zend\Mvc?
+That’s a good question. [Here’s what we recommend.](why-expressive.md)
+
+If you’re keen to get started, then [keep reading](getting-started/features.md)
+and get started writing your first middleware application today!

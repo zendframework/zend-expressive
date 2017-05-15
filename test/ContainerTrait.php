@@ -1,20 +1,18 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
 
 namespace ZendTest\Expressive;
 
-use Interop\Container\ContainerInterface;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Container\ContainerInterface;
 
 /**
- * Helper methods for mock Interop\Container\ContainerInterface.
+ * Helper methods for mock Psr\Container\ContainerInterface.
  */
 trait ContainerTrait
 {
@@ -41,7 +39,6 @@ trait ContainerTrait
      * @param ObjectProphecy $container
      * @param string $serviceName
      * @param mixed $service
-     *
      * @return void
      */
     protected function injectServiceInContainer(ObjectProphecy $container, $serviceName, $service)

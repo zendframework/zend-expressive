@@ -7,10 +7,12 @@ pages:
         - 'Quick Start: Standalone': getting-started/standalone.md
         - 'Quick Start: Skeleton Installer': getting-started/skeleton.md
     - Features:
+        - "Middleware Types": features/middleware-types.md
         - Applications: features/application.md
         - Containers:
             - Introduction: features/container/intro.md
             - 'Container Factories': features/container/factories.md
+            - 'Delegator Factories': features/container/delegator-factories.md
             - 'Using zend-servicemanager': features/container/zend-servicemanager.md
             - 'Using Pimple': features/container/pimple.md
             - 'Using Aura.Di': features/container/aura-di.md
@@ -18,7 +20,6 @@ pages:
             - Introduction: features/router/intro.md
             - 'Routing Interface': features/router/interface.md
             - 'URI Generation': features/router/uri-generation.md
-            - 'Route Result Observers': features/router/result-observers.md
             - 'Routing vs Piping': features/router/piping.md
             - 'Using Aura': features/router/aura.md
             - 'Using FastRoute': features/router/fast-route.md
@@ -31,6 +32,9 @@ pages:
             - 'Using Twig': features/template/twig.md
             - 'Using zend-view': features/template/zend-view.md
         - 'Error Handling': features/error-handling.md
+        - 'Modular Applications': features/modular-applications.md
+        - Middleware:
+            - 'Implicit HEAD and OPTIONS Middleware': features/middleware/implicit-methods-middleware.md
         - Helpers:
             - Introduction: features/helpers/intro.md
             - UrlHelper: features/helpers/url-helper.md
@@ -38,6 +42,7 @@ pages:
             - 'Body Parsing Middleware': features/helpers/body-parse.md
         - Emitters: features/emitters.md
     - Cookbook:
+        - 'Autowiring routes and pipeline middleware': cookbook/autowiring-routes-and-pipelines.md
         - 'Prepending a common path to all routes': cookbook/common-prefix-for-routes.md
         - 'Route-specific middleware pipelines': cookbook/route-specific-pipeline.md
         - 'Setting custom 404 page handling': cookbook/custom-404-page-handling.md
@@ -50,11 +55,16 @@ pages:
         - 'Enabling debug toolbars': cookbook/debug-toolbars.md
         - 'Handling multiple routes in a single class': cookbook/using-routed-middleware-class-as-controller.md
         - 'Flash Messengers': cookbook/flash-messengers.md
+        - 'Passing data between middleware': cookbook/passing-data-between-middleware.md
     - Reference:
+        - "Why choose Expressive?": why-expressive.md
+        - "CLI Tooling": reference/cli-tooling.md
         - Examples: reference/usage-examples.md
         - 'Expressive Projects': reference/expressive-projects.md
         - Migration:
             - 'From RC5 and Earlier': reference/migration/rc-to-v1.md
+            - 'To Expressive 1.1': reference/migration/to-v1-1.md
+            - 'To Expressive 2.0': reference/migration/to-v2.md
 site_name: Expressive
 site_description: 'zend-expressive: PSR-7 Middleware Microframework'
 repo_url: 'https://github.com/zendframework/zend-expressive'

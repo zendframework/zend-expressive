@@ -59,36 +59,22 @@ First, install the middleware in your application:
 $ composer require php-middleware/php-debug-bar
 ```
 
-This package provides a factory for creating the middleware, so we only need to
-wire it into our middleware pipeline.  Create and edit the file
-`config/autoload/middleware-pipeline.local.php` to read as follows:
+This package supplies a config provider, which could be added to your
+`config/config.php` when using zend-config-aggregator or
+expressive-config-manager. However, because it should only be enabled in
+development, we recommend creating a "local" configuration file (e.g.,
+`config/autoload/php-debugbar.local.php`) when you need to enable it, with the
+following contents:
 
 ```php
-use PhpMiddleware\PhpDebugBar\PhpDebugBarMiddleware;
-use PhpMiddleware\PhpDebugBar\PhpDebugBarMiddlewareFactory;
+<?php
+use PhpMiddleware\PhpDebugBar\ConfigProvider;
 
-return [
-    'dependencies' => [
-        'factories' => [
-            PhpDebugBarMiddleware::class => PhpDebugBarMiddlewareFactory::class,
-        ],
-    ],
-    'middleware_pipeline' => [
-        [
-            'middleware' => [
-                PhpDebugBarMiddleware::class,
-            ],
-            'priority' => 1000,
-        ],
-    ],
-];
+$provider = new ConfigProvider();
+return $provider();
 ```
-
-These changes will activate the toolbar in your application.
 
 > ### Use locally!
 >
-> You'll note that we specified the file `middleware-pipeline.local.php`, and
-> not `middleware-pipeline.global.php`. This ensures that the toolbar is only
-> enabled in the local environment, and not committed to your production
-> settings.
+> Remember to enable `PhpMiddleware\PhpDebugBar\ConfigProvider` only in your
+> development enviroments!

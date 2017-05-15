@@ -14,19 +14,13 @@ By default, this middleware will detect the following content types:
 
 ## Registering the middleware
 
-You can register it manually:
+You can register it programmatically:
 
 ```php
-use Zend\Expressive\Helper\BodyParams\BodyParamsMiddleware;
-
 $app->pipe(BodyParamsMiddleware::class);
-
-// register other middleware
-// register routing middleware
-$app->run();
 ```
 
-or as pipeline middleware:
+Alternately, register it via configuration, if using configuration-based applications:
 
 ```php
 // config/autoload/middleware-pipeline.global.php
@@ -43,7 +37,7 @@ return [
         ],
     ],
     'middleware_pipeline' => [
-        [ 'middleware' => Helper\BodyParams\BodyParamsMiddleware::class, 'priority' => 100],
+        ['middleware' => Helper\BodyParams\BodyParamsMiddleware::class, 'priority' => 100],
         /* ... */
         'routing' => [
             'middleware' => [
@@ -58,7 +52,17 @@ return [
 ];
 ```
 
-Another option is to incorporate it in route-specific middleware queues:
+Since body parsing does not necessarily need to happen for every request, you
+can also choose to incorporate it in route-specific middleware pipelines:
+
+```php
+$app->post('/login', [
+    BodyParamsMiddleware::class,
+    LoginMiddleware::class,
+]);
+```
+
+If using a configuration-based application:
 
 ```php
 // config/autoload/routes.global.php
@@ -88,11 +92,12 @@ return [
 ];
 ```
 
-This latter approach has a slight advantage: the middleware will only execute
-for routes that require the processing. While the middleware has some checks to
-ensure it only triggers for HTTP methods that accept bodies, those checks are
-still overhead that you might want to avoid; the above strategy of using the
-middleware only with specific routes can accomplish that.
+Using route-based middleware pipelines has the advantage of ensuring that the
+body parsing middleware only executes for routes that require the processing.
+While the middleware has some checks to ensure it only triggers for HTTP
+methods that accept bodies, those checks are still overhead that you might want
+to avoid; the above strategy of using the middleware only with specific routes
+can accomplish that.
 
 ## Strategies
 

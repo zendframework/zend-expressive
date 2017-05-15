@@ -25,7 +25,7 @@ You can do this programmatically within a container factory, assuming you are
 using a container that supports factories.
 
 ```php
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Stratigility\MiddlewarePipe;
 
 class ApiResourcePipelineFactory
@@ -35,8 +35,8 @@ class ApiResourcePipelineFactory
         $pipeline = new MiddlewarePipe();
 
         // These correspond to the bullet points above
-        $pipeline->pipe($container->get('AuthenticationMiddleware)');
-        $pipeline->pipe($container->get('AuthorizationMiddleware)');
+        $pipeline->pipe($container->get('AuthenticationMiddleware'));
+        $pipeline->pipe($container->get('AuthorizationMiddleware'));
         $pipeline->pipe($container->get('BodyParsingMiddleware'));
         $pipeline->pipe($container->get('ValidationMiddleware'));
 
@@ -52,23 +52,27 @@ This gives you full control over the creation of the pipeline. You would,
 however, need to ensure that you map the middleware to the pipeline factory when
 setting up your container configuration.
 
-One alternative when using zend-servicemanager is to use a [delegator factory](http://framework.zend.com/manual/current/en/modules/zend.service-manager.delegator-factories.html).
+One alternative when using zend-servicemanager is to use a [delegator factory](https://docs.zendframework.com/zend-servicemanager/delegators/).
 Delegator factories allow you to decorate the primary factory used to create the
 middleware in order to change the instance or return an alternate instance. In
 this case, we'd do the latter. The following is an example:
 
 ```php
+use Psr\Container\ContainerInterface;
 use Zend\ServiceManager\DelegatorFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Stratigility\MiddlewarePipe;
 
-class ApiResourcePipelineDelegatorFactory
+class ApiResourcePipelineDelegatorFactory implements DelegatorFactoryInterface
 {
-    public function createDelegatorWithName(
-        ServiceLocatorInterface $container,
+    /**
+     * zend-servicemanager v3 support
+     */
+    public function __invoke(
+        ContainerInterface $container,
         $name,
-        $requestedName,
-        $callback
+        callable $callback,
+        array $options = null
     ) {
         $pipeline = new MiddlewarePipe();
 
@@ -82,6 +86,18 @@ class ApiResourcePipelineDelegatorFactory
         $pipeline->pipe($callback());
 
         return $pipeline;
+    }
+
+    /**
+     * zend-servicemanager v2 support
+     */
+    public function createDelegatorWithName(
+        ServiceLocatorInterface $container,
+        $name,
+        $requestedName,
+        $callback
+    ) {
+        return $this($container, $name, $callback);
     }
 }
 ```
@@ -98,7 +114,7 @@ return [
             'ValidationMiddleware' => '...',
             'ApiResourceMiddleware' => '...',
         ],
-        'delegator_factories' => [
+        'delegators' => [
             'ApiResourceMiddleware' => [
                 'ApiResourcePipelineDelegatorFactory',
             ],
@@ -152,7 +168,8 @@ $app->route('/api/resource[/{id:[a-f0-9]{32}}]', [
 When either of these approaches are used, the individual middleware listed
 **MUST** be one of the following:
 
-- a callable middleware;
+- an instance of `Interop\Http\ServerMiddleware\MiddlewareInterface`;
+- a callable middleware (will be decorated as interop middleware);
 - a service name of middleware available in the container;
 - a fully qualified class name of a directly instantiable (no constructor
   arguments) middleware class.

@@ -1,22 +1,21 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
 
 namespace ZendTest\Expressive;
 
-use Interop\Container\ContainerInterface;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use ReflectionProperty;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Expressive\AppFactory;
 use Zend\Expressive\Application;
 use Zend\Expressive\Emitter\EmitterStack;
+use Zend\Expressive\Exception\MissingDependencyException;
 use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\ServiceManager\ServiceManager;
@@ -26,6 +25,13 @@ use Zend\ServiceManager\ServiceManager;
  */
 class AppFactoryTest extends TestCase
 {
+    static public $existingClasses;
+
+    protected function tearDown()
+    {
+        self::$existingClasses = null;
+    }
+
     public function getRouterFromApplication(Application $app)
     {
         $r = new ReflectionProperty($app, 'router');
@@ -87,5 +93,27 @@ class AppFactoryTest extends TestCase
         $reflection = new ReflectionClass(AppFactory::class);
         $constructor = $reflection->getConstructor();
         $this->assertFalse($constructor->isPublic());
+    }
+
+    public function testThrowExceptionWhenContainerNotProvidedAndServiceManagerNotExists()
+    {
+        self::$existingClasses = [
+            FastRouteRouter::class,
+        ];
+
+        $this->expectException(MissingDependencyException::class);
+
+        AppFactory::create();
+    }
+
+    public function testThrowExceptionWhenContainerNotProvidedAndFastRouteRouterNotExists()
+    {
+        self::$existingClasses = [
+            ServiceManager::class,
+        ];
+
+        $this->expectException(MissingDependencyException::class);
+
+        AppFactory::create();
     }
 }

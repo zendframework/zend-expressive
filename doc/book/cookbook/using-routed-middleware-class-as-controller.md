@@ -9,7 +9,7 @@ classes:
 - AlbumPageAdd
 
 If you are familiar with frameworks that provide controllers capable of handling
-multiple "actions", such as those found in Zend Framework 1 and 2, Symfony,
+multiple "actions", such as those found in Zend Framework's MVC layer, Symfony,
 CodeIgniter, CakePHP, and other popular frameworks, you may want to apply a
 similar pattern when using Expressive.
 
@@ -22,21 +22,27 @@ middleware class will use in order to determine which internal method to invoke.
 Consider the following route configuration:
 
 ```php
+use Album\Action\AlbumPage;
+
+// Programmatic:
+$app->get('/album[/{action:add|edit}[/{id}]]', AlbumPage::class, 'album');
+
+// Config-driven:
 return [
     /* ... */
     'routes' => [
         /* ... */
         [
-            'name' => 'album',
-            'path' => '/album[/{action:add|edit}[/{id}]]',
-            'middleware' => Album\Action\AlbumPage::class,
+            'name'            => 'album',
+            'path'            => '/album[/{action:add|edit}[/{id}]]',
+            'middleware'      => AlbumPage::class,
             'allowed_methods' => ['GET'],
         ],
         /* ... */
     ],
 ];
 ```
-The above defines a route that will match any of the following:
+The above each define a route that will match any of the following:
 
 - `/album`
 - `/album/add`
@@ -54,14 +60,18 @@ also receive an `id` attribute (in the latter example, it would be `3`).
 We might then implement `Album\Action\AlbumPage` as follows:
 
 ```php
+<?php
 namespace Album\Action;
 
-use Psr\Http\Message\ResponseInterface;
+use Fig\Http\Message\StatusCodeInterface as StatusCode;
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Response\EmptyResponse;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
-class AlbumPage
+class AlbumPage implements MiddlewareInterface
 {
     private $template;    
 
@@ -70,45 +80,33 @@ class AlbumPage
         $this->template = $template;
     }
 
-    public function __invoke(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        callable $next = null
-    ) {
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
         switch ($request->getAttribute('action', 'index')) {
             case 'index':
-                return $this->indexAction($request, $response, $next);
+                return $this->indexAction($request, $delegate);
             case 'add':
-                return $this->addAction($request, $response, $next);
+                return $this->addAction($request, $delegate);
             case 'edit':
-                return $this->editAction($request, $response, $next);
+                return $this->editAction($request, $delegate);
             default:
                 // Invalid; thus, a 404!
-                return $response->withStatus(404);
+                return new EmptyResponse(StatusCode::STATUS_NOT_FOUND);
         }
     }
 
-    public function indexAction(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        callable $next = null
-    ) {
+    public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
         return new HtmlResponse($this->template->render('album::album-page'));
     }
 
-    public function addAction(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        callable $next = null
-    ) {
+    public function addAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
         return new HtmlResponse($this->template->render('album::album-page-add'));
     }
 
-    public function editAction(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        callable $next = null
-    ) {
+    public function editAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
         $id = $request->getAttribute('id', false);
         if (! $id) {
             throw new \InvalidArgumentException('id parameter must be provided');
@@ -124,30 +122,31 @@ class AlbumPage
 This allows us to have the same dependencies for a set of related actions, and,
 if desired, even have common internal methods each can utilize.
 
-This approach is reasonable, but requires that I create a similar `__invoke()`
+This approach is reasonable, but requires that I create a similar `process()`
 implementation every time I want to accomplish a similar workflow. Let's create
 a generic implementation, via an `AbstractPage` class:
 
 ```php
+<?php
 namespace App\Action;
 
-use Psr\Http\Message\ResponseInterface;
+use Fig\Http\Message\StatusCodeInterface as StatusCode;
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Response\EmptyResponse;
 
-abstract class AbstractPage
+abstract class AbstractPage implements MiddlewareInterface
 {
-    public function __invoke(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        callable $next = null
-    ) {
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
         $action = $request->getAttribute('action', 'index') . 'Action';
 
         if (! method_exists($this, $action)) {
-            return $response->withStatus(404);
+            return new EmptyResponse(StatusCode::STATUS_NOT_FOUND);
         }
 
-        return $this->$action($request, $response, $next);
+        return $this->$action($request, $delegate);
     }
 }
 ```
@@ -155,19 +154,7 @@ abstract class AbstractPage
 The above abstract class pulls the `action` attribute on invocation, and
 concatenates it with the word `Action`. It then uses this value to determine if
 a corresponding method exists in the current class, and, if so, calls it with
-the arguments it received; otherwise, it returns a 404 response.
-
-> ## Invoking the error stack
->
-> Instead of returning a 404 response, you could also invoke `$next()` with an
-> error:
->
-> ```php
-> return $next($request, $response, new NotFoundError());
-> ```
->
-> This will then invoke the first error handler middleware capable of handling
-> the error.
+the arguments it received; otherwise, it returns an empty 404 response.
 
 Our original `AlbumPage` implementation could then be modified to extend
 `AbstractPage`:
@@ -176,7 +163,7 @@ Our original `AlbumPage` implementation could then be modified to extend
 namespace Album\Action;
 
 use App\Action\AbstractPage;
-use Psr\Http\Message\ResponseInterface;
+use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Template\TemplateRendererInterface;
@@ -202,25 +189,25 @@ class AlbumPage extends AbstractPage
 > logic in a trait, which you then compose into your middleware:
 >
 > ```php
+> <?php
 > namespace App\Action;
->
-> use Psr\Http\Message\ResponseInterface;
+> 
+> use Fig\Http\Message\StatusCodeInterface as StatusCode;
+> use Interop\Http\ServerMiddleware\DelegateInterface;
 > use Psr\Http\Message\ServerRequestInterface;
->
+> use Zend\Diactoros\Response\EmptyResponse;
+> 
 > trait ActionBasedInvocation
 > {
->     public function __invoke(
->         ServerRequestInterface $request,
->         ResponseInterface $response,
->         callable $next = null
->     ) {
+>     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+>     {
 >         $action = $request->getAttribute('action', 'index') . 'Action';
 > 
 >         if (! method_exists($this, $action)) {
->             return $response->withStatus(404);
+>             return new EmptyResponse(StatusCode::STATUS_NOT_FOUND);
 >         }
 > 
->         return $this->$action($request, $response, $next);
+>         return $this->$action($request, $delegate);
 >     }
 > }
 > ```
@@ -228,18 +215,16 @@ class AlbumPage extends AbstractPage
 > You would then compose it into a class as follows:
 >
 > ```php
+> <?php
 > namespace Album\Action;
 > 
 > use App\Action\ActionBasedInvocation;
-> use Psr\Http\Message\ResponseInterface;
-> use Psr\Http\Message\ServerRequestInterface;
-> use Zend\Diactoros\Response\HtmlResponse;
 > use Zend\Expressive\Template\TemplateRendererInterface;
 > 
-> class AlbumPage extends AbstractPage
+> class AlbumPage
 > {
 >     use ActionBasedInvocation;
->
+> 
 >     private $template;    
 > 
 >     public function __construct(TemplateRendererInterface $template)

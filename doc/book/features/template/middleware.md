@@ -18,18 +18,21 @@ setter. As an example:
 ```php
 namespace Acme\Blog;
 
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
-class EntryMiddleware
+class EntryMiddleware implements MiddlewareInterface
 {
-    private $renderer;
+    private $templateRenderer;
 
     public function __construct(TemplateRendererInterface $renderer)
     {
         $this->templateRenderer = $renderer;
     }
 
-    public function __invoke($request, $response, $next)
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         // ...
     }
@@ -42,14 +45,15 @@ This will necessitate having a factory for your middleware:
 namespace Acme\Blog\Container;
 
 use Acme\Blog\EntryMiddleware;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
+use Zend\Expressive\Template\TemplateRendererInterface;
 
 class EntryMiddlewareFactory
 {
     public function __invoke(ContainerInterface $container)
     {
         return new EntryMiddleware(
-            $container->get('Zend\Expressive\Template\TemplateRendererInterface')
+            $container->get(TemplateRendererInterface::class)
         );
     }
 }
@@ -66,22 +70,24 @@ consume it. Most often, we will want to render a template, optionally with
 substitutions to pass to it. This will typically look like the following:
 
 ```php
-<?php
 namespace Acme\Blog;
 
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
-class EntryMiddleware
+class EntryMiddleware implements MiddlewareInterface
 {
-    private $renderer;
+    private $templateRenderer;
 
     public function __construct(TemplateRendererInterface $renderer)
     {
         $this->templateRenderer = $renderer;
     }
 
-    public function __invoke($request, $response, $next)
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         // do some work...
         return new HtmlResponse(
@@ -91,13 +97,4 @@ class EntryMiddleware
         );
     }
 }
-```
-
-Alternately, you can write to the composed response:
-
-```php
-$response->getBody()->write($this->templateRenderer->render('blog::entry', [
-    'entry' => $entry,
-]));
-return $response;
 ```

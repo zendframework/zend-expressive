@@ -1,6 +1,6 @@
 # How can I setup the locale without routing parameters?
 
-Localized web applications often set the locale (and therefor the language)
+Localized web applications often set the locale (and therefore the language)
 based on a routing parameter, the session, or a specialized sub-domain.
 In this recipe we will concentrate on introspecting the URI path via middleware,
 which allows you to have a global mechanism for detecting the locale without
@@ -26,12 +26,16 @@ If it does find one, it uses the value to setup the locale. It also:
 - adds the locale segment as the base path of the `UrlHelper`.
 
 ```php
+<?php
 namespace Application\I18n;
 
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Locale;
+use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Helper\UrlHelper;
 
-class SetLocaleMiddleware
+class SetLocaleMiddleware implements MiddlewareInterface
 {
     private $helper;
     
@@ -40,27 +44,24 @@ class SetLocaleMiddleware
         $this->helper = $helper;
     }
     
-    public function __invoke($request, $response, callable $next)
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $uri = $request->getUri();
         
         $path = $uri->getPath();
         
-        if (! preg_match('#^/(?P<locale>[a-z]{2})/#', $path, $matches) {
+        if (! preg_match('#^/(?P<locale>[a-z]{2,3}([-_][a-zA-Z]{2}|))/#', $path, $matches)) {
             Locale::setDefault('de_DE');
-            return $next($request, $response);
+            return $delegate->process($request);
         }
         
         $locale = $matches['locale'];
-        Locale::setDefault($locale);
+        Locale::setDefault(Locale::canonicalize($locale));
         $this->helper->setBasePath($locale);
         
-        return $next(
-            $request->withUri(
-                $uri->withPath(substr($path, 3))
-            ),
-            $response
-        );
+        return $delegate->process($request->withUri(
+            $uri->withPath(substr($path, 3))
+        ));
     }
 }
 ```
@@ -69,9 +70,10 @@ Then you will need a factory for the `SetLocaleMiddleware` to inject the
 `UrlHelper` instance.
 
 ```php
+<?php
 namespace Application\I18n;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Expressive\Helper\UrlHelper;
 
 class SetLocaleMiddlewareFactory
@@ -85,21 +87,48 @@ class SetLocaleMiddlewareFactory
 }
 ```
 
-Afterwards, you need to configure the `SetLocaleMiddleware` in your 
-`/config/autoload/middleware-pipeline.global.php` file so that it is executed 
-on every request.
+Next, map the middleware to its factory in either
+`/config/autoload/dependencies.global.php` or
+`/config/autoload/middleware-pipeline.global.php`:
 
 ```php
+use Application\I18n\SetLocaleMiddleware;
+use Application\I18n\SetLocaleMiddlewareFactory;
+
 return [
     'dependencies' => [
         /* ... */
         'factories' => [
-            Application\I18n\SetLocaleMiddleware::class =>
-                Application\I18n\SetLocaleMiddlewareFactory::class,
+            SetLocaleMiddleware::class => SetLocaleMiddlewareFactory::class,
             /* ... */
         ],
-    ]
+    ],
+];
+```
 
+Finally, you will need to configure your middleware pipeline to ensure this
+middleware is executed on every request.
+
+If using a programmatic pipeline:
+
+```php
+use Application\I18n\SetLocaleMiddleware;
+use Zend\Expressive\Helper\UrlHelperMiddleware;
+
+/* ... */
+$app->pipe(SetLocaleMiddleware::class);
+/* ... */
+$app->pipeRoutingMiddleware();
+$app->pipe(UrlHelperMiddleware::class);
+$app->pipeDispatchMiddleware();
+/* ... */
+```
+
+If using a configuration-driven application, update
+`/config/autoload/middleware-pipeline.global.php` to add the middleware:
+
+```php
+return [
     'middleware_pipeline' => [
         [
             'middleware' => [
@@ -147,14 +176,16 @@ action middleware, you just need to inject the `UrlHelper` into your
 middleware and use it for URL generation:
 
 ```php
+<?php
 namespace Application\Action;
 
-use Psr\Http\Message\ResponseInterface;
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Expressive\Helper\UrlHelper;
 
-class RedirectAction
+class RedirectAction implements MiddlewareInterface
 {
     private $helper;
         
@@ -165,16 +196,11 @@ class RedirectAction
         
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
-     * @param callable|null          $next
-     *
+     * @param DelegateInterface      $delegate
      * @return RedirectResponse
      */
-    public function __invoke(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        callable $next = null
-    ) {
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
         $routeParams = [ /* ... */ ];
 
         return new RedirectResponse(
@@ -191,7 +217,7 @@ following would work for the above middleware:
 ```php
 namespace Application\Action;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Expressive\Helper\UrlHelper;
 
 class RedirectActionFactory

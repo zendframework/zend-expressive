@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.1.0 - TBD
+## 2.1.0 - TBD
 
 ### Added
 
@@ -20,12 +20,557 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
-## 1.0.1 - TBD
+## 2.0.4 - TBD
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#479](https://github.com/zendframework/zend-expressive/pull/479) fixes the
+  `WhoopsErrorResponseGenerator::$whoops` dockblock Type to support Whoops 1
+  and 2.
+
+- [#482](https://github.com/zendframework/zend-expressive/pull/482) fixes the
+  `Application::$defaultDelegate` dockblock Type.
+
+## 2.0.3 - 2017-03-28
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- [#468](https://github.com/zendframework/zend-expressive/pull/468) updates
+  references to `DefaultDelegate::class` to instead use the string
+  `'Zend\Expressive\Delegate\DefaultDelegate'`; using the string makes it clear
+  that the service name does not resolve to an actual class.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#476](https://github.com/zendframework/zend-expressive/pull/476) fixes the
+  `WhoopsErrorResponseGenerator` to ensure it returns a proper error status
+  code, instead of using a `200 OK` status.
+
+## 2.0.2 - 2017-03-13
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#467](https://github.com/zendframework/zend-expressive/pull/467) fixes an
+  issue when passing invokable, duck-typed, interop middleware to the
+  application without registering it with the container. Prior to the patch, it
+  was incorrectly being decorated by
+  `Zend\Stratigility\Middleware\CallableMiddlewareWrapper` instead of
+  `Zend\Stratigility\Middleware\CallableInteropMiddlewareWrapper`.
+
+## 2.0.1 - 2017-03-09
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#464](https://github.com/zendframework/zend-expressive/pull/464) fixes the
+  `WhoopsErrorResponseGenerator` to provide a correct `Content-Type` header to
+  the response when a JSON request occurs.
+
+## 2.0.0 - 2017-03-07
+
+### Added
+
+- [#450](https://github.com/zendframework/zend-expressive/pull/450) adds support
+  for [PSR-11](http://www.php-fig.org/psr/psr-11/); Expressive is now a PSR-11
+  consumer.
+
+- [#428](https://github.com/zendframework/zend-expressive/pull/428) updates the
+  zend-stratigility dependency to require `^2.0`; this allows usage of both
+  the new middleare-based error handling system introduced in zend-stratigility
+  1.3, as well as usage of [http-interop/http-middleware](https://github.com/http-interop/http-middleware)
+  implementations with Expressive. The following middleware is now supported:
+  - Implementations of `Interop\Http\ServerMiddleware\MiddlewareInterface`.
+  - Callable middleware that implements the same signature as
+    `Interop\Http\ServerMiddleware\MiddlewareInterface`.
+  - Callable middleware using the legacy double-pass signature
+    (`function ($request, $response, callable $next)`); these are now decorated
+    in `Zend\Stratigility\Middleware\CallableMiddlewareWrapper` instances.
+  - Service names resolving to any of the above.
+  - Arrays of any of the above; these will be cast to
+    `Zend\Stratigility\MiddlewarePipe` instances, piping each middleware.
+
+- [#396](https://github.com/zendframework/zend-expressive/pull/396) adds
+  `Zend\Expressive\Middleware\NotFoundHandler`, which provides a way to return a
+  templated 404 response to users. This middleware should be used as innermost
+  middleware. You may use the new `Zend\Expressive\Container\NotFoundHandlerFactory`
+  to generate the instance via your DI container.
+
+- [#396](https://github.com/zendframework/zend-expressive/pull/396) adds
+  `Zend\Expressive\Container\ErrorHandlerFactory`, for generating a
+  `Zend\Stratigility\Middleware\ErrorHandler` to use with your application.
+  If a `Zend\Expressive\Middleware\ErrorResponseGenerator` service is present in
+  the container, it will be used to seed the `ErrorHandler` with a response
+  generator. If you use this facility, you should enable the
+  `zend-expressive.raise_throwables` configuration flag.
+
+- [#396](https://github.com/zendframework/zend-expressive/pull/396) adds
+  `Zend\Expressive\Middleware\ErrorResponseGenerator` and
+  `Zend\Expressive\Middleware\WhoopsErrorResponseGenerator`, which may be used
+  with `Zend\Stratigility\Middleware\ErrorHandler` to generate error responses.
+  The first will generate templated error responses if a template renderer is
+  composed, and the latter will generate Whoops output.
+  You may use the new `Zend\Expressive\Container\ErrorResponseGeneratorFactory`
+  and `Zend\Expressive\Container\WhoopsErrorResponseGeneratorFactory`,
+  respectively, to create these instances; if you do, assign these to the
+  service name `Zend\Expressive\Middleware\ErrorResponseGenerator` to have them
+  automatically registered with the `ErrorHandler`.
+
+- [#396](https://github.com/zendframework/zend-expressive/pull/396) adds
+  `Zend\Expressive\ApplicationConfigInjectionTrait`, which exposes two methods,
+  `injectRoutesFromConfig()` and `injectPipelineFromConfig()`; this trait is now
+  composed into the `Application` class. These methods allow you to configure an
+  `Application` instance from configuration if desired, and are now used by the
+  `ApplicationFactory` to configure the `Application` instance.
+
+- [#396](https://github.com/zendframework/zend-expressive/pull/396) adds
+  a vendor binary, `vendor/bin/expressive-tooling`, which will install (or
+  uninstall) the [zend-expressive-tooling](https://github.com/zendframework/zend-expressive-tooling);
+  this package provides migration tools for updating your application to use
+  programmatic pipelines and the new error handling strategy, as well as tools
+  for identifying usage of the legacy Stratigility request and response
+  decorators and error middleware.
+
+- [#413](https://github.com/zendframework/zend-expressive/pull/413) adds the
+  middleware `Zend\Expressive\Middleware\ImplicitHeadMiddleware`; this
+  middleware can be used to provide implicit support for `HEAD` requests when
+  the matched route does not explicitly support the method.
+
+- [#413](https://github.com/zendframework/zend-expressive/pull/413) adds the
+  middleware `Zend\Expressive\Middleware\ImplicitOptionsMiddleware`; this
+  middleware can be used to provide implicit support for `OPTIONS` requests when
+  the matched route does not explicitly support the method; the returned 200
+  response will also include an `Allow` header listing allowed HTTP methods for
+  the URI.
+
+- [#426](https://github.com/zendframework/zend-expressive/pull/426) adds the
+  method `Application::getRoutes()`, which will return the list of
+  `Zend\Expressive\Router\Route` instances currently registered with the
+  application.
+
+- [#428](https://github.com/zendframework/zend-expressive/pull/428) adds the
+  class `Zend\Expressive\Delegate\NotFoundDelegate`, an
+  `Interop\Http\ServerMiddleware\DelegateInterface` implementation. The class
+  will return a 404 response; if a `TemplateRendererInterface` is available and
+  injected into the delegate, it will provide templated contents for the 404
+  response as well. We also provide `Zend\Expressive\Container\NotFoundDelegateFactory`
+  for providing an instance.
+
+- [#428](https://github.com/zendframework/zend-expressive/pull/428) adds the
+  method `Zend\Expressive\Application::getDefaultDelegate()`. This method will
+  return the default `Interop\Http\ServerMiddleware\DelegateInterface` injected
+  during instantiation, or, if none was injected, lazy load an instance of
+  `Zend\Expressive\Delegate\NotFoundDelegate`.
+
+- [#428](https://github.com/zendframework/zend-expressive/pull/428) adds the
+  constants `DISPATCH_MIDDLEWARE` and `ROUTING_MIDDLEWARE` to
+  `Zend\Expressive\Application`; they have identical values to the constants
+  previously defined in `Zend\Expressive\Container\ApplicationFactory`.
+
+- [#428](https://github.com/zendframework/zend-expressive/pull/428) adds
+  `Zend\Expressive\Middleware\LazyLoadingMiddleware`; this essentially extracts
+  the logic previously used within `Zend\Expressive\Application` to provide
+  container-based middleware to allow lazy-loading only when dispatched.
+
+### Changes
+
+- [#440](https://github.com/zendframework/zend-expressive/pull/440) changes the
+  `Zend\Expressive\Application::__call($method, array $args)` signature; in
+  previous versions, `$args` did not have a typehint. If you are extending the
+  class and overriding this method, you will need to update your signature
+  accordingly.
+
+- [#428](https://github.com/zendframework/zend-expressive/pull/428) updates
+  `Zend\Expressive\Container\ApplicationFactory` to ignore the
+  `zend-expressive.raise_throwables` configuration setting; Stratigility 2.X no
+  longer catches exceptions in its middleware dispatcher, making the setting
+  irrelevant.
+
+- [#422](https://github.com/zendframework/zend-expressive/pull/422) updates the
+  zend-expressive-router minimum supported version to 2.0.0.
+
+- [#428](https://github.com/zendframework/zend-expressive/pull/428) modifies the
+  `Zend\Expressive\Container\ApplicationFactory` constants `DISPATCH_MIDDLEWARE`
+  and `ROUTING_MIDDLEWARE` to define themselves based on the constants of the
+  same name now defined in `Zend\Expressive\Application`.
+
+- [#428](https://github.com/zendframework/zend-expressive/pull/428) modifies the
+  constructor of `Zend\Expressive\Application`; the third argument was
+  previously a nullable callable `$finalHandler`; it is now a nullable
+  `Interop\Http\ServerMiddleware\DelegateInterface` with the name
+  `$defaultDelegate`.
+
+- [#450](https://github.com/zendframework/zend-expressive/pull/450) modifies the
+  signatures in several classes to typehint against [PSR-11](http://www.php-fig.org/psr/psr-11/)
+  instead of [container-interop](https://github.com/container-interop/container-interop);
+  these include:
+
+  - `Zend\Expressive\AppFactory::create()`
+  - `Zend\Expressive\Application::__construct()`
+  - `Zend\Expressive\Container\ApplicationFactory::__invoke()`
+  - `Zend\Expressive\Container\ErrorHandlerFactory::__invoke()`
+  - `Zend\Expressive\Container\ErrorResponseGeneratorFactory::__invoke()`
+  - `Zend\Expressive\Container\NotFoundDelegateFactory::__invoke()`
+  - `Zend\Expressive\Container\NotFoundHandlerFactory::__invoke()`
+  - `Zend\Expressive\Container\WhoopsErrorResponseGeneratorFactory::__invoke()`
+  - `Zend\Expressive\Container\WhoopsFactory::__invoke()`
+  - `Zend\Expressive\Container\WhoopsPageHandlerFactory::__invoke()`
+
+- [#450](https://github.com/zendframework/zend-expressive/pull/450) changes the
+  interface inheritance of `Zend\Expressive\Container\Exception\InvalidServiceException`
+  to extend `Psr\Container\ContainerExceptionInterface` instead of
+  `Interop\Container\Exception\ContainerException`.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- [#428](https://github.com/zendframework/zend-expressive/pull/428) removes the
+  following routing/dispatch methods from `Zend\Expressive\Application`:
+  - `routeMiddleware()`; this is now encapsulated in `Zend\Expressive\Middleware\RouteMiddleware`.
+  - `dispatchMiddleware()`; this is now encapsulated in `Zend\Expressive\Middleware\DispatchMiddleware`.
+
+- [#428](https://github.com/zendframework/zend-expressive/pull/428) removes the
+  various "final handler" implementations and related factories. Users should
+  now use the "default delegates" as detailed in sections previous. Classes
+  and methods removed include:
+  - `Zend\Expressive\Application::getFinalHandler()`
+  - `Zend\Expressive\TemplatedErrorHandler`
+  - `Zend\Expressive\WhoopsErrorHandler`
+  - `Zend\Expressive\Container\TemplatedErrorHandlerFactory`
+  - `Zend\Expressive\Container\WhoopsErrorHandlerFactory`
+
+- [#428](https://github.com/zendframework/zend-expressive/pull/428) removes the
+  `Zend\Expressive\ErrorMiddlewarePipe` class, as zend-stratigility 2.X no
+  longer defines `Zend\Stratigility\ErrorMiddlewareInterface` or has a concept
+  of variant-signature error middleware. Use standard middleware to provide
+  error handling now.
+
+- [#428](https://github.com/zendframework/zend-expressive/pull/428) removes the
+  exception types `Zend\Expressive\Container\Exception\InvalidArgumentException`
+  (use `Zend\Expressive\Exception\InvalidArgumentException` instead) and
+  `Zend\Expressive\Container\Exception\NotFoundException` (which was never used
+  internally).
+
+### Fixed
+
+- Nothing.
+
+## 1.1.1 - 2017-02-14
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#447](https://github.com/zendframework/zend-expressive/pull/447) fixes an
+  error in the `ApplicationFactory` that occurs when the `config` service is an
+  `ArrayObject`. Prior to the fix, `ArrayObject` configurations would cause a
+  fatal error when injecting the pipeline and/or routes.
+
+## 1.1.0 - 2017-02-13
+
+### Added
+
+- [#309](https://github.com/zendframework/zend-expressive/pull/309) adds the
+  ability to provide options with which to instantiate the `FinalHandler`
+  instance, via the configuration:
+
+  ```php
+  [
+      'final_handler' => [
+          'options' => [ /* array of options */ ],
+      ],
+  ```
+
+- [#373](https://github.com/zendframework/zend-expressive/pull/373) adds interception
+  of exceptions from the `ServerRequestFactory` for invalid request information in order
+  to return `400` responses.
+
+- [#432](https://github.com/zendframework/zend-expressive/pull/432) adds two new
+  configuration flags for use with `Zend\Expressive\Container\ApplicationFactory`:
+  - `zend-expressive.programmatic_pipelines`: when enabled, the factory will
+    ignore the `middleware_pipeline` and `routes` configuration, allowing you to
+    wire these programmatically instead. We recommend creating these in the
+    files `config/pipeline.php` and `config/routes.php`, respectively, and
+    modifying your `public/index.php` to `require` these files in statements
+    immediately preceding the call to `$app->run()`.
+  - `zend-expressive.raise_throwables`: when enabled, this will be used to
+    notify zend-stratigility's internal dispatcher to no longer catch
+    exceptions/throwables, and instead allow them to bubble out. This allows you
+    to write custom middleware for handling errors.
+
+- [#429](https://github.com/zendframework/zend-expressive/pull/429) adds
+  `Zend\Expressive\Application::getDefaultDelegate()` as a
+  forwards-compatibility measure for the upcoming version 2.0.0. Currently,
+  it proxies to `getFinalHandler()`.
+
+- [#435](https://github.com/zendframework/zend-expressive/pull/435) adds support
+  for the 2.X versions of zend-expressive-router and the various router
+  implementations. This change also allows usage of zend-expressive-helpers 3.X.
+
+### Changed
+
+- [#429](https://github.com/zendframework/zend-expressive/pull/429) updates the
+  minimum supported zend-stratigility version to 1.3.3.
+
+- [#396](https://github.com/zendframework/zend-expressive/pull/396) updates the
+  `Zend\Expressive\Container\ApplicationFactory` to vary creation of the
+  `Application` instance based on two new configuration variables:
+
+  - `zend-expressive.programmatic_pipeline` will cause the factory to skip
+    injection of the middleware pipeline and routes from configuration. It is
+    then up to the developer to do so, or use the `Application` API to pipe
+    middleware and/or add routed middleware.
+
+  - `zend-expressive.raise_throwables` will cause the factory to call the new
+    `raiseThrowables()` method exposed by `Application` (and inherited from
+    `Zend\Stratigility\MiddlewarePipe`). Doing so will cause the application to
+    raise any `Throwable` or `Exception` instances caught, instead of catching
+    them and dispatching them to (legacy) Stratigility error middleware.
+
+### Deprecated
+
+- [#429](https://github.com/zendframework/zend-expressive/pull/429) deprecates
+  the following methods and classes:
+  - `Zend\Expressive\Application::pipeErrorHandler()`; use the
+    `raise_throwables` flag and standard middleware to handle errors instead.
+  - `Zend\Expressive\Application::routeMiddleware()`; this is extracted to a
+    dedicated middleware class for 2.0.
+  - `Zend\Expressive\Application::dispatchMiddleware()`; this is extracted to a
+    dedicated middleware class for 2.0.
+  - `Zend\Expressive\Application::getFinalHandler()` (this patch provides `getDefaultDelegate()` as a forwards-compatibility measure)
+  - `Zend\Expressive\Container\Exception\InvalidArgumentException`; this will be removed
+    in 2.0.0, and places where it was used will instead throw
+    `Zend\Expressive\Exception\InvalidArgumentException`.
+  - `Zend\Expressive\Container\Exception\NotFoundException`; this exception is
+    never thrown at this point.
+  - `Zend\Expressive\Container\TemplatedErrorHandlerFactory`
+  - `Zend\Expressive\Container\WhoopsErrorHandlerFactory`
+  - `Zend\Expressive\ErrorMiddlewarePipe`; Stratigility 1.3 deprecates its
+    `Zend\Stratigility\ErrorMiddlewareInterface`, and removes it in version 2.0.
+    use the `raise_throwables` flag and standard middleware to handle errors
+    instead.
+  - `Zend\Expressive\TemplatedErrorHandler`; the "final handler" concept is
+    retired in Expressive 2.0, and replaced with default delegates (classes
+    implementing `Interop\Http\ServerMiddleware\DelegateInterface` that will be
+    executed when the internal pipeline is exhausted, in order to guarantee a
+    response). If you are using custom final handlers, you will need to rewrite
+    them when adopting Expressive 2.0.
+  - `Zend\Expressive\WhoopsErrorHandler`
+
+### Removed
+
+- [#406](https://github.com/zendframework/zend-expressive/pull/406) removes the
+  `RouteResultSubjectInterface` implementation from `Zend\Expressive\Application`,
+  per the deprecation prior to the 1.0 stable release.
+
+### Fixed
+
+- [#442](https://github.com/zendframework/zend-expressive/pull/442) fixes how
+  the `WhoopsFactory` disables JSON output for whoops; previously, providing
+  boolean `false` values for either of the configuration flags
+  `json_exceptions.show_trace` or `json_exceptions.ajax_only` would result in
+  enabling the settings; these flags are now correctly evaluated by the
+  `WhoopsFactory`.
+
+## 1.0.6 - 2017-01-09
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#420](https://github.com/zendframework/zend-expressive/pull/420) fixes the
+  `routeMiddleware()`'s handling of 405 errors such that it now no longer emits
+  deprecation notices when running under the Stratigility 1.3 series.
+
+## 1.0.5 - 2016-12-08
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#403](https://github.com/zendframework/zend-expressive/pull/403) updates the
+  `AppFactory::create()` logic to raise exceptions in either of the following
+  scenarios:
+  - no container is specified, and the class `Zend\ServiceManager\ServiceManager`
+    is not available.
+  - no router is specified, and the class `Zend\Expressive\Router\FastRouteRouter`
+    is not available.
+- [#405](https://github.com/zendframework/zend-expressive/pull/405) fixes how
+  the `TemplatedErrorHandler` injects templated content into the response.
+  Previously, it would `write()` directly to the existing response body, which
+  could lead to issues if previous middleware had written to the response (as
+  the templated contents would append the previous contents). With this release,
+  it now creates a new `Zend\Diactoros\Stream`, writes to that, and returns a
+  new response with that new stream, guaranteeing it only contains the new
+  contents.
+- [#404](https://github.com/zendframework/zend-expressive/pull/404) fixes the
+  `swallowDeprecationNotices()` handler such that it will not swallow a global
+  handler once application execution completes.
+
+## 1.0.4 - 2016-12-07
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#402](https://github.com/zendframework/zend-expressive/pull/402) fixes how
+  `Application::__invoke()` registers the error handler designed to swallow
+  deprecation notices, as introduced in 1.0.3. It now checks to see if another
+  error handler was previously registered, and, if so, creates a composite
+  handler that will delegate to the previous for all other errors.
+
+## 1.0.3 - 2016-11-11
+
+### Added
+
+- Nothing.
+
+### Changes
+
+- [#395](https://github.com/zendframework/zend-expressive/pull/395) updates
+  `Application::__invoke()` to add an error handler to swallow deprecation
+  notices due to triggering error middleware when using Stratigility 1.3+. Since
+  error middleware is triggered whenever the `raiseThrowables` flag is not
+  enabled and an error or empty queue situation is encountered, handling it this
+  way prevents any such errors from bubbling out of the application.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
+## 1.0.2 - 2016-11-11
+
+### Added
+
+- Nothing.
+
+### Changes
+
+- [#393](https://github.com/zendframework/zend-expressive/pull/393) updates
+  `Application::run()` to inject the request with an `originalResponse`
+  attribute using the provided response as the value.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#393](https://github.com/zendframework/zend-expressive/pull/393) fixes how
+  each of the `TemplatedErrorHandler` and `WhoopsErrorHandler` access the
+  "original" request, URI, and/or response. Previously, these used
+  Stratigility-specific methods; they now use request attributes, eliminating
+  deprecation notices emitted in Stratigility 1.3+ versions.
+
+## 1.0.1 - 2016-11-11
 
 ### Added
 
 - [#306](https://github.com/zendframework/zend-expressive/pull/306) adds a
   cookbook recipe covering flash messages.
+- [#384](https://github.com/zendframework/zend-expressive/pull/384) adds support
+  for Whoops version 2 releases, providing PHP 7 support for Whoops.
 
 ### Deprecated
 
@@ -37,7 +582,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#391](https://github.com/zendframework/zend-expressive/pull/391) fixes the
+  `Application::run()` implementation to prevent emission of deprecation notices
+  when used with Stratigility 1.3.
 
 ## 1.0.0 - 2016-01-28
 

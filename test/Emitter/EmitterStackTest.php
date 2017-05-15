@@ -1,16 +1,14 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
 
 namespace ZendTest\Expressive\Emitter;
 
 use InvalidArgumentException;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use SplStack;
@@ -52,34 +50,40 @@ class EmitterStackTest extends TestCase
             'float'      => [1.1],
             'string'     => ['emitter'],
             'array'      => [[$this->prophesize(EmitterInterface::class)->reveal()]],
-            'object'     => [(object)[]],
+            'object'     => [(object) []],
         ];
     }
 
     /**
      * @dataProvider nonEmitterValues
+     *
+     * @param mixed $value
      */
     public function testCannotPushNonEmitterToStack($value)
     {
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->emitter->push($value);
     }
 
     /**
      * @dataProvider nonEmitterValues
+     *
+     * @param mixed $value
      */
     public function testCannotUnshiftNonEmitterToStack($value)
     {
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->emitter->unshift($value);
     }
 
     /**
      * @dataProvider nonEmitterValues
+     *
+     * @param mixed $value
      */
     public function testCannotSetNonEmitterToSpecificIndex($value)
     {
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->emitter->offsetSet(0, $value);
     }
 
@@ -121,5 +125,25 @@ class EmitterStackTest extends TestCase
         $response = $this->prophesize(ResponseInterface::class);
 
         $this->assertNull($this->emitter->emit($response->reveal()));
+    }
+
+    public function testEmitReturnsFalseIfLastEmmitterReturnsFalse()
+    {
+        $first = $this->prophesize(EmitterInterface::class);
+        $first->emit(Argument::type(ResponseInterface::class))
+            ->willReturn(false);
+
+        $this->emitter->push($first->reveal());
+
+        $response = $this->prophesize(ResponseInterface::class);
+
+        $this->assertFalse($this->emitter->emit($response->reveal()));
+    }
+
+    public function testEmitReturnsFalseIfNoEmittersAreComposed()
+    {
+        $response = $this->prophesize(ResponseInterface::class);
+
+        $this->assertFalse($this->emitter->emit($response->reveal()));
     }
 }

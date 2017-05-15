@@ -46,7 +46,7 @@ configuration. Configuration uses the following structure:
 ]
 ```
 
-Read more about zend-servicemanager in [its documentation](http://framework.zend.com/manual/current/en/modules/zend.service-manager.html).
+Read more about zend-servicemanager in [its documentation](https://docs.zendframework.com/zend-servicemanager/).
 
 ## Installing zend-servicemanager
 
@@ -103,7 +103,9 @@ $container->setInvokableClass(
 );
 
 // These next two can be added in any environment; they won't be used unless
-// you add the WhoopsErrorHandler as the FinalHandler implementation:
+// you add the WhoopsErrorHandler as the FinalHandler implementation
+// (Expressive 1.X) or the WhoopsErrorResponseGenerator as the
+// ErrorResponseGenerator implementation (Expressive 2.X):
 $container->setFactory(
     'Zend\Expressive\Whoops',
     'Zend\Expressive\Container\WhoopsFactory'
@@ -114,16 +116,35 @@ $container->setFactory(
 );
 
 // Error Handling
+
+// - Expressive 2.X, all environments:
+$container->setFactory(
+    'Zend\Expressive\Middleware\ErrorHandler',
+    'Zend\Expressive\Container\ErrorHandlerFactory'
+);
+
 // If in development:
+// - Expressive 1.X:
 $container->setFactory(
     'Zend\Expressive\FinalHandler',
     'Zend\Expressive\Container\WhoopsErrorHandlerFactory'
 );
+// - Expressive 2.X:
+$container->setFactory(
+    'Zend\Expressive\Middleware\ErrorResponseGenerator',
+    'Zend\Expressive\Container\WhoopsErrorResponseGeneratorFactory'
+);
 
 // If in production:
+// - Expressive 1.X:
 $container->setFactory(
     'Zend\Expressive\FinalHandler',
     'Zend\Expressive\Container\TemplatedErrorHandlerFactory'
+);
+// - Expressive 2.X:
+$container->setFactory(
+    'Zend\Expressive\Middleware\ErrorResponseGenerator',
+    'Zend\Expressive\Container\ErrorResponseGeneratorFactory'
 );
 
 return $container;
@@ -136,6 +157,12 @@ chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
 $container = require 'config/services.php';
 $app = $container->get('Zend\Expressive\Application');
+
+// Expressive 2.X:
+require 'config/pipeline.php';
+require 'config/routes.php';
+
+// All versions:
 $app->run();
 ```
 
@@ -151,6 +178,10 @@ return [
     'services' => [
         'config' => include __DIR__ . '/config.php',
     ],
+    'aliases' => [
+        // Expressive 2.0:
+        'Zend\Expressive\Delegate\DefaultDelegate' => 'Zend\Expressive\Delegate\NotFoundDelegate',
+    ],
     'invokables' => [
         'Zend\Expressive\Router\RouterInterface'     => 'Zend\Expressive\Router\AuraRouter',
         'Zend\Expressive\Template\TemplateRendererInterface' => 'Zend\Expressive\Plates\PlatesRenderer'
@@ -159,6 +190,11 @@ return [
         'Zend\Expressive\Application'       => 'Zend\Expressive\Container\ApplicationFactory',
         'Zend\Expressive\Whoops'            => 'Zend\Expressive\Container\WhoopsFactory',
         'Zend\Expressive\WhoopsPageHandler' => 'Zend\Expressive\Container\WhoopsPageHandlerFactory',
+
+        // Expressive 2.0:
+        'Zend\Expressive\Middleware\ErrorHandler'    => 'Zend\Expressive\Container\ErrorHandlerFactory',
+        'Zend\Expressive\Delegate\NotFoundDelegate'  => 'Zend\Expressive\Container\NotFoundDelegateFactory',
+        'Zend\Expressive\Middleware\NotFoundHandler' => 'Zend\Expressive\Container\NotFoundHandlerFactory',
     ],
 ];
 ```
@@ -172,8 +208,9 @@ use Zend\ServiceManager\ServiceManager;
 return new ServiceManager(new Config(include 'config/dependencies.php'));
 ```
 
-There is one problem, however: which final handler should you configure? You
-have two choices on how to approach this:
+There is one problem, however: in both Expressive 1.X and 2.X, you may want to
+vary error handling strategies based on whether or not you're in production:
+You have two choices on how to approach this:
 
 - Selectively inject the factory in the bootstrap.
 - Define the final handler service in an environment specific file and use file
@@ -189,16 +226,30 @@ use Zend\ServiceManager\ServiceManager;
 $container = new ServiceManager(new Config(include 'config/services.php'));
 switch ($variableOrConstantIndicatingEnvironment) {
     case 'development':
+        // Expressive 1.X:
         $container->setFactory(
             'Zend\Expressive\FinalHandler',
             'Zend\Expressive\Container\WhoopsErrorHandlerFactory'
         );
+
+        // Expressive 2.X:
+        $container->setFactory(
+            'Zend\Expressive\Middleware\ErrorResponseGenerator',
+            'Zend\Expressive\Container\WhoopsErrorResponseGeneratorFactory'
+        );
         break;
     case 'production':
     default:
+        // Expressive 1.X:
         $container->setFactory(
             'Zend\Expressive\FinalHandler',
             'Zend\Expressive\Container\TemplatedErrorHandlerFactory'
+        );
+
+        // Expressive 2.X:
+        $container->setFactory(
+            'Zend\Expressive\Middleware\ErrorResponseGenerator',
+            'Zend\Expressive\Container\ErrorResponseGeneratorFactory'
         );
 }
 return $container;
@@ -232,13 +283,27 @@ return [
     'services' => [
         'config' => include __DIR__ . '/config.php',
     ],
+    'aliases' => [
+        // Expressive 2.0:
+        'Zend\Expressive\Delegate\DefaultDelegate' => 'Zend\Expressive\Delegate\NotFoundDelegate',
+    ],
     'invokables' => [
         'Zend\Expressive\Router\RouterInterface'     => 'Zend\Expressive\Router\AuraRouter',
         'Zend\Expressive\Template\TemplateRendererInterface' => 'Zend\Expressive\Plates\PlatesRenderer'
     ],
     'factories' => [
         'Zend\Expressive\Application'       => 'Zend\Expressive\Container\ApplicationFactory',
+        'Zend\Expressive\Whoops'            => 'Zend\Expressive\Container\WhoopsFactory',
+        'Zend\Expressive\WhoopsPageHandler' => 'Zend\Expressive\Container\WhoopsPageHandlerFactory',
+
+        // Expressive 1.X:
         'Zend\Expressive\FinalHandler'      => 'Zend\Expressive\Container\TemplatedErrorHandlerFactory',
+
+        // Expressive 2.X:
+        'Zend\Expressive\Middleware\ErrorResponseGenerator' => 'Zend\Expressive\Container\ErrorResponseGeneratorFactory',
+        'Zend\Expressive\Middleware\ErrorHandler'    => 'Zend\Expressive\Container\ErrorHandlerFactory',
+        'Zend\Expressive\Delegate\NotFoundDelegate'  => 'Zend\Expressive\Container\NotFoundDelegateFactory',
+        'Zend\Expressive\Middleware\NotFoundHandler' => 'Zend\Expressive\Container\NotFoundHandlerFactory',
     ],
 ];
 ```
@@ -249,9 +314,14 @@ like this:
 ```php
 return [
     'factories' => [
-        'Zend\Expressive\FinalHandler'      => 'Zend\Expressive\Container\WhoopsErrorHandlerFactory',
         'Zend\Expressive\Whoops'            => 'Zend\Expressive\Container\WhoopsFactory',
         'Zend\Expressive\WhoopsPageHandler' => 'Zend\Expressive\Container\WhoopsPageHandlerFactory',
+
+        // Expressive 1.X:
+        'Zend\Expressive\FinalHandler'      => 'Zend\Expressive\Container\WhoopsErrorHandlerFactory',
+
+        // Expressive 2.X:
+        'Zend\Expressive\Middleware\ErrorResponseGenerator' => 'Zend\Expressive\Container\WhoopsErrorResponseGeneratorFactory',
     ],
 ];
 ```

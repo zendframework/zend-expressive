@@ -1,5 +1,12 @@
 # How can I make my application modular?
 
+> ## DEPRECATED
+>
+> Starting in Expressive 2.0, we now ship features to allow modular applications
+> both at the time of installation, or to add following installation. Please
+> see the chapter on [modular applications](../features/modular-applications.md)
+> for more details.
+
 Zend Framework 2 applications have a concept of modules, independent units that
 can provide configuration, services, and hooks into its MVC lifecycle. This
 functionality is provided by zend-modulemanager.

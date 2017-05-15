@@ -1,6 +1,7 @@
 # zend-expressive
 
 [![Build Status](https://secure.travis-ci.org/zendframework/zend-expressive.svg?branch=master)](https://secure.travis-ci.org/zendframework/zend-expressive)
+[![Coverage Status](https://coveralls.io/repos/github/zendframework/zend-expressive/badge.svg?branch=master)](https://coveralls.io/github/zendframework/zend-expressive?branch=master)
 
 *Develop PSR-7 middleware applications in minutes!*
 
@@ -11,8 +12,8 @@ features:
 - Routing. Choose your own router; we support:
     - [Aura.Router](https://github.com/auraphp/Aura.Router)
     - [FastRoute](https://github.com/nikic/FastRoute)
-    - [ZF2's MVC router](https://github.com/zendframework/zend-mvc)
-- DI Containers, via [container-interop](https://github.com/container-interop/container-interop).
+    - [zend-router](https://github.com/zendframework/zend-expressive-router)
+- DI Containers, via [PSR-11 Container](https://github.com/php-fig/container).
   Middleware matched via routing is retrieved from the composed container.
 - Optionally, templating. We support:
     - [Plates](http://platesphp.com/)
@@ -63,11 +64,11 @@ We currently support and provide the following routing integrations:
   `composer require zendframework/zend-expressive-aurarouter`
 - [FastRoute](https://github.com/nikic/FastRoute):
   `composer require zendframework/zend-expressive-fastroute`
-- [ZF2 MVC Router](https://github.com/zendframework/zend-mvc):
+- [zend-router](https://github.com/zendframework/zend-expressive-router):
   `composer require zendframework/zend-expressive-zendrouter`
 
 We recommend using a dependency injection container, and typehint against
-[container-interop](https://github.com/container-interop/container-interop). We
+[PSR-11 Container](https://github.com/php-fig/container). We
 can recommend the following implementations:
 
 - [zend-servicemanager](https://github.com/zendframework/zend-servicemanager):
@@ -75,7 +76,7 @@ can recommend the following implementations:
 - [pimple-container-interop](https://github.com/xtreamwayz/pimple-container-interop):
   `composer require xtreamwayz/pimple-container-interop`
 - [Aura.Di](https://github.com/auraphp/Aura.Di):
-  `composer require aura/di:3.0.*@beta`
+  `composer require aura/di`
 
 Additionally, you may optionally want to install a template renderer
 implementation, and/or an error handling integration. These are covered in the
@@ -90,10 +91,4 @@ $ mkdocs build
 ```
 
 Additionally, public-facing, browseable documentation is available at
-https://zendframework.github.io/zend-expressive/
-
-## Architecture
-
-Architectural notes are in [NOTES.md](NOTES.md).
-
-Please see the tests for full information on capabilities.
+https://docs.zendframework.com/zend-expressive/
