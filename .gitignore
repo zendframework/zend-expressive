@@ -5,3 +5,9 @@ clover.xml
 composer.lock
 coveralls-upload.json
 zf-mkdoc-theme.tgz
+/.settings/
+/.buildpath
+/.project
+/composer.phar
+/deployment.properties
+/deployment.xml
