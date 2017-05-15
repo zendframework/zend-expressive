@@ -39,6 +39,8 @@ use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\Stratigility\Route as StratigilityRoute;
+use ZendTest\Expressive\TestAsset\InvokableMiddleware;
+use Zend\Diactoros\Response;
 
 
 /**
@@ -563,7 +565,7 @@ class ApplicationTest extends TestCase
         $this->assertInstanceOf(StratigilityRoute::class, $route);
         $handler = $route->handler;
 
-        $request = $this->prophesize(ServerRequest::class)->reveal();
+        $request = $this->prophesize(Request::class)->reveal();
         $delegate = $this->prophesize(DelegateInterface::class)->reveal();
 
         $this->expectException(InvalidMiddlewareException::class);
