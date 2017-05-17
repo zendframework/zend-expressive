@@ -264,29 +264,23 @@ class ApplicationTest extends TestCase
         $app = new Application($this->router->reveal(), $container->reveal());
         $app->pipeDispatchMiddleware($request, new Response(), function () {
         });
-    }
 
-
-    public function uncallableMiddleware()
-    {
-        return [
-            ['foo'],
-            [['foo']]
-        ];
+        $this->assertCount(4, $middleware);
     }
 
     /**
-     * @dataProvider uncallableMiddleware
-     * @expectException Zend\Expressive\Exception\InvalidMiddlewareException
+     * @expectedException \Zend\Expressive\Exception\InvalidMiddlewareException
      */
-    public function testThrowsExceptionWhenDispatchingUncallableMiddleware($middleware)
+    public function testThrowsExceptionWhenDispatchingUncallableMiddleware()
     {
-        $this->expectException(InvalidMiddlewareException::class);
-        $request = new Request([], [], '/', 'GET');
-        $routeResult = RouteResult::fromRoute(new Route(__METHOD__,[]));
-        $request = $request->withAttribute(RouteResult::class, $routeResult);
+            $badMiddeware = ['some bad stuff'];
 
-        $this->getApp()->pipeDispatchMiddleware();
+            $request = new Request([], [], '/', 'GET');
+            $routeResult = RouteResult::fromRoute(new Route(__METHOD__,$badMiddeware));
+            $request = $request->withAttribute(RouteResult::class, $routeResult);
+
+            $this->expectException(InvalidMiddlewareException::class);
+            $this->getApp()->pipeDispatchMiddleware();
     }
 
 
