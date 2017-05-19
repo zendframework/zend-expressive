@@ -276,7 +276,7 @@ class ApplicationTest extends TestCase
         $badMiddeware = ['cdosdm',['some bad stuff'],['uffff']];
 
         $request = new Request([], [], '/', 'GET');
-        $routeResult = RouteResult::fromRoute(new Route(__METHOD__,$badMiddeware));
+        $routeResult = RouteResult::fromRoute(new Route(__METHOD__, $badMiddeware));
         $request = $request->withAttribute(RouteResult::class, $routeResult);
 
         $this->getApp()->pipe($request, $badMiddeware);
