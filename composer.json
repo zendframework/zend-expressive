@@ -41,12 +41,12 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Zend\\Expressive\\": "src/"
+			"Zend\\Expressive\\" : "src/"
 		}
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"ZendTest\\Expressive\\": "test/"
+			"ZendTest\\Expressive\\" : "test/"
 		},
 		"files": [
 			"test/class_exists.php"

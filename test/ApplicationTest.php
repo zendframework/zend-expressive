@@ -273,14 +273,13 @@ class ApplicationTest extends TestCase
      */
     public function testThrowsExceptionWhenDispatchingUncallableMiddleware()
     {
-            $badMiddeware = ['some bad stuff'];
+        $badMiddeware = ['cdosdm',['some bad stuff'],['uffff']];
 
-            $request = new Request([], [], '/', 'GET');
-            $routeResult = RouteResult::fromRoute(new Route(__METHOD__,$badMiddeware));
-            $request = $request->withAttribute(RouteResult::class, $routeResult);
+        $request = new Request([], [], '/', 'GET');
+        $routeResult = RouteResult::fromRoute(new Route(__METHOD__,$badMiddeware));
+        $request = $request->withAttribute(RouteResult::class, $routeResult);
 
-            $this->expectException(InvalidMiddlewareException::class);
-            $this->getApp()->pipeDispatchMiddleware();
+        $this->getApp()->pipe($request, $badMiddeware);
     }
 
 
