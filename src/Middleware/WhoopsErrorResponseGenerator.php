@@ -91,13 +91,9 @@ class WhoopsErrorResponseGenerator
     {
         $uri = $request->getAttribute('originalUri', false) ?: $request->getUri();
         $request = $request->getAttribute('originalRequest', false) ?: $request;
-        
+
         $serverParams = $request->getServerParams();
-        $scriptName = '';
-        
-        if (isset($serverParams['SCRIPT_NAME'])) {
-            $scriptName = $serverParams['SCRIPT_NAME'];
-        }
+        $scriptName = isset($serverParams['SCRIPT_NAME']) ? $serverParams['SCRIPT_NAME'] : '';
 
         $handler->addDataTable('Expressive Application Request', [
             'HTTP Method'            => $request->getMethod(),
