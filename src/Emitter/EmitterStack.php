@@ -90,7 +90,7 @@ class EmitterStack extends SplStack implements EmitterInterface
     /**
      * Validate that an emitter implements EmitterInterface.
      *
-     * @param mixed $emitter
+     * @param EmitterInterface $emitter
      * @return void
      * @throws InvalidArgumentException for non-emitter instances
      */
