@@ -80,6 +80,6 @@
 	"support" : {
 		"issues" : "https://github.com/zendframework/zend-expressive/issues",
 		"source" : "https://github.com/zendframework/zend-expressive",
-		"irc" : "#zftalk.dev"
+		"irc" : "http://webchat.freenode.net/?channels=zftalk"
 	}
 }
