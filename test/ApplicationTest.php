@@ -24,7 +24,6 @@ use RuntimeException;
 use UnexpectedValueException;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
-use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\ServerRequest as Request;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Expressive\Application;
@@ -40,6 +39,8 @@ use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\Stratigility\Route as StratigilityRoute;
+use ZendTest\Expressive\TestAsset\InvokableMiddleware;
+use Zend\Diactoros\Response;
 
 /**
  * @covers Zend\Expressive\Application
@@ -239,6 +240,48 @@ class ApplicationTest extends TestCase
 
         $this->assertCount(0, $pipeline);
     }
+
+    public function testDispatchMiddlewareCanDispatchArrayOfMiddlewareAsMiddlewarePipe()
+    {
+        $middleware = [
+            function () {
+            },
+            'FooBar',
+            [InvokableMiddleware::class, 'staticallyCallableMiddleware'],
+            InvokableMiddleware::class,
+        ];
+
+        $middlewareRoute = function ($req, $res, $next) {
+        };
+        $request = new Request([], [], '/', 'GET');
+        $routeResult = RouteResult::fromRoute(new Route('/', $middlewareRoute), $middleware);
+        $request = $request->withAttribute(RouteResult::class, $routeResult);
+
+        $container = $this->mockContainerInterface();
+        $this->injectServiceInContainer($container, 'FooBar', function () {
+        });
+
+        $app = new Application($this->router->reveal(), $container->reveal());
+        $app->pipeDispatchMiddleware($request, new Response(), function () {
+        });
+
+        $this->assertCount(4, $middleware);
+    }
+
+    /**
+     * @expectedException \Zend\Expressive\Exception\InvalidMiddlewareException
+     */
+    public function testThrowsExceptionWhenDispatchingUncallableMiddleware()
+    {
+        $badMiddeware = ['cdosdm',['some bad stuff'],['uffff']];
+
+        $request = new Request([], [], '/', 'GET');
+        $routeResult = RouteResult::fromRoute(new Route(__METHOD__, $badMiddeware));
+        $request = $request->withAttribute(RouteResult::class, $routeResult);
+
+        $this->getApp()->pipe($request, $badMiddeware);
+    }
+
 
     public function testCannotPipeRouteMiddlewareMoreThanOnce()
     {
@@ -490,7 +533,7 @@ class ApplicationTest extends TestCase
         $this->assertInstanceOf(StratigilityRoute::class, $route);
         $handler = $route->handler;
 
-        $request = $this->prophesize(ServerRequest::class)->reveal();
+        $request = $this->prophesize(Request::class)->reveal();
         $delegate = $this->prophesize(DelegateInterface::class)->reveal();
 
         $this->expectException(InvalidMiddlewareException::class);

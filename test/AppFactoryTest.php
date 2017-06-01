@@ -19,6 +19,7 @@ use Zend\Expressive\Exception\MissingDependencyException;
 use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\ServiceManager\ServiceManager;
+use Zend\Diactoros\Response\EmitterInterface;
 
 /**
  * @covers Zend\Expressive\AppFactory
@@ -67,6 +68,14 @@ class AppFactoryTest extends TestCase
 
         $this->assertCount(1, $emitter);
         $this->assertInstanceOf(SapiEmitter::class, $emitter->pop());
+    }
+
+    public function testFactoryUsesEmitterStackWithEmitterInterface()
+    {
+        $app     = AppFactory::create();
+        $emitter = $app->getEmitter();
+        $this->assertInstanceOf(EmitterStack::class, $emitter);
+        $this->assertInstanceOf(EmitterInterface::class, $emitter);
     }
 
     public function testFactoryAllowsPassingContainerToUse()
