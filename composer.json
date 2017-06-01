@@ -78,8 +78,10 @@
 	},
 	"homepage" : "https://docs.zendframework.com/zend-expressive/",
 	"support" : {
+		"docs" : "https://docs.zendframework.com/zend-expressive/",
 		"issues" : "https://github.com/zendframework/zend-expressive/issues",
 		"source" : "https://github.com/zendframework/zend-expressive",
-		"irc" : "http://webchat.freenode.net/?channels=zftalk"
+		"irc" : "http://webchat.freenode.net/?channels=zftalk",
+		"forum" : "https://discourse.zendframework.com/"
 	}
 }
