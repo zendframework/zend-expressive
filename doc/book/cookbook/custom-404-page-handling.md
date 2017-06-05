@@ -5,7 +5,7 @@
 > This recipe is deprecated with the release of Expressive 2.0, as that release
 > now expects and requires that you provide innermost middleware that will
 > return a response, and provides `Zend\Expressive\Middleware\NotFoundHandler`
-> as a default implementation. Please see the [error handling chapter](../error-handling.md#page-not-found)
+> as a default implementation. Please see the [error handling chapter](../features/error-handling.md)
 > for more information.
 
 In some cases, you may want to handle 404 errors separately from the
