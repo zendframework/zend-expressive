@@ -26,7 +26,7 @@ $ composer require xtreamwayz/pimple-container-interop
 
 To configure Pimple, instantiate it, and then add the factories desired. We
 recommend doing this in a dedicated script that returns the Pimple instance; in
-this example, we'll have that in `config/services.php`.
+this example, we'll have that in `config/container.php`.
 
 ```php
 use Xtreamwayz\Pimple\Container as Pimple;
@@ -95,7 +95,7 @@ Your bootstrap (typically `public/index.php`) will then look like this:
 
 ```php
 chdir(dirname(__DIR__));
-$container = require 'config/services.php';
+$container = require 'config/container.php';
 $app = $container->get(Zend\Expressive\Application::class);
 
 // In Expressive 2.X:

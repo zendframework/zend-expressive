@@ -71,7 +71,7 @@ For this example, we'll assume your application configuration (used by several
 factories to configure instances) is in `config/config.php`, and that that file
 returns an array.
 
-We'll create a `config/services.php` file that creates and returns a
+We'll create a `config/container.php` file that creates and returns a
 `Zend\ServiceManager\ServiceManager` instance as follows:
 
 ```php
@@ -170,7 +170,7 @@ $app->run();
 
 Alternately, you can use a configuration file to define the container. As
 before, we'll define our configuration in `config/config.php`, and our
-`config/services.php` file will still return our service manager instance; we'll
+`config/container.php` file will still return our service manager instance; we'll
 define the service configuration in `config/dependencies.php`:
 
 ```php
@@ -199,7 +199,7 @@ return [
 ];
 ```
 
-`config/services.php` becomes:
+`config/container.php` becomes:
 
 ```php
 use Zend\ServiceManager\Config;
@@ -216,14 +216,14 @@ You have two choices on how to approach this:
 - Define the final handler service in an environment specific file and use file
   globbing to merge files.
 
-In the first case, you would change the `config/services.php` example to look
+In the first case, you would change the `config/container.php` example to look
 like this:
 
 ```php
 use Zend\ServiceManager\Config;
 use Zend\ServiceManager\ServiceManager;
 
-$container = new ServiceManager(new Config(include 'config/services.php'));
+$container = new ServiceManager(new Config(include 'config/container.php'));
 switch ($variableOrConstantIndicatingEnvironment) {
     case 'development':
         // Expressive 1.X:

@@ -406,7 +406,7 @@ chdir(dirname(__DIR__));
 // Setup autoloading
 require 'vendor/autoload.php';
 
-$container = include 'config/services.php';
+$container = include 'config/container.php';
 $app       = $container->get(Zend\Expressive\Application::class);
 $app->run();
 ```
