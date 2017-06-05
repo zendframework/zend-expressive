@@ -127,15 +127,15 @@ You would register this with zend-servicemanager using:
 
 ```php
 $container->setFactory(
-    'Zend\Expressive\Router\RouterInterface',
-    'Application\Container\RouterFactory'
+    Zend\Expressive\Router\RouterInterface::class,
+    Application\Container\RouterFactory::class
 );
 ```
 
 And in Pimple:
 
 ```php
-$pimple['Zend\Expressive\Router\RouterInterface'] = new Application\Container\RouterFactory();
+$pimple[Zend\Expressive\Router\RouterInterface::class] = new Application\Container\RouterFactory();
 ```
 
 For zend-servicemanager, you can omit the factory entirely, and register the
@@ -143,8 +143,8 @@ class as an invokable:
 
 ```php
 $container->setInvokableClass(
-    'Zend\Expressive\Router\RouterInterface',
-    'Zend\Expressive\Router\AuraRouter'
+    Zend\Expressive\Router\RouterInterface::class,
+    Zend\Expressive\Router\AuraRouter::class
 );
 ```
 
@@ -215,18 +215,18 @@ use Zend\ServiceManager\ServiceManager;
 $container = new ServiceManager();
 $container->addFactory(
     'Aura\Router\Router',
-    'Application\Container\AuraRouterFactory'
+    Application\Container\AuraRouterFactory::class
 );
 $container->addFactory(
-    'Zend\Expressive\Router\RouterInterface',
+    Zend\Expressive\Router\RouterInterface::class,
     'Application\Container\RouterFactory'
 );
 
 // Alternately, via configuration:
 return [
     'factories' => [
-        'Aura\Router\Router' => 'Application\Container\AuraRouterFactory',
-        'Zend\Expressive\Router\RouterInterface' => 'Application\Container\RouterFactory',
+        'Aura\Router\Router' => Application\Container\AuraRouterFactory::class,
+        Zend\Expressive\Router\RouterInterface::class => 'Application\Container\RouterFactory::class,
     ],
 ];
 ```
@@ -240,5 +240,5 @@ use Interop\Container\Pimple\PimpleInterop as Pimple;
 
 $container = new Pimple();
 $container['Aura\Router\Router'] = new AuraRouterFactory();
-$container['Zend\Expressive\Router\RouterInterface'] = new RouterFactory();
+$container[Zend\Expressive\Router\RouterInterface::class] = new RouterFactory();
 ```

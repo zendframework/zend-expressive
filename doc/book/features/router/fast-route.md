@@ -183,7 +183,7 @@ class FastRouteCollectorFactory
     }
 }
 
-// in src/App/Container/FastRouteDispatcherFactory:
+// in src/App/Container/FastRouteDispatcherFactory.php:
 namespace App\Container;
 
 use FastRoute\Dispatcher\GroupPosBased as FastRouteDispatcher;
@@ -250,9 +250,9 @@ $container->addFactory(
 // Alternately, via configuration:
 return [
     'factories' => [
-        'FastRoute\RouteCollector' => 'App\Container\FastRouteCollectorFactory',
-        'FastRoute\DispatcherFactory' => 'App\Container\FastRouteDispatcherFactory',
-        'Zend\Expressive\Router\RouterInterface' => 'App\Container\RouterFactory',
+        'FastRoute\RouteCollector' => App\Container\FastRouteCollectorFactory::class,
+        'FastRoute\DispatcherFactory' => App\Container\FastRouteDispatcherFactory::class,
+        Zend\Expressive\Router\RouterInterface::class => App\Container\RouterFactory::class,
     ],
 ];
 ```
