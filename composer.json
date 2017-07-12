@@ -1,14 +1,23 @@
 {
     "name": "zendframework/zend-expressive",
     "description": "PSR-7 Middleware Microframework based on Stratigility",
+    "homepage": "https://docs.zendframework.com/zend-expressive/",
     "type": "library",
     "license": "BSD-3-Clause",
     "keywords": [
         "http",
         "middleware",
         "psr",
-        "psr-7"
+        "psr-7",
+        "psr-11"
     ],
+    "support": {
+        "docs": "https://docs.zendframework.com/zend-expressive/",
+        "issues": "https://github.com/zendframework/zend-expressive/issues",
+        "source": "https://github.com/zendframework/zend-expressive",
+        "slack": "https://zendframework-slack.herokuapp.com",
+        "forum": "https://discourse.zendframework.com/c/questions/expressive"
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "2.0-dev",
@@ -40,17 +49,17 @@
         "container-interop/container-interop": "<1.2.0"
     },
     "autoload": {
-      "psr-4": {
-        "Zend\\Expressive\\": "src/"
-      }
+        "psr-4": {
+            "Zend\\Expressive\\": "src/"
+        }
     },
     "autoload-dev": {
-      "psr-4": {
-        "ZendTest\\Expressive\\": "test/"
-      },
-      "files": [
-        "test/class_exists.php"
-      ]
+        "psr-4": {
+            "ZendTest\\Expressive\\": "test/"
+        },
+        "files": [
+            "test/class_exists.php"
+        ]
     },
     "suggest": {
         "filp/whoops": "^2.1 to use the Whoops error handler",
