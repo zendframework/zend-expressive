@@ -39,7 +39,6 @@ All notable changes to this project will be documented in this file, in reverse 
 - [#479](https://github.com/zendframework/zend-expressive/pull/479) fixes the
   `WhoopsErrorResponseGenerator::$whoops` dockblock Type to support Whoops 1
   and 2.
-
 - [#482](https://github.com/zendframework/zend-expressive/pull/482) fixes the
   `Application::$defaultDelegate` dockblock Type.
 
