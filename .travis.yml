@@ -53,17 +53,17 @@ matrix:
     - php: 7.1
       env:
         - DEPS=latest
-    - php: hhvm
+    - php: nightly
       env:
         - DEPS=lowest
-    - php: hhvm
+    - php: nightly
       env:
         - DEPS=locked
-    - php: hhvm
+    - php: nightly
       env:
         - DEPS=latest
   allow_failures:
-    - php: hhvm
+    - php: nightly
 
 before_install:
   - if [[ $TEST_COVERAGE != 'true' ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
