@@ -573,7 +573,7 @@ responses. To do this, you will:</p>
 <p>We encourage the use of dependency injection. As such, we recommend writing your
 middleware to accept the <code>TemplateRendererInterface</code> via either the constructor or a
 setter. As an example:</p>
-<pre class="codehilite"><code class="language-php linenums">namespace Acme\Blog;
+<pre class="codehilite"><code class="language-php">namespace Acme\Blog;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
@@ -595,8 +595,9 @@ class EntryMiddleware implements MiddlewareInterface
     }
 }</code></pre>
 
+
 <p>This will necessitate having a factory for your middleware:</p>
-<pre class="codehilite"><code class="language-php linenums">namespace Acme\Blog\Container;
+<pre class="codehilite"><code class="language-php">namespace Acme\Blog\Container;
 
 use Acme\Blog\EntryMiddleware;
 use Psr\Container\ContainerInterface;
@@ -612,6 +613,7 @@ class EntryMiddlewareFactory
     }
 }</code></pre>
 
+
 <p>And, of course, you'll need to tell your container to use the factory; see the
 <a href="../../container/intro/">container documentation</a> for more information on how you
 might accomplish that.</p>
@@ -619,7 +621,7 @@ might accomplish that.</p>
 <p>Now that we have the templating engine injected into our middleware, we can
 consume it. Most often, we will want to render a template, optionally with
 substitutions to pass to it. This will typically look like the following:</p>
-<pre class="codehilite"><code class="language-php linenums">namespace Acme\Blog;
+<pre class="codehilite"><code class="language-php">namespace Acme\Blog;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;

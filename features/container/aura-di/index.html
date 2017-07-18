@@ -574,14 +574,15 @@ injection container with the following features:</p>
 <h2 id="installing-auradi">Installing Aura.Di</h2>
 <p>Aura.Di implements <a href="https://github.com/container-interop/container-interop">container-interop</a>
 as of version 3.</p>
-<pre class="codehilite"><code class="language-bash linenums">$ composer require aura/di</code></pre>
+<pre class="codehilite"><code class="language-bash">$ composer require aura/di</code></pre>
+
 
 <h2 id="configuration">Configuration</h2>
 <p>Aura.Di can help you to organize your code better with
 <a href="http://auraphp.com/packages/Aura.Di/config.html">ContainerConfig classes</a> and
 <a href="http://auraphp.com/blog/2014/04/07/two-stage-config/">two step configuration</a>.
 In this example, we'll put that in <code>config/services.php</code>:</p>
-<pre class="codehilite"><code class="language-php linenums">&lt;?php
+<pre class="codehilite"><code class="language-php">&lt;?php
 use Aura\Di\ContainerBuilder;
 
 $containerBuilder = new ContainerBuilder();
@@ -592,8 +593,9 @@ return $containerBuilder-&gt;newConfiguredInstance([
     'Application\Config\Common',
 ]);</code></pre>
 
+
 <p>The bare minimum <code>ContainerConfig</code> code needed to make zend-expressive work is:</p>
-<pre class="codehilite"><code class="language-php linenums">&lt;?php
+<pre class="codehilite"><code class="language-php">&lt;?php
 // In src/Config/Common.php:
 namespace Application\Config;
 
@@ -673,8 +675,9 @@ class Common extends ContainerConfig
     }
 }</code></pre>
 
+
 <p>Your bootstrap (typically <code>public/index.php</code>) will then look like this:</p>
-<pre class="codehilite"><code class="language-php linenums">chdir(dirname(__DIR__));
+<pre class="codehilite"><code class="language-php">chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
 $container = require 'config/services.php';
 $app = $container-&gt;get(Zend\Expressive\Application::class);

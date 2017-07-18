@@ -572,7 +572,8 @@ if you need that information.</p>
 <p>We recommend that your code raise exceptions for conditions where it cannot
 gracefully recover. Additionally, we recommend that you have a reasonable PHP
 <code>error_reporting</code> setting that includes warnings and fatal errors:</p>
-<pre class="codehilite"><code class="language-php linenums">error_reporting(E_ALL &amp; ~E_USER_DEPRECATED &amp; ~E_DEPRECATED &amp; ~E_STRICT &amp; ~E_NOTICE);</code></pre>
+<pre class="codehilite"><code class="language-php">error_reporting(E_ALL &amp; ~E_USER_DEPRECATED &amp; ~E_DEPRECATED &amp; ~E_STRICT &amp; ~E_NOTICE);</code></pre>
+
 
 <p>If you follow these guidelines, you can then write or use middleware that does
 the following:</p>
@@ -581,7 +582,7 @@ the following:</p>
 <li>wraps execution of the delegate (<code>$delegate-&gt;process()</code>) with a try/catch block.</li>
 </ul>
 <p>As an example:</p>
-<pre class="codehilite"><code class="language-php linenums">function ($request, DelegateInterface $delegate)
+<pre class="codehilite"><code class="language-php">function ($request, DelegateInterface $delegate)
 {
     set_error_handler(function ($errno, $errstr, $errfile, $errline) {
         if (! (error_reporting() &amp; $errno)) {
@@ -608,9 +609,11 @@ the following:</p>
     ), 500);
 }</code></pre>
 
+
 <p>You would then pipe this as the outermost (or close to outermost) layer of your
 application:</p>
-<pre class="codehilite"><code class="language-php linenums">$app-&gt;pipe($errorMiddleware);</code></pre>
+<pre class="codehilite"><code class="language-php">$app-&gt;pipe($errorMiddleware);</code></pre>
+
 
 <p>So that you do not need to do this, we provide an error handler for you, via
 zend-stratigility: <code>Zend\Stratigility\Middleware\ErrorHandler</code>.</p>
@@ -645,7 +648,7 @@ generating the instance; it should be mapped to the service
 </ul>
 <p>Map the service <code>Zend\Expressive\Middleware\ErrorResponseGenerator</code> to one of
 these two factories in your configuration:</p>
-<pre class="codehilite"><code class="language-php linenums">use Zend\Expressive\Container;
+<pre class="codehilite"><code class="language-php">use Zend\Expressive\Container;
 use Zend\Expressive\Middleware;
 use Zend\Stratigility\Middleware\ErrorHandler;
 
@@ -658,6 +661,7 @@ return [
     ],
 ];</code></pre>
 
+
 <blockquote>
 <h3 id="use-development-mode-configuration-to-enable-whoops">Use development mode configuration to enable whoops</h3>
 <p>You can specify the above in one of your <code>config/autoload/*.global.php</code> files,
@@ -666,7 +670,7 @@ to ensure you have a production-capable error response generator.</p>
 in your application (which is provided by default in the Expressive 2.0
 skeleton), you can toggle usage of whoops by adding configuration to the file
 <code>config/autoload/development.local.php.dist</code>:</p>
-<pre class="codehilite"><code class="language-php linenums">use Zend\Expressive\Container;
+<pre class="codehilite"><code class="language-php">use Zend\Expressive\Container;
 use Zend\Expressive\Middleware;
 
 return [
@@ -676,6 +680,7 @@ return [
         ],
     ],
 ];</code></pre>
+
 
 <p>When you enable development mode, whoops will then be enabled; when you
 disable development mode, you'll be using your production generator.</p>
@@ -688,16 +693,17 @@ want to enable whoops.</p>
 features such as logging. <code>Zend\Stratigility\Middleware\ErrorHandler</code> provides
 the ability to do so via its <code>attachListener()</code> method.</p>
 <p>This method accepts a callable with the following signature:</p>
-<pre class="codehilite"><code class="language-php linenums">function (
+<pre class="codehilite"><code class="language-php">function (
     Throwable|Exception $error,
     ServerRequestInterface $request,
     ResponseInterface $response
 ) : void</code></pre>
 
+
 <p>The response provided is the response returned by your error response generator,
 allowing the listener the ability to introspect the generated response as well.</p>
 <p>As an example, you could create a logging listener as follows:</p>
-<pre class="codehilite"><code class="language-php linenums">namespace Acme;
+<pre class="codehilite"><code class="language-php">namespace Acme;
 
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -733,9 +739,10 @@ class LoggingErrorListener
     }
 }</code></pre>
 
+
 <p>You could then use a <a href="../container/delegator-factories/">delegator factory</a> to
 create your logger listener and attach it to your error handler:</p>
-<pre class="codehilite"><code class="language-php linenums">namespace Acme;
+<pre class="codehilite"><code class="language-php">namespace Acme;
 
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -758,11 +765,12 @@ class LoggingErrorListenerDelegatorFactory
     }
 }</code></pre>
 
+
 <h2 id="handling-more-specific-error-types">Handling more specific error types</h2>
 <p>You could also write more specific error handlers. As an example, you might want
 to catch <code>UnauthorizedException</code> instances specifically, and display a login
 page:</p>
-<pre class="codehilite"><code class="language-php linenums">function ($request, DelegateInterface $delegate) use ($renderer)
+<pre class="codehilite"><code class="language-php">function ($request, DelegateInterface $delegate) use ($renderer)
 {
     try {
         $response = $delegate-&gt;process($request);
@@ -776,12 +784,14 @@ page:</p>
     );
 }</code></pre>
 
+
 <p>You could then push this into a middleware pipe only when it's needed:</p>
-<pre class="codehilite"><code class="language-php linenums">$app-&gt;get('/dashboard', [
+<pre class="codehilite"><code class="language-php">$app-&gt;get('/dashboard', [
     $unauthorizedHandlerMiddleware,
     $middlewareThatChecksForAuthorization,
     $middlewareBehindAuthorizationWall,
 ], 'dashboard');</code></pre>
+
 
 <h2 id="default-delegates">Default delegates</h2>
 <p><code>Zend\Expressive\Application</code> manages an internal middleware pipeline; when you
@@ -802,7 +812,7 @@ optionally using a composed template renderer to do so.</p>
 creating an instance, and this should be mapped to the
 <code>Zend\Expressive\Delegate\NotFoundDelegate</code> service, and aliased to the
 <code>Zend\Expressive\Delegate\DefaultDelegate</code> service:</p>
-<pre class="codehilite"><code class="language-php linenums">use Zend\Expressive\Container;
+<pre class="codehilite"><code class="language-php">use Zend\Expressive\Container;
 use Zend\Expressive\Delegate;
 
 return [
@@ -815,6 +825,7 @@ return [
         ],
     ],
 ];</code></pre>
+
 
 <p>The factory will consume the following services:</p>
 <ul>
@@ -847,7 +858,7 @@ condition.</p>
 with an accompanying <code>Zend\Expressive\Container\NotFoundHandlerFactory</code>. This
 middleware composes and proxies to the <code>NotFoundDelegate</code> detailed in the
 previous section, and, as such, requires that that service be present.</p>
-<pre class="codehilite"><code class="language-php linenums">use Zend\Expressive\Container;
+<pre class="codehilite"><code class="language-php">use Zend\Expressive\Container;
 use Zend\Expressive\Delegate;
 use Zend\Expressive\Middleware;
 
@@ -858,13 +869,15 @@ return [
     ],
 ];</code></pre>
 
+
 <p>When registered, you should then pipe it as the innermost layer of your
 application:</p>
-<pre class="codehilite"><code class="language-php linenums">// A basic application:
+<pre class="codehilite"><code class="language-php">// A basic application:
 $app-&gt;pipe(ErrorHandler::class);
 $app-&gt;pipeRoutingMiddleware();
 $app-&gt;pipeDispatchMiddleware();
 $app-&gt;pipe(NotFoundHandler::class);</code></pre>
+
 
 <h2 id="version-1-error-handling">Version 1 error handling</h2>
 <blockquote>
@@ -915,7 +928,7 @@ the appropriate dependencies installed; see the <a href="../template/intro/">tem
 for information on what we support and how to install supported systems.</p>
 <p>Once you have selected your templating system, you can setup the templated error
 handler.</p>
-<pre class="codehilite"><code class="language-php linenums">use Zend\Expressive\Application;
+<pre class="codehilite"><code class="language-php">use Zend\Expressive\Application;
 use Zend\Expressive\Plates\PlatesRenderer;
 use Zend\Expressive\TemplatedErrorHandler;
 
@@ -924,6 +937,7 @@ $plates-&gt;addPath(__DIR__ . '/templates/error', 'error');
 $finalHandler = new TemplatedErrorHandler($plates, 'error::404', 'error::500');
 
 $app = new Application($router, $container, $finalHandler);</code></pre>
+
 
 <p>The above will use the templates <code>error::404</code> and <code>error::500</code> for 404 and general errors,
 respectively, rendering them using our Plates template adapter.</p>
@@ -939,12 +953,13 @@ exceptions and PHP errors. We provide integration with this library through
 uses its features for 404 status and non-exception errors. For exceptions, however, it will return
 the whoops output. As such, it is a good choice for use in development.</p>
 <p>To use it, you must first install whoops:</p>
-<pre class="codehilite"><code class="language-bash linenums">$ composer require filp/whoops</code></pre>
+<pre class="codehilite"><code class="language-bash">$ composer require filp/whoops</code></pre>
+
 
 <p>Then you will need to provide the error handler a whoops runtime instance, as well as a
 <code>Whoops\Handler\PrettyPageHandler</code> instance. You can also optionally provide a <code>TemplateRendererInterface</code>
 instance and template names, just as you would for a <code>TemplatedErrorHandler</code>.</p>
-<pre class="codehilite"><code class="language-php linenums">use Whoops\Handler\PrettyPageHandler;
+<pre class="codehilite"><code class="language-php">use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run as Whoops;
 use Zend\Expressive\Application;
 use Zend\Expressive\Plates\PlatesRenderer;
@@ -973,6 +988,7 @@ $app = new Application($router, $container, $finalHandler);
 // swallow bootstrap errors. 
 $whoops-&gt;register();
 $app-&gt;run();</code></pre>
+
 
 <p>The calls to <code>writeToOutput(false)</code>, <code>allowQuit(false)</code>, and <code>register()</code> must be made to guarantee
 whoops will interoperate well with zend-expressive.</p>

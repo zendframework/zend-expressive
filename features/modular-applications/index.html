@@ -607,12 +607,13 @@ these new features, you will need to install the following packages:</p>
 <li>zendframework/zend-component-installer</li>
 </ul>
 <p>As an example:</p>
-<pre class="codehilite"><code class="language-bash linenums">$ composer require zendframework/zend-config-aggregator \
+<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-config-aggregator \
 &gt; zendframework/zend-component-installer</code></pre>
+
 
 <p>Once installed, you should update your <code>config/config.php</code> file to read as
 follows:</p>
-<pre class="codehilite"><code class="language-php linenums">&lt;?php
+<pre class="codehilite"><code class="language-php">&lt;?php
 
 use Zend\ConfigAggregator\ArrayProvider;
 use Zend\ConfigAggregator\ConfigAggregator;
@@ -645,6 +646,7 @@ $aggregator = new ConfigAggregator([
 
 return $aggregator-&gt;getMergedConfig();</code></pre>
 
+
 <p>The above should mimic what you already had in place; if it does not, check to
 see if there are additional paths you were globbing previously.</p>
 <h2 id="module-structure">Module structure</h2>
@@ -656,7 +658,7 @@ array.</p>
 structure, and that the module contain a <code>src/</code> directory at the minimum, along
 with directories for other module-specific content, such as templates, tests, and
 assets:</p>
-<pre class="codehilite"><code class="language-text linenums">src/
+<pre class="codehilite"><code class="language-text">src/
   Acme/
     src/
       ConfigProvider.php
@@ -674,13 +676,15 @@ assets:</p>
       Middleware/
         VerifyUserTest.php</code></pre>
 
+
 <p>If you use the above structure, you would then add an entry in your
 <code>composer.json</code> file to provide autoloading:</p>
-<pre class="codehilite"><code class="language-json linenums">&quot;autoload&quot;: {
+<pre class="codehilite"><code class="language-json">&quot;autoload&quot;: {
     &quot;psr-4&quot;: {
         &quot;Acme\\&quot;: &quot;src/Acme/src/&quot;
     }
 }</code></pre>
+
 
 <p>Don't forget to execute <code>composer dump-autoload</code> after making the change!</p>
 <h2 id="creating-and-enabling-a-module">Creating and enabling a module</h2>
@@ -689,7 +693,7 @@ provider", which is simply an invokable class that returns a configuration
 array.</p>
 <p>Generally, a config provider will return dependency information, and
 module-specific configuration:</p>
-<pre class="codehilite"><code class="language-php linenums">namespace Acme;
+<pre class="codehilite"><code class="language-php">namespace Acme;
 
 class ConfigProvider
 {
@@ -721,11 +725,13 @@ class ConfigProvider
     }
 }</code></pre>
 
+
 <p>You would then add the config provider to the top (or towards the top) of your
 <code>config/config.php</code>:</p>
-<pre class="codehilite"><code class="language-php linenums">$aggregator = new ConfigAggregator([
+<pre class="codehilite"><code class="language-php">$aggregator = new ConfigAggregator([
     Acme\ConfigProvider::class,
     /* ... */</code></pre>
+
 
 <p>This approach allows your <code>config/autoload/*</code> files to take precedence over the
 module configuration, allowing you to override the values.</p>
@@ -747,7 +753,7 @@ them in two locations:</p>
   appropriate to the current environment. In development, for instance, this
   would be <code>false</code>.</li>
 </ul>
-<pre class="codehilite"><code class="language-php linenums">// config/autoload/global.php
+<pre class="codehilite"><code class="language-php">// config/autoload/global.php
 
 return [
     'config_cache_enabled' =&gt; true,
@@ -761,14 +767,16 @@ return [
     /* ... */
 ];</code></pre>
 
+
 <p>You would then alter your <code>config/config.php</code> file to add the second argument.
 The following example builds on the previous, and demonstrates having the
 <code>AppConfig</code> entry enabled. The configuration will be cached to
 <code>data/config-cache.php</code> in the application root:</p>
-<pre class="codehilite"><code class="language-php linenums">$configManager = new ConfigManager([
+<pre class="codehilite"><code class="language-php">$configManager = new ConfigManager([
     App\AppConfig::class,
     new PhpFileProvider('config/autoload/{{,*.}global,{,*.}local}.php'),
 ], 'data/config-cache.php');</code></pre>
+
 
 <p>When the configuration cache path is present, if the <code>config_cache_enabled</code> flag
 is enabled, then configuration will be read from the cached configuration,

@@ -583,7 +583,8 @@ handler", which determines whether or not to return an error, and, if so, what
 kind of error to return.</p>
 <p>Stratigility also allows you to segregate piped middleware to specific paths. As
 an example:</p>
-<pre class="codehilite"><code class="language-php linenums">$app-&gt;pipe('/api', $apiMiddleware);</code></pre>
+<pre class="codehilite"><code class="language-php">$app-&gt;pipe('/api', $apiMiddleware);</code></pre>
+
 
 <p>will execute <code>$apiMiddleware</code> only if the path matches <code>/api</code>; otherwise, it
 will skip over that middleware.</p>
@@ -606,11 +607,12 @@ zend-stratigility identified error handling middleware by its arity (number of
 function arguments); as such, zend-expressive defined an additional method for
 piping service-driven error handling middleware, <code>pipeErrorHandler()</code>. That
 method had the same signature as <code>pipe()</code>:</p>
-<pre class="codehilite"><code class="language-php linenums">// Without a path:
+<pre class="codehilite"><code class="language-php">// Without a path:
 $app-&gt;pipeErrorHandler('error handler service name');
 
 // Specific to a path:
 $app-&gt;pipeErrorHandler('/api', 'error handler service name');</code></pre>
+
 
 <p>That method returned a closure using the error middleware signature.</p>
 <p>As noted in the <a href="../../error-handling/">error handling chapter</a>, you should
@@ -689,7 +691,7 @@ the dedicated application methods <code>pipeRoutingMiddleware()</code> and
 <code>pipeDispatchMiddleware()</code>; <code>Application</code> contains logic to ensure neither of
 these are called more than once.</p>
 <p>As an example:</p>
-<pre class="codehilite"><code class="language-php linenums">$app-&gt;pipe(OriginalMessages::class);
+<pre class="codehilite"><code class="language-php">$app-&gt;pipe(OriginalMessages::class);
 $app-&gt;pipe(ServerUrlMiddleware::class);
 $app-&gt;pipe(XClacksOverhead::class);
 $app-&gt;pipe(ErrorHandler::class);

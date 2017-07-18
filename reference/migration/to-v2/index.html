@@ -774,7 +774,7 @@ signature, but will require that you either:</p>
 outset.</p>
 <p>We recommend that you begin writing middleware to follow the http-interop
 standard at this time. As an example:</p>
-<pre class="codehilite"><code class="language-php linenums">namespace App\Middleware;
+<pre class="codehilite"><code class="language-php">namespace App\Middleware;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
@@ -792,8 +792,9 @@ class XClacksOverheadMiddleware implements MiddlewareInterface
     }
 }</code></pre>
 
+
 <p>Alternately, you can write this as a callable:</p>
-<pre class="codehilite"><code class="language-php linenums">namespace App\Middleware;
+<pre class="codehilite"><code class="language-php">namespace App\Middleware;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -812,6 +813,7 @@ class XClacksOverheadMiddleware
         return $response-&gt;withHeader('X-Clacks-Overhead', 'GNU Terry Pratchett');
     }
 }</code></pre>
+
 
 <h2 id="original-messages">Original messages</h2>
 <p>In the <a href="../to-v1-1/">migration to version 1.1 guide</a>, we detail the fact that
@@ -833,10 +835,12 @@ configuration or programmatic pipeline.</p>
 <a href="https://github.com/zendframework/zend-expressive-tooling">zendframework/zend-expressive-tooling</a>
 package which will help you in this latter part of the migration. Install it as
 a development requirement via composer:</p>
-<pre class="codehilite"><code class="language-bash linenums">$ composer require --dev zendframework/zend-expressive-tooling</code></pre>
+<pre class="codehilite"><code class="language-bash">$ composer require --dev zendframework/zend-expressive-tooling</code></pre>
+
 
 <p>And then execute it via:</p>
-<pre class="codehilite"><code class="language-bash linenums">$ ./vendor/bin/expressive-migrate-original-messages</code></pre>
+<pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive-migrate-original-messages</code></pre>
+
 
 <p>This tool will update calls to <code>getOriginalRequest()</code> and <code>getOriginalUri()</code> to
 instead use the new request attributes that the <code>OriginalMessages</code> middleware
@@ -864,7 +868,7 @@ internally, removes the <code>ErrorMiddlewareInterface</code> entirely, and thus
 <code>$e</code>/<code>$error</code> argument to final handlers.</p>
 <p>As such, you <strong>MUST</strong> provide your own error handling with Expressive 2.0.</p>
 <p>Error handling middleware will typically introduce a try/catch block:</p>
-<pre class="codehilite"><code class="language-php linenums">function (
+<pre class="codehilite"><code class="language-php">function (
     ServerRequestInterface $request,
     ResponseInterface $response,
     callable $next
@@ -885,6 +889,7 @@ internally, removes the <code>ErrorMiddlewareInterface</code> entirely, and thus
     return $response;
 }</code></pre>
 
+
 <p>Additionally, you will need middleware registered as your innermost layer that
 is guaranteed to return a response. Generally, if you hit that layer, no other
 middleware is capable of handling the request, indicating a 400 (Bad Request) or
@@ -899,11 +904,12 @@ type <code>ErrorException</code> with the PHP error details.</p>
 <p><code>ErrorHandler</code> allows injection of an "error response generator", which allows
 you to alter how the error response is generated based on the current
 environment. Error response generators are callables with the signature:</p>
-<pre class="codehilite"><code class="language-php linenums">function (
+<pre class="codehilite"><code class="language-php">function (
     Throwable|Exception $e,
     ServerRequestInterface $request,
     ResponseInterface $response
 ) : ResponseInterface</code></pre>
+
 
 <p>Expressive 2.0 provides the following functionality to assist with your error
 handling needs:</p>
@@ -1020,7 +1026,7 @@ handling needs:</p>
 <p>If you are using configuration-driven middleware, your middleware pipeline
 configuration may look like this in order to make use of the new error handling
 facilities:</p>
-<pre class="codehilite"><code class="language-php linenums">// config/autoload/middleware-pipeline.global.php
+<pre class="codehilite"><code class="language-php">// config/autoload/middleware-pipeline.global.php
 
 use Zend\Expressive\Application;
 use Zend\Expressive\Container;
@@ -1080,15 +1086,17 @@ return [
     ],
 ];</code></pre>
 
+
 <p>If you are defining a programmatic pipeline (see more below on this), the
 pipeline might look like:</p>
-<pre class="codehilite"><code class="language-php linenums">$app-&gt;pipe(OriginalMessages::class);
+<pre class="codehilite"><code class="language-php">$app-&gt;pipe(OriginalMessages::class);
 $app-&gt;pipe(Helper\ServerUrlMiddleware::class);
 $app-&gt;pipe(ErrorHandler::class);
 $app-&gt;pipeRoutingMiddleware();
 $app-&gt;pipe(Helper\UrlHelperMiddleware::class);
 $app-&gt;pipeDispatchMiddleware();
 $app-&gt;pipe(Middleware\NotFoundHandler::class);</code></pre>
+
 
 <h3 id="error-handling-and-php-errors">Error handling and PHP errors</h3>
 <p>As noted above, <code>Zend\Stratigility\Middleware\ErrorHandler</code> also creates a PHP
@@ -1099,7 +1107,8 @@ errors it should cast this way.</p>
 to exceptions, code that would normally run will now result in error pages.</p>
 <p>We recommend adding the following line to your <code>public/index.php</code> towards the
 top of the file:</p>
-<pre class="codehilite"><code class="language-php linenums">error_reporting(error_reporting() &amp; ~E_USER_DEPRECATED);</code></pre>
+<pre class="codehilite"><code class="language-php">error_reporting(error_reporting() &amp; ~E_USER_DEPRECATED);</code></pre>
+
 
 <p>This will prevent the error handler from casting deprecation notices to
 exceptions, while keeping the rest of your error reporting mask intact.</p>
@@ -1191,14 +1200,16 @@ You may install this package in one of the following ways:</p>
 <ul>
 <li>Via the vendor binary <code>./vendor/bin/expressive-tooling</code>:</li>
 </ul>
-<pre class="codehilite"><code class="language-bash linenums">$ ./vendor/bin/expressive-tooling        # install
+<pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive-tooling        # install
 $ ./vendor/bin/expressive-tooling remove # uninstall</code></pre>
+
 
 <ul>
 <li>Using Composer:</li>
 </ul>
-<pre class="codehilite"><code class="language-bash linenums">$ composer require --dev zendframework/zend-expressive-tooling # install
+<pre class="codehilite"><code class="language-bash">$ composer require --dev zendframework/zend-expressive-tooling # install
 $ composer remove --dev zendframework/zend-expressive-tooling  # uninstall</code></pre>
+
 
 <p>Once installed, you will use the <code>vendor/bin/expressive-pipeline-from-config</code>
 command.</p>
@@ -1244,7 +1255,7 @@ the configuration in <code>config/autoload/programmatic-pipeline.global.php</cod
 are now ignored.</p>
 <p>If you wish to use Whoops in your development environment, you may add the
 following to a local configuration file (e.g., <code>config/autoload/local.php</code>):</p>
-<pre class="codehilite"><code class="language-php linenums">use Zend\Expressive\Container\WhoopsErrorResponseGeneratorFactory;
+<pre class="codehilite"><code class="language-php">use Zend\Expressive\Container\WhoopsErrorResponseGeneratorFactory;
 use Zend\Expressive\Middleware\ErrorResponseGenerator;
 
 return [
@@ -1254,6 +1265,7 @@ return [
         ],
     ],
 ];</code></pre>
+
 
 <p>Other things you may want to do:</p>
 <ul>
@@ -1323,28 +1335,31 @@ the currently selected locale.</p>
 opt-in to the new argument at will. For those implementing the interface,
 upgrading will require updating your router implementation's signature to match
 the new interface:</p>
-<pre class="codehilite"><code class="language-php linenums">public function generateUri(
+<pre class="codehilite"><code class="language-php">public function generateUri(
     string $name,
     array $substitutions = [],
     array $options = []
 ) : string</code></pre>
 
+
 <h2 id="url-helper-changes">URL helper changes</h2>
 <p>Expressive 2.0 uses zendframework/zend-expressive-helpers version 3.0+. This new
 version updates the signature of the <code>Zend\Expressive\Helper\UrlHelper</code> from:</p>
-<pre class="codehilite"><code class="language-php linenums">function (
+<pre class="codehilite"><code class="language-php">function (
     $routeName,
     array $routeParams = []
 ) : string</code></pre>
 
+
 <p>to:</p>
-<pre class="codehilite"><code class="language-php linenums">function (
+<pre class="codehilite"><code class="language-php">function (
     $routeName,
     array $routeParams = [],
     $queryParams = [],
     $fragmentIdentifier = null,
     array $options = []
 ) : string</code></pre>
+
 
 <p>For consumers, this should represent a widening of features, and will not
 require any changes, unless you wish to opt-in to the new arguments. See the

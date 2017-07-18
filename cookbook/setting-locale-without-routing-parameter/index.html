@@ -582,7 +582,7 @@ from the request URI's path. If if doesn't find one, it sets a default.</p>
 <li>amends the request with a truncated path (removing the locale segment).</li>
 <li>adds the locale segment as the base path of the <code>UrlHelper</code>.</li>
 </ul>
-<pre class="codehilite"><code class="language-php linenums">&lt;?php
+<pre class="codehilite"><code class="language-php">&lt;?php
 namespace Application\I18n;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
@@ -621,9 +621,10 @@ class SetLocaleMiddleware implements MiddlewareInterface
     }
 }</code></pre>
 
+
 <p>Then you will need a factory for the <code>SetLocaleMiddleware</code> to inject the
 <code>UrlHelper</code> instance.</p>
-<pre class="codehilite"><code class="language-php linenums">&lt;?php
+<pre class="codehilite"><code class="language-php">&lt;?php
 namespace Application\I18n;
 
 use Psr\Container\ContainerInterface;
@@ -639,10 +640,11 @@ class SetLocaleMiddlewareFactory
     }
 }</code></pre>
 
+
 <p>Next, map the middleware to its factory in either
 <code>/config/autoload/dependencies.global.php</code> or
 <code>/config/autoload/middleware-pipeline.global.php</code>:</p>
-<pre class="codehilite"><code class="language-php linenums">use Application\I18n\SetLocaleMiddleware;
+<pre class="codehilite"><code class="language-php">use Application\I18n\SetLocaleMiddleware;
 use Application\I18n\SetLocaleMiddlewareFactory;
 
 return [
@@ -655,10 +657,11 @@ return [
     ],
 ];</code></pre>
 
+
 <p>Finally, you will need to configure your middleware pipeline to ensure this
 middleware is executed on every request.</p>
 <p>If using a programmatic pipeline:</p>
-<pre class="codehilite"><code class="language-php linenums">use Application\I18n\SetLocaleMiddleware;
+<pre class="codehilite"><code class="language-php">use Application\I18n\SetLocaleMiddleware;
 use Zend\Expressive\Helper\UrlHelperMiddleware;
 
 /* ... */
@@ -669,9 +672,10 @@ $app-&gt;pipe(UrlHelperMiddleware::class);
 $app-&gt;pipeDispatchMiddleware();
 /* ... */</code></pre>
 
+
 <p>If using a configuration-driven application, update
 <code>/config/autoload/middleware-pipeline.global.php</code> to add the middleware:</p>
-<pre class="codehilite"><code class="language-php linenums">return [
+<pre class="codehilite"><code class="language-php">return [
     'middleware_pipeline' =&gt; [
         [
             'middleware' =&gt; [
@@ -696,11 +700,13 @@ $app-&gt;pipeDispatchMiddleware();
     ],
 ];</code></pre>
 
+
 <h2 id="url-generation-in-the-view">Url generation in the view</h2>
 <p>Since the <code>UrlHelper</code> has the locale set as a base path, you don't need 
 to worry about generating URLs within your view. Just use the helper to 
 generate a URL and it will do the rest.</p>
-<pre class="codehilite"><code class="language-php linenums">&lt;?php echo $this-&gt;url('your-route') ?&gt;</code></pre>
+<pre class="codehilite"><code class="language-php">&lt;?php echo $this-&gt;url('your-route') ?&gt;</code></pre>
+
 
 <blockquote>
 <h3 id="helpers-differ-between-template-renderers">Helpers differ between template renderers</h3>
@@ -711,7 +717,7 @@ Twig and Plates.</p>
 <p>If you want to add the locale parameter when creating URIs within your 
 action middleware, you just need to inject the <code>UrlHelper</code> into your 
 middleware and use it for URL generation:</p>
-<pre class="codehilite"><code class="language-php linenums">&lt;?php
+<pre class="codehilite"><code class="language-php">&lt;?php
 namespace Application\Action;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
@@ -744,10 +750,11 @@ class RedirectAction implements MiddlewareInterface
     }
 }</code></pre>
 
+
 <p>Injecting the <code>UrlHelper</code> into your middleware will also require that the
 middleware have a factory that manages the injection. As an example, the
 following would work for the above middleware:</p>
-<pre class="codehilite"><code class="language-php linenums">namespace Application\Action;
+<pre class="codehilite"><code class="language-php">namespace Application\Action;
 
 use Psr\Container\ContainerInterface;
 use Zend\Expressive\Helper\UrlHelper;
