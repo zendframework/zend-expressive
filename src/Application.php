@@ -474,7 +474,7 @@ class Application extends MiddlewarePipe
             }, false);
         });
 
-        if (count($matches) > 0) {
+        if (! empty($matches)) {
             throw new Exception\DuplicateRouteException(
                 'Duplicate route detected; same name or path, and one or more HTTP methods intersect'
             );
