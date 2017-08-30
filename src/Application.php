@@ -23,12 +23,6 @@ use Zend\Stratigility\MiddlewarePipe;
 
 /**
  * Middleware application providing routing based on paths and HTTP methods.
- *
- * @method Router\Route get($path, $middleware, $name = null)
- * @method Router\Route post($path, $middleware, $name = null)
- * @method Router\Route put($path, $middleware, $name = null)
- * @method Router\Route patch($path, $middleware, $name = null)
- * @method Router\Route delete($path, $middleware, $name = null)
  */
 class Application extends MiddlewarePipe
 {
@@ -58,17 +52,6 @@ class Application extends MiddlewarePipe
      * @var null|EmitterInterface
      */
     private $emitter;
-
-    /**
-     * @var string[] HTTP methods that can be used for routing
-     */
-    private $httpRouteMethods = [
-        'GET',
-        'POST',
-        'PUT',
-        'PATCH',
-        'DELETE',
-    ];
 
     /**
      * @var bool Flag indicating whether or not the route middleware is
@@ -117,47 +100,58 @@ class Application extends MiddlewarePipe
     }
 
     /**
-     * @param string $method
-     * @param array $args
+     * @param string|Router\Route $path
+     * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
+     * @param null|string $name The name of the route.
      * @return Router\Route
-     * @throws Exception\BadMethodCallException if the $method is not in $httpRouteMethods.
-     * @throws Exception\BadMethodCallException if receiving more or less than 2 arguments.
      */
-    public function __call($method, array $args)
+    public function get($path, $middleware, $name = null)
     {
-        if (! in_array(strtoupper($method), $this->httpRouteMethods, true)) {
-            throw new Exception\BadMethodCallException('Unsupported method');
-        }
+        return $this->route($path, $middleware, ['GET'], $name);
+    }
 
-        switch (count($args)) {
-            case 2:
-                // We have path and middleware; append the HTTP method.
-                $routeArgs = [
-                    $args[0],
-                    $args[1],
-                    [$method],
-                ];
-                break;
-            case 3:
-                // Need to reflow arguments to (0 => path, 1 => middleware, 2 => methods, 3 => name)
-                // from (0 => path, 1 => middleware, 2 => name)
-                $routeArgs = [
-                    $args[0],
-                    $args[1],
-                    [$method],
-                    $args[2],
-                ];
-                break;
-            default:
-                throw new Exception\BadMethodCallException(sprintf(
-                    '%s::%s requires at least 2 arguments, and no more than 3; received %d',
-                    __CLASS__,
-                    $method,
-                    count($args)
-                ));
-        }
+    /**
+     * @param string|Router\Route $path
+     * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
+     * @param null|string $name The name of the route.
+     * @return Router\Route
+     */
+    public function post($path, $middleware, $name = null)
+    {
+        return $this->route($path, $middleware, ['POST'], $name);
+    }
 
-        return $this->route(...$routeArgs);
+    /**
+     * @param string|Router\Route $path
+     * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
+     * @param null|string $name The name of the route.
+     * @return Router\Route
+     */
+    public function put($path, $middleware, $name = null)
+    {
+        return $this->route($path, $middleware, ['PUT'], $name);
+    }
+
+    /**
+     * @param string|Router\Route $path
+     * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
+     * @param null|string $name The name of the route.
+     * @return Router\Route
+     */
+    public function patch($path, $middleware, $name = null)
+    {
+        return $this->route($path, $middleware, ['PATCH'], $name);
+    }
+
+    /**
+     * @param string|Router\Route $path
+     * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
+     * @param null|string $name The name of the route.
+     * @return Router\Route
+     */
+    public function delete($path, $middleware, $name = null)
+    {
+        return $this->route($path, $middleware, ['DELETE'], $name);
     }
 
     /**
