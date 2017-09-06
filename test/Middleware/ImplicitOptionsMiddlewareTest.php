@@ -169,7 +169,10 @@ class ImplicitOptionsMiddlewareTest extends TestCase
         $delegate->process($request->reveal())->shouldNotBeCalled();
 
         $expected = $this->prophesize(ResponseInterface::class);
-        $expected->withHeader('Access-Control-Allow-Methods', implode(',', $allowedMethods))->will([$expected, 'reveal']);
+        $expected->withHeader(
+            'Access-Control-Allow-Methods',
+            implode(',', $allowedMethods)
+        )->will([$expected, 'reveal']);
         $expected->withHeader('Allow', implode(',', $allowedMethods))->will([$expected, 'reveal']);
 
         $middleware = new ImplicitOptionsMiddleware($expected->reveal());
