@@ -106,6 +106,7 @@ class ImplicitOptionsMiddlewareTest extends TestCase
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getMethod()->willReturn(RequestMethod::METHOD_OPTIONS);
+        $request->hasHeader("Access-Control-Request-Method")->willReturn(false);
         $request->getAttribute(RouteResult::class, false)->will([$result, 'reveal']);
 
         $response = $this->prophesize(ResponseInterface::class)->reveal();
@@ -134,12 +135,44 @@ class ImplicitOptionsMiddlewareTest extends TestCase
 
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getMethod()->willReturn(RequestMethod::METHOD_OPTIONS);
+        $request->hasHeader("Access-Control-Request-Method")->willReturn(false);
         $request->getAttribute(RouteResult::class, false)->will([$result, 'reveal']);
 
         $delegate = $this->prophesize(DelegateInterface::class);
         $delegate->process($request->reveal())->shouldNotBeCalled();
 
         $expected = $this->prophesize(ResponseInterface::class);
+        $expected->withHeader('Allow', implode(',', $allowedMethods))->will([$expected, 'reveal']);
+
+        $middleware = new ImplicitOptionsMiddleware($expected->reveal());
+        $result = $middleware->process($request->reveal(), $delegate->reveal());
+        $this->assertSame($expected->reveal(), $result);
+    }
+
+    public function testInjectsAccessControlAllowMethodsHeaderInResponseProvidedToConstructorDuringOptionsRequest()
+    {
+        $allowedMethods = [RequestMethod::METHOD_GET, RequestMethod::METHOD_POST];
+
+        $route = $this->prophesize(Route::class);
+        $route->implicitOptions()->willReturn(true);
+        $route->getAllowedMethods()->willReturn($allowedMethods);
+
+        $result = $this->prophesize(RouteResult::class);
+        $result->getMatchedRoute()->will([$route, 'reveal']);
+
+        $request = $this->prophesize(ServerRequestInterface::class);
+        $request->getMethod()->willReturn(RequestMethod::METHOD_OPTIONS);
+        $request->hasHeader("Access-Control-Request-Method")->willReturn(true);
+        $request->getAttribute(RouteResult::class, false)->will([$result, 'reveal']);
+
+        $delegate = $this->prophesize(DelegateInterface::class);
+        $delegate->process($request->reveal())->shouldNotBeCalled();
+
+        $expected = $this->prophesize(ResponseInterface::class);
+        $expected->withHeader(
+            'Access-Control-Allow-Methods',
+            implode(',', $allowedMethods)
+        )->will([$expected, 'reveal']);
         $expected->withHeader('Allow', implode(',', $allowedMethods))->will([$expected, 'reveal']);
 
         $middleware = new ImplicitOptionsMiddleware($expected->reveal());

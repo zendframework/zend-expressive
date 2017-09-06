@@ -79,6 +79,11 @@ class ImplicitOptionsMiddleware implements ServerMiddlewareInterface
         }
 
         $methods = implode(',', $route->getAllowedMethods());
+
+        if ($request->hasHeader('Access-Control-Request-Method')) {
+            $this->response = $this->getResponse()->withHeader('Access-Control-Allow-Methods', $methods);
+        }
+
         return $this->getResponse()->withHeader('Allow', $methods);
     }
 
