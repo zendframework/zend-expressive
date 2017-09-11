@@ -6,6 +6,8 @@ may integrate features or simply provide standalone benefits.
 
 Currently, these include:
 
+- [Body Parsing Middleware](body-parse.md)
+- [Content-Length Middleware](content-length.md)
 - [UrlHelper](url-helper.md)
 - [ServerUrlHelper](server-url-helper.md)
 
