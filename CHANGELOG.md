@@ -24,7 +24,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#508](https://github.com/zendframework/zend-expressive/pull/508) adds
+  documentation covering `Zend\Expressive\Helper\ContentLengthMiddleware`,
+  introduced in zend-expressive-helpers 4.1.0.
 
 ### Deprecated
 
