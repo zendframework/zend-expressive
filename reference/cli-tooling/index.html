@@ -4,39 +4,16 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="zend-expressive: PSR-7 Middleware Microframework">  
     <link rel="shortcut icon" href="../../img/favicon.ico">
 
     <title>CLI Tooling - Expressive</title>
 
-    <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.018/css/hack.min.css">
-    <link href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic&subset=latin-ext,latin" rel="stylesheet" type="text/css">
-    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin" rel="stylesheet" type="text/css">
-    <link href="//fonts.googleapis.com/css?family=Libre+Baskerville:400,400italic,700&subset=latin,latin-ext" rel="stylesheet" type="text/css">
-    <link href="../../css/base.css" rel="stylesheet">
-    <link href="../../css/zf-web.css" rel="stylesheet">
-    <link href="../../css/zf.css" rel="stylesheet">
-    <link href="../../css/prism-zf.css" rel="stylesheet">
-
-
-    <link href="../../css/zend-expressive.css" rel="stylesheet">
-
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-        <![endif]-->
-
-    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js"></script>
-    <script>
-    WebFont.load({
-        google: {
-            families: ['Open Sans', 'PT Sans']
-        }
-    });
-    </script>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha256-7s5uDGW3AHqw6xtJmNNtr+OBRJUlgkNJEo78P4b0yRw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/fontawesome/4.6.3/css/font-awesome.min.css" integrity="sha256-AIodEDkC8V/bHBkfyxzolUMw57jeQ9CauwhVW6YJ9CA=" crossorigin="anonymous">
+    <link rel="stylesheet" href="../../css/styles-482aa2add1.css">
+        <link href="../../css/zend-expressive.css" rel="stylesheet">
 
     
 </head>
@@ -318,6 +295,12 @@
 </li>
 
         
+            
+<li >
+    <a href="../../features/helpers/content-length/">Content-Length Middleware</a>
+</li>
+
+        
     </ul>
   </li>
 
@@ -552,11 +535,11 @@
         <div class="col-md-9" role="main">
 
 <ol class="breadcrumb" role="navigation" aria-label="breadcrumbs navigation">
-  <li><a href="../..">Expressive</a> &raquo;</li>
+  <li><a href="../..">Expressive</a></li>
   
     
       
-        <li>Reference &raquo;</li>
+        <li>Reference</li>
       
     
   
@@ -589,7 +572,6 @@ are using the Expressive skeleton, it provides aliases via Composer:</p>
 $ composer development-disable
 $ composer development-status</code></pre>
 
-
 <p>Add settings to your <code>development.*.php.dist</code> files, and commit those files to
 your repository; always toggle out of and into development mode after making
 changes, to ensure they pick up in your development environment.</p>
@@ -603,17 +585,14 @@ related to migration, modules, and middleware.</p>
 <p>You can install it if it is not already present in your application:</p>
 <pre class="codehilite"><code class="language-bash">$ composer require --dev zendframework/zend-expressive-tooling</code></pre>
 
-
 <p>If you installed the Expressive skeleton prior to version 2.0.2, you will want
 to update the tooling to get the latest release, which contains the <code>expressive</code>
 binary, as follows:</p>
 <pre class="codehilite"><code class="language-bash">$ composer require --dev &quot;zendframework/zend-expressive-tooling:^0.4.1&quot;</code></pre>
 
-
 <p>Once installed, invoking the binary without arguments will give a listing of
 available tools:</p>
 <pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive</code></pre>
-
 
 <p>Commands supported include:</p>
 <ul>
@@ -661,7 +640,6 @@ available tools:</p>
 <p>You may obtain full help for each command by invoking:</p>
 <pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive help &lt;command&gt;</code></pre>
 
-
 <h2 id="modules">Modules</h2>
 <ul>
 <li>Since 2.0.</li>
@@ -678,12 +656,10 @@ layout</a>.</p>
 zendframework/zend-expressive-tooling via Composer:</p>
 <pre class="codehilite"><code class="language-bash">$ composer require --dev zendframework/zend-expressive-tooling</code></pre>
 
-
 </blockquote>
 <p>For instance, if you wish to create a new module for managing users, you might
 execute the following:</p>
 <pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive-module create User</code></pre>
-
 
 <p>Which would create the following tree:</p>
 <pre class="codehilite"><code class="language-text">src/
@@ -691,7 +667,6 @@ execute the following:</p>
     src/
       ConfigProvider.php
     templates/</code></pre>
-
 
 <p>It would also create an autoloading rule within your <code>composer.json</code> for the
 <code>User</code> namespace, pointing it at the <code>src/User/src/</code> tree (and updating the
@@ -705,10 +680,8 @@ within your <code>config/config.php</code>.</p>
 </ul>
 <pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive-module register Account</code></pre>
 
-
 <p>The <code>deregister</code> command does the opposite of <code>register</code>.</p>
 <pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive-module deregister Account</code></pre>
-
 
 <h2 id="migrate-to-programmatic-pipelines">Migrate to programmatic pipelines</h2>
 <ul>
@@ -733,10 +706,8 @@ generate:</p>
 zendframework/zend-expressive-tooling:</p>
 <pre class="codehilite"><code class="language-bash">$ composer require --dev zendframework/zend-expressive-tooling</code></pre>
 
-
 <p>Invoke it as follows:</p>
 <pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive-pipeline-from-config generate</code></pre>
-
 
 <p>The tool will notify you of any errors, including whether or not it found (and
 skipped) Stratigility v1-style "error middleware".</p>
@@ -773,7 +744,6 @@ syntax to retrieve them:</p>
 $originalUri = $request-&gt;getAttribute('originalUri', $request-&gt;getUri();
 $originalResponse = $request-&gt;getAttribute('originalResponse') ?: new Response();</code></pre>
 
-
 <blockquote>
 <h3 id="original-response-is-not-trustworthy">Original response is not trustworthy</h3>
 <p>As noted above, the "original response" will likely be injected with the
@@ -786,10 +756,8 @@ syntax, zendframework/zend-expressive-tooling provides a binary,
 <code>vendor/bin/expressive-migrate-original-messages</code>. First, install that package:</p>
 <pre class="codehilite"><code class="language-bash">$ composer require --dev zendframework/zend-expressive-tooling</code></pre>
 
-
 <p>Then invoke it as follows:</p>
 <pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive-migrate-original-messages scan</code></pre>
-
 
 <p>This script will update any <code>getOriginalRequest()</code> and <code>getOriginalUri()</code> calls,
 and notify you of any <code>getOriginalResponse()</code> calls, providing you with details
@@ -823,10 +791,8 @@ provides the script <code>vendor/bin/expressive-scan-for-error-middleware</code>
 install that package:</p>
 <pre class="codehilite"><code class="language-bash">$ composer require --dev zendframework/zend-expressive-tooling</code></pre>
 
-
 <p>Then invoke it as follows:</p>
 <pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive-scan-for-error-middleware scan</code></pre>
-
 
 <p>The script will notify you of any places where it finds either use case, and
 provide feedback on how to update your application.</p>
@@ -893,13 +859,11 @@ provide feedback on how to update your application.</p>
 </div>
 
 
-    <script src="../../js/jquery-1.10.2.min.js"></script>
-    <script src="../../js/bootstrap-3.0.3.min.js"></script>
-    <script src="../../js/prism-zf.js"></script>
-
+    <script src="//cdn.jsdelivr.net/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src="//cdn.jsdelivr.net/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha256-KXn5puMvxCw+dAYznun+drMdG1IFl3agK0p/pqT9KAo=" crossorigin="anonymous"></script>
     <script>var base_url = '../..';</script>
+    <script src="../../js/scripts-8b95ab2fc3.js"></script>
     <script data-main="../../mkdocs/js/search.js" src="../../mkdocs/js/require.js"></script>
-    <script src="../../js/base.js"></script>
 
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
         <div class="modal-dialog">
@@ -940,112 +904,6 @@ provide feedback on how to update your application.</p>
   </div>
 </div>
 
-    <script>
-  // Prepare the component list dropdown for display
-  $(function () {
-    var components = $(".zf-components"),
-        componentList = components.find(".component-list"),
-        sidebar = $(".bs-sidebar.affix"),
-        sidebarInitialPos = sidebar.css("position"),
-        hidden,
-        componentToggle = $(".component-toggle"),
-        navbar = $(".navbar-fixed-top"),
-        rollUpLink = $(".zf-components-rollup a");
-
-    // Initial setup on document load
-    components.insertBefore(navbar);
-    $(".zf-logo a").tooltip();
-    componentToggle.tooltip();
-    rollUpLink.attr({ href: "#", alt: "Hide component list" });
-
-    // Cast initial sidebar position value
-    if (undefined === sidebarInitialPos) {
-      sidebarInitialPos = "fixed";
-    }
-
-    // Setup onclick events to toggle list
-    componentToggle.click(toggleComponentList);
-    rollUpLink.click(toggleComponentList);
-
-    // Toggle the component list display
-    function toggleComponentList(event) {
-      event.preventDefault();
-
-      if (hidden === undefined) {
-        // Not loaded yet; load and display.
-        loadComponentList();
-        return;
-      }
-
-      if (hidden) {
-        // Hidden; display.
-        showComponentList();
-        return;
-      }
-
-      // Currently visible; hide
-      hideComponentList();
-    }
-
-    // Show the component list
-    function showComponentList() {
-      navbar.css({position: "relative"});
-      sidebar.css({position: "relative"});
-      components
-        .css({"margin-top": "-" + components.outerHeight() + "px"})
-        .show()
-        .animate({"margin-top": 0}, {
-          complete: function () {
-            componentToggle
-              .data("placement", "top")
-              .attr("data-original-title", "Hide component list");
-            hidden = false;
-          },
-          queue: false
-        });
-    }
-
-    // Hide the component list
-    function hideComponentList() {
-      components.animate({"margin-top": "-" + components.outerHeight() + "px"}, {
-        complete: function () {
-          navbar.css({position: "fixed"});
-          sidebar.css({position: sidebarInitialPos});
-          componentToggle
-            .data("placement", "bottom")
-            .attr("data-original-title", "Show component list");
-          components.hide();
-          hidden = true;
-        },
-        queue: false
-      });
-      sidebar.animate({ top: sidebarInitialTop + "px" }, { queue: false});
-    }
-
-    // Inject a component into the componet list DOM.
-    function injectComponent(index, component) {
-      componentList.append('<div class="component"><h4><a href="' + component.url + '">' + component.name + '</a></h4><p>' + component.description + '</p></div>');
-    }
-
-    // Parse the component list, build the DOM, and display it.
-    function parseComponentList(components) {
-      $.each(components, injectComponent);
-      showComponentList();
-    }
-
-    // Fetch the component list and display it.
-    function loadComponentList () {
-      $.ajax({
-        url: "//docs.zendframework.com/zf-mkdoc-theme/scripts/zf-component-list.json",
-        dataType: "text json",
-        success: parseComponentList,
-        error: function (e) {
-          console.log("Error occurred with XHR call", e);
-        }
-      });
-    }
-  });
-</script>
-    </body>
+</body>
 
 </html>

@@ -4,39 +4,16 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="zend-expressive: PSR-7 Middleware Microframework">  
     <link rel="shortcut icon" href="../../img/favicon.ico">
 
     <title>Examples - Expressive</title>
 
-    <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.018/css/hack.min.css">
-    <link href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic&subset=latin-ext,latin" rel="stylesheet" type="text/css">
-    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin" rel="stylesheet" type="text/css">
-    <link href="//fonts.googleapis.com/css?family=Libre+Baskerville:400,400italic,700&subset=latin,latin-ext" rel="stylesheet" type="text/css">
-    <link href="../../css/base.css" rel="stylesheet">
-    <link href="../../css/zf-web.css" rel="stylesheet">
-    <link href="../../css/zf.css" rel="stylesheet">
-    <link href="../../css/prism-zf.css" rel="stylesheet">
-
-
-    <link href="../../css/zend-expressive.css" rel="stylesheet">
-
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-        <![endif]-->
-
-    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js"></script>
-    <script>
-    WebFont.load({
-        google: {
-            families: ['Open Sans', 'PT Sans']
-        }
-    });
-    </script>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha256-7s5uDGW3AHqw6xtJmNNtr+OBRJUlgkNJEo78P4b0yRw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/fontawesome/4.6.3/css/font-awesome.min.css" integrity="sha256-AIodEDkC8V/bHBkfyxzolUMw57jeQ9CauwhVW6YJ9CA=" crossorigin="anonymous">
+    <link rel="stylesheet" href="../../css/styles-482aa2add1.css">
+        <link href="../../css/zend-expressive.css" rel="stylesheet">
 
     
 </head>
@@ -318,6 +295,12 @@
 </li>
 
         
+            
+<li >
+    <a href="../../features/helpers/content-length/">Content-Length Middleware</a>
+</li>
+
+        
     </ul>
   </li>
 
@@ -552,11 +535,11 @@
         <div class="col-md-9" role="main">
 
 <ol class="breadcrumb" role="navigation" aria-label="breadcrumbs navigation">
-  <li><a href="../..">Expressive</a> &raquo;</li>
+  <li><a href="../..">Expressive</a></li>
   
     
       
-        <li>Reference &raquo;</li>
+        <li>Reference</li>
       
     
   
@@ -576,7 +559,6 @@ managing an application.</p>
 ├── src
 └── vendor</code></pre>
 
-
 <p>We assume also that:</p>
 <ul>
 <li>You have installed zend-expressive per the <a href="../..#installation">installation instructions</a>.</li>
@@ -591,12 +573,10 @@ managing an application.</p>
 <p>You can use the built-in web server to run the examples. Run:</p>
 <pre class="codehilite"><code class="language-bash">$ php -S 0.0.0.0:8080 -t public</code></pre>
 
-
 <p>from the application root to start up a web server running on port 8080, and
 then browse to http://localhost:8080/. If you used the Expressive installer,
 the following is equivalent:</p>
 <pre class="codehilite"><code class="language-bash">$ composer run --timeout=0 serve</code></pre>
-
 
 <h2 id="setting-up-autoloading-for-the-application-namespace">Setting up autoloading for the Application namespace</h2>
 <p>In your <code>composer.json</code> file, place the following:</p>
@@ -606,10 +586,8 @@ the following is equivalent:</p>
     }
 },</code></pre>
 
-
 <p>Once done, run:</p>
 <pre class="codehilite"><code class="language-bash">$ composer dump-autoload</code></pre>
-
 
 </blockquote>
 <h3 id="routing">Routing</h3>
@@ -691,14 +669,12 @@ $app-&gt;route('/post', 'HandlePostCollection', ['GET', 'POST']);
 // honored. (In FastRoute, GET is also honored.)
 $app-&gt;route('/post', 'WillThisHandlePost', []);</code></pre>
 
-
 <p>Finally, if desired, you can create a <code>Zend\Expressive\Router\Route</code> instance
 manually and pass it to <code>route()</code> as the sole argument:</p>
 <pre class="codehilite"><code class="language-php">$route = new Route('/post', 'HandlePost', ['GET', 'POST']);
 $route-&gt;setOptions($options);
 
 $app-&gt;route($route);</code></pre>
-
 
 <h2 id="hello-world-using-a-container">Hello World using a Container</h2>
 <p>Expressive works with <a href="https://github.com/php-fig/container">PSR-11 Container</a>,
@@ -739,12 +715,10 @@ $app-&gt;pipeDispatchMiddleware();
 
 $app-&gt;run();</code></pre>
 
-
 <p>In the example above, we pass our container to <code>AppFactory</code>. We could have also
 done this instead:</p>
 <pre class="codehilite"><code class="language-php">$app = AppFactory::create();
 $container = $app-&gt;getContainer();</code></pre>
-
 
 <p>and then added our service definitions. We recommend passing the container to
 the factory instead; if we ever change which container we use by default, your
@@ -752,7 +726,6 @@ code might not work!</p>
 <p>The following two lines are the ones of interest:</p>
 <pre class="codehilite"><code class="language-php">$app-&gt;get('/', 'HelloWorld');
 $app-&gt;get('/ping', 'Ping');</code></pre>
-
 
 <p>These map the two paths to <em>service names</em> instead of callables. When routing
 matches a path, it does the following:</p>
@@ -779,7 +752,6 @@ the container, and then pull it from there:</p>
 $app = $container-&gt;get('Zend\Expressive\Application');
 $app-&gt;run();</code></pre>
 
-
 <p>This is a nice way to encapsulate the application creation. You could then
 potentially move all service configuration to another file! (We already
 <a href="../../features/container/factories/#applicationfactory">document an ApplicationFactory for exactly this scenario.</a>)</p>
@@ -800,7 +772,6 @@ development than in production, after all!).</p>
 <p>First, install zend-config and zend-stdlib:</p>
 <pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-config zendframework/zend-stdlib</code></pre>
 
-
 <p>Now we can start creating our configuration files and container factories.</p>
 <p>In <code>config/config.php</code>, place the following:</p>
 <pre class="codehilite"><code class="language-php">&lt;?php
@@ -817,7 +788,6 @@ foreach (Glob::glob('config/autoload/{{,*.}global,{,*.}local}.php', Glob::GLOB_B
 // Return an ArrayObject so we can inject the config as a service in Aura.Di
 // and still use array checks like ``is_array``.
 return new ArrayObject($config, ArrayObject::ARRAY_AS_PROPS);</code></pre>
-
 
 <p>In <code>config/container.php</code>, place the following:</p>
 <pre class="codehilite"><code class="language-php">&lt;?php
@@ -837,7 +807,6 @@ $container-&gt;setService('config', $config);
 
 return $container;</code></pre>
 
-
 <p>In <code>config/autoload/dependencies.global.php</code>, place the following:</p>
 <pre class="codehilite"><code class="language-php">&lt;?php
 
@@ -854,7 +823,6 @@ return [
         ],
     ]
 ];</code></pre>
-
 
 <p>In <code>config/autoload/routes.global.php</code>, place the following:</p>
 <pre class="codehilite"><code class="language-php">&lt;?php
@@ -874,7 +842,6 @@ return [
     ],
 ];</code></pre>
 
-
 <p>In <code>src/Application/HelloWorld.php</code>, place the following:</p>
 <pre class="codehilite"><code class="language-php">&lt;?php
 namespace Application;
@@ -887,7 +854,6 @@ class HelloWorld
         return $res;
     }
 }</code></pre>
-
 
 <p>In <code>src/Application/Ping.php</code>, place the following:</p>
 <pre class="codehilite"><code class="language-php">&lt;?php
@@ -903,10 +869,8 @@ class Ping
     }
 }</code></pre>
 
-
 <p>After that’s done run:</p>
 <pre class="codehilite"><code>composer dump-autoload</code></pre>
-
 
 <p>Finally, in <code>public/index.php</code>, place the following:</p>
 <pre class="codehilite"><code class="language-php">&lt;?php
@@ -919,7 +883,6 @@ require 'vendor/autoload.php';
 $container = include 'config/services.php';
 $app       = $container-&gt;get(Zend\Expressive\Application::class);
 $app-&gt;run();</code></pre>
-
 
 <p>Notice that our index file now doesn't have any code related to setting up the
 application any longer! All it does is setup autoloading, retrieve our service
@@ -939,11 +902,9 @@ calling <code>$app-&gt;run()</code>, add the following in your <code>public/inde
     return new \Zend\Diactoros\Response\TextResponse('IN POST!');
 });</code></pre>
 
-
 <p>Note that we're using <code>post()</code> here; that means you'll have to use cURL, HTTPie,
 Postman, or some other tool to test making a POST request to the path:</p>
 <pre class="codehilite"><code class="language-bash">$ curl -X POST http://localhost:8080/post</code></pre>
-
 
 <p>You should see <code>IN POST!</code> for the response!</p>
 <p>Using this approach, you can build re-usable applications that are
@@ -971,7 +932,6 @@ return [
     ],
 ];</code></pre>
 
-
 <p>The key to note is <code>middleware_pipeline</code>, which is an array of middlewares to
 register in the pipeline; each will each be <code>pipe()</code>'d to the Application in the
 order specified.</p>
@@ -983,7 +943,6 @@ order specified.</p>
     'path'  =&gt; '/path/to/match',
     'priority' =&gt; 1, // Integer
 ]</code></pre>
-
 
 <p>Priority should be an integer, and follows the semantics of
 <a href="http://php.net/SplPriorityQueue">SplPriorityQueue</a>: higher numbers indicate
@@ -1013,7 +972,6 @@ the factory and expanded:</p>
         [ /* ... */ ],
     ],
 ];</code></pre>
-
 
 <blockquote>
 <h4 id="place-routing-middleware-correctly">Place routing middleware correctly</h4>
@@ -1045,7 +1003,6 @@ these may even contain the routing and dispatch middleware constants:</p>
         [ /* ... */ ],
     ],
 ];</code></pre>
-
 
 <blockquote>
 <h4 id="pipeline-keys-are-ignored">Pipeline keys are ignored</h4>
@@ -1083,14 +1040,12 @@ $server = Server::createServerFromRequest(
 );
 $server-&gt;listen();</code></pre>
 
-
 <p>You could also compose them in an <code>Application</code> instance, and utilize <code>run()</code>:</p>
 <pre class="codehilite"><code class="language-php">$app = AppFactory::create();
 $app-&gt;pipe('/blog', $blog);
 $app-&gt;pipe('/api', $api);
 
 $app-&gt;run();</code></pre>
-
 
 <p>This approach allows you to develop discrete applications and compose them
 together to create a website.</p>
@@ -1157,13 +1112,11 @@ together to create a website.</p>
 </div>
 
 
-    <script src="../../js/jquery-1.10.2.min.js"></script>
-    <script src="../../js/bootstrap-3.0.3.min.js"></script>
-    <script src="../../js/prism-zf.js"></script>
-
+    <script src="//cdn.jsdelivr.net/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src="//cdn.jsdelivr.net/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha256-KXn5puMvxCw+dAYznun+drMdG1IFl3agK0p/pqT9KAo=" crossorigin="anonymous"></script>
     <script>var base_url = '../..';</script>
+    <script src="../../js/scripts-8b95ab2fc3.js"></script>
     <script data-main="../../mkdocs/js/search.js" src="../../mkdocs/js/require.js"></script>
-    <script src="../../js/base.js"></script>
 
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
         <div class="modal-dialog">
@@ -1204,112 +1157,6 @@ together to create a website.</p>
   </div>
 </div>
 
-    <script>
-  // Prepare the component list dropdown for display
-  $(function () {
-    var components = $(".zf-components"),
-        componentList = components.find(".component-list"),
-        sidebar = $(".bs-sidebar.affix"),
-        sidebarInitialPos = sidebar.css("position"),
-        hidden,
-        componentToggle = $(".component-toggle"),
-        navbar = $(".navbar-fixed-top"),
-        rollUpLink = $(".zf-components-rollup a");
-
-    // Initial setup on document load
-    components.insertBefore(navbar);
-    $(".zf-logo a").tooltip();
-    componentToggle.tooltip();
-    rollUpLink.attr({ href: "#", alt: "Hide component list" });
-
-    // Cast initial sidebar position value
-    if (undefined === sidebarInitialPos) {
-      sidebarInitialPos = "fixed";
-    }
-
-    // Setup onclick events to toggle list
-    componentToggle.click(toggleComponentList);
-    rollUpLink.click(toggleComponentList);
-
-    // Toggle the component list display
-    function toggleComponentList(event) {
-      event.preventDefault();
-
-      if (hidden === undefined) {
-        // Not loaded yet; load and display.
-        loadComponentList();
-        return;
-      }
-
-      if (hidden) {
-        // Hidden; display.
-        showComponentList();
-        return;
-      }
-
-      // Currently visible; hide
-      hideComponentList();
-    }
-
-    // Show the component list
-    function showComponentList() {
-      navbar.css({position: "relative"});
-      sidebar.css({position: "relative"});
-      components
-        .css({"margin-top": "-" + components.outerHeight() + "px"})
-        .show()
-        .animate({"margin-top": 0}, {
-          complete: function () {
-            componentToggle
-              .data("placement", "top")
-              .attr("data-original-title", "Hide component list");
-            hidden = false;
-          },
-          queue: false
-        });
-    }
-
-    // Hide the component list
-    function hideComponentList() {
-      components.animate({"margin-top": "-" + components.outerHeight() + "px"}, {
-        complete: function () {
-          navbar.css({position: "fixed"});
-          sidebar.css({position: sidebarInitialPos});
-          componentToggle
-            .data("placement", "bottom")
-            .attr("data-original-title", "Show component list");
-          components.hide();
-          hidden = true;
-        },
-        queue: false
-      });
-      sidebar.animate({ top: sidebarInitialTop + "px" }, { queue: false});
-    }
-
-    // Inject a component into the componet list DOM.
-    function injectComponent(index, component) {
-      componentList.append('<div class="component"><h4><a href="' + component.url + '">' + component.name + '</a></h4><p>' + component.description + '</p></div>');
-    }
-
-    // Parse the component list, build the DOM, and display it.
-    function parseComponentList(components) {
-      $.each(components, injectComponent);
-      showComponentList();
-    }
-
-    // Fetch the component list and display it.
-    function loadComponentList () {
-      $.ajax({
-        url: "//docs.zendframework.com/zf-mkdoc-theme/scripts/zf-component-list.json",
-        dataType: "text json",
-        success: parseComponentList,
-        error: function (e) {
-          console.log("Error occurred with XHR call", e);
-        }
-      });
-    }
-  });
-</script>
-    </body>
+</body>
 
 </html>

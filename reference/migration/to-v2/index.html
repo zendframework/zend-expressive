@@ -4,39 +4,16 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="zend-expressive: PSR-7 Middleware Microframework">  
     <link rel="shortcut icon" href="../../../img/favicon.ico">
 
     <title>To Expressive 2.0 - Expressive</title>
 
-    <link href="../../../css/bootstrap-custom.min.css" rel="stylesheet">
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.018/css/hack.min.css">
-    <link href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic&subset=latin-ext,latin" rel="stylesheet" type="text/css">
-    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin" rel="stylesheet" type="text/css">
-    <link href="//fonts.googleapis.com/css?family=Libre+Baskerville:400,400italic,700&subset=latin,latin-ext" rel="stylesheet" type="text/css">
-    <link href="../../../css/base.css" rel="stylesheet">
-    <link href="../../../css/zf-web.css" rel="stylesheet">
-    <link href="../../../css/zf.css" rel="stylesheet">
-    <link href="../../../css/prism-zf.css" rel="stylesheet">
-
-
-    <link href="../../../css/zend-expressive.css" rel="stylesheet">
-
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-        <![endif]-->
-
-    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js"></script>
-    <script>
-    WebFont.load({
-        google: {
-            families: ['Open Sans', 'PT Sans']
-        }
-    });
-    </script>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha256-7s5uDGW3AHqw6xtJmNNtr+OBRJUlgkNJEo78P4b0yRw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/fontawesome/4.6.3/css/font-awesome.min.css" integrity="sha256-AIodEDkC8V/bHBkfyxzolUMw57jeQ9CauwhVW6YJ9CA=" crossorigin="anonymous">
+    <link rel="stylesheet" href="../../../css/styles-482aa2add1.css">
+        <link href="../../../css/zend-expressive.css" rel="stylesheet">
 
     
 </head>
@@ -318,6 +295,12 @@
 </li>
 
         
+            
+<li >
+    <a href="../../../features/helpers/content-length/">Content-Length Middleware</a>
+</li>
+
+        
     </ul>
   </li>
 
@@ -555,28 +538,19 @@
     </ul>
 
     
-    <ul class="pager hidden-print">
-      <li class="previous">
-        <a rel="prev" href="../to-v1-1/"><i class="fa fa-arrow-left"></i> Previous</a>
-      </li>
-      <li class="next disabled ">
-        <a rel="next" >Next <i class="fa fa-arrow-right"></i></a>
-      </li>
-    </ul>
-    
 </div></div>
         <div class="col-md-9" role="main">
 
 <ol class="breadcrumb" role="navigation" aria-label="breadcrumbs navigation">
-  <li><a href="../../..">Expressive</a> &raquo;</li>
+  <li><a href="../../..">Expressive</a></li>
   
     
       
-        <li>Reference &raquo;</li>
+        <li>Reference</li>
       
     
       
-        <li>Migration &raquo;</li>
+        <li>Migration</li>
       
     
   
@@ -792,7 +766,6 @@ class XClacksOverheadMiddleware implements MiddlewareInterface
     }
 }</code></pre>
 
-
 <p>Alternately, you can write this as a callable:</p>
 <pre class="codehilite"><code class="language-php">namespace App\Middleware;
 
@@ -813,7 +786,6 @@ class XClacksOverheadMiddleware
         return $response-&gt;withHeader('X-Clacks-Overhead', 'GNU Terry Pratchett');
     }
 }</code></pre>
-
 
 <h2 id="original-messages">Original messages</h2>
 <p>In the <a href="../to-v1-1/">migration to version 1.1 guide</a>, we detail the fact that
@@ -837,10 +809,8 @@ package which will help you in this latter part of the migration. Install it as
 a development requirement via composer:</p>
 <pre class="codehilite"><code class="language-bash">$ composer require --dev zendframework/zend-expressive-tooling</code></pre>
 
-
 <p>And then execute it via:</p>
 <pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive-migrate-original-messages</code></pre>
-
 
 <p>This tool will update calls to <code>getOriginalRequest()</code> and <code>getOriginalUri()</code> to
 instead use the new request attributes that the <code>OriginalMessages</code> middleware
@@ -889,7 +859,6 @@ internally, removes the <code>ErrorMiddlewareInterface</code> entirely, and thus
     return $response;
 }</code></pre>
 
-
 <p>Additionally, you will need middleware registered as your innermost layer that
 is guaranteed to return a response. Generally, if you hit that layer, no other
 middleware is capable of handling the request, indicating a 400 (Bad Request) or
@@ -909,7 +878,6 @@ environment. Error response generators are callables with the signature:</p>
     ServerRequestInterface $request,
     ResponseInterface $response
 ) : ResponseInterface</code></pre>
-
 
 <p>Expressive 2.0 provides the following functionality to assist with your error
 handling needs:</p>
@@ -1086,7 +1054,6 @@ return [
     ],
 ];</code></pre>
 
-
 <p>If you are defining a programmatic pipeline (see more below on this), the
 pipeline might look like:</p>
 <pre class="codehilite"><code class="language-php">$app-&gt;pipe(OriginalMessages::class);
@@ -1096,7 +1063,6 @@ $app-&gt;pipeRoutingMiddleware();
 $app-&gt;pipe(Helper\UrlHelperMiddleware::class);
 $app-&gt;pipeDispatchMiddleware();
 $app-&gt;pipe(Middleware\NotFoundHandler::class);</code></pre>
-
 
 <h3 id="error-handling-and-php-errors">Error handling and PHP errors</h3>
 <p>As noted above, <code>Zend\Stratigility\Middleware\ErrorHandler</code> also creates a PHP
@@ -1108,7 +1074,6 @@ to exceptions, code that would normally run will now result in error pages.</p>
 <p>We recommend adding the following line to your <code>public/index.php</code> towards the
 top of the file:</p>
 <pre class="codehilite"><code class="language-php">error_reporting(error_reporting() &amp; ~E_USER_DEPRECATED);</code></pre>
-
 
 <p>This will prevent the error handler from casting deprecation notices to
 exceptions, while keeping the rest of your error reporting mask intact.</p>
@@ -1203,13 +1168,11 @@ You may install this package in one of the following ways:</p>
 <pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive-tooling        # install
 $ ./vendor/bin/expressive-tooling remove # uninstall</code></pre>
 
-
 <ul>
 <li>Using Composer:</li>
 </ul>
 <pre class="codehilite"><code class="language-bash">$ composer require --dev zendframework/zend-expressive-tooling # install
 $ composer remove --dev zendframework/zend-expressive-tooling  # uninstall</code></pre>
-
 
 <p>Once installed, you will use the <code>vendor/bin/expressive-pipeline-from-config</code>
 command.</p>
@@ -1265,7 +1228,6 @@ return [
         ],
     ],
 ];</code></pre>
-
 
 <p>Other things you may want to do:</p>
 <ul>
@@ -1341,7 +1303,6 @@ the new interface:</p>
     array $options = []
 ) : string</code></pre>
 
-
 <h2 id="url-helper-changes">URL helper changes</h2>
 <p>Expressive 2.0 uses zendframework/zend-expressive-helpers version 3.0+. This new
 version updates the signature of the <code>Zend\Expressive\Helper\UrlHelper</code> from:</p>
@@ -1349,7 +1310,6 @@ version updates the signature of the <code>Zend\Expressive\Helper\UrlHelper</cod
     $routeName,
     array $routeParams = []
 ) : string</code></pre>
-
 
 <p>to:</p>
 <pre class="codehilite"><code class="language-php">function (
@@ -1359,7 +1319,6 @@ version updates the signature of the <code>Zend\Expressive\Helper\UrlHelper</cod
     $fragmentIdentifier = null,
     array $options = []
 ) : string</code></pre>
-
 
 <p>For consumers, this should represent a widening of features, and will not
 require any changes, unless you wish to opt-in to the new arguments. See the
@@ -1378,17 +1337,6 @@ is chosen. Starting with 1.3.0 of that renderer, Twig 2.1+ is now supported.</p>
 
 <hr />
 
-
-<nav>
-  <ul class="pager hidden-print">
-    <li class="previous">
-      <a rel="prev" href="../to-v1-1/"><i class="fa fa-arrow-left"></i> Previous</a>
-    </li>
-    <li class="next disabled ">
-      <a rel="next" >Next <i class="fa fa-arrow-right"></i></a>
-    </li>
-  </ul>
-</nav>
 </div>
         
     </div>
@@ -1438,13 +1386,11 @@ is chosen. Starting with 1.3.0 of that renderer, Twig 2.1+ is now supported.</p>
 </div>
 
 
-    <script src="../../../js/jquery-1.10.2.min.js"></script>
-    <script src="../../../js/bootstrap-3.0.3.min.js"></script>
-    <script src="../../../js/prism-zf.js"></script>
-
+    <script src="//cdn.jsdelivr.net/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src="//cdn.jsdelivr.net/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha256-KXn5puMvxCw+dAYznun+drMdG1IFl3agK0p/pqT9KAo=" crossorigin="anonymous"></script>
     <script>var base_url = '../../..';</script>
+    <script src="../../../js/scripts-8b95ab2fc3.js"></script>
     <script data-main="../../../mkdocs/js/search.js" src="../../../mkdocs/js/require.js"></script>
-    <script src="../../../js/base.js"></script>
 
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
         <div class="modal-dialog">
@@ -1485,112 +1431,6 @@ is chosen. Starting with 1.3.0 of that renderer, Twig 2.1+ is now supported.</p>
   </div>
 </div>
 
-    <script>
-  // Prepare the component list dropdown for display
-  $(function () {
-    var components = $(".zf-components"),
-        componentList = components.find(".component-list"),
-        sidebar = $(".bs-sidebar.affix"),
-        sidebarInitialPos = sidebar.css("position"),
-        hidden,
-        componentToggle = $(".component-toggle"),
-        navbar = $(".navbar-fixed-top"),
-        rollUpLink = $(".zf-components-rollup a");
-
-    // Initial setup on document load
-    components.insertBefore(navbar);
-    $(".zf-logo a").tooltip();
-    componentToggle.tooltip();
-    rollUpLink.attr({ href: "#", alt: "Hide component list" });
-
-    // Cast initial sidebar position value
-    if (undefined === sidebarInitialPos) {
-      sidebarInitialPos = "fixed";
-    }
-
-    // Setup onclick events to toggle list
-    componentToggle.click(toggleComponentList);
-    rollUpLink.click(toggleComponentList);
-
-    // Toggle the component list display
-    function toggleComponentList(event) {
-      event.preventDefault();
-
-      if (hidden === undefined) {
-        // Not loaded yet; load and display.
-        loadComponentList();
-        return;
-      }
-
-      if (hidden) {
-        // Hidden; display.
-        showComponentList();
-        return;
-      }
-
-      // Currently visible; hide
-      hideComponentList();
-    }
-
-    // Show the component list
-    function showComponentList() {
-      navbar.css({position: "relative"});
-      sidebar.css({position: "relative"});
-      components
-        .css({"margin-top": "-" + components.outerHeight() + "px"})
-        .show()
-        .animate({"margin-top": 0}, {
-          complete: function () {
-            componentToggle
-              .data("placement", "top")
-              .attr("data-original-title", "Hide component list");
-            hidden = false;
-          },
-          queue: false
-        });
-    }
-
-    // Hide the component list
-    function hideComponentList() {
-      components.animate({"margin-top": "-" + components.outerHeight() + "px"}, {
-        complete: function () {
-          navbar.css({position: "fixed"});
-          sidebar.css({position: sidebarInitialPos});
-          componentToggle
-            .data("placement", "bottom")
-            .attr("data-original-title", "Show component list");
-          components.hide();
-          hidden = true;
-        },
-        queue: false
-      });
-      sidebar.animate({ top: sidebarInitialTop + "px" }, { queue: false});
-    }
-
-    // Inject a component into the componet list DOM.
-    function injectComponent(index, component) {
-      componentList.append('<div class="component"><h4><a href="' + component.url + '">' + component.name + '</a></h4><p>' + component.description + '</p></div>');
-    }
-
-    // Parse the component list, build the DOM, and display it.
-    function parseComponentList(components) {
-      $.each(components, injectComponent);
-      showComponentList();
-    }
-
-    // Fetch the component list and display it.
-    function loadComponentList () {
-      $.ajax({
-        url: "//docs.zendframework.com/zf-mkdoc-theme/scripts/zf-component-list.json",
-        dataType: "text json",
-        success: parseComponentList,
-        error: function (e) {
-          console.log("Error occurred with XHR call", e);
-        }
-      });
-    }
-  });
-</script>
-    </body>
+</body>
 
 </html>

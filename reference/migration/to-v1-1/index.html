@@ -4,39 +4,16 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="zend-expressive: PSR-7 Middleware Microframework">  
     <link rel="shortcut icon" href="../../../img/favicon.ico">
 
     <title>To Expressive 1.1 - Expressive</title>
 
-    <link href="../../../css/bootstrap-custom.min.css" rel="stylesheet">
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.018/css/hack.min.css">
-    <link href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic&subset=latin-ext,latin" rel="stylesheet" type="text/css">
-    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin" rel="stylesheet" type="text/css">
-    <link href="//fonts.googleapis.com/css?family=Libre+Baskerville:400,400italic,700&subset=latin,latin-ext" rel="stylesheet" type="text/css">
-    <link href="../../../css/base.css" rel="stylesheet">
-    <link href="../../../css/zf-web.css" rel="stylesheet">
-    <link href="../../../css/zf.css" rel="stylesheet">
-    <link href="../../../css/prism-zf.css" rel="stylesheet">
-
-
-    <link href="../../../css/zend-expressive.css" rel="stylesheet">
-
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-        <![endif]-->
-
-    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js"></script>
-    <script>
-    WebFont.load({
-        google: {
-            families: ['Open Sans', 'PT Sans']
-        }
-    });
-    </script>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha256-7s5uDGW3AHqw6xtJmNNtr+OBRJUlgkNJEo78P4b0yRw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/fontawesome/4.6.3/css/font-awesome.min.css" integrity="sha256-AIodEDkC8V/bHBkfyxzolUMw57jeQ9CauwhVW6YJ9CA=" crossorigin="anonymous">
+    <link rel="stylesheet" href="../../../css/styles-482aa2add1.css">
+        <link href="../../../css/zend-expressive.css" rel="stylesheet">
 
     
 </head>
@@ -318,6 +295,12 @@
 </li>
 
         
+            
+<li >
+    <a href="../../../features/helpers/content-length/">Content-Length Middleware</a>
+</li>
+
+        
     </ul>
   </li>
 
@@ -552,15 +535,15 @@
         <div class="col-md-9" role="main">
 
 <ol class="breadcrumb" role="navigation" aria-label="breadcrumbs navigation">
-  <li><a href="../../..">Expressive</a> &raquo;</li>
+  <li><a href="../../..">Expressive</a></li>
   
     
       
-        <li>Reference &raquo;</li>
+        <li>Reference</li>
       
     
       
-        <li>Migration &raquo;</li>
+        <li>Migration</li>
       
     
   
@@ -681,12 +664,10 @@ return [
     ],
 ];</code></pre>
 
-
 <p>If you are <a href="https://mwop.net/blog/2016-05-16-programmatic-expressive.html">programmatically creating your pipeline</a>,
 use the following:</p>
 <pre class="codehilite"><code class="language-php">$app-&gt;pipe(OriginalMessages::class);
 /* all other middleware */</code></pre>
-
 
 <h3 id="identifying-and-fixing-getoriginal-calls">Identifying and fixing getOriginal calls</h3>
 <p>To help you identify and update calls in your own code to the <code>getOriginal*()</code>
@@ -696,10 +677,8 @@ package, <code>vendor/bin/expressive-migrate-original-messages</code>.</p>
 useful during development, install it as a development requirement:</p>
 <pre class="codehilite"><code class="language-bash">$ composer require --dev zendframework/zend-expressive-tooling</code></pre>
 
-
 <p>Once installed,  you can execute the tool using:</p>
 <pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive-migrate-original-messages</code></pre>
-
 
 <p>Passing the arguments <code>help</code>, <code>--help</code>, or <code>-h</code> will provide usage information;
 in most cases, it will assume sane defaults in order to run its scans.</p>
@@ -754,7 +733,6 @@ $app-&gt;pipe(Helper\UrlHelperMiddleware::class);
 $app-&gt;pipeDispatchMiddleware();
 $app-&gt;pipe(NotFoundHandler::class);</code></pre>
 
-
 <p>Expressive also provides methods for specifying routed middleware. These
 include:</p>
 <ul>
@@ -772,12 +750,10 @@ wish to provide additional options to your route:</p>
         'timestamp' =&gt; date(),
     ]);</code></pre>
 
-
 <p>As an example, the default routes defined in the skeleton application can be
 written as follows:</p>
 <pre class="codehilite"><code class="language-php">$app-&gt;get('/', \App\Action\HomePageAction::class, 'home');
 $app-&gt;get('/api/ping', \App\Action\PingAction::class, 'api.ping');</code></pre>
-
 
 <p>We recommend rewriting your middleware pipeline and routing configuration into
 programmatic/declarative statements. Specifically:</p>
@@ -797,7 +773,6 @@ your application:</p>
     ],
 ];</code></pre>
 
-
 <p>Once enabled, any <code>middleware_pipeline</code> or <code>routes</code> configuration will be
   ignored when creating the <code>Application</code> instance.</p>
 <ul>
@@ -806,7 +781,6 @@ your application:</p>
 </ul>
 <pre class="codehilite"><code class="language-php">require 'config/pipeline.php';
 require 'config/routes.php';</code></pre>
-
 
 <p>Once this has been done, the application will use your new programmatic
 pipelines instead of configuration. You can remove the <code>middleware_pipeline</code> and
@@ -852,7 +826,6 @@ configuration:</p>
     ],
 ];</code></pre>
 
-
 <p>When enabled, the internal dispatcher will no longer catch exceptions.</p>
 <p>This both allows you to, and <em>requires</em> you to, write your own error handling
 middleware. This will require two things:</p>
@@ -888,7 +861,6 @@ middleware. This will require two things:</p>
     return $response;
 }</code></pre>
 
-
 <p>Stratigility 1.3 provides such an implementation via its
 <code>Zend\Stratigility\Middleware\ErrorHandler</code>. In addition to the try/catch block,
 it also sets up a PHP error handler that will catch any PHP error types in the
@@ -902,7 +874,6 @@ current environment. Error response generators are callables with the signature:
     ServerRequestInterface $request,
     ResponseInterface $response
 ) : ResponseInterface</code></pre>
-
 
 <p>We recommend using the Stratigility <code>ErrorHandler</code> and writing and attaching a
 custom error response generator. As a simple example, the following details a
@@ -942,7 +913,6 @@ class TemplatedErrorResponseGenerator
     }
 }</code></pre>
 
-
 <p>You might then create a factory for generating the <code>ErrorHandler</code> and attaching
 this response generator as follows:</p>
 <pre class="codehilite"><code class="language-php">namespace Acme\Container;
@@ -964,7 +934,6 @@ class ErrorHandlerFactory
         return new ErrorHandler(new Response(), $generator);
     }
 }</code></pre>
-
 
 <p>Once that is created you can tell your middleware configuration about it:</p>
 <pre class="codehilite"><code class="language-php">// in config/autoload/middleware-pipeline.global.php
@@ -992,14 +961,12 @@ return [
     ],
 ];</code></pre>
 
-
 <p>Alternately, if using a programmatic pipeline, as detailed in the previous
 section, you can use the following:</p>
 <pre class="codehilite"><code class="language-php">use Zend\Stratigility\Middleware\ErrorHandler;
 
 $app-&gt;pipe(ErrorHandler::class);
 // add all other middleware after it</code></pre>
-
 
 <h3 id="not-found-middleware">Not Found middleware</h3>
 <p>At the innermost layer of your application, you need middleware guaranteed to
@@ -1041,7 +1008,6 @@ class TemplatedNotFoundHandler
     }
 }</code></pre>
 
-
 <p>Similar to the discussion of the <code>ErrorHandler</code> above, we'll create a factory
 for this:</p>
 <pre class="codehilite"><code class="language-php">namespace Acme\Container;
@@ -1059,7 +1025,6 @@ class TemplatedNotFoundHandlerFactory
         );
     }
 }</code></pre>
-
 
 <p>We can then register it in our pipeline:</p>
 <pre class="codehilite"><code class="language-php">// in config/autoload/middleware-pipeline.global.php
@@ -1089,13 +1054,11 @@ return [
     ],
 ];</code></pre>
 
-
 <p>If you are using programmatic pipelines, as described in the previous section:</p>
 <pre class="codehilite"><code class="language-php">use Acme\TemplatedNotFoundHandler;
 
 // all other pipeline directives, and then:
 $app-&gt;pipe(TemplatedNotFoundHandler::class);</code></pre>
-
 
 <h3 id="detecting-error-middleware-usage">Detecting error middleware usage</h3>
 <p>If you use the new error handling paradigm, we recommend that you also audit
@@ -1105,7 +1068,6 @@ of error middleware. To do this, we provide a tool via the
 package, <code>vendor/bin/expressive-scan-for-error-middleware</code>.</p>
 <p>First, install the tooling as a development requirement:</p>
 <pre class="codehilite"><code class="language-bash">$ composer require --dev zendframework/zend-expressive-tooling</code></pre>
-
 
 <p>The tool will scan the <code>src/</code> directory by default, but allows you to scan other
 directories via the <code>--dir</code> flag. It will detect and report files with any of
@@ -1119,7 +1081,6 @@ the following:</p>
 <pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive-scan-for-error-middleware scan
 # or, with a directory argument:
 $ ./vendor/bin/expressive-scan-for-error-middleware scan --dir ./lib</code></pre>
-
 
 <p>You may also call the tool using its <code>help</code> command, or either of the <code>--help</code>
 or <code>-h</code> flags to get full usage information.</p>
@@ -1142,7 +1103,6 @@ return [
         /* ... */
     ],
 ];</code></pre>
-
 
 <p>Next, we'll update <code>config/autoload/middleware-pipeline.global.php</code> to list only
 dependencies:</p>
@@ -1167,7 +1127,6 @@ return [
     ],
 ];</code></pre>
 
-
 <p>We'll also update <code>config/autoload/routes.global.php</code> to only list dependencies;
 in the following example, we list only the middleware shipped by default with
 the skeleton application:</p>
@@ -1187,7 +1146,6 @@ return [
     ],
 ];</code></pre>
 
-
 <p>To create our pipeline, we will create the file <code>config/pipeline.php</code>:</p>
 <pre class="codehilite"><code class="language-php">use Acme\TemplatedNotFoundHandler;
 use Zend\Expressive\Container\ApplicationFactory;
@@ -1205,7 +1163,6 @@ $app-&gt;pipe([
 ]);
 $app-&gt;pipe(TemplatedNotFoundHandler::class);</code></pre>
 
-
 <p>Note that you can use <em>arrays</em> of middleware just like you did in the
 configuration; this allows you to separate middleware into logical groups if
 desired!</p>
@@ -1216,7 +1173,6 @@ desired!</p>
 $app-&gt;get('/', Action\HomePageAction::class, 'home');
 $app-&gt;get('/api/ping', Action\PingAction::class, 'api.ping');</code></pre>
 
-
 <p>The above exercises the various routing methods of the <code>Application</code> class.</p>
 <p>Finally, we will need to update our <code>public/index.php</code>, to tell it to require
 our new pipeline and routing files; we'll do that between retrieving the
@@ -1225,7 +1181,6 @@ application from the container, and running the application:</p>
 require 'config/pipeline.php';
 require 'config/routes.php';
 $app-&gt;run();</code></pre>
-
 
 <p>With these changes in place, your application should continue to run as it did
 previously!</p>
@@ -1299,13 +1254,11 @@ order to make your application forwards-compatible.</p>
 </div>
 
 
-    <script src="../../../js/jquery-1.10.2.min.js"></script>
-    <script src="../../../js/bootstrap-3.0.3.min.js"></script>
-    <script src="../../../js/prism-zf.js"></script>
-
+    <script src="//cdn.jsdelivr.net/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src="//cdn.jsdelivr.net/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha256-KXn5puMvxCw+dAYznun+drMdG1IFl3agK0p/pqT9KAo=" crossorigin="anonymous"></script>
     <script>var base_url = '../../..';</script>
+    <script src="../../../js/scripts-8b95ab2fc3.js"></script>
     <script data-main="../../../mkdocs/js/search.js" src="../../../mkdocs/js/require.js"></script>
-    <script src="../../../js/base.js"></script>
 
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
         <div class="modal-dialog">
@@ -1346,112 +1299,6 @@ order to make your application forwards-compatible.</p>
   </div>
 </div>
 
-    <script>
-  // Prepare the component list dropdown for display
-  $(function () {
-    var components = $(".zf-components"),
-        componentList = components.find(".component-list"),
-        sidebar = $(".bs-sidebar.affix"),
-        sidebarInitialPos = sidebar.css("position"),
-        hidden,
-        componentToggle = $(".component-toggle"),
-        navbar = $(".navbar-fixed-top"),
-        rollUpLink = $(".zf-components-rollup a");
-
-    // Initial setup on document load
-    components.insertBefore(navbar);
-    $(".zf-logo a").tooltip();
-    componentToggle.tooltip();
-    rollUpLink.attr({ href: "#", alt: "Hide component list" });
-
-    // Cast initial sidebar position value
-    if (undefined === sidebarInitialPos) {
-      sidebarInitialPos = "fixed";
-    }
-
-    // Setup onclick events to toggle list
-    componentToggle.click(toggleComponentList);
-    rollUpLink.click(toggleComponentList);
-
-    // Toggle the component list display
-    function toggleComponentList(event) {
-      event.preventDefault();
-
-      if (hidden === undefined) {
-        // Not loaded yet; load and display.
-        loadComponentList();
-        return;
-      }
-
-      if (hidden) {
-        // Hidden; display.
-        showComponentList();
-        return;
-      }
-
-      // Currently visible; hide
-      hideComponentList();
-    }
-
-    // Show the component list
-    function showComponentList() {
-      navbar.css({position: "relative"});
-      sidebar.css({position: "relative"});
-      components
-        .css({"margin-top": "-" + components.outerHeight() + "px"})
-        .show()
-        .animate({"margin-top": 0}, {
-          complete: function () {
-            componentToggle
-              .data("placement", "top")
-              .attr("data-original-title", "Hide component list");
-            hidden = false;
-          },
-          queue: false
-        });
-    }
-
-    // Hide the component list
-    function hideComponentList() {
-      components.animate({"margin-top": "-" + components.outerHeight() + "px"}, {
-        complete: function () {
-          navbar.css({position: "fixed"});
-          sidebar.css({position: sidebarInitialPos});
-          componentToggle
-            .data("placement", "bottom")
-            .attr("data-original-title", "Show component list");
-          components.hide();
-          hidden = true;
-        },
-        queue: false
-      });
-      sidebar.animate({ top: sidebarInitialTop + "px" }, { queue: false});
-    }
-
-    // Inject a component into the componet list DOM.
-    function injectComponent(index, component) {
-      componentList.append('<div class="component"><h4><a href="' + component.url + '">' + component.name + '</a></h4><p>' + component.description + '</p></div>');
-    }
-
-    // Parse the component list, build the DOM, and display it.
-    function parseComponentList(components) {
-      $.each(components, injectComponent);
-      showComponentList();
-    }
-
-    // Fetch the component list and display it.
-    function loadComponentList () {
-      $.ajax({
-        url: "//docs.zendframework.com/zf-mkdoc-theme/scripts/zf-component-list.json",
-        dataType: "text json",
-        success: parseComponentList,
-        error: function (e) {
-          console.log("Error occurred with XHR call", e);
-        }
-      });
-    }
-  });
-</script>
-    </body>
+</body>
 
 </html>

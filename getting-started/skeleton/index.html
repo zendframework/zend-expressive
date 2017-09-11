@@ -4,39 +4,16 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="zend-expressive: PSR-7 Middleware Microframework">  
     <link rel="shortcut icon" href="../../img/favicon.ico">
 
     <title>Quick Start: Skeleton Installer - Expressive</title>
 
-    <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.018/css/hack.min.css">
-    <link href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic&subset=latin-ext,latin" rel="stylesheet" type="text/css">
-    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin" rel="stylesheet" type="text/css">
-    <link href="//fonts.googleapis.com/css?family=Libre+Baskerville:400,400italic,700&subset=latin,latin-ext" rel="stylesheet" type="text/css">
-    <link href="../../css/base.css" rel="stylesheet">
-    <link href="../../css/zf-web.css" rel="stylesheet">
-    <link href="../../css/zf.css" rel="stylesheet">
-    <link href="../../css/prism-zf.css" rel="stylesheet">
-
-
-    <link href="../../css/zend-expressive.css" rel="stylesheet">
-
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-        <![endif]-->
-
-    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js"></script>
-    <script>
-    WebFont.load({
-        google: {
-            families: ['Open Sans', 'PT Sans']
-        }
-    });
-    </script>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha256-7s5uDGW3AHqw6xtJmNNtr+OBRJUlgkNJEo78P4b0yRw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/fontawesome/4.6.3/css/font-awesome.min.css" integrity="sha256-AIodEDkC8V/bHBkfyxzolUMw57jeQ9CauwhVW6YJ9CA=" crossorigin="anonymous">
+    <link rel="stylesheet" href="../../css/styles-482aa2add1.css">
+        <link href="../../css/zend-expressive.css" rel="stylesheet">
 
     
 </head>
@@ -318,6 +295,12 @@
 </li>
 
         
+            
+<li >
+    <a href="../../features/helpers/content-length/">Content-Length Middleware</a>
+</li>
+
+        
     </ul>
   </li>
 
@@ -554,11 +537,11 @@
         <div class="col-md-9" role="main">
 
 <ol class="breadcrumb" role="navigation" aria-label="breadcrumbs navigation">
-  <li><a href="../..">Expressive</a> &raquo;</li>
+  <li><a href="../..">Expressive</a></li>
   
     
       
-        <li>Getting Started &raquo;</li>
+        <li>Getting Started</li>
       
     
   
@@ -574,7 +557,6 @@ renderer, and error handler from the outset.</p>
 <h2 id="create-a-new-project">Create a new project</h2>
 <p>First, we'll create a new project, using Composer's <code>create-project</code> command:</p>
 <pre class="codehilite"><code class="language-bash">$ composer create-project zendframework/zend-expressive-skeleton expressive</code></pre>
-
 
 <p>This will prompt you to choose:</p>
 <ul>
@@ -608,7 +590,6 @@ server</a>.</p>
 <p>From the project root directory, execute the following:</p>
 <pre class="codehilite"><code class="language-bash">$ composer run --timeout=0 serve</code></pre>
 
-
 <p>This starts up a web server on localhost port 8080; browse to
 http://localhost:8080/ to see if your application responds correctly!</p>
 <blockquote>
@@ -624,7 +605,6 @@ will be used, and it will run until you cancel the process (usually via
 the following will extend the timeout to a full day:</p>
 <pre class="codehilite"><code class="language-bash">$ composer run --timeout=86400 serve</code></pre>
 
-
 </blockquote>
 <h2 id="development-tools">Development Tools</h2>
 <p>Starting in version 2 of the skeleton, we ship tools to make development easier.</p>
@@ -635,7 +615,6 @@ you to enable and disable development mode from your cli.</p>
 $ composer development-disable # disable development mode
 $ composer development-status  # show development status</code></pre>
 
-
 <p>The development configuration is set in <code>config/autoload/development.local.php.dist</code>.
 It also allows you to specify configuration and modules that should only be enabled 
 when in development, and not when in production.</p>
@@ -645,14 +624,12 @@ However, it must be easy for developers to clear the configuration cache. That's
 what this command does.</p>
 <pre class="codehilite"><code class="language-bash">$ composer clear-config-cache</code></pre>
 
-
 <h3 id="testing-your-code">Testing Your Code</h3>
 <p><a href="https://github.com/sebastianbergmann/phpunit">PHPUnit</a> and 
 <a href="https://github.com/squizlabs/PHP_CodeSniffer">PHP_CodeSniffer</a> are now
 installed by default. To execute tests and detect coding standards violations,
 run the following command: </p>
 <pre class="codehilite"><code class="language-bash">$ composer check</code></pre>
-
 
 <h3 id="security-advisories">Security Advisories</h3>
 <p>We have included the <a href="https://github.com/Roave/SecurityAdvisories">security-advisories</a>
@@ -710,7 +687,6 @@ $aggregator = new ConfigAggregator([
 ], 'data/config-cache.php');
 
 return $aggregator-&gt;getMergedConfig();</code></pre>
-
 
 <p>The configuration is merged in the same order as it is passed, with later entries 
 having precedence.</p>
@@ -779,7 +755,6 @@ class ConfigProvider
     }
 }</code></pre>
 
-
 <h3 id="expressive-module-command">expressive-module command</h3>
 <p>To aid in the creation, registration, and deregistration of modules in your
 application, the installer will add the <a href="https://github.com/zendframework/zend-expressive-tooling">zendframework/zend-expressive-tooling</a>
@@ -817,12 +792,10 @@ exceptions.</p>
 <pre class="codehilite"><code class="language-php">$app-&gt;pipe(ErrorHandler::class);
 $app-&gt;pipe(ServerUrlMiddleware::class);  </code></pre>
 
-
 <p>After the <code>ErrorHandler</code> you can pipe more middleware that you want to execute 
 on every request, such as bootstrapping, pre-conditions, and modifications to 
 outgoing responses:</p>
 <pre class="codehilite"><code class="language-php">$app-&gt;pipe(ServerUrlMiddleware::class);  </code></pre>
-
 
 <p>Piped middleware may be either callables or service names. Middleware may also 
 be passed as an array; each item in the array must resolve to middleware 
@@ -836,10 +809,8 @@ this way will see a URI with the <strong>MATCHED PATH SEGMENT REMOVED!!!</strong
 $app-&gt;pipe('/docs', $apiDocMiddleware);
 $app-&gt;pipe('/files', $filesMiddleware);    </code></pre>
 
-
 <p>Next, you should register the routing middleware in the middleware pipeline:</p>
 <pre class="codehilite"><code class="language-php">$app-&gt;pipeRoutingMiddleware();</code></pre>
-
 
 <p>Add more middleware that needs to introspect the routing results; this might 
 include:</p>
@@ -855,16 +826,13 @@ include:</p>
 $app-&gt;pipe(ImplicitOptionsMiddleware::class);
 $app-&gt;pipe(UrlHelperMiddleware::class);</code></pre>
 
-
 <p>Next, register the dispatch middleware in the middleware pipeline:</p>
 <pre class="codehilite"><code class="language-php">$app-&gt;pipeDispatchMiddleware();</code></pre>
-
 
 <p>At this point, if no response is return by any middleware, we need to provide a
 way of notifying the user of this; by default, we use the <code>NotFoundHandler</code>, but
 you can provide any other fallback middleware you wish:</p>
 <pre class="codehilite"><code class="language-php">$app-&gt;pipe(NotFoundHandler::class);</code></pre>
-
 
 <p>The full example then looks something like this:</p>
 <pre class="codehilite"><code class="language-php">// In config/pipeline.php:
@@ -892,7 +860,6 @@ $app-&gt;pipeDispatchMiddleware();
 
 $app-&gt;pipe(NotFoundHandler::class);</code></pre>
 
-
 <h3 id="routing">Routing</h3>
 <p><a href="../../features/router/piping/#routing">Routing</a> is an additional feature
 provided by Expressive. Routing is setup in <code>config/routes.php</code>.</p>
@@ -903,14 +870,11 @@ $app-&gt;put('/album/:id', App\Action\AlbumUpdateAction::class, 'album.put');
 $app-&gt;patch('/album/:id', App\Action\AlbumUpdateAction::class, 'album.patch');
 $app-&gt;delete('/album/:id', App\Action\AlbumDeleteAction::class, 'album.delete');</code></pre>
 
-
 <p>Or with multiple request methods:</p>
 <pre class="codehilite"><code class="language-php">$app-&gt;route('/contact', App\Action\ContactAction::class, ['GET', 'POST', ...], 'contact');</code></pre>
 
-
 <p>Or handling all request methods:</p>
 <pre class="codehilite"><code class="language-php">$app-&gt;route('/contact', App\Action\ContactAction::class)-&gt;setName('contact');</code></pre>
-
 
 <p>Alternately, to be explicit, the above could be written as:</p>
 <pre class="codehilite"><code class="language-php">$app-&gt;route(
@@ -919,7 +883,6 @@ $app-&gt;delete('/album/:id', App\Action\AlbumDeleteAction::class, 'album.delete
   Zend\Expressive\Router\Route::HTTP_METHOD_ANY,
   'contact'
 );  </code></pre>
-
 
 <p>We recommend a single middleware class per combination of route and request
 method.</p>
@@ -945,7 +908,6 @@ function (
   Message\ResponseInterface $response,
   callable $next
 ) : Message\ResponseInterface</code></pre>
-
 
 <p>While this style of middleware is still quite wide-spread and used in a number
 of projects, it has some flaws. Chief among them is the fact that middleware
@@ -996,7 +958,6 @@ class HelloAction implements MiddlewareInterface
     }
 }</code></pre>
 
-
 <p>The above looks for a query string parameter "target", and uses its value to
 provide a message, which is then returned in an HTML response.</p>
 <p>Now we need to inform the application of this middleware, and indicate what
@@ -1013,11 +974,9 @@ Edit that file to add an <em>invokable</em> entry for the new middleware:</p>
     ],
 ];</code></pre>
 
-
 <p>Now open the file <code>config/routes.php</code>, and add the following at the bottom of
 the file:</p>
 <pre class="codehilite"><code class="language-php">$app-&gt;get('/hello', App\Action\HelloAction::class, 'hello');</code></pre>
-
 
 <p>Once you've completed the above, give it a try by going to each of the
 following URIs:</p>
@@ -1037,7 +996,6 @@ following contents:</p>
 <pre class="codehilite"><code class="language-php">&lt;?php $this-&gt;layout('layout::default', ['title' =&gt; 'Greetings']) ?&gt;
 
 &lt;h2&gt;Hello, &lt;?= $this-&gt;e($target) ?&gt;&lt;/h2&gt;</code></pre>
-
 
 <p>Now that we have a template, we need to:</p>
 <ul>
@@ -1078,7 +1036,6 @@ class HelloAction implements MiddlewareInterface
     }
 }</code></pre>
 
-
 <p>The above modifies the class to accept a renderer to the constructor, and then
 calls on it to render a template. Note that we no longer need to escape our
 target; the template takes care of that for us.</p>
@@ -1090,7 +1047,6 @@ selection for a dependency injection container, zend-servicemanager.</p>
 <p>zend-servicemanager provides a tool for generating factories based on
 reflecting a class; we'll use that to generate our factory:</p>
 <pre class="codehilite"><code class="language-bash">$ ./vendor/bin/generate-factory-for-class &quot;App\\Action\\HelloAction&quot; &gt; src/App/Action/HelloActionFactory.php</code></pre>
-
 
 <p>With that in place, we'll now update our configuration. Open the file
 <code>config/autoload/dependencies.global.php</code>; we'll remove the <code>invokables</code> entry
@@ -1110,7 +1066,6 @@ we created previously, and add a <code>factories</code> entry:</p>
         /* ... */
     ],
 ];</code></pre>
-
 
 <p>Save that file, and now re-visit the URIs:</p>
 <ul>
@@ -1192,13 +1147,11 @@ Expressive:</p>
 </div>
 
 
-    <script src="../../js/jquery-1.10.2.min.js"></script>
-    <script src="../../js/bootstrap-3.0.3.min.js"></script>
-    <script src="../../js/prism-zf.js"></script>
-
+    <script src="//cdn.jsdelivr.net/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src="//cdn.jsdelivr.net/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha256-KXn5puMvxCw+dAYznun+drMdG1IFl3agK0p/pqT9KAo=" crossorigin="anonymous"></script>
     <script>var base_url = '../..';</script>
+    <script src="../../js/scripts-8b95ab2fc3.js"></script>
     <script data-main="../../mkdocs/js/search.js" src="../../mkdocs/js/require.js"></script>
-    <script src="../../js/base.js"></script>
 
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
         <div class="modal-dialog">
@@ -1239,112 +1192,6 @@ Expressive:</p>
   </div>
 </div>
 
-    <script>
-  // Prepare the component list dropdown for display
-  $(function () {
-    var components = $(".zf-components"),
-        componentList = components.find(".component-list"),
-        sidebar = $(".bs-sidebar.affix"),
-        sidebarInitialPos = sidebar.css("position"),
-        hidden,
-        componentToggle = $(".component-toggle"),
-        navbar = $(".navbar-fixed-top"),
-        rollUpLink = $(".zf-components-rollup a");
-
-    // Initial setup on document load
-    components.insertBefore(navbar);
-    $(".zf-logo a").tooltip();
-    componentToggle.tooltip();
-    rollUpLink.attr({ href: "#", alt: "Hide component list" });
-
-    // Cast initial sidebar position value
-    if (undefined === sidebarInitialPos) {
-      sidebarInitialPos = "fixed";
-    }
-
-    // Setup onclick events to toggle list
-    componentToggle.click(toggleComponentList);
-    rollUpLink.click(toggleComponentList);
-
-    // Toggle the component list display
-    function toggleComponentList(event) {
-      event.preventDefault();
-
-      if (hidden === undefined) {
-        // Not loaded yet; load and display.
-        loadComponentList();
-        return;
-      }
-
-      if (hidden) {
-        // Hidden; display.
-        showComponentList();
-        return;
-      }
-
-      // Currently visible; hide
-      hideComponentList();
-    }
-
-    // Show the component list
-    function showComponentList() {
-      navbar.css({position: "relative"});
-      sidebar.css({position: "relative"});
-      components
-        .css({"margin-top": "-" + components.outerHeight() + "px"})
-        .show()
-        .animate({"margin-top": 0}, {
-          complete: function () {
-            componentToggle
-              .data("placement", "top")
-              .attr("data-original-title", "Hide component list");
-            hidden = false;
-          },
-          queue: false
-        });
-    }
-
-    // Hide the component list
-    function hideComponentList() {
-      components.animate({"margin-top": "-" + components.outerHeight() + "px"}, {
-        complete: function () {
-          navbar.css({position: "fixed"});
-          sidebar.css({position: sidebarInitialPos});
-          componentToggle
-            .data("placement", "bottom")
-            .attr("data-original-title", "Show component list");
-          components.hide();
-          hidden = true;
-        },
-        queue: false
-      });
-      sidebar.animate({ top: sidebarInitialTop + "px" }, { queue: false});
-    }
-
-    // Inject a component into the componet list DOM.
-    function injectComponent(index, component) {
-      componentList.append('<div class="component"><h4><a href="' + component.url + '">' + component.name + '</a></h4><p>' + component.description + '</p></div>');
-    }
-
-    // Parse the component list, build the DOM, and display it.
-    function parseComponentList(components) {
-      $.each(components, injectComponent);
-      showComponentList();
-    }
-
-    // Fetch the component list and display it.
-    function loadComponentList () {
-      $.ajax({
-        url: "//docs.zendframework.com/zf-mkdoc-theme/scripts/zf-component-list.json",
-        dataType: "text json",
-        success: parseComponentList,
-        error: function (e) {
-          console.log("Error occurred with XHR call", e);
-        }
-      });
-    }
-  });
-</script>
-    </body>
+</body>
 
 </html>
