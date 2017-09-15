@@ -27,7 +27,10 @@ class NotFoundDelegateFactory
         $template = isset($config['zend-expressive']['error_handler']['template_404'])
             ? $config['zend-expressive']['error_handler']['template_404']
             : NotFoundDelegate::TEMPLATE_DEFAULT;
+        $layout = isset($config['zend-expressive']['error_handler']['layout'])
+            ? $config['zend-expressive']['error_handler']['layout']
+            : NotFoundDelegate::LAYOUT_DEFAULT;
 
-        return new NotFoundDelegate(new Response(), $renderer, $template);
+        return new NotFoundDelegate(new Response(), $renderer, $template, $layout);
     }
 }
