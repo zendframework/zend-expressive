@@ -70,8 +70,10 @@ class NotFoundDelegateTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class)->reveal();
 
         $renderer = $this->prophesize(TemplateRendererInterface::class);
-        $renderer->render(NotFoundDelegate::TEMPLATE_DEFAULT, ['request' => $request, 'layout' => NotFoundDelegate::LAYOUT_DEFAULT])
-            ->willReturn('CONTENT');
+        $renderer->render(NotFoundDelegate::TEMPLATE_DEFAULT, [
+            'request' => $request,
+            'layout' => NotFoundDelegate::LAYOUT_DEFAULT
+            ])->willReturn('CONTENT');
 
         $stream = $this->prophesize(StreamInterface::class);
         $stream->write('CONTENT')->shouldBeCalled();
