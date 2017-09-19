@@ -54,9 +54,9 @@ class NotFoundDelegate implements DelegateInterface
         $layout = self::LAYOUT_DEFAULT
     ) {
         $this->responsePrototype = $responsePrototype;
-        $this->renderer          = $renderer;
-        $this->template          = $template;
-        $this->layout            = $layout;
+        $this->renderer = $renderer;
+        $this->template = $template;
+        $this->layout = $layout;
     }
 
     /**
@@ -67,7 +67,7 @@ class NotFoundDelegate implements DelegateInterface
      */
     public function process(ServerRequestInterface $request)
     {
-        if (! $this->renderer) {
+        if (!$this->renderer) {
             return $this->generatePlainTextResponse($request);
         }
 
@@ -87,7 +87,7 @@ class NotFoundDelegate implements DelegateInterface
             ->write(sprintf(
                 'Cannot %s %s',
                 $request->getMethod(),
-                (string) $request->getUri()
+                (string)$request->getUri()
             ));
         return $response;
     }
@@ -102,14 +102,9 @@ class NotFoundDelegate implements DelegateInterface
      */
     private function generateTemplatedResponse(ServerRequestInterface $request)
     {
-        $templateData = [
-            'request'  => $request,
-            'layout'  => $this->layout,
-        ];
-
         $response = $this->responsePrototype->withStatus(StatusCodeInterface::STATUS_NOT_FOUND);
         $response->getBody()->write(
-            $this->renderer->render($this->template, $templateData)
+            $this->renderer->render($this->template, ['request' => $request, 'layout' => $this->layout])
         );
 
         return $response;
