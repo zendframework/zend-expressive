@@ -24,15 +24,26 @@
             "dev-develop": "2.1-dev"
         }
     },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/webimpress/zend-expressive-router.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/webimpress/zend-stratigility.git"
+        }
+    ],
     "require": {
         "php": "^5.6 || ^7.0",
         "fig/http-message-util": "^1.1.2",
         "psr/container": "^1.0",
         "psr/http-message": "^1.0.1",
+        "webimpress/http-middleware-compatibility": "^0.1.1",
         "zendframework/zend-diactoros": "^1.3.10",
-        "zendframework/zend-expressive-router": "^2.1",
+        "zendframework/zend-expressive-router": "dev-feature/http-middleware-0.5 as 2.2",
         "zendframework/zend-expressive-template": "^1.0.4",
-        "zendframework/zend-stratigility": "^2.0.1"
+        "zendframework/zend-stratigility": "dev-feature/http-middleware-0.5"
     },
     "require-dev": {
         "filp/whoops": "^2.1.6 || ^1.1.10",

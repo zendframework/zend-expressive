@@ -9,12 +9,14 @@ namespace Zend\Expressive\Middleware;
 
 use Fig\Http\Message\RequestMethodInterface as RequestMethod;
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
+use Webimpress\HttpMiddlewareCompatibility\MiddlewareInterface as ServerMiddlewareInterface;
 use Zend\Diactoros\Response;
 use Zend\Expressive\Router\RouteResult;
+
+use const Webimpress\HttpMiddlewareCompatibility\HANDLER_METHOD;
 
 /**
  * Handle implicit OPTIONS requests.
@@ -66,16 +68,16 @@ class ImplicitOptionsMiddleware implements ServerMiddlewareInterface
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         if ($request->getMethod() !== RequestMethod::METHOD_OPTIONS) {
-            return $delegate->process($request);
+            return $delegate->{HANDLER_METHOD}($request);
         }
 
         if (false === ($result = $request->getAttribute(RouteResult::class, false))) {
-            return $delegate->process($request);
+            return $delegate->{HANDLER_METHOD}($request);
         }
 
         $route = $result->getMatchedRoute();
         if (! $route || ! $route->implicitOptions()) {
-            return $delegate->process($request);
+            return $delegate->{HANDLER_METHOD}($request);
         }
 
         $methods = implode(',', $route->getAllowedMethods());
