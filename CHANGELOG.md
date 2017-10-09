@@ -20,7 +20,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
-## 2.0.4 - TBD
+## 2.0.4 - 2017-10-09
 
 ### Added
 
@@ -43,6 +43,10 @@ All notable changes to this project will be documented in this file, in reverse 
   and 2.
 - [#482](https://github.com/zendframework/zend-expressive/pull/482) fixes the
   `Application::$defaultDelegate` dockblock Type.
+- [#489](https://github.com/zendframework/zend-expressive/pull/489) fixes an
+  edge case in the `WhoopsErrorHandler` whereby it would emit an error if
+  `$_SERVER['SCRIPT_NAME']` did not exist. It now checks for that value before
+  attempting to use it.
 
 ## 2.0.3 - 2017-03-28
 
