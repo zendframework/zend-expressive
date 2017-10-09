@@ -5,7 +5,7 @@
 > This recipe is deprecated with the release of Expressive 2.0, as that release
 > now expects and requires that you provide innermost middleware that will
 > return a response, and provides `Zend\Expressive\Middleware\NotFoundHandler`
-> as a default implementation. Please see the [error handling chapter](../error-handling.md#page-not-found)
+> as a default implementation. Please see the [error handling chapter](../features/error-handling.md)
 > for more information.
 
 In some cases, you may want to handle 404 errors separately from the
@@ -28,7 +28,7 @@ Your 404 handler can take one of two approaches:
 In the first approach, the `NotFound` middleware can be as simple as this:
 
 ```php
-namespace Application;
+namespace App;
 
 class NotFound
 {
@@ -56,7 +56,7 @@ In our example here, we will render a specific template, and use this to seed
 and return a response.
 
 ```php
-namespace Application;
+namespace App;
 
 use Zend\Expressive\Template\TemplateRendererInterface;
 
@@ -85,7 +85,7 @@ that does not rely on the final handler.
 
 ## Registering custom 404 handlers
 
-We can register either `Application\NotFound` class above as service in the
+We can register either `App\NotFound` class above as service in the
 [service container](../features/container/intro.md). In the case of the second approach,
 you would also need to provide a factory for creating the middleware (to ensure
 you inject the template renderer).
@@ -109,7 +109,7 @@ configuration, after the dispatch middleware:
         'priority' => 1,
     ],
     [
-        'middleware' => 'Application\NotFound',
+        'middleware' => 'App\NotFound',
         'priority' => -1,
     ],
     /* ... */
@@ -123,7 +123,7 @@ To manually add the middleware, you will need to pipe it to the application
 instance:
 
 ```php
-$app->pipe($container->get('Application\NotFound'));
+$app->pipe($container->get('App\NotFound'));
 ```
 
 This must be done *after*:
