@@ -37,8 +37,8 @@
     "require-dev": {
         "filp/whoops": "^2.1.6 || ^1.1.10",
         "malukenho/docheader": "^0.1.5",
-        "mockery/mockery": "^0.9.5",
-        "phpunit/phpunit": "^6.0.8 || ^5.7.15",
+        "mockery/mockery": "^1.0",
+        "phpunit/phpunit": "^5.7.22 || ^6.4.1",
         "zendframework/zend-coding-standard": "~1.0.0",
         "zendframework/zend-expressive-aurarouter": "^2.0",
         "zendframework/zend-expressive-fastroute": "^2.0",
