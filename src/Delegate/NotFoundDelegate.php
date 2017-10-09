@@ -67,7 +67,7 @@ class NotFoundDelegate implements DelegateInterface
      */
     public function process(ServerRequestInterface $request)
     {
-        if (!$this->renderer) {
+        if (! $this->renderer) {
             return $this->generatePlainTextResponse($request);
         }
 
@@ -87,7 +87,7 @@ class NotFoundDelegate implements DelegateInterface
             ->write(sprintf(
                 'Cannot %s %s',
                 $request->getMethod(),
-                (string)$request->getUri()
+                (string) $request->getUri()
             ));
         return $response;
     }
