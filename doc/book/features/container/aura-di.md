@@ -25,7 +25,7 @@ $ composer require aura/di
 Aura.Di can help you to organize your code better with
 [ContainerConfig classes](http://auraphp.com/packages/Aura.Di/config.html) and
 [two step configuration](http://auraphp.com/blog/2014/04/07/two-stage-config/).
-In this example, we'll put that in `config/services.php`:
+In this example, we'll put that in `config/container.php`:
 
 ```php
 <?php
@@ -129,7 +129,7 @@ Your bootstrap (typically `public/index.php`) will then look like this:
 ```php
 chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
-$container = require 'config/services.php';
+$container = require 'config/container.php';
 $app = $container->get(Zend\Expressive\Application::class);
 require 'config/pipeline.php';
 require 'config/routes.php';
