@@ -16,7 +16,7 @@ use Zend\Expressive\Template\TemplateRendererInterface;
 class NotFoundDelegate implements DelegateInterface
 {
     const TEMPLATE_DEFAULT = 'error::404';
-    const LAYOUT_DEFAULT = 'layout::error';
+    const LAYOUT_DEFAULT = 'layout::default';
 
     /**
      * @var TemplateRendererInterface

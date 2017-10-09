@@ -36,15 +36,15 @@ class NotFoundDelegateTest extends TestCase
     public function testConstructorCanAcceptRendererAndTemplate()
     {
         $renderer = $this->prophesize(TemplateRendererInterface::class)->reveal();
-        $layout = 'layout::error';
         $template = 'foo::bar';
+        $layout = 'layout::error';
 
         $delegate = new NotFoundDelegate($this->response->reveal(), $renderer, $template, $layout);
 
         $this->assertInstanceOf(NotFoundDelegate::class, $delegate);
         $this->assertAttributeSame($renderer, 'renderer', $delegate);
-        $this->assertAttributeEquals($layout, 'layout', $delegate);
         $this->assertAttributeEquals($template, 'template', $delegate);
+        $this->assertAttributeEquals($layout, 'layout', $delegate);
     }
 
     public function testRendersDefault404ResponseWhenNoRendererPresent()
