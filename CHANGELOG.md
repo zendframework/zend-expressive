@@ -49,6 +49,34 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
+## 2.0.5 - 2017-10-09
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#521](https://github.com/zendframework/zend-expressive/pull/521) adds an
+  explicit requirement on http-interop/http-middleware `^0.4.1` to the package.
+  This is necessary as newer builds of zend-stratigility instead depend on the
+  metapackage webimpress/http-middleware-compatibility instead of the
+  http-interop/http-middleware package — but middleware shipped in Expressive
+  requires it. This addition fixes problems due to missing http-middleware
+  interfaces.
+
 ## 2.0.4 - 2017-10-09
 
 ### Added
