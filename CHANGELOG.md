@@ -8,6 +8,21 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
+### Changed
+
+- [#505](https://github.com/zendframework/zend-expressive/pull/505) modifies
+  `Zend\Expressive\Application` to remove implementation of `__call()` in favor
+  of the following new methods:
+
+  - `get($path, $middleware, $name = null)`
+  - `post($path, $middleware, $name = null)`
+  - `put($path, $middleware, $name = null)`
+  - `patch($path, $middleware, $name = null)`
+  - `delete($path, $middleware, $name = null)`
+
+  This change is an internal implementation detail only, and will not affect
+  existing implementations or extensions.
+
 ### Deprecated
 
 - Nothing.
