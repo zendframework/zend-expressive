@@ -23,6 +23,16 @@ All notable changes to this project will be documented in this file, in reverse 
   This change is an internal implementation detail only, and will not affect
   existing implementations or extensions.
 
+- [#511](https://github.com/zendframework/zend-expressive/pull/511) modifies
+  the `NotFoundDelegate` to accept an optional `$layout` argument to its
+  constructor; the value defaults to `layout::default` if not provided. That
+  value will be passed for the `layout` template variable when the delegate
+  renders a template, allowing zend-view users (and potentially other template
+  systems) to customize the layout template used for reporting errors.
+
+  You may provide the template via the configuration
+  `zend-expressive.error_handler.layout`.
+
 ### Deprecated
 
 - Nothing.
