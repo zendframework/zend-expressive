@@ -36,7 +36,7 @@ Where:
 - `$routeName` is the name of a route defined in the composed router. You may
   omit this argument if you want to generate the path for the currently matched
   request.
-- `$rotueParams` is an array of substitutions to use for the provided route, with the
+- `$routeParams` is an array of substitutions to use for the provided route, with the
   following behavior:
     - If a `RouteResult` is composed in the helper, and the `$routeName` matches
       it, the provided `$params` will be merged with any matched parameters, with
