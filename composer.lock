@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "f6513b889a3c44064f683ac1b1849054",
+    "content-hash": "6720673b6d8dda2b2d727ac5dcda7029",
     "packages": [
         {
             "name": "fig/http-message-util",
@@ -345,11 +345,17 @@
         },
         {
             "name": "zendframework/zend-expressive-router",
-            "version": "dev-feature/http-middleware-0.5",
+            "version": "2.2.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/webimpress/zend-expressive-router.git",
-                "reference": "6d385d9f2f29194f8b5c9073a3d09e46affd86d7"
+                "url": "https://github.com/zendframework/zend-expressive-router.git",
+                "reference": "f6eac53d39cdbf7b6db11b3e6bb3565896633de4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zendframework/zend-expressive-router/zipball/f6eac53d39cdbf7b6db11b3e6bb3565896633de4",
+                "reference": "f6eac53d39cdbf7b6db11b3e6bb3565896633de4",
+                "shasum": ""
             },
             "require": {
                 "fig/http-message-util": "^1.1.2",
@@ -370,8 +376,8 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.1-dev",
-                    "dev-develop": "2.2-dev"
+                    "dev-master": "2.2-dev",
+                    "dev-develop": "2.3-dev"
                 }
             },
             "autoload": {
@@ -379,36 +385,7 @@
                     "Zend\\Expressive\\Router\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "ZendTest\\Expressive\\Router\\": "test/"
-                }
-            },
-            "scripts": {
-                "check": [
-                    "@license-check",
-                    "@cs-check",
-                    "@test"
-                ],
-                "upload-coverage": [
-                    "coveralls -v"
-                ],
-                "cs-check": [
-                    "phpcs --colors"
-                ],
-                "cs-fix": [
-                    "phpcbf --colors"
-                ],
-                "license-check": [
-                    "docheader check src/ test/"
-                ],
-                "test": [
-                    "phpunit --colors=always"
-                ],
-                "test-coverage": [
-                    "phpunit --coverage-clover clover.xml"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
@@ -420,7 +397,7 @@
                 "psr",
                 "psr-7"
             ],
-            "time": "2017-10-05T16:20:19+00:00"
+            "time": "2017-10-09T18:44:11+00:00"
         },
         {
             "name": "zendframework/zend-expressive-template",
@@ -473,11 +450,17 @@
         },
         {
             "name": "zendframework/zend-stratigility",
-            "version": "dev-feature/http-middleware-0.5",
+            "version": "2.1.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/webimpress/zend-stratigility.git",
-                "reference": "bddc3d633f5356de9df6fc4951e24e2df14da4be"
+                "url": "https://github.com/zendframework/zend-stratigility.git",
+                "reference": "74617cffd44180bef0aea63daca830d0b675c1c8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zendframework/zend-stratigility/zipball/74617cffd44180bef0aea63daca830d0b675c1c8",
+                "reference": "74617cffd44180bef0aea63daca830d0b675c1c8",
+                "shasum": ""
             },
             "require": {
                 "php": "^5.6 || ^7.0",
@@ -497,8 +480,8 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.0.0-dev",
-                    "dev-develop": "2.1.0-dev"
+                    "dev-master": "2.1.0-dev",
+                    "dev-develop": "2.2.0-dev"
                 }
             },
             "autoload": {
@@ -506,36 +489,7 @@
                     "Zend\\Stratigility\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "ZendTest\\Stratigility\\": "test/"
-                }
-            },
-            "scripts": {
-                "check": [
-                    "@license-check",
-                    "@cs-check",
-                    "@test"
-                ],
-                "upload-coverage": [
-                    "coveralls -v"
-                ],
-                "cs-check": [
-                    "phpcs --colors"
-                ],
-                "cs-fix": [
-                    "phpcbf --colors"
-                ],
-                "license-check": [
-                    "docheader check src/ test/"
-                ],
-                "test": [
-                    "phpunit --colors=always"
-                ],
-                "test-coverage": [
-                    "phpunit --coverage-clover clover.xml"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
@@ -546,11 +500,7 @@
                 "middleware",
                 "psr-7"
             ],
-            "support": {
-                "issues": "https://github.com/zendframework/zend-stratigility/issues",
-                "source": "https://github.com/zendframework/zend-stratigility"
-            },
-            "time": "2017-10-05T22:34:02+00:00"
+            "time": "2017-10-09T19:25:33+00:00"
         }
     ],
     "packages-dev": [
@@ -3328,19 +3278,9 @@
             "time": "2017-05-17T22:06:13+00:00"
         }
     ],
-    "aliases": [
-        {
-            "alias": "2.2",
-            "alias_normalized": "2.2.0.0",
-            "version": "dev-feature/http-middleware-0.5",
-            "package": "zendframework/zend-expressive-router"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "zendframework/zend-expressive-router": 20,
-        "zendframework/zend-stratigility": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
