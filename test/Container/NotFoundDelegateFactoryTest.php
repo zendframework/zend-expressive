@@ -54,6 +54,7 @@ class NotFoundDelegateFactoryTest extends TestCase
         $config = [
             'zend-expressive' => [
                 'error_handler' => [
+                    'layout' => 'layout::error',
                     'template_404' => 'foo::bar',
                 ],
             ],
@@ -64,6 +65,11 @@ class NotFoundDelegateFactoryTest extends TestCase
         $factory = new NotFoundDelegateFactory();
 
         $delegate = $factory($this->container->reveal());
+        $this->assertAttributeEquals(
+            $config['zend-expressive']['error_handler']['layout'],
+            'layout',
+            $delegate
+        );
         $this->assertAttributeEquals(
             $config['zend-expressive']['error_handler']['template_404'],
             'template',
