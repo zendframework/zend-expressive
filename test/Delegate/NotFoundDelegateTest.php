@@ -37,12 +37,14 @@ class NotFoundDelegateTest extends TestCase
     {
         $renderer = $this->prophesize(TemplateRendererInterface::class)->reveal();
         $template = 'foo::bar';
+        $layout = 'layout::error';
 
-        $delegate = new NotFoundDelegate($this->response->reveal(), $renderer, $template);
+        $delegate = new NotFoundDelegate($this->response->reveal(), $renderer, $template, $layout);
 
         $this->assertInstanceOf(NotFoundDelegate::class, $delegate);
         $this->assertAttributeSame($renderer, 'renderer', $delegate);
         $this->assertAttributeEquals($template, 'template', $delegate);
+        $this->assertAttributeEquals($layout, 'layout', $delegate);
     }
 
     public function testRendersDefault404ResponseWhenNoRendererPresent()
@@ -68,7 +70,14 @@ class NotFoundDelegateTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class)->reveal();
 
         $renderer = $this->prophesize(TemplateRendererInterface::class);
-        $renderer->render(NotFoundDelegate::TEMPLATE_DEFAULT, ['request' => $request])
+        $renderer
+            ->render(
+                NotFoundDelegate::TEMPLATE_DEFAULT,
+                [
+                    'request' => $request,
+                    'layout' => NotFoundDelegate::LAYOUT_DEFAULT,
+                ]
+            )
             ->willReturn('CONTENT');
 
         $stream = $this->prophesize(StreamInterface::class);

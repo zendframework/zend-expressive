@@ -16,6 +16,7 @@ use Zend\Expressive\Template\TemplateRendererInterface;
 class NotFoundDelegate implements DelegateInterface
 {
     const TEMPLATE_DEFAULT = 'error::404';
+    const LAYOUT_DEFAULT = 'layout::default';
 
     /**
      * @var TemplateRendererInterface
@@ -36,18 +37,26 @@ class NotFoundDelegate implements DelegateInterface
     private $template;
 
     /**
+     * @var string
+     */
+    private $layout;
+
+    /**
      * @param ResponseInterface $responsePrototype
      * @param TemplateRendererInterface $renderer
      * @param string $template
+     * @param string $layout
      */
     public function __construct(
         ResponseInterface $responsePrototype,
         TemplateRendererInterface $renderer = null,
-        $template = self::TEMPLATE_DEFAULT
+        $template = self::TEMPLATE_DEFAULT,
+        $layout = self::LAYOUT_DEFAULT
     ) {
         $this->responsePrototype = $responsePrototype;
-        $this->renderer          = $renderer;
-        $this->template          = $template;
+        $this->renderer = $renderer;
+        $this->template = $template;
+        $this->layout = $layout;
     }
 
     /**
@@ -95,7 +104,7 @@ class NotFoundDelegate implements DelegateInterface
     {
         $response = $this->responsePrototype->withStatus(StatusCodeInterface::STATUS_NOT_FOUND);
         $response->getBody()->write(
-            $this->renderer->render($this->template, ['request' => $request])
+            $this->renderer->render($this->template, ['request' => $request, 'layout' => $this->layout])
         );
 
         return $response;
