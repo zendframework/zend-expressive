@@ -5,20 +5,12 @@ language: php
 cache:
   directories:
     - $HOME/.composer/cache
-    - $HOME/.local
-    - vendor
-    - zf-mkdoc-theme
 
 env:
   global:
     - COMPOSER_ARGS="--no-interaction"
     - COVERAGE_DEPS="satooshi/php-coveralls"
     - LEGACY_DEPS="phpunit/phpunit"
-    - SITE_URL=https://zendframework.github.io/zend-expressive
-    - GH_USER_NAME="Matthew Weier O'Phinney"
-    - GH_USER_EMAIL=matthew@weierophinney.net
-    - GH_REF=github.com/zendframework/zend-expressive.git
-    - secure: "djSWIzje6Y+r72owunmsiCxNlXm1pmnlwMdjhy3L8g9lSnShC7MFvHBhhvEBQgVkKIxjmzq6RPI5wH/+LcotsHsM+LgVsgNhr9B9OR82Y3BNZM+bCU6qKmLWKn2bFafF097VBt22VaggFFlJhifWdCHZ65xfBIXXEACTDLm1nbOL9aKryEpsGTyd/NUyRLPyc9ShoVgHo/6I+NXHGbADxLGokdnQDw4kUpjWs++/G490OrkY8rZHDD2TpCcPca/v7i1+RrJVLnFVhXBAzSmxFLQon+FVN6orhiONs9r8u/sNovQtAEpaO4hmn8LFrf0oK/d4CgNdvm+1CQt+3TWJOM/yqYxOVxB9WukWfeGLn1d/XZvr9pUuF1BAP0r1kd95ewXgSwG9H5CCSBer39c+NnVTHE0PHUSaL0YX5VuOlAJ9K/suxHkRzQroJkkx34hI7EsJYsoMXrxBll7t5l9J8EQNGeihMc81pBWS262PyAlJxDtZ3aJpoVhhrVRpBdKNhXPFi5/nBb8EFxQUIAzYOSPJjbzJZxNBfB13Mq9Qn9WeEtw25QnHY60FmiVTs7hPCuMFOnUrJD+dW4Rkj86GBMecihdB/8TfYFvr6742rMZ+x6KhbyGOJADhp06YJC/2zPfpGzvWR8QqGDfDhXQAS7QNj/yH72OVIwUkC4oePfI="
 
 matrix:
   include:
@@ -28,9 +20,8 @@ matrix:
     - php: 5.6
       env:
         - DEPS=locked
+        - CS_CHECK=true
         - TEST_COVERAGE=true
-        - DEPLOY_DOCS="$(if [[ $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST == 'false' ]]; then echo -n 'true' ; else echo -n 'false' ; fi)"
-        - PATH="$HOME/.local/bin:$PATH"
     - php: 5.6
       env:
         - DEPS=latest
@@ -40,7 +31,6 @@ matrix:
     - php: 7
       env:
         - DEPS=locked
-        - CS_CHECK=true
     - php: 7
       env:
         - DEPS=latest
@@ -53,17 +43,17 @@ matrix:
     - php: 7.1
       env:
         - DEPS=latest
-    - php: hhvm
+    - php: 7.2
       env:
         - DEPS=lowest
-    - php: hhvm
+    - php: 7.2
       env:
         - DEPS=locked
-    - php: hhvm
+    - php: 7.2
       env:
         - DEPS=latest
   allow_failures:
-    - php: hhvm
+    - php: 7.2
 
 before_install:
   - if [[ $TEST_COVERAGE != 'true' ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
@@ -75,29 +65,15 @@ install:
   - if [[ $DEPS == 'latest' ]]; then travis_retry composer update $COMPOSER_ARGS ; fi
   - if [[ $DEPS == 'lowest' ]]; then travis_retry composer update --prefer-lowest --prefer-stable $COMPOSER_ARGS ; fi
   - if [[ $TEST_COVERAGE == 'true' ]]; then travis_retry composer require --dev $COMPOSER_ARGS $COVERAGE_DEPS ; fi
-  - composer show
+  - stty cols 120 && composer show
 
 script:
   - if [[ $TEST_COVERAGE == 'true' ]]; then composer test-coverage ; else composer test ; fi
   - if [[ $CS_CHECK == 'true' ]]; then composer cs-check ; fi
   - if [[ $CS_CHECK == 'true' ]]; then composer license-check ; fi
-  - if [[ $DEPLOY_DOCS == "true" && "$TRAVIS_TEST_RESULT" == "0" ]]; then wget -O theme-installer.sh "https://raw.githubusercontent.com/zendframework/zf-mkdoc-theme/master/theme-installer.sh" ; chmod 755 theme-installer.sh ; ./theme-installer.sh ; fi
 
 after_script:
   - if [[ $TEST_COVERAGE == 'true' ]]; then composer upload-coverage ; fi
 
-after_success:
-  - if [[ $DEPLOY_DOCS == "true" ]]; then echo "Preparing to build and deploy documentation" ; ./zf-mkdoc-theme/deploy.sh ; echo "Completed deploying documentation" ; fi
-
 notifications:
   email: false
-  irc:
-    channels:
-      - "irc.freenode.org#zftalk.dev"
-    on_success: change
-    on_failure: always
-  slack:
-    rooms:
-      - secure: "o54K7VKAMDYjHe7fh+rFNcohrjvgImwHZLBI1kbUi0L73nMsMhKcTdQ4tQyZtg/CxvMs6CyujInKbNbRg9KsCimEUMquDWiAFCgH1DOIIW9KrLtpiUYqzpe0/Xh6Xbtz3AKOmDP4NAkX5uiI9cDvhap08dmwI7hnVIHVe1UHxg1SOX9fb4lt/tv2xzYMlvdSq9bUaxm42eiqCHOIBnjn0mFeqj3m+aXFL4wJBBXLWW2ux327Ovp1q+SON3fpCDnc37ICXlUG5n4dIwSXUVBJPjiEsiY4eLZKx+IIX9EK9kw+q8O5fN5zeJ5K4LrV4OPR3ANt0YAy1aUoBVmfnx8ajBbVbpbx2qw0YU4XfdrlD8tugiY0PO8cma+lmNdGBICYypMBDe3INLZ/+ihtzMMhKcyPG+nUg50Y38pMIEbtK6HV7vdHrVIKfQPwFOeJ9Y1+4+B1zT9fn9pVVn/SiE0q4uJ+HX6CXI4/lSDJro7JMw/zaNS6Ry6qwyL3PmAc++CIjDChg3jAtmSOgCd/BTLP+IhpkXj/w8BPatFdQoxAo0KgYK7pNH61DN8H1Cvl5EqcMSXy09/SgyZMa2gUL0JvOxk3xCxJX1tm2QwdtkHDM/pcc6T5K6xkFny/ZPhX1IOgXTvKk+kN6Y5fpwI6OAPXfl3Ru/jAjsRgew4mLSE/U04="
-    on_success: change
-    on_failure: always
