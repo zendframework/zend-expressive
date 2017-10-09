@@ -7,17 +7,19 @@
 
 namespace ZendTest\Expressive\Middleware;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
+use Webimpress\HttpMiddlewareCompatibility\MiddlewareInterface as ServerMiddlewareInterface;
 use Zend\Expressive\Middleware\DispatchMiddleware;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouteResult;
 use Zend\Expressive\Router\RouterInterface;
+
+use const Webimpress\HttpMiddlewareCompatibility\HANDLER_METHOD;
 
 class DispatchMiddlewareTest extends TestCase
 {
@@ -54,7 +56,7 @@ class DispatchMiddlewareTest extends TestCase
     {
         $expected = $this->prophesize(ResponseInterface::class)->reveal();
         $this->request->getAttribute(RouteResult::class, false)->willReturn(false);
-        $this->delegate->process($this->request->reveal())->willReturn($expected);
+        $this->delegate->{HANDLER_METHOD}($this->request->reveal())->willReturn($expected);
 
         $response = $this->middleware->process($this->request->reveal(), $this->delegate->reveal());
 
@@ -63,7 +65,7 @@ class DispatchMiddlewareTest extends TestCase
 
     public function testInvokesMatchedMiddlewareWhenRouteResult()
     {
-        $this->delegate->process()->shouldNotBeCalled();
+        $this->delegate->{HANDLER_METHOD}()->shouldNotBeCalled();
 
         $expected = $this->prophesize(ResponseInterface::class)->reveal();
         $routedMiddleware = $this->prophesize(ServerMiddlewareInterface::class);
@@ -85,7 +87,7 @@ class DispatchMiddlewareTest extends TestCase
      */
     public function testCanDispatchCallableDoublePassMiddleware()
     {
-        $this->delegate->process()->shouldNotBeCalled();
+        $this->delegate->{HANDLER_METHOD}()->shouldNotBeCalled();
 
         $expected = $this->prophesize(ResponseInterface::class)->reveal();
         $routedMiddleware = function ($request, $response, $next) use ($expected) {
@@ -106,7 +108,7 @@ class DispatchMiddlewareTest extends TestCase
      */
     public function testCanDispatchMiddlewareServices()
     {
-        $this->delegate->process()->shouldNotBeCalled();
+        $this->delegate->{HANDLER_METHOD}()->shouldNotBeCalled();
 
         $expected = $this->prophesize(ResponseInterface::class)->reveal();
         $routedMiddleware = function ($request, $response, $next) use ($expected) {

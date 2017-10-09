@@ -8,9 +8,10 @@
 namespace Zend\Expressive\Delegate;
 
 use Fig\Http\Message\StatusCodeInterface;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
 class NotFoundDelegate implements DelegateInterface
@@ -60,12 +61,35 @@ class NotFoundDelegate implements DelegateInterface
     }
 
     /**
-     * Creates and returns a 404 response.
+     * Proxy to handle method to support http-interop/http-middleware 0.1.1
+     *
+     * @param RequestInterface $request
+     * @return ResponseInterface
+     */
+    public function next(RequestInterface $request)
+    {
+        return $this->handle($request);
+    }
+
+    /**
+     * Proxy to handle method to support http-interop/http-middleware
+     * versions between 0.2 and 0.4.1
      *
      * @param ServerRequestInterface $request
      * @return ResponseInterface
      */
     public function process(ServerRequestInterface $request)
+    {
+        return $this->handle($request);
+    }
+
+    /**
+     * Creates and returns a 404 response.
+     *
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface
+     */
+    public function handle(ServerRequestInterface $request)
     {
         if (! $this->renderer) {
             return $this->generatePlainTextResponse($request);
