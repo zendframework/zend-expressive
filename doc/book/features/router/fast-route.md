@@ -100,8 +100,8 @@ service name `Zend\Expressive\Router\RouterInterface`.
 A factory would look like this:
 
 ```php
-// in src/Application/Container/RouterFactory.php
-namespace Application\Container;
+// in src/App/Container/RouterFactory.php
+namespace App\Container;
 
 use Psr\Container\ContainerInterface;
 use Zend\Expressive\Router\FastRouteRouter;
@@ -123,15 +123,15 @@ You would register this with zend-servicemanager using:
 
 ```php
 $container->setFactory(
-    'Zend\Expressive\Router\RouterInterface',
-    'Application\Container\RouterFactory'
+    Zend\Expressive\Router\RouterInterface::class,
+    App\Container\RouterFactory::class
 );
 ```
 
 And in Pimple:
 
 ```php
-$pimple['Zend\Expressive\Router\RouterInterface'] = new Application\Container\RouterFactory();
+$pimple[Zend\Expressive\Router\RouterInterface::class] = new App\Container\RouterFactory();
 ```
 
 For zend-servicemanager, you can omit the factory entirely, and register the
@@ -139,8 +139,8 @@ class as an invokable:
 
 ```php
 $container->setInvokableClass(
-    'Zend\Expressive\Router\RouterInterface',
-    'Zend\Expressive\Router\FastRouteRouter'
+    Zend\Expressive\Router\RouterInterface::class,
+    Zend\Expressive\Router\FastRouteRouter::class
 );
 ```
 
@@ -160,8 +160,8 @@ Sound difficult? It's not; we've essentially done it above already!
 
 ```php
 <?php
-// in src/Application/Container/FastRouteCollectorFactory.php:
-namespace Application\Container;
+// in src/App/Container/FastRouteCollectorFactory.php:
+namespace App\Container;
 
 use FastRoute\RouteCollector;
 use FastRoute\RouteGenerator;
@@ -183,8 +183,8 @@ class FastRouteCollectorFactory
     }
 }
 
-// in src/Application/Container/FastRouteDispatcherFactory:
-namespace Application\Container;
+// in src/App/Container/FastRouteDispatcherFactory.php:
+namespace App\Container;
 
 use FastRoute\Dispatcher\GroupPosBased as FastRouteDispatcher;
 use Psr\Container\ContainerInterface;
@@ -203,8 +203,8 @@ class FastRouteDispatcherFactory
     }
 }
 
-// in src/Application/Container/RouterFactory.php
-namespace Application\Container;
+// in src/App/Container/RouterFactory.php
+namespace App\Container;
 
 use Psr\Container\ContainerInterface;
 use Zend\Expressive\Router\FastRouteRouter as FastRouteBridge;
@@ -218,8 +218,8 @@ class RouterFactory
     public function __invoke(ContainerInterface $container)
     {
         return new FastRouteBridge(
-            $container->get('FastRoute\RouteCollector'),
-            $container->get('FastRoute\DispatcherFactory')
+            $container->get(FastRoute\RouteCollector::class),
+            $container->get(FastRoute\DispatcherFactory::class)
         );
     }
 }
@@ -235,24 +235,24 @@ use Zend\ServiceManager\ServiceManager;
 
 $container = new ServiceManager();
 $container->addFactory(
-    'FastRoute\RouteCollector',
-    'Application\Container\FastRouteCollectorFactory'
+    FastRoute\RouteCollector::class,
+    App\Container\FastRouteCollectorFactory::class
 );
 $container->addFactory(
-    'FastRoute\DispatcherFactory',
-    'Application\Container\FastRouteDispatcherFactory'
+    FastRoute\DispatcherFactory::class,
+    App\Container\FastRouteDispatcherFactory::class
 );
 $container->addFactory(
-    'Zend\Expressive\Router\RouterInterface',
-    'Application\Container\RouterFactory'
+    Zend\Expressive\Router\RouterInterface::class,
+    App\Container\RouterFactory::class
 );
 
 // Alternately, via configuration:
 return [
     'factories' => [
-        'FastRoute\RouteCollector' => 'Application\Container\FastRouteCollectorFactory',
-        'FastRoute\DispatcherFactory' => 'Application\Container\FastRouteDispatcherFactory',
-        'Zend\Expressive\Router\RouterInterface' => 'Application\Container\RouterFactory',
+        'FastRoute\RouteCollector' => App\Container\FastRouteCollectorFactory::class,
+        'FastRoute\DispatcherFactory' => App\Container\FastRouteDispatcherFactory::class,
+        Zend\Expressive\Router\RouterInterface::class => App\Container\RouterFactory::class,
     ],
 ];
 ```
@@ -260,15 +260,15 @@ return [
 For Pimple, configuration looks like:
 
 ```php
-use Application\Container\FastRouteCollectorFactory;
-use Application\Container\FastRouteDispatcherFactory;
-use Application\Container\RouterFactory;
+use App\Container\FastRouteCollectorFactory;
+use App\Container\FastRouteDispatcherFactory;
+use App\Container\RouterFactory;
 use Interop\Container\Pimple\PimpleInterop as Pimple;
 
 $container = new Pimple();
-$container['FastRoute\RouteCollector'] = new FastRouteCollectorFactory();
-$container['FastRoute\RouteDispatcher'] = new FastRouteDispatcherFactory();
-$container['Zend\Expressive\Router\RouterInterface'] = new RouterFactory();
+$container[FastRoute\RouteCollector::class] = new FastRouteCollectorFactory();
+$container[FastRoute\RouteDispatcher::class] = new FastRouteDispatcherFactory();
+$container[Zend\Expressive\Router\RouterInterface::class] = new RouterFactory();
 ```
 
 ### FastRoute caching support

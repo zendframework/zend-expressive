@@ -26,7 +26,7 @@ $ composer require xtreamwayz/pimple-container-interop
 
 To configure Pimple, instantiate it, and then add the factories desired. We
 recommend doing this in a dedicated script that returns the Pimple instance; in
-this example, we'll have that in `config/services.php`.
+this example, we'll have that in `config/container.php`.
 
 ```php
 use Xtreamwayz\Pimple\Container as Pimple;
@@ -51,10 +51,10 @@ $container['Zend\Expressive\Router\RouterInterface'] = function ($container) {
 // Expressive 2.X: We'll provide a default delegate:
 $delegateFactory = new Container\NotFoundDelegateFactory();
 $container['Zend\Expressive\Delegate\DefaultDelegate'] = $delegateFactory;
-$container['Zend\Expressive\Delegate\NotFoundDelegate'] = $delegateFactory;
+$container[Zend\Expressive\Delegate\NotFoundDelegate::class] = $delegateFactory;
 
 // Expressive 2.X: We'll provide a not found handler:
-$container['Zend\Expressive\Middleware\NotFoundHandler'] = new Container\NotFoundHandlerFactory();
+$container[Zend\Expressive\Middleware\NotFoundHandler::class] = new Container\NotFoundHandlerFactory();
 
 // Templating
 // In most cases, you can instantiate the template renderer you want to use
@@ -80,13 +80,13 @@ $container['Zend\Expressive\Middleware\ErrorHandler'] = new Container\ErrorHandl
 // - Expressive 1.X:
 $container['Zend\Expressive\FinalHandler'] = new Container\WhoopsErrorHandlerFactory();
 // - Expressive 2.X:
-$container['Zend\Expressive\Middleware\ErrorResponseGenerator'] = new Container\WhoopsErrorResponseGeneratorFactory();
+$container[Zend\Expressive\Middleware\ErrorResponseGenerator::class] = new Container\WhoopsErrorResponseGeneratorFactory();
 
 // If in production:
 // - Expressive 1.X:
 $container['Zend\Expressive\FinalHandler'] = new Container\TemplatedErrorHandlerFactory();
 // - Expressive 2.X:
-$container['Zend\Expressive\Middleware\ErrorResponseGenerator'] = new Container\ErrorResponseGeneratorFactory();
+$container[Zend\Expressive\Middleware\ErrorResponseGenerator::class] = new Container\ErrorResponseGeneratorFactory();
 
 return $container;
 ```
@@ -95,8 +95,8 @@ Your bootstrap (typically `public/index.php`) will then look like this:
 
 ```php
 chdir(dirname(__DIR__));
-$container = require 'config/services.php';
-$app = $container->get('Zend\Expressive\Application');
+$container = require 'config/container.php';
+$app = $container->get(Zend\Expressive\Application::class);
 
 // In Expressive 2.X:
 require 'config/pipeline.php';
