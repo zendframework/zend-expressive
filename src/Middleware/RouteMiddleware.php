@@ -8,12 +8,14 @@
 namespace Zend\Expressive\Middleware;
 
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
+use Webimpress\HttpMiddlewareCompatibility\MiddlewareInterface as ServerMiddlewareInterface;
 use Zend\Expressive\Router\RouteResult;
 use Zend\Expressive\Router\RouterInterface;
+
+use const Webimpress\HttpMiddlewareCompatibility\HANDLER_METHOD;
 
 /**
  * Default routing middleware.
@@ -68,7 +70,7 @@ class RouteMiddleware implements ServerMiddlewareInterface
                 return $this->responsePrototype->withStatus(StatusCode::STATUS_METHOD_NOT_ALLOWED)
                     ->withHeader('Allow', implode(',', $result->getAllowedMethods()));
             }
-            return $delegate->process($request);
+            return $delegate->{HANDLER_METHOD}($request);
         }
 
         // Inject the actual route result, as well as individual matched parameters.
@@ -77,6 +79,6 @@ class RouteMiddleware implements ServerMiddlewareInterface
             $request = $request->withAttribute($param, $value);
         }
 
-        return $delegate->process($request);
+        return $delegate->{HANDLER_METHOD}($request);
     }
 }

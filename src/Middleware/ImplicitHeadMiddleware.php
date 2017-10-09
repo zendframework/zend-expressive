@@ -8,13 +8,15 @@
 namespace Zend\Expressive\Middleware;
 
 use Fig\Http\Message\RequestMethodInterface as RequestMethod;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
+use Webimpress\HttpMiddlewareCompatibility\MiddlewareInterface as ServerMiddlewareInterface;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
 use Zend\Expressive\Router\RouteResult;
+
+use const Webimpress\HttpMiddlewareCompatibility\HANDLER_METHOD;
 
 /**
  * Handle implicit HEAD requests.
@@ -72,23 +74,23 @@ class ImplicitHeadMiddleware implements ServerMiddlewareInterface
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         if ($request->getMethod() !== RequestMethod::METHOD_HEAD) {
-            return $delegate->process($request);
+            return $delegate->{HANDLER_METHOD}($request);
         }
 
         if (false === ($result = $request->getAttribute(RouteResult::class, false))) {
-            return $delegate->process($request);
+            return $delegate->{HANDLER_METHOD}($request);
         }
 
         $route = $result->getMatchedRoute();
         if (! $route || ! $route->implicitHead()) {
-            return $delegate->process($request);
+            return $delegate->{HANDLER_METHOD}($request);
         }
 
         if (! $route->allowsMethod(RequestMethod::METHOD_GET)) {
             return $this->getResponse();
         }
 
-        $response = $delegate->process(
+        $response = $delegate->{HANDLER_METHOD}(
             $request->withMethod(RequestMethod::METHOD_GET)
         );
 
