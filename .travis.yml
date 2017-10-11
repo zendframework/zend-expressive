@@ -8,7 +8,7 @@ cache:
 
 env:
   global:
-    - COMPOSER_ARGS="--no-interaction"
+    - COMPOSER_ARGS="--no-interaction --no-plugins"
     - COVERAGE_DEPS="satooshi/php-coveralls"
     - LEGACY_DEPS="phpunit/phpunit"
 
