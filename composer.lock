@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "307d5e80fbbe5ab497086d524c2f91e8",
+    "content-hash": "0b201408dc7a081105fc77e009976b6f",
     "packages": [
         {
             "name": "fig/http-message-util",
@@ -502,22 +502,22 @@
         },
         {
             "name": "zendframework/zend-stratigility",
-            "version": "2.1.0",
+            "version": "2.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-stratigility.git",
-                "reference": "74617cffd44180bef0aea63daca830d0b675c1c8"
+                "reference": "7dfec8dee92dad0d01e68365015f2848c250fe9f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-stratigility/zipball/74617cffd44180bef0aea63daca830d0b675c1c8",
-                "reference": "74617cffd44180bef0aea63daca830d0b675c1c8",
+                "url": "https://api.github.com/repos/zendframework/zend-stratigility/zipball/7dfec8dee92dad0d01e68365015f2848c250fe9f",
+                "reference": "7dfec8dee92dad0d01e68365015f2848c250fe9f",
                 "shasum": ""
             },
             "require": {
                 "php": "^5.6 || ^7.0",
                 "psr/http-message": "^1.0",
-                "webimpress/http-middleware-compatibility": "^0.1.1",
+                "webimpress/http-middleware-compatibility": "^0.1.3",
                 "zendframework/zend-escaper": "^2.3"
             },
             "require-dev": {
@@ -552,7 +552,7 @@
                 "middleware",
                 "psr-7"
             ],
-            "time": "2017-10-09T19:25:33+00:00"
+            "time": "2017-10-12T13:14:14+00:00"
         }
     ],
     "packages-dev": [

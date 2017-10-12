@@ -30,14 +30,13 @@
     "require": {
         "php": "^5.6 || ^7.0",
         "fig/http-message-util": "^1.1.2",
-        "http-interop/http-middleware": "^0.4.1",
         "psr/container": "^1.0",
         "psr/http-message": "^1.0.1",
         "webimpress/http-middleware-compatibility": "^0.1.3",
         "zendframework/zend-diactoros": "^1.3.10",
         "zendframework/zend-expressive-router": "^2.2",
         "zendframework/zend-expressive-template": "^1.0.4",
-        "zendframework/zend-stratigility": "^2.1"
+        "zendframework/zend-stratigility": "^2.1.2"
     },
     "require-dev": {
         "filp/whoops": "^2.1.6 || ^1.1.10",
