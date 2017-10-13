@@ -14,7 +14,6 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\StreamInterface;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequest;
 use Zend\Expressive\Middleware\ImplicitHeadMiddleware;
@@ -170,7 +169,8 @@ class ImplicitHeadMiddlewareTest extends TestCase
 
         $delegate = $this->prophesize(DelegateInterface::class);
         $delegate->process(Argument::that(function (ServerRequestInterface $request) {
-            $this->assertSame('HEAD', $request->getAttribute('forwarded_http_method'));
+            $attr = $request->getAttribute(ImplicitHeadMiddleware::FORWARDED_HTTP_METHOD_ATTRIBUTE);
+            $this->assertSame('HEAD', $attr);
             return true;
         }))->willReturn($response);
 
