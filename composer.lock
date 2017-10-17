@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "0b201408dc7a081105fc77e009976b6f",
+    "content-hash": "40463df205dfcecf01ab18b244c49be8",
     "packages": [
         {
             "name": "fig/http-message-util",
@@ -209,16 +209,16 @@
         },
         {
             "name": "webimpress/composer-extra-dependency",
-            "version": "0.2.0",
+            "version": "0.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webimpress/composer-extra-dependency.git",
-                "reference": "97c241b2c80628a2cd1002cece3fc54c419b1776"
+                "reference": "31fa56391d30f03b1180c87610cbe22254780ad9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webimpress/composer-extra-dependency/zipball/97c241b2c80628a2cd1002cece3fc54c419b1776",
-                "reference": "97c241b2c80628a2cd1002cece3fc54c419b1776",
+                "url": "https://api.github.com/repos/webimpress/composer-extra-dependency/zipball/31fa56391d30f03b1180c87610cbe22254780ad9",
+                "reference": "31fa56391d30f03b1180c87610cbe22254780ad9",
                 "shasum": ""
             },
             "require": {
@@ -251,29 +251,29 @@
                 "dependency",
                 "webimpress"
             ],
-            "time": "2017-10-11T22:05:48+00:00"
+            "time": "2017-10-17T17:15:14+00:00"
         },
         {
             "name": "webimpress/http-middleware-compatibility",
-            "version": "0.1.3",
+            "version": "0.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webimpress/http-middleware-compatibility.git",
-                "reference": "5839f5abf54346eafa6617434bd5f618c0cc7adb"
+                "reference": "8ed1c2c7523dce0035b98bc4f3a73ca9cd1d3717"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webimpress/http-middleware-compatibility/zipball/5839f5abf54346eafa6617434bd5f618c0cc7adb",
-                "reference": "5839f5abf54346eafa6617434bd5f618c0cc7adb",
+                "url": "https://api.github.com/repos/webimpress/http-middleware-compatibility/zipball/8ed1c2c7523dce0035b98bc4f3a73ca9cd1d3717",
+                "reference": "8ed1c2c7523dce0035b98bc4f3a73ca9cd1d3717",
                 "shasum": ""
             },
             "require": {
                 "http-interop/http-middleware": "^0.1.1 || ^0.2 || ^0.3 || ^0.4.1 || ^0.5",
                 "php": "^5.6 || ^7.0",
-                "webimpress/composer-extra-dependency": "^0.2"
+                "webimpress/composer-extra-dependency": "^0.2.2"
             },
             "require-dev": {
-                "phpunit/phpunit": "^5.7.22 || ^6.3.1"
+                "phpunit/phpunit": "^5.7.23 || ^6.4.3"
             },
             "type": "library",
             "extra": {
@@ -297,7 +297,7 @@
                 "psr-15",
                 "webimpress"
             ],
-            "time": "2017-10-11T22:13:48+00:00"
+            "time": "2017-10-17T17:31:10+00:00"
         },
         {
             "name": "zendframework/zend-diactoros",
