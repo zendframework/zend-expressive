@@ -1,4 +1,4 @@
-doc/html/
+docs/html/
 vendor/
 phpunit.xml
 zf-mkdoc-theme/
