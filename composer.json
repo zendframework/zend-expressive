@@ -1,22 +1,19 @@
 {
     "name": "zendframework/zend-expressive",
     "description": "PSR-7 Middleware Microframework based on Stratigility",
-    "homepage": "https://docs.zendframework.com/zend-expressive/",
-    "type": "library",
     "license": "BSD-3-Clause",
     "keywords": [
         "http",
         "middleware",
         "psr",
         "psr-7",
-        "psr-11"
+        "psr-11",
+        "zf",
+        "zendframework",
+        "zend-expressive"
     ],
-    "support": {
-        "docs": "https://docs.zendframework.com/zend-expressive/",
-        "issues": "https://github.com/zendframework/zend-expressive/issues",
-        "source": "https://github.com/zendframework/zend-expressive",
-        "slack": "https://zendframework-slack.herokuapp.com",
-        "forum": "https://discourse.zendframework.com/c/questions/expressive"
+    "config": {
+        "sort-packages": true
     },
     "extra": {
         "branch-alias": {
@@ -24,8 +21,13 @@
             "dev-develop": "2.1-dev"
         }
     },
-    "config": {
-        "sort-packages": true
+    "support": {
+        "docs": "https://docs.zendframework.com/zend-expressive/",
+        "issues": "https://github.com/zendframework/zend-expressive/issues",
+        "source": "https://github.com/zendframework/zend-expressive",
+        "rss": "https://github.com/zendframework/zend-expressive/releases.atom",
+        "slack": "https://zendframework-slack.herokuapp.com",
+        "forum": "https://discourse.zendframework.com/c/questions/expressive"
     },
     "require": {
         "php": "^5.6 || ^7.0",
@@ -43,7 +45,7 @@
         "filp/whoops": "^2.1.6 || ^1.1.10",
         "malukenho/docheader": "^0.1.5",
         "mockery/mockery": "^1.0",
-        "phpunit/phpunit": "^5.7.22 || ^6.4.1",
+        "phpunit/phpunit": "^5.7.23 || ^6.4.3",
         "zendframework/zend-coding-standard": "~1.0.0",
         "zendframework/zend-expressive-aurarouter": "^2.0",
         "zendframework/zend-expressive-fastroute": "^2.0",
@@ -83,11 +85,11 @@
             "@cs-check",
             "@test"
         ],
-        "upload-coverage": "coveralls -v",
         "cs-check": "phpcs",
         "cs-fix": "phpcbf",
         "test": "phpunit --colors=always",
-        "test-coverage": "phpunit --coverage-clover clover.xml",
+        "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
+        "upload-coverage": "coveralls -v",
         "license-check": "vendor/bin/docheader check src/ test/"
     }
 }
