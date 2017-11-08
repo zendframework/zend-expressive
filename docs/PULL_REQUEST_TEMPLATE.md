@@ -18,8 +18,8 @@ Provide a narrative description of what you are trying to accomplish:
   - [ ] Add a `CHANGELOG.md` entry for the new feature.
 
 - [ ] Is this related to quality assurance?
-  - [ ] Detail why the changes are necessary.
+  <!-- Detail why the changes are necessary -->
 
 - [ ] Is this related to documentation?
-  - [ ] Is it a typographical and/or grammatical fix?
-  - [ ] Is it new documentation?
+  <!-- Is it a typographical and/or grammatical fix? -->
+  <!-- Is it new documentation? -->
