@@ -38,27 +38,27 @@ use Zend\Expressive\Helper\UrlHelper;
 class SetLocaleMiddleware implements MiddlewareInterface
 {
     private $helper;
-    
+
     public function __construct(UrlHelper $helper)
     {
         $this->helper = $helper;
     }
-    
+
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $uri = $request->getUri();
-        
+
         $path = $uri->getPath();
-        
+
         if (! preg_match('#^/(?P<locale>[a-z]{2,3}([-_][a-zA-Z]{2}|))/#', $path, $matches)) {
             Locale::setDefault('de_DE');
             return $delegate->process($request);
         }
-        
+
         $locale = $matches['locale'];
         Locale::setDefault(Locale::canonicalize($locale));
         $this->helper->setBasePath($locale);
-        
+
         return $delegate->process($request->withUri(
             $uri->withPath(substr($path, 3))
         ));
@@ -156,8 +156,8 @@ return [
 
 ## Url generation in the view
 
-Since the `UrlHelper` has the locale set as a base path, you don't need 
-to worry about generating URLs within your view. Just use the helper to 
+Since the `UrlHelper` has the locale set as a base path, you don't need
+to worry about generating URLs within your view. Just use the helper to
 generate a URL and it will do the rest.
 
 ```php
@@ -171,8 +171,8 @@ generate a URL and it will do the rest.
 
 ## Redirecting within your middleware
 
-If you want to add the locale parameter when creating URIs within your 
-action middleware, you just need to inject the `UrlHelper` into your 
+If you want to add the locale parameter when creating URIs within your
+action middleware, you just need to inject the `UrlHelper` into your
 middleware and use it for URL generation:
 
 ```php
@@ -188,12 +188,12 @@ use Zend\Expressive\Helper\UrlHelper;
 class RedirectAction implements MiddlewareInterface
 {
     private $helper;
-        
+
     public function __construct(UrlHelper $helper)
     {
         $this->helper = $helper;
     }
-        
+
     /**
      * @param ServerRequestInterface $request
      * @param DelegateInterface      $delegate

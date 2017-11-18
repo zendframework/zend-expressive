@@ -28,14 +28,14 @@ class PassingDataMiddleware implements MiddlewareInterface
     {
         // Step 1: Do something first
         $data = [
-            'foo' => 'bar',  
+            'foo' => 'bar',
         ];
-        
+
         // Step 2: Inject data into the request, call the next middleware and wait for the response
         $response = $delegate->process($request->withAttribute(self::class, $data));
-        
+
         // Step 3: Optionally, do something (with the response) before returning the response
-        
+
         // Step 4: Return the response
         return $response;
     }
@@ -59,12 +59,12 @@ class ReceivingDataMiddleware implements MiddlewareInterface
     {
         // Step 1: Grab the data from the request and use it
         $data = $request->getAttribute(PassingDataMiddleware::class);
-        
+
         // Step 2: Call the next middleware and wait for the response
         $response = $delegate->process($request);
-        
+
         // Step 3: Optionally, do something (with the response) before returning the response
-        
+
         // Step 4: Return the response
         return $response;
     }
@@ -86,15 +86,15 @@ use Zend\Diactoros\Response\HtmlResponse;
 class ExampleAction implements MiddlewareInterface
 {
     // ...
-    
+
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         // Step 1: Grab the data from the request
         $data = $request->getAttribute(PassingDataMiddleware::class);
         $id = $request->getAttribute('id');
-        
+
         // Step 2: Do some more stuff
-        
+
         // Step 3: Return a Response
         return new HtmlResponse(
             $this->templateRenderer->render('blog::entry', [

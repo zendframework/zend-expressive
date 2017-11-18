@@ -111,7 +111,7 @@ return [
 >
 > You can specify the above in one of your `config/autoload/*.global.php` files,
 > to ensure you have a production-capable error response generator.
-> 
+>
 > If you are using [zf-development-mode](https://github.com/zfcampus/zf-development-mode)
 > in your application (which is provided by default in the Expressive 2.0
 > skeleton), you can toggle usage of whoops by adding configuration to the file
@@ -120,7 +120,7 @@ return [
 > ```php
 > use Zend\Expressive\Container;
 > use Zend\Expressive\Middleware;
-> 
+>
 > return [
 >     'dependencies' => [
 >         'factories' => [
@@ -477,7 +477,7 @@ $finalHandler = new WhoopsErrorHandler(
 $app = new Application($router, $container, $finalHandler);
 
 // Register Whoops just before running the application, as otherwise it can
-// swallow bootstrap errors. 
+// swallow bootstrap errors.
 $whoops->register();
 $app->run();
 ```

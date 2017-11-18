@@ -1,7 +1,7 @@
 # Provided Factories
 
 Expressive provides several factories compatible with
-[PSR-11 Container](https://github.com/php-fig/container) to facilitate 
+[PSR-11 Container](https://github.com/php-fig/container) to facilitate
 setting up common dependencies. The following is a list of provided
 containers, what they will create, the suggested service name, and any
 additional dependencies they may require.
@@ -41,7 +41,7 @@ order to seed the `Application` instance:
   `middleware_pipeline` and `routes` configuration are ignored, and the factory
   will assume that these are injected programmatically elsewhere.
 
-- `raise_throwables` (bool) (Since 1.1.0; obsolete as of 2.0.0): when enabled, 
+- `raise_throwables` (bool) (Since 1.1.0; obsolete as of 2.0.0): when enabled,
   this flag will prevent the Stratigility middleware dispatcher from catching
   exceptions, and instead allow them to bubble outwards.
 
@@ -84,12 +84,12 @@ order to seed the `Application` instance:
   service name resolving to valid middleware, middleware instances (either
   http-interop middleware or callable double-pass middleware), or an array of
   these values. If an array is provided, the specified middleware will be
-  composed into a `Zend\Stratigility\MiddlewarePipe` instance. 
-  
+  composed into a `Zend\Stratigility\MiddlewarePipe` instance.
+
   If the `path` key is present, that key will be used to segregate the
   middleware to a specific matched path (in other words, it will not execute if
   the path is not matched).
-  
+
   The `priority` defaults to 1, and follows the semantics of
   [SplPriorityQueue](http://php.net/SplPriorityQueue): higher integer values
   indicate higher priority (will execute earlier), while lower/negative integer
@@ -100,7 +100,7 @@ order to seed the `Application` instance:
   You *can* specify keys for each middleware specification. These will be
   ignored by the factory, but can be useful when merging several configurations
   into one for the application.
-  
+
   Under Expressive 1.X, if the `error` key is present and boolean `true`, then
   the middleware will be registered as error middleware. (This is necessary due
   to the fact that the factory defines a callable wrapper around middleware to
@@ -130,7 +130,7 @@ order to seed the `Application` instance:
 
     - `path`: the path to match. Format will be based on the router you choose for
       your project.
-  
+
     - `middleware`: a service name resolving to valid middleware, valid
       middleware (either http-interop middleware or callable double-pass
       middleware), or an array of such values (which will be composed into
@@ -141,10 +141,10 @@ order to seed the `Application` instance:
 
     - `allowed_methods`: an array of allowed HTTP methods. If not provided, the
       application assumes any method is allowed.
-  
+
     - `name`: if not provided, the path will be used as the route name (and, if
       specific HTTP methods are allowed, a list of those).
-  
+
     - `options`: a key/value set of additional options to pass to the underlying
       router implementation for the given route. (Typical use cases include
       passing constraints or default values.)

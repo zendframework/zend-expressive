@@ -118,7 +118,7 @@ release:
 In previous versions of Expressive, we consumed
 [container-interop](https://github.com/container-interop/container-interop),
 which provides `Interop\Container\ContainerInterface`, a shared interface for
-dependency injection containers. container-interop served as a working group for the 
+dependency injection containers. container-interop served as a working group for the
 [PSR-11](http://www.php-fig.org/psr/psr-11/) specification.
 
 In the weeks prior to the Expressive 2.0 release, PSR-11 was formally accepted,
@@ -177,7 +177,7 @@ Specifically, your middleware can now implement:
   Interop\Http\ServerMiddleware\DelegateInterface $delegate)`.
 - Callable middleware that follows the above signature (the typehint for the
   request argument is optional).
-  
+
 Both styles of middleware may be piped directly to the middleware pipeline or as
 routed middleware within Expressive. In each case, you can invoke the
 next middleware layer using `$delegate->process($request)`.
@@ -323,7 +323,7 @@ function (
         // caught PHP 5 exception
     }
 
-    // ... 
+    // ...
     // do something with $exception and generate a response
     // ...
 
@@ -394,7 +394,7 @@ handling needs:
     - The value of `zend-expressive.error_handler.template_error`, if present,
       will be used to seed the `$template` argument.
 
-- `Zend\Expressive\Middleware\WhoopsErrorResponseGenerator` uses Whoops to 
+- `Zend\Expressive\Middleware\WhoopsErrorResponseGenerator` uses Whoops to
   generate the error response. Its constructor takes a single argument, a
   `Whoops\Run` instance. If a `Whoops\Handler\PrettyPageHandler` is registered
   with the instance, it will add a data table with request details derived from
@@ -549,7 +549,7 @@ no longer supported with Stratigility version 2 and Expressive 2.0. You will
 need to find any instances of them in your application, or cases where your
 middleware invokes error middleware via the third argument to `$next()`.
 
-We provide a tool to assist you with that via the package 
+We provide a tool to assist you with that via the package
 [zendframework/zend-expressive-tooling](https://github.com/zendframework/zend-expressive-tooling):
 `vendor/bin/expressive-scan-for-error-middleware`. Run the command from your
 project root, optionally passing the `help`, `--help`, or `-h` commands for
@@ -666,7 +666,7 @@ This command does the following:
 - Reads your `routes` configuration, and generates a programmatic
   routing table for you, which is then stored in `config/routes.php`.
 
-- Adds a new configuration file, `config/autoload/programmatic-pipeline.global.php`, 
+- Adds a new configuration file, `config/autoload/programmatic-pipeline.global.php`,
   which enables the `programmatic_pipelines` configuration flag. Additionally,
   it adds dependency configuration for the new error handlers.
 

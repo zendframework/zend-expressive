@@ -41,24 +41,24 @@ fetch and dispatch the middleware inside a
 no overhead to utilizing service-based middleware _until it is dispatched_.
 
 > ### Service-based middleware in version 1
-> 
+>
 > In Expressive 1.X versions, lazy-loading middleware was handled by wrapping
 > the middleware inside a closure which composed the container.
-> 
+>
 > This posed a problem for Stratigility 1.X-style error handling middleware, as
 > zend-stratigility identified error handling middleware by its arity (number of
 > function arguments); as such, zend-expressive defined an additional method for
 > piping service-driven error handling middleware, `pipeErrorHandler()`. That
 > method had the same signature as `pipe()`:
-> 
+>
 > ```php
 > // Without a path:
 > $app->pipeErrorHandler('error handler service name');
-> 
+>
 > // Specific to a path:
 > $app->pipeErrorHandler('/api', 'error handler service name');
 > ```
-> 
+>
 > That method returned a closure using the error middleware signature.
 >
 > As noted in the [error handling chapter](../error-handling.md), you should

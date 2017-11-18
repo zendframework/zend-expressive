@@ -71,7 +71,7 @@ Starting in version 2 of the skeleton, we ship tools to make development easier.
 
 ### Development Mode
 
-[zf-development-mode](https://github.com/zfcampus/zf-development-mode) allows 
+[zf-development-mode](https://github.com/zfcampus/zf-development-mode) allows
 you to enable and disable development mode from your cli.
 
 ```bash
@@ -81,12 +81,12 @@ $ composer development-status  # show development status
 ```
 
 The development configuration is set in `config/autoload/development.local.php.dist`.
-It also allows you to specify configuration and modules that should only be enabled 
+It also allows you to specify configuration and modules that should only be enabled
 when in development, and not when in production.
 
 ### Clear config cache
 
-Production settings are the default, which means enabling the configuration cache. 
+Production settings are the default, which means enabling the configuration cache.
 However, it must be easy for developers to clear the configuration cache. That's
 what this command does.
 
@@ -96,10 +96,10 @@ $ composer clear-config-cache
 
 ### Testing Your Code
 
-[PHPUnit](https://github.com/sebastianbergmann/phpunit) and 
+[PHPUnit](https://github.com/sebastianbergmann/phpunit) and
 [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) are now
 installed by default. To execute tests and detect coding standards violations,
-run the following command: 
+run the following command:
 
 ```bash
 $ composer check
@@ -132,8 +132,8 @@ application.
 
 ### Component Installer
 
-Whenever you add a component or module that exposes itself as such, the 
-[zend-component-installer](https://zendframework.github.io/zend-component-installer/) 
+Whenever you add a component or module that exposes itself as such, the
+[zend-component-installer](https://docs.zendframework.com/zend-component-installer/)
 composer plugin will prompt you, asking if and where you want to inject its
 configuration. This ensures that components are wired automatically for you.
 
@@ -144,7 +144,7 @@ tools intended only for usage during development, choose
 ### Config Aggregator
 
 The [zend-config-aggregator](https://github.com/zendframework/zend-config-aggregator)
-library collects and merges configuration from different sources. It also supports 
+library collects and merges configuration from different sources. It also supports
 configuration caching.
 
 As an example, your `config/config.php` file might read as follows in order to
@@ -175,7 +175,7 @@ $aggregator = new ConfigAggregator([
 return $aggregator->getMergedConfig();
 ```
 
-The configuration is merged in the same order as it is passed, with later entries 
+The configuration is merged in the same order as it is passed, with later entries
 having precedence.
 
 ### Config Providers
@@ -185,7 +185,7 @@ constructor. Each provider should be a callable class that requires no
 constructor parameters, where invocation returns a configuration array (or a PHP
 generator) to be merged.
 
-Libraries or modules can have configuration providers that provide default values 
+Libraries or modules can have configuration providers that provide default values
 for a library or module. For the `UserModule\ConfigProvider` class loaded in the
 `ConfigAggregator` above, the `ConfigProvider` might look like this:
 
@@ -277,47 +277,47 @@ documentation](../reference/cli-tooling.md#modules).
 ## Adding Middleware
 
 The skeleton makes the assumption that you will be writing your middleware as
-classes, and uses [piping and routing](../features/router/piping.md) to add 
+classes, and uses [piping and routing](../features/router/piping.md) to add
 your middleware.
 
 ### Piping
 
-[Piping](../features/router/piping.md#piping) is a foundation feature of the 
+[Piping](../features/router/piping.md#piping) is a foundation feature of the
 underlying [zend-stratigility](https://docs.zendframework.com/zend-stratigility/)
 implementation. You can setup the middleware pipeline in `config/pipeline.php`.
 In this section, we'll demonstrate setting up a basic pipeline that includes
 error handling, segregated applications, routing, middleware dispatch, and more.
 
-The error handler should be the first (most outer) middleware to catch all 
+The error handler should be the first (most outer) middleware to catch all
 exceptions.
 
 ```php
 $app->pipe(ErrorHandler::class);
-$app->pipe(ServerUrlMiddleware::class);  
+$app->pipe(ServerUrlMiddleware::class);
 ```
 
-After the `ErrorHandler` you can pipe more middleware that you want to execute 
-on every request, such as bootstrapping, pre-conditions, and modifications to 
+After the `ErrorHandler` you can pipe more middleware that you want to execute
+on every request, such as bootstrapping, pre-conditions, and modifications to
 outgoing responses:
 
 ```php
-$app->pipe(ServerUrlMiddleware::class);  
+$app->pipe(ServerUrlMiddleware::class);
 ```
 
-Piped middleware may be either callables or service names. Middleware may also 
-be passed as an array; each item in the array must resolve to middleware 
+Piped middleware may be either callables or service names. Middleware may also
+be passed as an array; each item in the array must resolve to middleware
 eventually (i.e., callable or service name); underneath, Expressive creates
 `Zend\Stratigility\MiddlewarePipe` instances with each of the middleware listed
 piped to it.
 
 Middleware can be attached to specific paths, allowing you to mix and match
-applications under a common domain. The handlers in each middleware attached 
+applications under a common domain. The handlers in each middleware attached
 this way will see a URI with the **MATCHED PATH SEGMENT REMOVED!!!**
 
 ```php
 $app->pipe('/api', $apiMiddleware);
 $app->pipe('/docs', $apiDocMiddleware);
-$app->pipe('/files', $filesMiddleware);    
+$app->pipe('/files', $filesMiddleware);
 ```
 
 Next, you should register the routing middleware in the middleware pipeline:
@@ -326,7 +326,7 @@ Next, you should register the routing middleware in the middleware pipeline:
 $app->pipeRoutingMiddleware();
 ```
 
-Add more middleware that needs to introspect the routing results; this might 
+Add more middleware that needs to introspect the routing results; this might
 include:
 
 - handling for HTTP `HEAD` requests
@@ -386,7 +386,7 @@ $app->pipe(NotFoundHandler::class);
 ```
 
 ### Routing
-  
+
 [Routing](../features/router/piping.md#routing) is an additional feature
 provided by Expressive. Routing is setup in `config/routes.php`.
 
@@ -420,7 +420,7 @@ $app->route(
   App\Action\ContactAction::class,
   Zend\Expressive\Router\Route::HTTP_METHOD_ANY,
   'contact'
-);  
+);
 ```
 
 We recommend a single middleware class per combination of route and request
@@ -428,7 +428,7 @@ method.
 
 ## Next Steps
 
-The skeleton provides a default structure for templates, if you choose to use them. 
+The skeleton provides a default structure for templates, if you choose to use them.
 Let's see how you can create your first vanilla middleware, and templated middleware.
 
 ### Creating middleware
@@ -445,24 +445,24 @@ single method, `process()`, which accepts a
 > "double-pass", for the fact that it passes both the request and response between
 > layers. This middleware did not require an interface, and relied on a
 > conventional definition of:
-> 
+>
 > ```php
 > use Psr\Http\Message;
-> 
+>
 > function (
 >   Message\ServerRequestInterface $request,
 >   Message\ResponseInterface $response,
 >   callable $next
 > ) : Message\ResponseInterface
 > ```
-> 
+>
 > While this style of middleware is still quite wide-spread and used in a number
 > of projects, it has some flaws. Chief among them is the fact that middleware
 > should not rely on the `$response` instance provided to them (as it may have
 > modifications unacceptable for the current context), and that a response
 > returned from inner layers may not be based off the `$response` provided to them
 > (as inner layers may create and return a completely different response).
-> 
+>
 > Starting in Expressive 2.0, we add support for
 > [http-interop/http-middleware](https://github.com/http-interop/http-middleware),
 > which is a working group of [PHP-FIG](http://www.php-fig.org/) dedicated to
@@ -470,7 +470,7 @@ single method, `process()`, which accepts a
 > a "single-pass" or "lambda" architecture, whereby only the request instance is
 > passed between layers. We now recommend writing middleware using the
 > http-middleware interfaces for all new middleware.
-> 
+>
 > Middleware using the double-pass style is still accepted by Expressive, but
 > support for it will be discontinued once http-middleware is formally approved
 > by PHP-FIG.
@@ -609,7 +609,7 @@ The above modifies the class to accept a renderer to the constructor, and then
 calls on it to render a template. Note that we no longer need to escape our
 target; the template takes care of that for us.
 
-How does the template renderer get into the action? The answer is dependency 
+How does the template renderer get into the action? The answer is dependency
 injection.
 
 For the next part of the example, we'll be creating and wiring a factory for

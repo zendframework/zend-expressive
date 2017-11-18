@@ -87,7 +87,7 @@ correctly.
 >     array $substitutions = []
 > ) : string
 > ```
-> 
+>
 > If you are targeting that version, you may still provide the `$options`
 > argument, but it will not be invoked.
 

@@ -199,7 +199,7 @@ $app->pipe(LocalizationMiddleware::class);
 /* ... */
 ```
 
-If using a configuration-driven application, register it within your 
+If using a configuration-driven application, register it within your
 `config/autoload/middleware-pipeline.global.php` file, injecting it
 into the pipeline following the routing middleware:
 

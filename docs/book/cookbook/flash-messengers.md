@@ -22,7 +22,7 @@ damess/expressive-session-middleware.
 
 ## slim/flash
 
-Slim's [Flash messages service provider](https://github.com/slimphp/Slim-Flash) can be 
+Slim's [Flash messages service provider](https://github.com/slimphp/Slim-Flash) can be
 used in Expressive. It uses PHP's native session support.
 
 First, you'll need to add it to your application:
@@ -261,6 +261,6 @@ function($request, DelegateInterface $delegate)
                        ->getFlash('message');
     // ...
 }
-```  
+```
 
 From there, it's a matter of providing the flash messages to your template.

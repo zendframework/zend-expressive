@@ -107,7 +107,7 @@ $app->run();
 ```
 
 > ### Environments
-> 
+>
 > In the example above, we provide two alternate definitions for
 > either the service `Zend\Expressive\FinalHandler` (Expressive 1.X) or the
 > service `Zend\Expressive\Middleware\ErrorResponseGenerator` (Expressive 2.X),
