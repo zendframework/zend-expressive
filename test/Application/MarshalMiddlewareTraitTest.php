@@ -7,6 +7,8 @@
 
 namespace ZendTest\Expressive\Application;
 
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
@@ -14,8 +16,6 @@ use Psr\Http\Message\ResponseInterface;
 use ReflectionMethod;
 use ReflectionProperty;
 use stdClass;
-use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
-use Webimpress\HttpMiddlewareCompatibility\MiddlewareInterface as ServerMiddlewareInterface;
 use Zend\Expressive\Application;
 use Zend\Expressive\Exception\InvalidMiddlewareException;
 use Zend\Expressive\Middleware;
@@ -107,21 +107,21 @@ class MarshalMiddlewareTraitTest extends TestCase
 
     public function testPreparingInteropMiddlewareReturnsMiddlewareVerbatim()
     {
-        $base = $this->prophesize(ServerMiddlewareInterface::class)->reveal();
+        $base = $this->prophesize(MiddlewareInterface::class)->reveal();
         $middleware = $this->prepareMiddleware($base);
         $this->assertSame($base, $middleware);
     }
 
     public function testPreparingInteropMiddlewareWithoutContainerReturnsMiddlewareVerbatim()
     {
-        $base = $this->prophesize(ServerMiddlewareInterface::class)->reveal();
+        $base = $this->prophesize(MiddlewareInterface::class)->reveal();
         $middleware = $this->prepareMiddlewareWithoutContainer($base);
         $this->assertSame($base, $middleware);
     }
 
     public function testPreparingDuckTypedInteropMiddlewareReturnsDecoratedInteropMiddleware()
     {
-        $base = function ($request, DelegateInterface $delegate) {
+        $base = function ($request, RequestHandlerInterface $handler) {
         };
         $middleware = $this->prepareMiddleware($base);
         $this->assertInstanceOf(CallableInteropMiddlewareWrapper::class, $middleware);
@@ -130,7 +130,7 @@ class MarshalMiddlewareTraitTest extends TestCase
 
     public function testPreparingDuckTypedInteropMiddlewareWithoutContainerReturnsDecoratedInteropMiddleware()
     {
-        $base = function ($request, DelegateInterface $delegate) {
+        $base = function ($request, RequestHandlerInterface $handler) {
         };
         $middleware = $this->prepareMiddlewareWithoutContainer($base);
         $this->assertInstanceOf(CallableInteropMiddlewareWrapper::class, $middleware);
@@ -159,8 +159,8 @@ class MarshalMiddlewareTraitTest extends TestCase
 
     public function testPreparingArrayOfMiddlewareReturnsMiddlewarePipe()
     {
-        $first  = $this->prophesize(ServerMiddlewareInterface::class)->reveal();
-        $second = function ($request, DelegateInterface $delegate) {
+        $first  = $this->prophesize(MiddlewareInterface::class)->reveal();
+        $second = function ($request, RequestHandlerInterface $handler) {
         };
         $third  = function ($request, $response, callable $next) {
         };
@@ -193,8 +193,8 @@ class MarshalMiddlewareTraitTest extends TestCase
 
     public function testPreparingArrayOfMiddlewareWithoutContainerReturnsMiddlewarePipe()
     {
-        $first  = $this->prophesize(ServerMiddlewareInterface::class)->reveal();
-        $second = function ($request, DelegateInterface $delegate) {
+        $first  = $this->prophesize(MiddlewareInterface::class)->reveal();
+        $second = function ($request, RequestHandlerInterface $handler) {
         };
         $third  = function ($request, $response, callable $next) {
         };
@@ -221,7 +221,7 @@ class MarshalMiddlewareTraitTest extends TestCase
 
     public function testPreparingArrayOfMiddlewareRaisesExceptionWhenContainerMissingAndServiceInvalid()
     {
-        $first  = $this->prophesize(ServerMiddlewareInterface::class)->reveal();
+        $first  = $this->prophesize(MiddlewareInterface::class)->reveal();
         $second = 'second-middleware';
         $third  = 'third-middleware';
 

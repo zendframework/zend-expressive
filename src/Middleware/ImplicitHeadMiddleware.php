@@ -8,15 +8,13 @@
 namespace Zend\Expressive\Middleware;
 
 use Fig\Http\Message\RequestMethodInterface as RequestMethod;
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
-use Webimpress\HttpMiddlewareCompatibility\MiddlewareInterface as ServerMiddlewareInterface;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
 use Zend\Expressive\Router\RouteResult;
-
-use const Webimpress\HttpMiddlewareCompatibility\HANDLER_METHOD;
 
 /**
  * Handle implicit HEAD requests.
@@ -43,7 +41,7 @@ use const Webimpress\HttpMiddlewareCompatibility\HANDLER_METHOD;
  * the next layer, but alters the request passed to use the GET method;
  * it then provides an empty response body to the returned response.
  */
-class ImplicitHeadMiddleware implements ServerMiddlewareInterface
+class ImplicitHeadMiddleware implements MiddlewareInterface
 {
     /**
      * @var null|ResponseInterface
@@ -68,29 +66,29 @@ class ImplicitHeadMiddleware implements ServerMiddlewareInterface
      * response.
      *
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
+     * @param RequestHandlerInterface $handler
      * @return ResponseInterface
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         if ($request->getMethod() !== RequestMethod::METHOD_HEAD) {
-            return $delegate->{HANDLER_METHOD}($request);
+            return $handler->handle($request);
         }
 
         if (false === ($result = $request->getAttribute(RouteResult::class, false))) {
-            return $delegate->{HANDLER_METHOD}($request);
+            return $handler->handle($request);
         }
 
         $route = $result->getMatchedRoute();
         if (! $route || ! $route->implicitHead()) {
-            return $delegate->{HANDLER_METHOD}($request);
+            return $handler->handle($request);
         }
 
         if (! $route->allowsMethod(RequestMethod::METHOD_GET)) {
             return $this->getResponse();
         }
 
-        $response = $delegate->{HANDLER_METHOD}(
+        $response = $handler->handle(
             $request->withMethod(RequestMethod::METHOD_GET)
         );
 

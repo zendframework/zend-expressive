@@ -7,13 +7,11 @@
 
 namespace Zend\Expressive\Middleware;
 
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
-use Webimpress\HttpMiddlewareCompatibility\MiddlewareInterface;
 use Zend\Expressive\Delegate\NotFoundDelegate;
-
-use const Webimpress\HttpMiddlewareCompatibility\HANDLER_METHOD;
 
 class NotFoundHandler implements MiddlewareInterface
 {
@@ -34,11 +32,11 @@ class NotFoundHandler implements MiddlewareInterface
      * Creates and returns a 404 response.
      *
      * @param ServerRequestInterface $request Passed to internal delegate
-     * @param DelegateInterface $delegate Ignored.
+     * @param RequestHandlerInterface $handler Ignored.
      * @return ResponseInterface
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
-        return $this->internalDelegate->{HANDLER_METHOD}($request);
+        return $this->internalDelegate->handle($request);
     }
 }

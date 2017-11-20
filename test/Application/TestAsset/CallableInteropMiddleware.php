@@ -7,11 +7,11 @@
 
 namespace ZendTest\Expressive\Application\TestAsset;
 
-use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 
 class CallableInteropMiddleware
 {
-    public function __invoke($request, DelegateInterface $delegate)
+    public function __invoke($request, RequestHandlerInterface $handler)
     {
     }
 }

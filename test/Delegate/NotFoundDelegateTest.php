@@ -60,7 +60,7 @@ class NotFoundDelegateTest extends TestCase
 
         $delegate = new NotFoundDelegate($this->response->reveal());
 
-        $response = $delegate->process($request->reveal());
+        $response = $delegate->handle($request->reveal());
 
         $this->assertSame($this->response->reveal(), $response);
     }
@@ -88,7 +88,7 @@ class NotFoundDelegateTest extends TestCase
 
         $delegate = new NotFoundDelegate($this->response->reveal(), $renderer->reveal());
 
-        $response = $delegate->process($request);
+        $response = $delegate->handle($request);
 
         $this->assertSame($this->response->reveal(), $response);
     }

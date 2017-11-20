@@ -8,13 +8,13 @@
 namespace ZendTest\Expressive;
 
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Container\ContainerInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
-use Webimpress\HttpMiddlewareCompatibility\MiddlewareInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\ServerRequest;
@@ -88,7 +88,7 @@ class IntegrationTest extends TestCase
         $routedMiddleware
             ->process(
                 Argument::type(ServerRequestInterface::class),
-                Argument::type(DelegateInterface::class)
+                Argument::type(RequestHandlerInterface::class)
             )
             ->willReturn($response);
 

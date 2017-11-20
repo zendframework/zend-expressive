@@ -9,6 +9,7 @@ namespace ZendTest\Expressive;
 
 use DomainException;
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
+use Interop\Http\Server\RequestHandlerInterface;
 use InvalidArgumentException;
 use Mockery;
 use PHPUnit\Framework\TestCase;
@@ -20,7 +21,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use ReflectionProperty;
 use RuntimeException;
 use UnexpectedValueException;
-use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Diactoros\ServerRequest;
@@ -39,8 +39,6 @@ use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\Stratigility\Route as StratigilityRoute;
-
-use const Webimpress\HttpMiddlewareCompatibility\HANDLER_METHOD;
 
 /**
  * @covers Zend\Expressive\Application
@@ -283,7 +281,7 @@ class ApplicationTest extends TestCase
 
     public function testCanInjectDefaultDelegateViaConstructor()
     {
-        $defaultDelegate = $this->prophesize(DelegateInterface::class)->reveal();
+        $defaultDelegate = $this->prophesize(RequestHandlerInterface::class)->reveal();
         $app  = new Application($this->router->reveal(), null, $defaultDelegate);
         $test = $app->getDefaultDelegate();
         $this->assertSame($defaultDelegate, $test);
@@ -295,8 +293,8 @@ class ApplicationTest extends TestCase
         $this->router->match()->willReturn($routeResult);
 
         $finalResponse = $this->prophesize(ResponseInterface::class)->reveal();
-        $defaultDelegate = $this->prophesize(DelegateInterface::class);
-        $defaultDelegate->{HANDLER_METHOD}(Argument::type(ServerRequestInterface::class))
+        $defaultDelegate = $this->prophesize(RequestHandlerInterface::class);
+        $defaultDelegate->handle(Argument::type(ServerRequestInterface::class))
             ->willReturn($finalResponse);
 
         $emitter = $this->prophesize(EmitterInterface::class);
@@ -339,8 +337,8 @@ class ApplicationTest extends TestCase
         $this->router->match()->willReturn($routeResult);
 
         $finalResponse = $this->prophesize(ResponseInterface::class)->reveal();
-        $defaultDelegate = $this->prophesize(DelegateInterface::class);
-        $defaultDelegate->{HANDLER_METHOD}(Argument::type(ServerRequestInterface::class))
+        $defaultDelegate = $this->prophesize(RequestHandlerInterface::class);
+        $defaultDelegate->handle(Argument::type(ServerRequestInterface::class))
             ->willReturn($finalResponse);
 
         $emitter = $this->prophesize(EmitterInterface::class);
@@ -478,7 +476,7 @@ class ApplicationTest extends TestCase
         $handler = $route->handler;
 
         $request = $this->prophesize(ServerRequest::class)->reveal();
-        $delegate = $this->prophesize(DelegateInterface::class)->reveal();
+        $delegate = $this->prophesize(RequestHandlerInterface::class)->reveal();
 
         $this->expectException(InvalidMiddlewareException::class);
         $handler->process($request, $delegate);
@@ -617,15 +615,15 @@ class ApplicationTest extends TestCase
 
     public function testGetDefaultDelegateWillPullFromContainerIfServiceRegistered()
     {
-        $delegate = $this->prophesize(DelegateInterface::class)->reveal();
+        $handler = $this->prophesize(RequestHandlerInterface::class)->reveal();
         $container = $this->mockContainerInterface();
-        $this->injectServiceInContainer($container, 'Zend\Expressive\Delegate\DefaultDelegate', $delegate);
+        $this->injectServiceInContainer($container, 'Zend\Expressive\Delegate\DefaultDelegate', $handler);
 
         $app = new Application($this->router->reveal(), $container->reveal());
 
         $test = $app->getDefaultDelegate();
 
-        $this->assertSame($delegate, $test);
+        $this->assertSame($handler, $test);
     }
 
     public function testWillCreateAndConsumeNotFoundDelegateFactoryToCreateDelegateIfNoDelegateInContainer()

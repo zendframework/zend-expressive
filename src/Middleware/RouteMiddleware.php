@@ -8,14 +8,12 @@
 namespace Zend\Expressive\Middleware;
 
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
-use Webimpress\HttpMiddlewareCompatibility\MiddlewareInterface as ServerMiddlewareInterface;
 use Zend\Expressive\Router\RouteResult;
 use Zend\Expressive\Router\RouterInterface;
-
-use const Webimpress\HttpMiddlewareCompatibility\HANDLER_METHOD;
 
 /**
  * Default routing middleware.
@@ -32,7 +30,7 @@ use const Webimpress\HttpMiddlewareCompatibility\HANDLER_METHOD;
  *
  * @internal
  */
-class RouteMiddleware implements ServerMiddlewareInterface
+class RouteMiddleware implements MiddlewareInterface
 {
     /**
      * Response prototype for 405 responses.
@@ -58,10 +56,10 @@ class RouteMiddleware implements ServerMiddlewareInterface
 
     /**
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
+     * @param RequestHandlerInterface $handler
      * @return ResponseInterface
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         $result = $this->router->match($request);
 
@@ -70,7 +68,7 @@ class RouteMiddleware implements ServerMiddlewareInterface
                 return $this->responsePrototype->withStatus(StatusCode::STATUS_METHOD_NOT_ALLOWED)
                     ->withHeader('Allow', implode(',', $result->getAllowedMethods()));
             }
-            return $delegate->{HANDLER_METHOD}($request);
+            return $handler->handle($request);
         }
 
         // Inject the actual route result, as well as individual matched parameters.
@@ -79,6 +77,6 @@ class RouteMiddleware implements ServerMiddlewareInterface
             $request = $request->withAttribute($param, $value);
         }
 
-        return $delegate->{HANDLER_METHOD}($request);
+        return $handler->handle($request);
     }
 }

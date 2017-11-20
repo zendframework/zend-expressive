@@ -8,12 +8,12 @@
 namespace Zend\Expressive;
 
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
+use Interop\Http\Server\RequestHandlerInterface;
 use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use UnexpectedValueException;
-use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
@@ -38,7 +38,7 @@ class Application extends MiddlewarePipe
     private $container;
 
     /**
-     * @var null|DelegateInterface
+     * @var null|RequestHandlerInterface
      */
     private $defaultDelegate;
 
@@ -79,7 +79,7 @@ class Application extends MiddlewarePipe
      *
      * @param Router\RouterInterface $router
      * @param null|ContainerInterface $container IoC container from which to pull services, if any.
-     * @param null|DelegateInterface $defaultDelegate Default delegate
+     * @param null|RequestHandlerInterface $defaultDelegate Default delegate
      *     to use when $out is not provided on invocation / run() is invoked.
      * @param null|EmitterInterface $emitter Emitter to use when `run()` is
      *     invoked.
@@ -87,7 +87,7 @@ class Application extends MiddlewarePipe
     public function __construct(
         Router\RouterInterface $router,
         ContainerInterface $container = null,
-        DelegateInterface $defaultDelegate = null,
+        RequestHandlerInterface $defaultDelegate = null,
         EmitterInterface $emitter = null
     ) {
         parent::__construct();
@@ -397,7 +397,7 @@ class Application extends MiddlewarePipe
      * - If no container is composed, creates an instance of Delegate\NotFoundDelegate
      *   using the current response prototype only (i.e., no templating).
      *
-     * @return DelegateInterface
+     * @return RequestHandlerInterface
      */
     public function getDefaultDelegate()
     {

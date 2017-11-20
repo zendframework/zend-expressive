@@ -9,14 +9,12 @@ namespace Zend\Expressive\Middleware;
 
 use Fig\Http\Message\RequestMethodInterface as RequestMethod;
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
-use Webimpress\HttpMiddlewareCompatibility\MiddlewareInterface as ServerMiddlewareInterface;
 use Zend\Diactoros\Response;
 use Zend\Expressive\Router\RouteResult;
-
-use const Webimpress\HttpMiddlewareCompatibility\HANDLER_METHOD;
 
 /**
  * Handle implicit OPTIONS requests.
@@ -41,7 +39,7 @@ use const Webimpress\HttpMiddlewareCompatibility\HANDLER_METHOD;
  *
  * In all other circumstances, it will return the result of the delegate.
  */
-class ImplicitOptionsMiddleware implements ServerMiddlewareInterface
+class ImplicitOptionsMiddleware implements MiddlewareInterface
 {
     /**
      * @var null|ResponseInterface
@@ -62,22 +60,22 @@ class ImplicitOptionsMiddleware implements ServerMiddlewareInterface
      * Handle an implicit OPTIONS request.
      *
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
+     * @param RequestHandlerInterface $handler
      * @return ResponseInterface
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         if ($request->getMethod() !== RequestMethod::METHOD_OPTIONS) {
-            return $delegate->{HANDLER_METHOD}($request);
+            return $handler->handle($request);
         }
 
         if (false === ($result = $request->getAttribute(RouteResult::class, false))) {
-            return $delegate->{HANDLER_METHOD}($request);
+            return $handler->handle($request);
         }
 
         $route = $result->getMatchedRoute();
         if (! $route || ! $route->implicitOptions()) {
-            return $delegate->{HANDLER_METHOD}($request);
+            return $handler->handle($request);
         }
 
         $methods = implode(',', $route->getAllowedMethods());

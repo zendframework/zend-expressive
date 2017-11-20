@@ -7,16 +7,15 @@
 
 namespace ZendTest\Expressive\Middleware;
 
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
-use Webimpress\HttpMiddlewareCompatibility\MiddlewareInterface;
 use Zend\Expressive\Delegate\NotFoundDelegate;
 use Zend\Expressive\Middleware\NotFoundHandler;
-
-use const Webimpress\HttpMiddlewareCompatibility\HANDLER_METHOD;
 
 class NotFoundHandlerTest extends TestCase
 {
@@ -26,16 +25,16 @@ class NotFoundHandlerTest extends TestCase
     /** @var ServerRequestInterface|ObjectProphecy */
     private $request;
 
-    /** @var DelegateInterface|ObjectProphecy */
-    private $delegate;
+    /** @var RequestHandlerInterface|ObjectProphecy */
+    private $handler;
 
     public function setUp()
     {
         $this->internal = $this->prophesize(NotFoundDelegate::class);
         $this->request  = $this->prophesize(ServerRequestInterface::class);
 
-        $this->delegate = $this->prophesize(DelegateInterface::class);
-        $this->delegate->{HANDLER_METHOD}(Argument::type(ServerRequestInterface::class))->shouldNotBeCalled();
+        $this->handler = $this->prophesize(RequestHandlerInterface::class);
+        $this->handler->handle(Argument::type(ServerRequestInterface::class))->shouldNotBeCalled();
     }
 
     public function testImplementsInteropMiddleware()
@@ -46,11 +45,13 @@ class NotFoundHandlerTest extends TestCase
 
     public function testProxiesToInternalDelegate()
     {
+        $response = $this->prophesize(ResponseInterface::class)->reveal();
+
         $this->internal
-            ->{HANDLER_METHOD}(Argument::that([$this->request, 'reveal']))
-            ->willReturn('CONTENT');
+            ->handle(Argument::that([$this->request, 'reveal']))
+            ->willReturn($response);
 
         $handler = new NotFoundHandler($this->internal->reveal());
-        $this->assertEquals('CONTENT', $handler->process($this->request->reveal(), $this->delegate->reveal()));
+        $this->assertEquals($response, $handler->process($this->request->reveal(), $this->handler->reveal()));
     }
 }
