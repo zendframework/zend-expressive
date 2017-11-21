@@ -126,7 +126,7 @@ $ composer create-project zendframework/zend-expressive-skeleton expressive</cod
           <pre><code class="language-php" data-trim>
 $pathMiddleware = function (
     ServerRequestInterface $request,
-    DelegateInterface $delegate
+    RequestHandlerInterface $handler
 ) {
     $uri  = $request->getUri();
     $path = $uri->getPath();
