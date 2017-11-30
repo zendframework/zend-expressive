@@ -20,6 +20,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use ReflectionProperty;
 use RuntimeException;
+use Throwable;
 use UnexpectedValueException;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
@@ -532,9 +533,7 @@ class ApplicationTest extends TestCase
             $app = new Application($this->router->reveal(), null, null, $emitter->reveal());
 
             $app->run();
-        } catch (\Throwable $e) {
-            $this->fail($e->getMessage());
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             $this->fail($e->getMessage());
         }
     }
@@ -611,9 +610,7 @@ class ApplicationTest extends TestCase
             );
 
             $app->run();
-        } catch (\Throwable $e) {
-            $this->fail(sprintf("(%d) %s:\n%s", $e->getCode(), $e->getMessage(), $e->getTraceAsString()));
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             $this->fail(sprintf("(%d) %s:\n%s", $e->getCode(), $e->getMessage(), $e->getTraceAsString()));
         }
     }

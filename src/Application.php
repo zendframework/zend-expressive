@@ -13,6 +13,7 @@ use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Throwable;
 use UnexpectedValueException;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmitterInterface;
@@ -481,10 +482,10 @@ class Application extends MiddlewarePipe
     }
 
     /**
-     * @param \Exception|\Throwable $exception
+     * @param Throwable $exception
      * @return void
      */
-    private function emitMarshalServerRequestException($exception)
+    private function emitMarshalServerRequestException(Throwable $exception)
     {
         if ($this->container && $this->container->has(Middleware\ErrorResponseGenerator::class)) {
             $generator = $this->container->get(Middleware\ErrorResponseGenerator::class);
