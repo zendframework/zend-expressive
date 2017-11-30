@@ -4,6 +4,7 @@
  * @copyright Copyright (c) 2017 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+declare(strict_types=1);
 
 namespace Zend\Expressive\Middleware;
 
@@ -49,11 +50,6 @@ class DispatchMiddleware implements MiddlewareInterface
      */
     private $router;
 
-    /**
-     * @param RouterInterface $router
-     * @param ResponseInterface $responsePrototype
-     * @param ContainerInterface|null $container
-     */
     public function __construct(
         RouterInterface $router,
         ResponseInterface $responsePrototype,
@@ -64,11 +60,6 @@ class DispatchMiddleware implements MiddlewareInterface
         $this->container = $container;
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @param RequestHandlerInterface $handler
-     * @return ResponseInterface
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         $routeResult = $request->getAttribute(RouteResult::class, false);

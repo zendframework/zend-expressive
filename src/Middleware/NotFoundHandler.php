@@ -4,6 +4,7 @@
  * @copyright Copyright (c) 2016-2017 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+declare(strict_types=1);
 
 namespace Zend\Expressive\Middleware;
 
@@ -20,9 +21,6 @@ class NotFoundHandler implements MiddlewareInterface
      */
     private $internalDelegate;
 
-    /**
-     * @param NotFoundDelegate $internalDelegate
-     */
     public function __construct(NotFoundDelegate $internalDelegate)
     {
         $this->internalDelegate = $internalDelegate;
@@ -30,10 +28,6 @@ class NotFoundHandler implements MiddlewareInterface
 
     /**
      * Creates and returns a 404 response.
-     *
-     * @param ServerRequestInterface $request Passed to internal delegate
-     * @param RequestHandlerInterface $handler Ignored.
-     * @return ResponseInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {

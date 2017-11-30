@@ -4,6 +4,7 @@
  * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+declare(strict_types=1);
 
 namespace ZendTest\Expressive;
 
@@ -21,6 +22,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use ReflectionProperty;
 use RuntimeException;
 use Throwable;
+use TypeError;
 use UnexpectedValueException;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
@@ -185,7 +187,7 @@ class ApplicationTest extends TestCase
     public function testCallingRouteWithAnInvalidPathTypeRaisesAnException($path)
     {
         $app = $this->getApp();
-        $this->expectException(RouterException\InvalidArgumentException::class);
+        $this->expectException(TypeError::class);
         $app->route($path, new TestAsset\InteropMiddleware());
     }
 

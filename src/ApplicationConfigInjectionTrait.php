@@ -4,6 +4,7 @@
  * @copyright Copyright (c) 2016-2017 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+declare(strict_types=1);
 
 namespace Zend\Expressive;
 
@@ -65,9 +66,8 @@ trait ApplicationConfigInjectionTrait
      *
      * @param null|array $config If null, attempts to pull the 'config' service
      *     from the composed container.
-     * @return void
      */
-    public function injectPipelineFromConfig(array $config = null)
+    public function injectPipelineFromConfig(array $config = null) : void
     {
         if (null === $config) {
             $config = $this->container->has('config') ? $this->container->get('config') : [];
@@ -134,10 +134,9 @@ trait ApplicationConfigInjectionTrait
      *
      * @param null|array $config If null, attempts to pull the 'config' service
      *     from the composed container.
-     * @return void
      * @throws Exception\InvalidArgumentException
      */
-    public function injectRoutesFromConfig(array $config = null)
+    public function injectRoutesFromConfig(array $config = null) : void
     {
         if (null === $config) {
             $config = $this->container->has('config') ? $this->container->get('config') : [];
@@ -202,10 +201,9 @@ trait ApplicationConfigInjectionTrait
      * If the 'middleware' value is missing, or not viable as middleware, it
      * raises an exception, to ensure the pipeline is built correctly.
      *
-     * @return callable
      * @throws Exception\InvalidArgumentException
      */
-    private function createCollectionMapper()
+    private function createCollectionMapper() : callable
     {
         $appMiddlewares = [
             Application::ROUTING_MIDDLEWARE,
@@ -240,10 +238,8 @@ trait ApplicationConfigInjectionTrait
      *
      * The function is useful to reduce an array of pipeline middleware to a
      * priority queue.
-     *
-     * @return callable
      */
-    private function createPriorityQueueReducer()
+    private function createPriorityQueueReducer() : callable
     {
         // $serial is used to ensure that items of the same priority are enqueued
         // in the order in which they are inserted.

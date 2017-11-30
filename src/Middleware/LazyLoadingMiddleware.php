@@ -4,6 +4,7 @@
  * @copyright Copyright (c) 2017 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+declare(strict_types=1);
 
 namespace Zend\Expressive\Middleware;
 
@@ -37,7 +38,7 @@ class LazyLoadingMiddleware implements MiddlewareInterface
     public function __construct(
         ContainerInterface $container,
         ResponseInterface $responsePrototype,
-        $middlewareName
+        string $middlewareName
     ) {
         $this->container = $container;
         $this->responsePrototype = $responsePrototype;
@@ -45,9 +46,6 @@ class LazyLoadingMiddleware implements MiddlewareInterface
     }
 
     /**
-     * @param ServerRequestInterface $request
-     * @param RequestHandlerInterface $handler
-     * @return ResponseInterface
      * @throws InvalidMiddlewareException for invalid middleware types pulled
      *     from the container.
      */

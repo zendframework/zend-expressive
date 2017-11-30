@@ -4,6 +4,7 @@
  * @copyright Copyright (c) 2017 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+declare(strict_types=1);
 
 namespace Zend\Expressive\Delegate;
 
@@ -41,17 +42,11 @@ class NotFoundDelegate implements RequestHandlerInterface
      */
     private $layout;
 
-    /**
-     * @param ResponseInterface $responsePrototype
-     * @param TemplateRendererInterface $renderer
-     * @param string $template
-     * @param string $layout
-     */
     public function __construct(
         ResponseInterface $responsePrototype,
         TemplateRendererInterface $renderer = null,
-        $template = self::TEMPLATE_DEFAULT,
-        $layout = self::LAYOUT_DEFAULT
+        string $template = self::TEMPLATE_DEFAULT,
+        string $layout = self::LAYOUT_DEFAULT
     ) {
         $this->responsePrototype = $responsePrototype;
         $this->renderer = $renderer;
@@ -61,9 +56,6 @@ class NotFoundDelegate implements RequestHandlerInterface
 
     /**
      * Creates and returns a 404 response.
-     *
-     * @param ServerRequestInterface $request
-     * @return ResponseInterface
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
@@ -76,9 +68,6 @@ class NotFoundDelegate implements RequestHandlerInterface
 
     /**
      * Generates a plain text response indicating the request method and URI.
-     *
-     * @param ServerRequestInterface $request
-     * @return ResponseInterface
      */
     private function generatePlainTextResponse(ServerRequestInterface $request) : ResponseInterface
     {
@@ -97,9 +86,6 @@ class NotFoundDelegate implements RequestHandlerInterface
      * Generates a response using a template.
      *
      * Template will receive the current request via the "request" variable.
-     *
-     * @param ServerRequestInterface $request
-     * @return ResponseInterface
      */
     private function generateTemplatedResponse(ServerRequestInterface $request) : ResponseInterface
     {

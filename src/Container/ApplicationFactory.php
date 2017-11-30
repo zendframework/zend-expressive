@@ -4,6 +4,7 @@
  * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+declare(strict_types=1);
 
 namespace Zend\Expressive\Container;
 
@@ -52,11 +53,8 @@ class ApplicationFactory
      *
      * See the class level docblock for information on what services this
      * factory will optionally consume.
-     *
-     * @param ContainerInterface $container
-     * @return Application
      */
-    public function __invoke(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container) : Application
     {
         $config = $container->has('config') ? $container->get('config') : [];
         $config = $config instanceof ArrayObject ? $config->getArrayCopy() : $config;
@@ -84,12 +82,8 @@ class ApplicationFactory
 
     /**
      * Injects routes and the middleware pipeline into the application.
-     *
-     * @param Application $app
-     * @param array $config
-     * @return void
      */
-    private function injectRoutesAndPipeline(Application $app, array $config)
+    private function injectRoutesAndPipeline(Application $app, array $config) : void
     {
         $app->injectRoutesFromConfig($config);
         $app->injectPipelineFromConfig($config);

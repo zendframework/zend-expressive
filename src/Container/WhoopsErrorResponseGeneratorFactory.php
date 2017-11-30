@@ -4,6 +4,7 @@
  * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+declare(strict_types=1);
 
 namespace Zend\Expressive\Container;
 
@@ -12,11 +13,7 @@ use Zend\Expressive\Middleware\WhoopsErrorResponseGenerator;
 
 class WhoopsErrorResponseGeneratorFactory
 {
-    /**
-     * @param ContainerInterface $container
-     * @return WhoopsErrorResponseGenerator
-     */
-    public function __invoke(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container) : WhoopsErrorResponseGenerator
     {
         return new WhoopsErrorResponseGenerator(
             $container->get('Zend\Expressive\Whoops')
