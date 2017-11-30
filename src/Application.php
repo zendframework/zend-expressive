@@ -357,12 +357,8 @@ class Application extends MiddlewarePipe
     {
         try {
             $request  = $request ?: ServerRequestFactory::fromGlobals();
-        } catch (InvalidArgumentException $e) {
-            // Unable to parse uploaded files
-            $this->emitMarshalServerRequestException($e);
-            return;
-        } catch (UnexpectedValueException $e) {
-            // Invalid request method
+        } catch (InvalidArgumentException | UnexpectedValueException $e) {
+            // Unable to parse uploaded files | Invalid request method
             $this->emitMarshalServerRequestException($e);
             return;
         }
