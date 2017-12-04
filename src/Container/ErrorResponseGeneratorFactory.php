@@ -18,11 +18,10 @@ class ErrorResponseGeneratorFactory
     {
         $config = $container->has('config') ? $container->get('config') : [];
 
-        $debug = isset($config['debug']) ? $config['debug'] : false;
+        $debug = $config['debug'] ?? false;
 
-        $template = isset($config['zend-expressive']['error_handler']['template_error'])
-            ? $config['zend-expressive']['error_handler']['template_error']
-            : ErrorResponseGenerator::TEMPLATE_DEFAULT;
+        $template = $config['zend-expressive']['error_handler']['template_error']
+            ?? ErrorResponseGenerator::TEMPLATE_DEFAULT;
 
         $renderer = $container->has(TemplateRendererInterface::class)
             ? $container->get(TemplateRendererInterface::class)

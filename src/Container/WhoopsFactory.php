@@ -47,7 +47,7 @@ class WhoopsFactory
     public function __invoke(ContainerInterface $container) : Whoops
     {
         $config = $container->has('config') ? $container->get('config') : [];
-        $config = isset($config['whoops']) ? $config['whoops'] : [];
+        $config = $config['whoops'] ?? [];
 
         $whoops = new Whoops();
         $whoops->writeToOutput(false);
