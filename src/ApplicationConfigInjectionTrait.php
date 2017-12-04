@@ -93,7 +93,7 @@ trait ApplicationConfigInjectionTrait
         );
 
         foreach ($queue as $spec) {
-            $path = isset($spec['path']) ? $spec['path'] : '/';
+            $path = $spec['path'] ?? '/';
             $this->pipe($path, $spec['middleware']);
         }
     }
@@ -165,7 +165,7 @@ trait ApplicationConfigInjectionTrait
                 }
             }
 
-            $name  = isset($spec['name']) ? $spec['name'] : null;
+            $name  = $spec['name'] ?? null;
             $route = new Route($spec['path'], $spec['middleware'], $methods, $name);
 
             if (isset($spec['options'])) {

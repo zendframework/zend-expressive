@@ -40,7 +40,7 @@ class WhoopsPageHandlerFactory
     public function __invoke(ContainerInterface $container)
     {
         $config = $container->has('config') ? $container->get('config') : [];
-        $config = isset($config['whoops']) ? $config['whoops'] : [];
+        $config = $config['whoops'] ?? [];
 
         $pageHandler = new PrettyPageHandler();
 
