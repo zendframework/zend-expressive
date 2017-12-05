@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "160c5ca78e6e370057f7fc271a8aff4c",
+    "content-hash": "2001afe27d32d0a038f4e8f5d109b68d",
     "packages": [
         {
             "name": "fig/http-message-util",
@@ -360,11 +360,17 @@
         },
         {
             "name": "zendframework/zend-expressive-router",
-            "version": "dev-feature/psr-15",
+            "version": "dev-release-3.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/webimpress/zend-expressive-router.git",
-                "reference": "62b11753700ec6c15766412d72dbe11d6fe9c60d"
+                "url": "https://github.com/zendframework/zend-expressive-router.git",
+                "reference": "20ac6001322e4dd200aced2e02a75b6bd7c7446d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zendframework/zend-expressive-router/zipball/20ac6001322e4dd200aced2e02a75b6bd7c7446d",
+                "reference": "20ac6001322e4dd200aced2e02a75b6bd7c7446d",
+                "shasum": ""
             },
             "require": {
                 "fig/http-message-util": "^1.1.2",
@@ -385,8 +391,9 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.2-dev",
-                    "dev-develop": "2.3-dev"
+                    "dev-master": "2.2.x-dev",
+                    "dev-develop": "2.3.x-dev",
+                    "dev-release-3.0.0": "3.0.x-dev"
                 }
             },
             "autoload": {
@@ -394,48 +401,22 @@
                     "Zend\\Expressive\\Router\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "ZendTest\\Expressive\\Router\\": "test/"
-                }
-            },
-            "scripts": {
-                "check": [
-                    "@license-check",
-                    "@cs-check",
-                    "@test"
-                ],
-                "upload-coverage": [
-                    "coveralls -v"
-                ],
-                "cs-check": [
-                    "phpcs --colors"
-                ],
-                "cs-fix": [
-                    "phpcbf --colors"
-                ],
-                "license-check": [
-                    "docheader check src/ test/"
-                ],
-                "test": [
-                    "phpunit --colors=always"
-                ],
-                "test-coverage": [
-                    "phpunit --coverage-clover clover.xml"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
             "description": "Router subcomponent for Expressive",
             "keywords": [
+                "ZendFramework",
                 "expressive",
                 "http",
                 "middleware",
                 "psr",
-                "psr-7"
+                "psr-7",
+                "zend-expressive",
+                "zf"
             ],
-            "time": "2017-11-15T22:36:23+00:00"
+            "time": "2017-12-05T16:59:15+00:00"
         },
         {
             "name": "zendframework/zend-expressive-template",
@@ -492,12 +473,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-stratigility.git",
-                "reference": "f810c5ca22d90929ed7fc36d976dd8a8cd519a51"
+                "reference": "f18dc2add534e15df3c9da6741fe831fdffdf1f1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-stratigility/zipball/f810c5ca22d90929ed7fc36d976dd8a8cd519a51",
-                "reference": "f810c5ca22d90929ed7fc36d976dd8a8cd519a51",
+                "url": "https://api.github.com/repos/zendframework/zend-stratigility/zipball/f18dc2add534e15df3c9da6741fe831fdffdf1f1",
+                "reference": "f18dc2add534e15df3c9da6741fe831fdffdf1f1",
                 "shasum": ""
             },
             "require": {
@@ -518,8 +499,9 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.1.0-dev",
-                    "dev-develop": "2.2.0-dev"
+                    "dev-master": "2.1.x-dev",
+                    "dev-develop": "2.2.x-dev",
+                    "dev-release-3.0.0": "3.0.x-dev"
                 }
             },
             "autoload": {
@@ -540,7 +522,7 @@
                 "psr-7",
                 "zf"
             ],
-            "time": "2017-12-05T15:05:31+00:00"
+            "time": "2017-12-05T15:25:15+00:00"
         }
     ],
     "packages-dev": [
@@ -3332,9 +3314,9 @@
     ],
     "aliases": [
         {
-            "alias": "2.2",
-            "alias_normalized": "2.2.0.0",
-            "version": "dev-feature/psr-15",
+            "alias": "2.3",
+            "alias_normalized": "2.3.0.0",
+            "version": "3.0.9999999.9999999-dev",
             "package": "zendframework/zend-expressive-router"
         }
     ],
