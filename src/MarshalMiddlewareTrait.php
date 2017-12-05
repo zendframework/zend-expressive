@@ -10,8 +10,8 @@ namespace Zend\Expressive;
 use Interop\Http\Server\MiddlewareInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
-use Zend\Stratigility\Middleware\CallableInteropMiddlewareWrapper;
-use Zend\Stratigility\Middleware\CallableMiddlewareWrapper;
+use Zend\Stratigility\Middleware\CallableMiddlewareDecorator;
+use Zend\Stratigility\Middleware\DoublePassMiddlewareDecorator;
 use Zend\Stratigility\MiddlewarePipe;
 
 /**
@@ -60,11 +60,11 @@ trait MarshalMiddlewareTrait
         }
 
         if ($this->isCallableInteropMiddleware($middleware)) {
-            return new CallableInteropMiddlewareWrapper($middleware);
+            return new CallableMiddlewareDecorator($middleware);
         }
 
         if (is_callable($middleware)) {
-            return new CallableMiddlewareWrapper($middleware, $responsePrototype);
+            return new DoublePassMiddlewareDecorator($middleware, $responsePrototype);
         }
 
         if (is_array($middleware)) {
@@ -112,7 +112,6 @@ trait MarshalMiddlewareTrait
         ContainerInterface $container = null
     ) {
         $middlewarePipe = new MiddlewarePipe();
-        $middlewarePipe->setResponsePrototype($responsePrototype);
 
         foreach ($middlewares as $middleware) {
             $middlewarePipe->pipe(
@@ -149,7 +148,7 @@ trait MarshalMiddlewareTrait
         }
 
         if ($this->isCallableInteropMiddleware($instance)) {
-            return new CallableInteropMiddlewareWrapper($instance);
+            return new CallableMiddlewareDecorator($instance);
         }
 
         if (! is_callable($instance)) {
@@ -160,6 +159,6 @@ trait MarshalMiddlewareTrait
             ));
         }
 
-        return new CallableMiddlewareWrapper($instance, $responsePrototype);
+        return new DoublePassMiddlewareDecorator($instance, $responsePrototype);
     }
 }

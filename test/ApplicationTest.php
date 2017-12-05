@@ -602,8 +602,13 @@ class ApplicationTest extends TestCase
                 return true;
             }))->shouldBeCalled();
 
-            $app = new Application($this->router->reveal(), $container->reveal(), null, $emitter->reveal());
-            $app->setResponsePrototype($expectedResponse);
+            $app = new Application(
+                $this->router->reveal(),
+                $container->reveal(),
+                null,
+                $emitter->reveal(),
+                $expectedResponse
+            );
 
             $app->run();
         } catch (\Throwable $e) {

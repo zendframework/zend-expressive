@@ -72,6 +72,11 @@ class Application extends MiddlewarePipe
     private $routes = [];
 
     /**
+     * @var ResponseInterface
+     */
+    private $responsePrototype;
+
+    /**
      * Constructor
      *
      * Calls on the parent constructor, and then uses the provided arguments
@@ -88,15 +93,15 @@ class Application extends MiddlewarePipe
         Router\RouterInterface $router,
         ContainerInterface $container = null,
         RequestHandlerInterface $defaultDelegate = null,
-        EmitterInterface $emitter = null
+        EmitterInterface $emitter = null,
+        ResponseInterface $responsePrototype = null
     ) {
         parent::__construct();
         $this->router          = $router;
         $this->container       = $container;
         $this->defaultDelegate = $defaultDelegate;
         $this->emitter         = $emitter;
-
-        $this->setResponsePrototype(new Response());
+        $this->responsePrototype = $responsePrototype ?: new Response();
     }
 
     /**

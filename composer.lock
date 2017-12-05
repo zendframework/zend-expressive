@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "ab9f2f1ae47a6bdee9ab6a54b10debea",
+    "content-hash": "160c5ca78e6e370057f7fc271a8aff4c",
     "packages": [
         {
             "name": "fig/http-message-util",
@@ -488,11 +488,17 @@
         },
         {
             "name": "zendframework/zend-stratigility",
-            "version": "dev-feature/psr-15",
+            "version": "dev-release-3.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/webimpress/zend-stratigility.git",
-                "reference": "4a1cb4d27f0ee44616c6cb85ec29100cd66d13eb"
+                "url": "https://github.com/zendframework/zend-stratigility.git",
+                "reference": "ea9ea58c97f9dcadc7c70fcef93b9567fc82ab44"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zendframework/zend-stratigility/zipball/ea9ea58c97f9dcadc7c70fcef93b9567fc82ab44",
+                "reference": "ea9ea58c97f9dcadc7c70fcef93b9567fc82ab44",
+                "shasum": ""
             },
             "require": {
                 "http-interop/http-server-middleware": "^1.0.1",
@@ -521,57 +527,20 @@
                     "Zend\\Stratigility\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "ZendTest\\Stratigility\\": "test/"
-                }
-            },
-            "scripts": {
-                "check": [
-                    "@license-check",
-                    "@cs-check",
-                    "@test"
-                ],
-                "cs-check": [
-                    "phpcs"
-                ],
-                "cs-fix": [
-                    "phpcbf"
-                ],
-                "license-check": [
-                    "docheader check src/ test/"
-                ],
-                "test": [
-                    "phpunit --colors=always"
-                ],
-                "test-coverage": [
-                    "phpunit --colors=always --coverage-clover clover.xml"
-                ],
-                "upload-coverage": [
-                    "coveralls -v"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
             "description": "Middleware for PHP",
             "homepage": "https://github.com/zendframework/zend-stratigility",
             "keywords": [
+                "ZendFramework",
                 "http",
                 "middleware",
                 "psr-7",
-                "zendframework",
                 "zf"
             ],
-            "support": {
-                "docs": "https://docs.zendframework.com/zend-stratigility/",
-                "issues": "https://github.com/zendframework/zend-stratigility/issues",
-                "source": "https://github.com/zendframework/zend-stratigility",
-                "rss": "https://github.com/zendframework/zend-stratigility/releases.atom",
-                "slack": "https://zendframework-slack.herokuapp.com",
-                "forum": "https://discourse.zendframework.com/c/questions/expressive"
-            },
-            "time": "2017-11-13T11:14:36+00:00"
+            "time": "2017-12-04T22:43:51+00:00"
         }
     ],
     "packages-dev": [
@@ -3367,12 +3336,6 @@
             "alias_normalized": "2.2.0.0",
             "version": "dev-feature/psr-15",
             "package": "zendframework/zend-expressive-router"
-        },
-        {
-            "alias": "2.2",
-            "alias_normalized": "2.2.0.0",
-            "version": "dev-feature/psr-15",
-            "package": "zendframework/zend-stratigility"
         }
     ],
     "minimum-stability": "stable",
