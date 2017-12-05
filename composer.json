@@ -27,28 +27,33 @@
     "config": {
         "sort-packages": true
     },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/webimpress/zend-expressive-router.git"
+        }
+    ],
     "require": {
-        "php": "^5.6 || ^7.0",
+        "php": "^7.1",
         "fig/http-message-util": "^1.1.2",
-        "http-interop/http-middleware": "^0.4.1",
+        "http-interop/http-server-middleware": "^1.0.1",
         "psr/container": "^1.0",
         "psr/http-message": "^1.0.1",
-        "webimpress/http-middleware-compatibility": "^0.1.1",
         "zendframework/zend-diactoros": "^1.3.10",
-        "zendframework/zend-expressive-router": "^2.2",
+        "zendframework/zend-expressive-router": "dev-feature/psr-15 as 2.2",
         "zendframework/zend-expressive-template": "^1.0.4",
-        "zendframework/zend-stratigility": "^2.1"
+        "zendframework/zend-stratigility": "dev-release-3.0.0"
     },
     "require-dev": {
-        "filp/whoops": "^2.1.6 || ^1.1.10",
-        "malukenho/docheader": "^0.1.5",
+        "filp/whoops": "^1.1.10 || ^2.1.13",
+        "malukenho/docheader": "^0.1.6",
         "mockery/mockery": "^1.0",
-        "phpunit/phpunit": "^5.7.22 || ^6.4.1",
+        "phpunit/phpunit": "^6.4.4",
         "zendframework/zend-coding-standard": "~1.0.0",
         "zendframework/zend-expressive-aurarouter": "^2.0",
         "zendframework/zend-expressive-fastroute": "^2.0",
         "zendframework/zend-expressive-zendrouter": "^2.0.1",
-        "zendframework/zend-servicemanager": "^3.3 || ^2.7.8"
+        "zendframework/zend-servicemanager": "^2.7.8 || ^3.3"
     },
     "conflict": {
         "container-interop/container-interop": "<1.2.0"

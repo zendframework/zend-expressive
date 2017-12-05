@@ -18,22 +18,79 @@ HTTP POST requests to the path `/users`.
 
 Expressive allows you to define middleware using any of the following:
 
+- PSR-15 middlewares - [http-interop/http-server-middleware](https://github.com/http-interop/http-server-middleware)
+  instances (starting in Expressive 3.0)
+- Callable middleware that implements the http-interop/http-server-middleware signature
+  (starting in Expressive 3.0).
 - [http-interop/http-middleware](https://github.com/http-interop/http-middleware/tree/0.4.1)
-  instances (starting in Expressive 2.X).
+  instances (supported in Expressive 2.X only).
 - Callable middleware that implements the http-interop/http-middleware signature
-  (starting in Expressive 2.X).
+  (supported in Expressive 2.X only).
 - Callable "double-pass" middleware (as used in Expressive 1.X, and supported in
-  Expressive 2.X).
+  Expressive 2.X only).
 - Service names resolving to one of the above middleware types.
 - Middleware pipelines expressed as arrays of the above middleware types.
 
-## http-interop/http-middleware
+## PSR-15 middleware (http-interop/http-server-middleware) (Expressive 3.0)
+
+The http-interop/http-server-middleware project is the basis for the proposed
+PSR-15 specification, which covers HTTP Server Middleware that consumes
+[PSR-7](http://www.php-fig.org/psr/psr-7) HTTP messages. Expressive 3.0 accepts
+middleware that implements the `MiddlewareInterface`. As an example:
+
+```php
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
+class SomeMiddleware implements MiddlewareInterface
+{
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
+    {
+        // do something and return a response, or
+        // delegate to another request handler capable
+        // of returning a response via:
+        //
+        // return $handler->handle($request);
+    }
+}
+```
+
+You could also implement such middleware via an anonymous class.
+
+## Callable http-server-middleware (Expressive 3.0)
+
+Sometimes you may not want to create a class for one-off middleware. As such,
+Expressive allows you to provide a PHP callable that uses the same signature as
+`Interop\Http\Server\MiddlewareInterface`:
+
+```php
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
+function (ServerRequestInterface $request, RequestHanlderInterface $handler) : ResponseInterface
+{
+    // do something and return a response, or
+    // delegate to another request handler capable
+    // of returning a response via:
+    //
+    // return $handler->handle($request);
+}
+```
+
+One note: the `$request` argument does not require a typehint, and examples
+throughout the manual will omit the typehint when demonstrating callable
+middleware.
+
+## http-interop/http-middleware (Expressive 2.X)
 
 The http-interop/http-middleware project is the basis for the proposed PSR-15
 specification, which covers HTTP Server Middleware that consumes
 [PSR-7](http://www.php-fig.org/psr/psr-7/) HTTP messages. The project defines two
 interfaces, `Interop\Http\ServerMiddleware\MiddlewareInterface` and 
-`Interop\Http\ServerMiddleware\DelegateInterface`. Expressive accepts middleware
+`Interop\Http\ServerMiddleware\DelegateInterface`. Expressive 2.0 accepts middleware
 that implements the `MiddlewareInterface`. As an example:
 
 ```php
@@ -57,7 +114,7 @@ class SomeMiddleware implements MiddlewareInterface
 If you are using PHP 7 or above, you could also implement such middleware via an
 anonymous class.
 
-## Callable http-middleware
+## Callable http-middleware (Expressive 2.X)
 
 Sometimes you may not want to create a class for one-off middleware. As such,
 Expressive allows you to provide a PHP callable that uses the same signature as
@@ -82,7 +139,7 @@ One note: the `$request` argument does not require a typehint, and examples
 throughout the manual will omit the typehint when demonstrating callable
 middleware.
 
-## Double-pass middleware
+## Double-pass middleware (Expressive 1.X and 2.X)
 
 Expressive 1.X was based on Stratigility 1.X, which allowed middleware with the
 following signature:
@@ -117,6 +174,9 @@ conditions that may otherwise occur due to incomplete or mutated response state.
 This middleware is still supported in Expressive 2.X, but we encourage users to
 adopt http-interop/http-middleware signatures, as we will be deprecating
 double-pass middleware eventually.
+
+> This functionality has been removed in Expressive 3.0.
+> We encourage users to use PSR-15 middlewares.
 
 ## Service-based middleware
 

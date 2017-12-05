@@ -4,17 +4,19 @@
  * @copyright Copyright (c) 2017 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+declare(strict_types=1);
 
 namespace ZendTest\Expressive\TestAsset;
 
+use Interop\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
 
 class CallableInteropMiddleware
 {
-    public function __invoke(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function __invoke(ServerRequestInterface $request, RequestHandlerInterface $handler)
     {
-        $response = $delegate->process($request);
+        $response = $handler->handle($request);
+
         return $response->withHeader('X-Callable-Interop-Middleware', __CLASS__);
     }
 }

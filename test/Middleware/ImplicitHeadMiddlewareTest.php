@@ -4,23 +4,22 @@
  * @copyright Copyright (c) 2016-2017 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+declare(strict_types=1);
 
 namespace ZendTest\Expressive\Middleware;
 
 use Fig\Http\Message\RequestMethodInterface as RequestMethod;
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
+use Interop\Http\Server\RequestHandlerInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
-use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
 use Zend\Diactoros\Response;
 use Zend\Expressive\Middleware\ImplicitHeadMiddleware;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouteResult;
-
-use const Webimpress\HttpMiddlewareCompatibility\HANDLER_METHOD;
 
 class ImplicitHeadMiddlewareTest extends TestCase
 {
@@ -31,12 +30,12 @@ class ImplicitHeadMiddlewareTest extends TestCase
 
         $response = $this->prophesize(ResponseInterface::class)->reveal();
 
-        $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->{HANDLER_METHOD}($request->reveal())
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle($request->reveal())
             ->willReturn($response);
 
         $middleware = new ImplicitHeadMiddleware();
-        $result = $middleware->process($request->reveal(), $delegate->reveal());
+        $result = $middleware->process($request->reveal(), $handler->reveal());
 
         $this->assertSame($response, $result);
     }
@@ -49,12 +48,12 @@ class ImplicitHeadMiddlewareTest extends TestCase
 
         $response = $this->prophesize(ResponseInterface::class)->reveal();
 
-        $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->{HANDLER_METHOD}($request->reveal())
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle($request->reveal())
             ->willReturn($response);
 
         $middleware = new ImplicitHeadMiddleware();
-        $result = $middleware->process($request->reveal(), $delegate->reveal());
+        $result = $middleware->process($request->reveal(), $handler->reveal());
 
         $this->assertSame($response, $result);
     }
@@ -70,12 +69,12 @@ class ImplicitHeadMiddlewareTest extends TestCase
 
         $response = $this->prophesize(ResponseInterface::class)->reveal();
 
-        $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->{HANDLER_METHOD}($request->reveal())
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle($request->reveal())
             ->willReturn($response);
 
         $middleware = new ImplicitHeadMiddleware();
-        $result = $middleware->process($request->reveal(), $delegate->reveal());
+        $result = $middleware->process($request->reveal(), $handler->reveal());
 
         $this->assertSame($response, $result);
     }
@@ -94,12 +93,12 @@ class ImplicitHeadMiddlewareTest extends TestCase
 
         $response = $this->prophesize(ResponseInterface::class)->reveal();
 
-        $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->{HANDLER_METHOD}($request->reveal())
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle($request->reveal())
             ->willReturn($response);
 
         $middleware = new ImplicitHeadMiddleware();
-        $result = $middleware->process($request->reveal(), $delegate->reveal());
+        $result = $middleware->process($request->reveal(), $handler->reveal());
 
         $this->assertSame($response, $result);
     }
@@ -119,11 +118,11 @@ class ImplicitHeadMiddlewareTest extends TestCase
 
         $response = $this->prophesize(ResponseInterface::class)->reveal();
 
-        $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->{HANDLER_METHOD}($request->reveal())->shouldNotBeCalled($response);
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle($request->reveal())->shouldNotBeCalled($response);
 
         $middleware = new ImplicitHeadMiddleware();
-        $result = $middleware->process($request->reveal(), $delegate->reveal());
+        $result = $middleware->process($request->reveal(), $handler->reveal());
 
         $this->assertInstanceOf(Response::class, $result);
         $this->assertEquals(StatusCode::STATUS_OK, $result->getStatusCode());
@@ -145,12 +144,12 @@ class ImplicitHeadMiddlewareTest extends TestCase
 
         $response = $this->prophesize(ResponseInterface::class)->reveal();
 
-        $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->{HANDLER_METHOD}($request->reveal())->shouldNotBeCalled($response);
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle($request->reveal())->shouldNotBeCalled($response);
 
         $expected   = new Response();
         $middleware = new ImplicitHeadMiddleware($expected);
-        $result     = $middleware->process($request->reveal(), $delegate->reveal());
+        $result     = $middleware->process($request->reveal(), $handler->reveal());
 
         $this->assertSame($expected, $result);
     }
@@ -178,11 +177,11 @@ class ImplicitHeadMiddlewareTest extends TestCase
             }))
             ->will([$response, 'reveal']);
 
-        $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->{HANDLER_METHOD}($request->reveal())->will([$response, 'reveal']);
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle($request->reveal())->will([$response, 'reveal']);
 
         $middleware = new ImplicitHeadMiddleware();
-        $result = $middleware->process($request->reveal(), $delegate->reveal());
+        $result = $middleware->process($request->reveal(), $handler->reveal());
 
         $this->assertSame($response->reveal(), $result);
     }

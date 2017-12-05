@@ -29,9 +29,16 @@ If it does find one, it uses the value to setup the locale. It also:
 <?php
 namespace Application\I18n;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
+// Expressive 3.X:
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+
+// Expressive 2.X:
+use Interop\Http\ServerMiddleware\DelegateInterface as RequestHandlerInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
+
 use Locale;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Helper\UrlHelper;
 
@@ -44,7 +51,7 @@ class SetLocaleMiddleware implements MiddlewareInterface
         $this->helper = $helper;
     }
     
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         $uri = $request->getUri();
         
@@ -52,14 +59,22 @@ class SetLocaleMiddleware implements MiddlewareInterface
         
         if (! preg_match('#^/(?P<locale>[a-z]{2,3}([-_][a-zA-Z]{2}|))/#', $path, $matches)) {
             Locale::setDefault('de_DE');
-            return $delegate->process($request);
+            // Expressive 3.X:
+            return $handler->handle($request);
+            // Expressive 2.X:
+            return $handler->process($request);
         }
         
         $locale = $matches['locale'];
         Locale::setDefault(Locale::canonicalize($locale));
         $this->helper->setBasePath($locale);
         
-        return $delegate->process($request->withUri(
+        // Expressive 3.X:
+        return $handler->handle($request->withUri(
+            $uri->withPath(substr($path, 3))
+        ));
+        // Expressive 2.X:
+        return $handler->process($request->withUri(
             $uri->withPath(substr($path, 3))
         ));
     }
@@ -179,8 +194,14 @@ middleware and use it for URL generation:
 <?php
 namespace Application\Action;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
+// Expressive 3.X:
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+
+// Expressive 2.X:
+use Interop\Http\ServerMiddleware\DelegateInterface as RequestHandlerInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
+
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Expressive\Helper\UrlHelper;
@@ -193,13 +214,8 @@ class RedirectAction implements MiddlewareInterface
     {
         $this->helper = $helper;
     }
-        
-    /**
-     * @param ServerRequestInterface $request
-     * @param DelegateInterface      $delegate
-     * @return RedirectResponse
-     */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : RedirectResponse
     {
         $routeParams = [ /* ... */ ];
 

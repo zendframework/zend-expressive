@@ -197,10 +197,18 @@ regardless of the container implementation you choose.
 First, define the middleware:
 
 ```php
-namespace Your\Application
+<?php
+namespace Your\Application;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
+// Expressive 3.X:
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+
+// Expressive 2.X:
+use Interop\Http\ServerMiddleware\DelegateInterface as RequestHandlerInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
+
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Form\View\HelperConfig as FormHelperConfig;
 use Zend\View\HelperPluginManager;
@@ -214,11 +222,15 @@ class FormHelpersMiddleware implements MiddlewareInterface
         $this->helpers = $helpers;
     }
 
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         $config = new FormHelperConfig();
         $config->configureServiceManager($this->helpers);
-        return $delegate->process($request);
+
+        // Expressive 3.X:
+        return $handler->handle($request);
+        // Expressive 2.X:
+        return $handler->process($request);
     }
 }
 ```

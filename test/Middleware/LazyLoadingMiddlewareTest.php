@@ -4,16 +4,17 @@
  * @copyright Copyright (c) 2017 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+declare(strict_types=1);
 
 namespace ZendTest\Expressive\Middleware;
 
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
-use Webimpress\HttpMiddlewareCompatibility\MiddlewareInterface as ServerMiddlewareInterface;
 use Zend\Expressive\Exception\InvalidMiddlewareException;
 use Zend\Expressive\Middleware\LazyLoadingMiddleware;
 
@@ -28,15 +29,15 @@ class LazyLoadingMiddlewareTest extends TestCase
     /** @var ServerRequestInterface|ObjectProphecy */
     private $request;
 
-    /** @var DelegateInterface|ObjectProphecy */
-    private $delegate;
+    /** @var RequestHandlerInterface|ObjectProphecy */
+    private $handler;
 
     public function setUp()
     {
         $this->container = $this->prophesize(ContainerInterface::class);
         $this->response  = $this->prophesize(ResponseInterface::class);
         $this->request   = $this->prophesize(ServerRequestInterface::class);
-        $this->delegate  = $this->prophesize(DelegateInterface::class);
+        $this->handler   = $this->prophesize(RequestHandlerInterface::class);
     }
 
     public function buildLazyLoadingMiddleware($middlewareName)
@@ -52,11 +53,11 @@ class LazyLoadingMiddlewareTest extends TestCase
     {
         $expected   = $this->prophesize(ResponseInterface::class)->reveal();
 
-        $middleware = $this->prophesize(ServerMiddlewareInterface::class);
+        $middleware = $this->prophesize(MiddlewareInterface::class);
         $middleware
             ->process(
                 $this->request->reveal(),
-                $this->delegate->reveal()
+                $this->handler->reveal()
             )
             ->willReturn($expected);
 
@@ -65,7 +66,7 @@ class LazyLoadingMiddlewareTest extends TestCase
         $lazyLoadingMiddleware = $this->buildLazyLoadingMiddleware('middleware');
         $this->assertSame(
             $expected,
-            $lazyLoadingMiddleware->process($this->request->reveal(), $this->delegate->reveal())
+            $lazyLoadingMiddleware->process($this->request->reveal(), $this->handler->reveal())
         );
     }
 
@@ -73,7 +74,7 @@ class LazyLoadingMiddlewareTest extends TestCase
     {
         $expected   = $this->prophesize(ResponseInterface::class)->reveal();
 
-        $middleware = function ($request, DelegateInterface $delegate) use ($expected) {
+        $middleware = function ($request, RequestHandlerInterface $handler) use ($expected) {
             return $expected;
         };
 
@@ -82,7 +83,7 @@ class LazyLoadingMiddlewareTest extends TestCase
         $lazyLoadingMiddleware = $this->buildLazyLoadingMiddleware('middleware');
         $this->assertSame(
             $expected,
-            $lazyLoadingMiddleware->process($this->request->reveal(), $this->delegate->reveal())
+            $lazyLoadingMiddleware->process($this->request->reveal(), $this->handler->reveal())
         );
     }
 
@@ -99,7 +100,7 @@ class LazyLoadingMiddlewareTest extends TestCase
         $lazyLoadingMiddleware = $this->buildLazyLoadingMiddleware('middleware');
         $this->assertSame(
             $expected,
-            $lazyLoadingMiddleware->process($this->request->reveal(), $this->delegate->reveal())
+            $lazyLoadingMiddleware->process($this->request->reveal(), $this->handler->reveal())
         );
     }
 
@@ -130,6 +131,6 @@ class LazyLoadingMiddlewareTest extends TestCase
         $lazyLoadingMiddleware = $this->buildLazyLoadingMiddleware('middleware');
 
         $this->expectException(InvalidMiddlewareException::class);
-        $lazyLoadingMiddleware->process($this->request->reveal(), $this->delegate->reveal());
+        $lazyLoadingMiddleware->process($this->request->reveal(), $this->handler->reveal());
     }
 }

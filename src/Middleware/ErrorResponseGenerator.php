@@ -4,11 +4,13 @@
  * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+declare(strict_types=1);
 
 namespace Zend\Expressive\Middleware;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Throwable;
 use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Stratigility\Utils;
 
@@ -42,29 +44,21 @@ EOT;
      */
     private $template;
 
-    /**
-     * @param bool $isDevelopmentMode
-     * @param null|TemplateRendererInterface $renderer
-     * @param string $template
-     */
     public function __construct(
-        $isDevelopmentMode = false,
+        bool $isDevelopmentMode = false,
         TemplateRendererInterface $renderer = null,
-        $template = self::TEMPLATE_DEFAULT
+        string $template = self::TEMPLATE_DEFAULT
     ) {
-        $this->debug     = (bool) $isDevelopmentMode;
+        $this->debug     = $isDevelopmentMode;
         $this->renderer  = $renderer;
         $this->template  = $template;
     }
 
-    /**
-     * @param \Throwable|\Exception $e
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @return ResponseInterface
-     */
-    public function __invoke($e, ServerRequestInterface $request, ResponseInterface $response)
-    {
+    public function __invoke(
+        Throwable $e,
+        ServerRequestInterface $request,
+        ResponseInterface $response
+    ) : ResponseInterface {
         $response = $response->withStatus(Utils::getStatusCode($e, $response));
 
         if ($this->renderer) {
@@ -74,14 +68,11 @@ EOT;
         return $this->prepareDefaultResponse($e, $response);
     }
 
-    /**
-     * @param \Throwable|\Exception $e
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @return ResponseInterface
-     */
-    private function prepareTemplatedResponse($e, ServerRequestInterface $request, ResponseInterface $response)
-    {
+    private function prepareTemplatedResponse(
+        Throwable $e,
+        ServerRequestInterface $request,
+        ResponseInterface $response
+    ) : ResponseInterface {
         $templateData = [
             'response' => $response,
             'request'  => $request,
@@ -101,12 +92,7 @@ EOT;
         return $response;
     }
 
-    /**
-     * @param \Throwable|\Exception $e
-     * @param ResponseInterface $response
-     * @return ResponseInterface
-     */
-    private function prepareDefaultResponse($e, ResponseInterface $response)
+    private function prepareDefaultResponse(Throwable $e, ResponseInterface $response) : ResponseInterface
     {
         $message = 'An unexpected error occurred';
 
@@ -121,11 +107,8 @@ EOT;
 
     /**
      * Prepares a stack trace to display.
-     *
-     * @param \Throwable|\Exception $e
-     * @return string
      */
-    private function prepareStackTrace($e)
+    private function prepareStackTrace(Throwable $e) : string
     {
         $message = '';
         do {

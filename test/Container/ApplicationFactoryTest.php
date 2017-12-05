@@ -4,16 +4,17 @@
  * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+declare(strict_types=1);
 
 namespace ZendTest\Expressive\Container;
 
 use ArrayObject;
+use Interop\Http\Server\RequestHandlerInterface;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
 use ReflectionProperty;
-use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Expressive\Application;
@@ -48,8 +49,8 @@ class ApplicationFactoryTest extends TestCase
     /** @var EmitterInterface|ObjectProphecy */
     protected $emitter;
 
-    /** @var DelegateInterface|ObjectProphecy */
-    protected $delegate;
+    /** @var RequestHandlerInterface|ObjectProphecy */
+    protected $handler;
 
     /** @var RouterInterface|ObjectProphecy */
     protected $router;
@@ -61,11 +62,11 @@ class ApplicationFactoryTest extends TestCase
 
         $this->router = $this->prophesize(RouterInterface::class);
         $this->emitter = $this->prophesize(EmitterInterface::class);
-        $this->delegate = $this->prophesize(DelegateInterface::class)->reveal();
+        $this->handler = $this->prophesize(RequestHandlerInterface::class)->reveal();
 
         $this->injectServiceInContainer($this->container, RouterInterface::class, $this->router->reveal());
         $this->injectServiceInContainer($this->container, EmitterInterface::class, $this->emitter->reveal());
-        $this->injectServiceInContainer($this->container, 'Zend\Expressive\Delegate\DefaultDelegate', $this->delegate);
+        $this->injectServiceInContainer($this->container, 'Zend\Expressive\Delegate\DefaultDelegate', $this->handler);
     }
 
     public static function assertRoute($spec, array $routes)
@@ -118,7 +119,7 @@ class ApplicationFactoryTest extends TestCase
         $this->assertSame($this->router->reveal(), $test);
         $this->assertSame($this->container->reveal(), $app->getContainer());
         $this->assertSame($this->emitter->reveal(), $app->getEmitter());
-        $this->assertSame($this->delegate, $app->getDefaultDelegate());
+        $this->assertSame($this->handler, $app->getDefaultDelegate());
     }
 
     public function callableMiddlewares()

@@ -16,10 +16,18 @@ middleware to accept the `TemplateRendererInterface` via either the constructor 
 setter. As an example:
 
 ```php
+<?php
 namespace Acme\Blog;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
+// Expressive 3.X:
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+
+// Expressive 2.X:
+use Interop\Http\ServerMiddleware\DelegateInterface as RequestHandlerInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
+
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
@@ -32,7 +40,7 @@ class EntryMiddleware implements MiddlewareInterface
         $this->templateRenderer = $renderer;
     }
 
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         // ...
     }
@@ -42,6 +50,7 @@ class EntryMiddleware implements MiddlewareInterface
 This will necessitate having a factory for your middleware:
 
 ```php
+<?php
 namespace Acme\Blog\Container;
 
 use Acme\Blog\EntryMiddleware;
@@ -70,10 +79,18 @@ consume it. Most often, we will want to render a template, optionally with
 substitutions to pass to it. This will typically look like the following:
 
 ```php
+<?php
 namespace Acme\Blog;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
+// Expressive 3.X:
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+
+// Expressive 2.X:
+use Interop\Http\ServerMiddleware\DelegateInterface as RequestHandlerInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
+
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Template\TemplateRendererInterface;
@@ -87,7 +104,7 @@ class EntryMiddleware implements MiddlewareInterface
         $this->templateRenderer = $renderer;
     }
 
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         // do some work...
         return new HtmlResponse(

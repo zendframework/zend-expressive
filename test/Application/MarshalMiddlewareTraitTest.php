@@ -4,9 +4,12 @@
  * @copyright Copyright (c) 2017 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+declare(strict_types=1);
 
 namespace ZendTest\Expressive\Application;
 
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
@@ -14,14 +17,12 @@ use Psr\Http\Message\ResponseInterface;
 use ReflectionMethod;
 use ReflectionProperty;
 use stdClass;
-use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
-use Webimpress\HttpMiddlewareCompatibility\MiddlewareInterface as ServerMiddlewareInterface;
 use Zend\Expressive\Application;
 use Zend\Expressive\Exception\InvalidMiddlewareException;
 use Zend\Expressive\Middleware;
 use Zend\Expressive\Router\RouterInterface;
-use Zend\Stratigility\Middleware\CallableInteropMiddlewareWrapper;
-use Zend\Stratigility\Middleware\CallableMiddlewareWrapper;
+use Zend\Stratigility\Middleware\CallableMiddlewareDecorator;
+use Zend\Stratigility\Middleware\DoublePassMiddlewareDecorator;
 use Zend\Stratigility\MiddlewarePipe;
 
 class MarshalMiddlewareTraitTest extends TestCase
@@ -107,33 +108,33 @@ class MarshalMiddlewareTraitTest extends TestCase
 
     public function testPreparingInteropMiddlewareReturnsMiddlewareVerbatim()
     {
-        $base = $this->prophesize(ServerMiddlewareInterface::class)->reveal();
+        $base = $this->prophesize(MiddlewareInterface::class)->reveal();
         $middleware = $this->prepareMiddleware($base);
         $this->assertSame($base, $middleware);
     }
 
     public function testPreparingInteropMiddlewareWithoutContainerReturnsMiddlewareVerbatim()
     {
-        $base = $this->prophesize(ServerMiddlewareInterface::class)->reveal();
+        $base = $this->prophesize(MiddlewareInterface::class)->reveal();
         $middleware = $this->prepareMiddlewareWithoutContainer($base);
         $this->assertSame($base, $middleware);
     }
 
     public function testPreparingDuckTypedInteropMiddlewareReturnsDecoratedInteropMiddleware()
     {
-        $base = function ($request, DelegateInterface $delegate) {
+        $base = function ($request, RequestHandlerInterface $handler) {
         };
         $middleware = $this->prepareMiddleware($base);
-        $this->assertInstanceOf(CallableInteropMiddlewareWrapper::class, $middleware);
+        $this->assertInstanceOf(CallableMiddlewareDecorator::class, $middleware);
         $this->assertAttributeSame($base, 'middleware', $middleware);
     }
 
     public function testPreparingDuckTypedInteropMiddlewareWithoutContainerReturnsDecoratedInteropMiddleware()
     {
-        $base = function ($request, DelegateInterface $delegate) {
+        $base = function ($request, RequestHandlerInterface $handler) {
         };
         $middleware = $this->prepareMiddlewareWithoutContainer($base);
-        $this->assertInstanceOf(CallableInteropMiddlewareWrapper::class, $middleware);
+        $this->assertInstanceOf(CallableMiddlewareDecorator::class, $middleware);
         $this->assertAttributeSame($base, 'middleware', $middleware);
     }
 
@@ -142,7 +143,7 @@ class MarshalMiddlewareTraitTest extends TestCase
         $base = function ($request, $response, callable $next) {
         };
         $middleware = $this->prepareMiddleware($base);
-        $this->assertInstanceOf(CallableMiddlewareWrapper::class, $middleware);
+        $this->assertInstanceOf(DoublePassMiddlewareDecorator::class, $middleware);
         $this->assertAttributeSame($base, 'middleware', $middleware);
         $this->assertAttributeSame($this->responsePrototype->reveal(), 'responsePrototype', $middleware);
     }
@@ -152,15 +153,15 @@ class MarshalMiddlewareTraitTest extends TestCase
         $base = function ($request, $response, callable $next) {
         };
         $middleware = $this->prepareMiddlewareWithoutContainer($base);
-        $this->assertInstanceOf(CallableMiddlewareWrapper::class, $middleware);
+        $this->assertInstanceOf(DoublePassMiddlewareDecorator::class, $middleware);
         $this->assertAttributeSame($base, 'middleware', $middleware);
         $this->assertAttributeSame($this->responsePrototype->reveal(), 'responsePrototype', $middleware);
     }
 
     public function testPreparingArrayOfMiddlewareReturnsMiddlewarePipe()
     {
-        $first  = $this->prophesize(ServerMiddlewareInterface::class)->reveal();
-        $second = function ($request, DelegateInterface $delegate) {
+        $first  = $this->prophesize(MiddlewareInterface::class)->reveal();
+        $second = function ($request, RequestHandlerInterface $handler) {
         };
         $third  = function ($request, $response, callable $next) {
         };
@@ -193,8 +194,8 @@ class MarshalMiddlewareTraitTest extends TestCase
 
     public function testPreparingArrayOfMiddlewareWithoutContainerReturnsMiddlewarePipe()
     {
-        $first  = $this->prophesize(ServerMiddlewareInterface::class)->reveal();
-        $second = function ($request, DelegateInterface $delegate) {
+        $first  = $this->prophesize(MiddlewareInterface::class)->reveal();
+        $second = function ($request, RequestHandlerInterface $handler) {
         };
         $third  = function ($request, $response, callable $next) {
         };
@@ -221,7 +222,7 @@ class MarshalMiddlewareTraitTest extends TestCase
 
     public function testPreparingArrayOfMiddlewareRaisesExceptionWhenContainerMissingAndServiceInvalid()
     {
-        $first  = $this->prophesize(ServerMiddlewareInterface::class)->reveal();
+        $first  = $this->prophesize(MiddlewareInterface::class)->reveal();
         $second = 'second-middleware';
         $third  = 'third-middleware';
 
@@ -256,7 +257,7 @@ class MarshalMiddlewareTraitTest extends TestCase
 
         $middleware = $this->prepareMiddleware($base);
 
-        $this->assertInstanceOf(CallableInteropMiddlewareWrapper::class, $middleware);
+        $this->assertInstanceOf(CallableMiddlewareDecorator::class, $middleware);
         $this->assertAttributeInstanceOf(TestAsset\CallableInteropMiddleware::class, 'middleware', $middleware);
     }
 
@@ -265,7 +266,7 @@ class MarshalMiddlewareTraitTest extends TestCase
         $base = TestAsset\CallableMiddleware::class;
         $this->container->has(TestAsset\CallableMiddleware::class)->willReturn(false);
         $middleware = $this->prepareMiddleware($base);
-        $this->assertInstanceOf(CallableMiddlewareWrapper::class, $middleware);
+        $this->assertInstanceOf(DoublePassMiddlewareDecorator::class, $middleware);
         $this->assertAttributeInstanceOf(TestAsset\CallableMiddleware::class, 'middleware', $middleware);
     }
 

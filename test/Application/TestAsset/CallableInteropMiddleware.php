@@ -4,14 +4,15 @@
  * @copyright Copyright (c) 2017 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+declare(strict_types=1);
 
 namespace ZendTest\Expressive\Application\TestAsset;
 
-use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 
 class CallableInteropMiddleware
 {
-    public function __invoke($request, DelegateInterface $delegate)
+    public function __invoke($request, RequestHandlerInterface $handler)
     {
     }
 }

@@ -4,6 +4,7 @@
  * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+declare(strict_types=1);
 
 namespace Zend\Expressive\Container;
 
@@ -14,11 +15,7 @@ use Zend\Stratigility\Middleware\ErrorHandler;
 
 class ErrorHandlerFactory
 {
-    /**
-     * @param ContainerInterface $container
-     * @return ErrorHandler
-     */
-    public function __invoke(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container) : ErrorHandler
     {
         $generator = $container->has(ErrorResponseGenerator::class)
             ? $container->get(ErrorResponseGenerator::class)

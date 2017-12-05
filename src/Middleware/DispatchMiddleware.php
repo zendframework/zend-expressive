@@ -4,19 +4,18 @@
  * @copyright Copyright (c) 2017 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+declare(strict_types=1);
 
 namespace Zend\Expressive\Middleware;
 
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
-use Webimpress\HttpMiddlewareCompatibility\MiddlewareInterface as ServerMiddlewareInterface;
 use Zend\Expressive\MarshalMiddlewareTrait;
 use Zend\Expressive\Router\RouteResult;
 use Zend\Expressive\Router\RouterInterface;
-
-use const Webimpress\HttpMiddlewareCompatibility\HANDLER_METHOD;
 
 /**
  * Default dispatch middleware.
@@ -32,7 +31,7 @@ use const Webimpress\HttpMiddlewareCompatibility\HANDLER_METHOD;
  *
  * @internal
  */
-class DispatchMiddleware implements ServerMiddlewareInterface
+class DispatchMiddleware implements MiddlewareInterface
 {
     use MarshalMiddlewareTrait;
 
@@ -51,11 +50,6 @@ class DispatchMiddleware implements ServerMiddlewareInterface
      */
     private $router;
 
-    /**
-     * @param RouterInterface $router
-     * @param ResponseInterface $responsePrototype
-     * @param ContainerInterface|null $container
-     */
     public function __construct(
         RouterInterface $router,
         ResponseInterface $responsePrototype,
@@ -66,21 +60,16 @@ class DispatchMiddleware implements ServerMiddlewareInterface
         $this->container = $container;
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
-     * @return ResponseInterface
-     */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         $routeResult = $request->getAttribute(RouteResult::class, false);
         if (! $routeResult) {
-            return $delegate->{HANDLER_METHOD}($request);
+            return $handler->handle($request);
         }
 
         $middleware = $routeResult->getMatchedMiddleware();
 
-        if (! $middleware instanceof ServerMiddlewareInterface) {
+        if (! $middleware instanceof MiddlewareInterface) {
             $middleware = $this->prepareMiddleware(
                 $middleware,
                 $this->router,
@@ -89,6 +78,6 @@ class DispatchMiddleware implements ServerMiddlewareInterface
             );
         }
 
-        return $middleware->process($request, $delegate);
+        return $middleware->process($request, $handler);
     }
 }

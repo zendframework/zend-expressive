@@ -4,17 +4,17 @@
  * @copyright Copyright (c) 2017 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+declare(strict_types=1);
 
 namespace Zend\Expressive\Delegate;
 
 use Fig\Http\Message\StatusCodeInterface;
-use Psr\Http\Message\RequestInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
-class NotFoundDelegate implements DelegateInterface
+class NotFoundDelegate implements RequestHandlerInterface
 {
     const TEMPLATE_DEFAULT = 'error::404';
     const LAYOUT_DEFAULT = 'layout::default';
@@ -42,17 +42,11 @@ class NotFoundDelegate implements DelegateInterface
      */
     private $layout;
 
-    /**
-     * @param ResponseInterface $responsePrototype
-     * @param TemplateRendererInterface $renderer
-     * @param string $template
-     * @param string $layout
-     */
     public function __construct(
         ResponseInterface $responsePrototype,
         TemplateRendererInterface $renderer = null,
-        $template = self::TEMPLATE_DEFAULT,
-        $layout = self::LAYOUT_DEFAULT
+        string $template = self::TEMPLATE_DEFAULT,
+        string $layout = self::LAYOUT_DEFAULT
     ) {
         $this->responsePrototype = $responsePrototype;
         $this->renderer = $renderer;
@@ -61,35 +55,9 @@ class NotFoundDelegate implements DelegateInterface
     }
 
     /**
-     * Proxy to handle method to support http-interop/http-middleware 0.1.1
-     *
-     * @param RequestInterface $request
-     * @return ResponseInterface
-     */
-    public function next(RequestInterface $request)
-    {
-        return $this->handle($request);
-    }
-
-    /**
-     * Proxy to handle method to support http-interop/http-middleware
-     * versions between 0.2 and 0.4.1
-     *
-     * @param ServerRequestInterface $request
-     * @return ResponseInterface
-     */
-    public function process(ServerRequestInterface $request)
-    {
-        return $this->handle($request);
-    }
-
-    /**
      * Creates and returns a 404 response.
-     *
-     * @param ServerRequestInterface $request
-     * @return ResponseInterface
      */
-    public function handle(ServerRequestInterface $request)
+    public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         if (! $this->renderer) {
             return $this->generatePlainTextResponse($request);
@@ -100,11 +68,8 @@ class NotFoundDelegate implements DelegateInterface
 
     /**
      * Generates a plain text response indicating the request method and URI.
-     *
-     * @param ServerRequestInterface $request
-     * @return ResponseInterface
      */
-    private function generatePlainTextResponse(ServerRequestInterface $request)
+    private function generatePlainTextResponse(ServerRequestInterface $request) : ResponseInterface
     {
         $response = $this->responsePrototype->withStatus(StatusCodeInterface::STATUS_NOT_FOUND);
         $response->getBody()
@@ -113,6 +78,7 @@ class NotFoundDelegate implements DelegateInterface
                 $request->getMethod(),
                 (string) $request->getUri()
             ));
+
         return $response;
     }
 
@@ -120,11 +86,8 @@ class NotFoundDelegate implements DelegateInterface
      * Generates a response using a template.
      *
      * Template will receive the current request via the "request" variable.
-     *
-     * @param ServerRequestInterface $request
-     * @return ResponseInterface
      */
-    private function generateTemplatedResponse(ServerRequestInterface $request)
+    private function generateTemplatedResponse(ServerRequestInterface $request) : ResponseInterface
     {
         $response = $this->responsePrototype->withStatus(StatusCodeInterface::STATUS_NOT_FOUND);
         $response->getBody()->write(

@@ -107,6 +107,10 @@ The `Route` class has the following signature:
 ```php
 namespace Zend\Expressive\Router;
 
+// Expressive 3.X:
+use Interop\Http\Server\MiddlewareInterface;
+
+// Expressive 2.X:
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 
 class Route
