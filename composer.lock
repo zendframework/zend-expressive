@@ -492,12 +492,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-stratigility.git",
-                "reference": "ea9ea58c97f9dcadc7c70fcef93b9567fc82ab44"
+                "reference": "f810c5ca22d90929ed7fc36d976dd8a8cd519a51"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-stratigility/zipball/ea9ea58c97f9dcadc7c70fcef93b9567fc82ab44",
-                "reference": "ea9ea58c97f9dcadc7c70fcef93b9567fc82ab44",
+                "url": "https://api.github.com/repos/zendframework/zend-stratigility/zipball/f810c5ca22d90929ed7fc36d976dd8a8cd519a51",
+                "reference": "f810c5ca22d90929ed7fc36d976dd8a8cd519a51",
                 "shasum": ""
             },
             "require": {
@@ -540,7 +540,7 @@
                 "psr-7",
                 "zf"
             ],
-            "time": "2017-12-04T22:43:51+00:00"
+            "time": "2017-12-05T15:05:31+00:00"
         }
     ],
     "packages-dev": [

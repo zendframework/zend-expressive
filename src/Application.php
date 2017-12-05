@@ -204,7 +204,7 @@ class Application extends MiddlewarePipe
      * @param null|string|array|callable $middleware Middleware
      * @return self
      */
-    public function pipe($path, $middleware = null)
+    public function pipe($path, $middleware = null) : parent
     {
         if (null === $middleware) {
             $middleware = $this->prepareMiddleware(
