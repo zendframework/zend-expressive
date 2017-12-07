@@ -23,6 +23,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use ReflectionProperty;
 use RuntimeException;
 use Throwable;
+use TypeError;
 use UnexpectedValueException;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
@@ -187,7 +188,7 @@ class ApplicationTest extends TestCase
     public function testCallingRouteWithAnInvalidPathTypeRaisesAnException($path)
     {
         $app = $this->getApp();
-        $this->expectException(RouterException\InvalidArgumentException::class);
+        $this->expectException(TypeError::class);
         $app->route($path, new TestAsset\InteropMiddleware());
     }
 
