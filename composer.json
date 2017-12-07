@@ -28,12 +28,6 @@
     "config": {
         "sort-packages": true
     },
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/webimpress/prophecy.git"
-        }
-    ],
     "require": {
         "php": "^7.1",
         "fig/http-message-util": "^1.1.2",
@@ -50,7 +44,6 @@
         "malukenho/docheader": "^0.1.6",
         "mockery/mockery": "^1.0",
         "phpunit/phpunit": "^6.5.3",
-        "phpspec/prophecy": "dev-hotfix/368 as 1.8",
         "zendframework/zend-coding-standard": "~1.0.0",
         "zendframework/zend-expressive-aurarouter": "^3.0.0-dev",
         "zendframework/zend-expressive-fastroute": "^3.0.0-dev",

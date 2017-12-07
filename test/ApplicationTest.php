@@ -292,7 +292,7 @@ class ApplicationTest extends TestCase
 
     public function testDefaultDelegateIsUsedAtInvocationIfNoOutArgumentIsSupplied()
     {
-        $routeResult = RouteResult::fromRouteFailure();
+        $routeResult = RouteResult::fromRouteFailure([]);
         $this->router->match()->willReturn($routeResult);
 
         $finalResponse = $this->prophesize(ResponseInterface::class)->reveal();
@@ -336,7 +336,7 @@ class ApplicationTest extends TestCase
 
     public function testComposedEmitterIsCalledByRun()
     {
-        $routeResult = RouteResult::fromRouteFailure();
+        $routeResult = RouteResult::fromRouteFailure([]);
         $this->router->match()->willReturn($routeResult);
 
         $finalResponse = $this->prophesize(ResponseInterface::class)->reveal();
