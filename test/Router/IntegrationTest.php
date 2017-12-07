@@ -11,11 +11,14 @@ namespace ZendTest\Expressive\Router;
 
 use Fig\Http\Message\RequestMethodInterface as RequestMethod;
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
+use Interop\Http\Server\MiddlewareInterface;
 use Interop\Http\Server\RequestHandlerInterface;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Stream;
@@ -23,6 +26,7 @@ use Zend\Expressive\Application;
 use Zend\Expressive\Middleware;
 use Zend\Expressive\Router\AuraRouter;
 use Zend\Expressive\Router\FastRouteRouter;
+use Zend\Expressive\Router\RouteResult;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Router\ZendRouter;
 use ZendTest\Expressive\ContainerTrait;
@@ -418,8 +422,28 @@ class IntegrationTest extends TestCase
     {
         $app = new Application(new $adapter());
         $app->pipeRoutingMiddleware();
-        $app->pipe(new Middleware\ImplicitHeadMiddleware());
-        $app->pipe(new Middleware\ImplicitOptionsMiddleware());
+
+        // This middleware is used just to check that request has successful RouteResult
+        $middleware = $this->prophesize(MiddlewareInterface::class);
+        $middleware->process(Argument::that(function (ServerRequestInterface $req) {
+            $routeResult = $req->getAttribute(RouteResult::class);
+
+            Assert::assertInstanceOf(RouteResult::class, $routeResult);
+            Assert::assertTrue($routeResult->isSuccess());
+
+            return true;
+        }), Argument::any())->will(function (array $args) {
+            return $args[1]->handle($args[0]);
+        });
+
+        $app->pipe($middleware->reveal());
+
+        if ($method === 'HEAD') {
+            $app->pipe(new Middleware\ImplicitHeadMiddleware());
+        }
+        if ($method === 'OPTIONS') {
+            $app->pipe(new Middleware\ImplicitOptionsMiddleware());
+        }
         $app->pipeDispatchMiddleware();
 
         // Add a route with empty array - NO HTTP methods
