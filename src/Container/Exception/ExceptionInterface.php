@@ -5,6 +5,8 @@
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace Zend\Expressive\Container\Exception;
 
 /**

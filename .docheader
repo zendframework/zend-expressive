@@ -3,3 +3,5 @@
  * @copyright Copyright (c) %regexp:(20\d{2}-)?20\d{2}% Zend Technologies USA Inc. (https://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
