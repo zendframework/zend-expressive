@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Zend\Expressive;
 
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
+use Interop\Http\Server\MiddlewareInterface;
 use Interop\Http\Server\RequestHandlerInterface;
 use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
@@ -286,14 +287,13 @@ class Application extends MiddlewarePipe
      * On first invocation, pipes the route middleware to the middleware
      * pipeline.
      *
-     * @param string|Router\Route $path
-     * @param callable|string|array $middleware Middleware (or middleware service name) to associate with route.
+     * @param callable|string|array|MiddlewareInterface $middleware Middleware (or middleware service name)
+     *     to associate with route.
      * @param null|array $methods HTTP method to accept; null indicates any.
      * @param null|string $name The name of the route.
-     * @return Router\Route
      * @throws Exception\InvalidArgumentException if $path is not a Router\Route AND middleware is null.
      */
-    public function route(string $path, $middleware = null, array $methods = null, $name = null) : Router\Route
+    public function route(string $path, $middleware, array $methods = null, string $name = null) : Router\Route
     {
         $this->checkForDuplicateRoute($path, $methods);
 
