@@ -161,8 +161,8 @@ class ApplicationTest extends TestCase
     public function testCallingRouteWithOnlyAPathRaisesAnException()
     {
         $app = $this->getApp();
-        $this->expectException(Exception\InvalidArgumentException::class);
-        $app->route('/path');
+        $this->expectException(Exception\InvalidMiddlewareException::class);
+        $app->route('/path', null);
     }
 
     public function invalidPathTypes()
