@@ -81,49 +81,4 @@ class DispatchMiddlewareTest extends TestCase
 
         $this->assertSame($expected, $response);
     }
-
-    /**
-     * @group 453
-     */
-    public function testCanDispatchCallableDoublePassMiddleware()
-    {
-        $this->handler->handle()->shouldNotBeCalled();
-
-        $expected = $this->prophesize(ResponseInterface::class)->reveal();
-        $routedMiddleware = function ($request, $response, $next) use ($expected) {
-            return $expected;
-        };
-
-        $routeResult = RouteResult::fromRoute(new Route('/', $routedMiddleware));
-
-        $this->request->getAttribute(RouteResult::class, false)->willReturn($routeResult);
-
-        $response = $this->middleware->process($this->request->reveal(), $this->handler->reveal());
-
-        $this->assertSame($expected, $response);
-    }
-
-    /**
-     * @group 453
-     */
-    public function testCanDispatchMiddlewareServices()
-    {
-        $this->handler->handle()->shouldNotBeCalled();
-
-        $expected = $this->prophesize(ResponseInterface::class)->reveal();
-        $routedMiddleware = function ($request, $response, $next) use ($expected) {
-            return $expected;
-        };
-
-        $this->container->has('RoutedMiddleware')->willReturn(true);
-        $this->container->get('RoutedMiddleware')->willReturn($routedMiddleware);
-
-        $routeResult = RouteResult::fromRoute(new Route('/', 'RoutedMiddleware'));
-
-        $this->request->getAttribute(RouteResult::class, false)->willReturn($routeResult);
-
-        $response = $this->middleware->process($this->request->reveal(), $this->handler->reveal());
-
-        $this->assertSame($expected, $response);
-    }
 }
