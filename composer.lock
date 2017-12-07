@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "4d91c926d89ea540bc410f5f2322e929",
+    "content-hash": "464b8c7f81b30f4719a323fc3bc754c7",
     "packages": [
         {
             "name": "fig/http-message-util",
@@ -1229,17 +1229,11 @@
         },
         {
             "name": "phpspec/prophecy",
-            "version": "1.7.3",
+            "version": "dev-hotfix/368",
             "source": {
                 "type": "git",
-                "url": "https://github.com/phpspec/prophecy.git",
-                "reference": "e4ed002c67da8eceb0eb8ddb8b3847bb53c5c2bf"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/e4ed002c67da8eceb0eb8ddb8b3847bb53c5c2bf",
-                "reference": "e4ed002c67da8eceb0eb8ddb8b3847bb53c5c2bf",
-                "shasum": ""
+                "url": "https://github.com/webimpress/prophecy.git",
+                "reference": "e485d91f7844c3e41d606e4ccb780baee2f61b77"
             },
             "require": {
                 "doctrine/instantiator": "^1.0.2",
@@ -1263,7 +1257,11 @@
                     "Prophecy\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "Fixtures\\Prophecy\\": "fixtures"
+                }
+            },
             "license": [
                 "MIT"
             ],
@@ -1283,12 +1281,12 @@
             "keywords": [
                 "Double",
                 "Dummy",
-                "fake",
-                "mock",
-                "spy",
-                "stub"
+                "Fake",
+                "Mock",
+                "Spy",
+                "Stub"
             ],
-            "time": "2017-11-24T13:59:53+00:00"
+            "time": "2017-12-07T10:12:50+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -3331,11 +3329,19 @@
             "time": "2017-08-22T14:19:23+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "alias": "1.8",
+            "alias_normalized": "1.8.0.0",
+            "version": "dev-hotfix/368",
+            "package": "phpspec/prophecy"
+        }
+    ],
     "minimum-stability": "stable",
     "stability-flags": {
         "zendframework/zend-expressive-router": 20,
         "zendframework/zend-stratigility": 20,
+        "phpspec/prophecy": 20,
         "zendframework/zend-expressive-aurarouter": 20,
         "zendframework/zend-expressive-fastroute": 20,
         "zendframework/zend-expressive-zendrouter": 20
