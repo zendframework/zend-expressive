@@ -67,7 +67,7 @@ class RouteMiddlewareTest extends TestCase
 
     public function testGeneralRoutingFailureInvokesDelegateWithSameRequest()
     {
-        $result = RouteResult::fromRouteFailure([]);
+        $result = RouteResult::fromRouteFailure(Route::HTTP_METHOD_ANY);
 
         $this->router->match($this->request->reveal())->willReturn($result);
         $this->response->withStatus()->shouldNotBeCalled();

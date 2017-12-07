@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace ZendTest\Expressive\Application;
 
+use Interop\Http\Server\MiddlewareInterface;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -60,7 +61,7 @@ class ConfigInjectionTest extends TestCase
                     return false;
                 }
 
-                if ($route->getMiddleware() !== $spec['middleware']) {
+                if (! $route->getMiddleware() instanceof MiddlewareInterface) {
                     return false;
                 }
 
@@ -117,6 +118,9 @@ class ConfigInjectionTest extends TestCase
      */
     public function testInjectRoutesFromConfigSetsUpRoutesFromConfig($middleware)
     {
+        $this->container->has('HelloWorld')->willReturn(true);
+        $this->container->has('Ping')->willReturn(true);
+
         $config = [
             'routes' => [
                 [

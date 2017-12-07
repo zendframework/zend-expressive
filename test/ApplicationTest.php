@@ -14,6 +14,7 @@ use Fig\Http\Message\StatusCodeInterface as StatusCode;
 use Interop\Http\Server\RequestHandlerInterface;
 use InvalidArgumentException;
 use Mockery;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -136,15 +137,6 @@ class ApplicationTest extends TestCase
         $this->assertEquals('/foo', $route->getPath());
         $this->assertSame($this->noopMiddleware, $route->getMiddleware());
         $this->assertSame($methods, $route->getAllowedMethods());
-    }
-
-    public function testCanCallRouteWithARoute()
-    {
-        $route = new Route('/foo', $this->noopMiddleware);
-        $this->router->addRoute($route)->shouldBeCalled();
-        $app   = $this->getApp();
-        $test  = $app->route($route);
-        $this->assertSame($route, $test);
     }
 
     public function testCallingRouteWithExistingPathAndOmittingMethodsArgumentRaisesException()
@@ -543,14 +535,24 @@ class ApplicationTest extends TestCase
 
     public function testRetrieveRegisteredRoutes()
     {
-        $route = new Route('/foo', $this->noopMiddleware);
-        $this->router->addRoute($route)->shouldBeCalled();
+        // $route = new Route('/foo', $this->noopMiddleware);
+        $this->router->addRoute(Argument::that(function ($arg) {
+            Assert::assertInstanceOf(Route::class, $arg);
+            Assert::assertSame('/foo', $arg->getPath());
+            Assert::assertSame($this->noopMiddleware, $arg->getMiddleware());
+            return true;
+        }))->shouldBeCalled();
+
         $app = $this->getApp();
-        $test = $app->route($route);
-        $this->assertSame($route, $test);
+        $test = $app->route('/foo', $this->noopMiddleware);
+
+        $this->assertInstanceOf(Route::class, $test);
+        $this->assertSame('/foo', $test->getPath());
+        $this->assertSame($this->noopMiddleware, $test->getMiddleware());
+
         $routes = $app->getRoutes();
         $this->assertCount(1, $routes);
-        $this->assertInstanceOf(Route::class, $routes[0]);
+        $this->assertContainsOnlyInstancesOf(Route::class, $routes);
     }
 
     /**

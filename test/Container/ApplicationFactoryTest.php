@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace ZendTest\Expressive\Container;
 
 use ArrayObject;
+use Interop\Http\Server\MiddlewareInterface;
 use Interop\Http\Server\RequestHandlerInterface;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
@@ -82,7 +83,7 @@ class ApplicationFactoryTest extends TestCase
                     return false;
                 }
 
-                if ($route->getMiddleware() !== $spec['middleware']) {
+                if (! $route->getMiddleware() instanceof MiddlewareInterface) {
                     return false;
                 }
 
@@ -129,7 +130,6 @@ class ApplicationFactoryTest extends TestCase
             'service-name' => 'HelloWorld',
             'closure' => function () {
             },
-            'callable' => [InvokableMiddleware::class, 'staticallyCallableMiddleware'],
         ];
 
         $configTypes = [
@@ -153,6 +153,9 @@ class ApplicationFactoryTest extends TestCase
      */
     public function testFactorySetsUpRoutesFromConfig($middleware, $configType)
     {
+        $this->container->has('HelloWorld')->willReturn(true);
+        $this->container->has('Ping')->willReturn(true);
+
         $config = [
             'routes' => [
                 [
@@ -233,9 +236,12 @@ class ApplicationFactoryTest extends TestCase
      * @dataProvider configTypes
      *
      * @param null|string $configType
+     * @group xya
      */
     public function testCanSpecifyRouteViaConfigurationWithNoMethods($configType)
     {
+        $this->container->has('HelloWorld')->willReturn(true);
+
         $config = [
             'routes' => [
                 [
@@ -265,6 +271,8 @@ class ApplicationFactoryTest extends TestCase
      */
     public function testCanSpecifyRouteOptionsViaConfiguration($configType)
     {
+        $this->container->has('HelloWorld')->willReturn(true);
+
         $expected = [
             'values' => [
                 'foo' => 'bar',
@@ -331,6 +339,8 @@ class ApplicationFactoryTest extends TestCase
      */
     public function testExceptionIsRaisedInCaseOfInvalidRouteOptionsConfiguration($configType)
     {
+        $this->container->has('HelloWorld')->willReturn(true);
+
         $config = [
             'routes' => [
                 [
