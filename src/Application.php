@@ -293,34 +293,18 @@ class Application extends MiddlewarePipe
      * @return Router\Route
      * @throws Exception\InvalidArgumentException if $path is not a Router\Route AND middleware is null.
      */
-    public function route($path, $middleware = null, array $methods = null, $name = null)
+    public function route(string $path, $middleware = null, array $methods = null, $name = null) : Router\Route
     {
-        if (! $path instanceof Router\Route && null === $middleware) {
-            throw new Exception\InvalidArgumentException(sprintf(
-                '%s expects either a route argument, or a combination of a path and middleware arguments',
-                __METHOD__
-            ));
-        }
-
-        if ($path instanceof Router\Route) {
-            $route   = $path;
-            $path    = $route->getPath();
-            $methods = $route->getAllowedMethods();
-            $name    = $route->getName();
-        }
-
         $this->checkForDuplicateRoute($path, $methods);
 
-        if (! isset($route)) {
-            $methods    = null === $methods ? Router\Route::HTTP_METHOD_ANY : $methods;
-            $middleware = $this->prepareMiddleware(
-                $middleware,
-                $this->router,
-                $this->responsePrototype,
-                $this->container
-            );
-            $route      = new Router\Route($path, $middleware, $methods, $name);
-        }
+        $methods    = null === $methods ? Router\Route::HTTP_METHOD_ANY : $methods;
+        $middleware = $this->prepareMiddleware(
+            $middleware,
+            $this->router,
+            $this->responsePrototype,
+            $this->container
+        );
+        $route      = new Router\Route($path, $middleware, $methods, $name);
 
         $this->routes[] = $route;
         $this->router->addRoute($route);

@@ -166,7 +166,7 @@ trait ApplicationConfigInjectionTrait
             }
 
             $name  = $spec['name'] ?? null;
-            $route = new Route($spec['path'], $spec['middleware'], $methods, $name);
+            $route = $this->route($spec['path'], $spec['middleware'], $methods, $name);
 
             if (isset($spec['options'])) {
                 $options = $spec['options'];
@@ -179,8 +179,6 @@ trait ApplicationConfigInjectionTrait
 
                 $route->setOptions($options);
             }
-
-            $this->route($route);
         }
     }
 
