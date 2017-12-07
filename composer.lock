@@ -2724,12 +2724,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-expressive-aurarouter.git",
-                "reference": "b22b587bb46607b7c43f45e9502f33694ec320c8"
+                "reference": "7129a050b4aab3acbcdb68bdbb363bb982959fec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-expressive-aurarouter/zipball/b22b587bb46607b7c43f45e9502f33694ec320c8",
-                "reference": "b22b587bb46607b7c43f45e9502f33694ec320c8",
+                "url": "https://api.github.com/repos/zendframework/zend-expressive-aurarouter/zipball/7129a050b4aab3acbcdb68bdbb363bb982959fec",
+                "reference": "7129a050b4aab3acbcdb68bdbb363bb982959fec",
                 "shasum": ""
             },
             "require": {
@@ -2773,7 +2773,7 @@
                 "zend-expressive",
                 "zf"
             ],
-            "time": "2017-12-07T17:42:05+00:00"
+            "time": "2017-12-07T21:12:43+00:00"
         },
         {
             "name": "zendframework/zend-expressive-fastroute",
@@ -2843,12 +2843,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-expressive-zendrouter.git",
-                "reference": "56b14a02d272c45c0b1273984d6a5bedbf6bd587"
+                "reference": "1234ab08bf3180cf91590ddee35472fcb43719e4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-expressive-zendrouter/zipball/56b14a02d272c45c0b1273984d6a5bedbf6bd587",
-                "reference": "56b14a02d272c45c0b1273984d6a5bedbf6bd587",
+                "url": "https://api.github.com/repos/zendframework/zend-expressive-zendrouter/zipball/1234ab08bf3180cf91590ddee35472fcb43719e4",
+                "reference": "1234ab08bf3180cf91590ddee35472fcb43719e4",
                 "shasum": ""
             },
             "require": {
@@ -2893,7 +2893,7 @@
                 "zend-expressive",
                 "zf"
             ],
-            "time": "2017-12-07T17:48:31+00:00"
+            "time": "2017-12-07T21:14:39+00:00"
         },
         {
             "name": "zendframework/zend-http",
