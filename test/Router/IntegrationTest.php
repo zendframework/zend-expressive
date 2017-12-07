@@ -430,6 +430,7 @@ class IntegrationTest extends TestCase
 
             Assert::assertInstanceOf(RouteResult::class, $routeResult);
             Assert::assertTrue($routeResult->isSuccess());
+            Assert::assertFalse($routeResult->isMethodFailure());
 
             return true;
         }), Argument::any())->will(function (array $args) {
