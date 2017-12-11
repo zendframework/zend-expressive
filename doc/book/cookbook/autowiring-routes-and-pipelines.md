@@ -1,6 +1,6 @@
 # How can I autowire routes and pipelines?
 
-Expressive 2.0 switches to _programmatic_ piplines and routes, versus
+Expressive 2.0 switches to _programmatic_ pipelines and routes, versus
 _configuration-driven_ pipelines and routing. One drawback is that with
 configuration-driven approaches, users could provide configuration via a module
 `ConfigProvider`, and automatically expose new pipeline middleware or routes;
