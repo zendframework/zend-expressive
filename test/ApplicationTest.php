@@ -11,6 +11,7 @@ use BadMethodCallException;
 use DomainException;
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
 use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use InvalidArgumentException;
 use Mockery;
 use PHPUnit\Framework\TestCase;
@@ -19,6 +20,7 @@ use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use ReflectionMethod;
 use ReflectionProperty;
 use RuntimeException;
 use UnexpectedValueException;
@@ -719,5 +721,27 @@ class ApplicationTest extends TestCase
             ->willReturn($response);
 
         $this->assertSame($response, $app->process($request, $delegate->reveal()));
+    }
+
+    public function testPreparingArrayWithPairOfObjectAndStringMiddlewaresShouldNotBeTreatedAsCallable()
+    {
+        $first  = $this->prophesize(MiddlewareInterface::class)->reveal();
+        $second = TestAsset\CallableInteropMiddleware::class;
+        $queue  = [$first, $second];
+
+        $router = $this->router->reveal();
+        $response = $this->prophesize(ResponseInterface::class)->reveal();
+
+        $app = $this->getApp();
+        $r = new ReflectionMethod($app, 'prepareMiddleware');
+        $r->setAccessible(true);
+
+        $middleware = $r->invoke($app, $queue, $router, $response);
+
+        $this->assertInstanceOf(MiddlewarePipe::class, $middleware);
+
+        $r = new ReflectionProperty($middleware, 'pipeline');
+        $r->setAccessible(true);
+        $this->assertCount(2, $r->getValue($middleware));
     }
 }
