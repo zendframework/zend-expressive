@@ -12,14 +12,11 @@ Pimple only supports programmatic creation at this time.
 
 ## Installing Pimple
 
-Pimple does not currently (as of v3) implement
-[PSR-11 Container](https://github.com/php-fig/container); as
-such, you need to install the `xtreamwayz/pimple-container-interop` project,
-which provides a [PSR-11 Container](https://github.com/php-fig/container)
-wrapper around Pimple v3:
+Pimple implements [PSR-11 Container](https://github.com/php-fig/container)
+as of version 3.2.
 
 ```bash
-$ composer require xtreamwayz/pimple-container-interop
+$ composer require pimple/pimple
 ```
 
 ## Configuring Pimple
@@ -29,13 +26,14 @@ recommend doing this in a dedicated script that returns the Pimple instance; in
 this example, we'll have that in `config/container.php`.
 
 ```php
-use Xtreamwayz\Pimple\Container as Pimple;
+use Pimple\Container as PimpleContainer;
+use Pimple\Psr11\Container as PsrContainer;
 use Zend\Expressive\Container;
 use Zend\Expressive\Plates\PlatesRenderer;
 use Zend\Expressive\Router;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
-$container = new Pimple();
+$container = new PimpleContainer();
 
 // Application and configuration
 $container['config'] = include 'config/config.php';
@@ -44,7 +42,7 @@ $container['Zend\Expressive\Application'] = new Container\ApplicationFactory;
 // Routing
 // In most cases, you can instantiate the router you want to use without using a
 // factory:
-$container['Zend\Expressive\Router\RouterInterface'] = function ($container) {
+$container['Zend\Expressive\Router\RouterInterface'] = function (PimpleContainer $container) {
     return new Router\Aura();
 };
 
@@ -59,7 +57,7 @@ $container[Zend\Expressive\Middleware\NotFoundHandler::class] = new Container\No
 // Templating
 // In most cases, you can instantiate the template renderer you want to use
 // without using a factory:
-$container[TemplateRendererInterface::class] = function ($container) {
+$container[TemplateRendererInterface::class] = function (PimpleContainer $container) {
     return new PlatesRenderer();
 };
 
@@ -88,7 +86,7 @@ $container['Zend\Expressive\FinalHandler'] = new Container\TemplatedErrorHandler
 // - Expressive 2.X:
 $container[Zend\Expressive\Middleware\ErrorResponseGenerator::class] = new Container\ErrorResponseGeneratorFactory();
 
-return $container;
+return new PsrContainer($container);
 ```
 
 Your bootstrap (typically `public/index.php`) will then look like this:
