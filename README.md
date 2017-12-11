@@ -84,7 +84,7 @@ documentation.
 
 ## Documentation
 
-Documentation is [in the doc tree](doc/book/), and can be compiled using [mkdocs](http://www.mkdocs.org):
+Documentation is [in the doc tree](docs/book/), and can be compiled using [mkdocs](http://www.mkdocs.org):
 
 ```bash
 $ mkdocs build
