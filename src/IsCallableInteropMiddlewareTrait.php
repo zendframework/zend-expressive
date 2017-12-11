@@ -14,6 +14,35 @@ use ReflectionMethod;
 trait IsCallableInteropMiddlewareTrait
 {
     /**
+     * Is the provided $middleware argument callable?
+     *
+     * Runs the argument against is_callable(). If that returns true, and the
+     * value is an array with two elements, tests to ensure that the second
+     * element is a method of the first.
+     *
+     * @param mixed $middleware
+     * @return bool
+     */
+    private function isCallable($middleware)
+    {
+        if (! is_callable($middleware)) {
+            return false;
+        }
+
+        if (! is_array($middleware)) {
+            return true;
+        }
+
+        $classOrObject = array_shift($middleware);
+        if (! is_object($classOrObject) && ! class_exists($classOrObject)) {
+            return false;
+        }
+
+        $method = array_shift($middleware);
+        return method_exists($classOrObject, $method);
+    }
+
+    /**
      * Is callable middleware interop middleware?
      *
      * @param mixed $middleware
@@ -21,7 +50,7 @@ trait IsCallableInteropMiddlewareTrait
      */
     private function isCallableInteropMiddleware($middleware)
     {
-        if (! is_callable($middleware)) {
+        if (! $this->isCallable($middleware)) {
             return false;
         }
 
