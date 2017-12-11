@@ -7,16 +7,14 @@
 
 namespace Zend\Expressive\Middleware;
 
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
-use Webimpress\HttpMiddlewareCompatibility\MiddlewareInterface as ServerMiddlewareInterface;
 use Zend\Expressive\MarshalMiddlewareTrait;
 use Zend\Expressive\Router\RouteResult;
 use Zend\Expressive\Router\RouterInterface;
-
-use const Webimpress\HttpMiddlewareCompatibility\HANDLER_METHOD;
 
 /**
  * Default dispatch middleware.
@@ -75,7 +73,7 @@ class DispatchMiddleware implements ServerMiddlewareInterface
     {
         $routeResult = $request->getAttribute(RouteResult::class, false);
         if (! $routeResult) {
-            return $delegate->{HANDLER_METHOD}($request);
+            return $delegate->process($request);
         }
 
         $middleware = $routeResult->getMatchedMiddleware();

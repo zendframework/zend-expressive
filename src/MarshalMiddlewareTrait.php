@@ -7,9 +7,9 @@
 
 namespace Zend\Expressive;
 
+use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
-use Webimpress\HttpMiddlewareCompatibility\MiddlewareInterface as ServerMiddlewareInterface;
 use Zend\Stratigility\Middleware\CallableInteropMiddlewareWrapper;
 use Zend\Stratigility\Middleware\CallableMiddlewareWrapper;
 use Zend\Stratigility\MiddlewarePipe;
@@ -63,7 +63,7 @@ trait MarshalMiddlewareTrait
             return new CallableInteropMiddlewareWrapper($middleware);
         }
 
-        if (is_callable($middleware)) {
+        if ($this->isCallable($middleware)) {
             return new CallableMiddlewareWrapper($middleware, $responsePrototype);
         }
 

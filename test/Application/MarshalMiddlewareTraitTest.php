@@ -7,15 +7,16 @@
 
 namespace ZendTest\Expressive\Application;
 
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use ReflectionMethod;
 use ReflectionProperty;
 use stdClass;
-use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
-use Webimpress\HttpMiddlewareCompatibility\MiddlewareInterface as ServerMiddlewareInterface;
 use Zend\Expressive\Application;
 use Zend\Expressive\Exception\InvalidMiddlewareException;
 use Zend\Expressive\Middleware;
@@ -159,14 +160,15 @@ class MarshalMiddlewareTraitTest extends TestCase
 
     public function testPreparingArrayOfMiddlewareReturnsMiddlewarePipe()
     {
-        $first  = $this->prophesize(ServerMiddlewareInterface::class)->reveal();
-        $second = function ($request, DelegateInterface $delegate) {
+        $first   = $this->prophesize(ServerMiddlewareInterface::class)->reveal();
+        $second  = function ($request, DelegateInterface $delegate) {
         };
-        $third  = function ($request, $response, callable $next) {
+        $third   = function ($request, $response, callable $next) {
         };
-        $fourth = 'fourth';
-        $fifth  = TestAsset\CallableMiddleware::class;
-        $sixth  = TestAsset\CallableInteropMiddleware::class;
+        $fourth  = 'fourth';
+        $fifth   = TestAsset\CallableMiddleware::class;
+        $sixth   = TestAsset\CallableInteropMiddleware::class;
+        $seventh = [$first, $second];
 
         $this->container->has('fourth')->willReturn(true);
         $this->container->has(TestAsset\CallableMiddleware::class)->willReturn(false);
@@ -179,6 +181,7 @@ class MarshalMiddlewareTraitTest extends TestCase
             $fourth,
             $fifth,
             $sixth,
+            $seventh,
         ];
 
         $middleware = $this->prepareMiddleware($base);
@@ -188,7 +191,7 @@ class MarshalMiddlewareTraitTest extends TestCase
         $r->setAccessible(true);
         $pipeline = $r->getValue($middleware);
 
-        $this->assertCount(6, $pipeline);
+        $this->assertCount(7, $pipeline);
     }
 
     public function testPreparingArrayOfMiddlewareWithoutContainerReturnsMiddlewarePipe()

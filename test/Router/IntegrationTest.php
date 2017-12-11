@@ -9,11 +9,11 @@ namespace ZendTest\Expressive\Router;
 
 use Fig\Http\Message\RequestMethodInterface as RequestMethod;
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
+use Interop\Http\ServerMiddleware\DelegateInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
-use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Stream;
@@ -24,8 +24,6 @@ use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Router\ZendRouter;
 use ZendTest\Expressive\ContainerTrait;
-
-use const Webimpress\HttpMiddlewareCompatibility\HANDLER_METHOD;
 
 class IntegrationTest extends TestCase
 {
@@ -132,7 +130,7 @@ class IntegrationTest extends TestCase
     {
         $app = $this->createApplicationWithGetPost($adapter);
         $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->{HANDLER_METHOD}(Argument::type(ServerRequest::class))
+        $delegate->process(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'DELETE'], [], '/foo', 'DELETE');
@@ -157,7 +155,7 @@ class IntegrationTest extends TestCase
         $app->pipeDispatchMiddleware();
 
         $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->{HANDLER_METHOD}(Argument::type(ServerRequest::class))
+        $delegate->process(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');
@@ -185,7 +183,7 @@ class IntegrationTest extends TestCase
         $app->pipeDispatchMiddleware();
 
         $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->{HANDLER_METHOD}(Argument::type(ServerRequest::class))
+        $delegate->process(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');
@@ -213,7 +211,7 @@ class IntegrationTest extends TestCase
         $app->pipeDispatchMiddleware();
 
         $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->{HANDLER_METHOD}(Argument::type(ServerRequest::class))
+        $delegate->process(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');
@@ -240,7 +238,7 @@ class IntegrationTest extends TestCase
         $app->pipeDispatchMiddleware();
 
         $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->{HANDLER_METHOD}(Argument::type(ServerRequest::class))
+        $delegate->process(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');
@@ -280,7 +278,7 @@ class IntegrationTest extends TestCase
         }, ['DELETE']);
 
         $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->{HANDLER_METHOD}(Argument::type(ServerRequest::class))
+        $delegate->process(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');
@@ -336,7 +334,7 @@ class IntegrationTest extends TestCase
         });
 
         $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->{HANDLER_METHOD}(Argument::type(ServerRequest::class))
+        $delegate->process(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
         $request = new ServerRequest(['REQUEST_METHOD' => $method], [], '/foo', $method);
@@ -398,7 +396,7 @@ class IntegrationTest extends TestCase
         });
 
         $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->{HANDLER_METHOD}(Argument::type(ServerRequest::class))
+        $delegate->process(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
         $request  = new ServerRequest(['REQUEST_METHOD' => $method], [], '/foo', $method);
@@ -430,7 +428,7 @@ class IntegrationTest extends TestCase
         }, []);
 
         $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->{HANDLER_METHOD}(Argument::type(ServerRequest::class))
+        $delegate->process(Argument::type(ServerRequest::class))
             ->willReturn($this->response);
 
         $request = new ServerRequest(['REQUEST_METHOD' => $method], [], '/foo', $method);
@@ -460,7 +458,7 @@ class IntegrationTest extends TestCase
         }, []);
 
         $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->{HANDLER_METHOD}(Argument::type(ServerRequest::class))
+        $delegate->process(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
         $request = new ServerRequest(['REQUEST_METHOD' => $method], [], '/foo', $method);
@@ -489,7 +487,7 @@ class IntegrationTest extends TestCase
 
         $expected = (new Response())->withStatus(StatusCode::STATUS_NOT_FOUND);
         $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->{HANDLER_METHOD}(Argument::type(ServerRequest::class))
+        $delegate->process(Argument::type(ServerRequest::class))
             ->willReturn($expected);
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');

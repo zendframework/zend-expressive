@@ -9,6 +9,8 @@ namespace ZendTest\Expressive;
 
 use DomainException;
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use InvalidArgumentException;
 use Mockery;
 use PHPUnit\Framework\TestCase;
@@ -17,10 +19,11 @@ use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use ReflectionMethod;
 use ReflectionProperty;
 use RuntimeException;
 use UnexpectedValueException;
-use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
+use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Diactoros\ServerRequest;
@@ -39,8 +42,6 @@ use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\Stratigility\Route as StratigilityRoute;
-
-use const Webimpress\HttpMiddlewareCompatibility\HANDLER_METHOD;
 
 /**
  * @covers Zend\Expressive\Application
@@ -296,7 +297,7 @@ class ApplicationTest extends TestCase
 
         $finalResponse = $this->prophesize(ResponseInterface::class)->reveal();
         $defaultDelegate = $this->prophesize(DelegateInterface::class);
-        $defaultDelegate->{HANDLER_METHOD}(Argument::type(ServerRequestInterface::class))
+        $defaultDelegate->process(Argument::type(ServerRequestInterface::class))
             ->willReturn($finalResponse);
 
         $emitter = $this->prophesize(EmitterInterface::class);
@@ -340,7 +341,7 @@ class ApplicationTest extends TestCase
 
         $finalResponse = $this->prophesize(ResponseInterface::class)->reveal();
         $defaultDelegate = $this->prophesize(DelegateInterface::class);
-        $defaultDelegate->{HANDLER_METHOD}(Argument::type(ServerRequestInterface::class))
+        $defaultDelegate->process(Argument::type(ServerRequestInterface::class))
             ->willReturn($finalResponse);
 
         $emitter = $this->prophesize(EmitterInterface::class);
@@ -667,5 +668,65 @@ class ApplicationTest extends TestCase
 
         $this->assertAttributeNotSame($appResponsePrototype, 'responsePrototype', $delegate);
         $this->assertAttributeSame($renderer, 'renderer', $delegate);
+    }
+
+    public function testAllowsNestedMiddlewarePipelines()
+    {
+        $app     = $this->getApp();
+        $counter = function (ServerRequestInterface $request, DelegateInterface $delegate) {
+            $count   = $request->getAttribute('count', 0);
+            $request = $request->withAttribute('count', $count + 1);
+
+            return $delegate->process($request);
+        };
+
+        $app->pipe([
+            // First level
+            $counter,
+            [
+                // Second level
+                $counter,
+                $counter
+            ],
+            [
+                [
+                    // Third level
+                    $counter,
+                    $counter
+                ]
+            ]
+        ]);
+
+        $request  = new ServerRequest();
+        $response = new Response();
+        $delegate = $this->prophesize(DelegateInterface::class);
+
+        $delegate->process($request->withAttribute('count', 5))
+            ->shouldBeCalled()
+            ->willReturn($response);
+
+        $this->assertSame($response, $app->process($request, $delegate->reveal()));
+    }
+
+    public function testPreparingArrayWithPairOfObjectAndStringMiddlewaresShouldNotBeTreatedAsCallable()
+    {
+        $first  = $this->prophesize(MiddlewareInterface::class)->reveal();
+        $second = TestAsset\CallableInteropMiddleware::class;
+        $queue  = [$first, $second];
+
+        $router = $this->router->reveal();
+        $response = $this->prophesize(ResponseInterface::class)->reveal();
+
+        $app = $this->getApp();
+        $r = new ReflectionMethod($app, 'prepareMiddleware');
+        $r->setAccessible(true);
+
+        $middleware = $r->invoke($app, $queue, $router, $response);
+
+        $this->assertInstanceOf(MiddlewarePipe::class, $middleware);
+
+        $r = new ReflectionProperty($middleware, 'pipeline');
+        $r->setAccessible(true);
+        $this->assertCount(2, $r->getValue($middleware));
     }
 }

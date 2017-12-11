@@ -6,11 +6,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- [#517](https://github.com/zendframework/zend-expressive/pull/517) adds
-  support for http-interop/http-middleware 0.5.0 via a polyfill provided by the
-  package webimpress/http-middleware-compatibility. Essentially, this means you
-  can drop this package into an application targeting either the 0.4.1 or 0.5.0
-  versions of http-middleware, and it will "just work".
+- Nothing.
 
 ### Changed
 
@@ -48,6 +44,33 @@ All notable changes to this project will be documented in this file, in reverse 
 ### Fixed
 
 - Nothing.
+
+## 2.0.6 - 2017-12-11
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#534](https://github.com/zendframework/zend-expressive/pull/534) provides a
+  fix for how it detects `callable` middleware. Previously, it relied on PHP's
+  `is_callable()`, but that function can result in false positives when provided
+  a 2-element array where the first element is an object, as the function does
+  not verify that the second argument is a valid method of the first. We now
+  implement additional verifications to prevent such false positives.
 
 ## 2.0.5 - 2017-10-09
 

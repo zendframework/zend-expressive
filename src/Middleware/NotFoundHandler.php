@@ -7,13 +7,11 @@
 
 namespace Zend\Expressive\Middleware;
 
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
-use Webimpress\HttpMiddlewareCompatibility\MiddlewareInterface;
 use Zend\Expressive\Delegate\NotFoundDelegate;
-
-use const Webimpress\HttpMiddlewareCompatibility\HANDLER_METHOD;
 
 class NotFoundHandler implements MiddlewareInterface
 {
@@ -39,6 +37,6 @@ class NotFoundHandler implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        return $this->internalDelegate->{HANDLER_METHOD}($request);
+        return $this->internalDelegate->process($request);
     }
 }
