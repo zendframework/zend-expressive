@@ -1,15 +1,17 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2016-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2016-2017 Zend Technologies USA Inc. (https://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace ZendTest\Expressive\Middleware;
 
 use Fig\Http\Message\RequestMethodInterface as RequestMethod;
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -28,11 +30,11 @@ class ImplicitOptionsMiddlewareTest extends TestCase
 
         $response = $this->prophesize(ResponseInterface::class)->reveal();
 
-        $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->process($request->reveal())->willReturn($response);
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle($request->reveal())->willReturn($response);
 
         $middleware = new ImplicitOptionsMiddleware();
-        $result = $middleware->process($request->reveal(), $delegate->reveal());
+        $result = $middleware->process($request->reveal(), $handler->reveal());
         $this->assertSame($response, $result);
     }
 
@@ -44,11 +46,11 @@ class ImplicitOptionsMiddlewareTest extends TestCase
 
         $response = $this->prophesize(ResponseInterface::class)->reveal();
 
-        $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->process($request->reveal())->willReturn($response);
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle($request->reveal())->willReturn($response);
 
         $middleware = new ImplicitOptionsMiddleware();
-        $result = $middleware->process($request->reveal(), $delegate->reveal());
+        $result = $middleware->process($request->reveal(), $handler->reveal());
         $this->assertSame($response, $result);
     }
 
@@ -63,11 +65,11 @@ class ImplicitOptionsMiddlewareTest extends TestCase
 
         $response = $this->prophesize(ResponseInterface::class)->reveal();
 
-        $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->process($request->reveal())->willReturn($response);
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle($request->reveal())->willReturn($response);
 
         $middleware = new ImplicitOptionsMiddleware();
-        $result = $middleware->process($request->reveal(), $delegate->reveal());
+        $result = $middleware->process($request->reveal(), $handler->reveal());
         $this->assertSame($response, $result);
     }
 
@@ -85,11 +87,11 @@ class ImplicitOptionsMiddlewareTest extends TestCase
 
         $response = $this->prophesize(ResponseInterface::class)->reveal();
 
-        $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->process($request->reveal())->willReturn($response);
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle($request->reveal())->willReturn($response);
 
         $middleware = new ImplicitOptionsMiddleware();
-        $result = $middleware->process($request->reveal(), $delegate->reveal());
+        $result = $middleware->process($request->reveal(), $handler->reveal());
         $this->assertSame($response, $result);
     }
 
@@ -110,11 +112,11 @@ class ImplicitOptionsMiddlewareTest extends TestCase
 
         $response = $this->prophesize(ResponseInterface::class)->reveal();
 
-        $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->process($request->reveal())->shouldNotBeCalled();
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle($request->reveal())->shouldNotBeCalled();
 
         $middleware = new ImplicitOptionsMiddleware();
-        $result = $middleware->process($request->reveal(), $delegate->reveal());
+        $result = $middleware->process($request->reveal(), $handler->reveal());
         $this->assertInstanceOf(Response::class, $result);
         $this->assertNotSame($response, $result);
         $this->assertEquals(StatusCode::STATUS_OK, $result->getStatusCode());
@@ -136,14 +138,14 @@ class ImplicitOptionsMiddlewareTest extends TestCase
         $request->getMethod()->willReturn(RequestMethod::METHOD_OPTIONS);
         $request->getAttribute(RouteResult::class, false)->will([$result, 'reveal']);
 
-        $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->process($request->reveal())->shouldNotBeCalled();
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle($request->reveal())->shouldNotBeCalled();
 
         $expected = $this->prophesize(ResponseInterface::class);
         $expected->withHeader('Allow', implode(',', $allowedMethods))->will([$expected, 'reveal']);
 
         $middleware = new ImplicitOptionsMiddleware($expected->reveal());
-        $result = $middleware->process($request->reveal(), $delegate->reveal());
+        $result = $middleware->process($request->reveal(), $handler->reveal());
         $this->assertSame($expected->reveal(), $result);
     }
 }

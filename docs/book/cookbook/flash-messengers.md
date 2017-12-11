@@ -37,19 +37,32 @@ Second, create middleware that will add the flash message provider to the reques
 <?php
 namespace App;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
+// Expressive 3.X:
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+
+// Expressive 2.X:
+use Interop\Http\ServerMiddleware\DelegateInterface as RequestHandlerInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
+
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Flash\Messages;
 
 class SlimFlashMiddleware implements MiddlewareInterface
 {
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         // Start the session whenever we use this!
         session_start();
 
-        return $delegate->process(
+        // Expressive 3.X:
+        return $handler->handle(
+            $request->withAttribute('flash', new Messages())
+        );
+
+        // Expressive 2.X:
+        return $handler->process(
             $request->withAttribute('flash', new Messages())
         );
     }
@@ -118,10 +131,10 @@ From here, you can add and read messages by accessing the request's flash
 attribute. As an example, middleware generating messages might read as follows:
 
 ```php
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 use Zend\Diactoros\Response\RedirectResponse;
 
-function($request, DelegateInterface $delegate)
+function($request, RequestHandlerInterface $handler)
 {
     $flash = $request->getAttribute('flash');
     $flash->addMessage('message', 'Hello World!');
@@ -133,9 +146,9 @@ function($request, DelegateInterface $delegate)
 And middleware consuming the message might read:
 
 ```php
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 
-function($request, DelegateInterface $delegate)
+function($request, RequestHandlerInterface $handler)
 {
     $flash = $request->getAttribute('flash');
     $messages = $flash->getMessages();
@@ -235,10 +248,10 @@ an example, the middleware that is processing a POST request might set a flash
 message:
 
 ```php
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 use Zend\Diactoros\Response\RedirectResponse;
 
-function($request, DelegateInterface $delegate)
+function($request, RequestHandlerInterface $handler)
 {
     $session = $request->getAttribute('session');
     $session->getSegment(__NAMESPACE__)
@@ -252,9 +265,9 @@ Another middleware, to which the original middleware redirects, might look like
 this:
 
 ```php
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 
-function($request, DelegateInterface $delegate)
+function($request, RequestHandlerInterface $handler)
 {
     $session = $request->getAttribute('session');
     $message = $session->getSegment(__NAMESPACE__)

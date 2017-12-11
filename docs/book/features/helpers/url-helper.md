@@ -224,9 +224,21 @@ Compose the helper in your middleware (or elsewhere), and then use it to
 generate URI paths:
 
 ```php
+<?php
+
+// Expressive 3.X:
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+
+// Expressive 2.X:
+use Interop\Http\ServerMiddleware\DelegateInterface as RequestHandlerInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
+
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Helper\UrlHelper;
 
-class FooMiddleware
+class FooMiddleware implements MiddlewareInterface
 {
     private $helper;
 
@@ -235,13 +247,17 @@ class FooMiddleware
         $this->helper = $helper;
     }
 
-    public function __invoke($request, $response, callable $next)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
-        $response = $response->withHeader(
+        // Expressive 3.X:
+        $response = $handler->handle($request);
+        // Expressive 2.X:
+        $response = $handler->process($request);
+
+        return $response->withHeader(
             'Link',
             $this->helper->generate('resource', ['id' => 'sha1'])
         );
-        return $next($request, $response);
     }
 }
 ```
@@ -260,9 +276,16 @@ detected language, before stripping it off the request URI instance to pass on
 to the router:
 
 ```php
-use Interop\Http\ServerMiddleware\DelegateInterface;
+<?php
+// Expressive 3.X:
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+
+// Expressive 2.X:
+use Interop\Http\ServerMiddleware\DelegateInterface as RequestHandlerInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
-use Locale;
+
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Helper\UrlHelper;
 
@@ -275,19 +298,27 @@ class LocaleMiddleware implements MiddlewareInterface
         $this->helper = $helper;
     }
 
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         $uri = $request->getUri();
         $path = $uri->getPath();
         if (! preg_match('#^/(?P<locale>[a-z]{2,3}([-_][a-zA-Z]{2}|))/#', $path, $matches)) {
-            return $delegate->process($request);
+            // Expressive 3.X:
+            return $handler->handle($request);
+            // Expressive 2.X:
+            return $handler->process($request);
         }
 
         $locale = $matches['locale'];
         Locale::setDefault(Locale::canonicalize($locale));
         $this->helper->setBasePath($locale);
 
-        return $delegate->process($request->withUri(
+        // Expressive 3.X:
+        return $handler->handle($request->withUri(
+            $uri->withPath(substr($path, (strlen($locale) + 1)))
+        ));
+        // Expressive 2.X:
+        return $handler->process($request->withUri(
             $uri->withPath(substr($path, (strlen($locale) + 1)))
         ));
     }

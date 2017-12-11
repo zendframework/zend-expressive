@@ -64,8 +64,16 @@ We might then implement `Album\Action\AlbumPage` as follows:
 namespace Album\Action;
 
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+
+// Expressive 3.X:
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+
+// Expressive 2.X:
+use Interop\Http\ServerMiddleware\DelegateInterface as RequestHandlerInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
+
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\EmptyResponse;
 use Zend\Diactoros\Response\HtmlResponse;
@@ -80,32 +88,32 @@ class AlbumPage implements MiddlewareInterface
         $this->template = $template;
     }
 
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         switch ($request->getAttribute('action', 'index')) {
             case 'index':
-                return $this->indexAction($request, $delegate);
+                return $this->indexAction($request, $handler);
             case 'add':
-                return $this->addAction($request, $delegate);
+                return $this->addAction($request, $handler);
             case 'edit':
-                return $this->editAction($request, $delegate);
+                return $this->editAction($request, $handler);
             default:
                 // Invalid; thus, a 404!
                 return new EmptyResponse(StatusCode::STATUS_NOT_FOUND);
         }
     }
 
-    public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function indexAction(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         return new HtmlResponse($this->template->render('album::album-page'));
     }
 
-    public function addAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function addAction(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         return new HtmlResponse($this->template->render('album::album-page-add'));
     }
 
-    public function editAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function editAction(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         $id = $request->getAttribute('id', false);
         if (! $id) {
@@ -131,14 +139,22 @@ a generic implementation, via an `AbstractPage` class:
 namespace App\Action;
 
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+
+// Expressive 3.X:
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\http\Server\RequestHandlerInterface;
+
+// Expressive 2.X:
+use Interop\Http\ServerMiddleware\DelegateInterface as RequestHandlerInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
+
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\EmptyResponse;
 
 abstract class AbstractPage implements MiddlewareInterface
 {
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         $action = $request->getAttribute('action', 'index') . 'Action';
 
@@ -146,7 +162,7 @@ abstract class AbstractPage implements MiddlewareInterface
             return new EmptyResponse(StatusCode::STATUS_NOT_FOUND);
         }
 
-        return $this->$action($request, $delegate);
+        return $this->$action($request, $handler);
     }
 }
 ```
@@ -160,12 +176,11 @@ Our original `AlbumPage` implementation could then be modified to extend
 `AbstractPage`:
 
 ```php
+<?php
 namespace Album\Action;
 
 use App\Action\AbstractPage;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\HtmlResponse;
+use Psr\Http\Message\ResponseInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
 class AlbumPage extends AbstractPage
@@ -177,9 +192,9 @@ class AlbumPage extends AbstractPage
         $this->template = $template;
     }
 
-    public function indexAction( /* ... */ ) { /* ... */ }
-    public function addAction( /* ... */ ) { /* ... */ }
-    public function editAction( /* ... */ ) { /* ... */ }
+    public function indexAction( /* ... */ ) : ResponseInterface { /* ... */ }
+    public function addAction( /* ... */ ) : ResponseInterface { /* ... */ }
+    public function editAction( /* ... */ ) : ResponseInterface { /* ... */ }
 }
 ```
 
@@ -193,21 +208,28 @@ class AlbumPage extends AbstractPage
 > namespace App\Action;
 >
 > use Fig\Http\Message\StatusCodeInterface as StatusCode;
-> use Interop\Http\ServerMiddleware\DelegateInterface;
+>
+> // Expressive 3.X:
+> use Interop\Http\Server\RequestHandlerInterface;
+>
+> // Expressive 2.X:
+> use Interop\Http\ServerMiddleware\DelegateInterface as RequestHandlerInterface;
+>
+> use Psr\Http\Message\ResponseInterface;
 > use Psr\Http\Message\ServerRequestInterface;
 > use Zend\Diactoros\Response\EmptyResponse;
 >
 > trait ActionBasedInvocation
 > {
->     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+>     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
 >     {
 >         $action = $request->getAttribute('action', 'index') . 'Action';
 >
 >         if (! method_exists($this, $action)) {
 >             return new EmptyResponse(StatusCode::STATUS_NOT_FOUND);
 >         }
->
->         return $this->$action($request, $delegate);
+> 
+>         return $this->$action($request, $handler);
 >     }
 > }
 > ```
@@ -219,21 +241,22 @@ class AlbumPage extends AbstractPage
 > namespace Album\Action;
 >
 > use App\Action\ActionBasedInvocation;
+> use Psr\Http\Message\ResponseInterface;
 > use Zend\Expressive\Template\TemplateRendererInterface;
 >
 > class AlbumPage
 > {
 >     use ActionBasedInvocation;
 >
->     private $template;
+>     private $template;    
 >
 >     public function __construct(TemplateRendererInterface $template)
 >     {
 >         $this->template = $template;
 >     }
->
->     public function indexAction( /* ... */ ) { /* ... */ }
->     public function addAction( /* ... */ ) { /* ... */ }
->     public function editAction( /* ... */ ) { /* ... */ }
+> 
+>     public function indexAction( /* ... */ ) : ResponseInterface { /* ... */ }
+>     public function addAction( /* ... */ ) : ResponseInterface { /* ... */ }
+>     public function editAction( /* ... */ ) : ResponseInterface { /* ... */ }
 > }
 > ```

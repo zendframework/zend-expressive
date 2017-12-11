@@ -1,15 +1,17 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2017 Zend Technologies USA Inc. (https://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Zend\Expressive\Middleware;
 
 use Fig\Http\Message\RequestMethodInterface as RequestMethod;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
@@ -41,7 +43,7 @@ use Zend\Expressive\Router\RouteResult;
  * the next layer, but alters the request passed to use the GET method;
  * it then provides an empty response body to the returned response.
  */
-class ImplicitHeadMiddleware implements ServerMiddlewareInterface
+class ImplicitHeadMiddleware implements MiddlewareInterface
 {
     const FORWARDED_HTTP_METHOD_ATTRIBUTE = 'forwarded_http_method';
 
@@ -68,29 +70,29 @@ class ImplicitHeadMiddleware implements ServerMiddlewareInterface
      * response.
      *
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
+     * @param RequestHandlerInterface $handler
      * @return ResponseInterface
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         if ($request->getMethod() !== RequestMethod::METHOD_HEAD) {
-            return $delegate->process($request);
+            return $handler->handle($request);
         }
 
         if (false === ($result = $request->getAttribute(RouteResult::class, false))) {
-            return $delegate->process($request);
+            return $handler->handle($request);
         }
 
         $route = $result->getMatchedRoute();
         if (! $route || ! $route->implicitHead()) {
-            return $delegate->process($request);
+            return $handler->handle($request);
         }
 
         if (! $route->allowsMethod(RequestMethod::METHOD_GET)) {
             return $this->getResponse();
         }
 
-        $response = $delegate->process(
+        $response = $handler->handle(
             $request
                 ->withMethod(RequestMethod::METHOD_GET)
                 ->withAttribute(self::FORWARDED_HTTP_METHOD_ATTRIBUTE, RequestMethod::METHOD_HEAD)

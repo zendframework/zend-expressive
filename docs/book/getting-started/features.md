@@ -130,6 +130,9 @@ its way back out the onion.
 >
 > Expressive 2.X still supports double-pass middleware, though we recommend the
 > lambda style.
+>
+> Expressive 3.0 does not longer support double-pass middleware. Please use
+> PSR-15 middlewares instead.
 
 > ### Stratigility 1.X Error Middleware
 >

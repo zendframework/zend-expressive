@@ -1,18 +1,21 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (https://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace ZendTest\Expressive;
 
 use DomainException;
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 use InvalidArgumentException;
 use Mockery;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -22,6 +25,8 @@ use Psr\Http\Message\ServerRequestInterface;
 use ReflectionMethod;
 use ReflectionProperty;
 use RuntimeException;
+use Throwable;
+use TypeError;
 use UnexpectedValueException;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmitterInterface;
@@ -137,15 +142,6 @@ class ApplicationTest extends TestCase
         $this->assertSame($methods, $route->getAllowedMethods());
     }
 
-    public function testCanCallRouteWithARoute()
-    {
-        $route = new Route('/foo', $this->noopMiddleware);
-        $this->router->addRoute($route)->shouldBeCalled();
-        $app   = $this->getApp();
-        $test  = $app->route($route);
-        $this->assertSame($route, $test);
-    }
-
     public function testCallingRouteWithExistingPathAndOmittingMethodsArgumentRaisesException()
     {
         $this->router->addRoute(Argument::type(Route::class))->shouldBeCalledTimes(2);
@@ -160,8 +156,8 @@ class ApplicationTest extends TestCase
     public function testCallingRouteWithOnlyAPathRaisesAnException()
     {
         $app = $this->getApp();
-        $this->expectException(Exception\InvalidArgumentException::class);
-        $app->route('/path');
+        $this->expectException(Exception\InvalidMiddlewareException::class);
+        $app->route('/path', null);
     }
 
     public function invalidPathTypes()
@@ -187,7 +183,7 @@ class ApplicationTest extends TestCase
     public function testCallingRouteWithAnInvalidPathTypeRaisesAnException($path)
     {
         $app = $this->getApp();
-        $this->expectException(RouterException\InvalidArgumentException::class);
+        $this->expectException(TypeError::class);
         $app->route($path, new TestAsset\InteropMiddleware());
     }
 
@@ -284,7 +280,7 @@ class ApplicationTest extends TestCase
 
     public function testCanInjectDefaultDelegateViaConstructor()
     {
-        $defaultDelegate = $this->prophesize(DelegateInterface::class)->reveal();
+        $defaultDelegate = $this->prophesize(RequestHandlerInterface::class)->reveal();
         $app  = new Application($this->router->reveal(), null, $defaultDelegate);
         $test = $app->getDefaultDelegate();
         $this->assertSame($defaultDelegate, $test);
@@ -292,12 +288,12 @@ class ApplicationTest extends TestCase
 
     public function testDefaultDelegateIsUsedAtInvocationIfNoOutArgumentIsSupplied()
     {
-        $routeResult = RouteResult::fromRouteFailure();
+        $routeResult = RouteResult::fromRouteFailure([]);
         $this->router->match()->willReturn($routeResult);
 
         $finalResponse = $this->prophesize(ResponseInterface::class)->reveal();
-        $defaultDelegate = $this->prophesize(DelegateInterface::class);
-        $defaultDelegate->process(Argument::type(ServerRequestInterface::class))
+        $defaultDelegate = $this->prophesize(RequestHandlerInterface::class);
+        $defaultDelegate->handle(Argument::type(ServerRequestInterface::class))
             ->willReturn($finalResponse);
 
         $emitter = $this->prophesize(EmitterInterface::class);
@@ -336,12 +332,12 @@ class ApplicationTest extends TestCase
 
     public function testComposedEmitterIsCalledByRun()
     {
-        $routeResult = RouteResult::fromRouteFailure();
+        $routeResult = RouteResult::fromRouteFailure([]);
         $this->router->match()->willReturn($routeResult);
 
         $finalResponse = $this->prophesize(ResponseInterface::class)->reveal();
-        $defaultDelegate = $this->prophesize(DelegateInterface::class);
-        $defaultDelegate->process(Argument::type(ServerRequestInterface::class))
+        $defaultDelegate = $this->prophesize(RequestHandlerInterface::class);
+        $defaultDelegate->handle(Argument::type(ServerRequestInterface::class))
             ->willReturn($finalResponse);
 
         $emitter = $this->prophesize(EmitterInterface::class);
@@ -479,7 +475,7 @@ class ApplicationTest extends TestCase
         $handler = $route->handler;
 
         $request = $this->prophesize(ServerRequest::class)->reveal();
-        $delegate = $this->prophesize(DelegateInterface::class)->reveal();
+        $delegate = $this->prophesize(RequestHandlerInterface::class)->reveal();
 
         $this->expectException(InvalidMiddlewareException::class);
         $handler->process($request, $delegate);
@@ -535,23 +531,31 @@ class ApplicationTest extends TestCase
             $app = new Application($this->router->reveal(), null, null, $emitter->reveal());
 
             $app->run();
-        } catch (\Throwable $e) {
-            $this->fail($e->getMessage());
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             $this->fail($e->getMessage());
         }
     }
 
     public function testRetrieveRegisteredRoutes()
     {
-        $route = new Route('/foo', $this->noopMiddleware);
-        $this->router->addRoute($route)->shouldBeCalled();
+        // $route = new Route('/foo', $this->noopMiddleware);
+        $this->router->addRoute(Argument::that(function ($arg) {
+            Assert::assertInstanceOf(Route::class, $arg);
+            Assert::assertSame('/foo', $arg->getPath());
+            Assert::assertSame($this->noopMiddleware, $arg->getMiddleware());
+            return true;
+        }))->shouldBeCalled();
+
         $app = $this->getApp();
-        $test = $app->route($route);
-        $this->assertSame($route, $test);
+        $test = $app->route('/foo', $this->noopMiddleware);
+
+        $this->assertInstanceOf(Route::class, $test);
+        $this->assertSame('/foo', $test->getPath());
+        $this->assertSame($this->noopMiddleware, $test->getMiddleware());
+
         $routes = $app->getRoutes();
         $this->assertCount(1, $routes);
-        $this->assertInstanceOf(Route::class, $routes[0]);
+        $this->assertContainsOnlyInstancesOf(Route::class, $routes);
     }
 
     /**
@@ -605,28 +609,31 @@ class ApplicationTest extends TestCase
                 return true;
             }))->shouldBeCalled();
 
-            $app = new Application($this->router->reveal(), $container->reveal(), null, $emitter->reveal());
-            $app->setResponsePrototype($expectedResponse);
+            $app = new Application(
+                $this->router->reveal(),
+                $container->reveal(),
+                null,
+                $emitter->reveal(),
+                $expectedResponse
+            );
 
             $app->run();
-        } catch (\Throwable $e) {
-            $this->fail(sprintf("(%d) %s:\n%s", $e->getCode(), $e->getMessage(), $e->getTraceAsString()));
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             $this->fail(sprintf("(%d) %s:\n%s", $e->getCode(), $e->getMessage(), $e->getTraceAsString()));
         }
     }
 
     public function testGetDefaultDelegateWillPullFromContainerIfServiceRegistered()
     {
-        $delegate = $this->prophesize(DelegateInterface::class)->reveal();
+        $handler = $this->prophesize(RequestHandlerInterface::class)->reveal();
         $container = $this->mockContainerInterface();
-        $this->injectServiceInContainer($container, 'Zend\Expressive\Delegate\DefaultDelegate', $delegate);
+        $this->injectServiceInContainer($container, 'Zend\Expressive\Delegate\DefaultDelegate', $handler);
 
         $app = new Application($this->router->reveal(), $container->reveal());
 
         $test = $app->getDefaultDelegate();
 
-        $this->assertSame($delegate, $test);
+        $this->assertSame($handler, $test);
     }
 
     public function testWillCreateAndConsumeNotFoundDelegateFactoryToCreateDelegateIfNoDelegateInContainer()
@@ -673,11 +680,11 @@ class ApplicationTest extends TestCase
     public function testAllowsNestedMiddlewarePipelines()
     {
         $app     = $this->getApp();
-        $counter = function (ServerRequestInterface $request, DelegateInterface $delegate) {
+        $counter = function (ServerRequestInterface $request, RequestHandlerInterface $handler) {
             $count   = $request->getAttribute('count', 0);
             $request = $request->withAttribute('count', $count + 1);
 
-            return $delegate->process($request);
+            return $handler->handle($request);
         };
 
         $app->pipe([
@@ -699,13 +706,13 @@ class ApplicationTest extends TestCase
 
         $request  = new ServerRequest();
         $response = new Response();
-        $delegate = $this->prophesize(DelegateInterface::class);
+        $handler  = $this->prophesize(RequestHandlerInterface::class);
 
-        $delegate->process($request->withAttribute('count', 5))
+        $handler->handle($request->withAttribute('count', 5))
             ->shouldBeCalled()
             ->willReturn($response);
 
-        $this->assertSame($response, $app->process($request, $delegate->reveal()));
+        $this->assertSame($response, $app->process($request, $handler->reveal()));
     }
 
     public function testPreparingArrayWithPairOfObjectAndStringMiddlewaresShouldNotBeTreatedAsCallable()

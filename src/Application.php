@@ -1,18 +1,22 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (https://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Zend\Expressive;
 
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Throwable;
 use UnexpectedValueException;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmitterInterface;
@@ -38,7 +42,7 @@ class Application extends MiddlewarePipe
     private $container;
 
     /**
-     * @var null|DelegateInterface
+     * @var null|RequestHandlerInterface
      */
     private $defaultDelegate;
 
@@ -72,6 +76,11 @@ class Application extends MiddlewarePipe
     private $routes = [];
 
     /**
+     * @var ResponseInterface
+     */
+    private $responsePrototype;
+
+    /**
      * Constructor
      *
      * Calls on the parent constructor, and then uses the provided arguments
@@ -79,7 +88,7 @@ class Application extends MiddlewarePipe
      *
      * @param Router\RouterInterface $router
      * @param null|ContainerInterface $container IoC container from which to pull services, if any.
-     * @param null|DelegateInterface $defaultDelegate Default delegate
+     * @param null|RequestHandlerInterface $defaultDelegate Default delegate
      *     to use when $out is not provided on invocation / run() is invoked.
      * @param null|EmitterInterface $emitter Emitter to use when `run()` is
      *     invoked.
@@ -87,16 +96,16 @@ class Application extends MiddlewarePipe
     public function __construct(
         Router\RouterInterface $router,
         ContainerInterface $container = null,
-        DelegateInterface $defaultDelegate = null,
-        EmitterInterface $emitter = null
+        RequestHandlerInterface $defaultDelegate = null,
+        EmitterInterface $emitter = null,
+        ResponseInterface $responsePrototype = null
     ) {
         parent::__construct();
         $this->router          = $router;
         $this->container       = $container;
         $this->defaultDelegate = $defaultDelegate;
         $this->emitter         = $emitter;
-
-        $this->setResponsePrototype(new Response());
+        $this->responsePrototype = $responsePrototype ?: new Response();
     }
 
     /**
@@ -199,7 +208,7 @@ class Application extends MiddlewarePipe
      * @param null|string|array|callable $middleware Middleware
      * @return self
      */
-    public function pipe($path, $middleware = null)
+    public function pipe($path, $middleware = null) : parent
     {
         if (null === $middleware) {
             $middleware = $this->prepareMiddleware(
@@ -278,41 +287,24 @@ class Application extends MiddlewarePipe
      * On first invocation, pipes the route middleware to the middleware
      * pipeline.
      *
-     * @param string|Router\Route $path
-     * @param callable|string|array $middleware Middleware (or middleware service name) to associate with route.
+     * @param callable|string|array|MiddlewareInterface $middleware Middleware (or middleware service name)
+     *     to associate with route.
      * @param null|array $methods HTTP method to accept; null indicates any.
      * @param null|string $name The name of the route.
-     * @return Router\Route
      * @throws Exception\InvalidArgumentException if $path is not a Router\Route AND middleware is null.
      */
-    public function route($path, $middleware = null, array $methods = null, $name = null)
+    public function route(string $path, $middleware, array $methods = null, string $name = null) : Router\Route
     {
-        if (! $path instanceof Router\Route && null === $middleware) {
-            throw new Exception\InvalidArgumentException(sprintf(
-                '%s expects either a route argument, or a combination of a path and middleware arguments',
-                __METHOD__
-            ));
-        }
-
-        if ($path instanceof Router\Route) {
-            $route   = $path;
-            $path    = $route->getPath();
-            $methods = $route->getAllowedMethods();
-            $name    = $route->getName();
-        }
-
         $this->checkForDuplicateRoute($path, $methods);
 
-        if (! isset($route)) {
-            $methods    = null === $methods ? Router\Route::HTTP_METHOD_ANY : $methods;
-            $middleware = $this->prepareMiddleware(
-                $middleware,
-                $this->router,
-                $this->responsePrototype,
-                $this->container
-            );
-            $route      = new Router\Route($path, $middleware, $methods, $name);
-        }
+        $methods    = null === $methods ? Router\Route::HTTP_METHOD_ANY : $methods;
+        $middleware = $this->prepareMiddleware(
+            $middleware,
+            $this->router,
+            $this->responsePrototype,
+            $this->container
+        );
+        $route      = new Router\Route($path, $middleware, $methods, $name);
 
         $this->routes[] = $route;
         $this->router->addRoute($route);
@@ -351,12 +343,8 @@ class Application extends MiddlewarePipe
     {
         try {
             $request  = $request ?: ServerRequestFactory::fromGlobals();
-        } catch (InvalidArgumentException $e) {
-            // Unable to parse uploaded files
-            $this->emitMarshalServerRequestException($e);
-            return;
-        } catch (UnexpectedValueException $e) {
-            // Invalid request method
+        } catch (InvalidArgumentException | UnexpectedValueException $e) {
+            // Unable to parse uploaded files | Invalid request method
             $this->emitMarshalServerRequestException($e);
             return;
         }
@@ -397,7 +385,7 @@ class Application extends MiddlewarePipe
      * - If no container is composed, creates an instance of Delegate\NotFoundDelegate
      *   using the current response prototype only (i.e., no templating).
      *
-     * @return DelegateInterface
+     * @return RequestHandlerInterface
      */
     public function getDefaultDelegate()
     {
@@ -476,10 +464,10 @@ class Application extends MiddlewarePipe
     }
 
     /**
-     * @param \Exception|\Throwable $exception
+     * @param Throwable $exception
      * @return void
      */
-    private function emitMarshalServerRequestException($exception)
+    private function emitMarshalServerRequestException(Throwable $exception)
     {
         if ($this->container && $this->container->has(Middleware\ErrorResponseGenerator::class)) {
             $generator = $this->container->get(Middleware\ErrorResponseGenerator::class);

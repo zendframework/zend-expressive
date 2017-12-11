@@ -1,15 +1,17 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2017 Zend Technologies USA Inc. (https://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Zend\Expressive\Middleware;
 
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Router\RouteResult;
@@ -30,7 +32,7 @@ use Zend\Expressive\Router\RouterInterface;
  *
  * @internal
  */
-class RouteMiddleware implements ServerMiddlewareInterface
+class RouteMiddleware implements MiddlewareInterface
 {
     /**
      * Response prototype for 405 responses.
@@ -56,10 +58,10 @@ class RouteMiddleware implements ServerMiddlewareInterface
 
     /**
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
+     * @param RequestHandlerInterface $handler
      * @return ResponseInterface
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         $result = $this->router->match($request);
 
@@ -68,7 +70,7 @@ class RouteMiddleware implements ServerMiddlewareInterface
                 return $this->responsePrototype->withStatus(StatusCode::STATUS_METHOD_NOT_ALLOWED)
                     ->withHeader('Allow', implode(',', $result->getAllowedMethods()));
             }
-            return $delegate->process($request);
+            return $handler->handle($request);
         }
 
         // Inject the actual route result, as well as individual matched parameters.
@@ -77,6 +79,6 @@ class RouteMiddleware implements ServerMiddlewareInterface
             $request = $request->withAttribute($param, $value);
         }
 
-        return $delegate->process($request);
+        return $handler->handle($request);
     }
 }

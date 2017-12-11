@@ -1,17 +1,19 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (https://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace Zend\Expressive;
 
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
+use Interop\Http\Server\MiddlewareInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
-use Zend\Stratigility\Middleware\CallableInteropMiddlewareWrapper;
-use Zend\Stratigility\Middleware\CallableMiddlewareWrapper;
+use Zend\Stratigility\Middleware\CallableMiddlewareDecorator;
+use Zend\Stratigility\Middleware\DoublePassMiddlewareDecorator;
 use Zend\Stratigility\MiddlewarePipe;
 
 /**
@@ -38,7 +40,7 @@ trait MarshalMiddlewareTrait
      * @param Router\RouterInterface $router
      * @param ResponseInterface $responsePrototype
      * @param null|ContainerInterface $container
-     * @return ServerMiddlewareInterface
+     * @return MiddlewareInterface
      * @throws Exception\InvalidMiddlewareException
      */
     private function prepareMiddleware(
@@ -55,16 +57,16 @@ trait MarshalMiddlewareTrait
             return new Middleware\DispatchMiddleware($router, $responsePrototype, $container);
         }
 
-        if ($middleware instanceof ServerMiddlewareInterface) {
+        if ($middleware instanceof MiddlewareInterface) {
             return $middleware;
         }
 
         if ($this->isCallableInteropMiddleware($middleware)) {
-            return new CallableInteropMiddlewareWrapper($middleware);
+            return new CallableMiddlewareDecorator($middleware);
         }
 
         if ($this->isCallable($middleware)) {
-            return new CallableMiddlewareWrapper($middleware, $responsePrototype);
+            return new DoublePassMiddlewareDecorator($middleware, $responsePrototype);
         }
 
         if (is_array($middleware)) {
@@ -82,7 +84,7 @@ trait MarshalMiddlewareTrait
         throw new Exception\InvalidMiddlewareException(sprintf(
             'Unable to resolve middleware "%s" to a callable or %s',
             is_object($middleware) ? get_class($middleware) . '[Object]' : gettype($middleware) . '[Scalar]',
-            ServerMiddlewareInterface::class
+            MiddlewareInterface::class
         ));
     }
 
@@ -112,7 +114,6 @@ trait MarshalMiddlewareTrait
         ContainerInterface $container = null
     ) {
         $middlewarePipe = new MiddlewarePipe();
-        $middlewarePipe->setResponsePrototype($responsePrototype);
 
         foreach ($middlewares as $middleware) {
             $middlewarePipe->pipe(
@@ -128,10 +129,10 @@ trait MarshalMiddlewareTrait
      *
      * @param string $middleware
      * @param ResponseInterface $responsePrototype
-     * @return ServerMiddlewareInterface
+     * @return MiddlewareInterface
      * @throws Exception\InvalidMiddlewareException if $middleware is not a class.
      * @throws Exception\InvalidMiddlewareException if $middleware does not resolve
-     *     to either an invokable class or ServerMiddlewareInterface instance.
+     *     to either an invokable class or MiddlewareInterface instance.
      */
     private function marshalInvokableMiddleware($middleware, ResponseInterface $responsePrototype)
     {
@@ -144,22 +145,22 @@ trait MarshalMiddlewareTrait
 
         $instance = new $middleware();
 
-        if ($instance instanceof ServerMiddlewareInterface) {
+        if ($instance instanceof MiddlewareInterface) {
             return $instance;
         }
 
         if ($this->isCallableInteropMiddleware($instance)) {
-            return new CallableInteropMiddlewareWrapper($instance);
+            return new CallableMiddlewareDecorator($instance);
         }
 
         if (! is_callable($instance)) {
             throw new Exception\InvalidMiddlewareException(sprintf(
                 'Middleware of class "%s" is invalid; neither invokable nor %s',
                 $middleware,
-                ServerMiddlewareInterface::class
+                MiddlewareInterface::class
             ));
         }
 
-        return new CallableMiddlewareWrapper($instance, $responsePrototype);
+        return new DoublePassMiddlewareDecorator($instance, $responsePrototype);
     }
 }

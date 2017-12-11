@@ -1,9 +1,11 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2017 Zend Technologies USA Inc. (https://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Zend\Expressive\Container;
 
@@ -24,12 +26,10 @@ class NotFoundDelegateFactory
         $renderer = $container->has(TemplateRendererInterface::class)
             ? $container->get(TemplateRendererInterface::class)
             : null;
-        $template = isset($config['zend-expressive']['error_handler']['template_404'])
-            ? $config['zend-expressive']['error_handler']['template_404']
-            : NotFoundDelegate::TEMPLATE_DEFAULT;
-        $layout = isset($config['zend-expressive']['error_handler']['layout'])
-            ? $config['zend-expressive']['error_handler']['layout']
-            : NotFoundDelegate::LAYOUT_DEFAULT;
+        $template = $config['zend-expressive']['error_handler']['template_404']
+            ?? NotFoundDelegate::TEMPLATE_DEFAULT;
+        $layout = $config['zend-expressive']['error_handler']['layout']
+            ?? NotFoundDelegate::LAYOUT_DEFAULT;
 
         return new NotFoundDelegate(new Response(), $renderer, $template, $layout);
     }

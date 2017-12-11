@@ -1,9 +1,11 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2016-2017 Zend Technologies USA Inc. (https://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Zend\Expressive\Container;
 
@@ -21,11 +23,10 @@ class ErrorResponseGeneratorFactory
     {
         $config = $container->has('config') ? $container->get('config') : [];
 
-        $debug = isset($config['debug']) ? $config['debug'] : false;
+        $debug = $config['debug'] ?? false;
 
-        $template = isset($config['zend-expressive']['error_handler']['template_error'])
-            ? $config['zend-expressive']['error_handler']['template_error']
-            : ErrorResponseGenerator::TEMPLATE_DEFAULT;
+        $template = $config['zend-expressive']['error_handler']['template_error']
+            ?? ErrorResponseGenerator::TEMPLATE_DEFAULT;
 
         $renderer = $container->has(TemplateRendererInterface::class)
             ? $container->get(TemplateRendererInterface::class)
