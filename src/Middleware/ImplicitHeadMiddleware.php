@@ -43,6 +43,8 @@ use Zend\Expressive\Router\RouteResult;
  */
 class ImplicitHeadMiddleware implements ServerMiddlewareInterface
 {
+    const FORWARDED_HTTP_METHOD_ATTRIBUTE = 'forwarded_http_method';
+
     /**
      * @var null|ResponseInterface
      */
@@ -89,7 +91,9 @@ class ImplicitHeadMiddleware implements ServerMiddlewareInterface
         }
 
         $response = $delegate->process(
-            $request->withMethod(RequestMethod::METHOD_GET)
+            $request
+                ->withMethod(RequestMethod::METHOD_GET)
+                ->withAttribute(self::FORWARDED_HTTP_METHOD_ATTRIBUTE, RequestMethod::METHOD_HEAD)
         );
 
         return $response->withBody(new Stream('php://temp/', 'wb+'));
