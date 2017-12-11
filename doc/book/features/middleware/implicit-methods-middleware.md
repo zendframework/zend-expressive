@@ -70,6 +70,15 @@ instance). However, if `GET` is supported, it will dispatch the next layer, but
 with a `GET` request instead of `HEAD`; additionally, it will inject the
 returned response with an empty response body before returning it.
 
+### Detecting forwarded requests
+
+- Since 2.1.0
+
+When the next layer is dispatched, the request will have an additional
+attribute, `Zend\Expressive\Middleware\ImplicitHeadMiddleware::FORWARDED_HTTP_METHOD_ATTRIBUTE`,
+with a value of `HEAD`. As such, you can check for this value in order to vary
+the headers returned if desired.
+
 ## ImplicitOptionsMiddleware
 
 `Zend\Expressive\Middleware\ImplicitOptionsMiddleware` provides support for
