@@ -63,7 +63,7 @@ trait MarshalMiddlewareTrait
             return new CallableInteropMiddlewareWrapper($middleware);
         }
 
-        if (is_callable($middleware)) {
+        if ($this->isCallable($middleware)) {
             return new CallableMiddlewareWrapper($middleware, $responsePrototype);
         }
 
