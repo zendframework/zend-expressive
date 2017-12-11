@@ -75,6 +75,12 @@ Commands supported include:
   the [section on detecting legacy error middleware](#detect-usage-of-legacy-error-middleware)
   for more details.
 
+- **`migrate:interop-middleware [--src|-s=]`**: Scan for http-interop/http-middleware
+  middlewares and delegators and update them to PSR-15 (http-interop/http-server-middleware)
+  middlewares and request handlers. The script changes namespace of interfaces, rename method
+  `process` to `handle` for delegators/request handlers and adds PHP7 return type on method
+  `process` and `handle`. _Since Expressive 3.0._
+
 - **`migrate:original-messages [--src|-s]`**: Scan the associated source directory
   (defaults to `src`) for `getOriginal*()` method calls and replace them with
   `getAttribute()` calls. See the [section on detecting legacy

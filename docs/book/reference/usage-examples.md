@@ -166,7 +166,12 @@ the application will pull it from there when matched.
 Edit your `public/index.php` to read as follows:
 
 ```php
-use Interop\Http\ServerMiddleware\DelegateInterface;
+// Expressive 3.X:
+use Interop\Http\Server\RequestHandlerInterface;
+
+// Expressive 2.X:
+use Interop\Http\ServerMiddleware\DelegateInterface as RequestHandlerInterface;
+
 use Zend\Diactoros\Response\JsonResponse;
 use Zend\Diactoros\Response\TextResponse;
 use Zend\Expressive\AppFactory;
@@ -177,13 +182,13 @@ require __DIR__ . '/../vendor/autoload.php';
 $container = new ServiceManager();
 
 $container->setFactory('HelloWorld', function ($container) {
-    return function ($request, DelegateInterface $delegate) {
+    return function ($request, RequestHandlerInterface $handler) {
         return new TextResponse('Hello, world!');
     };
 });
 
 $container->setFactory('Ping', function ($container) {
-    return function ($request, DelegateInterface $delegate) {
+    return function ($request, RequestHandlerInterface $handler) {
         return new JsonResponse(['ack' => time()]);
     };
 });

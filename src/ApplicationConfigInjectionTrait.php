@@ -1,9 +1,11 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2016-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2016-2017 Zend Technologies USA Inc. (https://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Zend\Expressive;
 
@@ -91,7 +93,7 @@ trait ApplicationConfigInjectionTrait
         );
 
         foreach ($queue as $spec) {
-            $path = isset($spec['path']) ? $spec['path'] : '/';
+            $path = $spec['path'] ?? '/';
             $this->pipe($path, $spec['middleware']);
         }
     }
@@ -163,8 +165,8 @@ trait ApplicationConfigInjectionTrait
                 }
             }
 
-            $name  = isset($spec['name']) ? $spec['name'] : null;
-            $route = new Route($spec['path'], $spec['middleware'], $methods, $name);
+            $name  = $spec['name'] ?? null;
+            $route = $this->route($spec['path'], $spec['middleware'], $methods, $name);
 
             if (isset($spec['options'])) {
                 $options = $spec['options'];
@@ -177,8 +179,6 @@ trait ApplicationConfigInjectionTrait
 
                 $route->setOptions($options);
             }
-
-            $this->route($route);
         }
     }
 

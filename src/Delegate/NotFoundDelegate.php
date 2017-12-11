@@ -1,19 +1,21 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2017 Zend Technologies USA Inc. (https://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Zend\Expressive\Delegate;
 
 use Fig\Http\Message\StatusCodeInterface;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
-class NotFoundDelegate implements DelegateInterface
+class NotFoundDelegate implements RequestHandlerInterface
 {
     const TEMPLATE_DEFAULT = 'error::404';
     const LAYOUT_DEFAULT = 'layout::default';
@@ -65,7 +67,7 @@ class NotFoundDelegate implements DelegateInterface
      * @param ServerRequestInterface $request
      * @return ResponseInterface
      */
-    public function process(ServerRequestInterface $request)
+    public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         if (! $this->renderer) {
             return $this->generatePlainTextResponse($request);
@@ -80,7 +82,7 @@ class NotFoundDelegate implements DelegateInterface
      * @param ServerRequestInterface $request
      * @return ResponseInterface
      */
-    private function generatePlainTextResponse(ServerRequestInterface $request)
+    private function generatePlainTextResponse(ServerRequestInterface $request) : ResponseInterface
     {
         $response = $this->responsePrototype->withStatus(StatusCodeInterface::STATUS_NOT_FOUND);
         $response->getBody()
@@ -89,6 +91,7 @@ class NotFoundDelegate implements DelegateInterface
                 $request->getMethod(),
                 (string) $request->getUri()
             ));
+
         return $response;
     }
 
@@ -100,7 +103,7 @@ class NotFoundDelegate implements DelegateInterface
      * @param ServerRequestInterface $request
      * @return ResponseInterface
      */
-    private function generateTemplatedResponse(ServerRequestInterface $request)
+    private function generateTemplatedResponse(ServerRequestInterface $request) : ResponseInterface
     {
         $response = $this->responsePrototype->withStatus(StatusCodeInterface::STATUS_NOT_FOUND);
         $response->getBody()->write(

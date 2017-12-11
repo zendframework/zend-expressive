@@ -471,9 +471,15 @@ single method, `process()`, which accepts a
 > passed between layers. We now recommend writing middleware using the
 > http-middleware interfaces for all new middleware.
 >
-> Middleware using the double-pass style is still accepted by Expressive, but
-> support for it will be discontinued once http-middleware is formally approved
-> by PHP-FIG.
+> Starting in Expressive 3.0, we added support for
+> [PSR-15 middleware](https://github.com/http-interop/http-server-middleware)
+> and abandoned http-interop/http-middleware; middleware based on
+> http-interop/http-middleware middlewares is no longer supported.
+> 
+> Middleware using the double-pass style is accepted only by Expressive 1.X and
+> 2.X, and no longer directly supported in Expressive 3.X. You may use
+> `Zend\Stratigility\Middleware\DoublePassMiddlewareDecorator` in order to
+> decorate such middleware for use in Expressive 3.X.
 
 The skeleton defines an `App` namespace for you, and suggests placing middleware
 under the namespace `App\Action`.
@@ -485,14 +491,21 @@ Let's create a "Hello" action. Place the following in
 <?php
 namespace App\Action;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
+// Expressive 3.X:
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+
+// Expressive 2.X:
+use Interop\Http\ServerMiddleware\DelegateInterface as RequestHandlerInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
+
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 
 class HelloAction implements MiddlewareInterface
 {
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         // On all PHP versions:
         $query  = $request->getQueryParams();
@@ -574,8 +587,15 @@ Replace your `src/App/Action/HelloAction.php` file with the following contents:
 <?php
 namespace App\Action;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
+// Expressive 3.X:
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+
+// Expressive 2.X:
+use Interop\Http\ServerMiddleware\DelegateInterface as RequestHandlerInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
+
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Template\TemplateRendererInterface;
@@ -589,7 +609,7 @@ class HelloAction implements MiddlewareInterface
         $this->renderer = $renderer;
     }
 
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         // On all PHP versions:
         $query  = $request->getQueryParams();

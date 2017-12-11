@@ -16,15 +16,22 @@ want.
 ```php
 namespace App\Middleware;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
+// Expressive 3.X:
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+
+// Expressive 2.X:
+use Interop\Http\ServerMiddleware\DelegateInterface as RequestHandlerInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
+
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class PassingDataMiddleware implements MiddlewareInterface
 {
     // ...
 
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         // Step 1: Do something first
         $data = [
@@ -32,8 +39,13 @@ class PassingDataMiddleware implements MiddlewareInterface
         ];
 
         // Step 2: Inject data into the request, call the next middleware and wait for the response
-        $response = $delegate->process($request->withAttribute(self::class, $data));
 
+        // Expressive 3.X:
+        $response = $handler->handle($request->withAttribute(self::class, $data));
+
+        // Expressive 2.X:
+        $response = $handler->process($request->withAttribute(self::class, $data));
+        
         // Step 3: Optionally, do something (with the response) before returning the response
 
         // Step 4: Return the response
@@ -47,22 +59,34 @@ Later, `ReceivingDataMiddleware` grabs the data and processes it:
 ```php
 namespace App\Middleware;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
+// Expressive 3.X:
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+
+// Expressive 2.X:
+use Interop\Http\ServerMiddleware\DelegateInterface as RequestHandlerInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
+
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class ReceivingDataMiddleware implements MiddlewareInterface
 {
     // ...
 
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         // Step 1: Grab the data from the request and use it
         $data = $request->getAttribute(PassingDataMiddleware::class);
 
         // Step 2: Call the next middleware and wait for the response
-        $response = $delegate->process($request);
 
+        // Expressive 3.X:
+        $response = $handler->handle($request);
+
+        // Expressive 2.X:
+        $response = $handler->process($request);
+        
         // Step 3: Optionally, do something (with the response) before returning the response
 
         // Step 4: Return the response
@@ -78,16 +102,23 @@ information and passes it to the template renderer to create an `HtmlResponse`:
 ```php
 namespace App\Action;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
+// Expressive 3.X:
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+
+// Expressive 2.X:
+use Interop\Http\ServerMiddleware\DelegateInterface as RequestHandlerInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
+
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 
 class ExampleAction implements MiddlewareInterface
 {
     // ...
-
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         // Step 1: Grab the data from the request
         $data = $request->getAttribute(PassingDataMiddleware::class);

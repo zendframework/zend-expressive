@@ -1,19 +1,24 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (https://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace ZendTest\Expressive\Router;
 
 use Fig\Http\Message\RequestMethodInterface as RequestMethod;
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Stream;
@@ -21,6 +26,7 @@ use Zend\Expressive\Application;
 use Zend\Expressive\Middleware;
 use Zend\Expressive\Router\AuraRouter;
 use Zend\Expressive\Router\FastRouteRouter;
+use Zend\Expressive\Router\RouteResult;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Router\ZendRouter;
 use ZendTest\Expressive\ContainerTrait;
@@ -129,12 +135,12 @@ class IntegrationTest extends TestCase
     public function testRoutingDoesNotMatchMethod($adapter)
     {
         $app = $this->createApplicationWithGetPost($adapter);
-        $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->process(Argument::type(ServerRequest::class))
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'DELETE'], [], '/foo', 'DELETE');
-        $result  = $app->process($request, $delegate->reveal());
+        $result  = $app->process($request, $handler->reveal());
 
         $this->assertSame(StatusCode::STATUS_METHOD_NOT_ALLOWED, $result->getStatusCode());
         $headers = $result->getHeaders();
@@ -154,17 +160,17 @@ class IntegrationTest extends TestCase
         $app = $this->createApplicationWithGetPost($adapter);
         $app->pipeDispatchMiddleware();
 
-        $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->process(Argument::type(ServerRequest::class))
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');
-        $result  = $app->process($request, $delegate->reveal());
+        $result  = $app->process($request, $handler->reveal());
 
         $this->assertEquals('Middleware GET', (string) $result->getBody());
 
         $request  = new ServerRequest(['REQUEST_METHOD' => 'POST'], [], '/foo', 'POST');
-        $result   = $app->process($request, $delegate->reveal());
+        $result   = $app->process($request, $handler->reveal());
 
         $this->assertEquals('Middleware POST', (string) $result->getBody());
     }
@@ -182,17 +188,17 @@ class IntegrationTest extends TestCase
         $app = $this->createApplicationWithGetPost($adapter, 'foo-get', 'foo-post');
         $app->pipeDispatchMiddleware();
 
-        $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->process(Argument::type(ServerRequest::class))
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');
-        $result  = $app->process($request, $delegate->reveal());
+        $result  = $app->process($request, $handler->reveal());
 
         $this->assertEquals('Middleware GET', (string) $result->getBody());
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'POST'], [], '/foo', 'POST');
-        $result  = $app->process($request, $delegate->reveal());
+        $result  = $app->process($request, $handler->reveal());
 
         $this->assertEquals('Middleware POST', (string) $result->getBody());
     }
@@ -210,17 +216,17 @@ class IntegrationTest extends TestCase
         $app = $this->createApplicationWithRouteGetPost($adapter);
         $app->pipeDispatchMiddleware();
 
-        $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->process(Argument::type(ServerRequest::class))
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');
-        $result  = $app->process($request, $delegate->reveal());
+        $result  = $app->process($request, $handler->reveal());
 
         $this->assertEquals('Middleware GET', (string) $result->getBody());
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'POST'], [], '/foo', 'POST');
-        $result  = $app->process($request, $delegate->reveal());
+        $result  = $app->process($request, $handler->reveal());
 
         $this->assertEquals('Middleware POST', (string) $result->getBody());
     }
@@ -237,17 +243,17 @@ class IntegrationTest extends TestCase
         $app = $this->createApplicationWithRouteGetPost($adapter, 'foo-get', 'foo-post');
         $app->pipeDispatchMiddleware();
 
-        $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->process(Argument::type(ServerRequest::class))
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');
-        $result  = $app->process($request, $delegate->reveal());
+        $result  = $app->process($request, $handler->reveal());
 
         $this->assertEquals('Middleware GET', (string) $result->getBody());
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'POST'], [], '/foo', 'POST');
-        $result  = $app->process($request, $delegate->reveal());
+        $result  = $app->process($request, $handler->reveal());
 
         $this->assertEquals('Middleware POST', (string) $result->getBody());
     }
@@ -277,20 +283,20 @@ class IntegrationTest extends TestCase
             return $res->withBody($stream);
         }, ['DELETE']);
 
-        $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->process(Argument::type(ServerRequest::class))
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');
-        $result  = $app->process($request, $delegate->reveal());
+        $result  = $app->process($request, $handler->reveal());
         $this->assertEquals('Middleware GET, POST', (string) $result->getBody());
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'POST'], [], '/foo', 'POST');
-        $result  = $app->process($request, $delegate->reveal());
+        $result  = $app->process($request, $handler->reveal());
         $this->assertEquals('Middleware GET, POST', (string) $result->getBody());
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'DELETE'], [], '/foo', 'DELETE');
-        $result  = $app->process($request, $delegate->reveal());
+        $result  = $app->process($request, $handler->reveal());
         $this->assertEquals('Middleware DELETE', (string) $result->getBody());
     }
 
@@ -333,12 +339,12 @@ class IntegrationTest extends TestCase
             return $res->withBody($stream);
         });
 
-        $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->process(Argument::type(ServerRequest::class))
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
         $request = new ServerRequest(['REQUEST_METHOD' => $method], [], '/foo', $method);
-        $result  = $app->process($request, $delegate->reveal());
+        $result  = $app->process($request, $handler->reveal());
         $this->assertEquals('Middleware', (string) $result->getBody());
     }
 
@@ -395,12 +401,12 @@ class IntegrationTest extends TestCase
             return $res->withBody($stream);
         });
 
-        $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->process(Argument::type(ServerRequest::class))
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
         $request  = new ServerRequest(['REQUEST_METHOD' => $method], [], '/foo', $method);
-        $result   = $app->process($request, $delegate->reveal());
+        $result   = $app->process($request, $handler->reveal());
 
         $this->assertEquals(StatusCode::STATUS_OK, $result->getStatusCode());
         $this->assertEquals('', (string) $result->getBody());
@@ -416,8 +422,29 @@ class IntegrationTest extends TestCase
     {
         $app = new Application(new $adapter());
         $app->pipeRoutingMiddleware();
-        $app->pipe(new Middleware\ImplicitHeadMiddleware());
-        $app->pipe(new Middleware\ImplicitOptionsMiddleware());
+
+        // This middleware is used just to check that request has successful RouteResult
+        $middleware = $this->prophesize(MiddlewareInterface::class);
+        $middleware->process(Argument::that(function (ServerRequestInterface $req) {
+            $routeResult = $req->getAttribute(RouteResult::class);
+
+            Assert::assertInstanceOf(RouteResult::class, $routeResult);
+            Assert::assertTrue($routeResult->isSuccess());
+            Assert::assertFalse($routeResult->isMethodFailure());
+
+            return true;
+        }), Argument::any())->will(function (array $args) {
+            return $args[1]->handle($args[0]);
+        });
+
+        $app->pipe($middleware->reveal());
+
+        if ($method === 'HEAD') {
+            $app->pipe(new Middleware\ImplicitHeadMiddleware());
+        }
+        if ($method === 'OPTIONS') {
+            $app->pipe(new Middleware\ImplicitOptionsMiddleware());
+        }
         $app->pipeDispatchMiddleware();
 
         // Add a route with empty array - NO HTTP methods
@@ -427,12 +454,12 @@ class IntegrationTest extends TestCase
             return $res->withBody($stream);
         }, []);
 
-        $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->process(Argument::type(ServerRequest::class))
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle(Argument::type(ServerRequest::class))
             ->willReturn($this->response);
 
         $request = new ServerRequest(['REQUEST_METHOD' => $method], [], '/foo', $method);
-        $result  = $app->process($request, $delegate->reveal());
+        $result  = $app->process($request, $handler->reveal());
 
         $this->assertEquals(StatusCode::STATUS_OK, $result->getStatusCode());
         $this->assertEquals('', (string) $result->getBody());
@@ -457,12 +484,12 @@ class IntegrationTest extends TestCase
             return $res->withBody($stream);
         }, []);
 
-        $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->process(Argument::type(ServerRequest::class))
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
         $request = new ServerRequest(['REQUEST_METHOD' => $method], [], '/foo', $method);
-        $result  = $app->process($request, $delegate->reveal());
+        $result  = $app->process($request, $handler->reveal());
         $this->assertEquals(StatusCode::STATUS_METHOD_NOT_ALLOWED, $result->getStatusCode());
         $this->assertNotContains('Middleware', (string) $result->getBody());
     }
@@ -486,12 +513,12 @@ class IntegrationTest extends TestCase
         }, ['GET']);
 
         $expected = (new Response())->withStatus(StatusCode::STATUS_NOT_FOUND);
-        $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->process(Argument::type(ServerRequest::class))
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler->handle(Argument::type(ServerRequest::class))
             ->willReturn($expected);
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');
-        $result  = $app->process($request, $delegate->reveal());
+        $result  = $app->process($request, $handler->reveal());
         $this->assertSame($expected, $result);
     }
 }

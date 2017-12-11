@@ -136,19 +136,25 @@ Such a `LocalizationMiddleware` class could look similar to this:
 
 ```php
 <?php
-
 namespace Application\I18n;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
+// Expressive 3.X:
+use Interop\Http\Server\MiddlewareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+
+// Expressive 2.X:
+use Interop\Http\ServerMiddleware\DelegateInterface as RequestHandlerInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
+
 use Locale;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class LocalizationMiddleware implements MiddlewareInterface
 {
     const LOCALIZATION_ATTRIBUTE = 'locale';
 
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         // Get locale from route, fallback to the user's browser preference
         $locale = $request->getAttribute(
@@ -159,7 +165,10 @@ class LocalizationMiddleware implements MiddlewareInterface
         );
 
         // Store the locale as a request attribute
-        return $delegate->process($request->withAttribute(self::LOCALIZATION_ATTRIBUTE, $locale));
+        // Expressive 3.X:
+        return $handler->handle($request->withAttribute(self::LOCALIZATION_ATTRIBUTE, $locale));
+        // Expressive 2.X:
+        return $handler->process($request->withAttribute(self::LOCALIZATION_ATTRIBUTE, $locale));
     }
 }
 ```

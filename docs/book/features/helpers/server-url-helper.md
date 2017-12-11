@@ -131,8 +131,15 @@ Compose the helper in your middleware (or elsewhere), and then use it to
 generate URI paths:
 
 ```php
-use Interop\Http\ServerMiddleware\DelegateInterface;
+// Expressive 3.X:
+use Interop\Http\Server\MiddlewareInterfacel
+use Interop\Http\Server\RequestHandlerInterface;
+
+// Expressive 2.X:
+use Interop\Http\ServerMiddleware\DelegateInterface as RequestHandlerInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
+
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Helper\ServerUrlHelper;
 
@@ -145,9 +152,13 @@ class FooMiddleware implements MiddlewareInterface
         $this->helper = $helper;
     }
 
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
-        $response = $delegate->process($request);
+        // Expressive 3.X:
+        $response = $handler->handle($request);
+        // Expressive 2.X:
+        $response = $handler->process($request);
+
         return $response->withHeader(
             'Link',
             $this->helper->generate() . '; rel="self"'
