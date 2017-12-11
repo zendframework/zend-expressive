@@ -10,7 +10,7 @@ supported by Expressive.
 _Delegator factories_ accept the following arguments:
 
 - The container itself;
-- The name of the service whose creation is being decrorated;
+- The name of the service whose creation is being decorated;
 - A callback that will produce the service being decorated.
 
 As an example, let's say we have a `UserRepository` class that composes some sort of

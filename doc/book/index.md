@@ -19,7 +19,7 @@ framework for PHP, with the following features:
   [whoops](https://github.com/filp/whoops) for debugging purposes.
 - Nested middleware applications. Write an application, and compose it later
   in another, optionally under a separate subpath.
-- [Simplfied installation](getting-started/skeleton.md). Our custom
+- [Simplified installation](getting-started/skeleton.md). Our custom
   [Composer](https://getcomposer.org)-based installer prompts you for your
   initial stack choices, giving you exactly the base you want to start from.
 
