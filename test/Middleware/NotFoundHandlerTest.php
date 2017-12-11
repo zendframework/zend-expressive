@@ -7,16 +7,14 @@
 
 namespace ZendTest\Expressive\Middleware;
 
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
-use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
-use Webimpress\HttpMiddlewareCompatibility\MiddlewareInterface;
 use Zend\Expressive\Delegate\NotFoundDelegate;
 use Zend\Expressive\Middleware\NotFoundHandler;
-
-use const Webimpress\HttpMiddlewareCompatibility\HANDLER_METHOD;
 
 class NotFoundHandlerTest extends TestCase
 {
@@ -35,7 +33,7 @@ class NotFoundHandlerTest extends TestCase
         $this->request  = $this->prophesize(ServerRequestInterface::class);
 
         $this->delegate = $this->prophesize(DelegateInterface::class);
-        $this->delegate->{HANDLER_METHOD}(Argument::type(ServerRequestInterface::class))->shouldNotBeCalled();
+        $this->delegate->process(Argument::type(ServerRequestInterface::class))->shouldNotBeCalled();
     }
 
     public function testImplementsInteropMiddleware()
@@ -47,7 +45,7 @@ class NotFoundHandlerTest extends TestCase
     public function testProxiesToInternalDelegate()
     {
         $this->internal
-            ->{HANDLER_METHOD}(Argument::that([$this->request, 'reveal']))
+            ->process(Argument::that([$this->request, 'reveal']))
             ->willReturn('CONTENT');
 
         $handler = new NotFoundHandler($this->internal->reveal());

@@ -23,7 +23,6 @@ use ReflectionMethod;
 use ReflectionProperty;
 use RuntimeException;
 use UnexpectedValueException;
-use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
@@ -43,8 +42,6 @@ use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\Stratigility\Route as StratigilityRoute;
-
-use const Webimpress\HttpMiddlewareCompatibility\HANDLER_METHOD;
 
 /**
  * @covers Zend\Expressive\Application
@@ -300,7 +297,7 @@ class ApplicationTest extends TestCase
 
         $finalResponse = $this->prophesize(ResponseInterface::class)->reveal();
         $defaultDelegate = $this->prophesize(DelegateInterface::class);
-        $defaultDelegate->{HANDLER_METHOD}(Argument::type(ServerRequestInterface::class))
+        $defaultDelegate->process(Argument::type(ServerRequestInterface::class))
             ->willReturn($finalResponse);
 
         $emitter = $this->prophesize(EmitterInterface::class);
@@ -344,7 +341,7 @@ class ApplicationTest extends TestCase
 
         $finalResponse = $this->prophesize(ResponseInterface::class)->reveal();
         $defaultDelegate = $this->prophesize(DelegateInterface::class);
-        $defaultDelegate->{HANDLER_METHOD}(Argument::type(ServerRequestInterface::class))
+        $defaultDelegate->process(Argument::type(ServerRequestInterface::class))
             ->willReturn($finalResponse);
 
         $emitter = $this->prophesize(EmitterInterface::class);
