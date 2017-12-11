@@ -7,7 +7,6 @@
 
 namespace ZendTest\Expressive;
 
-use BadMethodCallException;
 use DomainException;
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
 use Interop\Http\ServerMiddleware\DelegateInterface;
@@ -371,20 +370,6 @@ class ApplicationTest extends TestCase
         $app = new Application($this->router->reveal());
         $this->expectException(RuntimeException::class);
         $app->getContainer();
-    }
-
-    public function testUnsupportedMethodCall()
-    {
-        $app = $this->getApp();
-        $this->expectException(BadMethodCallException::class);
-        $app->foo();
-    }
-
-    public function testCallMethodWithCountOfArgsNotEqualsWith2()
-    {
-        $app = $this->getApp();
-        $this->expectException(BadMethodCallException::class);
-        $app->post('/foo');
     }
 
     /**
