@@ -6,7 +6,11 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#480](https://github.com/zendframework/zend-expressive/pull/480) updates the
+  `ImplicitHeadMiddleware` to add a request attribute indicating the request was
+  originally generated for a `HEAD` request before delegating the request; you
+  can now pull the attribute `Zend\Expressive\Middleware\ImplicitHeadMiddleware::FORWARDED_HTTP_METHOD_ATTRIBUTE`
+  in your own middleware in order to vary behavior in these scenarios.
 
 ### Changed
 
