@@ -10,8 +10,8 @@
 
     <title>Using zend-servicemanager - Expressive</title>
 
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha256-7s5uDGW3AHqw6xtJmNNtr+OBRJUlgkNJEo78P4b0yRw=" crossorigin="anonymous">
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/fontawesome/4.6.3/css/font-awesome.min.css" integrity="sha256-AIodEDkC8V/bHBkfyxzolUMw57jeQ9CauwhVW6YJ9CA=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="../../../css/styles-482aa2add1.css">
         <link href="../../../css/zend-expressive.css" rel="stylesheet">
 
@@ -37,8 +37,8 @@
 
             <!-- Main title -->
             <span class="navbar-brand">
-              <a class="logo-link" href="http://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Zend Framework"><img src="../../../img/zf-logo-mark.svg" height="28" alt="Zend Framework" /></a>
-              <a href="../../..">Expressive</a>
+                <a class="logo-link" href="https://framework.zend.com/" data-toggle="tooltip" data-placement="bottom" title="Go to the ZF homepage"><img src="../../../img/zf-logo-mark.svg" height="28" alt="Zend Framework" /></a>
+                <a href="../../..">Expressive</a>
             </span>
         </div>
 
@@ -601,7 +601,7 @@ configuration. We'll show you both methods.</p>
 <p>For this example, we'll assume your application configuration (used by several
 factories to configure instances) is in <code>config/config.php</code>, and that that file
 returns an array.</p>
-<p>We'll create a <code>config/services.php</code> file that creates and returns a
+<p>We'll create a <code>config/container.php</code> file that creates and returns a
 <code>Zend\ServiceManager\ServiceManager</code> instance as follows:</p>
 <pre class="codehilite"><code class="language-php">use Zend\ServiceManager\ServiceManager;
 
@@ -610,24 +610,24 @@ $container = new ServiceManager();
 // Application and configuration
 $container-&gt;setService('config', include 'config/config.php');
 $container-&gt;setFactory(
-    'Zend\Expressive\Application',
-    'Zend\Expressive\Container\ApplicationFactory'
+    Zend\Expressive\Application::class,
+    Zend\Expressive\Container\ApplicationFactory::class
 );
 
 // Routing
 // In most cases, you can instantiate the router you want to use without using a
 // factory:
 $container-&gt;setInvokableClass(
-    'Zend\Expressive\Router\RouterInterface',
-    'Zend\Expressive\Router\AuraRouter'
+    Zend\Expressive\Router\RouterInterface::class,
+    Zend\Expressive\Router\AuraRouter::class
 );
 
 // Templating
 // In most cases, you can instantiate the template renderer you want to use
 // without using a factory:
 $container-&gt;setInvokableClass(
-    'Zend\Expressive\Template\TemplateRendererInterface',
-    'Zend\Expressive\Plates\PlatesRenderer'
+    Zend\Expressive\Template\TemplateRendererInterface::class,
+    Zend\Expressive\Plates\PlatesRenderer::class
 );
 
 // These next two can be added in any environment; they won't be used unless
@@ -636,43 +636,43 @@ $container-&gt;setInvokableClass(
 // ErrorResponseGenerator implementation (Expressive 2.X):
 $container-&gt;setFactory(
     'Zend\Expressive\Whoops',
-    'Zend\Expressive\Container\WhoopsFactory'
+    Zend\Expressive\Container\WhoopsFactory::class
 );
 $container-&gt;setFactory(
     'Zend\Expressive\WhoopsPageHandler',
-    'Zend\Expressive\Container\WhoopsPageHandlerFactory'
+    Zend\Expressive\Container\WhoopsPageHandlerFactory::class
 );
 
 // Error Handling
 
 // - Expressive 2.X, all environments:
 $container-&gt;setFactory(
-    'Zend\Expressive\Middleware\ErrorHandler',
-    'Zend\Expressive\Container\ErrorHandlerFactory'
+    Zend\Expressive\Middleware\ErrorHandler::class,
+    Zend\Expressive\Container\ErrorHandlerFactory::class
 );
 
 // If in development:
 // - Expressive 1.X:
 $container-&gt;setFactory(
     'Zend\Expressive\FinalHandler',
-    'Zend\Expressive\Container\WhoopsErrorHandlerFactory'
+    Zend\Expressive\Container\WhoopsErrorHandlerFactory::class
 );
 // - Expressive 2.X:
 $container-&gt;setFactory(
-    'Zend\Expressive\Middleware\ErrorResponseGenerator',
-    'Zend\Expressive\Container\WhoopsErrorResponseGeneratorFactory'
+    Zend\Expressive\Middleware\ErrorResponseGenerator::class,
+    Zend\Expressive\Container\WhoopsErrorResponseGeneratorFactory::class
 );
 
 // If in production:
 // - Expressive 1.X:
 $container-&gt;setFactory(
     'Zend\Expressive\FinalHandler',
-    'Zend\Expressive\Container\TemplatedErrorHandlerFactory'
+    Zend\Expressive\Container\TemplatedErrorHandlerFactory::class
 );
 // - Expressive 2.X:
 $container-&gt;setFactory(
-    'Zend\Expressive\Middleware\ErrorResponseGenerator',
-    'Zend\Expressive\Container\ErrorResponseGeneratorFactory'
+    Zend\Expressive\Middleware\ErrorResponseGenerator::class,
+    Zend\Expressive\Container\ErrorResponseGeneratorFactory::class
 );
 
 return $container;</code></pre>
@@ -680,8 +680,8 @@ return $container;</code></pre>
 <p>Your bootstrap (typically <code>public/index.php</code>) will then look like this:</p>
 <pre class="codehilite"><code class="language-php">chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
-$container = require 'config/services.php';
-$app = $container-&gt;get('Zend\Expressive\Application');
+$container = require 'config/container.php';
+$app = $container-&gt;get(\Zend\Expressive\Application::class);
 
 // Expressive 2.X:
 require 'config/pipeline.php';
@@ -693,7 +693,7 @@ $app-&gt;run();</code></pre>
 <h3 id="configuration-driven-container">Configuration-Driven Container</h3>
 <p>Alternately, you can use a configuration file to define the container. As
 before, we'll define our configuration in <code>config/config.php</code>, and our
-<code>config/services.php</code> file will still return our service manager instance; we'll
+<code>config/container.php</code> file will still return our service manager instance; we'll
 define the service configuration in <code>config/dependencies.php</code>:</p>
 <pre class="codehilite"><code class="language-php">return [
     'services' =&gt; [
@@ -704,22 +704,22 @@ define the service configuration in <code>config/dependencies.php</code>:</p>
         'Zend\Expressive\Delegate\DefaultDelegate' =&gt; 'Zend\Expressive\Delegate\NotFoundDelegate',
     ],
     'invokables' =&gt; [
-        'Zend\Expressive\Router\RouterInterface'     =&gt; 'Zend\Expressive\Router\AuraRouter',
-        'Zend\Expressive\Template\TemplateRendererInterface' =&gt; 'Zend\Expressive\Plates\PlatesRenderer'
+        Zend\Expressive\Router\RouterInterface::class     =&gt; Zend\Expressive\Router\AuraRouter::class,
+        Zend\Expressive\Template\TemplateRendererInterface::class =&gt; 'Zend\Expressive\Plates\PlatesRenderer::class
     ],
     'factories' =&gt; [
-        'Zend\Expressive\Application'       =&gt; 'Zend\Expressive\Container\ApplicationFactory',
-        'Zend\Expressive\Whoops'            =&gt; 'Zend\Expressive\Container\WhoopsFactory',
-        'Zend\Expressive\WhoopsPageHandler' =&gt; 'Zend\Expressive\Container\WhoopsPageHandlerFactory',
+        Zend\Expressive\Application::class       =&gt; Zend\Expressive\Container\ApplicationFactory::class,
+        'Zend\Expressive\Whoops'            =&gt; Zend\Expressive\Container\WhoopsFactory::class,
+        'Zend\Expressive\WhoopsPageHandler' =&gt; Zend\Expressive\Container\WhoopsPageHandlerFactory::class,
 
         // Expressive 2.0:
-        'Zend\Expressive\Middleware\ErrorHandler'    =&gt; 'Zend\Expressive\Container\ErrorHandlerFactory',
-        'Zend\Expressive\Delegate\NotFoundDelegate'  =&gt; 'Zend\Expressive\Container\NotFoundDelegateFactory',
-        'Zend\Expressive\Middleware\NotFoundHandler' =&gt; 'Zend\Expressive\Container\NotFoundHandlerFactory',
+        Zend\Stratigility\Middleware\ErrorHandler::class    =&gt; Zend\Expressive\Container\ErrorHandlerFactory::class,
+        Zend\Expressive\Delegate\NotFoundDelegate::class  =&gt; Zend\Expressive\Container\NotFoundDelegateFactory::class,
+        Zend\Expressive\Middleware\NotFoundHandler::class =&gt; Zend\Expressive\Container\NotFoundHandlerFactory::class,
     ],
 ];</code></pre>
 
-<p><code>config/services.php</code> becomes:</p>
+<p><code>config/container.php</code> becomes:</p>
 <pre class="codehilite"><code class="language-php">use Zend\ServiceManager\Config;
 use Zend\ServiceManager\ServiceManager;
 
@@ -733,24 +733,24 @@ You have two choices on how to approach this:</p>
 <li>Define the final handler service in an environment specific file and use file
   globbing to merge files.</li>
 </ul>
-<p>In the first case, you would change the <code>config/services.php</code> example to look
+<p>In the first case, you would change the <code>config/container.php</code> example to look
 like this:</p>
 <pre class="codehilite"><code class="language-php">use Zend\ServiceManager\Config;
 use Zend\ServiceManager\ServiceManager;
 
-$container = new ServiceManager(new Config(include 'config/services.php'));
+$container = new ServiceManager(new Config(include 'config/container.php'));
 switch ($variableOrConstantIndicatingEnvironment) {
     case 'development':
         // Expressive 1.X:
         $container-&gt;setFactory(
             'Zend\Expressive\FinalHandler',
-            'Zend\Expressive\Container\WhoopsErrorHandlerFactory'
+            Zend\Expressive\Container\WhoopsErrorHandlerFactory::class
         );
 
         // Expressive 2.X:
         $container-&gt;setFactory(
-            'Zend\Expressive\Middleware\ErrorResponseGenerator',
-            'Zend\Expressive\Container\WhoopsErrorResponseGeneratorFactory'
+            Zend\Expressive\Middleware\ErrorResponseGenerator::class,
+            Zend\Expressive\Container\WhoopsErrorResponseGeneratorFactory::class
         );
         break;
     case 'production':
@@ -758,13 +758,13 @@ switch ($variableOrConstantIndicatingEnvironment) {
         // Expressive 1.X:
         $container-&gt;setFactory(
             'Zend\Expressive\FinalHandler',
-            'Zend\Expressive\Container\TemplatedErrorHandlerFactory'
+            Zend\Expressive\Container\TemplatedErrorHandlerFactory::class
         );
 
         // Expressive 2.X:
         $container-&gt;setFactory(
-            'Zend\Expressive\Middleware\ErrorResponseGenerator',
-            'Zend\Expressive\Container\ErrorResponseGeneratorFactory'
+            Zend\Expressive\Middleware\ErrorResponseGenerator::class,
+            Zend\Expressive\Container\ErrorResponseGeneratorFactory::class
         );
 }
 return $container;</code></pre>
@@ -790,25 +790,25 @@ return ConfigFactory::fromFiles(
     ],
     'aliases' =&gt; [
         // Expressive 2.0:
-        'Zend\Expressive\Delegate\DefaultDelegate' =&gt; 'Zend\Expressive\Delegate\NotFoundDelegate',
+        'Zend\Expressive\Delegate\DefaultDelegate' =&gt; Zend\Expressive\Delegate\NotFoundDelegate::class,
     ],
     'invokables' =&gt; [
-        'Zend\Expressive\Router\RouterInterface'     =&gt; 'Zend\Expressive\Router\AuraRouter',
-        'Zend\Expressive\Template\TemplateRendererInterface' =&gt; 'Zend\Expressive\Plates\PlatesRenderer'
+        Zend\Expressive\Router\RouterInterface::class     =&gt; Zend\Expressive\Router\AuraRouter::class,
+        Zend\Expressive\Template\TemplateRendererInterface::class =&gt; 'Zend\Expressive\Plates\PlatesRenderer::class
     ],
     'factories' =&gt; [
-        'Zend\Expressive\Application'       =&gt; 'Zend\Expressive\Container\ApplicationFactory',
-        'Zend\Expressive\Whoops'            =&gt; 'Zend\Expressive\Container\WhoopsFactory',
-        'Zend\Expressive\WhoopsPageHandler' =&gt; 'Zend\Expressive\Container\WhoopsPageHandlerFactory',
+        Zend\Expressive\Application::class       =&gt; Zend\Expressive\Container\ApplicationFactory::class,
+        'Zend\Expressive\Whoops'            =&gt; Zend\Expressive\Container\WhoopsFactory::class,
+        'Zend\Expressive\WhoopsPageHandler' =&gt; Zend\Expressive\Container\WhoopsPageHandlerFactory::class,
 
         // Expressive 1.X:
-        'Zend\Expressive\FinalHandler'      =&gt; 'Zend\Expressive\Container\TemplatedErrorHandlerFactory',
+        'Zend\Expressive\FinalHandler'      =&gt; Zend\Expressive\Container\TemplatedErrorHandlerFactory::class,
 
         // Expressive 2.X:
-        'Zend\Expressive\Middleware\ErrorResponseGenerator' =&gt; 'Zend\Expressive\Container\ErrorResponseGeneratorFactory',
-        'Zend\Expressive\Middleware\ErrorHandler'    =&gt; 'Zend\Expressive\Container\ErrorHandlerFactory',
-        'Zend\Expressive\Delegate\NotFoundDelegate'  =&gt; 'Zend\Expressive\Container\NotFoundDelegateFactory',
-        'Zend\Expressive\Middleware\NotFoundHandler' =&gt; 'Zend\Expressive\Container\NotFoundHandlerFactory',
+        Zend\Expressive\Middleware\ErrorResponseGenerator::class =&gt; Zend\Expressive\Container\ErrorResponseGeneratorFactory::class,
+        Zend\Stratigility\Middleware\ErrorHandler::class    =&gt; Zend\Expressive\Container\ErrorHandlerFactory::class,
+        'Zend\Expressive\Delegate\NotFoundDelegate'  =&gt; Zend\Expressive\Container\NotFoundDelegateFactory::class,
+        Zend\Expressive\Middleware\NotFoundHandler::class =&gt; Zend\Expressive\Container\NotFoundHandlerFactory::class,
     ],
 ];</code></pre>
 
@@ -816,14 +816,14 @@ return ConfigFactory::fromFiles(
 like this:</p>
 <pre class="codehilite"><code class="language-php">return [
     'factories' =&gt; [
-        'Zend\Expressive\Whoops'            =&gt; 'Zend\Expressive\Container\WhoopsFactory',
-        'Zend\Expressive\WhoopsPageHandler' =&gt; 'Zend\Expressive\Container\WhoopsPageHandlerFactory',
+        'Zend\Expressive\Whoops'            =&gt; Zend\Expressive\Container\WhoopsFactory::class,
+        'Zend\Expressive\WhoopsPageHandler' =&gt; Zend\Expressive\Container\WhoopsPageHandlerFactory::class,
 
         // Expressive 1.X:
-        'Zend\Expressive\FinalHandler'      =&gt; 'Zend\Expressive\Container\WhoopsErrorHandlerFactory',
+        'Zend\Expressive\FinalHandler'      =&gt; Zend\Expressive\Container\WhoopsErrorHandlerFactory::class,
 
         // Expressive 2.X:
-        'Zend\Expressive\Middleware\ErrorResponseGenerator' =&gt; 'Zend\Expressive\Container\WhoopsErrorResponseGeneratorFactory',
+        Zend\Expressive\Middleware\ErrorResponseGenerator::class =&gt; 'Zend\Expressive\Container\WhoopsErrorResponseGeneratorFactory::class,
     ],
 ];</code></pre>
 
@@ -855,7 +855,7 @@ the application configuration.)</p>
             <div class="col-lg-3">
               <p>
                 <strong>Zend Framework</strong><br />
-                <a href="http://framework.zend.com/">framework.zend.com</a><br />
+                <a href="https://framework.zend.com/">framework.zend.com</a><br />
                 <a href="https://docs.zendframework.com">docs.zendframework.com</a><br />
                 <a href="https://packages.zendframework.com">packages.zendframework.com</a><br />
                 <a href="https://apigility.org">apigility.org</a><br />
@@ -876,14 +876,15 @@ the application configuration.)</p>
                 <h4>Copyright</h4>
                 <div class="hline-w"></div>
 
-                <p>&copy; 2006-2016 by <a href="http://www.zend.com">Zend</a>, a <a href="http://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2017 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
             </div>
 
             <div class="col-lg-4">
                 <h4>Contacts</h4>
                 <div class="hline-w"></div>
                 <p>
-                    <a href="irc://irc.freenode.net/zftalk" class="btn-social btn-outline" alt="IRC" title="IRC"><i class="fa fa-comment"></i></a>
+                    <a href="https://discourse.zendframework.com" class="btn-social btn-outline" alt="Forum" title="Forum"><i class="fa fa-comments"></i></a>
+                    <a href="https://zendframework-slack.herokuapp.com" class="btn-social btn-outline" alt="Slack" title="Slack"><i class="fa fa-slack"></i></a>
                     <a href="https://github.com/zendframework" class="btn-social btn-outline" alt="Github" title="Github"><i class="fa fa-github"></i></a>
                     <a href="https://twitter.com/zfdevteam" class="btn-social btn-outline" alt="Twitter" title="Twitter"><i class="fa fa-twitter"></i></a>
                 </p>
@@ -892,11 +893,10 @@ the application configuration.)</p>
     </div>
 </div>
 
-
-    <script src="//cdn.jsdelivr.net/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
-    <script src="//cdn.jsdelivr.net/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha256-KXn5puMvxCw+dAYznun+drMdG1IFl3agK0p/pqT9KAo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
     <script>var base_url = '../../..';</script>
-    <script src="../../../js/scripts-8b95ab2fc3.js"></script>
+    <script src="../../../js/scripts-0b6185f4a5.js"></script>
     <script data-main="../../../mkdocs/js/search.js" src="../../../mkdocs/js/require.js"></script>
 
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
@@ -929,7 +929,7 @@ the application configuration.)</p>
     <div class="zf-components">
   <div class="zf-components-grid">
     <div class="zf-logo">
-      <a href="http://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Go to the ZF homepage"><img src="../../../img/zf-logo-mark.svg" alt="Zend Framework" width="250" /></a>
+      <a href="https://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Go to the ZF homepage"><img src="../../../img/zf-logo-mark.svg" alt="Zend Framework" width="250" /></a>
     </div>
 
     <div class="component-list"></div>
