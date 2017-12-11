@@ -169,7 +169,7 @@ middleware prevents any middleware attached later from executing.
 You can attach middleware manually, in which case the pipeline is executed in
 the order of attachment, or use configuration. When you use configuration, you
 will specify a priority integer to dictate the order in which middleware should
-be attached.  Middleware specifying high integer prioritiess are attached (and
+be attached. Middleware specifying high integer priorities are attached (and
 thus executed) earlier, while those specifying lower and/or negative integers
 are attached later. The default priority is 1.
 
@@ -217,7 +217,7 @@ will execute in one of two conditions:
 - routed middleware called on the next middleware instead of returning a response.
 
 As such, the largest use case for such middleware is to provide a "default"
-error response for your application, ucually as an HTTP 404 Not Found response.
+error response for your application, usually as an HTTP 404 Not Found response.
 
 The main points to remember are:
 
