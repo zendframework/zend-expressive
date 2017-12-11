@@ -8,18 +8,16 @@
 namespace ZendTest\Expressive\Middleware;
 
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
-use Webimpress\HttpMiddlewareCompatibility\MiddlewareInterface as ServerMiddlewareInterface;
 use Zend\Expressive\Middleware\RouteMiddleware;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouteResult;
 use Zend\Expressive\Router\RouterInterface;
-
-use const Webimpress\HttpMiddlewareCompatibility\HANDLER_METHOD;
 
 class RouteMiddlewareTest extends TestCase
 {
@@ -56,7 +54,7 @@ class RouteMiddlewareTest extends TestCase
         $result = RouteResult::fromRouteFailure(['GET', 'POST']);
 
         $this->router->match($this->request->reveal())->willReturn($result);
-        $this->delegate->{HANDLER_METHOD}()->shouldNotBeCalled();
+        $this->delegate->process()->shouldNotBeCalled();
         $this->request->withAttribute()->shouldNotBeCalled();
         $this->response->withStatus(StatusCode::STATUS_METHOD_NOT_ALLOWED)->will([$this->response, 'reveal']);
         $this->response->withHeader('Allow', 'GET,POST')->will([$this->response, 'reveal']);
@@ -75,7 +73,7 @@ class RouteMiddlewareTest extends TestCase
         $this->request->withAttribute()->shouldNotBeCalled();
 
         $expected = $this->prophesize(ResponseInterface::class)->reveal();
-        $this->delegate->{HANDLER_METHOD}($this->request->reveal())->willReturn($expected);
+        $this->delegate->process($this->request->reveal())->willReturn($expected);
 
         $response = $this->middleware->process($this->request->reveal(), $this->delegate->reveal());
         $this->assertSame($expected, $response);
@@ -104,7 +102,7 @@ class RouteMiddlewareTest extends TestCase
 
         $expected = $this->prophesize(ResponseInterface::class)->reveal();
         $this->delegate
-            ->{HANDLER_METHOD}($this->request->reveal())
+            ->process($this->request->reveal())
             ->willReturn($expected);
 
         $response = $this->middleware->process($this->request->reveal(), $this->delegate->reveal());

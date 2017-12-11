@@ -7,15 +7,13 @@
 
 namespace Zend\Expressive\Middleware;
 
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
-use Webimpress\HttpMiddlewareCompatibility\MiddlewareInterface as ServerMiddlewareInterface;
 use Zend\Expressive\Exception\InvalidMiddlewareException;
 use Zend\Expressive\IsCallableInteropMiddlewareTrait;
-
-use const Webimpress\HttpMiddlewareCompatibility\HANDLER_METHOD;
 
 class LazyLoadingMiddleware implements ServerMiddlewareInterface
 {
@@ -78,7 +76,7 @@ class LazyLoadingMiddleware implements ServerMiddlewareInterface
 
         // Legacy double-pass signature
         return $middleware($request, $this->responsePrototype, function ($request, $response) use ($delegate) {
-            return $delegate->{HANDLER_METHOD}($request);
+            return $delegate->process($request);
         });
     }
 }

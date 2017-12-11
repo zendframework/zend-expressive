@@ -9,16 +9,14 @@ namespace ZendTest\Expressive\Middleware;
 
 use Fig\Http\Message\RequestMethodInterface as RequestMethod;
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
+use Interop\Http\ServerMiddleware\DelegateInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
 use Zend\Diactoros\Response;
 use Zend\Expressive\Middleware\ImplicitOptionsMiddleware;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouteResult;
-
-use const Webimpress\HttpMiddlewareCompatibility\HANDLER_METHOD;
 
 class ImplicitOptionsMiddlewareTest extends TestCase
 {
@@ -31,7 +29,7 @@ class ImplicitOptionsMiddlewareTest extends TestCase
         $response = $this->prophesize(ResponseInterface::class)->reveal();
 
         $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->{HANDLER_METHOD}($request->reveal())->willReturn($response);
+        $delegate->process($request->reveal())->willReturn($response);
 
         $middleware = new ImplicitOptionsMiddleware();
         $result = $middleware->process($request->reveal(), $delegate->reveal());
@@ -47,7 +45,7 @@ class ImplicitOptionsMiddlewareTest extends TestCase
         $response = $this->prophesize(ResponseInterface::class)->reveal();
 
         $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->{HANDLER_METHOD}($request->reveal())->willReturn($response);
+        $delegate->process($request->reveal())->willReturn($response);
 
         $middleware = new ImplicitOptionsMiddleware();
         $result = $middleware->process($request->reveal(), $delegate->reveal());
@@ -66,7 +64,7 @@ class ImplicitOptionsMiddlewareTest extends TestCase
         $response = $this->prophesize(ResponseInterface::class)->reveal();
 
         $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->{HANDLER_METHOD}($request->reveal())->willReturn($response);
+        $delegate->process($request->reveal())->willReturn($response);
 
         $middleware = new ImplicitOptionsMiddleware();
         $result = $middleware->process($request->reveal(), $delegate->reveal());
@@ -88,7 +86,7 @@ class ImplicitOptionsMiddlewareTest extends TestCase
         $response = $this->prophesize(ResponseInterface::class)->reveal();
 
         $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->{HANDLER_METHOD}($request->reveal())->willReturn($response);
+        $delegate->process($request->reveal())->willReturn($response);
 
         $middleware = new ImplicitOptionsMiddleware();
         $result = $middleware->process($request->reveal(), $delegate->reveal());
@@ -113,7 +111,7 @@ class ImplicitOptionsMiddlewareTest extends TestCase
         $response = $this->prophesize(ResponseInterface::class)->reveal();
 
         $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->{HANDLER_METHOD}($request->reveal())->shouldNotBeCalled();
+        $delegate->process($request->reveal())->shouldNotBeCalled();
 
         $middleware = new ImplicitOptionsMiddleware();
         $result = $middleware->process($request->reveal(), $delegate->reveal());
@@ -139,7 +137,7 @@ class ImplicitOptionsMiddlewareTest extends TestCase
         $request->getAttribute(RouteResult::class, false)->will([$result, 'reveal']);
 
         $delegate = $this->prophesize(DelegateInterface::class);
-        $delegate->{HANDLER_METHOD}($request->reveal())->shouldNotBeCalled();
+        $delegate->process($request->reveal())->shouldNotBeCalled();
 
         $expected = $this->prophesize(ResponseInterface::class);
         $expected->withHeader('Allow', implode(',', $allowedMethods))->will([$expected, 'reveal']);
