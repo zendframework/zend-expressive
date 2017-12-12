@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "91e5be173a1daf4fbd7f6da03c87cf15",
+    "content-hash": "816ff331da9fc573ed51a30a3adfe0bb",
     "packages": [
         {
             "name": "fig/http-message-util",
@@ -420,35 +420,37 @@
         },
         {
             "name": "zendframework/zend-expressive-template",
-            "version": "1.0.4",
+            "version": "dev-release-2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-expressive-template.git",
-                "reference": "23922f96b32ab6e64fc551ec06b81fd047828765"
+                "reference": "49a19cfe466e8462beed87c3b1e3d307cf632139"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-expressive-template/zipball/23922f96b32ab6e64fc551ec06b81fd047828765",
-                "reference": "23922f96b32ab6e64fc551ec06b81fd047828765",
+                "url": "https://api.github.com/repos/zendframework/zend-expressive-template/zipball/49a19cfe466e8462beed87c3b1e3d307cf632139",
+                "reference": "49a19cfe466e8462beed87c3b1e3d307cf632139",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.5"
+                "php": "^7.1"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.7",
+                "malukenho/docheader": "^0.1.6",
+                "phpunit/phpunit": "^6.5.3",
                 "zendframework/zend-coding-standard": "~1.0.0"
             },
             "suggest": {
-                "zendframework/zend-expressive-platesrenderer": "^0.1 to use the Plates template renderer",
-                "zendframework/zend-expressive-twigrenderer": "^0.1 to use the Twig template renderer",
-                "zendframework/zend-expressive-zendviewrenderer": "^0.1 to use the zend-view PhpRenderer template renderer"
+                "zendframework/zend-expressive-platesrenderer": "^2.0 to use the Plates template renderer",
+                "zendframework/zend-expressive-twigrenderer": "^2.0 to use the Twig template renderer",
+                "zendframework/zend-expressive-zendviewrenderer": "^2.0 to use the zend-view PhpRenderer template renderer"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0-dev",
-                    "dev-develop": "1.1-dev"
+                    "dev-master": "1.0.x-dev",
+                    "dev-develop": "1.1.x-dev",
+                    "dev-release-2.0.0": "2.0.x-dev"
                 }
             },
             "autoload": {
@@ -462,10 +464,13 @@
             ],
             "description": "Template subcomponent for Expressive",
             "keywords": [
+                "ZendFramework",
                 "expressive",
-                "template"
+                "template",
+                "zend-expressive",
+                "zf"
             ],
-            "time": "2017-01-11T18:42:34+00:00"
+            "time": "2017-12-12T16:17:11+00:00"
         },
         {
             "name": "zendframework/zend-stratigility",
@@ -3335,6 +3340,7 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "zendframework/zend-expressive-router": 20,
+        "zendframework/zend-expressive-template": 20,
         "zendframework/zend-stratigility": 20,
         "zendframework/zend-expressive-aurarouter": 20,
         "zendframework/zend-expressive-fastroute": 20,
