@@ -26,7 +26,7 @@ trait IsCallableInteropMiddlewareTrait
      * @param mixed $middleware
      * @return bool
      */
-    private function isCallable($middleware): bool
+    private function isCallable($middleware) : bool
     {
         if (! is_callable($middleware)) {
             return false;
@@ -51,7 +51,7 @@ trait IsCallableInteropMiddlewareTrait
      * @param mixed $middleware
      * @return bool
      */
-    private function isCallableInteropMiddleware($middleware): bool
+    private function isCallableInteropMiddleware($middleware) : bool
     {
         if (! $this->isCallable($middleware)) {
             return false;
@@ -72,7 +72,7 @@ trait IsCallableInteropMiddlewareTrait
      * @param callable $middleware
      * @return ReflectionFunctionAbstract
      */
-    private function reflectMiddleware(callable $middleware): ReflectionFunctionAbstract
+    private function reflectMiddleware(callable $middleware) : ReflectionFunctionAbstract
     {
         if (is_array($middleware)) {
             $class = array_shift($middleware);

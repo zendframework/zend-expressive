@@ -56,7 +56,7 @@ class WhoopsErrorResponseGenerator
         Throwable $e,
         ServerRequestInterface $request,
         ResponseInterface $response
-    ): ResponseInterface {
+    ) : ResponseInterface {
         // Walk through all handlers
         foreach ($this->whoops->getHandlers() as $handler) {
             // Add fancy data for the PrettyPageHandler
@@ -93,7 +93,7 @@ class WhoopsErrorResponseGenerator
      * @param PrettyPageHandler $handler
      * @return void
      */
-    private function prepareWhoopsHandler(ServerRequestInterface $request, PrettyPageHandler $handler): void
+    private function prepareWhoopsHandler(ServerRequestInterface $request, PrettyPageHandler $handler) : void
     {
         $uri = $request->getAttribute('originalUri', false) ?: $request->getUri();
         $request = $request->getAttribute('originalRequest', false) ?: $request;

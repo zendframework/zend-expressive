@@ -50,7 +50,7 @@ final class AppFactory
     public static function create(
         ContainerInterface $container = null,
         Router\RouterInterface $router = null
-    ): Application {
+    ) : Application {
         if (! $container && ! class_exists(ServiceManager::class)) {
             throw new Exception\MissingDependencyException(sprintf(
                 '%s requires a container, but none was provided and %s is not installed',

@@ -70,7 +70,7 @@ EOT;
         Throwable $e,
         ServerRequestInterface $request,
         ResponseInterface $response
-    ): ResponseInterface {
+    ) : ResponseInterface {
         $response = $response->withStatus(Utils::getStatusCode($e, $response));
 
         if ($this->renderer) {
@@ -90,7 +90,7 @@ EOT;
         Throwable $e,
         ServerRequestInterface $request,
         ResponseInterface $response
-    ): ResponseInterface {
+    ) : ResponseInterface {
         $templateData = [
             'response' => $response,
             'request'  => $request,
@@ -115,7 +115,7 @@ EOT;
      * @param ResponseInterface $response
      * @return ResponseInterface
      */
-    private function prepareDefaultResponse(Throwable $e, ResponseInterface $response): ResponseInterface
+    private function prepareDefaultResponse(Throwable $e, ResponseInterface $response) : ResponseInterface
     {
         $message = 'An unexpected error occurred';
 
@@ -134,7 +134,7 @@ EOT;
      * @param Throwable $e
      * @return string
      */
-    private function prepareStackTrace(Throwable $e): string
+    private function prepareStackTrace(Throwable $e) : string
     {
         $message = '';
         do {

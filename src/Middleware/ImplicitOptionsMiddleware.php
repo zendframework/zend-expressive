@@ -89,7 +89,7 @@ class ImplicitOptionsMiddleware implements MiddlewareInterface
      *
      * @return ResponseInterface
      */
-    private function getResponse(): ResponseInterface
+    private function getResponse() : ResponseInterface
     {
         return $this->response ?: new Response('php://temp', StatusCode::STATUS_OK);
     }
