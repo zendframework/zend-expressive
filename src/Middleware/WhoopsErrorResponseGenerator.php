@@ -52,8 +52,11 @@ class WhoopsErrorResponseGenerator
      * @param ResponseInterface $response
      * @return ResponseInterface
      */
-    public function __invoke(Throwable $e, ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
-    {
+    public function __invoke(
+        Throwable $e,
+        ServerRequestInterface $request,
+        ResponseInterface $response
+    ): ResponseInterface {
         // Walk through all handlers
         foreach ($this->whoops->getHandlers() as $handler) {
             // Add fancy data for the PrettyPageHandler

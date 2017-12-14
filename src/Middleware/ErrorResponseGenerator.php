@@ -66,8 +66,11 @@ EOT;
      * @param ResponseInterface $response
      * @return ResponseInterface
      */
-    public function __invoke(Throwable $e, ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
-    {
+    public function __invoke(
+        Throwable $e,
+        ServerRequestInterface $request,
+        ResponseInterface $response
+    ): ResponseInterface {
         $response = $response->withStatus(Utils::getStatusCode($e, $response));
 
         if ($this->renderer) {

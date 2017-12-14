@@ -134,8 +134,10 @@ trait MarshalMiddlewareTrait
      * @throws Exception\InvalidMiddlewareException if $middleware does not resolve
      *     to either an invokable class or MiddlewareInterface instance.
      */
-    private function marshalInvokableMiddleware(string $middleware, ResponseInterface $responsePrototype): MiddlewareInterface
-    {
+    private function marshalInvokableMiddleware(
+        string $middleware,
+        ResponseInterface $responsePrototype
+    ): MiddlewareInterface {
         if (! class_exists($middleware)) {
             throw new Exception\InvalidMiddlewareException(sprintf(
                 'Unable to create middleware "%s"; not a valid class or service name',
