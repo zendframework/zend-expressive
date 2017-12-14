@@ -52,8 +52,8 @@ class NotFoundDelegate implements RequestHandlerInterface
     public function __construct(
         ResponseInterface $responsePrototype,
         TemplateRendererInterface $renderer = null,
-        $template = self::TEMPLATE_DEFAULT,
-        $layout = self::LAYOUT_DEFAULT
+        string $template = self::TEMPLATE_DEFAULT,
+        string $layout = self::LAYOUT_DEFAULT
     ) {
         $this->responsePrototype = $responsePrototype;
         $this->renderer = $renderer;

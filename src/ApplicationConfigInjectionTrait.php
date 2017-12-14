@@ -69,7 +69,7 @@ trait ApplicationConfigInjectionTrait
      *     from the composed container.
      * @return void
      */
-    public function injectPipelineFromConfig(array $config = null)
+    public function injectPipelineFromConfig(array $config = null): void
     {
         if (null === $config) {
             $config = $this->container->has('config') ? $this->container->get('config') : [];
@@ -139,7 +139,7 @@ trait ApplicationConfigInjectionTrait
      * @return void
      * @throws Exception\InvalidArgumentException
      */
-    public function injectRoutesFromConfig(array $config = null)
+    public function injectRoutesFromConfig(array $config = null): void
     {
         if (null === $config) {
             $config = $this->container->has('config') ? $this->container->get('config') : [];
@@ -205,7 +205,7 @@ trait ApplicationConfigInjectionTrait
      * @return callable
      * @throws Exception\InvalidArgumentException
      */
-    private function createCollectionMapper()
+    private function createCollectionMapper(): callable
     {
         $appMiddlewares = [
             Application::ROUTING_MIDDLEWARE,

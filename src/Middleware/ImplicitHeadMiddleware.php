@@ -106,7 +106,7 @@ class ImplicitHeadMiddleware implements MiddlewareInterface
      *
      * @return ResponseInterface
      */
-    private function getResponse()
+    private function getResponse(): ResponseInterface
     {
         return $this->response ?: new Response();
     }

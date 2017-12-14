@@ -39,7 +39,7 @@ class LazyLoadingMiddleware implements MiddlewareInterface
     public function __construct(
         ContainerInterface $container,
         ResponseInterface $responsePrototype,
-        $middlewareName
+        string $middlewareName
     ) {
         $this->container = $container;
         $this->responsePrototype = $responsePrototype;

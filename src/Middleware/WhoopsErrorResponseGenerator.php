@@ -12,6 +12,7 @@ namespace Zend\Expressive\Middleware;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Throwable;
 use Whoops\Handler\JsonResponseHandler;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run;
@@ -46,12 +47,12 @@ class WhoopsErrorResponseGenerator
     }
 
     /**
-     * @param \Throwable|\Exception $e
+     * @param Throwable $e
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
      * @return ResponseInterface
      */
-    public function __invoke($e, ServerRequestInterface $request, ResponseInterface $response)
+    public function __invoke(Throwable $e, ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         // Walk through all handlers
         foreach ($this->whoops->getHandlers() as $handler) {
@@ -89,7 +90,7 @@ class WhoopsErrorResponseGenerator
      * @param PrettyPageHandler $handler
      * @return void
      */
-    private function prepareWhoopsHandler(ServerRequestInterface $request, PrettyPageHandler $handler)
+    private function prepareWhoopsHandler(ServerRequestInterface $request, PrettyPageHandler $handler): void
     {
         $uri = $request->getAttribute('originalUri', false) ?: $request->getUri();
         $request = $request->getAttribute('originalRequest', false) ?: $request;

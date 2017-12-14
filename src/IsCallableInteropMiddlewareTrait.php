@@ -11,6 +11,7 @@ namespace Zend\Expressive;
 
 use Closure;
 use ReflectionFunction;
+use ReflectionFunctionAbstract;
 use ReflectionMethod;
 
 trait IsCallableInteropMiddlewareTrait
@@ -25,7 +26,7 @@ trait IsCallableInteropMiddlewareTrait
      * @param mixed $middleware
      * @return bool
      */
-    private function isCallable($middleware)
+    private function isCallable($middleware): bool
     {
         if (! is_callable($middleware)) {
             return false;
@@ -50,7 +51,7 @@ trait IsCallableInteropMiddlewareTrait
      * @param mixed $middleware
      * @return bool
      */
-    private function isCallableInteropMiddleware($middleware)
+    private function isCallableInteropMiddleware($middleware): bool
     {
         if (! $this->isCallable($middleware)) {
             return false;
@@ -69,9 +70,9 @@ trait IsCallableInteropMiddlewareTrait
      * callable due to private visibility.
      *
      * @param callable $middleware
-     * @return \ReflectionFunctionAbstract
+     * @return ReflectionFunctionAbstract
      */
-    private function reflectMiddleware(callable $middleware)
+    private function reflectMiddleware(callable $middleware): ReflectionFunctionAbstract
     {
         if (is_array($middleware)) {
             $class = array_shift($middleware);

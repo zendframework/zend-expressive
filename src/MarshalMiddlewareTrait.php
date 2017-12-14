@@ -48,7 +48,7 @@ trait MarshalMiddlewareTrait
         Router\RouterInterface $router,
         ResponseInterface $responsePrototype,
         ContainerInterface $container = null
-    ) {
+    ): MiddlewareInterface {
         if ($middleware === Application::ROUTING_MIDDLEWARE) {
             return new Middleware\RouteMiddleware($router, $responsePrototype);
         }
@@ -112,7 +112,7 @@ trait MarshalMiddlewareTrait
         Router\RouterInterface $router,
         ResponseInterface $responsePrototype,
         ContainerInterface $container = null
-    ) {
+    ): MiddlewarePipe {
         $middlewarePipe = new MiddlewarePipe();
 
         foreach ($middlewares as $middleware) {
@@ -134,7 +134,7 @@ trait MarshalMiddlewareTrait
      * @throws Exception\InvalidMiddlewareException if $middleware does not resolve
      *     to either an invokable class or MiddlewareInterface instance.
      */
-    private function marshalInvokableMiddleware($middleware, ResponseInterface $responsePrototype)
+    private function marshalInvokableMiddleware(string $middleware, ResponseInterface $responsePrototype): MiddlewareInterface
     {
         if (! class_exists($middleware)) {
             throw new Exception\InvalidMiddlewareException(sprintf(

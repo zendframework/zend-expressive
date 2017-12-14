@@ -96,7 +96,7 @@ class EmitterStack extends SplStack implements EmitterInterface
      * @return void
      * @throws InvalidArgumentException for non-emitter instances
      */
-    private function validateEmitter($emitter)
+    private function validateEmitter($emitter): void
     {
         if (! $emitter instanceof EmitterInterface) {
             throw new Exception\InvalidArgumentException(sprintf(

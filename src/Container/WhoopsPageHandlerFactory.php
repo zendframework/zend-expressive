@@ -37,7 +37,7 @@ class WhoopsPageHandlerFactory
      * @param ContainerInterface $container
      * @return PrettyPageHandler
      */
-    public function __invoke(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container): PrettyPageHandler
     {
         $config = $container->has('config') ? $container->get('config') : [];
         $config = $config['whoops'] ?? [];
@@ -59,7 +59,7 @@ class WhoopsPageHandlerFactory
      * @return void
      * @throws Exception\InvalidServiceException for an invalid editor definition.
      */
-    private function injectEditor(PrettyPageHandler $handler, $config, ContainerInterface $container)
+    private function injectEditor(PrettyPageHandler $handler, $config, ContainerInterface $container): void
     {
         if (! isset($config['editor'])) {
             return;

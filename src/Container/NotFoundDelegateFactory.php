@@ -20,7 +20,7 @@ class NotFoundDelegateFactory
      * @param ContainerInterface $container
      * @return NotFoundDelegate
      */
-    public function __invoke(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container): NotFoundDelegate
     {
         $config   = $container->has('config') ? $container->get('config') : [];
         $renderer = $container->has(TemplateRendererInterface::class)
