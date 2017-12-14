@@ -15,10 +15,6 @@ use Zend\Expressive\Middleware\NotFoundHandler;
 
 class NotFoundHandlerFactory
 {
-    /**
-     * @param ContainerInterface $container
-     * @return NotFoundHandler
-     */
     public function __invoke(ContainerInterface $container) : NotFoundHandler
     {
         return new NotFoundHandler($container->get(NotFoundDelegate::class));

@@ -46,12 +46,6 @@ class WhoopsErrorResponseGenerator
         $this->whoops = $whoops;
     }
 
-    /**
-     * @param Throwable $e
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @return ResponseInterface
-     */
     public function __invoke(
         Throwable $e,
         ServerRequestInterface $request,
@@ -88,10 +82,6 @@ class WhoopsErrorResponseGenerator
 
     /**
      * Prepare the Whoops page handler with a table displaying request information
-     *
-     * @param ServerRequestInterface $request
-     * @param PrettyPageHandler $handler
-     * @return void
      */
     private function prepareWhoopsHandler(ServerRequestInterface $request, PrettyPageHandler $handler) : void
     {

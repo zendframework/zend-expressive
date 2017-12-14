@@ -37,10 +37,6 @@ trait MarshalMiddlewareTrait
      * - If no callable is created, an exception is thrown.
      *
      * @param mixed $middleware
-     * @param Router\RouterInterface $router
-     * @param ResponseInterface $responsePrototype
-     * @param null|ContainerInterface $container
-     * @return MiddlewareInterface
      * @throws Exception\InvalidMiddlewareException
      */
     private function prepareMiddleware(
@@ -100,11 +96,6 @@ trait MarshalMiddlewareTrait
      *
      * As each middleware is verified, it is piped to the middleware pipe.
      *
-     * @param array $middlewares
-     * @param Router\RouterInterface $router
-     * @param ResponseInterface $responsePrototype
-     * @param null|ContainerInterface $container
-     * @return MiddlewarePipe
      * @throws Exception\InvalidMiddlewareException for any invalid middleware items.
      */
     private function marshalMiddlewarePipe(
@@ -127,9 +118,6 @@ trait MarshalMiddlewareTrait
     /**
      * Attempt to instantiate the given middleware.
      *
-     * @param string $middleware
-     * @param ResponseInterface $responsePrototype
-     * @return MiddlewareInterface
      * @throws Exception\InvalidMiddlewareException if $middleware is not a class.
      * @throws Exception\InvalidMiddlewareException if $middleware does not resolve
      *     to either an invokable class or MiddlewareInterface instance.

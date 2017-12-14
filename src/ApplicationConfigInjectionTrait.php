@@ -67,7 +67,6 @@ trait ApplicationConfigInjectionTrait
      *
      * @param null|array $config If null, attempts to pull the 'config' service
      *     from the composed container.
-     * @return void
      */
     public function injectPipelineFromConfig(array $config = null) : void
     {
@@ -136,7 +135,6 @@ trait ApplicationConfigInjectionTrait
      *
      * @param null|array $config If null, attempts to pull the 'config' service
      *     from the composed container.
-     * @return void
      * @throws Exception\InvalidArgumentException
      */
     public function injectRoutesFromConfig(array $config = null) : void
@@ -202,7 +200,6 @@ trait ApplicationConfigInjectionTrait
      * If the 'middleware' value is missing, or not viable as middleware, it
      * raises an exception, to ensure the pipeline is built correctly.
      *
-     * @return callable
      * @throws Exception\InvalidArgumentException
      */
     private function createCollectionMapper() : callable
@@ -240,8 +237,6 @@ trait ApplicationConfigInjectionTrait
      *
      * The function is useful to reduce an array of pipeline middleware to a
      * priority queue.
-     *
-     * @return callable
      */
     private function createPriorityQueueReducer()
     {

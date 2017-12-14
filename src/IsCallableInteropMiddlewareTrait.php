@@ -24,7 +24,6 @@ trait IsCallableInteropMiddlewareTrait
      * element is a method of the first.
      *
      * @param mixed $middleware
-     * @return bool
      */
     private function isCallable($middleware) : bool
     {
@@ -49,7 +48,6 @@ trait IsCallableInteropMiddlewareTrait
      * Is callable middleware interop middleware?
      *
      * @param mixed $middleware
-     * @return bool
      */
     private function isCallableInteropMiddleware($middleware) : bool
     {
@@ -68,9 +66,6 @@ trait IsCallableInteropMiddlewareTrait
      *
      * Duplicates MiddlewarePipe::getReflectionFunction, but that method is not
      * callable due to private visibility.
-     *
-     * @param callable $middleware
-     * @return ReflectionFunctionAbstract
      */
     private function reflectMiddleware(callable $middleware) : ReflectionFunctionAbstract
     {

@@ -33,10 +33,6 @@ use Whoops\Handler\PrettyPageHandler;
  */
 class WhoopsPageHandlerFactory
 {
-    /**
-     * @param ContainerInterface $container
-     * @return PrettyPageHandler
-     */
     public function __invoke(ContainerInterface $container) : PrettyPageHandler
     {
         $config = $container->has('config') ? $container->get('config') : [];
@@ -53,10 +49,7 @@ class WhoopsPageHandlerFactory
      * Inject an editor into the whoops configuration.
      *
      * @see https://github.com/filp/whoops/blob/master/docs/Open%20Files%20In%20An%20Editor.md
-     * @param PrettyPageHandler $handler
      * @param array|\ArrayAccess $config
-     * @param ContainerInterface $container
-     * @return void
      * @throws Exception\InvalidServiceException for an invalid editor definition.
      */
     private function injectEditor(PrettyPageHandler $handler, $config, ContainerInterface $container) : void

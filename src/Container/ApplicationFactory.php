@@ -54,9 +54,6 @@ class ApplicationFactory
      *
      * See the class level docblock for information on what services this
      * factory will optionally consume.
-     *
-     * @param ContainerInterface $container
-     * @return Application
      */
     public function __invoke(ContainerInterface $container) : Application
     {
@@ -86,10 +83,6 @@ class ApplicationFactory
 
     /**
      * Injects routes and the middleware pipeline into the application.
-     *
-     * @param Application $app
-     * @param array $config
-     * @return void
      */
     private function injectRoutesAndPipeline(Application $app, array $config) : void
     {

@@ -41,7 +41,6 @@ final class AppFactory
      *     instance
      * @param null|Router\RouterInterface $router Router implementation to use;
      *     defaults to the FastRoute router bridge.
-     * @return Application
      * @throws Exception\MissingDependencyException if the container was not
      *     provided and the ServiceManager class is not present.
      * @throws Exception\MissingDependencyException if the router was not

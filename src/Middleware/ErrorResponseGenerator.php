@@ -45,11 +45,6 @@ EOT;
      */
     private $template;
 
-    /**
-     * @param bool $isDevelopmentMode
-     * @param null|TemplateRendererInterface $renderer
-     * @param string $template
-     */
     public function __construct(
         bool $isDevelopmentMode = false,
         TemplateRendererInterface $renderer = null,
@@ -60,12 +55,6 @@ EOT;
         $this->template  = $template;
     }
 
-    /**
-     * @param Throwable $e
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @return ResponseInterface
-     */
     public function __invoke(
         Throwable $e,
         ServerRequestInterface $request,
@@ -80,12 +69,6 @@ EOT;
         return $this->prepareDefaultResponse($e, $response);
     }
 
-    /**
-     * @param Throwable $e
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @return ResponseInterface
-     */
     private function prepareTemplatedResponse(
         Throwable $e,
         ServerRequestInterface $request,
@@ -110,11 +93,6 @@ EOT;
         return $response;
     }
 
-    /**
-     * @param Throwable $e
-     * @param ResponseInterface $response
-     * @return ResponseInterface
-     */
     private function prepareDefaultResponse(Throwable $e, ResponseInterface $response) : ResponseInterface
     {
         $message = 'An unexpected error occurred';
@@ -130,9 +108,6 @@ EOT;
 
     /**
      * Prepares a stack trace to display.
-     *
-     * @param Throwable $e
-     * @return string
      */
     private function prepareStackTrace(Throwable $e) : string
     {

@@ -81,12 +81,9 @@ class Application extends MiddlewarePipe
     private $responsePrototype;
 
     /**
-     * Constructor
-     *
      * Calls on the parent constructor, and then uses the provided arguments
      * to set internal properties.
      *
-     * @param Router\RouterInterface $router
      * @param null|ContainerInterface $container IoC container from which to pull services, if any.
      * @param null|RequestHandlerInterface $defaultDelegate Default delegate
      *     to use when $out is not provided on invocation / run() is invoked.
@@ -109,10 +106,8 @@ class Application extends MiddlewarePipe
     }
 
     /**
-     * @param string|Router\Route $path
      * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
      * @param null|string $name The name of the route.
-     * @return Router\Route
      */
     public function get($path, $middleware, string $name = null) : Router\Route
     {
@@ -120,10 +115,8 @@ class Application extends MiddlewarePipe
     }
 
     /**
-     * @param string|Router\Route $path
      * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
      * @param null|string $name The name of the route.
-     * @return Router\Route
      */
     public function post($path, $middleware, $name = null) : Router\Route
     {
@@ -131,10 +124,8 @@ class Application extends MiddlewarePipe
     }
 
     /**
-     * @param string|Router\Route $path
      * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
      * @param null|string $name The name of the route.
-     * @return Router\Route
      */
     public function put($path, $middleware, string $name = null) : Router\Route
     {
@@ -142,10 +133,8 @@ class Application extends MiddlewarePipe
     }
 
     /**
-     * @param string|Router\Route $path
      * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
      * @param null|string $name The name of the route.
-     * @return Router\Route
      */
     public function patch($path, $middleware, string $name = null) : Router\Route
     {
@@ -153,10 +142,8 @@ class Application extends MiddlewarePipe
     }
 
     /**
-     * @param string|Router\Route $path
      * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
      * @param null|string $name The name of the route.
-     * @return Router\Route
      */
     public function delete($path, $middleware, string $name = null) : Router\Route
     {
@@ -164,10 +151,8 @@ class Application extends MiddlewarePipe
     }
 
     /**
-     * @param string|Router\Route $path
      * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
      * @param null|string $name The name of the route.
-     * @return Router\Route
      */
     public function any($path, $middleware, string $name = null) : Router\Route
     {
@@ -206,7 +191,6 @@ class Application extends MiddlewarePipe
      *
      * @param string|array|callable $path Either a URI path prefix, or middleware.
      * @param null|string|array|callable $middleware Middleware
-     * @return self
      */
     public function pipe($path, $middleware = null) : parent
     {
@@ -254,8 +238,6 @@ class Application extends MiddlewarePipe
 
     /**
      * Register the routing middleware in the middleware pipeline.
-     *
-     * @return void
      */
     public function pipeRoutingMiddleware() : void
     {
@@ -267,8 +249,6 @@ class Application extends MiddlewarePipe
 
     /**
      * Register the dispatch middleware in the middleware pipeline.
-     *
-     * @return void
      */
     public function pipeDispatchMiddleware() : void
     {
@@ -334,10 +314,6 @@ class Application extends MiddlewarePipe
      *
      * Once it has processed itself, it emits the returned response using the
      * composed emitter.
-     *
-     * @param null|ServerRequestInterface $request
-     * @param null|ResponseInterface $response
-     * @return void
      */
     public function run(ServerRequestInterface $request = null, ResponseInterface $response = null) : void
     {
@@ -364,7 +340,6 @@ class Application extends MiddlewarePipe
      *
      * If no IoC container is registered, we raise an exception.
      *
-     * @return ContainerInterface
      * @throws Exception\ContainerNotRegisteredException
      */
     public function getContainer() : ContainerInterface
@@ -384,8 +359,6 @@ class Application extends MiddlewarePipe
      *   service, pulls that service, assigns it, and returns it.
      * - If no container is composed, creates an instance of Delegate\NotFoundDelegate
      *   using the current response prototype only (i.e., no templating).
-     *
-     * @return RequestHandlerInterface
      */
     public function getDefaultDelegate() : RequestHandlerInterface
     {
@@ -413,8 +386,6 @@ class Application extends MiddlewarePipe
      *
      * If none was registered during instantiation, this will lazy-load an
      * EmitterStack composing an SapiEmitter instance.
-     *
-     * @return EmitterInterface
      */
     public function getEmitter() : EmitterInterface
     {
@@ -432,8 +403,6 @@ class Application extends MiddlewarePipe
      * if so, and it responds to any of the $methods indicated, raises
      * a DuplicateRouteException indicating a duplicate route.
      *
-     * @param string $path
-     * @param null|array $methods
      * @throws Exception\DuplicateRouteException on duplicate route detection.
      */
     private function checkForDuplicateRoute(string $path, array $methods = null) : void
@@ -463,10 +432,6 @@ class Application extends MiddlewarePipe
         }
     }
 
-    /**
-     * @param Throwable $exception
-     * @return void
-     */
     private function emitMarshalServerRequestException(Throwable $exception) : void
     {
         if ($this->container && $this->container->has(Middleware\ErrorResponseGenerator::class)) {

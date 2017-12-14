@@ -44,9 +44,6 @@ class WhoopsFactory
 {
     /**
      * Create and return an instance of the Whoops runner.
-     *
-     * @param ContainerInterface $container
-     * @return Whoops
      */
     public function __invoke(ContainerInterface $container) : Whoops
     {
