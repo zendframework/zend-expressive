@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "816ff331da9fc573ed51a30a3adfe0bb",
+    "content-hash": "1d22955a4a39f1de64329c6288eca1a3",
     "packages": [
         {
             "name": "fig/http-message-util",
@@ -474,16 +474,16 @@
         },
         {
             "name": "zendframework/zend-stratigility",
-            "version": "dev-release-3.0.0",
+            "version": "3.0.0alpha1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-stratigility.git",
-                "reference": "a27cd099239e97f79d2adae5be7cbd62cda2a592"
+                "reference": "6e09063cc8b1655177eab8ab1e4f62105c96cf38"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-stratigility/zipball/a27cd099239e97f79d2adae5be7cbd62cda2a592",
-                "reference": "a27cd099239e97f79d2adae5be7cbd62cda2a592",
+                "url": "https://api.github.com/repos/zendframework/zend-stratigility/zipball/6e09063cc8b1655177eab8ab1e4f62105c96cf38",
+                "reference": "6e09063cc8b1655177eab8ab1e4f62105c96cf38",
                 "shasum": ""
             },
             "require": {
@@ -527,7 +527,7 @@
                 "psr-7",
                 "zf"
             ],
-            "time": "2017-12-05T19:16:17+00:00"
+            "time": "2018-01-10T16:48:17+00:00"
         }
     ],
     "packages-dev": [
@@ -3341,7 +3341,7 @@
     "stability-flags": {
         "zendframework/zend-expressive-router": 20,
         "zendframework/zend-expressive-template": 20,
-        "zendframework/zend-stratigility": 20,
+        "zendframework/zend-stratigility": 15,
         "zendframework/zend-expressive-aurarouter": 20,
         "zendframework/zend-expressive-fastroute": 20,
         "zendframework/zend-expressive-zendrouter": 20
