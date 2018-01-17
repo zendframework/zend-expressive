@@ -68,10 +68,6 @@ class ImplicitHeadMiddleware implements MiddlewareInterface
      * If the route allows GET requests, dispatches as a GET request and
      * resets the response body to be empty; otherwise, creates a new empty
      * response.
-     *
-     * @param ServerRequestInterface $request
-     * @param RequestHandlerInterface $handler
-     * @return ResponseInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
@@ -103,10 +99,8 @@ class ImplicitHeadMiddleware implements MiddlewareInterface
 
     /**
      * Return the response prototype to use for an implicit HEAD request.
-     *
-     * @return ResponseInterface
      */
-    private function getResponse()
+    private function getResponse() : ResponseInterface
     {
         return $this->response ?: new Response();
     }

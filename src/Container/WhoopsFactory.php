@@ -44,11 +44,8 @@ class WhoopsFactory
 {
     /**
      * Create and return an instance of the Whoops runner.
-     *
-     * @param ContainerInterface $container
-     * @return Whoops
      */
-    public function __invoke(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container) : Whoops
     {
         $config = $container->has('config') ? $container->get('config') : [];
         $config = $config['whoops'] ?? [];
@@ -69,7 +66,7 @@ class WhoopsFactory
      * @param array|\ArrayAccess $config
      * @return void
      */
-    private function registerJsonHandler(Whoops $whoops, $config)
+    private function registerJsonHandler(Whoops $whoops, $config) : void
     {
         if (empty($config['json_exceptions']['display'])) {
             return;

@@ -60,10 +60,6 @@ class ImplicitOptionsMiddleware implements MiddlewareInterface
 
     /**
      * Handle an implicit OPTIONS request.
-     *
-     * @param ServerRequestInterface $request
-     * @param RequestHandlerInterface $handler
-     * @return ResponseInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
@@ -86,10 +82,8 @@ class ImplicitOptionsMiddleware implements MiddlewareInterface
 
     /**
      * Return the response prototype to use for an implicit OPTIONS request.
-     *
-     * @return ResponseInterface
      */
-    private function getResponse()
+    private function getResponse() : ResponseInterface
     {
         return $this->response ?: new Response('php://temp', StatusCode::STATUS_OK);
     }

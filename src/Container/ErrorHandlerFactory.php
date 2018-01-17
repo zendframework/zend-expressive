@@ -16,11 +16,7 @@ use Zend\Stratigility\Middleware\ErrorHandler;
 
 class ErrorHandlerFactory
 {
-    /**
-     * @param ContainerInterface $container
-     * @return ErrorHandler
-     */
-    public function __invoke(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container) : ErrorHandler
     {
         $generator = $container->has(ErrorResponseGenerator::class)
             ? $container->get(ErrorResponseGenerator::class)

@@ -14,11 +14,7 @@ use Zend\Expressive\Middleware\WhoopsErrorResponseGenerator;
 
 class WhoopsErrorResponseGeneratorFactory
 {
-    /**
-     * @param ContainerInterface $container
-     * @return WhoopsErrorResponseGenerator
-     */
-    public function __invoke(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container) : WhoopsErrorResponseGenerator
     {
         return new WhoopsErrorResponseGenerator(
             $container->get('Zend\Expressive\Whoops')
