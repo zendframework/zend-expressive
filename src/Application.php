@@ -109,7 +109,7 @@ class Application extends MiddlewarePipe
      * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
      * @param null|string $name The name of the route.
      */
-    public function get($path, $middleware, string $name = null) : Router\Route
+    public function get(string $path, $middleware, string $name = null) : Router\Route
     {
         return $this->route($path, $middleware, ['GET'], $name);
     }
@@ -118,7 +118,7 @@ class Application extends MiddlewarePipe
      * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
      * @param null|string $name The name of the route.
      */
-    public function post($path, $middleware, $name = null) : Router\Route
+    public function post(string $path, $middleware, $name = null) : Router\Route
     {
         return $this->route($path, $middleware, ['POST'], $name);
     }
@@ -127,7 +127,7 @@ class Application extends MiddlewarePipe
      * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
      * @param null|string $name The name of the route.
      */
-    public function put($path, $middleware, string $name = null) : Router\Route
+    public function put(string $path, $middleware, string $name = null) : Router\Route
     {
         return $this->route($path, $middleware, ['PUT'], $name);
     }
@@ -136,7 +136,7 @@ class Application extends MiddlewarePipe
      * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
      * @param null|string $name The name of the route.
      */
-    public function patch($path, $middleware, string $name = null) : Router\Route
+    public function patch(string $path, $middleware, string $name = null) : Router\Route
     {
         return $this->route($path, $middleware, ['PATCH'], $name);
     }
@@ -145,7 +145,7 @@ class Application extends MiddlewarePipe
      * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
      * @param null|string $name The name of the route.
      */
-    public function delete($path, $middleware, string $name = null) : Router\Route
+    public function delete(string $path, $middleware, string $name = null) : Router\Route
     {
         return $this->route($path, $middleware, ['DELETE'], $name);
     }
@@ -154,7 +154,7 @@ class Application extends MiddlewarePipe
      * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
      * @param null|string $name The name of the route.
      */
-    public function any($path, $middleware, string $name = null) : Router\Route
+    public function any(string $path, $middleware, string $name = null) : Router\Route
     {
         return $this->route($path, $middleware, null, $name);
     }
@@ -191,6 +191,7 @@ class Application extends MiddlewarePipe
      *
      * @param string|array|callable $path Either a URI path prefix, or middleware.
      * @param null|string|array|callable $middleware Middleware
+     * @return $this
      */
     public function pipe($path, $middleware = null) : parent
     {
@@ -297,7 +298,7 @@ class Application extends MiddlewarePipe
      *
      * @return Router\Route[]
      */
-    public function getRoutes() : iterable
+    public function getRoutes() : array
     {
         return $this->routes;
     }

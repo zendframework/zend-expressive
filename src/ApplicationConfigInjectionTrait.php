@@ -238,7 +238,7 @@ trait ApplicationConfigInjectionTrait
      * The function is useful to reduce an array of pipeline middleware to a
      * priority queue.
      */
-    private function createPriorityQueueReducer()
+    private function createPriorityQueueReducer() : callable
     {
         // $serial is used to ensure that items of the same priority are enqueued
         // in the order in which they are inserted.
