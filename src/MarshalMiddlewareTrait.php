@@ -37,10 +37,6 @@ trait MarshalMiddlewareTrait
      * - If no callable is created, an exception is thrown.
      *
      * @param mixed $middleware
-     * @param Router\RouterInterface $router
-     * @param ResponseInterface $responsePrototype
-     * @param null|ContainerInterface $container
-     * @return MiddlewareInterface
      * @throws Exception\InvalidMiddlewareException
      */
     private function prepareMiddleware(
@@ -48,7 +44,7 @@ trait MarshalMiddlewareTrait
         Router\RouterInterface $router,
         ResponseInterface $responsePrototype,
         ContainerInterface $container = null
-    ) {
+    ) : MiddlewareInterface {
         if ($middleware === Application::ROUTING_MIDDLEWARE) {
             return new Middleware\RouteMiddleware($router, $responsePrototype);
         }
@@ -100,11 +96,6 @@ trait MarshalMiddlewareTrait
      *
      * As each middleware is verified, it is piped to the middleware pipe.
      *
-     * @param array $middlewares
-     * @param Router\RouterInterface $router
-     * @param ResponseInterface $responsePrototype
-     * @param null|ContainerInterface $container
-     * @return MiddlewarePipe
      * @throws Exception\InvalidMiddlewareException for any invalid middleware items.
      */
     private function marshalMiddlewarePipe(
@@ -112,7 +103,7 @@ trait MarshalMiddlewareTrait
         Router\RouterInterface $router,
         ResponseInterface $responsePrototype,
         ContainerInterface $container = null
-    ) {
+    ) : MiddlewarePipe {
         $middlewarePipe = new MiddlewarePipe();
 
         foreach ($middlewares as $middleware) {
@@ -127,15 +118,14 @@ trait MarshalMiddlewareTrait
     /**
      * Attempt to instantiate the given middleware.
      *
-     * @param string $middleware
-     * @param ResponseInterface $responsePrototype
-     * @return MiddlewareInterface
      * @throws Exception\InvalidMiddlewareException if $middleware is not a class.
      * @throws Exception\InvalidMiddlewareException if $middleware does not resolve
      *     to either an invokable class or MiddlewareInterface instance.
      */
-    private function marshalInvokableMiddleware($middleware, ResponseInterface $responsePrototype)
-    {
+    private function marshalInvokableMiddleware(
+        string $middleware,
+        ResponseInterface $responsePrototype
+    ) : MiddlewareInterface {
         if (! class_exists($middleware)) {
             throw new Exception\InvalidMiddlewareException(sprintf(
                 'Unable to create middleware "%s"; not a valid class or service name',

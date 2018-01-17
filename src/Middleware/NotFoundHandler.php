@@ -35,7 +35,6 @@ class NotFoundHandler implements MiddlewareInterface
      *
      * @param ServerRequestInterface $request Passed to internal delegate
      * @param RequestHandlerInterface $handler Ignored.
-     * @return ResponseInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {

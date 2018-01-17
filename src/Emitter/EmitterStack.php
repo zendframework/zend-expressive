@@ -35,7 +35,6 @@ class EmitterStack extends SplStack implements EmitterInterface
      * As such, return a boolean false value from an emitter to indicate it
      * cannot emit the response.
      *
-     * @param ResponseInterface $response
      * @return false|null
      */
     public function emit(ResponseInterface $response)
@@ -93,10 +92,9 @@ class EmitterStack extends SplStack implements EmitterInterface
      * Validate that an emitter implements EmitterInterface.
      *
      * @param mixed $emitter
-     * @return void
      * @throws InvalidArgumentException for non-emitter instances
      */
-    private function validateEmitter($emitter)
+    private function validateEmitter($emitter) : void
     {
         if (! $emitter instanceof EmitterInterface) {
             throw new Exception\InvalidArgumentException(sprintf(

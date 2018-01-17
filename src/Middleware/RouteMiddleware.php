@@ -46,21 +46,12 @@ class RouteMiddleware implements MiddlewareInterface
      */
     private $router;
 
-    /**
-     * @param RouterInterface $router
-     * @param ResponseInterface $responsePrototype
-     */
     public function __construct(RouterInterface $router, ResponseInterface $responsePrototype)
     {
         $this->router = $router;
         $this->responsePrototype = $responsePrototype;
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @param RequestHandlerInterface $handler
-     * @return ResponseInterface
-     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         $result = $this->router->match($request);

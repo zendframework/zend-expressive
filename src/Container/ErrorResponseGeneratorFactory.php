@@ -15,11 +15,7 @@ use Zend\Expressive\Template\TemplateRendererInterface;
 
 class ErrorResponseGeneratorFactory
 {
-    /**
-     * @param ContainerInterface $container
-     * @return ErrorResponseGenerator
-     */
-    public function __invoke(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container) : ErrorResponseGenerator
     {
         $config = $container->has('config') ? $container->get('config') : [];
 

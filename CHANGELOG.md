@@ -9,6 +9,9 @@ All notable changes to this project will be documented in this file, in reverse 
 - [#529](https://github.com/zendframework/zend-expressive/pull/529) adds support
   for PSR-15.
 
+- [#538](https://github.com/zendframework/zend-expressive/pull/538) adds scalar
+  and return type hints to methods wherever possible.
+
 ### Changed
 
 - Nothing.

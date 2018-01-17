@@ -39,7 +39,7 @@ class LazyLoadingMiddleware implements MiddlewareInterface
     public function __construct(
         ContainerInterface $container,
         ResponseInterface $responsePrototype,
-        $middlewareName
+        string $middlewareName
     ) {
         $this->container = $container;
         $this->responsePrototype = $responsePrototype;
@@ -47,9 +47,6 @@ class LazyLoadingMiddleware implements MiddlewareInterface
     }
 
     /**
-     * @param ServerRequestInterface $request
-     * @param RequestHandlerInterface $handler
-     * @return ResponseInterface
      * @throws InvalidMiddlewareException for invalid middleware types pulled
      *     from the container.
      */
