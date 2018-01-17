@@ -60,7 +60,7 @@ class SetLocaleMiddleware implements MiddlewareInterface
         $this->helper->setBasePath($locale);
 
         return $delegate->process($request->withUri(
-            $uri->withPath(substr($path, 3))
+            $uri->withPath(substr($path, strlen($locale)+1))
         ));
     }
 }
