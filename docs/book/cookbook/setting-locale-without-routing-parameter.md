@@ -76,7 +76,7 @@ class SetLocaleMiddleware implements MiddlewareInterface
 
         // Expressive 2.X:
         return $handler->process($request->withUri(
-            $uri->withPath(substr($path, 3))
+            $uri->withPath(substr($path, strlen($locale)+1))
         ));
     }
 }
