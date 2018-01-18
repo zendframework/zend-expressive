@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Zend\Expressive;
 
+use Interop\Http\Server\MiddlewareInterface;
 use SplPriorityQueue;
 use Zend\Expressive\Router\Route;
 
@@ -79,8 +80,8 @@ trait ApplicationConfigInjectionTrait
                 return;
             }
 
-            $this->pipeRoutingMiddleware();
-            $this->pipeDispatchMiddleware();
+            $this->pipe($this->container->get(Middleware\RouteMiddleware::class));
+            $this->pipe($this->container->get(Middleware\DispatchMiddleware::class));
             return;
         }
 
@@ -91,9 +92,16 @@ trait ApplicationConfigInjectionTrait
             new SplPriorityQueue()
         );
 
+        $pathDecorator = $this->createPathDecorator();
+
         foreach ($queue as $spec) {
+            $middleware = $this->prepareConfigBasedMiddleware($spec['middleware']);
             $path = $spec['path'] ?? '/';
-            $this->pipe($path, $spec['middleware']);
+            $this->pipe(
+                $path === '/'
+                ? $middleware
+                : $pathDecorator($path, $middleware)
+            );
         }
     }
 
@@ -164,7 +172,12 @@ trait ApplicationConfigInjectionTrait
             }
 
             $name  = $spec['name'] ?? null;
-            $route = $this->route($spec['path'], $spec['middleware'], $methods, $name);
+            $route = $this->route(
+                $spec['path'],
+                $this->prepareConfigBasedMiddleware($spec['middleware']),
+                $methods,
+                $name
+            );
 
             if (isset($spec['options'])) {
                 $options = $spec['options'];
@@ -251,5 +264,23 @@ trait ApplicationConfigInjectionTrait
             $serial -= 1;
             return $queue;
         };
+    }
+
+    /**
+     * @param string|MiddlewareInterface|array $middleware
+     * @throws Exception\InvalidMiddlewareException if $middleware is not one
+     *     of the expected types.
+     */
+    private function prepareConfigBasedMiddleware($middleware) : MiddlewareInterface
+    {
+        if (is_string($middleware) || $middleware instanceof MiddlewareInterface) {
+            return $this->marshalMiddleware($middleware);
+        }
+
+        if (! is_array($middleware)) {
+            throw Exception\InvalidMiddlewareException::forMiddleware($middleware);
+        }
+
+        return ($this->createPipelineDecorator())(...$middleware);
     }
 }

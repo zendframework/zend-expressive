@@ -34,33 +34,6 @@ use Zend\Expressive\Router\RouterInterface;
  */
 class DispatchMiddleware implements MiddlewareInterface
 {
-    use MarshalMiddlewareTrait;
-
-    /**
-     * @var ContainerInterface|null
-     */
-    private $container;
-
-    /**
-     * @var ResponseInterface
-     */
-    private $responsePrototype;
-
-    /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    public function __construct(
-        RouterInterface $router,
-        ResponseInterface $responsePrototype,
-        ContainerInterface $container = null
-    ) {
-        $this->router = $router;
-        $this->responsePrototype = $responsePrototype;
-        $this->container = $container;
-    }
-
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         $routeResult = $request->getAttribute(RouteResult::class, false);
@@ -69,16 +42,6 @@ class DispatchMiddleware implements MiddlewareInterface
         }
 
         $middleware = $routeResult->getMatchedMiddleware();
-
-        if (! $middleware instanceof MiddlewareInterface) {
-            $middleware = $this->prepareMiddleware(
-                $middleware,
-                $this->router,
-                $this->responsePrototype,
-                $this->container
-            );
-        }
-
         return $middleware->process($request, $handler);
     }
 }

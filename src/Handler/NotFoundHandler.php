@@ -15,7 +15,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
-class NotFoundDelegate implements RequestHandlerInterface
+class NotFoundHandler implements RequestHandlerInterface
 {
     const TEMPLATE_DEFAULT = 'error::404';
     const LAYOUT_DEFAULT = 'layout::default';

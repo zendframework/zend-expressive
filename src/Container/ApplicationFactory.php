@@ -64,15 +64,19 @@ class ApplicationFactory
             ? $container->get(RouterInterface::class)
             : new FastRouteRouter();
 
-        $delegate = $container->has('Zend\Expressive\Delegate\DefaultDelegate')
-            ? $container->get('Zend\Expressive\Delegate\DefaultDelegate')
+        $delegate = $container->has('Zend\Expressive\Handler\DefaultHandler')
+            ? $container->get('Zend\Expressive\Handler\DefaultHandler')
             : null;
 
         $emitter = $container->has(EmitterInterface::class)
             ? $container->get(EmitterInterface::class)
             : null;
 
-        $app = new Application($router, $container, $delegate, $emitter);
+        $response = $container->has(ResponseInterface::class)
+            ? $container->get(ResponseInterface::class)
+            : null;
+
+        $app = new Application($router, $container, $delegate, $emitter, $response);
 
         if (empty($config['zend-expressive']['programmatic_pipeline'])) {
             $this->injectRoutesAndPipeline($app, $config);

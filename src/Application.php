@@ -24,17 +24,14 @@ use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Stratigility\MiddlewarePipe;
+use Zend\Stratigility\Middleware\PathMiddlewareDecorator;
 
 /**
  * Middleware application providing routing based on paths and HTTP methods.
  */
-class Application extends MiddlewarePipe
+class Application implements MiddlewareInterface, RequestHandlerInterface
 {
     use ApplicationConfigInjectionTrait;
-    use MarshalMiddlewareTrait;
-
-    const DISPATCH_MIDDLEWARE = 'EXPRESSIVE_DISPATCH_MIDDLEWARE';
-    const ROUTING_MIDDLEWARE = 'EXPRESSIVE_ROUTING_MIDDLEWARE';
 
     /**
      * @var null|ContainerInterface
@@ -44,13 +41,7 @@ class Application extends MiddlewarePipe
     /**
      * @var null|RequestHandlerInterface
      */
-    private $defaultDelegate;
-
-    /**
-     * @var bool Flag indicating whether or not the dispatch middleware is
-     *     registered in the middleware pipeline.
-     */
-    private $dispatchMiddlewareIsRegistered = false;
+    private $defaultHandler;
 
     /**
      * @var null|EmitterInterface
@@ -58,10 +49,24 @@ class Application extends MiddlewarePipe
     private $emitter;
 
     /**
-     * @var bool Flag indicating whether or not the route middleware is
-     *     registered in the middleware pipeline.
+     * @var ContainerInterface
      */
-    private $routeMiddlewareIsRegistered = false;
+    private $middlewareContainer;
+
+    /**
+     * @var null|callable
+     */
+    private $pathDecorator;
+
+    /**
+     * @var MiddlewarePipe
+     */
+    private $pipeline;
+
+    /**
+     * @var null|callable
+     */
+    private $pipelineDecorator;
 
     /**
      * @var Router\RouterInterface
@@ -85,7 +90,7 @@ class Application extends MiddlewarePipe
      * to set internal properties.
      *
      * @param null|ContainerInterface $container IoC container from which to pull services, if any.
-     * @param null|RequestHandlerInterface $defaultDelegate Default delegate
+     * @param null|RequestHandlerInterface $defaultHandler Default handler
      *     to use when $out is not provided on invocation / run() is invoked.
      * @param null|EmitterInterface $emitter Emitter to use when `run()` is
      *     invoked.
@@ -93,16 +98,96 @@ class Application extends MiddlewarePipe
     public function __construct(
         Router\RouterInterface $router,
         ContainerInterface $container = null,
-        RequestHandlerInterface $defaultDelegate = null,
+        RequestHandlerInterface $defaultHandler = null,
         EmitterInterface $emitter = null,
         ResponseInterface $responsePrototype = null
     ) {
-        parent::__construct();
-        $this->router          = $router;
-        $this->container       = $container;
-        $this->defaultDelegate = $defaultDelegate;
-        $this->emitter         = $emitter;
-        $this->responsePrototype = $responsePrototype ?: new Response();
+        $this->pipeline            = new MiddlewarePipe();
+        $this->router              = $router;
+        $this->container           = $container;
+        $this->middlewareContainer = $container ? new MiddlewareContainer($container) : null;
+        $this->defaultHandler      = $defaultHandler;
+        $this->emitter             = $emitter;
+        $this->responsePrototype   = $responsePrototype ?: new Response();
+    }
+
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
+        return $this->process($request, $this->getDefaultHandler());
+    }
+
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
+    {
+        return $this->pipeline->process($request, $handler);
+    }
+
+    /**
+     * Run the application
+     *
+     * If no request or response are provided, the method will use
+     * ServerRequestFactory::fromGlobals to create a request instance, and
+     * instantiate a default response instance.
+     *
+     * It retrieves the default delegate using getDefaultHandler(), and
+     * uses that to process itself.
+     *
+     * Once it has processed itself, it emits the returned response using the
+     * composed emitter.
+     */
+    public function run(ServerRequestInterface $request = null, ResponseInterface $response = null) : void
+    {
+        try {
+            $request  = $request ?: ServerRequestFactory::fromGlobals();
+        } catch (InvalidArgumentException | UnexpectedValueException $e) {
+            // Unable to parse uploaded files | Invalid request method
+            $this->emitMarshalServerRequestException($e);
+            return;
+        }
+
+        $response = $this->handle(
+            $request->withAttribute('originalResponse', $response ?: new Response())
+        );
+
+        $emitter = $this->getEmitter();
+        $emitter->emit($response);
+    }
+
+    /**
+     * @param string|MiddlewareInterface $middleware
+     * @throws Exception\InvalidMiddlewareException if the middleware provided is
+     *     neither a string service name nor a `MiddlewareInterface` instance.
+     */
+    public function pipe($middleware) : void
+    {
+        $this->pipeline->pipe($this->marshalMiddleware($middleware));
+    }
+
+    /**
+     * Add a route for the route middleware to match.
+     *
+     * Accepts either a Router\Route instance, or a combination of a path and
+     * middleware, and optionally the HTTP methods allowed.
+     *
+     * @param string|MiddlewareInterface $middleware Middleware (or middleware service name)
+     *     to associate with route.
+     * @param null|array $methods HTTP method to accept; null indicates any.
+     * @param null|string $name The name of the route.
+     * @throws Exception\InvalidArgumentException if $path is not a Router\Route AND middleware is null.
+     * @throws Exception\InvalidMiddlewareException if $middleware is neither a
+     *     string nor a MiddlewareInterface instance.
+     */
+    public function route(string $path, $middleware, array $methods = null, string $name = null) : Router\Route
+    {
+        $this->checkForDuplicateRoute($path, $methods);
+
+        $methods    = null === $methods ? Router\Route::HTTP_METHOD_ANY : $methods;
+        $middleware = $this->marshalMiddleware($middleware);
+        $route      = new Router\Route($path, $middleware, $methods, $name);
+
+        $this->routes[] = $route;
+        $this->router->addRoute($route);
+
+        return $route;
     }
 
     /**
@@ -160,140 +245,6 @@ class Application extends MiddlewarePipe
     }
 
     /**
-     * Overload pipe() operation.
-     *
-     * Middleware piped may be either callables or service names. Middleware
-     * specified as services will be wrapped in a closure similar to the
-     * following:
-     *
-     * <code>
-     * function ($request, $response, $next = null) use ($container, $middleware) {
-     *     $invokable = $container->get($middleware);
-     *     if (! is_callable($invokable)) {
-     *         throw new Exception\InvalidMiddlewareException(sprintf(
-     *             'Lazy-loaded middleware "%s" is not invokable',
-     *             $middleware
-     *         ));
-     *     }
-     *     return $invokable($request, $response, $next);
-     * };
-     * </code>
-     *
-     * This is done to delay fetching the middleware until it is actually used;
-     * the upshot is that you will not be notified if the service is invalid to
-     * use as middleware until runtime.
-     *
-     * Middleware may also be passed as an array; each item in the array must
-     * resolve to middleware eventually (i.e., callable or service name).
-     *
-     * Finally, ensures that the route middleware is only ever registered
-     * once.
-     *
-     * @param string|array|callable $path Either a URI path prefix, or middleware.
-     * @param null|string|array|callable $middleware Middleware
-     * @return $this
-     */
-    public function pipe($path, $middleware = null) : parent
-    {
-        if (null === $middleware) {
-            $middleware = $this->prepareMiddleware(
-                $path,
-                $this->router,
-                $this->responsePrototype,
-                $this->container
-            );
-            $path = '/';
-        }
-
-        if (! is_callable($middleware)
-            && (is_string($middleware) || is_array($middleware))
-        ) {
-            $middleware = $this->prepareMiddleware(
-                $middleware,
-                $this->router,
-                $this->responsePrototype,
-                $this->container
-            );
-        }
-
-        if ($middleware instanceof Middleware\RouteMiddleware && $this->routeMiddlewareIsRegistered) {
-            return $this;
-        }
-
-        if ($middleware instanceof Middleware\DispatchMiddleware && $this->dispatchMiddlewareIsRegistered) {
-            return $this;
-        }
-
-        parent::pipe($path, $middleware);
-
-        if ($middleware instanceof Middleware\RouteMiddleware) {
-            $this->routeMiddlewareIsRegistered = true;
-        }
-
-        if ($middleware instanceof Middleware\DispatchMiddleware) {
-            $this->dispatchMiddlewareIsRegistered = true;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Register the routing middleware in the middleware pipeline.
-     */
-    public function pipeRoutingMiddleware() : void
-    {
-        if ($this->routeMiddlewareIsRegistered) {
-            return;
-        }
-        $this->pipe(self::ROUTING_MIDDLEWARE);
-    }
-
-    /**
-     * Register the dispatch middleware in the middleware pipeline.
-     */
-    public function pipeDispatchMiddleware() : void
-    {
-        if ($this->dispatchMiddlewareIsRegistered) {
-            return;
-        }
-        $this->pipe(self::DISPATCH_MIDDLEWARE);
-    }
-
-    /**
-     * Add a route for the route middleware to match.
-     *
-     * Accepts either a Router\Route instance, or a combination of a path and
-     * middleware, and optionally the HTTP methods allowed.
-     *
-     * On first invocation, pipes the route middleware to the middleware
-     * pipeline.
-     *
-     * @param callable|string|array|MiddlewareInterface $middleware Middleware (or middleware service name)
-     *     to associate with route.
-     * @param null|array $methods HTTP method to accept; null indicates any.
-     * @param null|string $name The name of the route.
-     * @throws Exception\InvalidArgumentException if $path is not a Router\Route AND middleware is null.
-     */
-    public function route(string $path, $middleware, array $methods = null, string $name = null) : Router\Route
-    {
-        $this->checkForDuplicateRoute($path, $methods);
-
-        $methods    = null === $methods ? Router\Route::HTTP_METHOD_ANY : $methods;
-        $middleware = $this->prepareMiddleware(
-            $middleware,
-            $this->router,
-            $this->responsePrototype,
-            $this->container
-        );
-        $route      = new Router\Route($path, $middleware, $methods, $name);
-
-        $this->routes[] = $route;
-        $this->router->addRoute($route);
-
-        return $route;
-    }
-
-    /**
      * Retrieve all directly registered routes with the application.
      *
      * @return Router\Route[]
@@ -304,36 +255,46 @@ class Application extends MiddlewarePipe
     }
 
     /**
-     * Run the application
-     *
-     * If no request or response are provided, the method will use
-     * ServerRequestFactory::fromGlobals to create a request instance, and
-     * instantiate a default response instance.
-     *
-     * It retrieves the default delegate using getDefaultDelegate(), and
-     * uses that to process itself.
-     *
-     * Once it has processed itself, it emits the returned response using the
-     * composed emitter.
+     * Creates and returns a factory for generating PathMiddlewareDecorator instances.
      */
-    public function run(ServerRequestInterface $request = null, ResponseInterface $response = null) : void
+    public function createPathDecorator() : callable
     {
-        try {
-            $request  = $request ?: ServerRequestFactory::fromGlobals();
-        } catch (InvalidArgumentException | UnexpectedValueException $e) {
-            // Unable to parse uploaded files | Invalid request method
-            $this->emitMarshalServerRequestException($e);
-            return;
-        }
+        $this->pathDecorator = $this->pathDecorator ?: function (string $path, $middleware) : PathMiddlewareDecorator {
+            return new PathMiddlewareDecorator(
+                $path,
+                $this->marshalMiddleware($middleware)
+            );
+        };
+        return $this->pathDecorator;
+    }
 
-        $response = $response ?: new Response();
-        $request  = $request->withAttribute('originalResponse', $response);
-        $delegate = $this->getDefaultDelegate();
+    /**
+     * Creates and returns a factory for generating MiddlewarePipe instances.
+     *
+     * The returned factory allows passing an array or arguments of middleware,
+     * each of which may be a string middleware service name or a
+     * MiddlewareInterface instance.
+     */
+    public function createPipelineDecorator() : callable
+    {
+        /**
+         * @param string|MiddlewareInterface[] $middleware
+         */
+        $this->pipelineDecorator = $this->pipelineDecorator ?: function (...$middleware) : MiddlewarePipe {
+            // Allow passing arrays of middleware or individual lists of middleware
+            if (count($middleware) === 1
+                && is_array($middleware[0])
+            ) {
+                $middleware = array_shift($middleware);
+            }
 
-        $response = $this->process($request, $delegate);
-
-        $emitter = $this->getEmitter();
-        $emitter->emit($response);
+            $pipeline = new MiddlewarePipe();
+            foreach ($middleware as $m) {
+                $pipeline->pipe($this->marshalMiddleware($m));
+            }
+            return $pipeline;
+        };
+        return $this->pipelineDecorator;
     }
 
     /**
@@ -356,30 +317,30 @@ class Application extends MiddlewarePipe
      *
      * If no default delegate is present, attempts the following:
      *
-     * - If a container is composed, and it has the 'Zend\Expressive\Delegate\DefaultDelegate'
+     * - If a container is composed, and it has the 'Zend\Expressive\Handler\DefaultHandler'
      *   service, pulls that service, assigns it, and returns it.
-     * - If no container is composed, creates an instance of Delegate\NotFoundDelegate
+     * - If no container is composed, creates an instance of Handler\NotFoundHandler
      *   using the current response prototype only (i.e., no templating).
      */
-    public function getDefaultDelegate() : RequestHandlerInterface
+    public function getDefaultHandler() : RequestHandlerInterface
     {
-        if ($this->defaultDelegate) {
-            return $this->defaultDelegate;
+        if ($this->defaultHandler) {
+            return $this->defaultHandler;
         }
 
-        if ($this->container && $this->container->has('Zend\Expressive\Delegate\DefaultDelegate')) {
-            $this->defaultDelegate = $this->container->get('Zend\Expressive\Delegate\DefaultDelegate');
-            return $this->defaultDelegate;
+        if ($this->container && $this->container->has('Zend\Expressive\Handler\DefaultHandler')) {
+            $this->defaultHandler = $this->container->get('Zend\Expressive\Handler\DefaultHandler');
+            return $this->defaultHandler;
         }
 
         if ($this->container) {
-            $factory = new Container\NotFoundDelegateFactory();
-            $this->defaultDelegate = $factory($this->container);
-            return $this->defaultDelegate;
+            $factory = new Container\NotFoundHandlerFactory();
+            $this->defaultHandler = $factory($this->container);
+            return $this->defaultHandler;
         }
 
-        $this->defaultDelegate = new Delegate\NotFoundDelegate($this->responsePrototype);
-        return $this->defaultDelegate;
+        $this->defaultHandler = new Handler\NotFoundHandler($this->responsePrototype);
+        return $this->defaultHandler;
     }
 
     /**
@@ -445,5 +406,30 @@ class Application extends MiddlewarePipe
 
         $emitter = $this->getEmitter();
         $emitter->emit($response);
+    }
+
+    /**
+     * @param mixed $middleware
+     * @throws Exception\InvalidMiddlewareException if $middleware is neither a
+     *     string nor a MiddlewareInterface instance.
+     */
+    private function marshalMiddleware($middleware) : MiddlewareInterface
+    {
+        if ((! is_string($middleware) || empty($middleware))
+            && ! $middleware instanceof MiddlewareInterface
+        ) {
+            throw Exception\InvalidMiddlewareException::forMiddleware($middleware);
+        }
+
+        if (is_string($middleware) && ! $this->middlewareContainer) {
+            throw new Exception\ContainerNotRegisteredException(sprintf(
+                'Cannot marshal middleware by service name "%s"; no container registered',
+                $middleware
+            ));
+        }
+
+        return is_string($middleware)
+            ? new Middleware\LazyLoadingMiddleware($this->middlewareContainer, $middleware)
+            : $middleware;
     }
 }
