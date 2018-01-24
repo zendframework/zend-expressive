@@ -22,7 +22,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use ReflectionMethod;
 use ReflectionProperty;
 use RuntimeException;
 use Throwable;
@@ -32,21 +31,20 @@ use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Diactoros\ServerRequest;
-use Zend\Diactoros\ServerRequest as Request;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Expressive\Application;
-use Zend\Expressive\Delegate;
 use Zend\Expressive\Emitter\EmitterStack;
 use Zend\Expressive\Exception;
 use Zend\Expressive\Exception\InvalidMiddlewareException;
+use Zend\Expressive\Handler;
 use Zend\Expressive\Middleware;
+use Zend\Expressive\MiddlewareContainer;
+use Zend\Expressive\MiddlewareFactory;
 use Zend\Expressive\Router\Exception as RouterException;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouteResult;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
-use Zend\Stratigility\MiddlewarePipe;
-use Zend\Stratigility\Route as StratigilityRoute;
 
 /**
  * @covers Zend\Expressive\Application
@@ -90,10 +88,35 @@ class ApplicationTest extends TestCase
         $this->assertInstanceOf(Application::class, $app);
     }
 
-    public function testApplicationIsAMiddlewarePipe()
+    public function testApplicationIsAMiddlewareInterface()
     {
         $app = $this->getApp();
-        $this->assertInstanceOf(MiddlewarePipe::class, $app);
+        $this->assertInstanceOf(MiddlewareInterface::class, $app);
+    }
+
+    public function testApplicationIsARequestHandlerInterface()
+    {
+        $app = $this->getApp();
+        $this->assertInstanceOf(RequestHandlerInterface::class, $app);
+    }
+
+    public function testApplicationCreatesAMiddlewareFactoryFromTheContainer()
+    {
+        $container = $this->mockContainerInterface();
+        $app = new Application($this->router->reveal(), $container->reveal());
+
+        $r = new ReflectionProperty($app, 'middlewareFactory');
+        $r->setAccessible(true);
+        $factory = $r->getValue($app);
+
+        $this->assertInstanceOf(MiddlewareFactory::class, $factory);
+
+        $r = new ReflectionProperty($factory, 'container');
+        $r->setAccessible(true);
+        $factoryContainer = $r->getValue($factory);
+
+        $this->assertInstanceOf(MiddlewareContainer::class, $factoryContainer);
+        $this->assertAttributeSame($container->reveal(), 'container', $factoryContainer);
     }
 
     public function testRouteMethodReturnsRouteInstance()
@@ -227,81 +250,30 @@ class ApplicationTest extends TestCase
         });
     }
 
-    public function testRouteAndDispatchMiddlewareAreNotPipedAtInstantation()
+    public function testCanInjectDefaultHandlerViaConstructor()
     {
-        $app = $this->getApp();
-
-        $r = new ReflectionProperty($app, 'pipeline');
-        $r->setAccessible(true);
-        $pipeline = $r->getValue($app);
-
-        $this->assertCount(0, $pipeline);
+        $defaultHandler = $this->prophesize(RequestHandlerInterface::class)->reveal();
+        $app  = new Application($this->router->reveal(), null, $defaultHandler);
+        $test = $app->getDefaultHandler();
+        $this->assertSame($defaultHandler, $test);
     }
 
-    public function testCannotPipeRouteMiddlewareMoreThanOnce()
-    {
-        $app             = $this->getApp();
-        $routeMiddleware = Application::ROUTING_MIDDLEWARE;
-
-        $app->pipe($routeMiddleware);
-        $app->pipe($routeMiddleware);
-
-        $r = new ReflectionProperty($app, 'pipeline');
-        $r->setAccessible(true);
-        $pipeline = $r->getValue($app);
-
-        $this->assertCount(1, $pipeline);
-        $route = $pipeline->dequeue();
-        $this->assertInstanceOf(StratigilityRoute::class, $route);
-        $test  = $route->handler;
-
-        $this->assertInstanceOf(Middleware\RouteMiddleware::class, $test);
-    }
-
-    public function testCannotPipeDispatchMiddlewareMoreThanOnce()
-    {
-        $app                = $this->getApp();
-        $dispatchMiddleware = Application::DISPATCH_MIDDLEWARE;
-
-        $app->pipe($dispatchMiddleware);
-        $app->pipe($dispatchMiddleware);
-
-        $r = new ReflectionProperty($app, 'pipeline');
-        $r->setAccessible(true);
-        $pipeline = $r->getValue($app);
-
-        $this->assertCount(1, $pipeline);
-        $route = $pipeline->dequeue();
-        $this->assertInstanceOf(StratigilityRoute::class, $route);
-        $test  = $route->handler;
-
-        $this->assertInstanceOf(Middleware\DispatchMiddleware::class, $test);
-    }
-
-    public function testCanInjectDefaultDelegateViaConstructor()
-    {
-        $defaultDelegate = $this->prophesize(RequestHandlerInterface::class)->reveal();
-        $app  = new Application($this->router->reveal(), null, $defaultDelegate);
-        $test = $app->getDefaultDelegate();
-        $this->assertSame($defaultDelegate, $test);
-    }
-
-    public function testDefaultDelegateIsUsedAtInvocationIfNoOutArgumentIsSupplied()
+    public function testDefaultHandlerIsUsedAtInvocationIfNoOutArgumentIsSupplied()
     {
         $routeResult = RouteResult::fromRouteFailure([]);
         $this->router->match()->willReturn($routeResult);
 
         $finalResponse = $this->prophesize(ResponseInterface::class)->reveal();
-        $defaultDelegate = $this->prophesize(RequestHandlerInterface::class);
-        $defaultDelegate->handle(Argument::type(ServerRequestInterface::class))
+        $defaultHandler = $this->prophesize(RequestHandlerInterface::class);
+        $defaultHandler->handle(Argument::type(ServerRequestInterface::class))
             ->willReturn($finalResponse);
 
         $emitter = $this->prophesize(EmitterInterface::class);
         $emitter->emit($finalResponse)->shouldBeCalled();
 
-        $app = new Application($this->router->reveal(), null, $defaultDelegate->reveal(), $emitter->reveal());
+        $app = new Application($this->router->reveal(), null, $defaultHandler->reveal(), $emitter->reveal());
 
-        $request  = new Request([], [], 'http://example.com/');
+        $request  = new ServerRequest([], [], 'http://example.com/');
 
         $app->run($request);
     }
@@ -336,8 +308,8 @@ class ApplicationTest extends TestCase
         $this->router->match()->willReturn($routeResult);
 
         $finalResponse = $this->prophesize(ResponseInterface::class)->reveal();
-        $defaultDelegate = $this->prophesize(RequestHandlerInterface::class);
-        $defaultDelegate->handle(Argument::type(ServerRequestInterface::class))
+        $defaultHandler = $this->prophesize(RequestHandlerInterface::class);
+        $defaultHandler->handle(Argument::type(ServerRequestInterface::class))
             ->willReturn($finalResponse);
 
         $emitter = $this->prophesize(EmitterInterface::class);
@@ -345,9 +317,9 @@ class ApplicationTest extends TestCase
             Argument::type(ResponseInterface::class)
         )->shouldBeCalled();
 
-        $app = new Application($this->router->reveal(), null, $defaultDelegate->reveal(), $emitter->reveal());
+        $app = new Application($this->router->reveal(), null, $defaultHandler->reveal(), $emitter->reveal());
 
-        $request  = new Request([], [], 'http://example.com/');
+        $request  = new ServerRequest([], [], 'http://example.com/');
         $response = $this->prophesize(ResponseInterface::class);
         $response->withStatus(StatusCode::STATUS_NOT_FOUND)->will([$response, 'reveal']);
 
@@ -369,43 +341,6 @@ class ApplicationTest extends TestCase
     }
 
     /**
-     * @group 64
-     */
-    public function testCanTriggerPipingOfRouteMiddleware()
-    {
-        $app = $this->getApp();
-        $app->pipeRoutingMiddleware();
-
-        $r = new ReflectionProperty($app, 'pipeline');
-        $r->setAccessible(true);
-        $pipeline = $r->getValue($app);
-
-        $this->assertCount(1, $pipeline);
-
-        $route = $pipeline->dequeue();
-        $this->assertInstanceOf(StratigilityRoute::class, $route);
-        $this->assertInstanceOf(Middleware\RouteMiddleware::class, $route->handler);
-        $this->assertEquals('/', $route->path);
-    }
-
-    public function testCanTriggerPipingOfDispatchMiddleware()
-    {
-        $app = $this->getApp();
-        $app->pipeDispatchMiddleware();
-
-        $r = new ReflectionProperty($app, 'pipeline');
-        $r->setAccessible(true);
-        $pipeline = $r->getValue($app);
-
-        $this->assertCount(1, $pipeline);
-
-        $route = $pipeline->dequeue();
-        $this->assertInstanceOf(StratigilityRoute::class, $route);
-        $this->assertInstanceOf(Middleware\DispatchMiddleware::class, $route->handler);
-        $this->assertEquals('/', $route->path);
-    }
-
-    /**
      * @group lazy-piping
      */
     public function testPipingAllowsPassingMiddlewareServiceNameAsSoleArgument()
@@ -422,35 +357,13 @@ class ApplicationTest extends TestCase
         $r->setAccessible(true);
         $pipeline = $r->getValue($app);
 
-        $route = $pipeline->dequeue();
-        $this->assertInstanceOf(StratigilityRoute::class, $route);
-        $handler = $route->handler;
-        $this->assertInstanceOf(Middleware\LazyLoadingMiddleware::class, $handler);
-        $this->assertAttributeEquals('foo', 'middlewareName', $handler);
-    }
-
-    /**
-     * @group lazy-piping
-     */
-    public function testAllowsPipingMiddlewareAsServiceNameWithPath()
-    {
-        $middleware = new TestAsset\InteropMiddleware();
-
-        $container = $this->mockContainerInterface();
-        $this->injectServiceInContainer($container, 'foo', $middleware);
-
-        $app = new Application($this->router->reveal(), $container->reveal());
-        $app->pipe('/foo', 'foo');
-
-        $r = new ReflectionProperty($app, 'pipeline');
+        $r = new ReflectionProperty($pipeline, 'pipeline');
         $r->setAccessible(true);
-        $pipeline = $r->getValue($app);
+        $pipeline = iterator_to_array($r->getValue($pipeline));
 
-        $route = $pipeline->dequeue();
-        $this->assertInstanceOf(StratigilityRoute::class, $route);
-        $handler = $route->handler;
-        $this->assertInstanceOf(Middleware\LazyLoadingMiddleware::class, $handler);
-        $this->assertAttributeEquals('foo', 'middlewareName', $handler);
+        $test = array_shift($pipeline);
+        $this->assertInstanceOf(Middleware\LazyLoadingMiddleware::class, $test);
+        $this->assertAttributeEquals('foo', 'middlewareName', $test);
     }
 
     /**
@@ -464,21 +377,13 @@ class ApplicationTest extends TestCase
         $this->injectServiceInContainer($container, 'foo', $middleware);
 
         $app = new Application($this->router->reveal(), $container->reveal());
-        $app->pipe('/foo', 'foo');
-
-        $r = new ReflectionProperty($app, 'pipeline');
-        $r->setAccessible(true);
-        $pipeline = $r->getValue($app);
-
-        $route = $pipeline->dequeue();
-        $this->assertInstanceOf(StratigilityRoute::class, $route);
-        $handler = $route->handler;
+        $app->pipe('foo');
 
         $request = $this->prophesize(ServerRequest::class)->reveal();
         $delegate = $this->prophesize(RequestHandlerInterface::class)->reveal();
 
         $this->expectException(InvalidMiddlewareException::class);
-        $handler->process($request, $delegate);
+        $app->process($request, $delegate);
     }
 
     public function invalidRequestExceptions()
@@ -623,58 +528,58 @@ class ApplicationTest extends TestCase
         }
     }
 
-    public function testGetDefaultDelegateWillPullFromContainerIfServiceRegistered()
+    public function testGetDefaultHandlerWillPullFromContainerIfServiceRegistered()
     {
         $handler = $this->prophesize(RequestHandlerInterface::class)->reveal();
         $container = $this->mockContainerInterface();
-        $this->injectServiceInContainer($container, 'Zend\Expressive\Delegate\DefaultDelegate', $handler);
+        $this->injectServiceInContainer($container, 'Zend\Expressive\Handler\DefaultHandler', $handler);
 
         $app = new Application($this->router->reveal(), $container->reveal());
 
-        $test = $app->getDefaultDelegate();
+        $test = $app->getDefaultHandler();
 
         $this->assertSame($handler, $test);
     }
 
-    public function testWillCreateAndConsumeNotFoundDelegateFactoryToCreateDelegateIfNoDelegateInContainer()
+    public function testWillCreateAndConsumeNotFoundHandlerFactoryToCreateHandlerIfNoHandlerInContainer()
     {
         $container = $this->mockContainerInterface();
-        $container->has('Zend\Expressive\Delegate\DefaultDelegate')->willReturn(false);
+        $container->has('Zend\Expressive\Handler\DefaultHandler')->willReturn(false);
         $container->has(TemplateRendererInterface::class)->willReturn(false);
         $app = new Application($this->router->reveal(), $container->reveal());
 
-        $delegate = $app->getDefaultDelegate();
+        $handler = $app->getDefaultHandler();
 
-        $this->assertInstanceOf(Delegate\NotFoundDelegate::class, $delegate);
+        $this->assertInstanceOf(Handler\NotFoundHandler::class, $handler);
 
         $r = new ReflectionProperty($app, 'responsePrototype');
         $r->setAccessible(true);
         $appResponsePrototype = $r->getValue($app);
 
-        $this->assertAttributeNotSame($appResponsePrototype, 'responsePrototype', $delegate);
-        $this->assertAttributeEmpty('renderer', $delegate);
+        $this->assertAttributeNotSame($appResponsePrototype, 'responsePrototype', $handler);
+        $this->assertAttributeEmpty('renderer', $handler);
     }
 
-    public function testWillUseConfiguredTemplateRendererWhenCreatingDelegateFromNotFoundDelegateFactory()
+    public function testWillUseConfiguredTemplateRendererWhenCreatingHandlerFromNotFoundHandlerFactory()
     {
         $container = $this->mockContainerInterface();
-        $container->has('Zend\Expressive\Delegate\DefaultDelegate')->willReturn(false);
+        $container->has('Zend\Expressive\Handler\DefaultHandler')->willReturn(false);
 
         $renderer = $this->prophesize(TemplateRendererInterface::class)->reveal();
         $this->injectServiceInContainer($container, TemplateRendererInterface::class, $renderer);
 
         $app = new Application($this->router->reveal(), $container->reveal());
 
-        $delegate = $app->getDefaultDelegate();
+        $handler = $app->getDefaultHandler();
 
-        $this->assertInstanceOf(Delegate\NotFoundDelegate::class, $delegate);
+        $this->assertInstanceOf(Handler\NotFoundHandler::class, $handler);
 
         $r = new ReflectionProperty($app, 'responsePrototype');
         $r->setAccessible(true);
         $appResponsePrototype = $r->getValue($app);
 
-        $this->assertAttributeNotSame($appResponsePrototype, 'responsePrototype', $delegate);
-        $this->assertAttributeSame($renderer, 'renderer', $delegate);
+        $this->assertAttributeNotSame($appResponsePrototype, 'responsePrototype', $handler);
+        $this->assertAttributeSame($renderer, 'renderer', $handler);
     }
 
     public function testAllowsNestedMiddlewarePipelines()
@@ -713,27 +618,5 @@ class ApplicationTest extends TestCase
             ->willReturn($response);
 
         $this->assertSame($response, $app->process($request, $handler->reveal()));
-    }
-
-    public function testPreparingArrayWithPairOfObjectAndStringMiddlewaresShouldNotBeTreatedAsCallable()
-    {
-        $first  = $this->prophesize(MiddlewareInterface::class)->reveal();
-        $second = TestAsset\CallableInteropMiddleware::class;
-        $queue  = [$first, $second];
-
-        $router = $this->router->reveal();
-        $response = $this->prophesize(ResponseInterface::class)->reveal();
-
-        $app = $this->getApp();
-        $r = new ReflectionMethod($app, 'prepareMiddleware');
-        $r->setAccessible(true);
-
-        $middleware = $r->invoke($app, $queue, $router, $response);
-
-        $this->assertInstanceOf(MiddlewarePipe::class, $middleware);
-
-        $r = new ReflectionProperty($middleware, 'pipeline');
-        $r->setAccessible(true);
-        $this->assertCount(2, $r->getValue($middleware));
     }
 }

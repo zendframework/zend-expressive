@@ -24,7 +24,6 @@ use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Stratigility\MiddlewarePipe;
-use Zend\Stratigility\Middleware\PathMiddlewareDecorator;
 
 /**
  * Middleware application providing routing based on paths and HTTP methods.

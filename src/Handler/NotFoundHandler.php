@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Zend\Expressive\Delegate;
+namespace Zend\Expressive\Handler;
 
 use Fig\Http\Message\StatusCodeInterface;
 use Psr\Http\Message\ResponseInterface;
