@@ -31,15 +31,15 @@ trait ApplicationConfigInjectionTrait
      *     'middleware_pipeline' => [
      *         // An array of middleware to register with the pipeline.
      *         // entries to register prior to routing/dispatching...
-     *         Application::ROUTING_MIDDLEWARE,
-     *         Application::DISPATCH_MIDDLEWARE,
+     *         // - entry for \Zend\Expressive\Middleware\RouteMiddleware::class
+     *         // - entry \Zend\Expressive\Middleware\DispatchMiddleware::class
      *         // entries to register after routing/dispatching...
      *     ],
      * ];
      * </code>
      *
-     * Each item in the middleware_pipeline array (with the exception of the routing
-     * and dispatch middleware entries) must be of the following specification:
+     * Each item in the middleware_pipeline array must be of the following
+     * specification:
      *
      * <code>
      * [
@@ -92,15 +92,13 @@ trait ApplicationConfigInjectionTrait
             new SplPriorityQueue()
         );
 
-        $pathDecorator = $this->createPathDecorator();
-
+        $factory = $this->getMiddlewareFactory();
         foreach ($queue as $spec) {
-            $middleware = $this->prepareConfigBasedMiddleware($spec['middleware']);
             $path = $spec['path'] ?? '/';
             $this->pipe(
                 $path === '/'
-                ? $middleware
-                : $pathDecorator($path, $middleware)
+                    ? $factory->prepare($spec['middleware'])
+                    : $factory->path($path, $spec['middleware'])
             );
         }
     }
@@ -174,7 +172,7 @@ trait ApplicationConfigInjectionTrait
             $name  = $spec['name'] ?? null;
             $route = $this->route(
                 $spec['path'],
-                $this->prepareConfigBasedMiddleware($spec['middleware']),
+                $spec['middleware'],
                 $methods,
                 $name
             );
@@ -217,16 +215,7 @@ trait ApplicationConfigInjectionTrait
      */
     private function createCollectionMapper() : callable
     {
-        $appMiddlewares = [
-            Application::ROUTING_MIDDLEWARE,
-            Application::DISPATCH_MIDDLEWARE,
-        ];
-
-        return function ($item) use ($appMiddlewares) {
-            if (in_array($item, $appMiddlewares, true)) {
-                return ['middleware' => $item];
-            }
-
+        return function ($item) {
             if (! is_array($item) || ! array_key_exists('middleware', $item)) {
                 throw new Exception\InvalidArgumentException(sprintf(
                     'Invalid pipeline specification received; must be an array containing a middleware '
@@ -264,23 +253,5 @@ trait ApplicationConfigInjectionTrait
             $serial -= 1;
             return $queue;
         };
-    }
-
-    /**
-     * @param string|MiddlewareInterface|array $middleware
-     * @throws Exception\InvalidMiddlewareException if $middleware is not one
-     *     of the expected types.
-     */
-    private function prepareConfigBasedMiddleware($middleware) : MiddlewareInterface
-    {
-        if (is_string($middleware) || $middleware instanceof MiddlewareInterface) {
-            return $this->marshalMiddleware($middleware);
-        }
-
-        if (! is_array($middleware)) {
-            throw Exception\InvalidMiddlewareException::forMiddleware($middleware);
-        }
-
-        return ($this->createPipelineDecorator())(...$middleware);
     }
 }
