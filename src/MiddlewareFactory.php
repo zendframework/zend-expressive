@@ -12,6 +12,7 @@ namespace Zend\Expressive;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Zend\Stratigility\MiddlewarePipe;
+use Zend\Stratigility\Middleware\CallableMiddlewareDecorator;
 use Zend\Stratigility\Middleware\PathMiddlewareDecorator;
 
 /**
@@ -115,8 +116,8 @@ class MiddlewareFactory
     public function pipeline(...$middleware) : MiddlewarePipe
     {
         // Allow passing arrays of middleware or individual lists of middleware
-        if (count($middleware) === 1
-            && is_array($middleware[0])
+        if (is_array($middleware[0])
+            && count($middleware) === 1
         ) {
             $middleware = array_shift($middleware);
         }
