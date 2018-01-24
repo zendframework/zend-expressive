@@ -267,26 +267,6 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
     }
 
     /**
-     * Creates and returns a factory for generating PathMiddlewareDecorator instances.
-     */
-    public function createPathDecorator() : callable
-    {
-        return [$this->middlewareFactory, 'path'];
-    }
-
-    /**
-     * Creates and returns a factory for generating MiddlewarePipe instances.
-     *
-     * The returned factory allows passing an array or arguments of middleware,
-     * each of which may be a string middleware service name or a
-     * MiddlewareInterface instance.
-     */
-    public function createPipelineDecorator() : callable
-    {
-        return [$this->middlewareFactory, 'pipeline'];
-    }
-
-    /**
      * Retrieve the IoC container.
      *
      * If no IoC container is registered, we raise an exception.
