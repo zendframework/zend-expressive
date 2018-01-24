@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "473f0f8877714d12ddcc3b1bce84a1d9",
+    "content-hash": "adc157a306ff684be37515cd725f9946",
     "packages": [
         {
             "name": "fig/http-message-util",
@@ -55,113 +55,6 @@
                 "response"
             ],
             "time": "2017-02-09T16:10:21+00:00"
-        },
-        {
-            "name": "http-interop/http-server-handler",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/http-interop/http-server-handler.git",
-                "reference": "931a6495fb1b6005c9b4abc4dd11fb12a2a8103b"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/http-interop/http-server-handler/zipball/931a6495fb1b6005c9b4abc4dd11fb12a2a8103b",
-                "reference": "931a6495fb1b6005c9b4abc4dd11fb12a2a8103b",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.0",
-                "psr/http-message": "^1.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Interop\\Http\\Server\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "PHP-FIG",
-                    "homepage": "http://www.php-fig.org/"
-                }
-            ],
-            "description": "Common interface for HTTP server-side request handler",
-            "keywords": [
-                "handler",
-                "http",
-                "psr",
-                "psr-15",
-                "psr-7",
-                "request",
-                "response",
-                "server"
-            ],
-            "time": "2017-11-09T18:35:22+00:00"
-        },
-        {
-            "name": "http-interop/http-server-middleware",
-            "version": "1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/http-interop/http-server-middleware.git",
-                "reference": "e605a7f47a002e857a3b9bb992010e2f859e4560"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/http-interop/http-server-middleware/zipball/e605a7f47a002e857a3b9bb992010e2f859e4560",
-                "reference": "e605a7f47a002e857a3b9bb992010e2f859e4560",
-                "shasum": ""
-            },
-            "require": {
-                "http-interop/http-server-handler": "^1.0",
-                "php": ">=7.0",
-                "psr/http-message": "^1.0"
-            },
-            "replace": {
-                "http-interop/http-middleware": ">=0.5"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Interop\\Http\\Server\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "PHP-FIG",
-                    "homepage": "http://www.php-fig.org/"
-                }
-            ],
-            "description": "Common interface for HTTP server-side middleware",
-            "keywords": [
-                "http",
-                "middleware",
-                "psr",
-                "psr-15",
-                "psr-7",
-                "request",
-                "response"
-            ],
-            "time": "2017-11-09T21:42:30+00:00"
         },
         {
             "name": "psr/container",
@@ -261,6 +154,112 @@
                 "response"
             ],
             "time": "2016-08-06T14:39:51+00:00"
+        },
+        {
+            "name": "psr/http-server-handler",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/http-server-handler.git",
+                "reference": "439d92054dc06097f2406ec074a2627839955a02"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/http-server-handler/zipball/439d92054dc06097f2406ec074a2627839955a02",
+                "reference": "439d92054dc06097f2406ec074a2627839955a02",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0",
+                "psr/http-message": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Http\\Server\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for HTTP server-side request handler",
+            "keywords": [
+                "handler",
+                "http",
+                "http-interop",
+                "psr",
+                "psr-15",
+                "psr-7",
+                "request",
+                "response",
+                "server"
+            ],
+            "time": "2018-01-22T17:04:15+00:00"
+        },
+        {
+            "name": "psr/http-server-middleware",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/http-server-middleware.git",
+                "reference": "ea17eb1fb2c8df6db919cc578451a8013c6a0ae5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/http-server-middleware/zipball/ea17eb1fb2c8df6db919cc578451a8013c6a0ae5",
+                "reference": "ea17eb1fb2c8df6db919cc578451a8013c6a0ae5",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0",
+                "psr/http-message": "^1.0",
+                "psr/http-server-handler": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Http\\Server\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for HTTP server-side middleware",
+            "keywords": [
+                "http",
+                "http-interop",
+                "middleware",
+                "psr",
+                "psr-15",
+                "psr-7",
+                "request",
+                "response"
+            ],
+            "time": "2018-01-22T17:08:31+00:00"
         },
         {
             "name": "zendframework/zend-diactoros",
@@ -364,29 +363,29 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-expressive-router.git",
-                "reference": "3d71af137573410ad6891f6131a39a96154a7a53"
+                "reference": "9ecd970f1e6a0b670de62cb28314189b2e17465d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-expressive-router/zipball/3d71af137573410ad6891f6131a39a96154a7a53",
-                "reference": "3d71af137573410ad6891f6131a39a96154a7a53",
+                "url": "https://api.github.com/repos/zendframework/zend-expressive-router/zipball/9ecd970f1e6a0b670de62cb28314189b2e17465d",
+                "reference": "9ecd970f1e6a0b670de62cb28314189b2e17465d",
                 "shasum": ""
             },
             "require": {
                 "fig/http-message-util": "^1.1.2",
-                "http-interop/http-server-middleware": "^1.0.1",
                 "php": "^7.1",
-                "psr/http-message": "^1.0.1"
+                "psr/http-message": "^1.0.1",
+                "psr/http-server-middleware": "^1.0"
             },
             "require-dev": {
-                "malukenho/docheader": "^0.1.5",
-                "phpunit/phpunit": "^6.4.4",
+                "malukenho/docheader": "^0.1.6",
+                "phpunit/phpunit": "^6.5.5",
                 "zendframework/zend-coding-standard": "~1.0.0"
             },
             "suggest": {
-                "zendframework/zend-expressive-aurarouter": "^1.0 to use the Aura.Router routing adapter",
-                "zendframework/zend-expressive-fastroute": "^1.2 to use the FastRoute routing adapter",
-                "zendframework/zend-expressive-zendrouter": "^1.2 to use the zend-router routing adapter"
+                "zendframework/zend-expressive-aurarouter": "^3.0 to use the Aura.Router routing adapter",
+                "zendframework/zend-expressive-fastroute": "^3.0 to use the FastRoute routing adapter",
+                "zendframework/zend-expressive-zendrouter": "^3.0 to use the zend-router routing adapter"
             },
             "type": "library",
             "extra": {
@@ -416,7 +415,7 @@
                 "zend-expressive",
                 "zf"
             ],
-            "time": "2017-12-14T15:25:08+00:00"
+            "time": "2018-01-24T20:51:48+00:00"
         },
         {
             "name": "zendframework/zend-expressive-template",
@@ -478,23 +477,23 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-stratigility.git",
-                "reference": "9cd4dfb9c1c9d2e1354dbab74ae295e3eedfe6f3"
+                "reference": "02b87b907db65e8dd00856bb4ac57b449792e370"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-stratigility/zipball/9cd4dfb9c1c9d2e1354dbab74ae295e3eedfe6f3",
-                "reference": "9cd4dfb9c1c9d2e1354dbab74ae295e3eedfe6f3",
+                "url": "https://api.github.com/repos/zendframework/zend-stratigility/zipball/02b87b907db65e8dd00856bb4ac57b449792e370",
+                "reference": "02b87b907db65e8dd00856bb4ac57b449792e370",
                 "shasum": ""
             },
             "require": {
-                "http-interop/http-server-middleware": "^1.0.1",
                 "php": "^7.1",
                 "psr/http-message": "^1.0",
+                "psr/http-server-middleware": "^1.0",
                 "zendframework/zend-escaper": "^2.3"
             },
             "require-dev": {
-                "malukenho/docheader": "^0.1.5",
-                "phpunit/phpunit": "^5.7.22 || ^6.4.1",
+                "malukenho/docheader": "^0.1.6",
+                "phpunit/phpunit": "^6.5.5",
                 "zendframework/zend-coding-standard": "~1.0.0",
                 "zendframework/zend-diactoros": "^1.0"
             },
@@ -504,14 +503,15 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.1.x-dev",
-                    "dev-develop": "2.2.x-dev",
+                    "dev-master": "3.0-dev",
+                    "dev-develop": "3.1-dev",
                     "dev-release-3.0.0": "3.0.x-dev"
                 }
             },
             "autoload": {
                 "files": [
                     "src/functions/double-pass-middleware.php",
+                    "src/functions/host.php",
                     "src/functions/middleware.php",
                     "src/functions/path.php"
                 ],
@@ -523,16 +523,16 @@
             "license": [
                 "BSD-3-Clause"
             ],
-            "description": "Middleware for PHP",
-            "homepage": "https://github.com/zendframework/zend-stratigility",
+            "description": "PSR-7 middleware foundation for building and dispatching middleware pipelines",
             "keywords": [
                 "ZendFramework",
                 "http",
                 "middleware",
+                "psr-15",
                 "psr-7",
                 "zf"
             ],
-            "time": "2018-01-15T22:51:33+00:00"
+            "time": "2018-01-24T17:35:05+00:00"
         }
     ],
     "packages-dev": [

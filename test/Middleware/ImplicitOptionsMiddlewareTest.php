@@ -11,10 +11,10 @@ namespace ZendTest\Expressive\Middleware;
 
 use Fig\Http\Message\RequestMethodInterface as RequestMethod;
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
-use Interop\Http\Server\RequestHandlerInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Diactoros\Response;
 use Zend\Expressive\Middleware\ImplicitOptionsMiddleware;
 use Zend\Expressive\Router\Route;

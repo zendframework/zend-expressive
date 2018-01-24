@@ -9,9 +9,9 @@ declare(strict_types=1);
 
 namespace ZendTest\Expressive;
 
-use Interop\Http\Server\MiddlewareInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use Zend\Expressive\Exception;
 use Zend\Expressive\MiddlewareContainer;
 use Zend\Expressive\Middleware\DispatchMiddleware;

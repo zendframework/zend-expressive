@@ -9,11 +9,11 @@ declare(strict_types=1);
 
 namespace ZendTest\Expressive\Application;
 
-use Interop\Http\Server\MiddlewareInterface;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use ReflectionProperty;
 use SplQueue;
 use Zend\Expressive\Application;

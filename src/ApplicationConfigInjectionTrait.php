@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Zend\Expressive;
 
-use Interop\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use SplPriorityQueue;
 use Zend\Expressive\Router\Route;
 

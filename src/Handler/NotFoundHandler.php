@@ -10,9 +10,9 @@ declare(strict_types=1);
 namespace Zend\Expressive\Delegate;
 
 use Fig\Http\Message\StatusCodeInterface;
-use Interop\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
 class NotFoundHandler implements RequestHandlerInterface

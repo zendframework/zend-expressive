@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace ZendTest\Expressive\TestAsset;
 
-use Interop\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 class CallableInteropMiddleware
 {

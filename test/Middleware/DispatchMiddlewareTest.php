@@ -9,13 +9,13 @@ declare(strict_types=1);
 
 namespace ZendTest\Expressive\Middleware;
 
-use Interop\Http\Server\MiddlewareInterface;
-use Interop\Http\Server\RequestHandlerInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Expressive\Middleware\DispatchMiddleware;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouteResult;

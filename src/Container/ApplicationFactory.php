@@ -23,12 +23,12 @@ use Zend\Expressive\Router\RouterInterface;
  *
  * - 'Zend\Expressive\Router\RouterInterface'. If missing, a FastRoute router
  *   bridge will be instantiated and used.
- * - 'Zend\Expressive\Delegate\DefaultDelegate'. The service should be
- *   either a `Interop\Http\ServerMiddleware\DelegateInterface` instance, or
+ * - 'Zend\Expressive\Handler\DefaultHandler'. The service should be
+ *   either a `Psr\Http\Server\RequestHandlerInterface` instance, or
  *   a callable that accepts a request and optionally a response; the instance
- *   will be used as the default delegate when the middleware pipeline is
+ *   will be used as the default handler when the middleware pipeline is
  *   exhausted. If none is provided, `Zend\Expressive\Application` will create
- *   a `Zend\Expressive\Delegate\NotFoundDelegate` instance using the response
+ *   a `Zend\Expressive\Handler\NotFoundHandler` instance using the response
  *   prototype only.
  * - 'Zend\Diactoros\Response\EmitterInterface'. If missing, an EmitterStack is
  *   created, adding a SapiEmitter to the bottom of the stack.

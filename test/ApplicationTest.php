@@ -11,8 +11,6 @@ namespace ZendTest\Expressive;
 
 use DomainException;
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
-use Interop\Http\Server\MiddlewareInterface;
-use Interop\Http\Server\RequestHandlerInterface;
 use InvalidArgumentException;
 use Mockery;
 use PHPUnit\Framework\Assert;
@@ -22,6 +20,8 @@ use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use ReflectionMethod;
 use ReflectionProperty;
 use RuntimeException;

@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace Zend\Expressive;
 
-use Interop\Http\Server\MiddlewareInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\Stratigility\Middleware\PathMiddlewareDecorator;
 

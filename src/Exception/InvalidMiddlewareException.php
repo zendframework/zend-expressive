@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Zend\Expressive\Exception;
 
-use Interop\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use RuntimeException;
 
 class InvalidMiddlewareException extends RuntimeException implements ExceptionInterface

@@ -10,12 +10,12 @@ declare(strict_types=1);
 namespace Zend\Expressive;
 
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
-use Interop\Http\Server\MiddlewareInterface;
-use Interop\Http\Server\RequestHandlerInterface;
 use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Throwable;
 use UnexpectedValueException;
 use Zend\Diactoros\Response;
