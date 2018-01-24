@@ -22,13 +22,10 @@ use Zend\Expressive\Router\RouterInterface;
  * Default dispatch middleware.
  *
  * Checks for a composed route result in the request. If none is provided,
- * delegates to the next middleware.
+ * delegates request processing to the handler.
  *
- * Otherwise, it pulls the middleware from the route result. If the middleware
- * is not http-interop middleware, it uses the composed router, response
- * prototype, and container to prepare it, via the
- * `MarshalMiddlewareTrait::prepareMiddleware()` method. In each case, it then
- * processes the middleware.
+ * Otherwise, it pulls the middleware from the route result and processes it
+ * with the provided request and handler.
  *
  * @internal
  */
