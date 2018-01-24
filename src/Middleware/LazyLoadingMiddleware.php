@@ -28,11 +28,6 @@ class LazyLoadingMiddleware implements MiddlewareInterface
      */
     private $middlewareName;
 
-    /**
-     * @var ResponseInterface
-     */
-    private $responsePrototype;
-
     public function __construct(
         MiddlewareContainer $container,
         string $middlewareName
