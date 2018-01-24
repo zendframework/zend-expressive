@@ -49,9 +49,9 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
     private $emitter;
 
     /**
-     * @var ContainerInterface
+     * @var MiddlewareFactory
      */
-    private $middlewareContainer;
+    private $middlewareFactory;
 
     /**
      * @var null|callable
@@ -102,13 +102,13 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
         EmitterInterface $emitter = null,
         ResponseInterface $responsePrototype = null
     ) {
-        $this->pipeline            = new MiddlewarePipe();
-        $this->router              = $router;
-        $this->container           = $container;
-        $this->middlewareContainer = $container ? new MiddlewareContainer($container) : null;
-        $this->defaultHandler      = $defaultHandler;
-        $this->emitter             = $emitter;
-        $this->responsePrototype   = $responsePrototype ?: new Response();
+        $this->pipeline          = new MiddlewarePipe();
+        $this->router            = $router;
+        $this->container         = $container;
+        $this->middlewareFactory = new MiddlewareFactory($container);
+        $this->defaultHandler    = $defaultHandler;
+        $this->emitter           = $emitter;
+        $this->responsePrototype = $responsePrototype ?: new Response();
     }
 
     public function handle(ServerRequestInterface $request) : ResponseInterface
@@ -153,13 +153,14 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
     }
 
     /**
-     * @param string|MiddlewareInterface $middleware
+     * @param string|array|callable|MiddlewareInterface $middleware Middleware
+     *     (or middleware service name) to pipe to the application.
      * @throws Exception\InvalidMiddlewareException if the middleware provided is
-     *     neither a string service name nor a `MiddlewareInterface` instance.
+     *     none of the specified types.
      */
     public function pipe($middleware) : void
     {
-        $this->pipeline->pipe($this->marshalMiddleware($middleware));
+        $this->pipeline->pipe($this->middlewareFactory->prepare($middleware));
     }
 
     /**
@@ -168,8 +169,8 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
      * Accepts either a Router\Route instance, or a combination of a path and
      * middleware, and optionally the HTTP methods allowed.
      *
-     * @param string|MiddlewareInterface $middleware Middleware (or middleware service name)
-     *     to associate with route.
+     * @param string|array|callable|MiddlewareInterface $middleware Middleware
+     *     (or middleware service name) to associate with route.
      * @param null|array $methods HTTP method to accept; null indicates any.
      * @param null|string $name The name of the route.
      * @throws Exception\InvalidArgumentException if $path is not a Router\Route AND middleware is null.
@@ -181,7 +182,7 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
         $this->checkForDuplicateRoute($path, $methods);
 
         $methods    = null === $methods ? Router\Route::HTTP_METHOD_ANY : $methods;
-        $middleware = $this->marshalMiddleware($middleware);
+        $middleware = $this->middlewareFactory->prepare($middleware);
         $route      = new Router\Route($path, $middleware, $methods, $name);
 
         $this->routes[] = $route;
@@ -191,7 +192,8 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
     }
 
     /**
-     * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
+     * @param string|array|callable|MiddlewareInterface $middleware Middleware
+     *     (or middleware service name) to associate with route.
      * @param null|string $name The name of the route.
      */
     public function get(string $path, $middleware, string $name = null) : Router\Route
@@ -200,7 +202,8 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
     }
 
     /**
-     * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
+     * @param string|array|callable|MiddlewareInterface $middleware Middleware
+     *     (or middleware service name) to associate with route.
      * @param null|string $name The name of the route.
      */
     public function post(string $path, $middleware, $name = null) : Router\Route
@@ -209,7 +212,8 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
     }
 
     /**
-     * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
+     * @param string|array|callable|MiddlewareInterface $middleware Middleware
+     *     (or middleware service name) to associate with route.
      * @param null|string $name The name of the route.
      */
     public function put(string $path, $middleware, string $name = null) : Router\Route
@@ -218,7 +222,8 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
     }
 
     /**
-     * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
+     * @param string|array|callable|MiddlewareInterface $middleware Middleware
+     *     (or middleware service name) to associate with route.
      * @param null|string $name The name of the route.
      */
     public function patch(string $path, $middleware, string $name = null) : Router\Route
@@ -227,7 +232,8 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
     }
 
     /**
-     * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
+     * @param string|array|callable|MiddlewareInterface $middleware Middleware
+     *     (or middleware service name) to associate with route.
      * @param null|string $name The name of the route.
      */
     public function delete(string $path, $middleware, string $name = null) : Router\Route
@@ -236,7 +242,8 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
     }
 
     /**
-     * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
+     * @param string|array|callable|MiddlewareInterface $middleware Middleware
+     *     (or middleware service name) to associate with route.
      * @param null|string $name The name of the route.
      */
     public function any(string $path, $middleware, string $name = null) : Router\Route
@@ -254,18 +261,17 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
         return $this->routes;
     }
 
+    public function getMiddlewareFactory() : MiddlewareFactory
+    {
+        return $this->middlewareFactory;
+    }
+
     /**
      * Creates and returns a factory for generating PathMiddlewareDecorator instances.
      */
     public function createPathDecorator() : callable
     {
-        $this->pathDecorator = $this->pathDecorator ?: function (string $path, $middleware) : PathMiddlewareDecorator {
-            return new PathMiddlewareDecorator(
-                $path,
-                $this->marshalMiddleware($middleware)
-            );
-        };
-        return $this->pathDecorator;
+        return [$this->middlewareFactory, 'path'];
     }
 
     /**
@@ -277,24 +283,7 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
      */
     public function createPipelineDecorator() : callable
     {
-        /**
-         * @param string|MiddlewareInterface[] $middleware
-         */
-        $this->pipelineDecorator = $this->pipelineDecorator ?: function (...$middleware) : MiddlewarePipe {
-            // Allow passing arrays of middleware or individual lists of middleware
-            if (count($middleware) === 1
-                && is_array($middleware[0])
-            ) {
-                $middleware = array_shift($middleware);
-            }
-
-            $pipeline = new MiddlewarePipe();
-            foreach ($middleware as $m) {
-                $pipeline->pipe($this->marshalMiddleware($m));
-            }
-            return $pipeline;
-        };
-        return $this->pipelineDecorator;
+        return [$this->middlewareFactory, 'pipeline'];
     }
 
     /**
@@ -406,30 +395,5 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
 
         $emitter = $this->getEmitter();
         $emitter->emit($response);
-    }
-
-    /**
-     * @param mixed $middleware
-     * @throws Exception\InvalidMiddlewareException if $middleware is neither a
-     *     string nor a MiddlewareInterface instance.
-     */
-    private function marshalMiddleware($middleware) : MiddlewareInterface
-    {
-        if ((! is_string($middleware) || empty($middleware))
-            && ! $middleware instanceof MiddlewareInterface
-        ) {
-            throw Exception\InvalidMiddlewareException::forMiddleware($middleware);
-        }
-
-        if (is_string($middleware) && ! $this->middlewareContainer) {
-            throw new Exception\ContainerNotRegisteredException(sprintf(
-                'Cannot marshal middleware by service name "%s"; no container registered',
-                $middleware
-            ));
-        }
-
-        return is_string($middleware)
-            ? new Middleware\LazyLoadingMiddleware($this->middlewareContainer, $middleware)
-            : $middleware;
     }
 }

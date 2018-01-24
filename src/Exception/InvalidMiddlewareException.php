@@ -21,7 +21,8 @@ class InvalidMiddlewareException extends RuntimeException implements ExceptionIn
     public static function forMiddleware($middleware) : self
     {
         return new self(sprintf(
-            'Middleware "%s" is neither a string service name nor a %s instance',
+            'Middleware "%s" is neither a string service name, a PHP callable,'
+            . ' a %s instance, or an array of such arguments',
             is_object($middleware) ? get_class($middleware) : gettype($middleware),
             MiddlewareInterface::class
         ));
