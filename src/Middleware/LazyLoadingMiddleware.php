@@ -11,6 +11,7 @@ namespace Zend\Expressive\Middleware;
 
 use Interop\Http\Server\MiddlewareInterface;
 use Interop\Http\Server\RequestHandlerInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\MiddlewareContainer;
 use Zend\Expressive\Exception\InvalidMiddlewareException;
