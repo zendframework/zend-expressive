@@ -11,12 +11,12 @@ namespace Zend\Expressive\Container;
 
 use Psr\Container\ContainerInterface;
 use Zend\Expressive\Handler\NotFoundHandler;
-use Zend\Expressive\Middleware\NotFoundHandler as StratigilityNotFoundHandler;
+use Zend\Expressive\Middleware\NotFoundMiddleware;
 
 class NotFoundMiddlewareFactory
 {
-    public function __invoke(ContainerInterface $container) : StratigilityNotFoundHandler
+    public function __invoke(ContainerInterface $container) : NotFoundMiddleware
     {
-        return new StratigilityNotFoundHandler($container->get(NotFoundHandler::class));
+        return new NotFoundMiddleware($container->get(NotFoundHandler::class));
     }
 }

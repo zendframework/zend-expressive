@@ -21,15 +21,16 @@ use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\Expressive\Application;
 use Zend\Expressive\Container\ApplicationFactory;
-use Zend\Expressive\Delegate\NotFoundDelegate;
 use Zend\Expressive\Emitter\EmitterStack;
 use Zend\Expressive\Exception as ExpressiveException;
+use Zend\Expressive\Handler\NotFoundHandler;
 use Zend\Expressive\Middleware\DispatchMiddleware;
 use Zend\Expressive\Middleware\LazyLoadingMiddleware;
 use Zend\Expressive\Middleware\RouteMiddleware;
 use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouterInterface;
+use Zend\Stratigility\Middleware\PathMiddlewareDecorator;
 use Zend\Stratigility\MiddlewarePipe;
 use ZendTest\Expressive\ContainerTrait;
 use ZendTest\Expressive\TestAsset\InteropMiddleware;
@@ -68,7 +69,7 @@ class ApplicationFactoryTest extends TestCase
 
         $this->injectServiceInContainer($this->container, RouterInterface::class, $this->router->reveal());
         $this->injectServiceInContainer($this->container, EmitterInterface::class, $this->emitter->reveal());
-        $this->injectServiceInContainer($this->container, 'Zend\Expressive\Delegate\DefaultDelegate', $this->handler);
+        $this->injectServiceInContainer($this->container, 'Zend\Expressive\Handler\DefaultHandler', $this->handler);
     }
 
     public static function assertRoute($spec, array $routes)
@@ -113,6 +114,25 @@ class ApplicationFactoryTest extends TestCase
         return $r->getValue($app);
     }
 
+    public function getInternalQueueFromApplication(Application $app)
+    {
+        $r = new ReflectionProperty($app, 'pipeline');
+        $r->setAccessible(true);
+        $pipeline = $r->getValue($app);
+        
+        $r = new ReflectionProperty($pipeline, 'pipeline');
+        $r->setAccessible(true);
+        return $r->getValue($pipeline);
+    }
+
+    public function injectRouteAndDispatchMiddleware()
+    {
+        $routeMiddleware = $this->prophesize(RouteMiddleware::class)->reveal();
+        $this->injectServiceInContainer($this->container, RouteMiddleware::class, $routeMiddleware);
+        $dispatchMiddleware = $this->prophesize(DispatchMiddleware::class)->reveal();
+        $this->injectServiceInContainer($this->container, DispatchMiddleware::class, $dispatchMiddleware);
+    }
+
     public function testFactoryWillPullAllReplaceableDependenciesFromContainerWhenPresent()
     {
         $app = $this->factory->__invoke($this->container->reveal());
@@ -121,7 +141,7 @@ class ApplicationFactoryTest extends TestCase
         $this->assertSame($this->router->reveal(), $test);
         $this->assertSame($this->container->reveal(), $app->getContainer());
         $this->assertSame($this->emitter->reveal(), $app->getEmitter());
-        $this->assertSame($this->handler, $app->getDefaultDelegate());
+        $this->assertSame($this->handler, $app->getDefaultHandler());
     }
 
     public function callableMiddlewares()
@@ -174,6 +194,7 @@ class ApplicationFactoryTest extends TestCase
         $config = $configType ? new $configType($config) : $config;
 
         $this->injectServiceInContainer($this->container, 'config', $config);
+        $this->injectRouteAndDispatchMiddleware();
 
         $app = $this->factory->__invoke($this->container->reveal());
 
@@ -196,8 +217,8 @@ class ApplicationFactoryTest extends TestCase
         $this->assertSame($container->reveal(), $app->getContainer());
         $this->assertInstanceOf(EmitterStack::class, $app->getEmitter());
         $this->assertCount(1, $app->getEmitter());
-        $this->assertInstanceOf(SapiEmitter::class, $app->getEmitter()->pop());
-        $this->assertInstanceOf(NotFoundDelegate::class, $app->getDefaultDelegate());
+        $this->assertInstanceOf(SapiEmitter::class, $app->getEmitter()->pop(), var_export($app->getEmitter(), true));
+        $this->assertInstanceOf(NotFoundHandler::class, $app->getDefaultHandler());
     }
 
     public function configTypes()
@@ -254,6 +275,7 @@ class ApplicationFactoryTest extends TestCase
         $config = $configType ? new $configType($config) : $config;
 
         $this->injectServiceInContainer($this->container, 'config', $config);
+        $this->injectRouteAndDispatchMiddleware();
 
         $app = $this->factory->__invoke($this->container->reveal());
 
@@ -296,6 +318,7 @@ class ApplicationFactoryTest extends TestCase
         $config = $configType ? new $configType($config) : $config;
 
         $this->injectServiceInContainer($this->container, 'config', $config);
+        $this->injectRouteAndDispatchMiddleware();
 
         $app = $this->factory->__invoke($this->container->reveal());
 
@@ -400,64 +423,44 @@ class ApplicationFactoryTest extends TestCase
 
         $app = $this->factory->__invoke($this->container->reveal());
 
-        $this->assertAttributeSame(
-            false,
-            'routeMiddlewareIsRegistered',
-            $app,
-            'Route middleware was registered when it should not have been'
-        );
-
-        $this->assertAttributeSame(
-            false,
-            'dispatchMiddlewareIsRegistered',
-            $app,
-            'Dispatch middleware was registered when it should not have been'
-        );
-
-        $r = new ReflectionProperty($app, 'pipeline');
-        $r->setAccessible(true);
-        $pipeline = $r->getValue($app);
+        $pipeline = $this->getInternalQueueFromApplication($app);
 
         $this->assertCount(5, $pipeline, 'Did not get expected pipeline count!');
 
         $test = $pipeline->dequeue();
-        $this->assertEquals('/api', $test->path);
-        $this->assertSame($api, $test->handler);
-
-        // Lazy middleware is not marshaled until invocation
-        $test = $pipeline->dequeue();
-        $this->assertEquals('/dynamic-path', $test->path);
-        $this->assertNotSame($dynamicPath, $test->handler);
-        $this->assertInstanceOf(LazyLoadingMiddleware::class, $test->handler);
+        $this->assertInstanceOf(PathMiddlewareDecorator::class, $test);
+        $this->assertAttributeSame('/api', 'prefix', $test);
+        $this->assertAttributeSame($api, 'middleware', $test);
 
         $test = $pipeline->dequeue();
-        $this->assertEquals('/', $test->path);
-        $this->assertSame($noPath, $test->handler);
-
-        // Lazy middleware is not marshaled until invocation
-        $test = $pipeline->dequeue();
-        $this->assertEquals('/', $test->path);
-        $this->assertNotSame($goodbye, $test->handler);
-        $this->assertInstanceOf(LazyLoadingMiddleware::class, $test->handler);
+        $this->assertInstanceOf(PathMiddlewareDecorator::class, $test);
+        $this->assertAttributeSame('/dynamic-path', 'prefix', $test);
+        $this->assertAttributeInstanceOf(LazyLoadingMiddleware::class, 'middleware', $test);
 
         $test = $pipeline->dequeue();
-        $nestedPipeline = $test->handler;
-        $this->assertInstanceOf(MiddlewarePipe::class, $nestedPipeline);
+        $this->assertSame($noPath, $test);
 
-        $r = new ReflectionProperty($nestedPipeline, 'pipeline');
+        $test = $pipeline->dequeue();
+        $this->assertNotSame($goodbye, $test);
+        $this->assertInstanceOf(LazyLoadingMiddleware::class, $test);
+
+        $test = $pipeline->dequeue();
+        $this->assertInstanceOf(MiddlewarePipe::class, $test);
+
+        $r = new ReflectionProperty($test, 'pipeline');
         $r->setAccessible(true);
-        $nestedPipeline = $r->getValue($nestedPipeline);
+        $nestedPipeline = $r->getValue($test);
 
         $test = $nestedPipeline->dequeue();
-        $this->assertSame($pipelineFirst, $test->handler);
+        $this->assertSame($pipelineFirst, $test);
 
         // Lazy middleware is not marshaled until invocation
         $test = $nestedPipeline->dequeue();
-        $this->assertNotSame($hello, $test->handler);
-        $this->assertInstanceOf(LazyLoadingMiddleware::class, $test->handler);
+        $this->assertNotSame($hello, $test);
+        $this->assertInstanceOf(LazyLoadingMiddleware::class, $test);
 
         $test = $nestedPipeline->dequeue();
-        $this->assertSame($pipelineLast, $test->handler);
+        $this->assertSame($pipelineLast, $test);
     }
 
     public function configWithRoutesButNoPipeline()
@@ -502,25 +505,22 @@ class ApplicationFactoryTest extends TestCase
         array $config,
         $configType
     ) {
+        $this->injectRouteAndDispatchMiddleware();
+
         $config = $configType ? new $configType($config) : $config;
         $this->injectServiceInContainer($this->container, 'config', $config);
-        $app = $this->factory->__invoke($this->container->reveal());
-        $this->assertAttributeSame(true, 'routeMiddlewareIsRegistered', $app);
-        $this->assertAttributeSame(true, 'dispatchMiddlewareIsRegistered', $app);
 
-        $r = new ReflectionProperty($app, 'pipeline');
-        $r->setAccessible(true);
-        $pipeline = $r->getValue($app);
+        $app = $this->factory->__invoke($this->container->reveal());
+
+        $pipeline = $this->getInternalQueueFromApplication($app);
 
         $this->assertCount(2, $pipeline, 'Did not get expected pipeline count!');
 
         $test = $pipeline->dequeue();
-        $this->assertEquals('/', $test->path);
-        $this->assertInstanceOf(RouteMiddleware::class, $test->handler);
+        $this->assertInstanceOf(RouteMiddleware::class, $test);
 
         $test = $pipeline->dequeue();
-        $this->assertEquals('/', $test->path);
-        $this->assertInstanceOf(DispatchMiddleware::class, $test->handler);
+        $this->assertInstanceOf(DispatchMiddleware::class, $test);
     }
 
     /**
@@ -577,12 +577,7 @@ class ApplicationFactoryTest extends TestCase
 
         $app = $this->factory->__invoke($this->container->reveal());
 
-        $this->assertAttributeSame(false, 'routeMiddlewareIsRegistered', $app);
-        $this->assertAttributeSame(false, 'dispatchMiddlewareIsRegistered', $app);
-
-        $r = new ReflectionProperty($app, 'pipeline');
-        $r->setAccessible(true);
-        $pipeline = $r->getValue($app);
+        $pipeline = $this->getInternalQueueFromApplication($app);
         $this->assertCount(0, $pipeline, 'Pipeline contains entries and should not');
 
         $routes = $app->getRoutes();

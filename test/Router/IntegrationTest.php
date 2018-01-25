@@ -82,18 +82,19 @@ class IntegrationTest extends TestCase
      */
     private function createApplicationWithGetPost($adapter, $getName = null, $postName = null)
     {
-        $app = new Application(new $adapter());
-        $app->pipeRoutingMiddleware();
+        $router = new $adapter();
+        $app = new Application($router);
+        $app->pipe(new Middleware\RouteMiddleware($router, $this->response));
 
-        $app->get('/foo', function ($req, $res, $next) {
+        $app->get('/foo', function ($req, $handler) {
             $stream = new Stream('php://temp', 'w+');
             $stream->write('Middleware GET');
-            return $res->withBody($stream);
+            return $this->response->withBody($stream);
         }, $getName);
-        $app->post('/foo', function ($req, $res, $next) {
+        $app->post('/foo', function ($req, $handler) {
             $stream = new Stream('php://temp', 'w+');
             $stream->write('Middleware POST');
-            return $res->withBody($stream);
+            return $this->response->withBody($stream);
         }, $postName);
 
         return $app;
@@ -110,18 +111,19 @@ class IntegrationTest extends TestCase
      */
     private function createApplicationWithRouteGetPost($adapter, $getName = null, $postName = null)
     {
-        $app = new Application(new $adapter());
-        $app->pipeRoutingMiddleware();
+        $router = new $adapter();
+        $app = new Application($router);
+        $app->pipe(new Middleware\RouteMiddleware($router, $this->response));
 
-        $app->route('/foo', function ($req, $res, $next) {
+        $app->route('/foo', function ($req, $handler) {
             $stream = new Stream('php://temp', 'w+');
             $stream->write('Middleware GET');
-            return $res->withBody($stream);
+            return $this->response->withBody($stream);
         }, ['GET'], $getName);
-        $app->route('/foo', function ($req, $res, $next) {
+        $app->route('/foo', function ($req, $handler) {
             $stream = new Stream('php://temp', 'w+');
             $stream->write('Middleware POST');
-            return $res->withBody($stream);
+            return $this->response->withBody($stream);
         }, ['POST'], $postName);
 
         return $app;
@@ -158,7 +160,7 @@ class IntegrationTest extends TestCase
     public function testRoutingWithSamePathWithoutName($adapter)
     {
         $app = $this->createApplicationWithGetPost($adapter);
-        $app->pipeDispatchMiddleware();
+        $app->pipe(new Middleware\DispatchMiddleware());
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
         $handler->handle(Argument::type(ServerRequest::class))
@@ -186,10 +188,11 @@ class IntegrationTest extends TestCase
     public function testRoutingWithSamePathWithName($adapter)
     {
         $app = $this->createApplicationWithGetPost($adapter, 'foo-get', 'foo-post');
-        $app->pipeDispatchMiddleware();
+        $app->pipe(new Middleware\DispatchMiddleware());
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
-        $handler->handle(Argument::type(ServerRequest::class))
+        $handler
+            ->handle(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');
@@ -214,7 +217,7 @@ class IntegrationTest extends TestCase
     public function testRoutingWithSamePathWithRouteWithoutName($adapter)
     {
         $app = $this->createApplicationWithRouteGetPost($adapter);
-        $app->pipeDispatchMiddleware();
+        $app->pipe(new Middleware\DispatchMiddleware());
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
         $handler->handle(Argument::type(ServerRequest::class))
@@ -241,10 +244,11 @@ class IntegrationTest extends TestCase
     public function testRoutingWithSamePathWithRouteWithName($adapter)
     {
         $app = $this->createApplicationWithRouteGetPost($adapter, 'foo-get', 'foo-post');
-        $app->pipeDispatchMiddleware();
+        $app->pipe(new Middleware\DispatchMiddleware());
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
-        $handler->handle(Argument::type(ServerRequest::class))
+        $handler
+            ->handle(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');
@@ -268,23 +272,28 @@ class IntegrationTest extends TestCase
      */
     public function testRoutingWithSamePathWithRouteWithMultipleMethods($adapter)
     {
-        $app = new Application(new $adapter());
-        $app->pipeRoutingMiddleware();
-        $app->pipeDispatchMiddleware();
+        $router = new $adapter();
+        $app = new Application($router);
+        $app->pipe(new Middleware\RouteMiddleware($router, $this->response));
+        $app->pipe(new Middleware\DispatchMiddleware());
 
-        $app->route('/foo', function ($req, $res, $next) {
+        $response = clone $this->response;
+        $app->route('/foo', function ($req, $handler) use ($response) {
             $stream = new Stream('php://temp', 'w+');
             $stream->write('Middleware GET, POST');
-            return $res->withBody($stream);
+            return $response->withBody($stream);
         }, ['GET', 'POST']);
-        $app->route('/foo', function ($req, $res, $next) {
+
+        $deleteResponse = clone $this->response;
+        $app->route('/foo', function ($req, $handler) use ($deleteResponse) {
             $stream = new Stream('php://temp', 'w+');
             $stream->write('Middleware DELETE');
-            return $res->withBody($stream);
+            return $deleteResponse->withBody($stream);
         }, ['DELETE']);
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
-        $handler->handle(Argument::type(ServerRequest::class))
+        $handler
+            ->handle(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');
@@ -328,19 +337,22 @@ class IntegrationTest extends TestCase
      */
     public function testMatchWithAllHttpMethods($adapter, $method)
     {
-        $app = new Application(new $adapter());
-        $app->pipeRoutingMiddleware();
-        $app->pipeDispatchMiddleware();
+        $router = new $adapter();
+        $app = new Application($router);
+        $app->pipe(new Middleware\RouteMiddleware($router, $this->response));
+        $app->pipe(new Middleware\DispatchMiddleware());
 
         // Add a route with Zend\Expressive\Router\Route::HTTP_METHOD_ANY
-        $app->route('/foo', function ($req, $res, $next) {
+        $response = clone $this->response;
+        $app->route('/foo', function ($req, $handler) use ($response) {
             $stream = new Stream('php://temp', 'w+');
             $stream->write('Middleware');
-            return $res->withBody($stream);
+            return $response->withBody($stream);
         });
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
-        $handler->handle(Argument::type(ServerRequest::class))
+        $handler
+            ->handle(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
         $request = new ServerRequest(['REQUEST_METHOD' => $method], [], '/foo', $method);
@@ -388,11 +400,12 @@ class IntegrationTest extends TestCase
      */
     public function testAllowedMethodsWhenOnlyPutMethodSet($adapter, $method)
     {
-        $app = new Application(new $adapter());
-        $app->pipeRoutingMiddleware();
+        $router = new $adapter();
+        $app = new Application($router);
+        $app->pipe(new Middleware\RouteMiddleware($router, $this->response));
         $app->pipe(new Middleware\ImplicitHeadMiddleware());
         $app->pipe(new Middleware\ImplicitOptionsMiddleware());
-        $app->pipeDispatchMiddleware();
+        $app->pipe(new Middleware\DispatchMiddleware());
 
         // Add a PUT route
         $app->put('/foo', function ($req, $res, $next) {
@@ -420,8 +433,9 @@ class IntegrationTest extends TestCase
      */
     public function testAllowedMethodsWhenNoHttpMethodsSet($adapter, $method)
     {
-        $app = new Application(new $adapter());
-        $app->pipeRoutingMiddleware();
+        $router = new $adapter();
+        $app = new Application($router);
+        $app->pipe(new Middleware\RouteMiddleware($router, $this->response));
 
         // This middleware is used just to check that request has successful RouteResult
         $middleware = $this->prophesize(MiddlewareInterface::class);
@@ -445,7 +459,7 @@ class IntegrationTest extends TestCase
         if ($method === 'OPTIONS') {
             $app->pipe(new Middleware\ImplicitOptionsMiddleware());
         }
-        $app->pipeDispatchMiddleware();
+        $app->pipe(new Middleware\DispatchMiddleware());
 
         // Add a route with empty array - NO HTTP methods
         $app->route('/foo', function ($req, $res, $next) {
@@ -473,9 +487,10 @@ class IntegrationTest extends TestCase
      */
     public function testNotAllowedMethodWhenNoHttpMethodsSet($adapter, $method)
     {
-        $app = new Application(new $adapter());
-        $app->pipeRoutingMiddleware();
-        $app->pipeDispatchMiddleware();
+        $router = new $adapter();
+        $app = new Application($router);
+        $app->pipe(new Middleware\RouteMiddleware($router, $this->response));
+        $app->pipe(new Middleware\DispatchMiddleware());
 
         // Add a route with empty array - NO HTTP methods
         $app->route('/foo', function ($req, $res, $next) {
@@ -503,18 +518,21 @@ class IntegrationTest extends TestCase
      */
     public function testWithOnlyRootPathRouteDefinedRoutingToSubPathsShouldDelegate($adapter)
     {
-        $app = new Application(new $adapter());
-        $app->pipeRoutingMiddleware();
+        $router = new $adapter();
+        $app = new Application($router);
+        $app->pipe(new Middleware\RouteMiddleware($router, $this->response));
 
-        $app->route('/', function ($req, $res, $next) {
+        $response = clone $this->response;
+        $app->route('/', function ($req, $handler) use ($response) {
             $stream = new Stream('php://temp', 'w+');
             $stream->write('Middleware');
-            return $res->withBody($stream);
+            return $response->withBody($stream);
         }, ['GET']);
 
-        $expected = (new Response())->withStatus(StatusCode::STATUS_NOT_FOUND);
+        $expected = $this->response->withStatus(StatusCode::STATUS_NOT_FOUND);
         $handler = $this->prophesize(RequestHandlerInterface::class);
-        $handler->handle(Argument::type(ServerRequest::class))
+        $handler
+            ->handle(Argument::type(ServerRequest::class))
             ->willReturn($expected);
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');

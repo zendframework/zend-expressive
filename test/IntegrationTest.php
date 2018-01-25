@@ -21,7 +21,7 @@ use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\ServerRequest;
 use Zend\Expressive\Application;
-use Zend\Expressive\Delegate\NotFoundDelegate;
+use Zend\Expressive\Handler\NotFoundHandler;
 use Zend\Expressive\Router\FastRouteRouter;
 
 class IntegrationTest extends TestCase
@@ -74,45 +74,12 @@ class IntegrationTest extends TestCase
     {
         $request  = new ServerRequest([], [], 'https://example.com/foo', 'GET');
         $response = new Response();
-        $delegate = new NotFoundDelegate($response);
+        $delegate = new NotFoundHandler($response);
         $app      = new Application(new FastRouteRouter(), null, $delegate, $this->getEmitter());
 
         $app->run($request, $response);
 
         $this->assertInstanceOf(ResponseInterface::class, $this->response);
         $this->assertEquals(StatusCode::STATUS_NOT_FOUND, $this->response->getStatusCode());
-    }
-
-    public function testCallableClassInteropMiddlewareNotRegisteredWithContainerCanBeComposedSuccessfully()
-    {
-        $response = new Response();
-        $routedMiddleware = $this->prophesize(MiddlewareInterface::class);
-        $routedMiddleware
-            ->process(
-                Argument::type(ServerRequestInterface::class),
-                Argument::type(RequestHandlerInterface::class)
-            )
-            ->willReturn($response);
-
-        $container = $this->prophesize(ContainerInterface::class);
-        $container->has('RoutedMiddleware')->willReturn(true);
-        $container->get('RoutedMiddleware')->will([$routedMiddleware, 'reveal']);
-        $container->has(TestAsset\CallableInteropMiddleware::class)->willReturn(false);
-
-        $delegate = new NotFoundDelegate($response);
-        $app      = new Application(new FastRouteRouter(), $container->reveal(), $delegate, $this->getEmitter());
-
-        $app->pipe(TestAsset\CallableInteropMiddleware::class);
-        $app->get('/', 'RoutedMiddleware');
-
-        $request  = new ServerRequest([], [], 'https://example.com/foo', 'GET');
-        $app->run($request, new Response());
-
-        $this->assertInstanceOf(ResponseInterface::class, $this->response);
-        $this->assertTrue($this->response->hasHeader('X-Callable-Interop-Middleware'));
-        $this->assertEquals(
-            TestAsset\CallableInteropMiddleware::class,
-            $this->response->getHeaderLine('X-Callable-Interop-Middleware')
-        );
     }
 }

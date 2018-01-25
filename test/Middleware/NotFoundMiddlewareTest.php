@@ -16,12 +16,12 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Zend\Expressive\Delegate\NotFoundDelegate;
-use Zend\Expressive\Middleware\NotFoundHandler;
+use Zend\Expressive\Handler\NotFoundHandler;
+use Zend\Expressive\Middleware\NotFoundMiddleware;
 
-class NotFoundHandlerTest extends TestCase
+class NotFoundMiddlewareTest extends TestCase
 {
-    /** @var NotFoundDelegate|ObjectProphecy */
+    /** @var NotFoundHandler|ObjectProphecy */
     private $internal;
 
     /** @var ServerRequestInterface|ObjectProphecy */
@@ -32,7 +32,7 @@ class NotFoundHandlerTest extends TestCase
 
     public function setUp()
     {
-        $this->internal = $this->prophesize(NotFoundDelegate::class);
+        $this->internal = $this->prophesize(NotFoundHandler::class);
         $this->request  = $this->prophesize(ServerRequestInterface::class);
 
         $this->handler = $this->prophesize(RequestHandlerInterface::class);
@@ -41,11 +41,11 @@ class NotFoundHandlerTest extends TestCase
 
     public function testImplementsInteropMiddleware()
     {
-        $handler = new NotFoundHandler($this->internal->reveal());
+        $handler = new NotFoundMiddleware($this->internal->reveal());
         $this->assertInstanceOf(MiddlewareInterface::class, $handler);
     }
 
-    public function testProxiesToInternalDelegate()
+    public function testProxiesToInternalHandler()
     {
         $response = $this->prophesize(ResponseInterface::class)->reveal();
 
@@ -53,7 +53,7 @@ class NotFoundHandlerTest extends TestCase
             ->handle(Argument::that([$this->request, 'reveal']))
             ->willReturn($response);
 
-        $handler = new NotFoundHandler($this->internal->reveal());
+        $handler = new NotFoundMiddleware($this->internal->reveal());
         $this->assertEquals($response, $handler->process($this->request->reveal(), $this->handler->reveal()));
     }
 }

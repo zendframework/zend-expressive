@@ -13,11 +13,11 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
 use Zend\Diactoros\Response;
-use Zend\Expressive\Container\NotFoundDelegateFactory;
-use Zend\Expressive\Delegate\NotFoundDelegate;
+use Zend\Expressive\Container\NotFoundHandlerFactory;
+use Zend\Expressive\Handler\NotFoundHandler;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
-class NotFoundDelegateFactoryTest extends TestCase
+class NotFoundHandlerFactoryTest extends TestCase
 {
     /** @var ContainerInterface|ObjectProphecy */
     private $container;
@@ -31,12 +31,12 @@ class NotFoundDelegateFactoryTest extends TestCase
     {
         $this->container->has('config')->willReturn(false);
         $this->container->has(TemplateRendererInterface::class)->willReturn(false);
-        $factory = new NotFoundDelegateFactory();
+        $factory = new NotFoundHandlerFactory();
 
-        $delegate = $factory($this->container->reveal());
-        $this->assertInstanceOf(NotFoundDelegate::class, $delegate);
-        $this->assertAttributeInstanceOf(Response::class, 'responsePrototype', $delegate);
-        $this->assertAttributeEmpty('renderer', $delegate);
+        $handler = $factory($this->container->reveal());
+        $this->assertInstanceOf(NotFoundHandler::class, $handler);
+        $this->assertAttributeInstanceOf(Response::class, 'responsePrototype', $handler);
+        $this->assertAttributeEmpty('renderer', $handler);
     }
 
     public function testFactoryCreatesInstanceUsingRendererServiceWhenPresent()
@@ -45,10 +45,10 @@ class NotFoundDelegateFactoryTest extends TestCase
         $this->container->has('config')->willReturn(false);
         $this->container->has(TemplateRendererInterface::class)->willReturn(true);
         $this->container->get(TemplateRendererInterface::class)->willReturn($renderer);
-        $factory = new NotFoundDelegateFactory();
+        $factory = new NotFoundHandlerFactory();
 
-        $delegate = $factory($this->container->reveal());
-        $this->assertAttributeSame($renderer, 'renderer', $delegate);
+        $handler = $factory($this->container->reveal());
+        $this->assertAttributeSame($renderer, 'renderer', $handler);
     }
 
     public function testFactoryUsesConfigured404TemplateWhenPresent()
@@ -64,18 +64,18 @@ class NotFoundDelegateFactoryTest extends TestCase
         $this->container->has('config')->willReturn(true);
         $this->container->get('config')->willReturn($config);
         $this->container->has(TemplateRendererInterface::class)->willReturn(false);
-        $factory = new NotFoundDelegateFactory();
+        $factory = new NotFoundHandlerFactory();
 
-        $delegate = $factory($this->container->reveal());
+        $handler = $factory($this->container->reveal());
         $this->assertAttributeEquals(
             $config['zend-expressive']['error_handler']['layout'],
             'layout',
-            $delegate
+            $handler
         );
         $this->assertAttributeEquals(
             $config['zend-expressive']['error_handler']['template_404'],
             'template',
-            $delegate
+            $handler
         );
     }
 }

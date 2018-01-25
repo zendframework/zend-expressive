@@ -46,9 +46,6 @@ use Zend\Expressive\Router\RouterInterface;
  */
 class ApplicationFactory
 {
-    const DISPATCH_MIDDLEWARE = Application::DISPATCH_MIDDLEWARE;
-    const ROUTING_MIDDLEWARE = Application::ROUTING_MIDDLEWARE;
-
     /**
      * Create and return an Application instance.
      *

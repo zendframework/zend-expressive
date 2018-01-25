@@ -13,31 +13,31 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Zend\Expressive\Delegate\NotFoundDelegate;
+use Zend\Expressive\Handler\NotFoundHandler;
 
-class NotFoundHandler implements MiddlewareInterface
+class NotFoundMiddleware implements MiddlewareInterface
 {
     /**
-     * @var NotFoundDelegate
+     * @var NotFoundHandler
      */
-    private $internalDelegate;
+    private $internalHandler;
 
     /**
-     * @param NotFoundDelegate $internalDelegate
+     * @param NotFoundHandler $internalHandler
      */
-    public function __construct(NotFoundDelegate $internalDelegate)
+    public function __construct(NotFoundHandler $internalHandler)
     {
-        $this->internalDelegate = $internalDelegate;
+        $this->internalHandler = $internalHandler;
     }
 
     /**
      * Creates and returns a 404 response.
      *
-     * @param ServerRequestInterface $request Passed to internal delegate
+     * @param ServerRequestInterface $request Passed to internal handler
      * @param RequestHandlerInterface $handler Ignored.
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
-        return $this->internalDelegate->handle($request);
+        return $this->internalHandler->handle($request);
     }
 }
