@@ -214,8 +214,16 @@ class ConfigInjectionTest extends TestCase
      */
     public function testProvidingRoutesAndNoPipelineImplicitlyRegistersRoutingAndDispatchMiddleware(array $config)
     {
-        $this->injectServiceInContainer($this->container, Middleware\RouteMiddleware::class, $this->routeMiddleware);
-        $this->injectServiceInContainer($this->container, Middleware\DispatchMiddleware::class, $this->dispatchMiddleware);
+        $this->injectServiceInContainer(
+            $this->container,
+            Middleware\RouteMiddleware::class,
+            $this->routeMiddleware
+        );
+        $this->injectServiceInContainer(
+            $this->container,
+            Middleware\DispatchMiddleware::class,
+            $this->dispatchMiddleware
+        );
         $app = $this->createApplication();
 
         $app->injectPipelineFromConfig($config);
@@ -374,8 +382,16 @@ class ConfigInjectionTest extends TestCase
             ],
         ];
         $this->container->has('config')->willReturn(false);
-        $this->injectServiceInContainer($this->container, Middleware\RouteMiddleware::class, $this->routeMiddleware);
-        $this->injectServiceInContainer($this->container, Middleware\DispatchMiddleware::class, $this->dispatchMiddleware);
+        $this->injectServiceInContainer(
+            $this->container,
+            Middleware\RouteMiddleware::class,
+            $this->routeMiddleware
+        );
+        $this->injectServiceInContainer(
+            $this->container,
+            Middleware\DispatchMiddleware::class,
+            $this->dispatchMiddleware
+        );
 
         $app = $this->createApplication();
 
@@ -397,8 +413,16 @@ class ConfigInjectionTest extends TestCase
             ],
         ];
         $this->container->has('config')->willReturn(false);
-        $this->injectServiceInContainer($this->container, Middleware\RouteMiddleware::class, $this->routeMiddleware);
-        $this->injectServiceInContainer($this->container, Middleware\DispatchMiddleware::class, $this->dispatchMiddleware);
+        $this->injectServiceInContainer(
+            $this->container,
+            Middleware\RouteMiddleware::class,
+            $this->routeMiddleware
+        );
+        $this->injectServiceInContainer(
+            $this->container,
+            Middleware\DispatchMiddleware::class,
+            $this->dispatchMiddleware
+        );
 
         $app = $this->createApplication();
 

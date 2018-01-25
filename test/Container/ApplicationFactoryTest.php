@@ -119,7 +119,7 @@ class ApplicationFactoryTest extends TestCase
         $r = new ReflectionProperty($app, 'pipeline');
         $r->setAccessible(true);
         $pipeline = $r->getValue($app);
-        
+
         $r = new ReflectionProperty($pipeline, 'pipeline');
         $r->setAccessible(true);
         return $r->getValue($pipeline);
