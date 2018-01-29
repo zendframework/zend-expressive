@@ -136,7 +136,7 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
     public function run(ServerRequestInterface $request = null, ResponseInterface $response = null) : void
     {
         try {
-            $request  = $request ?: ServerRequestFactory::fromGlobals();
+            $request = $request ?: ServerRequestFactory::fromGlobals();
         } catch (InvalidArgumentException | UnexpectedValueException $e) {
             // Unable to parse uploaded files | Invalid request method
             $this->emitMarshalServerRequestException($e);
