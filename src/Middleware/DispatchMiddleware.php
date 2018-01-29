@@ -9,14 +9,11 @@ declare(strict_types=1);
 
 namespace Zend\Expressive\Middleware;
 
-use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Zend\Expressive\MarshalMiddlewareTrait;
 use Zend\Expressive\Router\RouteResult;
-use Zend\Expressive\Router\RouterInterface;
 
 /**
  * Default dispatch middleware.

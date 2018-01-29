@@ -11,6 +11,7 @@ namespace Zend\Expressive\Container;
 
 use ArrayObject;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseInterface;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Expressive\Application;
 use Zend\Expressive\Router\FastRouteRouter;
