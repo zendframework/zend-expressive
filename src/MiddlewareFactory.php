@@ -69,7 +69,7 @@ class MiddlewareFactory
             return $this->pipeline(...$middleware);
         }
 
-        if ((! is_string($middleware) || empty($middleware))) {
+        if (! is_string($middleware) || ! $middleware) {
             throw Exception\InvalidMiddlewareException::forMiddleware($middleware);
         }
 
@@ -90,10 +90,7 @@ class MiddlewareFactory
     public function lazy(string $middleware) : Middleware\LazyLoadingMiddleware
     {
         if (! $this->container) {
-            throw new Exception\ContainerNotRegisteredException(sprintf(
-                'Cannot marshal middleware by service name "%s"; no container registered',
-                $middleware
-            ));
+            throw Exception\ContainerNotRegisteredException::forMiddlewareService($middleware);
         }
 
         return new Middleware\LazyLoadingMiddleware($this->container, $middleware);

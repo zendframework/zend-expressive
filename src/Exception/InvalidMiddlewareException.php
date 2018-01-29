@@ -15,7 +15,7 @@ use RuntimeException;
 class InvalidMiddlewareException extends RuntimeException implements ExceptionInterface
 {
     /**
-     * @var mixed $middleware The middleware that does not fulfill the
+     * @param mixed $middleware The middleware that does not fulfill the
      *     expectations of MiddlewarePipe::pipe
      */
     public static function forMiddleware($middleware) : self
@@ -29,7 +29,7 @@ class InvalidMiddlewareException extends RuntimeException implements ExceptionIn
     }
 
     /**
-     * @var mixed $service The actual service created by the container.
+     * @param mixed $service The actual service created by the container.
      */
     public static function forMiddlewareService(string $name, $service) : self
     {
