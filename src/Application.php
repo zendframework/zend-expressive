@@ -104,7 +104,7 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
         $this->pipeline          = new MiddlewarePipe();
         $this->router            = $router;
         $this->container         = $container;
-        $this->middlewareFactory = new MiddlewareFactory($container);
+        $this->middlewareFactory = $container ? new MiddlewareFactory(new MiddlewareContainer($container)) : null;
         $this->defaultHandler    = $defaultHandler;
         $this->emitter           = $emitter;
         $this->responsePrototype = $responsePrototype ?: new Response();

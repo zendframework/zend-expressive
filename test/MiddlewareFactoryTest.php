@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace ZendTest\Expressive;
 
 use PHPUnit\Framework\TestCase;
-use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use ReflectionProperty;
 use Zend\Expressive\Exception;
@@ -27,14 +26,14 @@ class MiddlewareFactoryTest extends TestCase
 {
     public function setUp()
     {
-        $this->originContainer = $this->prophesize(ContainerInterface::class);
-        $this->factory = new MiddlewareFactory($this->originContainer->reveal());
+        $this->container = $this->prophesize(MiddlewareContainer::class);
+        $this->factory = new MiddlewareFactory($this->container->reveal());
     }
 
     public function assertLazyLoadingMiddleware(string $expectedMiddlewareName, MiddlewareInterface $middleware)
     {
         $this->assertInstanceOf(LazyLoadingMiddleware::class, $middleware);
-        $this->assertAttributeInstanceOf(MiddlewareContainer::class, 'container', $middleware);
+        $this->assertAttributeSame($this->container->reveal(), 'container', $middleware);
         $this->assertAttributeSame($expectedMiddlewareName, 'middlewareName', $middleware);
     }
 
@@ -58,22 +57,6 @@ class MiddlewareFactoryTest extends TestCase
         return iterator_to_array($r->getValue($pipeline));
     }
 
-    public function testCanAcceptNullToConstructor()
-    {
-        $factory = new MiddlewareFactory();
-        $this->assertAttributeEmpty('container', $factory);
-    }
-
-    public function testCreatesMiddlewareFactoryFromContainerDuringInstantiation()
-    {
-        $r = new ReflectionProperty($this->factory, 'container');
-        $r->setAccessible(true);
-        $container = $r->getValue($this->factory);
-
-        $this->assertInstanceOf(MiddlewareContainer::class, $container);
-        $this->assertAttributeSame($this->originContainer->reveal(), 'container', $container);
-    }
-
     public function testCallableDecoratesCallableMiddleware()
     {
         $callable = function ($request, $handler) {
@@ -81,13 +64,6 @@ class MiddlewareFactoryTest extends TestCase
 
         $middleware = $this->factory->callable($callable);
         $this->assertCallableMiddleware($callable, $middleware);
-    }
-
-    public function testLazyLoadingMiddlewareRaisesExceptionIfNoContainerComposed()
-    {
-        $factory = new MiddlewareFactory();
-        $this->expectException(Exception\ContainerNotRegisteredException::class);
-        $factory->lazy('service');
     }
 
     public function testLazyLoadingMiddlewareDecoratesMiddlewareServiceName()
@@ -117,7 +93,7 @@ class MiddlewareFactoryTest extends TestCase
         $middleware = $this->factory->prepare('service');
         $this->assertInstanceOf(LazyLoadingMiddleware::class, $middleware);
         $this->assertAttributeSame('service', 'middlewareName', $middleware);
-        $this->assertAttributeInstanceOf(MiddlewareContainer::class, 'container', $middleware);
+        $this->assertAttributeSame($this->container->reveal(), 'container', $middleware);
     }
 
     public function testPrepareDecoratesArraysAsMiddlewarePipes()

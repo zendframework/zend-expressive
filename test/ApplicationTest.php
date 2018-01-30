@@ -68,7 +68,8 @@ class ApplicationTest extends TestCase
 
     public function getApp()
     {
-        return new Application($this->router->reveal());
+        $container = $this->mockContainerInterface();
+        return new Application($this->router->reveal(), $container->reveal());
     }
 
     public function commonHttpMethods()

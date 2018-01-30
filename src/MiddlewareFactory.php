@@ -41,13 +41,13 @@ use Zend\Stratigility\Middleware\PathMiddlewareDecorator;
 class MiddlewareFactory
 {
     /**
-     * @var null|MiddlewareContainer
+     * @var MiddlewareContainer
      */
     private $container;
 
-    public function __construct(ContainerInterface $container = null)
+    public function __construct(MiddlewareContainer $container)
     {
-        $this->container = $container ? new MiddlewareContainer($container) : null;
+        $this->container = $container;
     }
 
     /**
@@ -89,10 +89,6 @@ class MiddlewareFactory
      */
     public function lazy(string $middleware) : Middleware\LazyLoadingMiddleware
     {
-        if (! $this->container) {
-            throw Exception\ContainerNotRegisteredException::forMiddlewareService($middleware);
-        }
-
         return new Middleware\LazyLoadingMiddleware($this->container, $middleware);
     }
 
