@@ -23,12 +23,18 @@ use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Stream;
 use Zend\Expressive\Application;
+use Zend\Expressive\ApplicationRunner;
 use Zend\Expressive\Middleware;
+use Zend\Expressive\MiddlewareContainer;
+use Zend\Expressive\MiddlewareFactory;
+use Zend\Expressive\Middleware\RouteMiddleware;
+use Zend\Expressive\Proxy;
 use Zend\Expressive\Router\AuraRouter;
 use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\RouteResult;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Router\ZendRouter;
+use Zend\Stratigility\MiddlewarePipe;
 use ZendTest\Expressive\ContainerTrait;
 
 class IntegrationTest extends TestCase
@@ -53,9 +59,21 @@ class IntegrationTest extends TestCase
 
     public function getApplication()
     {
-        return new Application(
-            $this->router->reveal(),
-            $this->container->reveal()
+        return $this->createApplicationFromRouter($this->router->reveal());
+    }
+
+    public function createApplicationFromRouter(RouterInterface $router)
+    {
+        $container = new MiddlewareContainer($this->container->reveal());
+        $factory = new MiddlewareFactory($container);
+        $pipeline = new MiddlewarePipe();
+        $routeMiddleware = new RouteMiddleware($router, $this->response);
+        $runner = $this->prophesize(ApplicationRunner::class)->reveal();
+        return new Proxy(
+            $factory,
+            $pipeline,
+            $routeMiddleware,
+            $runner
         );
     }
 
@@ -83,7 +101,7 @@ class IntegrationTest extends TestCase
     private function createApplicationWithGetPost($adapter, $getName = null, $postName = null)
     {
         $router = new $adapter();
-        $app = new Application($router, $this->container->reveal());
+        $app = $this->createApplicationFromRouter($router);
         $app->pipe(new Middleware\RouteMiddleware($router, $this->response));
 
         $app->get('/foo', function ($req, $handler) {
@@ -112,7 +130,7 @@ class IntegrationTest extends TestCase
     private function createApplicationWithRouteGetPost($adapter, $getName = null, $postName = null)
     {
         $router = new $adapter();
-        $app = new Application($router, $this->container->reveal());
+        $app = $this->createApplicationFromRouter($router);
         $app->pipe(new Middleware\RouteMiddleware($router, $this->response));
 
         $app->route('/foo', function ($req, $handler) {
@@ -273,7 +291,7 @@ class IntegrationTest extends TestCase
     public function testRoutingWithSamePathWithRouteWithMultipleMethods($adapter)
     {
         $router = new $adapter();
-        $app = new Application($router, $this->container->reveal());
+        $app = $this->createApplicationFromRouter($router);
         $app->pipe(new Middleware\RouteMiddleware($router, $this->response));
         $app->pipe(new Middleware\DispatchMiddleware());
 
@@ -338,7 +356,7 @@ class IntegrationTest extends TestCase
     public function testMatchWithAllHttpMethods($adapter, $method)
     {
         $router = new $adapter();
-        $app = new Application($router, $this->container->reveal());
+        $app = $this->createApplicationFromRouter($router);
         $app->pipe(new Middleware\RouteMiddleware($router, $this->response));
         $app->pipe(new Middleware\DispatchMiddleware());
 
@@ -401,7 +419,7 @@ class IntegrationTest extends TestCase
     public function testAllowedMethodsWhenOnlyPutMethodSet($adapter, $method)
     {
         $router = new $adapter();
-        $app = new Application($router, $this->container->reveal());
+        $app = $this->createApplicationFromRouter($router);
         $app->pipe(new Middleware\RouteMiddleware($router, $this->response));
         $app->pipe(new Middleware\ImplicitHeadMiddleware());
         $app->pipe(new Middleware\ImplicitOptionsMiddleware());
@@ -434,7 +452,7 @@ class IntegrationTest extends TestCase
     public function testAllowedMethodsWhenNoHttpMethodsSet($adapter, $method)
     {
         $router = new $adapter();
-        $app = new Application($router, $this->container->reveal());
+        $app = $this->createApplicationFromRouter($router);
         $app->pipe(new Middleware\RouteMiddleware($router, $this->response));
 
         // This middleware is used just to check that request has successful RouteResult
@@ -488,7 +506,7 @@ class IntegrationTest extends TestCase
     public function testNotAllowedMethodWhenNoHttpMethodsSet($adapter, $method)
     {
         $router = new $adapter();
-        $app = new Application($router, $this->container->reveal());
+        $app = $this->createApplicationFromRouter($router);
         $app->pipe(new Middleware\RouteMiddleware($router, $this->response));
         $app->pipe(new Middleware\DispatchMiddleware());
 
@@ -519,7 +537,7 @@ class IntegrationTest extends TestCase
     public function testWithOnlyRootPathRouteDefinedRoutingToSubPathsShouldDelegate($adapter)
     {
         $router = new $adapter();
-        $app = new Application($router, $this->container->reveal());
+        $app = $this->createApplicationFromRouter($router);
         $app->pipe(new Middleware\RouteMiddleware($router, $this->response));
 
         $response = clone $this->response;
