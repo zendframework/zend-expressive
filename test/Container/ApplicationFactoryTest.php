@@ -1,0 +1,44 @@
+<?php
+/**
+ * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
+ * @copyright Copyright (c) 2018 Zend Technologies USA Inc. (https://www.zend.com)
+ * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
+ */
+
+declare(strict_types=1);
+
+namespace ZendTest\Expressive\Container;
+
+use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
+use Zend\Expressive\Application;
+use Zend\Expressive\ApplicationRunner;
+use Zend\Expressive\Container\ApplicationFactory;
+use Zend\Expressive\MiddlewareFactory;
+use Zend\Expressive\Middleware\RouteMiddleware;
+use Zend\Stratigility\MiddlewarePipe;
+
+class ApplicationFactoryTest extends TestCase
+{
+    public function testFactoryProducesAnApplication()
+    {
+        $middlewareFactory = $this->prophesize(MiddlewareFactory::class)->reveal();
+        $routeMiddleware = $this->prophesize(RouteMiddleware::class)->reveal();
+        $runner = $this->prophesize(ApplicationRunner::class)->reveal();
+
+        $container = $this->prophesize(ContainerInterface::class);
+        $container->get(MiddlewareFactory::class)->willReturn($middlewareFactory);
+        $container->get(RouteMiddleware::class)->willReturn($routeMiddleware);
+        $container->get(ApplicationRunner::class)->willReturn($runner);
+
+        $factory = new ApplicationFactory();
+
+        $application = $factory($container->reveal());
+
+        $this->assertInstanceOf(Application::class, $application);
+        $this->assertAttributeSame($middlewareFactory, 'factory', $application);
+        $this->assertAttributeInstanceOf(MiddlewarePipe::class, 'pipeline', $application);
+        $this->assertAttributeSame($routeMiddleware, 'routes', $application);
+        $this->assertAttributeSame($runner, 'runner', $application);
+    }
+}
