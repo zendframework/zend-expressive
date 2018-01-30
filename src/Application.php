@@ -17,8 +17,10 @@ use Zend\Stratigility\MiddlewarePipeInterface;
 
 use function Zend\Stratigility\path;
 
-class Proxy implements MiddlewareInterface, RequestHandlerInterface
+class Application implements MiddlewareInterface, RequestHandlerInterface
 {
+    use ApplicationConfigInjectionTrait;
+
     /**
      * @var MiddlewareFactory
      */

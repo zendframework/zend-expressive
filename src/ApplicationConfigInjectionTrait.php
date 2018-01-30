@@ -12,6 +12,8 @@ namespace Zend\Expressive;
 use SplPriorityQueue;
 use Zend\Expressive\Router\Route;
 
+use function Zend\Stratigility\path;
+
 trait ApplicationConfigInjectionTrait
 {
     /**
@@ -64,23 +66,16 @@ trait ApplicationConfigInjectionTrait
      * the `middleware` value of a specification. Internally, this will create
      * a `Zend\Stratigility\MiddlewarePipe` instance, with the middleware
      * specified piped in the order provided.
-     *
-     * @param null|array $config If null, attempts to pull the 'config' service
-     *     from the composed container.
      */
-    public function injectPipelineFromConfig(array $config = null) : void
+    public function injectPipelineFromConfig(array $config) : void
     {
-        if (null === $config) {
-            $config = $this->container->has('config') ? $this->container->get('config') : [];
-        }
-
         if (empty($config['middleware_pipeline'])) {
             if (! isset($config['routes']) || ! is_array($config['routes'])) {
                 return;
             }
 
-            $this->pipe($this->container->get(Middleware\RouteMiddleware::class));
-            $this->pipe($this->container->get(Middleware\DispatchMiddleware::class));
+            $this->pipe(Middleware\RouteMiddleware::class);
+            $this->pipe(Middleware\DispatchMiddleware::class);
             return;
         }
 
@@ -91,13 +86,12 @@ trait ApplicationConfigInjectionTrait
             new SplPriorityQueue()
         );
 
-        $factory = $this->getMiddlewareFactory();
         foreach ($queue as $spec) {
             $path = $spec['path'] ?? '/';
             $this->pipe(
                 $path === '/'
-                    ? $factory->prepare($spec['middleware'])
-                    : $factory->path($path, $spec['middleware'])
+                    ? $spec['middleware']
+                    : path($path, $this->factory->prepare($spec['middleware']))
             );
         }
     }
@@ -138,16 +132,10 @@ trait ApplicationConfigInjectionTrait
      * The "options" key may also be omitted, and its interpretation will be
      * dependent on the underlying router used.
      *
-     * @param null|array $config If null, attempts to pull the 'config' service
-     *     from the composed container.
      * @throws Exception\InvalidArgumentException
      */
-    public function injectRoutesFromConfig(array $config = null) : void
+    public function injectRoutesFromConfig(array $config) : void
     {
-        if (null === $config) {
-            $config = $this->container->has('config') ? $this->container->get('config') : [];
-        }
-
         if (! isset($config['routes']) || ! is_array($config['routes'])) {
             return;
         }

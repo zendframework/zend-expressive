@@ -28,7 +28,6 @@ use Zend\Expressive\Middleware;
 use Zend\Expressive\MiddlewareContainer;
 use Zend\Expressive\MiddlewareFactory;
 use Zend\Expressive\Middleware\RouteMiddleware;
-use Zend\Expressive\Proxy;
 use Zend\Expressive\Router\AuraRouter;
 use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\RouteResult;
@@ -69,7 +68,7 @@ class IntegrationTest extends TestCase
         $pipeline = new MiddlewarePipe();
         $routeMiddleware = new RouteMiddleware($router, $this->response);
         $runner = $this->prophesize(ApplicationRunner::class)->reveal();
-        return new Proxy(
+        return new Application(
             $factory,
             $pipeline,
             $routeMiddleware,

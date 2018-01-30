@@ -16,16 +16,16 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Zend\Expressive\Application;
 use Zend\Expressive\ApplicationRunner;
 use Zend\Expressive\MiddlewareFactory;
 use Zend\Expressive\Middleware\RouteMiddleware;
-use Zend\Expressive\Proxy;
 use Zend\Expressive\Router\Route;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\Stratigility\MiddlewarePipeInterface;
 use Zend\Stratigility\Middleware\PathMiddlewareDecorator;
 
-class ProxyTest extends TestCase
+class ApplicationTest extends TestCase
 {
     public function setUp()
     {
@@ -34,7 +34,7 @@ class ProxyTest extends TestCase
         $this->routes = $this->prophesize(RouteMiddleware::class);
         $this->runner = $this->prophesize(ApplicationRunner::class);
 
-        $this->proxy = new Proxy(
+        $this->app = new Application(
             $this->factory->reveal(),
             $this->pipeline->reveal(),
             $this->routes->reveal(),
@@ -54,7 +54,7 @@ class ProxyTest extends TestCase
 
         $this->pipeline->handle($request)->willReturn($response);
 
-        $this->assertSame($response, $this->proxy->handle($request));
+        $this->assertSame($response, $this->app->handle($request));
     }
 
     public function testProcessProxiesToPipelineToProcess()
@@ -65,20 +65,20 @@ class ProxyTest extends TestCase
 
         $this->pipeline->process($request, $handler)->willReturn($response);
 
-        $this->assertSame($response, $this->proxy->process($request, $handler));
+        $this->assertSame($response, $this->app->process($request, $handler));
     }
 
     public function testRunProxiesToRunner()
     {
         $this->runner->run(null)->shouldBeCalled();
-        $this->assertNull($this->proxy->run());
+        $this->assertNull($this->app->run());
     }
 
     public function testRunProxiesToRunnerWithRequest()
     {
         $request = $this->prophesize(ServerRequestInterface::class)->reveal();
         $this->runner->run($request)->shouldBeCalled();
-        $this->assertNull($this->proxy->run($request));
+        $this->assertNull($this->app->run($request));
     }
 
     public function validMiddleware() : iterable
@@ -109,7 +109,7 @@ class ProxyTest extends TestCase
             }))
             ->shouldBeCalled();
 
-        $this->assertNull($this->proxy->pipe($middleware));
+        $this->assertNull($this->app->pipe($middleware));
     }
 
     /**
@@ -132,7 +132,7 @@ class ProxyTest extends TestCase
             }))
             ->shouldBeCalled();
 
-        $this->assertNull($this->proxy->pipe('/foo', $middleware));
+        $this->assertNull($this->app->pipe('/foo', $middleware));
     }
 
     /**
@@ -158,7 +158,7 @@ class ProxyTest extends TestCase
             )
             ->willReturn($route);
 
-        $this->assertSame($route, $this->proxy->route('/foo', $middleware));
+        $this->assertSame($route, $this->app->route('/foo', $middleware));
     }
 
     /**
@@ -184,7 +184,7 @@ class ProxyTest extends TestCase
             )
             ->willReturn($route);
 
-        $this->assertSame($route, $this->proxy->route('/foo', $middleware, ['GET', 'POST']));
+        $this->assertSame($route, $this->app->route('/foo', $middleware, ['GET', 'POST']));
     }
 
     /**
@@ -210,7 +210,7 @@ class ProxyTest extends TestCase
             )
             ->willReturn($route);
 
-        $this->assertSame($route, $this->proxy->route('/foo', $middleware, ['GET', 'POST'], 'foo'));
+        $this->assertSame($route, $this->app->route('/foo', $middleware, ['GET', 'POST'], 'foo'));
     }
 
     public function requestMethodsWithValidMiddleware() : iterable
@@ -247,7 +247,7 @@ class ProxyTest extends TestCase
             )
             ->willReturn($route);
 
-        $this->assertSame($route, $this->proxy->{$method}('/foo', $middleware));
+        $this->assertSame($route, $this->app->{$method}('/foo', $middleware));
     }
 
     /**
@@ -273,7 +273,7 @@ class ProxyTest extends TestCase
             )
             ->willReturn($route);
 
-        $this->assertSame($route, $this->proxy->{$method}('/foo', $middleware, 'foo'));
+        $this->assertSame($route, $this->app->{$method}('/foo', $middleware, 'foo'));
     }
 
     /**
@@ -299,7 +299,7 @@ class ProxyTest extends TestCase
             )
             ->willReturn($route);
 
-        $this->assertSame($route, $this->proxy->any('/foo', $middleware));
+        $this->assertSame($route, $this->app->any('/foo', $middleware));
     }
 
     /**
@@ -325,7 +325,7 @@ class ProxyTest extends TestCase
             )
             ->willReturn($route);
 
-        $this->assertSame($route, $this->proxy->any('/foo', $middleware, 'foo'));
+        $this->assertSame($route, $this->app->any('/foo', $middleware, 'foo'));
     }
 
     public function testGetRoutesProxiesToRouteMiddleware()
@@ -333,6 +333,6 @@ class ProxyTest extends TestCase
         $route = $this->prophesize(Route::class)->reveal();
         $this->routes->getRoutes()->willReturn([$route]);
 
-        $this->assertSame([$route], $this->proxy->getRoutes());
+        $this->assertSame([$route], $this->app->getRoutes());
     }
 }
