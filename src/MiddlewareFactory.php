@@ -13,7 +13,6 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\Stratigility\Middleware\CallableMiddlewareDecorator;
-use Zend\Stratigility\Middleware\PathMiddlewareDecorator;
 
 /**
  * Marshal middleware for use in the application.
@@ -120,21 +119,5 @@ class MiddlewareFactory
             $pipeline->pipe($this->prepare($m));
         }
         return $pipeline;
-    }
-
-    /**
-     * Segregate one or more middleware by path.
-     *
-     * Creates and returns a PathMiddlewareDecorator instance after first
-     * passing the $middleware argument to prepare().
-     *
-     * @param string|array|MiddlewareInterface $middleware
-     */
-    public function path(string $path, $middleware) : PathMiddlewareDecorator
-    {
-        return new PathMiddlewareDecorator(
-            $path,
-            $this->prepare($middleware)
-        );
     }
 }

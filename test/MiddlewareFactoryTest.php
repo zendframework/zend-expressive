@@ -19,8 +19,6 @@ use Zend\Expressive\Middleware\DispatchMiddleware;
 use Zend\Expressive\Middleware\LazyLoadingMiddleware;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\Stratigility\Middleware\CallableMiddlewareDecorator;
-use Zend\Stratigility\Middleware\DoublePassMiddlewareDecorator;
-use Zend\Stratigility\Middleware\PathMiddlewareDecorator;
 
 class MiddlewareFactoryTest extends TestCase
 {
@@ -192,52 +190,6 @@ class MiddlewareFactoryTest extends TestCase
 
         $this->assertInstanceOf(MiddlewarePipe::class, $pipeline);
         $received = $this->reflectPipeline($pipeline);
-        $this->assertCount(2, $received);
-        $this->assertCallableMiddleware($callable, $received[0]);
-        $this->assertSame($middleware, $received[1]);
-    }
-
-    /**
-     * @dataProvider validPrepareTypes
-     * @param string|callable|MiddlewareInterface $middleware
-     * @param mixed $expected Expected type or value for use with assertion
-     */
-    public function testPathCreatesPathMiddlewareDecoratorUsingAnyMiddlewareTypeSupportedByPrepare(
-        $middleware,
-        string $assertion,
-        $expected
-    ) {
-        $decorator = $this->factory->path('/foo', $middleware);
-        $this->assertInstanceOf(PathMiddlewareDecorator::class, $decorator);
-
-        $this->assertAttributeSame('/foo', 'prefix', $decorator);
-
-        $r = new ReflectionProperty($decorator, 'middleware');
-        $r->setAccessible(true);
-        $received = $r->getValue($decorator);
-
-        $this->{$assertion}($expected, $received);
-    }
-
-    public function testPathCanAcceptAnArrayOfMiddleware()
-    {
-        $callable = function ($request, $handler) {
-        };
-        $middleware = new DispatchMiddleware();
-
-        $internalPipeline = [$callable, $middleware];
-
-        $decorator = $this->factory->path('/foo', $internalPipeline);
-
-        $this->assertInstanceOf(PathMiddlewareDecorator::class, $decorator);
-
-        $this->assertAttributeSame('/foo', 'prefix', $decorator);
-
-        $r = new ReflectionProperty($decorator, 'middleware');
-        $r->setAccessible(true);
-        $received = $r->getValue($decorator);
-
-        $received = $this->reflectPipeline($received);
         $this->assertCount(2, $received);
         $this->assertCallableMiddleware($callable, $received[0]);
         $this->assertSame($middleware, $received[1]);
