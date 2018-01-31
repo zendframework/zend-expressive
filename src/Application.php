@@ -19,8 +19,6 @@ use function Zend\Stratigility\path;
 
 class Application implements MiddlewareInterface, RequestHandlerInterface
 {
-    use ApplicationConfigInjectionTrait;
-
     /**
      * @var MiddlewareFactory
      */
