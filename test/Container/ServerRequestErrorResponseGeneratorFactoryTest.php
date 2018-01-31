@@ -16,15 +16,15 @@ use PHPUnit\Framework\TestCase;
 use Throwable;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequest;
-use Zend\Expressive\Container\ServerFactoryErrorResponseGeneratorFactory;
+use Zend\Expressive\Container\ServerRequestErrorResponseGeneratorFactory;
 use Zend\Expressive\Middleware\ErrorResponseGenerator;
 
-class ServerFactoryErrorResponseGeneratorFactoryTest extends TestCase
+class ServerRequestErrorResponseGeneratorFactoryTest extends TestCase
 {
     public function testFactoryGeneratesCallable()
     {
         $container = $this->prophesize(ContainerInterface::class);
-        $factory = new ServerFactoryErrorResponseGeneratorFactory();
+        $factory = new ServerRequestErrorResponseGeneratorFactory();
 
         $generator = $factory($container->reveal());
 

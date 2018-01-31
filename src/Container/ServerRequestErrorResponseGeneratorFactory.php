@@ -16,7 +16,7 @@ use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequest;
 use Zend\Expressive\Middleware\ErrorResponseGenerator;
 
-class ServerFactoryErrorResponseGeneratorFactory
+class ServerRequestErrorResponseGeneratorFactory
 {
     public function __invoke(ContainerInterface $container) : callable
     {
