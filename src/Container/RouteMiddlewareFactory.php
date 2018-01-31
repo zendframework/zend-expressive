@@ -12,7 +12,7 @@ namespace Zend\Expressive\Container;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Zend\Expressive\Middleware\RouteMiddleware;
-use Zend\Expressive\Router\RouteInterface;
+use Zend\Expressive\Router\RouterInterface;
 
 class RouteMiddlewareFactory
 {
