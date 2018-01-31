@@ -37,7 +37,6 @@ use Zend\Expressive\ServerRequestErrorResponseGenerator;
  */
 class ApplicationRunnerFactory
 {
-
     public function __invoke(ContainerInterface $container) : ApplicationRunner
     {
         return new ApplicationRunner(

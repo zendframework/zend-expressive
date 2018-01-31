@@ -134,10 +134,10 @@ class ConfigInjectionTest extends TestCase
         Assert::assertThat($found, Assert::isTrue(), $message);
     }
 
-    public function assertRouteMiddleware(MiddlewareInterface $middleware)
+    public static function assertRouteMiddleware(MiddlewareInterface $middleware)
     {
         if ($middleware instanceof Middleware\RouteMiddleware) {
-            Assert::that($middleware instanceof Middleware\RouteMiddleware);
+            Assert::assertInstanceOf(Middleware\RouteMiddleware::class, $middleware);
             return;
         }
 
@@ -153,10 +153,10 @@ class ConfigInjectionTest extends TestCase
         );
     }
 
-    public function assertDispatchMiddleware(MiddlewareInterface $middleware)
+    public static function assertDispatchMiddleware(MiddlewareInterface $middleware)
     {
         if ($middleware instanceof Middleware\DispatchMiddleware) {
-            Assert::that($middleware instanceof Middleware\DispatchMiddleware);
+            Assert::assertInstanceOf(Middleware\DispatchMiddleware::class, $middleware);
             return;
         }
 
