@@ -38,8 +38,8 @@ class ApplicationConfigInjectionDelegator
             return $application;
         }
 
-        $this->injectPipelineFromConfig($application, $config);
-        $this->injectRoutesFromConfig($application, $config);
+        self::injectPipelineFromConfig($application, $config);
+        self::injectRoutesFromConfig($application, $config);
 
         return $application;
     }
@@ -95,7 +95,7 @@ class ApplicationConfigInjectionDelegator
      * a `Zend\Stratigility\MiddlewarePipe` instance, with the middleware
      * specified piped in the order provided.
      */
-    public function injectPipelineFromConfig(Application $application, array $config) : void
+    public static function injectPipelineFromConfig(Application $application, array $config) : void
     {
         if (empty($config['middleware_pipeline'])) {
             if (! isset($config['routes']) || ! is_array($config['routes'])) {
@@ -158,7 +158,7 @@ class ApplicationConfigInjectionDelegator
      *
      * @throws InvalidArgumentException
      */
-    public function injectRoutesFromConfig(Application $application, array $config) : void
+    public static function injectRoutesFromConfig(Application $application, array $config) : void
     {
         if (! isset($config['routes']) || ! is_array($config['routes'])) {
             return;

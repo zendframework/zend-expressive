@@ -55,8 +55,6 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
             new Response()
         );
         $this->dispatchMiddleware = $this->prophesize(Middleware\DispatchMiddleware::class)->reveal();
-
-        $this->injector = new ApplicationConfigInjectionDelegator();
     }
 
     public function createApplication()
@@ -211,7 +209,7 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
 
         $app = $this->createApplication();
 
-        $this->injector->injectRoutesFromConfig($app, $config);
+        ApplicationConfigInjectionDelegator::injectRoutesFromConfig($app, $config);
 
         $routes = $app->getRoutes();
 
@@ -235,7 +233,7 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
 
         $app = $this->createApplication();
 
-        $this->injector->injectRoutesFromConfig($app, $config);
+        ApplicationConfigInjectionDelegator::injectRoutesFromConfig($app, $config);
 
         $routes = $app->getRoutes();
         $this->assertCount(0, $routes);
@@ -280,7 +278,7 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
         );
         $app = $this->createApplication();
 
-        $this->injector->injectPipelineFromConfig($app, $config);
+        ApplicationConfigInjectionDelegator::injectPipelineFromConfig($app, $config);
 
         $queue = $this->getQueueFromApplicationPipeline($app);
 
@@ -306,7 +304,7 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
 
         $app = $this->createApplication();
 
-        $this->injector->injectPipelineFromConfig($app, $config);
+        ApplicationConfigInjectionDelegator::injectPipelineFromConfig($app, $config);
 
         $pipeline = $this->getQueueFromApplicationPipeline($app);
 
@@ -328,7 +326,7 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
 
         $app = $this->createApplication();
 
-        $this->injector->injectPipelineFromConfig($app, $config);
+        ApplicationConfigInjectionDelegator::injectPipelineFromConfig($app, $config);
 
         $pipeline = $this->getQueueFromApplicationPipeline($app);
 
@@ -340,7 +338,7 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
     public function testInjectPipelineFromConfigWithEmptyConfigDoesNothing()
     {
         $app = $this->createApplication();
-        $this->injector->injectPipelineFromConfig($app, []);
+        ApplicationConfigInjectionDelegator::injectPipelineFromConfig($app, []);
         $pipeline = $this->getQueueFromApplicationPipeline($app);
         $this->assertEquals(0, $pipeline->count());
     }
@@ -348,7 +346,7 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
     public function testInjectRoutesFromConfigWithEmptyConfigDoesNothing()
     {
         $app = $this->createApplication();
-        $this->injector->injectRoutesFromConfig($app, []);
+        ApplicationConfigInjectionDelegator::injectRoutesFromConfig($app, []);
         $this->assertEquals([], $app->getRoutes());
         $pipeline = $this->getQueueFromApplicationPipeline($app);
         $this->assertEquals(0, $pipeline->count());
@@ -370,7 +368,7 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Allowed HTTP methods');
-        $this->injector->injectRoutesFromConfig($app, $config);
+        ApplicationConfigInjectionDelegator::injectRoutesFromConfig($app, $config);
     }
 
     public function testInjectRoutesFromConfigRaisesExceptionIfOptionsIsNotAnArray()
@@ -390,7 +388,7 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Route options must be an array');
-        $this->injector->injectRoutesFromConfig($app, $config);
+        ApplicationConfigInjectionDelegator::injectRoutesFromConfig($app, $config);
     }
 
     public function testInjectRoutesFromConfigCanProvideRouteOptions()
@@ -410,7 +408,7 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
         $this->container->has('config')->willReturn(false);
         $app = $this->createApplication();
 
-        $this->injector->injectRoutesFromConfig($app, $config);
+        ApplicationConfigInjectionDelegator::injectRoutesFromConfig($app, $config);
 
         $routes = $app->getRoutes();
 
@@ -445,7 +443,7 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
 
         $app = $this->createApplication();
 
-        $this->injector->injectPipelineFromConfig($app, $config);
+        ApplicationConfigInjectionDelegator::injectPipelineFromConfig($app, $config);
         $this->assertEquals([], $app->getRoutes());
     }
 
@@ -476,7 +474,7 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
 
         $app = $this->createApplication();
 
-        $this->injector->injectPipelineFromConfig($app, $config);
+        ApplicationConfigInjectionDelegator::injectPipelineFromConfig($app, $config);
         $this->assertEquals([], $app->getRoutes());
     }
 
@@ -493,6 +491,6 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid pipeline specification received');
-        $this->injector->injectPipelineFromConfig($app, $config);
+        ApplicationConfigInjectionDelegator::injectPipelineFromConfig($app, $config);
     }
 }

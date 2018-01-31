@@ -7,13 +7,12 @@
 
 declare(strict_types=1);
 
-namespace ZendTest\Expressive\Application\TestAsset;
+namespace ZendTest\Expressive\Container\TestAsset;
 
-use Psr\Http\Server\RequestHandlerInterface;
-
-class CallableInteropMiddleware
+class CallableMiddleware
 {
-    public function __invoke($request, RequestHandlerInterface $handler)
+    public function __invoke($request, $response, callable $next)
     {
+        return $response;
     }
 }
