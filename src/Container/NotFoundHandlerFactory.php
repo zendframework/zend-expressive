@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace Zend\Expressive\Container;
 
 use Psr\Container\ContainerInterface;
-use Zend\Diactoros\Response;
+use Psr\Http\Message\ResponseInterface;
 use Zend\Expressive\Handler\NotFoundHandler;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
@@ -27,6 +27,11 @@ class NotFoundHandlerFactory
         $layout = $config['zend-expressive']['error_handler']['layout']
             ?? NotFoundHandler::LAYOUT_DEFAULT;
 
-        return new NotFoundHandler(new Response(), $renderer, $template, $layout);
+        return new NotFoundHandler(
+            $container->get(ResponseInterface::class),
+            $renderer,
+            $template,
+            $layout
+        );
     }
 }

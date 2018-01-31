@@ -12,7 +12,7 @@ namespace ZendTest\Expressive\Container;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
-use Zend\Diactoros\Response;
+use Psr\Http\Message\ResponseInterface;
 use Zend\Expressive\Container\NotFoundHandlerFactory;
 use Zend\Expressive\Handler\NotFoundHandler;
 use Zend\Expressive\Template\TemplateRendererInterface;
@@ -25,6 +25,8 @@ class NotFoundHandlerFactoryTest extends TestCase
     protected function setUp()
     {
         $this->container = $this->prophesize(ContainerInterface::class);
+        $this->response = $this->prophesize(ResponseInterface::class)->reveal();
+        $this->container->get(ResponseInterface::class)->willReturn($this->response);
     }
 
     public function testFactoryCreatesInstanceWithoutRendererIfRendererServiceIsMissing()
@@ -35,7 +37,7 @@ class NotFoundHandlerFactoryTest extends TestCase
 
         $handler = $factory($this->container->reveal());
         $this->assertInstanceOf(NotFoundHandler::class, $handler);
-        $this->assertAttributeInstanceOf(Response::class, 'responsePrototype', $handler);
+        $this->assertAttributeSame($this->response, 'responsePrototype', $handler);
         $this->assertAttributeEmpty('renderer', $handler);
     }
 
