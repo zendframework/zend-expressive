@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Diactoros\Response\EmitterInterface;
-use Zend\Expressive\Application;
+use Zend\Expressive\ApplicationPipeline;
 use Zend\Expressive\ApplicationRunner;
 use Zend\Expressive\Container\ApplicationRunnerFactory;
 use Zend\Expressive\ServerRequestFactory;
@@ -24,7 +24,7 @@ class ApplicationRunnerFactoryTest extends TestCase
     public function testFactoryProducesRunnerUsingServicesFromContainer()
     {
         $container = $this->prophesize(ContainerInterface::class);
-        $app = $this->registerApplicationInContainer($container);
+        $handler = $this->registerHandlerInContainer($container);
         $emitter = $this->registerEmitterInContainer($container);
         $serverRequestFactory = $this->registerServerRequestFactoryInContainer($container);
         $errorGenerator = $this->registerServerRequestErroResponseGeneratorInContainer($container);
@@ -34,16 +34,16 @@ class ApplicationRunnerFactoryTest extends TestCase
         $runner = $factory($container->reveal());
 
         $this->assertInstanceOf(ApplicationRunner::class, $runner);
-        $this->assertAttributeSame($app, 'handler', $runner);
+        $this->assertAttributeSame($handler, 'handler', $runner);
         $this->assertAttributeSame($emitter, 'emitter', $runner);
         $this->assertAttributeSame($serverRequestFactory, 'serverRequestFactory', $runner);
         $this->assertAttributeSame($errorGenerator, 'serverRequestErrorResponseGenerator', $runner);
     }
 
-    public function registerApplicationInContainer($container) : RequestHandlerInterface
+    public function registerHandlerInContainer($container) : RequestHandlerInterface
     {
         $app = $this->prophesize(RequestHandlerInterface::class)->reveal();
-        $container->get(Application::class)->willReturn($app);
+        $container->get(ApplicationPipeline::class)->willReturn($app);
         return $app;
     }
 
