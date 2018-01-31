@@ -12,8 +12,6 @@ namespace Zend\Expressive;
 use SplPriorityQueue;
 use Zend\Expressive\Router\Route;
 
-use function Zend\Stratigility\path;
-
 trait ApplicationConfigInjectionTrait
 {
     /**
@@ -88,11 +86,7 @@ trait ApplicationConfigInjectionTrait
 
         foreach ($queue as $spec) {
             $path = $spec['path'] ?? '/';
-            $this->pipe(
-                $path === '/'
-                    ? $spec['middleware']
-                    : path($path, $this->factory->prepare($spec['middleware']))
-            );
+            $this->pipe($path, $spec['middleware']);
         }
     }
 

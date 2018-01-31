@@ -100,9 +100,12 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
      */
     public function pipe($middlewareOrPath, $middleware = null) : void
     {
-        $middleware = $middleware === null
-            ? $this->factory->prepare($middlewareOrPath)
-            : path($middlewareOrPath, $this->factory->prepare($middleware));
+        $middleware = $middleware ?: $middlewareOrPath;
+        $path = $middleware === $middlewareOrPath ? '/' : $middlewareOrPath;
+
+        $middleware = $path !== '/'
+            ? path($path, $this->factory->prepare($middleware))
+            : $this->factory->prepare($middleware);
 
         $this->pipeline->pipe($middleware);
     }
