@@ -85,14 +85,11 @@ class RouteMiddleware implements MiddlewareInterface
     /**
      * Add a route for the route middleware to match.
      *
-     * Accepts either a Route instance, or a combination of a path and
-     * middleware, and optionally the HTTP methods allowed.
+     * Accepts a combination of a path and middleware, and optionally the HTTP methods allowed.
      *
      * @param null|array $methods HTTP method to accept; null indicates any.
      * @param null|string $name The name of the route.
-     * @throws Exception\InvalidArgumentException if $path is not a Route AND middleware is null.
-     * @throws Exception\InvalidMiddlewareException if $middleware is neither a
-     *     string nor a MiddlewareInterface instance.
+     * @throws Exception\DuplicateRouteException if specification represents an existing route.
      */
     public function route(
         string $path,
