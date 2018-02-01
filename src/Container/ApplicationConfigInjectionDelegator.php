@@ -21,8 +21,12 @@ class ApplicationConfigInjectionDelegator
     /**
      * Decorate an Application instance by injecting routes and/or middleware
      * from configuration.
+     *
+     * @return mixed|Application Typically, this should return an Application
+     *     instance. However, if the delegator is attached to some other service,
+     *     there is a possibility it will return another type.
      */
-    public function __invoke(ContainerInterface $container, string $serviceName, callable $callback) : Application
+    public function __invoke(ContainerInterface $container, string $serviceName, callable $callback)
     {
         $application = $callback();
         if (! $application instanceof Application) {
