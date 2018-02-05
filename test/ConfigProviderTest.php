@@ -14,7 +14,6 @@ use Psr\Http\Message\ResponseInterface;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Expressive\Application;
 use Zend\Expressive\ApplicationPipeline;
-use Zend\Expressive\ApplicationRunner;
 use Zend\Expressive\ConfigProvider;
 use Zend\Expressive\Handler;
 use Zend\Expressive\MiddlewareContainer;
@@ -26,6 +25,7 @@ use Zend\Expressive\ServerRequestErrorResponseGenerator;
 use Zend\Expressive\ServerRequestFactory;
 use Zend\Stratigility\Middleware\ErrorHandler;
 use Zend\Stratigility\Middleware\ErrorResponseGenerator;
+use Zend\HttpHandlerRunner\RequestHandlerRunner;
 
 class ConfigProviderTest extends TestCase
 {
@@ -50,7 +50,6 @@ class ConfigProviderTest extends TestCase
 
         $this->assertArrayHasKey(Application::class, $factories);
         $this->assertArrayHasKey(ApplicationPipeline::class, $factories);
-        $this->assertArrayHasKey(ApplicationRunner::class, $factories);
         $this->assertArrayHasKey(EmitterInterface::class, $factories);
         $this->assertArrayHasKey(ErrorHandler::class, $factories);
         $this->assertArrayHasKey(ErrorResponseGenerator::class, $factories);
@@ -60,6 +59,7 @@ class ConfigProviderTest extends TestCase
         $this->assertArrayHasKey(DispatchMiddleware::class, $factories);
         $this->assertArrayHasKey(Middleware\NotFoundMiddleware::class, $factories);
         $this->assertArrayHasKey(PathBasedRoutingMiddleware::class, $factories);
+        $this->assertArrayHasKey(RequestHandlerRunner::class, $factories);
         $this->assertArrayHasKey(ResponseInterface::class, $factories);
         $this->assertArrayHasKey(ServerRequestErrorResponseGenerator::class, $factories);
         $this->assertArrayHasKey(ServerRequestFactory::class, $factories);

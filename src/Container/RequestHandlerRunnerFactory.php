@@ -10,12 +10,12 @@ declare(strict_types=1);
 namespace Zend\Expressive\Container;
 
 use Psr\Container\ContainerInterface;
-use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Expressive\Application;
 use Zend\Expressive\ApplicationPipeline;
-use Zend\Expressive\ApplicationRunner;
 use Zend\Expressive\ServerRequestFactory;
 use Zend\Expressive\ServerRequestErrorResponseGenerator;
+use Zend\HttpHandlerRunner\Emitter\EmitterInterface;
+use Zend\HttpHandlerRunner\RequestHandlerRunner;
 
 /**
  * Create an ApplicationRunner instance.
@@ -33,13 +33,13 @@ use Zend\Expressive\ServerRequestErrorResponseGenerator;
  *   to a PHP callable that accepts a Throwable argument, and which will return
  *   a Psr\Http\Message\ResponseInterface instance.
  *
- * It also consumes the service Zend\Diactoros\Response\EmitterInterface.
+ * It also consumes the service Zend\HttpHandlerRunner\Emitter\EmitterInterface.
  */
-class ApplicationRunnerFactory
+class RequestHandlerRunnerFactory
 {
-    public function __invoke(ContainerInterface $container) : ApplicationRunner
+    public function __invoke(ContainerInterface $container) : RequestHandlerRunner
     {
-        return new ApplicationRunner(
+        return new RequestHandlerRunner(
             $container->get(ApplicationPipeline::class),
             $container->get(EmitterInterface::class),
             $container->get(ServerRequestFactory::class),

@@ -11,6 +11,7 @@ namespace Zend\Expressive;
 
 use Psr\Http\Message\ResponseInterface;
 use Zend\Diactoros\Response\EmitterInterface;
+use Zend\HttpHandlerRunner\RequestHandlerRunner;
 use Zend\Stratigility\Middleware\ErrorHandler;
 use Zend\Stratigility\Middleware\ErrorResponseGenerator;
 
@@ -40,7 +41,6 @@ class ConfigProvider
             'factories' => [
                 Application::class                         => Container\ApplicationFactory::class,
                 ApplicationPipeline::class                 => Container\ApplicationPipelineFactory::class,
-                ApplicationRunner::class                   => Container\ApplicationRunnerFactory::class,
                 EmitterInterface::class                    => Container\EmitterFactory::class,
                 ErrorHandler::class                        => Container\ErrorHandlerFactory::class,
                 // Change the following in development to the WhoopsErrorResponseGeneratorFactory:
@@ -49,6 +49,7 @@ class ConfigProvider
                 MiddlewareContainer::class                 => Container\MiddlewareContainerFactory::class,
                 MiddlewareFactory::class                   => Container\MiddlewareFactoryFactory::class,
                 Middleware\NotFoundMiddleware::class       => Container\NotFoundMiddlewareFactory::class,
+                RequestHandlerRunner::class                => Container\RequestHandlerRunnerFactory::class,
                 ResponseInterface::class                   => Container\ResponseFactory::class,
                 Router\DispatchMiddleware::class           => Container\DispatchMiddlewareFactory::class,
                 Router\PathBasedRoutingMiddleware::class   => Container\RouteMiddlewareFactory::class,

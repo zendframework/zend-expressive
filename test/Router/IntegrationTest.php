@@ -23,7 +23,6 @@ use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Stream;
 use Zend\Expressive\Application;
-use Zend\Expressive\ApplicationRunner;
 use Zend\Expressive\Middleware;
 use Zend\Expressive\MiddlewareContainer;
 use Zend\Expressive\MiddlewareFactory;
@@ -34,6 +33,7 @@ use Zend\Expressive\Router\PathBasedRoutingMiddleware as RouteMiddleware;
 use Zend\Expressive\Router\RouteResult;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Router\ZendRouter;
+use Zend\HttpHandlerRunner\RequestHandlerRunner;
 use Zend\Stratigility\MiddlewarePipe;
 use ZendTest\Expressive\ContainerTrait;
 
@@ -68,7 +68,7 @@ class IntegrationTest extends TestCase
         $factory = new MiddlewareFactory($container);
         $pipeline = new MiddlewarePipe();
         $routeMiddleware = new RouteMiddleware($router, $this->response);
-        $runner = $this->prophesize(ApplicationRunner::class)->reveal();
+        $runner = $this->prophesize(RequestHandlerRunner::class)->reveal();
         return new Application(
             $factory,
             $pipeline,

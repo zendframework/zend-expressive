@@ -14,6 +14,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Expressive\Router\PathBasedRoutingMiddleware;
+use Zend\HttpHandlerRunner\RequestHandlerRunner;
 use Zend\Stratigility\MiddlewarePipeInterface;
 
 use function Zend\Stratigility\path;
@@ -36,7 +37,7 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
     private $routes;
 
     /**
-     * @var ApplicationRunner
+     * @var RequestHandlerRunner
      */
     private $runner;
 
@@ -44,7 +45,7 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
         MiddlewareFactory $factory,
         MiddlewarePipeInterface $pipeline,
         PathBasedRoutingMiddleware $routes,
-        ApplicationRunner $runner
+        RequestHandlerRunner $runner
     ) {
         $this->factory = $factory;
         $this->pipeline = $pipeline;
@@ -73,11 +74,11 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
     /**
      * Run the application.
      *
-     * Proxies to the ApplicationRunner::run() method.
+     * Proxies to the RequestHandlerRunner::run() method.
      */
-    public function run(ServerRequestInterface $request = null) : void
+    public function run() : void
     {
-        $this->runner->run($request);
+        $this->runner->run();
     }
 
     /**

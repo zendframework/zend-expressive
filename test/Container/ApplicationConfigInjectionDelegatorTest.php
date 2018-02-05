@@ -18,7 +18,6 @@ use ReflectionProperty;
 use SplQueue;
 use Zend\Diactoros\Response;
 use Zend\Expressive\Application;
-use Zend\Expressive\ApplicationRunner;
 use Zend\Expressive\Container\ApplicationConfigInjectionDelegator;
 use Zend\Expressive\Exception\InvalidArgumentException;
 use Zend\Expressive\Middleware;
@@ -28,6 +27,7 @@ use Zend\Expressive\Router\DispatchMiddleware;
 use Zend\Expressive\Router\PathBasedRoutingMiddleware;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouterInterface;
+use Zend\HttpHandlerRunner\RequestHandlerRunner;
 use Zend\Stratigility\MiddlewarePipe;
 use ZendTest\Expressive\ContainerTrait;
 use ZendTest\Expressive\TestAsset\InvokableMiddleware;
@@ -64,7 +64,7 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
         $container = new MiddlewareContainer($this->container->reveal());
         $factory = new MiddlewareFactory($container);
         $pipeline = new MiddlewarePipe();
-        $runner = $this->prophesize(ApplicationRunner::class)->reveal();
+        $runner = $this->prophesize(RequestHandlerRunner::class)->reveal();
         return new Application(
             $factory,
             $pipeline,

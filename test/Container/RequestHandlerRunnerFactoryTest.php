@@ -12,14 +12,14 @@ namespace ZendTest\Expressive\Container;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Expressive\ApplicationPipeline;
-use Zend\Expressive\ApplicationRunner;
-use Zend\Expressive\Container\ApplicationRunnerFactory;
+use Zend\Expressive\Container\RequestHandlerRunnerFactory;
 use Zend\Expressive\ServerRequestFactory;
 use Zend\Expressive\ServerRequestErrorResponseGenerator;
+use Zend\HttpHandlerRunner\Emitter\EmitterInterface;
+use Zend\HttpHandlerRunner\RequestHandlerRunner;
 
-class ApplicationRunnerFactoryTest extends TestCase
+class RequestHandlerRunnerFactoryTest extends TestCase
 {
     public function testFactoryProducesRunnerUsingServicesFromContainer()
     {
@@ -29,11 +29,11 @@ class ApplicationRunnerFactoryTest extends TestCase
         $serverRequestFactory = $this->registerServerRequestFactoryInContainer($container);
         $errorGenerator = $this->registerServerRequestErroResponseGeneratorInContainer($container);
 
-        $factory = new ApplicationRunnerFactory();
+        $factory = new RequestHandlerRunnerFactory();
 
         $runner = $factory($container->reveal());
 
-        $this->assertInstanceOf(ApplicationRunner::class, $runner);
+        $this->assertInstanceOf(RequestHandlerRunner::class, $runner);
         $this->assertAttributeSame($handler, 'handler', $runner);
         $this->assertAttributeSame($emitter, 'emitter', $runner);
         $this->assertAttributeSame($serverRequestFactory, 'serverRequestFactory', $runner);

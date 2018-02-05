@@ -17,10 +17,10 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Expressive\Application;
-use Zend\Expressive\ApplicationRunner;
 use Zend\Expressive\MiddlewareFactory;
 use Zend\Expressive\Router\PathBasedRoutingMiddleware as RouteMiddleware;
 use Zend\Expressive\Router\Route;
+use Zend\HttpHandlerRunner\RequestHandlerRunner;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\Stratigility\MiddlewarePipeInterface;
 use Zend\Stratigility\Middleware\PathMiddlewareDecorator;
@@ -32,7 +32,7 @@ class ApplicationTest extends TestCase
         $this->factory = $this->prophesize(MiddlewareFactory::class);
         $this->pipeline = $this->prophesize(MiddlewarePipeInterface::class);
         $this->routes = $this->prophesize(RouteMiddleware::class);
-        $this->runner = $this->prophesize(ApplicationRunner::class);
+        $this->runner = $this->prophesize(RequestHandlerRunner::class);
 
         $this->app = new Application(
             $this->factory->reveal(),
@@ -72,13 +72,6 @@ class ApplicationTest extends TestCase
     {
         $this->runner->run(null)->shouldBeCalled();
         $this->assertNull($this->app->run());
-    }
-
-    public function testRunProxiesToRunnerWithRequest()
-    {
-        $request = $this->prophesize(ServerRequestInterface::class)->reveal();
-        $this->runner->run($request)->shouldBeCalled();
-        $this->assertNull($this->app->run($request));
     }
 
     public function validMiddleware() : iterable

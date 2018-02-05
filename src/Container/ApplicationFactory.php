@@ -12,9 +12,9 @@ namespace Zend\Expressive\Container;
 use Psr\Container\ContainerInterface;
 use Zend\Expressive\Application;
 use Zend\Expressive\ApplicationPipeline;
-use Zend\Expressive\ApplicationRunner;
 use Zend\Expressive\MiddlewareFactory;
 use Zend\Expressive\Router\PathBasedRoutingMiddleware;
+use Zend\HttpHandlerRunner\RequestHandlerRunner;
 use Zend\Stratigility\MiddlewarePipe;
 
 /**
@@ -27,7 +27,7 @@ use Zend\Stratigility\MiddlewarePipe;
  * - Zend\Expressive\ApplicationPipeline, which should resolve to a
  *   Zend\Stratigility\MiddlewarePipeInterface instance.
  * - Zend\Expressive\Middleware\RouteMiddleware.
- * - Zend\Expressive\ApplicationRunner.
+ * - Zend\HttpHandler\RequestHandlerRunner.
  */
 class ApplicationFactory
 {
@@ -37,7 +37,7 @@ class ApplicationFactory
             $container->get(MiddlewareFactory::class),
             $container->get(ApplicationPipeline::class),
             $container->get(PathBasedRoutingMiddleware::class),
-            $container->get(ApplicationRunner::class)
+            $container->get(RequestHandlerRunner::class)
         );
     }
 }
