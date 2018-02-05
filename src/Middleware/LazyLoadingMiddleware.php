@@ -9,20 +9,17 @@ declare(strict_types=1);
 
 namespace Zend\Expressive\Middleware;
 
-use Interop\Http\Server\MiddlewareInterface;
-use Interop\Http\Server\RequestHandlerInterface;
-use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use Zend\Expressive\MiddlewareContainer;
 use Zend\Expressive\Exception\InvalidMiddlewareException;
-use Zend\Expressive\IsCallableInteropMiddlewareTrait;
 
 class LazyLoadingMiddleware implements MiddlewareInterface
 {
-    use IsCallableInteropMiddlewareTrait;
-
     /**
-     * @var ContainerInterface
+     * @var MiddlewareContainer
      */
     private $container;
 
@@ -31,18 +28,11 @@ class LazyLoadingMiddleware implements MiddlewareInterface
      */
     private $middlewareName;
 
-    /**
-     * @var ResponseInterface
-     */
-    private $responsePrototype;
-
     public function __construct(
-        ContainerInterface $container,
-        ResponseInterface $responsePrototype,
+        MiddlewareContainer $container,
         string $middlewareName
     ) {
         $this->container = $container;
-        $this->responsePrototype = $responsePrototype;
         $this->middlewareName = $middlewareName;
     }
 
@@ -53,29 +43,6 @@ class LazyLoadingMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         $middleware = $this->container->get($this->middlewareName);
-
-        // http-interop middleware
-        if ($middleware instanceof MiddlewareInterface) {
-            return $middleware->process($request, $handler);
-        }
-
-        // Unknown - invalid!
-        if (! is_callable($middleware)) {
-            throw new InvalidMiddlewareException(sprintf(
-                'Lazy-loaded middleware "%s" is neither invokable nor implements %s',
-                $this->middlewareName,
-                MiddlewareInterface::class
-            ));
-        }
-
-        // Callable http-interop middleware
-        if ($this->isCallableInteropMiddleware($middleware)) {
-            return $middleware($request, $handler);
-        }
-
-        // Legacy double-pass signature
-        return $middleware($request, $this->responsePrototype, function ($request, $response) use ($handler) {
-            return $handler->handle($request);
-        });
+        return $middleware->process($request, $handler);
     }
 }

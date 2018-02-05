@@ -7,17 +7,13 @@
 
 declare(strict_types=1);
 
-namespace ZendTest\Expressive\TestAsset;
+namespace ZendTest\Expressive\Container\TestAsset;
 
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 class CallableInteropMiddleware
 {
-    public function __invoke(ServerRequestInterface $request, RequestHandlerInterface $handler)
+    public function __invoke($request, RequestHandlerInterface $handler)
     {
-        $response = $handler->handle($request);
-
-        return $response->withHeader('X-Callable-Interop-Middleware', __CLASS__);
     }
 }
