@@ -2,12 +2,12 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 3.0.0alpha1 - TBD
+## 3.0.0alpha1 - 2018-01-22
 
 ### Added
 
 - [#529](https://github.com/zendframework/zend-expressive/pull/529) adds support
-  for PSR-15.
+  for http-interop/http-server-middleware (PSR-15 pre-cursor).
 
 - [#538](https://github.com/zendframework/zend-expressive/pull/538) adds scalar
   and return type hints to methods wherever possible.
@@ -26,7 +26,7 @@ All notable changes to this project will be documented in this file, in reverse 
   support for PHP versions prior to PHP 7.1.
 
 - [#529](https://github.com/zendframework/zend-expressive/pull/529) removes
-  support for http-interop/http-middleware.
+  support for http-interop/http-middleware (previous PSR-15 iteration).
 
 ### Fixed
 
