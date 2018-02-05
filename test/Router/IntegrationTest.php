@@ -27,9 +27,10 @@ use Zend\Expressive\ApplicationRunner;
 use Zend\Expressive\Middleware;
 use Zend\Expressive\MiddlewareContainer;
 use Zend\Expressive\MiddlewareFactory;
-use Zend\Expressive\Middleware\RouteMiddleware;
 use Zend\Expressive\Router\AuraRouter;
+use Zend\Expressive\Router\DispatchMiddleware;
 use Zend\Expressive\Router\FastRouteRouter;
+use Zend\Expressive\Router\PathBasedRoutingMiddleware as RouteMiddleware;
 use Zend\Expressive\Router\RouteResult;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Router\ZendRouter;
@@ -101,7 +102,7 @@ class IntegrationTest extends TestCase
     {
         $router = new $adapter();
         $app = $this->createApplicationFromRouter($router);
-        $app->pipe(new Middleware\RouteMiddleware($router, $this->response));
+        $app->pipe(new RouteMiddleware($router, $this->response));
 
         $app->get('/foo', function ($req, $handler) {
             $stream = new Stream('php://temp', 'w+');
@@ -130,7 +131,7 @@ class IntegrationTest extends TestCase
     {
         $router = new $adapter();
         $app = $this->createApplicationFromRouter($router);
-        $app->pipe(new Middleware\RouteMiddleware($router, $this->response));
+        $app->pipe(new RouteMiddleware($router, $this->response));
 
         $app->route('/foo', function ($req, $handler) {
             $stream = new Stream('php://temp', 'w+');
@@ -177,7 +178,7 @@ class IntegrationTest extends TestCase
     public function testRoutingWithSamePathWithoutName($adapter)
     {
         $app = $this->createApplicationWithGetPost($adapter);
-        $app->pipe(new Middleware\DispatchMiddleware());
+        $app->pipe(new DispatchMiddleware());
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
         $handler->handle(Argument::type(ServerRequest::class))
@@ -205,7 +206,7 @@ class IntegrationTest extends TestCase
     public function testRoutingWithSamePathWithName($adapter)
     {
         $app = $this->createApplicationWithGetPost($adapter, 'foo-get', 'foo-post');
-        $app->pipe(new Middleware\DispatchMiddleware());
+        $app->pipe(new DispatchMiddleware());
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
         $handler
@@ -234,7 +235,7 @@ class IntegrationTest extends TestCase
     public function testRoutingWithSamePathWithRouteWithoutName($adapter)
     {
         $app = $this->createApplicationWithRouteGetPost($adapter);
-        $app->pipe(new Middleware\DispatchMiddleware());
+        $app->pipe(new DispatchMiddleware());
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
         $handler->handle(Argument::type(ServerRequest::class))
@@ -261,7 +262,7 @@ class IntegrationTest extends TestCase
     public function testRoutingWithSamePathWithRouteWithName($adapter)
     {
         $app = $this->createApplicationWithRouteGetPost($adapter, 'foo-get', 'foo-post');
-        $app->pipe(new Middleware\DispatchMiddleware());
+        $app->pipe(new DispatchMiddleware());
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
         $handler
@@ -291,8 +292,8 @@ class IntegrationTest extends TestCase
     {
         $router = new $adapter();
         $app = $this->createApplicationFromRouter($router);
-        $app->pipe(new Middleware\RouteMiddleware($router, $this->response));
-        $app->pipe(new Middleware\DispatchMiddleware());
+        $app->pipe(new RouteMiddleware($router, $this->response));
+        $app->pipe(new DispatchMiddleware());
 
         $response = clone $this->response;
         $app->route('/foo', function ($req, $handler) use ($response) {
@@ -356,8 +357,8 @@ class IntegrationTest extends TestCase
     {
         $router = new $adapter();
         $app = $this->createApplicationFromRouter($router);
-        $app->pipe(new Middleware\RouteMiddleware($router, $this->response));
-        $app->pipe(new Middleware\DispatchMiddleware());
+        $app->pipe(new RouteMiddleware($router, $this->response));
+        $app->pipe(new DispatchMiddleware());
 
         // Add a route with Zend\Expressive\Router\Route::HTTP_METHOD_ANY
         $response = clone $this->response;
@@ -419,10 +420,10 @@ class IntegrationTest extends TestCase
     {
         $router = new $adapter();
         $app = $this->createApplicationFromRouter($router);
-        $app->pipe(new Middleware\RouteMiddleware($router, $this->response));
+        $app->pipe(new RouteMiddleware($router, $this->response));
         $app->pipe(new Middleware\ImplicitHeadMiddleware());
         $app->pipe(new Middleware\ImplicitOptionsMiddleware());
-        $app->pipe(new Middleware\DispatchMiddleware());
+        $app->pipe(new DispatchMiddleware());
 
         // Add a PUT route
         $app->put('/foo', function ($req, $res, $next) {
@@ -452,7 +453,7 @@ class IntegrationTest extends TestCase
     {
         $router = new $adapter();
         $app = $this->createApplicationFromRouter($router);
-        $app->pipe(new Middleware\RouteMiddleware($router, $this->response));
+        $app->pipe(new RouteMiddleware($router, $this->response));
 
         // This middleware is used just to check that request has successful RouteResult
         $middleware = $this->prophesize(MiddlewareInterface::class);
@@ -476,7 +477,7 @@ class IntegrationTest extends TestCase
         if ($method === 'OPTIONS') {
             $app->pipe(new Middleware\ImplicitOptionsMiddleware());
         }
-        $app->pipe(new Middleware\DispatchMiddleware());
+        $app->pipe(new DispatchMiddleware());
 
         // Add a route with empty array - NO HTTP methods
         $app->route('/foo', function ($req, $res, $next) {
@@ -506,8 +507,8 @@ class IntegrationTest extends TestCase
     {
         $router = new $adapter();
         $app = $this->createApplicationFromRouter($router);
-        $app->pipe(new Middleware\RouteMiddleware($router, $this->response));
-        $app->pipe(new Middleware\DispatchMiddleware());
+        $app->pipe(new RouteMiddleware($router, $this->response));
+        $app->pipe(new DispatchMiddleware());
 
         // Add a route with empty array - NO HTTP methods
         $app->route('/foo', function ($req, $res, $next) {
@@ -537,7 +538,7 @@ class IntegrationTest extends TestCase
     {
         $router = new $adapter();
         $app = $this->createApplicationFromRouter($router);
-        $app->pipe(new Middleware\RouteMiddleware($router, $this->response));
+        $app->pipe(new RouteMiddleware($router, $this->response));
 
         $response = clone $this->response;
         $app->route('/', function ($req, $handler) use ($response) {

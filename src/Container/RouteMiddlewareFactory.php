@@ -11,14 +11,14 @@ namespace Zend\Expressive\Container;
 
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
-use Zend\Expressive\Middleware\RouteMiddleware;
+use Zend\Expressive\Router\PathBasedRoutingMiddleware;
 use Zend\Expressive\Router\RouterInterface;
 
 class RouteMiddlewareFactory
 {
-    public function __invoke(ContainerInterface $container) : RouteMiddleware
+    public function __invoke(ContainerInterface $container) : PathBasedRoutingMiddleware
     {
-        return new RouteMiddleware(
+        return new PathBasedRoutingMiddleware(
             $container->get(RouterInterface::class),
             $container->get(ResponseInterface::class)
         );

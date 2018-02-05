@@ -14,7 +14,7 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Zend\Expressive\Exception;
 use Zend\Expressive\MiddlewareContainer;
-use Zend\Expressive\Middleware\DispatchMiddleware;
+use Zend\Expressive\Router\DispatchMiddleware;
 
 class MiddlewareContainerTest extends TestCase
 {

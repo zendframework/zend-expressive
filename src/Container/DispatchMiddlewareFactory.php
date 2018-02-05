@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace Zend\Expressive\Container;
 
 use Psr\Container\ContainerInterface;
-use Zend\Expressive\Middleware\DispatchMiddleware;
+use Zend\Expressive\Router\DispatchMiddleware;
 
 class DispatchMiddlewareFactory
 {

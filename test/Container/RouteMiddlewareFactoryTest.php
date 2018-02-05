@@ -13,16 +13,15 @@ use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Zend\Expressive\Container\RouteMiddlewareFactory;
-use Zend\Expressive\Middleware\RouteMiddleware;
+use Zend\Expressive\Router\PathBasedRoutingMiddleware;
 use Zend\Expressive\Router\RouterInterface;
 
 class RouteMiddlewareFactoryTest extends TestCase
 {
-    public function testFactoryProducesRouteMiddleware()
+    public function testFactoryProducesPathBasedRoutingMiddleware()
     {
         $router = $this->prophesize(RouterInterface::class)->reveal();
         $response = $this->prophesize(ResponseInterface::class)->reveal();
-
         $container = $this->prophesize(ContainerInterface::class);
         $container->get(RouterInterface::class)->willReturn($router);
         $container->get(ResponseInterface::class)->willReturn($response);
@@ -31,7 +30,7 @@ class RouteMiddlewareFactoryTest extends TestCase
 
         $middleware = $factory($container->reveal());
 
-        $this->assertInstanceOf(RouteMiddleware::class, $middleware);
+        $this->assertInstanceOf(PathBasedRoutingMiddleware::class, $middleware);
         $this->assertAttributeSame($router, 'router', $middleware);
         $this->assertAttributeSame($response, 'responsePrototype', $middleware);
     }

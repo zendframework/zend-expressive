@@ -24,6 +24,8 @@ use Zend\Expressive\Exception\InvalidArgumentException;
 use Zend\Expressive\Middleware;
 use Zend\Expressive\MiddlewareContainer;
 use Zend\Expressive\MiddlewareFactory;
+use Zend\Expressive\Router\DispatchMiddleware;
+use Zend\Expressive\Router\PathBasedRoutingMiddleware;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Stratigility\MiddlewarePipe;
@@ -37,10 +39,10 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
     /** @var ContainerInterface|ObjectProphecy */
     private $container;
 
-    /** @var Middleware\DispatchMiddleware|ObjectProphecy */
+    /** @var DispatchMiddleware|ObjectProphecy */
     private $dispatchMiddleware;
 
-    /** @var Middleware\RouteMiddleware|ObjectProphecy */
+    /** @var PathBasedRoutingMiddleware */
     private $routeMiddleware;
 
     /** @var RouterInterface|ObjectProphecy */
@@ -50,11 +52,11 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
     {
         $this->container = $this->mockContainerInterface();
         $this->router = $this->prophesize(RouterInterface::class);
-        $this->routeMiddleware = new Middleware\RouteMiddleware(
+        $this->routeMiddleware = new PathBasedRoutingMiddleware(
             $this->router->reveal(),
             new Response()
         );
-        $this->dispatchMiddleware = $this->prophesize(Middleware\DispatchMiddleware::class)->reveal();
+        $this->dispatchMiddleware = $this->prophesize(DispatchMiddleware::class)->reveal();
     }
 
     public function createApplication()
@@ -134,27 +136,27 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
 
     public static function assertRouteMiddleware(MiddlewareInterface $middleware)
     {
-        if ($middleware instanceof Middleware\RouteMiddleware) {
-            Assert::assertInstanceOf(Middleware\RouteMiddleware::class, $middleware);
+        if ($middleware instanceof PathBasedRoutingMiddleware) {
+            Assert::assertInstanceOf(PathBasedRoutingMiddleware::class, $middleware);
             return;
         }
 
         if (! $middleware instanceof Middleware\LazyLoadingMiddleware) {
-            Assert::fail('Middleware is not an instance of RouteMiddleware');
+            Assert::fail('Middleware is not an instance of PathBasedRoutingMiddleware');
         }
 
         Assert::assertAttributeSame(
-            Middleware\RouteMiddleware::class,
+            PathBasedRoutingMiddleware::class,
             'middlewareName',
             $middleware,
-            'Middleware is not an instance of RouteMiddleware'
+            'Middleware is not an instance of PathBasedRoutingMiddleware'
         );
     }
 
     public static function assertDispatchMiddleware(MiddlewareInterface $middleware)
     {
-        if ($middleware instanceof Middleware\DispatchMiddleware) {
-            Assert::assertInstanceOf(Middleware\DispatchMiddleware::class, $middleware);
+        if ($middleware instanceof DispatchMiddleware) {
+            Assert::assertInstanceOf(DispatchMiddleware::class, $middleware);
             return;
         }
 
@@ -163,7 +165,7 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
         }
 
         Assert::assertAttributeSame(
-            Middleware\DispatchMiddleware::class,
+            DispatchMiddleware::class,
             'middlewareName',
             $middleware,
             'Middleware is not an instance of DispatchMiddleware'
@@ -268,12 +270,12 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
     {
         $this->injectServiceInContainer(
             $this->container,
-            Middleware\RouteMiddleware::class,
+            PathBasedRoutingMiddleware::class,
             $this->routeMiddleware
         );
         $this->injectServiceInContainer(
             $this->container,
-            Middleware\DispatchMiddleware::class,
+            DispatchMiddleware::class,
             $this->dispatchMiddleware
         );
         $app = $this->createApplication();
@@ -432,12 +434,12 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
         $this->container->has('config')->willReturn(false);
         $this->injectServiceInContainer(
             $this->container,
-            Middleware\RouteMiddleware::class,
+            PathBasedRoutingMiddleware::class,
             $this->routeMiddleware
         );
         $this->injectServiceInContainer(
             $this->container,
-            Middleware\DispatchMiddleware::class,
+            DispatchMiddleware::class,
             $this->dispatchMiddleware
         );
 
@@ -463,12 +465,12 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
         $this->container->has('config')->willReturn(false);
         $this->injectServiceInContainer(
             $this->container,
-            Middleware\RouteMiddleware::class,
+            PathBasedRoutingMiddleware::class,
             $this->routeMiddleware
         );
         $this->injectServiceInContainer(
             $this->container,
-            Middleware\DispatchMiddleware::class,
+            DispatchMiddleware::class,
             $this->dispatchMiddleware
         );
 

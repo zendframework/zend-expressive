@@ -28,7 +28,7 @@
         "psr/http-message": "^1.0.1",
         "psr/http-server-middleware": "^1.0",
         "zendframework/zend-diactoros": "^1.3.10",
-        "zendframework/zend-expressive-router": "^3.0.0-dev",
+        "zendframework/zend-expressive-router": "^3.0.0alpha1",
         "zendframework/zend-expressive-template": "^2.0.0-dev",
         "zendframework/zend-stratigility": "^3.0.0alpha2"
     },

@@ -16,7 +16,7 @@ use Zend\Expressive\ApplicationPipeline;
 use Zend\Expressive\ApplicationRunner;
 use Zend\Expressive\Container\ApplicationFactory;
 use Zend\Expressive\MiddlewareFactory;
-use Zend\Expressive\Middleware\RouteMiddleware;
+use Zend\Expressive\Router\PathBasedRoutingMiddleware;
 use Zend\Stratigility\MiddlewarePipeInterface;
 
 class ApplicationFactoryTest extends TestCase
@@ -25,13 +25,13 @@ class ApplicationFactoryTest extends TestCase
     {
         $middlewareFactory = $this->prophesize(MiddlewareFactory::class)->reveal();
         $pipeline = $this->prophesize(MiddlewarePipeInterface::class)->reveal();
-        $routeMiddleware = $this->prophesize(RouteMiddleware::class)->reveal();
+        $routeMiddleware = $this->prophesize(PathBasedRoutingMiddleware::class)->reveal();
         $runner = $this->prophesize(ApplicationRunner::class)->reveal();
 
         $container = $this->prophesize(ContainerInterface::class);
         $container->get(MiddlewareFactory::class)->willReturn($middlewareFactory);
         $container->get(ApplicationPipeline::class)->willReturn($pipeline);
-        $container->get(RouteMiddleware::class)->willReturn($routeMiddleware);
+        $container->get(PathBasedRoutingMiddleware::class)->willReturn($routeMiddleware);
         $container->get(ApplicationRunner::class)->willReturn($runner);
 
         $factory = new ApplicationFactory();

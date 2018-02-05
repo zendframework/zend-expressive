@@ -19,7 +19,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Expressive\Application;
 use Zend\Expressive\ApplicationRunner;
 use Zend\Expressive\MiddlewareFactory;
-use Zend\Expressive\Middleware\RouteMiddleware;
+use Zend\Expressive\Router\PathBasedRoutingMiddleware as RouteMiddleware;
 use Zend\Expressive\Router\Route;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\Stratigility\MiddlewarePipeInterface;

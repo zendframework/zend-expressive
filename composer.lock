@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "d312c86f0c5451b074b337291e9e51f6",
+    "content-hash": "2c363cb362dca9caa0010304971a918d",
     "packages": [
         {
             "name": "fig/http-message-util",
@@ -359,16 +359,16 @@
         },
         {
             "name": "zendframework/zend-expressive-router",
-            "version": "dev-release-3.0.0",
+            "version": "3.0.0alpha1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-expressive-router.git",
-                "reference": "9ecd970f1e6a0b670de62cb28314189b2e17465d"
+                "reference": "456f018239d0aeff9d17eba9064da525982aa9d0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-expressive-router/zipball/9ecd970f1e6a0b670de62cb28314189b2e17465d",
-                "reference": "9ecd970f1e6a0b670de62cb28314189b2e17465d",
+                "url": "https://api.github.com/repos/zendframework/zend-expressive-router/zipball/456f018239d0aeff9d17eba9064da525982aa9d0",
+                "reference": "456f018239d0aeff9d17eba9064da525982aa9d0",
                 "shasum": ""
             },
             "require": {
@@ -390,8 +390,8 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.2.x-dev",
-                    "dev-develop": "2.3.x-dev",
+                    "dev-master": "2.3.x-dev",
+                    "dev-develop": "2.4.x-dev",
                     "dev-release-3.0.0": "3.0.x-dev"
                 }
             },
@@ -415,7 +415,7 @@
                 "zend-expressive",
                 "zf"
             ],
-            "time": "2018-01-24T20:51:48+00:00"
+            "time": "2018-02-01T20:34:39+00:00"
         },
         {
             "name": "zendframework/zend-expressive-template",
@@ -3287,7 +3287,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "zendframework/zend-expressive-router": 20,
+        "zendframework/zend-expressive-router": 15,
         "zendframework/zend-expressive-template": 20,
         "zendframework/zend-stratigility": 15,
         "zendframework/zend-expressive-aurarouter": 20,

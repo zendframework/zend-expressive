@@ -13,6 +13,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Zend\Expressive\Router\PathBasedRoutingMiddleware;
 use Zend\Stratigility\MiddlewarePipeInterface;
 
 use function Zend\Stratigility\path;
@@ -30,7 +31,7 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
     private $pipeline;
 
     /**
-     * @var Middleware\RouteMiddleware
+     * @var PathBasedRoutingMiddleware
      */
     private $routes;
 
@@ -42,7 +43,7 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
     public function __construct(
         MiddlewareFactory $factory,
         MiddlewarePipeInterface $pipeline,
-        Middleware\RouteMiddleware $routes,
+        PathBasedRoutingMiddleware $routes,
         ApplicationRunner $runner
     ) {
         $this->factory = $factory;

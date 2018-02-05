@@ -15,8 +15,8 @@ use ReflectionProperty;
 use Zend\Expressive\Exception;
 use Zend\Expressive\MiddlewareContainer;
 use Zend\Expressive\MiddlewareFactory;
-use Zend\Expressive\Middleware\DispatchMiddleware;
 use Zend\Expressive\Middleware\LazyLoadingMiddleware;
+use Zend\Expressive\Router\DispatchMiddleware;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\Stratigility\Middleware\CallableMiddlewareDecorator;
 

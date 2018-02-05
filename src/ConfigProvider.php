@@ -33,7 +33,9 @@ class ConfigProvider
         // @codingStandardsIgnoreStart
         return [
             'aliases' => [
-                Handler\DefaultHandler::class => Handler\NotFoundHandler::class,
+                Handler\DefaultHandler::class        => Handler\NotFoundHandler::class,
+                Middleware\DispatchMiddleware::class => Router\DispatchMiddleware::class,
+                Middleware\RouteMiddleware::class    => Router\PathBasedRoutingMiddleware::class,
             ],
             'factories' => [
                 Application::class                         => Container\ApplicationFactory::class,
@@ -46,10 +48,10 @@ class ConfigProvider
                 Handler\NotFoundHandler::class             => Handler\NotFoundHandlerFactory::class,
                 MiddlewareContainer::class                 => Container\MiddlewareContainerFactory::class,
                 MiddlewareFactory::class                   => Container\MiddlewareFactoryFactory::class,
-                Middleware\DispatchMiddleware::class       => Container\DispatchMiddlewareFactory::class,
                 Middleware\NotFoundMiddleware::class       => Container\NotFoundMiddlewareFactory::class,
-                Middleware\RouteMiddleware::class          => Container\RouteMiddlewareFactory::class,
                 ResponseInterface::class                   => Container\ResponseFactory::class,
+                Router\DispatchMiddleware::class           => Container\DispatchMiddlewareFactory::class,
+                Router\PathBasedRoutingMiddleware::class   => Container\RouteMiddlewareFactory::class,
                 ServerRequestErrorResponseGenerator::class => Container\ServerRequestErrorResponseGeneratorFactory::class,
                 ServerRequestFactory::class                => Container\ServerRequestFactoryFactory::class,
             ],

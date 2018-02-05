@@ -14,7 +14,7 @@ use Zend\Expressive\Application;
 use Zend\Expressive\ApplicationPipeline;
 use Zend\Expressive\ApplicationRunner;
 use Zend\Expressive\MiddlewareFactory;
-use Zend\Expressive\Middleware\RouteMiddleware;
+use Zend\Expressive\Router\PathBasedRoutingMiddleware;
 use Zend\Stratigility\MiddlewarePipe;
 
 /**
@@ -36,7 +36,7 @@ class ApplicationFactory
         return new Application(
             $container->get(MiddlewareFactory::class),
             $container->get(ApplicationPipeline::class),
-            $container->get(RouteMiddleware::class),
+            $container->get(PathBasedRoutingMiddleware::class),
             $container->get(ApplicationRunner::class)
         );
     }
