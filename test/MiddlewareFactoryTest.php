@@ -11,6 +11,7 @@ namespace ZendTest\Expressive;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use ReflectionProperty;
 use Zend\Expressive\Exception;
 use Zend\Expressive\MiddlewareContainer;
@@ -19,6 +20,7 @@ use Zend\Expressive\Middleware\LazyLoadingMiddleware;
 use Zend\Expressive\Router\DispatchMiddleware;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\Stratigility\Middleware\CallableMiddlewareDecorator;
+use Zend\Stratigility\Middleware\RequestHandlerMiddleware;
 
 class MiddlewareFactoryTest extends TestCase
 {
@@ -193,5 +195,21 @@ class MiddlewareFactoryTest extends TestCase
         $this->assertCount(2, $received);
         $this->assertCallableMiddleware($callable, $received[0]);
         $this->assertSame($middleware, $received[1]);
+    }
+
+    public function testPrepareDecoratesRequestHandlersAsMiddleware()
+    {
+        $handler = $this->prophesize(RequestHandlerInterface::class)->reveal();
+        $middleware = $this->factory->prepare($handler);
+        $this->assertInstanceOf(RequestHandlerMiddleware::class, $middleware);
+        $this->assertAttributeSame($handler, 'handler', $middleware);
+    }
+
+    public function testHandlerDecoratesRequestHandlersAsMiddleware()
+    {
+        $handler = $this->prophesize(RequestHandlerInterface::class)->reveal();
+        $middleware = $this->factory->handler($handler);
+        $this->assertInstanceOf(RequestHandlerMiddleware::class, $middleware);
+        $this->assertAttributeSame($handler, 'handler', $middleware);
     }
 }

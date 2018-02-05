@@ -10,11 +10,14 @@ declare(strict_types=1);
 namespace ZendTest\Expressive;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Expressive\Exception;
 use Zend\Expressive\MiddlewareContainer;
 use Zend\Expressive\Router\DispatchMiddleware;
+use Zend\Stratigility\Middleware\RequestHandlerMiddleware;
 
 class MiddlewareContainerTest extends TestCase
 {
@@ -84,5 +87,19 @@ class MiddlewareContainerTest extends TestCase
 
         $middleware = $this->container->get(DispatchMiddleware::class);
         $this->assertInstanceOf(DispatchMiddleware::class, $middleware);
+    }
+
+    public function testGetWillDecorateARequestHandlerAsMiddleware()
+    {
+        $handler = $this->prophesize(RequestHandlerInterface::class)->reveal();
+
+        $this->originContainer->has('AHandlerNotMiddleware')->willReturn(true);
+        $this->originContainer->get('AHandlerNotMiddleware')->willReturn($handler);
+
+        $middleware = $this->container->get('AHandlerNotMiddleware');
+
+        // Test that we get back middleware decorating the handler
+        $this->assertInstanceOf(RequestHandlerMiddleware::class, $middleware);
+        $this->assertAttributeSame($handler, 'handler', $middleware);
     }
 }

@@ -92,11 +92,12 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
      *
      * The resulting middleware, in both cases, is piped to the pipeline.
      *
-     * @param string|array|callable|MiddlewareInterface $middlewareOrPath
+     * @param string|array|callable|MiddlewareInterface|RequestHandlerInterface $middlewareOrPath
      *     Either the middleware to pipe, or the path to segregate the $middleware
      *     by, via a PathMiddlewareDecorator.
-     * @param null|string|array|callable|MiddlewareInterface $middleware If present,
-     *     middleware to segregate by the path specified in $middlewareOrPath.
+     * @param null|string|array|callable|MiddlewareInterface|RequestHandlerInterface $middleware
+     *     If present, middleware or request handler to segregate by the path
+     *     specified in $middlewareOrPath.
      */
     public function pipe($middlewareOrPath, $middleware = null) : void
     {
@@ -113,8 +114,9 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
     /**
      * Add a route for the route middleware to match.
      *
-     * @param string|array|callable|MiddlewareInterface $middleware Middleware
-     *     (or middleware service name) to associate with route.
+     * @param string|array|callable|MiddlewareInterface|RequestHandlerInterface $middleware
+     *     Middleware or request handler (or service name resolving to one of
+     *     those types) to associate with route.
      * @param null|array $methods HTTP method to accept; null indicates any.
      * @param null|string $name The name of the route.
      */
@@ -129,8 +131,9 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
     }
 
     /**
-     * @param string|array|callable|MiddlewareInterface $middleware Middleware
-     *     (or middleware service name) to associate with route.
+     * @param string|array|callable|MiddlewareInterface|RequestHandlerInterface $middleware
+     *     Middleware or request handler (or service name resolving to one of
+     *     those types) to associate with route.
      * @param null|string $name The name of the route.
      */
     public function get(string $path, $middleware, string $name = null) : Router\Route
@@ -139,8 +142,9 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
     }
 
     /**
-     * @param string|array|callable|MiddlewareInterface $middleware Middleware
-     *     (or middleware service name) to associate with route.
+     * @param string|array|callable|MiddlewareInterface|RequestHandlerInterface $middleware
+     *     Middleware or request handler (or service name resolving to one of
+     *     those types) to associate with route.
      * @param null|string $name The name of the route.
      */
     public function post(string $path, $middleware, $name = null) : Router\Route
@@ -149,8 +153,9 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
     }
 
     /**
-     * @param string|array|callable|MiddlewareInterface $middleware Middleware
-     *     (or middleware service name) to associate with route.
+     * @param string|array|callable|MiddlewareInterface|RequestHandlerInterface $middleware
+     *     Middleware or request handler (or service name resolving to one of
+     *     those types) to associate with route.
      * @param null|string $name The name of the route.
      */
     public function put(string $path, $middleware, string $name = null) : Router\Route
@@ -159,8 +164,9 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
     }
 
     /**
-     * @param string|array|callable|MiddlewareInterface $middleware Middleware
-     *     (or middleware service name) to associate with route.
+     * @param string|array|callable|MiddlewareInterface|RequestHandlerInterface $middleware
+     *     Middleware or request handler (or service name resolving to one of
+     *     those types) to associate with route.
      * @param null|string $name The name of the route.
      */
     public function patch(string $path, $middleware, string $name = null) : Router\Route
@@ -169,8 +175,9 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
     }
 
     /**
-     * @param string|array|callable|MiddlewareInterface $middleware Middleware
-     *     (or middleware service name) to associate with route.
+     * @param string|array|callable|MiddlewareInterface|RequestHandlerInterface $middleware
+     *     Middleware or request handler (or service name resolving to one of
+     *     those types) to associate with route.
      * @param null|string $name The name of the route.
      */
     public function delete(string $path, $middleware, string $name = null) : Router\Route
@@ -179,8 +186,9 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
     }
 
     /**
-     * @param string|array|callable|MiddlewareInterface $middleware Middleware
-     *     (or middleware service name) to associate with route.
+     * @param string|array|callable|MiddlewareInterface|RequestHandlerInterface $middleware
+     *     Middleware or request handler (or service name resolving to one of
+     *     those types) to associate with route.
      * @param null|string $name The name of the route.
      */
     public function any(string $path, $middleware, string $name = null) : Router\Route

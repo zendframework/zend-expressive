@@ -11,8 +11,10 @@ namespace Zend\Expressive;
 
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\Stratigility\Middleware\CallableMiddlewareDecorator;
+use Zend\Stratigility\Middleware\RequestHandlerMiddleware;
 
 /**
  * Marshal middleware for use in the application.
@@ -23,17 +25,20 @@ use Zend\Stratigility\Middleware\CallableMiddlewareDecorator;
  * If any middleware provided is already a MiddlewareInterface, it can be used
  * verbatim or decorated as-is. Other middleware types acceptable are:
  *
+ * - PSR-15 RequestHandlerInterface instances; these will be decorated as
+ *   RequestHandlerMiddleware instances.
  * - string service names resolving to middleware
  * - arrays of service names and/or MiddlewareInterface instances
  * - PHP callables that follow the PSR-15 signature
  *
- * Additionally, the class provides several decorator/utility methods:
+ * Additionally, the class provides the following decorator/utility methods:
  *
  * - callable() will decorate the callable middleware passed to it using
  *   CallableMiddlewareDecorator.
- * - path() will decorate the path and middleware passed to it using
- *   PathMiddlewareDecorator, after first passing the middleware to the prepare()
- *   method.
+ * - handler() will decorate the request handler passed to it using
+ *   RequestHandlerMiddleware.
+ * - lazy() will decorate the string service name passed to it, along with the
+ *   factory instance, as a LazyLoadingMiddleware instance.
  * - pipeline() will create a MiddlewarePipe instance from the array of
  *   middleware passed to it, after passing each first to prepare().
  */
@@ -50,7 +55,7 @@ class MiddlewareFactory
     }
 
     /**
-     * @param string|array|callable|MiddlewareInterface $middleware
+     * @param string|array|callable|MiddlewareInterface|RequestHandlerInterface $middleware
      * @throws Exception\InvalidMiddlewareException if argument is not one of
      *    the specified types.
      */
@@ -58,6 +63,10 @@ class MiddlewareFactory
     {
         if ($middleware instanceof MiddlewareInterface) {
             return $middleware;
+        }
+
+        if ($middleware instanceof RequestHandlerInterface) {
+            return new RequestHandlerMiddleware($middleware);
         }
 
         if (is_callable($middleware)) {
@@ -81,6 +90,14 @@ class MiddlewareFactory
     public function callable(callable $middleware) : CallableMiddlewareDecorator
     {
         return new CallableMiddlewareDecorator($middleware);
+    }
+
+    /**
+     * Decorate a RequestHandlerInterface as middleware via RequestHandlerMiddleware.
+     */
+    public function handler(RequestHandlerInterface $handler) : RequestHandlerMiddleware
+    {
+        return new RequestHandlerMiddleware($handler);
     }
 
     /**

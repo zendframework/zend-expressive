@@ -10,7 +10,11 @@ declare(strict_types=1);
 namespace Zend\Expressive;
 
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use Zend\Stratigility\Middleware\RequestHandlerMiddleware;
 
 class MiddlewareContainer implements ContainerInterface
 {
@@ -54,6 +58,10 @@ class MiddlewareContainer implements ContainerInterface
         $middleware = $this->container->has($service)
             ? $this->container->get($service)
             : new $service();
+
+        $middleware = $middleware instanceof RequestHandlerInterface
+            ? new RequestHandlerMiddleware($middleware)
+            : $middleware;
 
         if (! $middleware instanceof MiddlewareInterface) {
             throw Exception\InvalidMiddlewareException::forMiddlewareService($service, $middleware);

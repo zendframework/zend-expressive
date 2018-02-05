@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Zend\Expressive\Exception;
 
 use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use RuntimeException;
 
 class InvalidMiddlewareException extends RuntimeException implements ExceptionInterface
@@ -22,9 +23,10 @@ class InvalidMiddlewareException extends RuntimeException implements ExceptionIn
     {
         return new self(sprintf(
             'Middleware "%s" is neither a string service name, a PHP callable,'
-            . ' a %s instance, or an array of such arguments',
+            . ' a %s instance, a %s instance, or an array of such arguments',
             is_object($middleware) ? get_class($middleware) : gettype($middleware),
-            MiddlewareInterface::class
+            MiddlewareInterface::class,
+            RequestHandlerInterface::class
         ));
     }
 

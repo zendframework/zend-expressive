@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "cbc08fc439c0962426b5bee34e8bde00",
+    "content-hash": "180206ebc13fd93cff91494490cf057f",
     "packages": [
         {
             "name": "fig/http-message-util",
@@ -527,16 +527,16 @@
         },
         {
             "name": "zendframework/zend-stratigility",
-            "version": "3.0.0alpha2",
+            "version": "3.0.0alpha3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-stratigility.git",
-                "reference": "f463c40690fc473d96accd6c1fcee19deaaf09f3"
+                "reference": "e346801682bad999320ee89285b62643f27735a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-stratigility/zipball/f463c40690fc473d96accd6c1fcee19deaaf09f3",
-                "reference": "f463c40690fc473d96accd6c1fcee19deaaf09f3",
+                "url": "https://api.github.com/repos/zendframework/zend-stratigility/zipball/e346801682bad999320ee89285b62643f27735a9",
+                "reference": "e346801682bad999320ee89285b62643f27735a9",
                 "shasum": ""
             },
             "require": {
@@ -586,7 +586,7 @@
                 "psr-7",
                 "zf"
             ],
-            "time": "2018-01-25T22:04:13+00:00"
+            "time": "2018-02-05T21:18:43+00:00"
         }
     ],
     "packages-dev": [
