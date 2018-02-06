@@ -22,7 +22,7 @@ class ErrorResponseGenerator
     /**
      * @var bool
      */
-    private $debug = false;
+    private $debug;
 
     /**
      * @var TemplateRendererInterface
