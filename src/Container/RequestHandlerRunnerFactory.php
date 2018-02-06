@@ -10,10 +10,9 @@ declare(strict_types=1);
 namespace Zend\Expressive\Container;
 
 use Psr\Container\ContainerInterface;
-use Zend\Expressive\Application;
 use Zend\Expressive\ApplicationPipeline;
-use Zend\Expressive\ServerRequestFactory;
 use Zend\Expressive\ServerRequestErrorResponseGenerator;
+use Zend\Expressive\ServerRequestFactory;
 use Zend\HttpHandlerRunner\Emitter\EmitterInterface;
 use Zend\HttpHandlerRunner\RequestHandlerRunner;
 

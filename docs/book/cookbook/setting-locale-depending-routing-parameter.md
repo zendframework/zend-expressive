@@ -152,7 +152,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class LocalizationMiddleware implements MiddlewareInterface
 {
-    const LOCALIZATION_ATTRIBUTE = 'locale';
+    public const LOCALIZATION_ATTRIBUTE = 'locale';
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {

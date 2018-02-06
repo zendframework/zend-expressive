@@ -17,12 +17,12 @@ use Zend\Stratigility\Utils;
 
 class ErrorResponseGenerator
 {
-    const TEMPLATE_DEFAULT = 'error::error';
+    public const TEMPLATE_DEFAULT = 'error::error';
 
     /**
      * @var bool
      */
-    private $debug = false;
+    private $debug;
 
     /**
      * @var TemplateRendererInterface
@@ -50,7 +50,7 @@ EOT;
         TemplateRendererInterface $renderer = null,
         string $template = self::TEMPLATE_DEFAULT
     ) {
-        $this->debug     = (bool) $isDevelopmentMode;
+        $this->debug     = $isDevelopmentMode;
         $this->renderer  = $renderer;
         $this->template  = $template;
     }

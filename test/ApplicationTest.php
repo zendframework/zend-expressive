@@ -21,9 +21,9 @@ use Zend\Expressive\MiddlewareFactory;
 use Zend\Expressive\Router\PathBasedRoutingMiddleware as RouteMiddleware;
 use Zend\Expressive\Router\Route;
 use Zend\HttpHandlerRunner\RequestHandlerRunner;
+use Zend\Stratigility\Middleware\PathMiddlewareDecorator;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\Stratigility\MiddlewarePipeInterface;
-use Zend\Stratigility\Middleware\PathMiddlewareDecorator;
 
 class ApplicationTest extends TestCase
 {
