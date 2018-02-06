@@ -14,8 +14,8 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Expressive\ApplicationPipeline;
 use Zend\Expressive\Container\RequestHandlerRunnerFactory;
-use Zend\Expressive\ServerRequestFactory;
 use Zend\Expressive\ServerRequestErrorResponseGenerator;
+use Zend\Expressive\ServerRequestFactory;
 use Zend\HttpHandlerRunner\Emitter\EmitterInterface;
 use Zend\HttpHandlerRunner\RequestHandlerRunner;
 

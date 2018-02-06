@@ -9,12 +9,11 @@ declare(strict_types=1);
 
 namespace Zend\Expressive;
 
-use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Zend\Stratigility\MiddlewarePipe;
 use Zend\Stratigility\Middleware\CallableMiddlewareDecorator;
 use Zend\Stratigility\Middleware\RequestHandlerMiddleware;
+use Zend\Stratigility\MiddlewarePipe;
 
 /**
  * Marshal middleware for use in the application.

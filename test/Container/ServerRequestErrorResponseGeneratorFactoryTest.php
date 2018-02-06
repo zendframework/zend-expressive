@@ -10,9 +10,9 @@ declare(strict_types=1);
 namespace ZendTest\Expressive\Container;
 
 use Exception;
-use Psr\Container\ContainerInterface;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
 use Throwable;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequest;

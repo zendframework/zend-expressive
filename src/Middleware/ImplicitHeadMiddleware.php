@@ -45,7 +45,7 @@ use Zend\Expressive\Router\RouteResult;
  */
 class ImplicitHeadMiddleware implements MiddlewareInterface
 {
-    const FORWARDED_HTTP_METHOD_ATTRIBUTE = 'forwarded_http_method';
+    public const FORWARDED_HTTP_METHOD_ATTRIBUTE = 'forwarded_http_method';
 
     /**
      * @var null|ResponseInterface

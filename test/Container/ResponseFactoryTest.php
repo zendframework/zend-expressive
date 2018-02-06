@@ -11,9 +11,7 @@ namespace ZendTest\Expressive\Container;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
-use Throwable;
 use Zend\Diactoros\Response;
-use Zend\Expressive\Container\Exception\InvalidServiceException;
 use Zend\Expressive\Container\ResponseFactory;
 
 class ResponseFactoryTest extends TestCase
