@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 3.0.0alpha3 - 2018-02-06
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- [#546](https://github.com/zendframework/zend-expressive/pull/546) merges
+  `Zend\Expressive\Middleware\NotFoundHandler` into
+  `Zend\Expressive\Middleware\NotFoundMiddleware`, as well as merges
+  `Zend\Expressive\Container\NotFoundHandlerFactory` into
+  `Zend\Expressive\Container\NotFoundMiddlewareFactory`. `NotFoundMiddleware`
+  now does the work of the former `Zend\Expressive\Delegate\NotFoundDelegate`,
+  and, as such, accepts the following constructor arguments:
+
+  - PSR-7 `ResponseInterface $responsePrototype` (required)
+  - `Zend\Expressive\Template\TemplateRendererInterface $renderer` (optional)
+  - `string $template = self::TEMPLATE_DEFAULT` (optional; defaults to "error::404")
+  - `string $layout = self::LAYOUT_DEFAULT` (optional; defaults to "layout::default")
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- [#546](https://github.com/zendframework/zend-expressive/pull/546) removes the
+  class `Zend\Expressive\Delegate\DefaultDelegate`, as there is no longer a
+  concept of a default handler invoked by the application. Instead, developers
+  MUST pipe middleware at the innermost layer of the pipeline guaranteed to
+  return a response; we recommend using `Zend\Expressive\Middleware\NotFoundMiddleware` 
+  for this purpose.
+
+### Fixed
+
+- Nothing.
+
 ## 3.0.0alpha2 - 2018-02-05
 
 ### Added
