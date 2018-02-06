@@ -11,7 +11,6 @@ namespace ZendTest\Expressive;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
-use Zend\HttpHandlerRunner\Emitter\EmitterInterface;
 use Zend\Expressive\Application;
 use Zend\Expressive\ApplicationPipeline;
 use Zend\Expressive\ConfigProvider;
@@ -23,6 +22,7 @@ use Zend\Expressive\Router\DispatchMiddleware;
 use Zend\Expressive\Router\PathBasedRoutingMiddleware;
 use Zend\Expressive\ServerRequestErrorResponseGenerator;
 use Zend\Expressive\ServerRequestFactory;
+use Zend\HttpHandlerRunner\Emitter\EmitterInterface;
 use Zend\Stratigility\Middleware\ErrorHandler;
 use Zend\Stratigility\Middleware\ErrorResponseGenerator;
 use Zend\HttpHandlerRunner\RequestHandlerRunner;
