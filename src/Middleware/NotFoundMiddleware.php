@@ -18,8 +18,8 @@ use Zend\Expressive\Template\TemplateRendererInterface;
 
 class NotFoundMiddleware implements MiddlewareInterface
 {
-    const TEMPLATE_DEFAULT = 'error::404';
-    const LAYOUT_DEFAULT = 'layout::default';
+    public const TEMPLATE_DEFAULT = 'error::404';
+    public const LAYOUT_DEFAULT = 'layout::default';
 
     /**
      * @var TemplateRendererInterface
