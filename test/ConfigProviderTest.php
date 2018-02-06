@@ -14,6 +14,7 @@ use Psr\Http\Message\ResponseInterface;
 use Zend\Expressive\Application;
 use Zend\Expressive\ApplicationPipeline;
 use Zend\Expressive\ConfigProvider;
+use Zend\Expressive\Delegate\DefaultDelegate;
 use Zend\Expressive\Middleware;
 use Zend\Expressive\MiddlewareContainer;
 use Zend\Expressive\MiddlewareFactory;
@@ -37,7 +38,7 @@ class ConfigProviderTest extends TestCase
     {
         $config = $this->provider->getDependencies();
         $aliases = $config['aliases'];
-        $this->assertArrayHasKey('Zend\Expressive\Delegate\DefaultDelegate', $aliases);
+        $this->assertArrayHasKey(DefaultDelegate::class, $aliases);
         $this->assertArrayHasKey(Middleware\DispatchMiddleware::class, $aliases);
         $this->assertArrayHasKey(Middleware\RouteMiddleware::class, $aliases);
     }
