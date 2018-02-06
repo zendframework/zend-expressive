@@ -11,7 +11,6 @@ namespace Zend\Expressive\Container;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
-use Zend\Expressive\Container\EmitterFactory;
 use Zend\HttpHandlerRunner\Emitter\EmitterStack;
 use Zend\HttpHandlerRunner\Emitter\SapiEmitter;
 

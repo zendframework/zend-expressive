@@ -15,7 +15,6 @@ use Zend\Expressive\ApplicationPipeline;
 use Zend\Expressive\MiddlewareFactory;
 use Zend\Expressive\Router\PathBasedRoutingMiddleware;
 use Zend\HttpHandlerRunner\RequestHandlerRunner;
-use Zend\Stratigility\MiddlewarePipe;
 
 /**
  * Create an Application instance.

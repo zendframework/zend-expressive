@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace ZendTest\Expressive;
 
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;

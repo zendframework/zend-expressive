@@ -14,13 +14,13 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use ReflectionProperty;
 use Zend\Expressive\Exception;
+use Zend\Expressive\Middleware\LazyLoadingMiddleware;
 use Zend\Expressive\MiddlewareContainer;
 use Zend\Expressive\MiddlewareFactory;
-use Zend\Expressive\Middleware\LazyLoadingMiddleware;
 use Zend\Expressive\Router\DispatchMiddleware;
-use Zend\Stratigility\MiddlewarePipe;
 use Zend\Stratigility\Middleware\CallableMiddlewareDecorator;
 use Zend\Stratigility\Middleware\RequestHandlerMiddleware;
+use Zend\Stratigility\MiddlewarePipe;
 
 class MiddlewareFactoryTest extends TestCase
 {

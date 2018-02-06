@@ -15,7 +15,6 @@ use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use ReflectionProperty;
-use SplQueue;
 use Zend\Diactoros\Response;
 use Zend\Expressive\Application;
 use Zend\Expressive\Container\ApplicationConfigInjectionDelegator;
