@@ -17,7 +17,7 @@ use Zend\Stratigility\Utils;
 
 class ErrorResponseGenerator
 {
-    const TEMPLATE_DEFAULT = 'error::error';
+    public const TEMPLATE_DEFAULT = 'error::error';
 
     /**
      * @var bool
