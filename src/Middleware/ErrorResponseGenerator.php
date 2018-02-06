@@ -50,7 +50,7 @@ EOT;
         TemplateRendererInterface $renderer = null,
         string $template = self::TEMPLATE_DEFAULT
     ) {
-        $this->debug     = (bool) $isDevelopmentMode;
+        $this->debug     = $isDevelopmentMode;
         $this->renderer  = $renderer;
         $this->template  = $template;
     }
