@@ -22,10 +22,13 @@ class NotFoundMiddlewareFactoryTest extends TestCase
     /** @var ContainerInterface|ObjectProphecy */
     private $container;
 
+    /** @var ResponseInterface|ObjectProphecy */
+    private $response;
+
     protected function setUp()
     {
-        $this->container = $this->prophesize(ContainerInterface::class);
         $this->response = $this->prophesize(ResponseInterface::class)->reveal();
+        $this->container = $this->prophesize(ContainerInterface::class);
         $this->container->get(ResponseInterface::class)->willReturn($this->response);
     }
 
