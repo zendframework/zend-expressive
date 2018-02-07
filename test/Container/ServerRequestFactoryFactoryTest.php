@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace ZendTest\Expressive\Container;
 
+use Closure;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Zend\Diactoros\ServerRequestFactory;
@@ -29,10 +30,18 @@ class ServerRequestFactoryFactoryTest extends TestCase
     }
 
     /**
+     * Some containers do not allow returning generic PHP callables, and will
+     * error when one is returned; one example is Auryn. As such, the factory
+     * cannot simply return a callable referencing the
+     * ServerRequestFactory::fromGlobals method, but must be decorated as a
+     * closure.
+     *
      * @depends testFactoryReturnsCallable
      */
-    public function testFactoryUsesDiactorosFromGlobals(callable $factory)
+    public function testFactoryIsAClosure(callable $factory)
     {
-        $this->assertSame([ServerRequestFactory::class, 'fromGlobals'], $factory);
+        $this->assertNotSame([ServerRequestFactory::class, 'fromGlobals'], $factory);
+        $this->assertNotSame(ServerRequestFactory::class . '::fromGlobals', $factory);
+        $this->assertInstanceOf(Closure::class, $factory);
     }
 }
