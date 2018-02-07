@@ -9,8 +9,6 @@ declare(strict_types=1);
 
 namespace Zend\Expressive;
 
-use Zend\Expressive\Response\NotFoundResponseInterface;
-use Zend\Expressive\Response\RouterResponseInterface;
 use Zend\HttpHandlerRunner\Emitter\EmitterInterface;
 use Zend\HttpHandlerRunner\RequestHandlerRunner;
 use Zend\Stratigility\Middleware\ErrorHandler;
@@ -48,11 +46,11 @@ class ConfigProvider
                 // Change the following in development to the WhoopsErrorResponseGeneratorFactory:
                 Middleware\ErrorResponseGenerator::class   => Container\ErrorResponseGeneratorFactory::class,
                 Middleware\NotFoundMiddleware::class       => Container\NotFoundMiddlewareFactory::class,
-                NotFoundResponseInterface::class           => Container\ResponseFactory::class,
                 RequestHandlerRunner::class                => Container\RequestHandlerRunnerFactory::class,
+                Response\NotFoundResponseInterface::class  => Container\ResponseFactory::class,
+                Response\RouterResponseInterface::class    => Container\ResponseFactory::class,
                 Router\DispatchMiddleware::class           => Container\DispatchMiddlewareFactory::class,
                 Router\PathBasedRoutingMiddleware::class   => Container\RouteMiddlewareFactory::class,
-                RouterResponseInterface::class             => Container\ResponseFactory::class,
                 ServerRequestErrorResponseGenerator::class => Container\ServerRequestErrorResponseGeneratorFactory::class,
                 ServerRequestFactory::class                => Container\ServerRequestFactoryFactory::class,
             ],
