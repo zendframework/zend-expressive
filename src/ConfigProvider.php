@@ -13,7 +13,6 @@ use Psr\Http\Message\ResponseInterface;
 use Zend\HttpHandlerRunner\Emitter\EmitterInterface;
 use Zend\HttpHandlerRunner\RequestHandlerRunner;
 use Zend\Stratigility\Middleware\ErrorHandler;
-use Zend\Stratigility\Middleware\ErrorResponseGenerator;
 
 /**
  * Provide initial configuration for zend-expressive.
@@ -43,10 +42,10 @@ class ConfigProvider
                 ApplicationPipeline::class                 => Container\ApplicationPipelineFactory::class,
                 EmitterInterface::class                    => Container\EmitterFactory::class,
                 ErrorHandler::class                        => Container\ErrorHandlerFactory::class,
-                // Change the following in development to the WhoopsErrorResponseGeneratorFactory:
-                ErrorResponseGenerator::class              => Container\ErrorResponseGeneratorFactory::class,
                 MiddlewareContainer::class                 => Container\MiddlewareContainerFactory::class,
                 MiddlewareFactory::class                   => Container\MiddlewareFactoryFactory::class,
+                // Change the following in development to the WhoopsErrorResponseGeneratorFactory:
+                Middleware\ErrorResponseGenerator::class   => Container\ErrorResponseGeneratorFactory::class,
                 Middleware\NotFoundMiddleware::class       => Container\NotFoundMiddlewareFactory::class,
                 RequestHandlerRunner::class                => Container\RequestHandlerRunnerFactory::class,
                 ResponseInterface::class                   => Container\ResponseFactory::class,
