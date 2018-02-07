@@ -15,6 +15,7 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Zend\Expressive\Container\NotFoundMiddlewareFactory;
 use Zend\Expressive\Middleware\NotFoundMiddleware;
+use Zend\Expressive\Response\NotFoundResponseInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
 class NotFoundMiddlewareFactoryTest extends TestCase
@@ -29,7 +30,7 @@ class NotFoundMiddlewareFactoryTest extends TestCase
     {
         $this->response = $this->prophesize(ResponseInterface::class)->reveal();
         $this->container = $this->prophesize(ContainerInterface::class);
-        $this->container->get(ResponseInterface::class)->willReturn($this->response);
+        $this->container->get(NotFoundResponseInterface::class)->willReturn($this->response);
     }
 
     public function testFactoryCreatesInstanceWithoutRendererIfRendererServiceIsMissing()
