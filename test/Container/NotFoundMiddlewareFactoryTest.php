@@ -15,7 +15,7 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Zend\Expressive\Container\NotFoundMiddlewareFactory;
 use Zend\Expressive\Middleware\NotFoundMiddleware;
-use Zend\Expressive\Response\NotFoundResponseInterface;
+use Zend\Expressive\NotFoundResponseInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
 class NotFoundMiddlewareFactoryTest extends TestCase

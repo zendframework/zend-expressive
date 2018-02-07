@@ -10,9 +10,9 @@ declare(strict_types=1);
 namespace Zend\Expressive\Container;
 
 use Psr\Container\ContainerInterface;
-use Zend\Expressive\Response\RouterResponseInterface;
 use Zend\Expressive\Router\PathBasedRoutingMiddleware;
 use Zend\Expressive\Router\RouterInterface;
+use Zend\Expressive\RouterResponseInterface;
 
 class RouteMiddlewareFactory
 {
