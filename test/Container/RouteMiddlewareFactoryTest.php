@@ -13,9 +13,9 @@ use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Zend\Expressive\Container\RouteMiddlewareFactory;
+use Zend\Expressive\Response\RouterResponseInterface;
 use Zend\Expressive\Router\PathBasedRoutingMiddleware;
 use Zend\Expressive\Router\RouterInterface;
-use Zend\Expressive\RouterResponseInterface;
 
 class RouteMiddlewareFactoryTest extends TestCase
 {

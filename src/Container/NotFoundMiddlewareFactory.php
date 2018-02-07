@@ -11,7 +11,7 @@ namespace Zend\Expressive\Container;
 
 use Psr\Container\ContainerInterface;
 use Zend\Expressive\Middleware\NotFoundMiddleware;
-use Zend\Expressive\NotFoundResponseInterface;
+use Zend\Expressive\Response\NotFoundResponseInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
 class NotFoundMiddlewareFactory
