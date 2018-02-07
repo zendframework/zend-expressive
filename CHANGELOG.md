@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 3.0.0alpha5 - 2018-02-07
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- [#547](https://github.com/zendframework/zend-expressive/pull/547) modifies the
+  `ConfigProvider`, the `NotFoundMiddlewareFactory`, and the
+  `RouteMiddlewareFactory` to remove the concept of the _unshared_
+  `ResponseInterface` service, as service sharing is not always configurable in
+  container implementations. To resolve the ability to provide discrete
+  instances, the `ConfigProvider` defines two new virtual services that each
+  resolve to the `Zend\Expressive\Container\ResponseFactory`:
+
+  - `Zend\Expressive\Response\NotFoundResponseInterface`
+  - `Zend\Expressive\Response\RouterResponseInterface`
+
+  The related factories now consume these services in order to receive a
+  response prototype for the services they produce.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 3.0.0alpha4 - 2018-02-07
 
 ### Added

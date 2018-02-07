@@ -13,6 +13,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Zend\Expressive\Container\RouteMiddlewareFactory;
+use Zend\Expressive\Response\RouterResponseInterface;
 use Zend\Expressive\Router\PathBasedRoutingMiddleware;
 use Zend\Expressive\Router\RouterInterface;
 
@@ -24,7 +25,7 @@ class RouteMiddlewareFactoryTest extends TestCase
         $response = $this->prophesize(ResponseInterface::class)->reveal();
         $container = $this->prophesize(ContainerInterface::class);
         $container->get(RouterInterface::class)->willReturn($router);
-        $container->get(ResponseInterface::class)->willReturn($response);
+        $container->get(RouterResponseInterface::class)->willReturn($response);
 
         $factory = new RouteMiddlewareFactory();
 

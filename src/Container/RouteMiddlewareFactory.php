@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace Zend\Expressive\Container;
 
 use Psr\Container\ContainerInterface;
-use Psr\Http\Message\ResponseInterface;
+use Zend\Expressive\Response\RouterResponseInterface;
 use Zend\Expressive\Router\PathBasedRoutingMiddleware;
 use Zend\Expressive\Router\RouterInterface;
 
@@ -20,7 +20,7 @@ class RouteMiddlewareFactory
     {
         return new PathBasedRoutingMiddleware(
             $container->get(RouterInterface::class),
-            $container->get(ResponseInterface::class)
+            $container->get(RouterResponseInterface::class)
         );
     }
 }

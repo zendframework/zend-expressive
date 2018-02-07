@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace Zend\Expressive;
 
-use Psr\Http\Message\ResponseInterface;
 use Zend\HttpHandlerRunner\Emitter\EmitterInterface;
 use Zend\HttpHandlerRunner\RequestHandlerRunner;
 use Zend\Stratigility\Middleware\ErrorHandler;
@@ -48,15 +47,12 @@ class ConfigProvider
                 Middleware\ErrorResponseGenerator::class   => Container\ErrorResponseGeneratorFactory::class,
                 Middleware\NotFoundMiddleware::class       => Container\NotFoundMiddlewareFactory::class,
                 RequestHandlerRunner::class                => Container\RequestHandlerRunnerFactory::class,
-                ResponseInterface::class                   => Container\ResponseFactory::class,
+                Response\NotFoundResponseInterface::class  => Container\ResponseFactory::class,
+                Response\RouterResponseInterface::class    => Container\ResponseFactory::class,
                 Router\DispatchMiddleware::class           => Container\DispatchMiddlewareFactory::class,
                 Router\PathBasedRoutingMiddleware::class   => Container\RouteMiddlewareFactory::class,
                 ServerRequestErrorResponseGenerator::class => Container\ServerRequestErrorResponseGeneratorFactory::class,
                 ServerRequestFactory::class                => Container\ServerRequestFactoryFactory::class,
-            ],
-            'shared' => [
-                // Do not share response instances
-                ResponseInterface::class => false,
             ],
         ];
         // @codingStandardsIgnoreEnd
