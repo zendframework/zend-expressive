@@ -24,6 +24,14 @@ All notable changes to this project will be documented in this file, in reverse 
   The related factories now consume these services in order to receive a
   response prototype for the services they produce.
 
+- [#542](https://github.com/zendframework/zend-expressive/pull/542) modifies the
+  `composer.json` to no longer suggest the pimple/pimple package, but rather the
+  zendframework/zend-pimple-config package.
+
+- [#542](https://github.com/zendframework/zend-expressive/pull/542) modifies the
+  `composer.json` to no longer suggest the aura/di package, but rather the
+  zendframework/zend-auradi-config package.
+
 ### Deprecated
 
 - Nothing.
