@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 3.0.0alpha4 - 2018-02-07
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#549](https://github.com/zendframework/zend-expressive/pull/549) modifies how
+  the `ServerRequestFactoryFactory` returns the
+  `ServerRequestFactory::fromGlobals()` mechanism, wrapping it in an anonymous
+  function. This ensures compatibility across all containers.
+
+- [#550](https://github.com/zendframework/zend-expressive/pull/550) fixes how
+  the `ConfigProvider` references the `ErrorResponseGenerator`, using the
+  `Zend\Expressive\Middleware` namespace instead of the
+  `Zend\Stratigility\Middleware` namespace.
+
 ## 3.0.0alpha3 - 2018-02-06
 
 ### Added
