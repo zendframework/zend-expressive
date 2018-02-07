@@ -18,6 +18,8 @@ use Zend\Expressive\Delegate\DefaultDelegate;
 use Zend\Expressive\Middleware;
 use Zend\Expressive\MiddlewareContainer;
 use Zend\Expressive\MiddlewareFactory;
+use Zend\Expressive\Response\NotFoundResponseInterface;
+use Zend\Expressive\Response\RouterResponseInterface;
 use Zend\Expressive\Router\DispatchMiddleware;
 use Zend\Expressive\Router\PathBasedRoutingMiddleware;
 use Zend\Expressive\ServerRequestErrorResponseGenerator;
@@ -50,27 +52,19 @@ class ConfigProviderTest extends TestCase
 
         $this->assertArrayHasKey(Application::class, $factories);
         $this->assertArrayHasKey(ApplicationPipeline::class, $factories);
+        $this->assertArrayHasKey(DispatchMiddleware::class, $factories);
         $this->assertArrayHasKey(EmitterInterface::class, $factories);
         $this->assertArrayHasKey(ErrorHandler::class, $factories);
         $this->assertArrayHasKey(ErrorResponseGenerator::class, $factories);
+        $this->assertArrayHasKey(Middleware\NotFoundMiddleware::class, $factories);
         $this->assertArrayHasKey(MiddlewareContainer::class, $factories);
         $this->assertArrayHasKey(MiddlewareFactory::class, $factories);
-        $this->assertArrayHasKey(DispatchMiddleware::class, $factories);
-        $this->assertArrayHasKey(Middleware\NotFoundMiddleware::class, $factories);
+        $this->assertArrayHasKey(NotFoundResponseInterface::class, $factories);
         $this->assertArrayHasKey(PathBasedRoutingMiddleware::class, $factories);
         $this->assertArrayHasKey(RequestHandlerRunner::class, $factories);
-        $this->assertArrayHasKey(ResponseInterface::class, $factories);
+        $this->assertArrayHasKey(RouterResponseInterface::class, $factories);
         $this->assertArrayHasKey(ServerRequestErrorResponseGenerator::class, $factories);
         $this->assertArrayHasKey(ServerRequestFactory::class, $factories);
-    }
-
-    public function testResponseIsMarkedAsUnshared()
-    {
-        $config = $this->provider->getDependencies();
-        $shared = $config['shared'];
-
-        $this->assertArrayHasKey(ResponseInterface::class, $shared);
-        $this->assertFalse($shared[ResponseInterface::class]);
     }
 
     public function testInvocationReturnsArrayWithDependencies()
@@ -80,6 +74,5 @@ class ConfigProviderTest extends TestCase
         $this->assertArrayHasKey('dependencies', $config);
         $this->assertArrayHasKey('aliases', $config['dependencies']);
         $this->assertArrayHasKey('factories', $config['dependencies']);
-        $this->assertArrayHasKey('shared', $config['dependencies']);
     }
 }
