@@ -1,8 +1,8 @@
 # Using Pimple
 
-[Pimple](http://pimple.sensiolabs.org/) is a widely used code-driven dependency
-injection container provided as a standalone component by SensioLabs. It
-features:
+[Pimple](http://pimple.sensiolabs.org/) is a widely used, code-driven,
+dependency injection container provided as a standalone component by SensioLabs.
+It features:
 
 - combined parameter and service storage.
 - ability to define factories for specific classes.
@@ -13,18 +13,18 @@ Pimple only supports programmatic creation at this time.
 ## Installing and configuring Pimple
 
 Pimple implements [PSR-11 Container](https://github.com/php-fig/container)
-as of version 3.2. To use Pimple as dependency injection container we
-recommend using [zendframework/zend-pimple-config](https://github.com/zendframework/zend-pimple-config)
+as of version 3.2. To use Pimple as a dependency injection container, we
+recommend using [zendframework/zend-pimple-config](https://github.com/zendframework/zend-pimple-config),
 which helps you to configure the PSR-11 container. First install the package:
 
 ```bash
 $ composer require zendframework/zend-pimple-config
 ```
 
-Then to configure Pimple use the following script
-(we'll have that in `config/container.php`):
+Now, create the file `config/container.php` with the following contents:
 
 ```php
+<?php
 use Zend\Pimple\Config\Config;
 use Zend\Pimple\Config\ContainerFactory;
 
@@ -34,8 +34,8 @@ $factory = new ContainerFactory();
 return $factory(new Config($config));
 ```
 
-For more information please see
-[documentation of zend-pimple-config](https://github.com/zendframework/zend-pimple-config/blob/master/README.md).
+For more information, please see the
+[zend-pimple-config documentation](https://github.com/zendframework/zend-pimple-config/blob/master/README.md).
 
 Your bootstrap (typically `public/index.php`) will then look like this:
 

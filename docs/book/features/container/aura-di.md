@@ -14,18 +14,19 @@ injection container with the following features:
 ## Installing and configuring Aura.Di
 
 Aura.Di implements [container-interop](https://github.com/container-interop/container-interop)
-as of version 3. To use Aura.Di as dependency injection container we
-recommend using [zendframework/zend-auradi-config](https://github.com/zendframework/zend-auradi-config)
-which helps you to configure the PSR-11 container. First install the package:
+as of version 3. To use Aura.Di as a dependency injection container, we
+recommend using [zendframework/zend-auradi-config](https://github.com/zendframework/zend-auradi-config),
+which helps you to configure its container. First install the package:
 
 ```bash
 $ composer require zendframework/zend-auradi-config
 ```
 
-Then to configure Aura.Di use the following script
-(we'll put that in `config/container.php`):
+To configure Aura.Di, create the file `config/container.php` with the following
+contents:
 
 ```php
+<?php
 use Zend\AuraDi\Config\Config;
 use Zend\AuraDi\Config\ContainerFactory;
 
@@ -35,8 +36,8 @@ $factory = new ContainerFactory();
 return $factory(new Config($config));
 ```
 
-For more information please see
-[documentation of zend-auradi-config](https://github.com/zendframework/zend-auradi-config/blob/master/README.md).
+For more information, please see the
+[zend-auradi-config documentation](https://github.com/zendframework/zend-auradi-config/blob/master/README.md).
 
 Your bootstrap (typically `public/index.php`) will then look like this:
 
