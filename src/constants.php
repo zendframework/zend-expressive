@@ -62,7 +62,7 @@ const ROUTE_MIDDLEWARE = __NAMESPACE__ . '\Middleware\RouteMiddleware';
  *
  * @var string
  */
-const SERVER_REQUEST_ERROR_RESPONSE_GENERATOR = __NAMESPACE__ . '\Expressive\ServerRequestErrorResponseGenerator';
+const SERVER_REQUEST_ERROR_RESPONSE_GENERATOR = __NAMESPACE__ . '\ServerRequestErrorResponseGenerator';
 
 /**
  * Virtual service name that should resolve to a service capable of producing
@@ -70,4 +70,4 @@ const SERVER_REQUEST_ERROR_RESPONSE_GENERATOR = __NAMESPACE__ . '\Expressive\Ser
  *
  * @var string
  */
-const SERVER_REQUEST_FACTORY = __NAMESPACE__ . '\Expressive\ServerRequestFactory';
+const SERVER_REQUEST_FACTORY = __NAMESPACE__ . '\ServerRequestFactory';
