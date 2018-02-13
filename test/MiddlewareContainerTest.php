@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace ZendTest\Expressive;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -20,7 +21,13 @@ use Zend\Stratigility\Middleware\RequestHandlerMiddleware;
 
 class MiddlewareContainerTest extends TestCase
 {
-    public function setUp()
+    /** @var ContainerInterface|ObjectProphecy */
+    private $originContainer;
+
+    /** @var MiddlewareContainer */
+    private $container;
+
+    protected function setUp()
     {
         $this->originContainer = $this->prophesize(ContainerInterface::class);
         $this->container = new MiddlewareContainer($this->originContainer->reveal());

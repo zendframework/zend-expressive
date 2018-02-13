@@ -17,7 +17,7 @@ use Zend\Expressive\Container\ServerRequestFactoryFactory;
 
 class ServerRequestFactoryFactoryTest extends TestCase
 {
-    public function testFactoryReturnsCallable()
+    public function testFactoryReturnsCallable() : callable
     {
         $container = $this->prophesize(ContainerInterface::class)->reveal();
         $factory = new ServerRequestFactoryFactory();

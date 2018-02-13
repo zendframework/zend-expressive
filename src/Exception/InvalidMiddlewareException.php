@@ -13,6 +13,11 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use RuntimeException;
 
+use function get_class;
+use function gettype;
+use function is_object;
+use function sprintf;
+
 class InvalidMiddlewareException extends RuntimeException implements ExceptionInterface
 {
     /**
@@ -23,7 +28,7 @@ class InvalidMiddlewareException extends RuntimeException implements ExceptionIn
     {
         return new self(sprintf(
             'Middleware "%s" is neither a string service name, a PHP callable,'
-            . ' a %s instance, a %s instance, or an array of such arguments',
+                . ' a %s instance, a %s instance, or an array of such arguments',
             is_object($middleware) ? get_class($middleware) : gettype($middleware),
             MiddlewareInterface::class,
             RequestHandlerInterface::class

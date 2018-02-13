@@ -9,9 +9,11 @@ declare(strict_types=1);
 
 namespace ZendTest\Expressive;
 
+use Generator;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -25,9 +27,28 @@ use Zend\Stratigility\Middleware\PathMiddlewareDecorator;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\Stratigility\MiddlewarePipeInterface;
 
+use function array_unshift;
+use function sprintf;
+use function strtoupper;
+
 class ApplicationTest extends TestCase
 {
-    public function setUp()
+    /** @var MiddlewareFactory|ObjectProphecy */
+    private $factory;
+
+    /** @var MiddlewarePipeInterface|ObjectProphecy */
+    private $pipeline;
+
+    /** @var RouteMiddleware|ObjectProphecy */
+    private $routes;
+
+    /** @var RequestHandlerRunner|ObjectProphecy */
+    private $runner;
+
+    /** @var Application */
+    private $app;
+
+    protected function setUp()
     {
         $this->factory = $this->prophesize(MiddlewareFactory::class);
         $this->pipeline = $this->prophesize(MiddlewarePipeInterface::class);
@@ -42,7 +63,7 @@ class ApplicationTest extends TestCase
         );
     }
 
-    public function createMockMiddleware()
+    private function createMockMiddleware() : MiddlewareInterface
     {
         return $this->prophesize(MiddlewareInterface::class)->reveal();
     }
@@ -74,134 +95,140 @@ class ApplicationTest extends TestCase
         $this->assertNull($this->app->run());
     }
 
-    public function validMiddleware() : iterable
+    public function validMiddleware() : Generator
     {
-        // @codingStandardsIgnoreStart
         yield 'string'   => ['service'];
         yield 'array'    => [['middleware', 'service']];
-        yield 'callable' => [function ($request, $response) {}];
+        yield 'callable' => [
+            function ($request, $response) {
+            },
+        ];
         yield 'instance' => [new MiddlewarePipe()];
-        // @codingStandardsIgnoreEnd
     }
 
     /**
      * @dataProvider validMiddleware
-     * @param string|array|callable|MiddlewareInterface $middleware
+     *
+     * @param array|callable|string|MiddlewareInterface $middleware
      */
     public function testPipeCanAcceptSingleMiddlewareArgument($middleware)
     {
         $preparedMiddleware = $this->createMockMiddleware();
         $this->factory
-            ->prepare($middleware)
-            ->willReturn($preparedMiddleware);
+             ->prepare($middleware)
+             ->willReturn($preparedMiddleware);
 
         $this->pipeline
-            ->pipe(Argument::that(function ($test) use ($preparedMiddleware) {
-                Assert::assertSame($preparedMiddleware, $test);
-                return $test;
-            }))
-            ->shouldBeCalled();
+             ->pipe(Argument::that(function ($test) use ($preparedMiddleware) {
+                 Assert::assertSame($preparedMiddleware, $test);
+                 return $test;
+             }))
+             ->shouldBeCalled();
 
         $this->assertNull($this->app->pipe($middleware));
     }
 
     /**
      * @dataProvider validMiddleware
-     * @param string|array|callable|MiddlewareInterface $middleware
+     *
+     * @param array|callable|string|MiddlewareInterface $middleware
      */
     public function testPipeCanAcceptAPathArgument($middleware)
     {
         $preparedMiddleware = $this->createMockMiddleware();
         $this->factory
-            ->prepare($middleware)
-            ->willReturn($preparedMiddleware);
+             ->prepare($middleware)
+             ->willReturn($preparedMiddleware);
 
         $this->pipeline
-            ->pipe(Argument::that(function ($test) use ($preparedMiddleware) {
-                Assert::assertInstanceOf(PathMiddlewareDecorator::class, $test);
-                Assert::assertAttributeSame('/foo', 'prefix', $test);
-                Assert::assertAttributeSame($preparedMiddleware, 'middleware', $test);
-                return $test;
-            }))
-            ->shouldBeCalled();
+             ->pipe(Argument::that(function ($test) use ($preparedMiddleware) {
+                 Assert::assertInstanceOf(PathMiddlewareDecorator::class, $test);
+                 Assert::assertAttributeSame('/foo', 'prefix', $test);
+                 Assert::assertAttributeSame($preparedMiddleware, 'middleware', $test);
+                 return $test;
+             }))
+             ->shouldBeCalled();
 
         $this->assertNull($this->app->pipe('/foo', $middleware));
     }
 
     /**
      * @dataProvider validMiddleware
-     * @param string|array|callable|MiddlewareInterface $middleware
+     *
+     * @param array|callable|string|MiddlewareInterface $middleware
      */
     public function testRouteAcceptsPathAndMiddlewareOnly($middleware)
     {
         $preparedMiddleware = $this->createMockMiddleware();
 
         $this->factory
-            ->prepare($middleware)
-            ->willReturn($preparedMiddleware);
+             ->prepare($middleware)
+             ->willReturn($preparedMiddleware);
 
         $route = $this->prophesize(Route::class)->reveal();
 
         $this->routes
-            ->route(
-                '/foo',
-                $preparedMiddleware,
-                null,
-                null
-            )
-            ->willReturn($route);
+             ->route(
+                 '/foo',
+                 $preparedMiddleware,
+                 null,
+                 null
+             )
+             ->willReturn($route);
 
         $this->assertSame($route, $this->app->route('/foo', $middleware));
     }
 
     /**
      * @dataProvider validMiddleware
-     * @param string|array|callable|MiddlewareInterface $middleware
+     *
+     * @param array|callable|string|MiddlewareInterface $middleware
      */
     public function testRouteAcceptsPathMiddlewareAndMethodsOnly($middleware)
     {
         $preparedMiddleware = $this->createMockMiddleware();
 
         $this->factory
-            ->prepare($middleware)
-            ->willReturn($preparedMiddleware);
+             ->prepare($middleware)
+             ->willReturn($preparedMiddleware);
 
         $route = $this->prophesize(Route::class)->reveal();
 
         $this->routes
-            ->route(
-                '/foo',
-                $preparedMiddleware,
-                ['GET', 'POST'],
-                null
-            )
-            ->willReturn($route);
+             ->route(
+                 '/foo',
+                 $preparedMiddleware,
+                 ['GET', 'POST'],
+                 null
+             )
+             ->willReturn($route);
 
         $this->assertSame($route, $this->app->route('/foo', $middleware, ['GET', 'POST']));
     }
 
     /**
      * @dataProvider validMiddleware
-     * @param string|array|callable|MiddlewareInterface $middleware
+     *
+     * @param array|callable|string|MiddlewareInterface $middleware
      */
     public function testRouteAcceptsPathMiddlewareMethodsAndName($middleware)
     {
         $preparedMiddleware = $this->createMockMiddleware();
 
         $this->factory
-            ->prepare($middleware)
-            ->willReturn($preparedMiddleware);
+             ->prepare($middleware)
+             ->willReturn($preparedMiddleware);
 
         $route = $this->prophesize(Route::class)->reveal();
 
         $this->routes
-            ->route(
-                '/foo',
-                $preparedMiddleware,
-                ['GET', 'POST'],
-                'foo'
-            )
-            ->willReturn($route);
+             ->route(
+                 '/foo',
+                 $preparedMiddleware,
+                 ['GET', 'POST'],
+                 'foo'
+             )
+             ->willReturn($route);
 
         $this->assertSame($route, $this->app->route('/foo', $middleware, ['GET', 'POST'], 'foo'));
     }
@@ -219,104 +246,108 @@ class ApplicationTest extends TestCase
 
     /**
      * @dataProvider requestMethodsWithValidMiddleware
-     * @param string|array|callable|MiddlewareInterface $middleware
+     *
+     * @param array|callable|string|MiddlewareInterface $middleware
      */
     public function testSpecificRouteMethodsCanAcceptOnlyPathAndMiddleware(string $method, $middleware)
     {
         $preparedMiddleware = $this->createMockMiddleware();
 
         $this->factory
-            ->prepare($middleware)
-            ->willReturn($preparedMiddleware);
+             ->prepare($middleware)
+             ->willReturn($preparedMiddleware);
 
         $route = $this->prophesize(Route::class)->reveal();
 
         $this->routes
-            ->route(
-                '/foo',
-                $preparedMiddleware,
-                [strtoupper($method)],
-                null
-            )
-            ->willReturn($route);
+             ->route(
+                 '/foo',
+                 $preparedMiddleware,
+                 [strtoupper($method)],
+                 null
+             )
+             ->willReturn($route);
 
         $this->assertSame($route, $this->app->{$method}('/foo', $middleware));
     }
 
     /**
      * @dataProvider requestMethodsWithValidMiddleware
-     * @param string|array|callable|MiddlewareInterface $middleware
+     *
+     * @param array|callable|string|MiddlewareInterface $middleware
      */
     public function testSpecificRouteMethodsCanAcceptPathMiddlewareAndName(string $method, $middleware)
     {
         $preparedMiddleware = $this->createMockMiddleware();
 
         $this->factory
-            ->prepare($middleware)
-            ->willReturn($preparedMiddleware);
+             ->prepare($middleware)
+             ->willReturn($preparedMiddleware);
 
         $route = $this->prophesize(Route::class)->reveal();
 
         $this->routes
-            ->route(
-                '/foo',
-                $preparedMiddleware,
-                [strtoupper($method)],
-                'foo'
-            )
-            ->willReturn($route);
+             ->route(
+                 '/foo',
+                 $preparedMiddleware,
+                 [strtoupper($method)],
+                 'foo'
+             )
+             ->willReturn($route);
 
         $this->assertSame($route, $this->app->{$method}('/foo', $middleware, 'foo'));
     }
 
     /**
      * @dataProvider validMiddleware
-     * @param string|array|callable|MiddlewareInterface $middleware
+     *
+     * @param array|callable|string|MiddlewareInterface $middleware
      */
     public function testAnyMethodPassesNullForMethodWhenNoNamePresent($middleware)
     {
         $preparedMiddleware = $this->createMockMiddleware();
 
         $this->factory
-            ->prepare($middleware)
-            ->willReturn($preparedMiddleware);
+             ->prepare($middleware)
+             ->willReturn($preparedMiddleware);
 
         $route = $this->prophesize(Route::class)->reveal();
 
         $this->routes
-            ->route(
-                '/foo',
-                $preparedMiddleware,
-                null,
-                null
-            )
-            ->willReturn($route);
+             ->route(
+                 '/foo',
+                 $preparedMiddleware,
+                 null,
+                 null
+             )
+             ->willReturn($route);
 
         $this->assertSame($route, $this->app->any('/foo', $middleware));
     }
 
     /**
      * @dataProvider validMiddleware
-     * @param string|array|callable|MiddlewareInterface $middleware
+     *
+     * @param array|callable|string|MiddlewareInterface $middleware
      */
     public function testAnyMethodPassesNullForMethodWhenAllArgumentsPresent($middleware)
     {
         $preparedMiddleware = $this->createMockMiddleware();
 
         $this->factory
-            ->prepare($middleware)
-            ->willReturn($preparedMiddleware);
+             ->prepare($middleware)
+             ->willReturn($preparedMiddleware);
 
         $route = $this->prophesize(Route::class)->reveal();
 
         $this->routes
-            ->route(
-                '/foo',
-                $preparedMiddleware,
-                null,
-                'foo'
-            )
-            ->willReturn($route);
+             ->route(
+                 '/foo',
+                 $preparedMiddleware,
+                 null,
+                 'foo'
+             )
+             ->willReturn($route);
 
         $this->assertSame($route, $this->app->any('/foo', $middleware, 'foo'));
     }

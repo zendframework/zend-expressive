@@ -14,6 +14,8 @@ use Whoops\Handler\JsonResponseHandler;
 use Whoops\Run as Whoops;
 use Whoops\Util\Misc as WhoopsUtil;
 
+use function method_exists;
+
 /**
  * Create and return an instance of the Whoops runner.
  *
@@ -62,9 +64,7 @@ class WhoopsFactory
     /**
      * If configuration indicates a JsonResponseHandler, configure and register it.
      *
-     * @param Whoops $whoops
      * @param array|\ArrayAccess $config
-     * @return void
      */
     private function registerJsonHandler(Whoops $whoops, $config) : void
     {

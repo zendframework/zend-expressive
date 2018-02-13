@@ -12,6 +12,13 @@ namespace Zend\Expressive\Container;
 use Psr\Container\ContainerInterface;
 use Whoops\Handler\PrettyPageHandler;
 
+use function get_class;
+use function gettype;
+use function is_callable;
+use function is_object;
+use function is_string;
+use function sprintf;
+
 /**
  * Create and return an instance of the whoops PrettyPageHandler.
  *
@@ -49,6 +56,7 @@ class WhoopsPageHandlerFactory
      * Inject an editor into the whoops configuration.
      *
      * @see https://github.com/filp/whoops/blob/master/docs/Open%20Files%20In%20An%20Editor.md
+     *
      * @param array|\ArrayAccess $config
      * @throws Exception\InvalidServiceException for an invalid editor definition.
      */

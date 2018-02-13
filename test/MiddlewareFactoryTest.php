@@ -9,7 +9,9 @@ declare(strict_types=1);
 
 namespace ZendTest\Expressive;
 
+use Generator;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use ReflectionProperty;
@@ -22,35 +24,44 @@ use Zend\Stratigility\Middleware\CallableMiddlewareDecorator;
 use Zend\Stratigility\Middleware\RequestHandlerMiddleware;
 use Zend\Stratigility\MiddlewarePipe;
 
+use function array_shift;
+use function iterator_to_array;
+
 class MiddlewareFactoryTest extends TestCase
 {
-    public function setUp()
+    /** @var MiddlewareContainer|ObjectProphecy */
+    private $container;
+
+    /** @var MiddlewareFactory */
+    private $factory;
+
+    protected function setUp()
     {
         $this->container = $this->prophesize(MiddlewareContainer::class);
         $this->factory = new MiddlewareFactory($this->container->reveal());
     }
 
-    public function assertLazyLoadingMiddleware(string $expectedMiddlewareName, MiddlewareInterface $middleware)
+    private function assertLazyLoadingMiddleware(string $expectedMiddlewareName, MiddlewareInterface $middleware)
     {
         $this->assertInstanceOf(LazyLoadingMiddleware::class, $middleware);
         $this->assertAttributeSame($this->container->reveal(), 'container', $middleware);
         $this->assertAttributeSame($expectedMiddlewareName, 'middlewareName', $middleware);
     }
 
-    public function assertCallableMiddleware(callable $expectedCallable, MiddlewareInterface $middleware)
+    private function assertCallableMiddleware(callable $expectedCallable, MiddlewareInterface $middleware)
     {
         $this->assertInstanceOf(CallableMiddlewareDecorator::class, $middleware);
         $this->assertAttributeSame($expectedCallable, 'middleware', $middleware);
     }
 
-    public function assertPipeline(array $expectedPipeline, MiddlewareInterface $middleware)
+    private function assertPipeline(array $expectedPipeline, MiddlewareInterface $middleware)
     {
         $this->assertInstanceOf(MiddlewarePipe::class, $middleware);
         $pipeline = $this->reflectPipeline($middleware);
         $this->assertSame($expectedPipeline, $pipeline);
     }
 
-    public function reflectPipeline(MiddlewarePipe $pipeline) : array
+    private function reflectPipeline(MiddlewarePipe $pipeline) : array
     {
         $r = new ReflectionProperty($pipeline, 'pipeline');
         $r->setAccessible(true);
@@ -106,7 +117,7 @@ class MiddlewareFactoryTest extends TestCase
         $this->assertPipeline([$middleware1, $middleware2, $middleware3], $middleware);
     }
 
-    public function invalidMiddlewareTypes() : iterable
+    public function invalidMiddlewareTypes() : Generator
     {
         yield 'null' => [null];
         yield 'false' => [false];
@@ -120,6 +131,8 @@ class MiddlewareFactoryTest extends TestCase
 
     /**
      * @dataProvider invalidMiddlewareTypes
+     *
+     * @param mixed $middleware
      */
     public function testPrepareRaisesExceptionForTypesItDoesNotUnderstand($middleware)
     {
@@ -147,7 +160,7 @@ class MiddlewareFactoryTest extends TestCase
         $this->assertPipeline([$middleware1, $middleware2, $middleware3], $middleware);
     }
 
-    public function validPrepareTypes()
+    public function validPrepareTypes() : Generator
     {
         yield 'service' => ['service', 'assertLazyLoadingMiddleware', 'service'];
 
@@ -161,7 +174,8 @@ class MiddlewareFactoryTest extends TestCase
 
     /**
      * @dataProvider validPrepareTypes
-     * @param string|callable|MiddlewareInterface $middleware
+     *
+     * @param callable|string|MiddlewareInterface $middleware
      * @param mixed $expected Expected type or value for use with assertion
      */
     public function testPipelineAllowsAnyTypeSupportedByPrepare(

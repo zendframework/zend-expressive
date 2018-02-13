@@ -18,6 +18,18 @@ use Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware;
 use Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware;
 use Zend\Expressive\Router\Route;
 
+use function array_key_exists;
+use function array_map;
+use function array_reduce;
+use function get_class;
+use function gettype;
+use function is_array;
+use function is_int;
+use function is_object;
+use function sprintf;
+
+use const PHP_INT_MAX;
+
 class ApplicationConfigInjectionDelegator
 {
     /**
@@ -226,8 +238,6 @@ class ApplicationConfigInjectionDelegator
      *
      * If the 'middleware' value is missing, or not viable as middleware, it
      * raises an exception, to ensure the pipeline is built correctly.
-     *
-     * @throws InvalidArgumentException
      */
     private static function createCollectionMapper() : callable
     {
@@ -235,7 +245,7 @@ class ApplicationConfigInjectionDelegator
             if (! is_array($item) || ! array_key_exists('middleware', $item)) {
                 throw new InvalidArgumentException(sprintf(
                     'Invalid pipeline specification received; must be an array'
-                    . ' containing a middleware key; received %s',
+                        . ' containing a middleware key; received %s',
                     is_object($item) ? get_class($item) : gettype($item)
                 ));
             }

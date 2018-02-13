@@ -30,14 +30,14 @@ class LazyLoadingMiddlewareTest extends TestCase
     /** @var RequestHandlerInterface|ObjectProphecy */
     private $handler;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->container = $this->prophesize(MiddlewareContainer::class);
         $this->request   = $this->prophesize(ServerRequestInterface::class);
         $this->handler   = $this->prophesize(RequestHandlerInterface::class);
     }
 
-    public function buildLazyLoadingMiddleware($middlewareName)
+    private function buildLazyLoadingMiddleware(string $middlewareName) : LazyLoadingMiddleware
     {
         return new LazyLoadingMiddleware(
             $this->container->reveal(),
@@ -53,7 +53,8 @@ class LazyLoadingMiddlewareTest extends TestCase
             ->process(
                 $this->request->reveal(),
                 $this->handler->reveal()
-            )->willReturn($response);
+            )
+            ->willReturn($response);
 
         $this->container->get('foo')->will([$middleware, 'reveal']);
 

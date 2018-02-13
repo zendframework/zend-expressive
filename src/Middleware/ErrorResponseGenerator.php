@@ -15,6 +15,9 @@ use Throwable;
 use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Stratigility\Utils;
 
+use function get_class;
+use function sprintf;
+
 class ErrorResponseGenerator
 {
     public const TEMPLATE_DEFAULT = 'error::error';

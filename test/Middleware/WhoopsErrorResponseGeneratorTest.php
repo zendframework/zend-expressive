@@ -22,6 +22,9 @@ use Whoops\Run;
 use Whoops\RunInterface;
 use Zend\Expressive\Middleware\WhoopsErrorResponseGenerator;
 
+use function interface_exists;
+use function method_exists;
+
 class WhoopsErrorResponseGeneratorTest extends TestCase
 {
     /** @var Run|RunInterface|ObjectProphecy */
@@ -36,7 +39,7 @@ class WhoopsErrorResponseGeneratorTest extends TestCase
     /** @var StreamInterface|ObjectProphecy */
     private $stream;
 
-    public function setUp()
+    protected function setUp()
     {
         // Run is marked final in 2.X, but in that version, we can mock the
         // RunInterface. 1.X has only Run, and it is not final.

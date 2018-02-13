@@ -11,6 +11,7 @@ namespace ZendTest\Expressive\Router;
 
 use Fig\Http\Message\RequestMethodInterface as RequestMethod;
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
+use Generator;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -23,7 +24,6 @@ use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Stream;
 use Zend\Expressive\Application;
-use Zend\Expressive\Middleware;
 use Zend\Expressive\MiddlewareContainer;
 use Zend\Expressive\MiddlewareFactory;
 use Zend\Expressive\Router\AuraRouter;
@@ -39,6 +39,9 @@ use Zend\Expressive\Router\ZendRouter;
 use Zend\HttpHandlerRunner\RequestHandlerRunner;
 use Zend\Stratigility\MiddlewarePipe;
 use ZendTest\Expressive\ContainerTrait;
+
+use function array_pop;
+use function sprintf;
 
 class IntegrationTest extends TestCase
 {
@@ -56,7 +59,7 @@ class IntegrationTest extends TestCase
     /** @var ContainerInterface|ObjectProphecy */
     private $container;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->response  = new Response();
         $this->responseFactory = function () {
@@ -66,12 +69,7 @@ class IntegrationTest extends TestCase
         $this->container = $this->mockContainerInterface();
     }
 
-    public function getApplication()
-    {
-        return $this->createApplicationFromRouter($this->router->reveal());
-    }
-
-    public function createApplicationFromRouter(RouterInterface $router)
+    private function createApplicationFromRouter(RouterInterface $router) : Application
     {
         $container = new MiddlewareContainer($this->container->reveal());
         $factory = new MiddlewareFactory($container);
@@ -89,7 +87,7 @@ class IntegrationTest extends TestCase
     /**
      * Get the router adapters to test
      */
-    public function routerAdapters()
+    public function routerAdapters() : array
     {
         return [
             'aura'       => [AuraRouter::class],
@@ -103,8 +101,8 @@ class IntegrationTest extends TestCase
      * using Application::get() and Application::post()
      *
      * @param string $adapter
-     * @param string $getName
-     * @param string $postName
+     * @param null|string $getName
+     * @param null|string $postName
      * @return Application
      */
     private function createApplicationWithGetPost($adapter, $getName = null, $postName = null)
@@ -133,8 +131,8 @@ class IntegrationTest extends TestCase
      * using Application::route()
      *
      * @param string $adapter
-     * @param string $getName
-     * @param string $postName
+     * @param null|string $getName
+     * @param null|string $postName
      * @return Application
      */
     private function createApplicationWithRouteGetPost($adapter, $getName = null, $postName = null)
@@ -168,7 +166,7 @@ class IntegrationTest extends TestCase
         $app = $this->createApplicationWithGetPost($adapter);
         $handler = $this->prophesize(RequestHandlerInterface::class);
         $handler->handle(Argument::type(ServerRequest::class))
-            ->shouldNotBeCalled();
+                ->shouldNotBeCalled();
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'DELETE'], [], '/foo', 'DELETE');
         $result  = $app->process($request, $handler->reveal());
@@ -193,7 +191,7 @@ class IntegrationTest extends TestCase
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
         $handler->handle(Argument::type(ServerRequest::class))
-            ->shouldNotBeCalled();
+                ->shouldNotBeCalled();
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');
         $result  = $app->process($request, $handler->reveal());
@@ -250,7 +248,7 @@ class IntegrationTest extends TestCase
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
         $handler->handle(Argument::type(ServerRequest::class))
-            ->shouldNotBeCalled();
+                ->shouldNotBeCalled();
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');
         $result  = $app->process($request, $handler->reveal());
@@ -339,7 +337,7 @@ class IntegrationTest extends TestCase
         $this->assertEquals('Middleware DELETE', (string) $result->getBody());
     }
 
-    public function routerAdaptersForHttpMethods()
+    public function routerAdaptersForHttpMethods() : Generator
     {
         $allMethods = [
             RequestMethod::METHOD_GET,
@@ -391,7 +389,7 @@ class IntegrationTest extends TestCase
         $this->assertEquals('Middleware', (string) $result->getBody());
     }
 
-    public function allowedMethod()
+    public function allowedMethod() : array
     {
         return [
             'aura-head'          => [AuraRouter::class, RequestMethod::METHOD_HEAD],
@@ -403,7 +401,7 @@ class IntegrationTest extends TestCase
         ];
     }
 
-    public function notAllowedMethod()
+    public function notAllowedMethod() : array
     {
         return [
             'aura-get'          => [AuraRouter::class, RequestMethod::METHOD_GET],
@@ -449,7 +447,7 @@ class IntegrationTest extends TestCase
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
         $handler->handle(Argument::type(ServerRequest::class))
-            ->shouldNotBeCalled();
+                ->shouldNotBeCalled();
 
         $request  = new ServerRequest(['REQUEST_METHOD' => $method], [], '/foo', $method);
         $result   = $app->process($request, $handler->reveal());
@@ -474,16 +472,17 @@ class IntegrationTest extends TestCase
         // This middleware is used just to check that request has successful RouteResult
         $middleware = $this->prophesize(MiddlewareInterface::class);
         $middleware->process(Argument::that(function (ServerRequestInterface $req) {
-            $routeResult = $req->getAttribute(RouteResult::class);
+                       $routeResult = $req->getAttribute(RouteResult::class);
 
-            Assert::assertInstanceOf(RouteResult::class, $routeResult);
-            Assert::assertTrue($routeResult->isSuccess());
-            Assert::assertFalse($routeResult->isMethodFailure());
+                       Assert::assertInstanceOf(RouteResult::class, $routeResult);
+                       Assert::assertTrue($routeResult->isSuccess());
+                       Assert::assertFalse($routeResult->isMethodFailure());
 
-            return true;
-        }), Argument::any())->will(function (array $args) {
-            return $args[1]->handle($args[0]);
-        });
+                       return true;
+                   }), Argument::any())
+                   ->will(function (array $args) {
+                       return $args[1]->handle($args[0]);
+                   });
 
         $app->pipe($middleware->reveal());
 
@@ -505,7 +504,7 @@ class IntegrationTest extends TestCase
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
         $handler->handle(Argument::type(ServerRequest::class))
-            ->willReturn($this->response);
+                ->willReturn($this->response);
 
         $request = new ServerRequest(['REQUEST_METHOD' => $method], [], '/foo', $method);
         $result  = $app->process($request, $handler->reveal());
@@ -537,7 +536,7 @@ class IntegrationTest extends TestCase
 
         $handler = $this->prophesize(RequestHandlerInterface::class);
         $handler->handle(Argument::type(ServerRequest::class))
-            ->shouldNotBeCalled();
+                ->shouldNotBeCalled();
 
         $request = new ServerRequest(['REQUEST_METHOD' => $method], [], '/foo', $method);
         $result  = $app->process($request, $handler->reveal());

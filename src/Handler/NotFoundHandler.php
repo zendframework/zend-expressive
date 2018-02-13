@@ -15,6 +15,8 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
+use function sprintf;
+
 class NotFoundHandler implements RequestHandlerInterface
 {
     public const TEMPLATE_DEFAULT = 'error::404';
@@ -59,7 +61,6 @@ class NotFoundHandler implements RequestHandlerInterface
      * Creates and returns a 404 response.
      *
      * @param ServerRequestInterface $request Passed to internal handler
-     * @param RequestHandlerInterface $handler Ignored.
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
@@ -77,11 +78,11 @@ class NotFoundHandler implements RequestHandlerInterface
     {
         $response = ($this->responseFactory)()->withStatus(StatusCodeInterface::STATUS_NOT_FOUND);
         $response->getBody()
-            ->write(sprintf(
-                'Cannot %s %s',
-                $request->getMethod(),
-                (string) $request->getUri()
-            ));
+                 ->write(sprintf(
+                     'Cannot %s %s',
+                     $request->getMethod(),
+                     (string) $request->getUri()
+                 ));
 
         return $response;
     }

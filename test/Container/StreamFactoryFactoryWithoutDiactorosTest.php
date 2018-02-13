@@ -10,66 +10,56 @@ declare(strict_types=1);
 namespace ZendTest\Expressive\Container;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
-use Throwable;
 use Zend\Expressive\Container\Exception\InvalidServiceException;
 use Zend\Expressive\Container\StreamFactoryFactory;
 
+use function class_exists;
+use function spl_autoload_functions;
+use function spl_autoload_register;
+use function spl_autoload_unregister;
+
 class StreamFactoryFactoryWithoutDiactorosTest extends TestCase
 {
+    /** @var ContainerInterface|ObjectProphecy */
+    private $container;
+
+    /** @var StreamFactoryFactory */
+    private $factory;
+
+    /** @var array */
     private $autoloadFunctions = [];
 
-    public function setUp()
+    protected function setUp()
     {
         class_exists(InvalidServiceException::class);
 
         $this->container = $this->prophesize(ContainerInterface::class)->reveal();
         $this->factory = new StreamFactoryFactory();
 
-        foreach (spl_autoload_functions() as $autoloader) {
-            if (! is_array($autoloader)) {
-                continue;
-            }
-
-            $context = $autoloader[0];
-
-            if (! is_object($context)
-                || ! preg_match('/^Composer.*?ClassLoader$/', get_class($context))
-            ) {
-                continue;
-            }
-
-            $this->autoloadFunctions[] = $autoloader;
-
+        $this->autoloadFunctions = spl_autoload_functions();
+        foreach ($this->autoloadFunctions as $autoloader) {
             spl_autoload_unregister($autoloader);
         }
     }
 
-    public function tearDown()
-    {
-        $this->reloadAutoloaders();
-    }
-
-    public function reloadAutoloaders()
+    private function reloadAutoloaders()
     {
         foreach ($this->autoloadFunctions as $autoloader) {
             spl_autoload_register($autoloader);
         }
-        $this->autoloadFunctions = [];
     }
 
     public function testFactoryRaisesAnExceptionIfDiactorosIsNotLoaded()
     {
-        $e = null;
+        $this->expectException(InvalidServiceException::class);
+        $this->expectExceptionMessage('zendframework/zend-diactoros');
 
         try {
             ($this->factory)($this->container);
-        } catch (Throwable $e) {
+        } finally {
+            $this->reloadAutoloaders();
         }
-
-        $this->reloadAutoloaders();
-
-        $this->assertInstanceOf(InvalidServiceException::class, $e);
-        $this->assertContains('zendframework/zend-diactoros', $e->getMessage());
     }
 }

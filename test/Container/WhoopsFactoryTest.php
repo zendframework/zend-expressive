@@ -21,6 +21,9 @@ use Whoops\Util\Misc as WhoopsUtil;
 use Zend\Expressive\Container\WhoopsFactory;
 use ZendTest\Expressive\ContainerTrait;
 
+use function method_exists;
+use function sprintf;
+
 /**
  * @covers Zend\Expressive\Container\WhoopsFactory
  */
@@ -34,7 +37,7 @@ class WhoopsFactoryTest extends TestCase
     /** @var WhoopsFactory */
     private $factory;
 
-    public function setUp()
+    protected function setUp()
     {
         $pageHandler     = $this->prophesize(PrettyPageHandler::class);
         $this->container = $this->mockContainerInterface();
@@ -43,7 +46,7 @@ class WhoopsFactoryTest extends TestCase
         $this->factory = new WhoopsFactory();
     }
 
-    public function assertWhoopsContainsHandler($type, Whoops $whoops, $message = null)
+    public function assertWhoopsContainsHandler(string $type, Whoops $whoops, string $message = null)
     {
         $message = $message ?: sprintf('Failed to assert whoops runtime composed handler of type %s', $type);
         $r       = new ReflectionProperty($whoops, 'handlerStack');
@@ -83,12 +86,13 @@ class WhoopsFactoryTest extends TestCase
 
     /**
      * @backupGlobals enabled
-     * @depends       testWillInjectJsonResponseHandlerIfConfigurationExpectsIt
-     * @dataProvider  provideConfig
+     * @depends testWillInjectJsonResponseHandlerIfConfigurationExpectsIt
      *
-     * @param bool  $showsTrace
-     * @param bool  $isAjaxOnly
-     * @param bool  $requestIsAjax
+     * @dataProvider provideConfig
+     *
+     * @param bool $showsTrace
+     * @param bool $isAjaxOnly
+     * @param bool $requestIsAjax
      */
     public function testJsonResponseHandlerCanBeConfigured($showsTrace, $isAjaxOnly, $requestIsAjax)
     {

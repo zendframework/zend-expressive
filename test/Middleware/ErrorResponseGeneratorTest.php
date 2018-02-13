@@ -34,7 +34,7 @@ class ErrorResponseGeneratorTest extends TestCase
     /** @var TemplateRendererInterface|ObjectProphecy */
     private $renderer;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->request  = $this->prophesize(ServerRequestInterface::class);
         $this->response = $this->prophesize(ResponseInterface::class);
@@ -93,13 +93,13 @@ class ErrorResponseGeneratorTest extends TestCase
             });
 
         $this->stream
-            ->write(Argument::that(function ($body) use ($leaf, $branch, $error) {
-                $this->assertContains($leaf->getTraceAsString(), $body);
-                $this->assertContains($branch->getTraceAsString(), $body);
-                $this->assertContains($error->getTraceAsString(), $body);
-                return true;
-            }))
-            ->shouldBeCalled();
+             ->write(Argument::that(function ($body) use ($leaf, $branch, $error) {
+                 $this->assertContains($leaf->getTraceAsString(), $body);
+                 $this->assertContains($branch->getTraceAsString(), $body);
+                 $this->assertContains($error->getTraceAsString(), $body);
+                 return true;
+             }))
+             ->shouldBeCalled();
 
         $generator = new ErrorResponseGenerator($debug = true);
         $response = $generator($error, $this->request->reveal(), $initialResponse->reveal());
@@ -107,7 +107,7 @@ class ErrorResponseGeneratorTest extends TestCase
         $this->assertSame($response, $secondaryResponse->reveal());
     }
 
-    public function templates()
+    public function templates() : array
     {
         return [
             'default' => [null, 'error::error'],
@@ -129,14 +129,14 @@ class ErrorResponseGeneratorTest extends TestCase
         $secondaryResponse = clone $this->response;
 
         $this->renderer
-            ->render($expected, [
-                'response' => $secondaryResponse->reveal(),
-                'request'  => $this->request->reveal(),
-                'uri'      => 'https://example.com/foo',
-                'status'   => StatusCode::STATUS_INTERNAL_SERVER_ERROR,
-                'reason'   => 'Internal Server Error',
-            ])
-            ->willReturn('TEMPLATED CONTENTS');
+             ->render($expected, [
+                 'response' => $secondaryResponse->reveal(),
+                 'request'  => $this->request->reveal(),
+                 'uri'      => 'https://example.com/foo',
+                 'status'   => StatusCode::STATUS_INTERNAL_SERVER_ERROR,
+                 'reason'   => 'Internal Server Error',
+             ])
+             ->willReturn('TEMPLATED CONTENTS');
 
         $secondaryResponse->getBody()->will([$this->stream, 'reveal']);
 
@@ -191,15 +191,15 @@ class ErrorResponseGeneratorTest extends TestCase
             });
 
         $this->renderer
-            ->render($expected, [
-                'response' => $secondaryResponse->reveal(),
-                'request'  => $this->request->reveal(),
-                'uri'      => 'https://example.com/foo',
-                'status'   => StatusCode::STATUS_INTERNAL_SERVER_ERROR,
-                'reason'   => 'Network Connect Timeout Error',
-                'error'    => $error,
-            ])
-            ->willReturn('TEMPLATED CONTENTS');
+             ->render($expected, [
+                 'response' => $secondaryResponse->reveal(),
+                 'request'  => $this->request->reveal(),
+                 'uri'      => 'https://example.com/foo',
+                 'status'   => StatusCode::STATUS_INTERNAL_SERVER_ERROR,
+                 'reason'   => 'Network Connect Timeout Error',
+                 'error'    => $error,
+             ])
+             ->willReturn('TEMPLATED CONTENTS');
 
         $this->stream->write('TEMPLATED CONTENTS')->shouldBeCalled();
 

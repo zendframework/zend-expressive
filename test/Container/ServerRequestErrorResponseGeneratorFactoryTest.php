@@ -19,9 +19,11 @@ use Zend\Diactoros\ServerRequest;
 use Zend\Expressive\Container\ServerRequestErrorResponseGeneratorFactory;
 use Zend\Expressive\Middleware\ErrorResponseGenerator;
 
+use function array_shift;
+
 class ServerRequestErrorResponseGeneratorFactoryTest extends TestCase
 {
-    public function testFactoryGeneratesCallable()
+    public function testFactoryGeneratesCallable() : array
     {
         $container = $this->prophesize(ContainerInterface::class);
         $factory = new ServerRequestErrorResponseGeneratorFactory();

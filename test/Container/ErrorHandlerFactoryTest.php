@@ -23,7 +23,7 @@ class ErrorHandlerFactoryTest extends TestCase
     /** @var ContainerInterface|ObjectProphecy */
     private $container;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->container = $this->prophesize(ContainerInterface::class);
     }

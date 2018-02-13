@@ -92,10 +92,10 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
      *
      * The resulting middleware, in both cases, is piped to the pipeline.
      *
-     * @param string|array|callable|MiddlewareInterface|RequestHandlerInterface $middlewareOrPath
+     * @param array|callable|string|MiddlewareInterface|RequestHandlerInterface $middlewareOrPath
      *     Either the middleware to pipe, or the path to segregate the $middleware
      *     by, via a PathMiddlewareDecorator.
-     * @param null|string|array|callable|MiddlewareInterface|RequestHandlerInterface $middleware
+     * @param null|array|callable|string|MiddlewareInterface|RequestHandlerInterface $middleware
      *     If present, middleware or request handler to segregate by the path
      *     specified in $middlewareOrPath.
      */
@@ -114,7 +114,7 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
     /**
      * Add a route for the route middleware to match.
      *
-     * @param string|array|callable|MiddlewareInterface|RequestHandlerInterface $middleware
+     * @param array|callable|string|MiddlewareInterface|RequestHandlerInterface $middleware
      *     Middleware or request handler (or service name resolving to one of
      *     those types) to associate with route.
      * @param null|array $methods HTTP method to accept; null indicates any.
@@ -131,7 +131,7 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
     }
 
     /**
-     * @param string|array|callable|MiddlewareInterface|RequestHandlerInterface $middleware
+     * @param array|callable|string|MiddlewareInterface|RequestHandlerInterface $middleware
      *     Middleware or request handler (or service name resolving to one of
      *     those types) to associate with route.
      * @param null|string $name The name of the route.
@@ -142,7 +142,7 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
     }
 
     /**
-     * @param string|array|callable|MiddlewareInterface|RequestHandlerInterface $middleware
+     * @param array|callable|string|MiddlewareInterface|RequestHandlerInterface $middleware
      *     Middleware or request handler (or service name resolving to one of
      *     those types) to associate with route.
      * @param null|string $name The name of the route.
@@ -153,7 +153,7 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
     }
 
     /**
-     * @param string|array|callable|MiddlewareInterface|RequestHandlerInterface $middleware
+     * @param array|callable|string|MiddlewareInterface|RequestHandlerInterface $middleware
      *     Middleware or request handler (or service name resolving to one of
      *     those types) to associate with route.
      * @param null|string $name The name of the route.
@@ -164,7 +164,7 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
     }
 
     /**
-     * @param string|array|callable|MiddlewareInterface|RequestHandlerInterface $middleware
+     * @param array|callable|string|MiddlewareInterface|RequestHandlerInterface $middleware
      *     Middleware or request handler (or service name resolving to one of
      *     those types) to associate with route.
      * @param null|string $name The name of the route.
@@ -175,7 +175,7 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
     }
 
     /**
-     * @param string|array|callable|MiddlewareInterface|RequestHandlerInterface $middleware
+     * @param array|callable|string|MiddlewareInterface|RequestHandlerInterface $middleware
      *     Middleware or request handler (or service name resolving to one of
      *     those types) to associate with route.
      * @param null|string $name The name of the route.
@@ -186,7 +186,7 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
     }
 
     /**
-     * @param string|array|callable|MiddlewareInterface|RequestHandlerInterface $middleware
+     * @param array|callable|string|MiddlewareInterface|RequestHandlerInterface $middleware
      *     Middleware or request handler (or service name resolving to one of
      *     those types) to associate with route.
      * @param null|string $name The name of the route.

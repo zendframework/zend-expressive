@@ -19,6 +19,12 @@ use Whoops\Run;
 use Whoops\RunInterface;
 use Zend\Stratigility\Utils;
 
+use function get_class;
+use function gettype;
+use function is_object;
+use function method_exists;
+use function sprintf;
+
 class WhoopsErrorResponseGenerator
 {
     /**

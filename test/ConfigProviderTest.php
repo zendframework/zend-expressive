@@ -27,6 +27,11 @@ use Zend\ServiceManager\Config;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Stratigility\Middleware\ErrorHandler;
 
+use function array_merge_recursive;
+use function file_get_contents;
+use function json_decode;
+use function sprintf;
+
 use const Zend\Expressive\DEFAULT_DELEGATE;
 use const Zend\Expressive\DISPATCH_MIDDLEWARE;
 use const Zend\Expressive\IMPLICIT_HEAD_MIDDLEWARE;
@@ -40,7 +45,7 @@ class ConfigProviderTest extends TestCase
     /** @var ConfigProvider */
     private $provider;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->provider = new ConfigProvider();
     }

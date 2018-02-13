@@ -30,7 +30,7 @@ class WhoopsPageHandlerFactoryTest extends TestCase
     /** @var WhoopsPageHandlerFactory */
     private $factory;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->container = $this->mockContainerInterface();
         $this->factory   = new WhoopsPageHandlerFactory();
@@ -85,7 +85,7 @@ class WhoopsPageHandlerFactoryTest extends TestCase
         $this->assertAttributeSame($editor, 'editor', $result);
     }
 
-    public function invalidEditors()
+    public function invalidEditors() : array
     {
         return [
             'true'       => [true],

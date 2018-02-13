@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace ZendTest\Expressive\Container;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -27,7 +28,7 @@ class RequestHandlerRunnerFactoryTest extends TestCase
         $handler = $this->registerHandlerInContainer($container);
         $emitter = $this->registerEmitterInContainer($container);
         $serverRequestFactory = $this->registerServerRequestFactoryInContainer($container);
-        $errorGenerator = $this->registerServerRequestErroResponseGeneratorInContainer($container);
+        $errorGenerator = $this->registerServerRequestErrorResponseGeneratorInContainer($container);
 
         $factory = new RequestHandlerRunnerFactory();
 
@@ -40,21 +41,30 @@ class RequestHandlerRunnerFactoryTest extends TestCase
         $this->assertAttributeSame($errorGenerator, 'serverRequestErrorResponseGenerator', $runner);
     }
 
-    public function registerHandlerInContainer($container) : RequestHandlerInterface
+    /**
+     * @param ContainerInterface|ObjectProphecy $container
+     */
+    private function registerHandlerInContainer(ObjectProphecy $container) : RequestHandlerInterface
     {
         $app = $this->prophesize(RequestHandlerInterface::class)->reveal();
         $container->get(ApplicationPipeline::class)->willReturn($app);
         return $app;
     }
 
-    public function registerEmitterInContainer($container) : EmitterInterface
+    /**
+     * @param ContainerInterface|ObjectProphecy $container
+     */
+    private function registerEmitterInContainer(ObjectProphecy $container) : EmitterInterface
     {
         $emitter = $this->prophesize(EmitterInterface::class)->reveal();
         $container->get(EmitterInterface::class)->willReturn($emitter);
         return $emitter;
     }
 
-    public function registerServerRequestFactoryInContainer($container) : callable
+    /**
+     * @param ContainerInterface|ObjectProphecy $container
+     */
+    private function registerServerRequestFactoryInContainer(ObjectProphecy $container) : callable
     {
         $factory = function () {
         };
@@ -62,7 +72,10 @@ class RequestHandlerRunnerFactoryTest extends TestCase
         return $factory;
     }
 
-    public function registerServerRequestErroResponseGeneratorInContainer($container) : callable
+    /**
+     * @param ContainerInterface|ObjectProphecy $container
+     */
+    private function registerServerRequestErrorResponseGeneratorInContainer(ObjectProphecy $container) : callable
     {
         $generator = function ($e) {
         };

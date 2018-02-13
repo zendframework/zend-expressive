@@ -11,13 +11,15 @@ namespace Zend\Expressive\Exception;
 
 use RuntimeException;
 
+use function sprintf;
+
 class MissingDependencyException extends RuntimeException implements ExceptionInterface
 {
     public static function forMiddlewareService(string $service) : self
     {
         return new self(sprintf(
             'Cannot fetch middleware service "%s"; service not registered,'
-            . ' or does not resolve to an autoloadable class name',
+                . ' or does not resolve to an autoloadable class name',
             $service
         ));
     }

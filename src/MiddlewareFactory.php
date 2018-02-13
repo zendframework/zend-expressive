@@ -15,6 +15,12 @@ use Zend\Stratigility\Middleware\CallableMiddlewareDecorator;
 use Zend\Stratigility\Middleware\RequestHandlerMiddleware;
 use Zend\Stratigility\MiddlewarePipe;
 
+use function array_shift;
+use function count;
+use function is_array;
+use function is_callable;
+use function is_string;
+
 /**
  * Marshal middleware for use in the application.
  *
@@ -54,9 +60,9 @@ class MiddlewareFactory
     }
 
     /**
-     * @param string|array|callable|MiddlewareInterface|RequestHandlerInterface $middleware
+     * @param array|callable|string|MiddlewareInterface|RequestHandlerInterface $middleware
      * @throws Exception\InvalidMiddlewareException if argument is not one of
-     *    the specified types.
+     *     the specified types.
      */
     public function prepare($middleware) : MiddlewareInterface
     {
@@ -119,7 +125,7 @@ class MiddlewareFactory
      * Each item is passed to prepare() before being passed to the
      * MiddlewarePipe instance the method returns.
      *
-     * @param string|array|MiddlewarePipe $middleware
+     * @param array|string|MiddlewarePipe ...$middleware
      */
     public function pipeline(...$middleware) : MiddlewarePipe
     {

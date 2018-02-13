@@ -15,6 +15,7 @@ use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use ReflectionProperty;
+use SplQueue;
 use Zend\Diactoros\Response;
 use Zend\Expressive\Application;
 use Zend\Expressive\Container\ApplicationConfigInjectionDelegator;
@@ -32,6 +33,10 @@ use Zend\HttpHandlerRunner\RequestHandlerRunner;
 use Zend\Stratigility\MiddlewarePipe;
 use ZendTest\Expressive\ContainerTrait;
 use ZendTest\Expressive\TestAsset\InvokableMiddleware;
+
+use function array_merge;
+use function array_reduce;
+use function array_shift;
 
 class ApplicationConfigInjectionDelegatorTest extends TestCase
 {
@@ -52,7 +57,7 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
     /** @var RouterInterface|ObjectProphecy */
     private $router;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->container = $this->mockContainerInterface();
         $this->router = $this->prophesize(RouterInterface::class);
@@ -64,7 +69,7 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
         $this->methodNotAllowedMiddleware = $this->prophesize(MethodNotAllowedMiddleware::class)->reveal();
     }
 
-    public function createApplication()
+    private function createApplication() : Application
     {
         $container = new MiddlewareContainer($this->container->reveal());
         $factory = new MiddlewareFactory($container);
@@ -78,7 +83,7 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
         );
     }
 
-    public function getQueueFromApplicationPipeline(Application $app)
+    private function getQueueFromApplicationPipeline(Application $app) : SplQueue
     {
         $r = new ReflectionProperty($app, 'pipeline');
         $r->setAccessible(true);
@@ -89,7 +94,7 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
         return $r->getValue($pipeline);
     }
 
-    public static function assertRoute($spec, array $routes)
+    public static function assertRoute(array $spec, array $routes)
     {
         Assert::assertThat(
             array_reduce($routes, function ($found, $route) use ($spec) {
@@ -122,21 +127,6 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
             Assert::isTrue(),
             'Route created does not match any specifications'
         );
-    }
-
-    public static function assertPipelineContainsInstanceOf($class, $pipeline, $message = null)
-    {
-        $message = $message ?: 'Did not find expected middleware class type in pipeline';
-        $found   = false;
-
-        foreach ($pipeline as $middleware) {
-            if ($middleware instanceof $class) {
-                $found = true;
-                break;
-            }
-        }
-
-        Assert::assertThat($found, Assert::isTrue(), $message);
     }
 
     public static function assertRouteMiddleware(MiddlewareInterface $middleware)
@@ -196,7 +186,7 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
         );
     }
 
-    public function callableMiddlewares()
+    public function callableMiddlewares() : array
     {
         return [
             ['HelloWorld'],
@@ -223,7 +213,7 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
     /**
      * @dataProvider callableMiddlewares
      *
-     * @param callable|array|string $middleware
+     * @param array|callable|string $middleware
      */
     public function testInjectRoutesFromConfigSetsUpRoutesFromConfig($middleware)
     {
@@ -277,7 +267,7 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
         $this->assertCount(0, $routes);
     }
 
-    public function configWithRoutesButNoPipeline()
+    public function configWithRoutesButNoPipeline() : array
     {
         $middleware = function ($request, $response, $next) {
         };
@@ -299,8 +289,6 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
 
     /**
      * @dataProvider configWithRoutesButNoPipeline
-     *
-     * @param array $config
      */
     public function testProvidingRoutesAndNoPipelineImplicitlyRegistersRoutingAndDispatchMiddleware(array $config)
     {
