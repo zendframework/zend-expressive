@@ -22,8 +22,9 @@ use Zend\Expressive\Exception\InvalidArgumentException;
 use Zend\Expressive\Middleware;
 use Zend\Expressive\MiddlewareContainer;
 use Zend\Expressive\MiddlewareFactory;
-use Zend\Expressive\Router\DispatchMiddleware;
-use Zend\Expressive\Router\PathBasedRoutingMiddleware;
+use Zend\Expressive\Router\Middleware\DispatchMiddleware;
+use Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware;
+use Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\HttpHandlerRunner\RequestHandlerRunner;
@@ -41,6 +42,9 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
     /** @var DispatchMiddleware|ObjectProphecy */
     private $dispatchMiddleware;
 
+    /** @var MethodNotAllowedMiddleware|ObjectProphecy */
+    private $methodNotAllowedMiddleware;
+
     /** @var PathBasedRoutingMiddleware */
     private $routeMiddleware;
 
@@ -56,6 +60,7 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
             new Response()
         );
         $this->dispatchMiddleware = $this->prophesize(DispatchMiddleware::class)->reveal();
+        $this->methodNotAllowedMiddleware = $this->prophesize(MethodNotAllowedMiddleware::class)->reveal();
     }
 
     public function createApplication()
@@ -171,6 +176,25 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
         );
     }
 
+    public static function assertMethodNotAllowedMiddleware(MiddlewareInterface $middleware)
+    {
+        if ($middleware instanceof MethodNotAllowedMiddleware) {
+            Assert::assertInstanceOf(MethodNotAllowedMiddleware::class, $middleware);
+            return;
+        }
+
+        if (! $middleware instanceof Middleware\LazyLoadingMiddleware) {
+            Assert::fail('Middleware is not an instance of MethodNotAllowedMiddleware');
+        }
+
+        Assert::assertAttributeSame(
+            MethodNotAllowedMiddleware::class,
+            'middlewareName',
+            $middleware,
+            'Middleware is not an instance of MethodNotAllowedMiddleware'
+        );
+    }
+
     public function callableMiddlewares()
     {
         return [
@@ -283,10 +307,13 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
 
         $queue = $this->getQueueFromApplicationPipeline($app);
 
-        $this->assertCount(2, $queue, 'Did not get expected pipeline count!');
+        $this->assertCount(3, $queue, 'Did not get expected pipeline count!');
 
         $test = $queue->dequeue();
         $this->assertRouteMiddleware($test);
+
+        $test = $queue->dequeue();
+        $this->assertMethodNotAllowedMiddleware($test);
 
         $test = $queue->dequeue();
         $this->assertDispatchMiddleware($test);

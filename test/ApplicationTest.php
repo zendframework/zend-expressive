@@ -18,7 +18,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Expressive\Application;
 use Zend\Expressive\MiddlewareFactory;
-use Zend\Expressive\Router\PathBasedRoutingMiddleware as RouteMiddleware;
+use Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware as RouteMiddleware;
 use Zend\Expressive\Router\Route;
 use Zend\HttpHandlerRunner\RequestHandlerRunner;
 use Zend\Stratigility\Middleware\PathMiddlewareDecorator;

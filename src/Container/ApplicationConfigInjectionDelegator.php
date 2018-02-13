@@ -13,8 +13,9 @@ use Psr\Container\ContainerInterface;
 use SplPriorityQueue;
 use Zend\Expressive\Application;
 use Zend\Expressive\Exception\InvalidArgumentException;
-use Zend\Expressive\Router\DispatchMiddleware;
-use Zend\Expressive\Router\PathBasedRoutingMiddleware;
+use Zend\Expressive\Router\Middleware\DispatchMiddleware;
+use Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware;
+use Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware;
 use Zend\Expressive\Router\Route;
 
 class ApplicationConfigInjectionDelegator
@@ -65,8 +66,9 @@ class ApplicationConfigInjectionDelegator
      *     'middleware_pipeline' => [
      *         // An array of middleware to register with the pipeline.
      *         // entries to register prior to routing/dispatching...
-     *         // - entry for \Zend\Expressive\Router\PathBasedRoutingMiddleware::class
-     *         // - entry \Zend\Expressive\Router\DispatchMiddleware::class
+     *         // - entry for \Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware::class
+     *         // - entry for \Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware::class
+     *         // - entry \Zend\Expressive\Router\Middleware\DispatchMiddleware::class
      *         // entries to register after routing/dispatching...
      *     ],
      * ];
@@ -108,6 +110,7 @@ class ApplicationConfigInjectionDelegator
             }
 
             $application->pipe(PathBasedRoutingMiddleware::class);
+            $application->pipe(MethodNotAllowedMiddleware::class);
             $application->pipe(DispatchMiddleware::class);
             return;
         }

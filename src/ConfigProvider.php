@@ -33,8 +33,8 @@ class ConfigProvider
         return [
             'aliases' => [
                 Delegate\DefaultDelegate::class      => Middleware\NotFoundMiddleware::class,
-                Middleware\DispatchMiddleware::class => Router\DispatchMiddleware::class,
-                Middleware\RouteMiddleware::class    => Router\PathBasedRoutingMiddleware::class,
+                Middleware\DispatchMiddleware::class => Router\Middleware\DispatchMiddleware::class,
+                Middleware\RouteMiddleware::class    => Router\Middleware\PathBasedRoutingMiddleware::class,
             ],
             'factories' => [
                 Application::class                         => Container\ApplicationFactory::class,
@@ -49,8 +49,6 @@ class ConfigProvider
                 RequestHandlerRunner::class                => Container\RequestHandlerRunnerFactory::class,
                 Response\NotFoundResponseInterface::class  => Container\ResponseFactory::class,
                 Response\RouterResponseInterface::class    => Container\ResponseFactory::class,
-                Router\DispatchMiddleware::class           => Container\DispatchMiddlewareFactory::class,
-                Router\PathBasedRoutingMiddleware::class   => Container\RouteMiddlewareFactory::class,
                 ServerRequestErrorResponseGenerator::class => Container\ServerRequestErrorResponseGeneratorFactory::class,
                 ServerRequestFactory::class                => Container\ServerRequestFactoryFactory::class,
             ],
