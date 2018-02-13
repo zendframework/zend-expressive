@@ -73,7 +73,7 @@ class ApplicationConfigInjectionDelegator
      *         // entries to register prior to routing/dispatching...
      *         // - entry for \Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware::class
      *         // - entry for \Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware::class
-     *         // - entry \Zend\Expressive\Router\Middleware\DispatchMiddleware::class
+     *         // - entry for \Zend\Expressive\Router\Middleware\DispatchMiddleware::class
      *         // entries to register after routing/dispatching...
      *     ],
      * ];
