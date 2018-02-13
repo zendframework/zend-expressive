@@ -224,14 +224,6 @@ class ApplicationConfigInjectionDelegator
      * function (array|string $item) : array
      * </code>
      *
-     * When it encounters one of the self::*_MIDDLEWARE constants, it passes
-     * the value to the `createPipelineMapper()` callback to create a spec
-     * that uses the return value as pipeline middleware.
-     *
-     * If the 'middleware' value is an array, it uses the `createPipelineMapper()`
-     * callback as an array mapper in order to ensure the self::*_MIDDLEWARE
-     * are injected correctly.
-     *
      * If the 'middleware' value is missing, or not viable as middleware, it
      * raises an exception, to ensure the pipeline is built correctly.
      *
@@ -242,8 +234,8 @@ class ApplicationConfigInjectionDelegator
         return function ($item) {
             if (! is_array($item) || ! array_key_exists('middleware', $item)) {
                 throw new InvalidArgumentException(sprintf(
-                    'Invalid pipeline specification received; must be an array containing a middleware '
-                    . 'key, or one of the Application::*_MIDDLEWARE constants; received %s',
+                    'Invalid pipeline specification received; must be an array'
+                    . ' containing a middleware key; received %s',
                     is_object($item) ? get_class($item) : gettype($item)
                 ));
             }
