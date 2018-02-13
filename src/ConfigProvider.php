@@ -32,9 +32,9 @@ class ConfigProvider
         // @codingStandardsIgnoreStart
         return [
             'aliases' => [
-                Delegate\DefaultDelegate::class      => Handler\NotFoundHandler::class,
-                Middleware\DispatchMiddleware::class => Router\Middleware\DispatchMiddleware::class,
-                Middleware\RouteMiddleware::class    => Router\Middleware\PathBasedRoutingMiddleware::class,
+                DEFAULT_DELEGATE    => Handler\NotFoundHandler::class,
+                DISPATCH_MIDDLEWARE => Router\Middleware\DispatchMiddleware::class,
+                ROUTE_MIDDLEWARE    => Router\Middleware\PathBasedRoutingMiddleware::class,
             ],
             'factories' => [
                 Application::class                         => Container\ApplicationFactory::class,
@@ -47,10 +47,9 @@ class ConfigProvider
                 // Change the following in development to the WhoopsErrorResponseGeneratorFactory:
                 Middleware\ErrorResponseGenerator::class   => Container\ErrorResponseGeneratorFactory::class,
                 RequestHandlerRunner::class                => Container\RequestHandlerRunnerFactory::class,
-                Response\NotFoundResponseInterface::class  => Container\ResponseFactory::class,
-                Response\RouterResponseInterface::class    => Container\ResponseFactory::class,
-                ServerRequestErrorResponseGenerator::class => Container\ServerRequestErrorResponseGeneratorFactory::class,
-                ServerRequestFactory::class                => Container\ServerRequestFactoryFactory::class,
+                NOT_FOUND_RESPONSE                         => Container\ResponseFactory::class,
+                SERVER_REQUEST_ERROR_RESPONSE_GENERATOR    => Container\ServerRequestErrorResponseGeneratorFactory::class,
+                SERVER_REQUEST_FACTORY                     => Container\ServerRequestFactoryFactory::class,
             ],
         ];
         // @codingStandardsIgnoreEnd

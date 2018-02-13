@@ -14,6 +14,8 @@ use Zend\Expressive\Handler\NotFoundHandler;
 use Zend\Expressive\Response\NotFoundResponseInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
+use const Zend\Expressive\NOT_FOUND_RESPONSE;
+
 class NotFoundHandlerFactory
 {
     public function __invoke(ContainerInterface $container) : NotFoundHandler
@@ -28,7 +30,7 @@ class NotFoundHandlerFactory
             ?? NotFoundHandler::LAYOUT_DEFAULT;
 
         return new NotFoundHandler(
-            $container->get(NotFoundResponseInterface::class),
+            $container->get(NOT_FOUND_RESPONSE),
             $renderer,
             $template,
             $layout

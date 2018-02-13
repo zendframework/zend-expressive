@@ -18,13 +18,18 @@ use Zend\Expressive\Handler\NotFoundHandler;
 use Zend\Expressive\Middleware;
 use Zend\Expressive\MiddlewareContainer;
 use Zend\Expressive\MiddlewareFactory;
-use Zend\Expressive\Response\NotFoundResponseInterface;
-use Zend\Expressive\Response\RouterResponseInterface;
 use Zend\Expressive\ServerRequestErrorResponseGenerator;
 use Zend\Expressive\ServerRequestFactory;
 use Zend\HttpHandlerRunner\Emitter\EmitterInterface;
 use Zend\HttpHandlerRunner\RequestHandlerRunner;
 use Zend\Stratigility\Middleware\ErrorHandler;
+
+use const Zend\Expressive\DEFAULT_DELEGATE;
+use const Zend\Expressive\DISPATCH_MIDDLEWARE;
+use const Zend\Expressive\NOT_FOUND_RESPONSE;
+use const Zend\Expressive\ROUTE_MIDDLEWARE;
+use const Zend\Expressive\SERVER_REQUEST_ERROR_RESPONSE_GENERATOR;
+use const Zend\Expressive\SERVER_REQUEST_FACTORY;
 
 class ConfigProviderTest extends TestCase
 {
@@ -37,9 +42,9 @@ class ConfigProviderTest extends TestCase
     {
         $config = $this->provider->getDependencies();
         $aliases = $config['aliases'];
-        $this->assertArrayHasKey(DefaultDelegate::class, $aliases);
-        $this->assertArrayHasKey(Middleware\DispatchMiddleware::class, $aliases);
-        $this->assertArrayHasKey(Middleware\RouteMiddleware::class, $aliases);
+        $this->assertArrayHasKey(DEFAULT_DELEGATE, $aliases);
+        $this->assertArrayHasKey(DISPATCH_MIDDLEWARE, $aliases);
+        $this->assertArrayHasKey(ROUTE_MIDDLEWARE, $aliases);
     }
 
     public function testProviderDefinesExpectedFactoryServices()
@@ -55,11 +60,10 @@ class ConfigProviderTest extends TestCase
         $this->assertArrayHasKey(MiddlewareFactory::class, $factories);
         $this->assertArrayHasKey(Middleware\ErrorResponseGenerator::class, $factories);
         $this->assertArrayHasKey(NotFoundHandler::class, $factories);
-        $this->assertArrayHasKey(NotFoundResponseInterface::class, $factories);
+        $this->assertArrayHasKey(NOT_FOUND_RESPONSE, $factories);
         $this->assertArrayHasKey(RequestHandlerRunner::class, $factories);
-        $this->assertArrayHasKey(RouterResponseInterface::class, $factories);
-        $this->assertArrayHasKey(ServerRequestErrorResponseGenerator::class, $factories);
-        $this->assertArrayHasKey(ServerRequestFactory::class, $factories);
+        $this->assertArrayHasKey(SERVER_REQUEST_ERROR_RESPONSE_GENERATOR, $factories);
+        $this->assertArrayHasKey(SERVER_REQUEST_FACTORY, $factories);
     }
 
     public function testInvocationReturnsArrayWithDependencies()

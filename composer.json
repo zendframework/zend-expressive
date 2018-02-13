@@ -56,6 +56,9 @@
         "zendframework/zend-servicemanager": "^3.3 to use zend-servicemanager for dependency injection"
     },
     "autoload": {
+        "files": [
+            "src/constants.php"
+        ],
         "psr-4": {
             "Zend\\Expressive\\": "src/"
         }
