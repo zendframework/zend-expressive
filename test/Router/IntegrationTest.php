@@ -29,6 +29,8 @@ use Zend\Expressive\MiddlewareFactory;
 use Zend\Expressive\Router\AuraRouter;
 use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\Middleware\DispatchMiddleware;
+use Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware;
+use Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware;
 use Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware;
 use Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware as RouteMiddleware;
 use Zend\Expressive\Router\RouteResult;
@@ -427,8 +429,9 @@ class IntegrationTest extends TestCase
         $app = $this->createApplicationFromRouter($router);
         $app->pipe(new RouteMiddleware($router, $this->response));
         $app->pipe(new MethodNotAllowedMiddleware($this->response));
-        $app->pipe(new Middleware\ImplicitHeadMiddleware());
-        $app->pipe(new Middleware\ImplicitOptionsMiddleware());
+        $app->pipe(new ImplicitHeadMiddleware($this->response, function () {
+        }));
+        $app->pipe(new ImplicitOptionsMiddleware($this->response));
         $app->pipe(new DispatchMiddleware());
 
         // Add a PUT route
@@ -479,10 +482,11 @@ class IntegrationTest extends TestCase
         $app->pipe($middleware->reveal());
 
         if ($method === 'HEAD') {
-            $app->pipe(new Middleware\ImplicitHeadMiddleware());
+            $app->pipe(new ImplicitHeadMiddleware($this->response, function () {
+            }));
         }
         if ($method === 'OPTIONS') {
-            $app->pipe(new Middleware\ImplicitOptionsMiddleware());
+            $app->pipe(new ImplicitOptionsMiddleware($this->response));
         }
         $app->pipe(new DispatchMiddleware());
 
