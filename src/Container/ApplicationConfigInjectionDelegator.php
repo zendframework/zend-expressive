@@ -24,15 +24,20 @@ class ApplicationConfigInjectionDelegator
      * Decorate an Application instance by injecting routes and/or middleware
      * from configuration.
      *
-     * @return mixed|Application Typically, this should return an Application
-     *     instance. However, if the delegator is attached to some other service,
-     *     there is a possibility it will return another type.
+     * @throws Exception\InvalidServiceException if the $callback produces
+     *     something other than an `Application` instance, as the delegator cannot
+     *     proceed with its operations.
      */
-    public function __invoke(ContainerInterface $container, string $serviceName, callable $callback)
+    public function __invoke(ContainerInterface $container, string $serviceName, callable $callback) : Application
     {
         $application = $callback();
         if (! $application instanceof Application) {
-            return $application;
+            throw new Exception\InvalidServiceException(sprintf(
+                'Delegator factory %s cannot operate on a %s; please map it only to the %s service',
+                __CLASS__,
+                is_object($application) ? get_class($application) . ' instance' : gettype($application),
+                Application::class
+            ));
         }
 
         if (! $container->has('config')) {

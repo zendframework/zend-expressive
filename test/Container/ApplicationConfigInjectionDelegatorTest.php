@@ -18,6 +18,7 @@ use ReflectionProperty;
 use Zend\Diactoros\Response;
 use Zend\Expressive\Application;
 use Zend\Expressive\Container\ApplicationConfigInjectionDelegator;
+use Zend\Expressive\Container\Exception\InvalidServiceException;
 use Zend\Expressive\Exception\InvalidArgumentException;
 use Zend\Expressive\Middleware;
 use Zend\Expressive\MiddlewareContainer;
@@ -205,6 +206,18 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
             ],
             [[InvokableMiddleware::class, 'staticallyCallableMiddleware']],
         ];
+    }
+
+    public function testInvocationAsDelegatorFactoryRaisesExceptionIfCallbackIsNotAnApplication()
+    {
+        $container = $this->prophesize(ContainerInterface::class)->reveal();
+        $callback = function () {
+            return $this;
+        };
+        $factory = new ApplicationConfigInjectionDelegator();
+        $this->expectException(InvalidServiceException::class);
+        $this->expectExceptionMessage('cannot operate');
+        $factory($container, Application::class, $callback);
     }
 
     /**
