@@ -30,6 +30,10 @@ use const Zend\Expressive\NOT_FOUND_RESPONSE;
 use const Zend\Expressive\ROUTE_MIDDLEWARE;
 use const Zend\Expressive\SERVER_REQUEST_ERROR_RESPONSE_GENERATOR;
 use const Zend\Expressive\SERVER_REQUEST_FACTORY;
+use const Zend\Expressive\Router\IMPLICIT_HEAD_MIDDLEWARE_RESPONSE;
+use const Zend\Expressive\Router\IMPLICIT_HEAD_MIDDLEWARE_STREAM_FACTORY;
+use const Zend\Expressive\Router\IMPLICIT_OPTIONS_MIDDLEWARE_RESPONSE;
+use const Zend\Expressive\Router\METHOD_NOT_ALLOWED_MIDDLEWARE_RESPONSE;
 
 class ConfigProviderTest extends TestCase
 {
@@ -56,6 +60,10 @@ class ConfigProviderTest extends TestCase
         $this->assertArrayHasKey(ApplicationPipeline::class, $factories);
         $this->assertArrayHasKey(EmitterInterface::class, $factories);
         $this->assertArrayHasKey(ErrorHandler::class, $factories);
+        $this->assertArrayHasKey(IMPLICIT_HEAD_MIDDLEWARE_RESPONSE, $factories);
+        $this->assertArrayHasKey(IMPLICIT_HEAD_MIDDLEWARE_STREAM_FACTORY, $factories);
+        $this->assertArrayHasKey(IMPLICIT_OPTIONS_MIDDLEWARE_RESPONSE, $factories);
+        $this->assertArrayHasKey(METHOD_NOT_ALLOWED_MIDDLEWARE_RESPONSE, $factories);
         $this->assertArrayHasKey(MiddlewareContainer::class, $factories);
         $this->assertArrayHasKey(MiddlewareFactory::class, $factories);
         $this->assertArrayHasKey(Middleware\ErrorResponseGenerator::class, $factories);
