@@ -17,7 +17,7 @@ use Zend\Expressive\Exception;
 use Zend\Expressive\Middleware\LazyLoadingMiddleware;
 use Zend\Expressive\MiddlewareContainer;
 use Zend\Expressive\MiddlewareFactory;
-use Zend\Expressive\Router\DispatchMiddleware;
+use Zend\Expressive\Router\Middleware\DispatchMiddleware;
 use Zend\Stratigility\Middleware\CallableMiddlewareDecorator;
 use Zend\Stratigility\Middleware\RequestHandlerMiddleware;
 use Zend\Stratigility\MiddlewarePipe;

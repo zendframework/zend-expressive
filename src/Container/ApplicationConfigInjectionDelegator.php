@@ -13,8 +13,9 @@ use Psr\Container\ContainerInterface;
 use SplPriorityQueue;
 use Zend\Expressive\Application;
 use Zend\Expressive\Exception\InvalidArgumentException;
-use Zend\Expressive\Router\DispatchMiddleware;
-use Zend\Expressive\Router\PathBasedRoutingMiddleware;
+use Zend\Expressive\Router\Middleware\DispatchMiddleware;
+use Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware;
+use Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware;
 use Zend\Expressive\Router\Route;
 
 class ApplicationConfigInjectionDelegator
@@ -23,15 +24,20 @@ class ApplicationConfigInjectionDelegator
      * Decorate an Application instance by injecting routes and/or middleware
      * from configuration.
      *
-     * @return mixed|Application Typically, this should return an Application
-     *     instance. However, if the delegator is attached to some other service,
-     *     there is a possibility it will return another type.
+     * @throws Exception\InvalidServiceException if the $callback produces
+     *     something other than an `Application` instance, as the delegator cannot
+     *     proceed with its operations.
      */
-    public function __invoke(ContainerInterface $container, string $serviceName, callable $callback)
+    public function __invoke(ContainerInterface $container, string $serviceName, callable $callback) : Application
     {
         $application = $callback();
         if (! $application instanceof Application) {
-            return $application;
+            throw new Exception\InvalidServiceException(sprintf(
+                'Delegator factory %s cannot operate on a %s; please map it only to the %s service',
+                __CLASS__,
+                is_object($application) ? get_class($application) . ' instance' : gettype($application),
+                Application::class
+            ));
         }
 
         if (! $container->has('config')) {
@@ -65,8 +71,9 @@ class ApplicationConfigInjectionDelegator
      *     'middleware_pipeline' => [
      *         // An array of middleware to register with the pipeline.
      *         // entries to register prior to routing/dispatching...
-     *         // - entry for \Zend\Expressive\Router\PathBasedRoutingMiddleware::class
-     *         // - entry \Zend\Expressive\Router\DispatchMiddleware::class
+     *         // - entry for \Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware::class
+     *         // - entry for \Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware::class
+     *         // - entry for \Zend\Expressive\Router\Middleware\DispatchMiddleware::class
      *         // entries to register after routing/dispatching...
      *     ],
      * ];
@@ -108,6 +115,7 @@ class ApplicationConfigInjectionDelegator
             }
 
             $application->pipe(PathBasedRoutingMiddleware::class);
+            $application->pipe(MethodNotAllowedMiddleware::class);
             $application->pipe(DispatchMiddleware::class);
             return;
         }
@@ -216,14 +224,6 @@ class ApplicationConfigInjectionDelegator
      * function (array|string $item) : array
      * </code>
      *
-     * When it encounters one of the self::*_MIDDLEWARE constants, it passes
-     * the value to the `createPipelineMapper()` callback to create a spec
-     * that uses the return value as pipeline middleware.
-     *
-     * If the 'middleware' value is an array, it uses the `createPipelineMapper()`
-     * callback as an array mapper in order to ensure the self::*_MIDDLEWARE
-     * are injected correctly.
-     *
      * If the 'middleware' value is missing, or not viable as middleware, it
      * raises an exception, to ensure the pipeline is built correctly.
      *
@@ -234,8 +234,8 @@ class ApplicationConfigInjectionDelegator
         return function ($item) {
             if (! is_array($item) || ! array_key_exists('middleware', $item)) {
                 throw new InvalidArgumentException(sprintf(
-                    'Invalid pipeline specification received; must be an array containing a middleware '
-                    . 'key, or one of the Application::*_MIDDLEWARE constants; received %s',
+                    'Invalid pipeline specification received; must be an array'
+                    . ' containing a middleware key; received %s',
                     is_object($item) ? get_class($item) : gettype($item)
                 ));
             }

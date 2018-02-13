@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace ZendTest\Expressive\Middleware;
+namespace ZendTest\Expressive\Handler;
 
 use Fig\Http\Message\RequestMethodInterface as RequestMethod;
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
@@ -17,16 +17,13 @@ use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
-use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\HandlerInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Zend\Expressive\Middleware\NotFoundMiddleware;
+use Zend\Expressive\Handler\NotFoundHandler;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
-class NotFoundMiddlewareTest extends TestCase
+class NotFoundHandlerTest extends TestCase
 {
-    /** @var RequestHandlerInterface|ObjectProphecy */
-    private $handler;
-
     /** @var ServerRequestInterface|ObjectProphecy */
     private $request;
 
@@ -37,22 +34,19 @@ class NotFoundMiddlewareTest extends TestCase
     {
         $this->request  = $this->prophesize(ServerRequestInterface::class);
         $this->response = $this->prophesize(ResponseInterface::class);
-
-        $this->handler = $this->prophesize(RequestHandlerInterface::class);
-        $this->handler->handle(Argument::type(ServerRequestInterface::class))->shouldNotBeCalled();
     }
 
-    public function testImplementsInteropMiddleware()
+    public function testImplementsRequesthandler()
     {
-        $handler = new NotFoundMiddleware($this->response->reveal());
-        $this->assertInstanceOf(MiddlewareInterface::class, $handler);
+        $handler = new NotFoundHandler($this->response->reveal());
+        $this->assertInstanceOf(RequestHandlerInterface::class, $handler);
     }
 
     public function testConstructorDoesNotRequireARenderer()
     {
-        $middleware = new NotFoundMiddleware($this->response->reveal());
-        $this->assertInstanceOf(NotFoundMiddleware::class, $middleware);
-        $this->assertAttributeSame($this->response->reveal(), 'responsePrototype', $middleware);
+        $handler = new NotFoundHandler($this->response->reveal());
+        $this->assertInstanceOf(NotFoundHandler::class, $handler);
+        $this->assertAttributeSame($this->response->reveal(), 'responsePrototype', $handler);
     }
 
     public function testConstructorCanAcceptRendererAndTemplate()
@@ -61,12 +55,12 @@ class NotFoundMiddlewareTest extends TestCase
         $template = 'foo::bar';
         $layout = 'layout::error';
 
-        $middleware = new NotFoundMiddleware($this->response->reveal(), $renderer, $template, $layout);
+        $handler = new NotFoundHandler($this->response->reveal(), $renderer, $template, $layout);
 
-        $this->assertInstanceOf(NotFoundMiddleware::class, $middleware);
-        $this->assertAttributeSame($renderer, 'renderer', $middleware);
-        $this->assertAttributeEquals($template, 'template', $middleware);
-        $this->assertAttributeEquals($layout, 'layout', $middleware);
+        $this->assertInstanceOf(NotFoundHandler::class, $handler);
+        $this->assertAttributeSame($renderer, 'renderer', $handler);
+        $this->assertAttributeEquals($template, 'template', $handler);
+        $this->assertAttributeEquals($layout, 'layout', $handler);
     }
 
     public function testRendersDefault404ResponseWhenNoRendererPresent()
@@ -80,9 +74,9 @@ class NotFoundMiddlewareTest extends TestCase
         $this->response->withStatus(StatusCode::STATUS_NOT_FOUND)->will([$this->response, 'reveal']);
         $this->response->getBody()->will([$stream, 'reveal']);
 
-        $middleware = new NotFoundMiddleware($this->response->reveal());
+        $handler = new NotFoundHandler($this->response->reveal());
 
-        $response = $middleware->process($request->reveal(), $this->handler->reveal());
+        $response = $handler->handle($request->reveal());
 
         $this->assertSame($this->response->reveal(), $response);
     }
@@ -94,10 +88,10 @@ class NotFoundMiddlewareTest extends TestCase
         $renderer = $this->prophesize(TemplateRendererInterface::class);
         $renderer
             ->render(
-                NotFoundMiddleware::TEMPLATE_DEFAULT,
+                NotFoundHandler::TEMPLATE_DEFAULT,
                 [
                     'request' => $request,
-                    'layout' => NotFoundMiddleware::LAYOUT_DEFAULT,
+                    'layout' => NotFoundHandler::LAYOUT_DEFAULT,
                 ]
             )
             ->willReturn('CONTENT');
@@ -108,9 +102,9 @@ class NotFoundMiddlewareTest extends TestCase
         $this->response->withStatus(StatusCode::STATUS_NOT_FOUND)->will([$this->response, 'reveal']);
         $this->response->getBody()->will([$stream, 'reveal']);
 
-        $middleware = new NotFoundMiddleware($this->response->reveal(), $renderer->reveal());
+        $handler = new NotFoundHandler($this->response->reveal(), $renderer->reveal());
 
-        $response = $middleware->process($request, $this->handler->reveal());
+        $response = $handler->handle($request);
 
         $this->assertSame($this->response->reveal(), $response);
     }

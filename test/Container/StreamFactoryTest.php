@@ -11,18 +11,18 @@ namespace ZendTest\Expressive\Container;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
-use Zend\Expressive\Container\DispatchMiddlewareFactory;
-use Zend\Expressive\Router\DispatchMiddleware;
+use Zend\Diactoros\Stream;
+use Zend\Expressive\Container\StreamFactory;
 
-class DispatchMiddlewareFactoryTest extends TestCase
+class StreamFactoryTest extends TestCase
 {
-    public function testFactoryProducesDispatchMiddleware()
+    public function testFactoryProducesAStreamWhenDiactorosIsInstalled()
     {
         $container = $this->prophesize(ContainerInterface::class)->reveal();
-        $factory = new DispatchMiddlewareFactory();
+        $factory = new StreamFactory();
 
-        $middleware = $factory($container);
+        $response = $factory($container);
 
-        $this->assertInstanceOf(DispatchMiddleware::class, $middleware);
+        $this->assertInstanceOf(Stream::class, $response);
     }
 }
