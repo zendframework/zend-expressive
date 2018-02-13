@@ -32,9 +32,10 @@ class ConfigProvider
         // @codingStandardsIgnoreStart
         return [
             'aliases' => [
-                DEFAULT_DELEGATE    => Handler\NotFoundHandler::class,
-                DISPATCH_MIDDLEWARE => Router\Middleware\DispatchMiddleware::class,
-                ROUTE_MIDDLEWARE    => Router\Middleware\PathBasedRoutingMiddleware::class,
+                DEFAULT_DELEGATE     => Handler\NotFoundHandler::class,
+                DISPATCH_MIDDLEWARE  => Router\Middleware\DispatchMiddleware::class,
+                NOT_FOUND_MIDDLEWARE => Handler\NotFoundHandler::class,
+                ROUTE_MIDDLEWARE     => Router\Middleware\PathBasedRoutingMiddleware::class,
             ],
             'factories' => [
                 Application::class                             => Container\ApplicationFactory::class,
