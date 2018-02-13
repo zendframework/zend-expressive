@@ -32,7 +32,7 @@ class ConfigProvider
         // @codingStandardsIgnoreStart
         return [
             'aliases' => [
-                Delegate\DefaultDelegate::class      => Middleware\NotFoundMiddleware::class,
+                Delegate\DefaultDelegate::class      => Handler\NotFoundHandler::class,
                 Middleware\DispatchMiddleware::class => Router\Middleware\DispatchMiddleware::class,
                 Middleware\RouteMiddleware::class    => Router\Middleware\PathBasedRoutingMiddleware::class,
             ],
@@ -41,11 +41,11 @@ class ConfigProvider
                 ApplicationPipeline::class                 => Container\ApplicationPipelineFactory::class,
                 EmitterInterface::class                    => Container\EmitterFactory::class,
                 ErrorHandler::class                        => Container\ErrorHandlerFactory::class,
+                Handler\NotFoundHandler::class             => Container\NotFoundHandlerFactory::class,
                 MiddlewareContainer::class                 => Container\MiddlewareContainerFactory::class,
                 MiddlewareFactory::class                   => Container\MiddlewareFactoryFactory::class,
                 // Change the following in development to the WhoopsErrorResponseGeneratorFactory:
                 Middleware\ErrorResponseGenerator::class   => Container\ErrorResponseGeneratorFactory::class,
-                Middleware\NotFoundMiddleware::class       => Container\NotFoundMiddlewareFactory::class,
                 RequestHandlerRunner::class                => Container\RequestHandlerRunnerFactory::class,
                 Response\NotFoundResponseInterface::class  => Container\ResponseFactory::class,
                 Response\RouterResponseInterface::class    => Container\ResponseFactory::class,

@@ -7,16 +7,15 @@
 
 declare(strict_types=1);
 
-namespace Zend\Expressive\Middleware;
+namespace Zend\Expressive\Handler;
 
 use Fig\Http\Message\StatusCodeInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
-class NotFoundMiddleware implements MiddlewareInterface
+class NotFoundHandler implements RequestHandlerInterface
 {
     public const TEMPLATE_DEFAULT = 'error::404';
     public const LAYOUT_DEFAULT = 'layout::default';
@@ -62,7 +61,7 @@ class NotFoundMiddleware implements MiddlewareInterface
      * @param ServerRequestInterface $request Passed to internal handler
      * @param RequestHandlerInterface $handler Ignored.
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
+    public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         if (! $this->renderer) {
             return $this->generatePlainTextResponse($request);

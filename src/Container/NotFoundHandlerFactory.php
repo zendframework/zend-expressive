@@ -10,24 +10,24 @@ declare(strict_types=1);
 namespace Zend\Expressive\Container;
 
 use Psr\Container\ContainerInterface;
-use Zend\Expressive\Middleware\NotFoundMiddleware;
+use Zend\Expressive\Handler\NotFoundHandler;
 use Zend\Expressive\Response\NotFoundResponseInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
-class NotFoundMiddlewareFactory
+class NotFoundHandlerFactory
 {
-    public function __invoke(ContainerInterface $container) : NotFoundMiddleware
+    public function __invoke(ContainerInterface $container) : NotFoundHandler
     {
         $config   = $container->has('config') ? $container->get('config') : [];
         $renderer = $container->has(TemplateRendererInterface::class)
             ? $container->get(TemplateRendererInterface::class)
             : null;
         $template = $config['zend-expressive']['error_handler']['template_404']
-                    ?? NotFoundMiddleware::TEMPLATE_DEFAULT;
+            ?? NotFoundHandler::TEMPLATE_DEFAULT;
         $layout   = $config['zend-expressive']['error_handler']['layout']
-                    ?? NotFoundMiddleware::LAYOUT_DEFAULT;
+            ?? NotFoundHandler::LAYOUT_DEFAULT;
 
-        return new NotFoundMiddleware(
+        return new NotFoundHandler(
             $container->get(NotFoundResponseInterface::class),
             $renderer,
             $template,

@@ -13,12 +13,12 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
-use Zend\Expressive\Container\NotFoundMiddlewareFactory;
-use Zend\Expressive\Middleware\NotFoundMiddleware;
+use Zend\Expressive\Container\NotFoundHandlerFactory;
+use Zend\Expressive\Handler\NotFoundHandler;
 use Zend\Expressive\Response\NotFoundResponseInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
-class NotFoundMiddlewareFactoryTest extends TestCase
+class NotFoundHandlerFactoryTest extends TestCase
 {
     /** @var ContainerInterface|ObjectProphecy */
     private $container;
@@ -37,12 +37,12 @@ class NotFoundMiddlewareFactoryTest extends TestCase
     {
         $this->container->has('config')->willReturn(false);
         $this->container->has(TemplateRendererInterface::class)->willReturn(false);
-        $factory = new NotFoundMiddlewareFactory();
+        $factory = new NotFoundHandlerFactory();
 
-        $middleware = $factory($this->container->reveal());
-        $this->assertInstanceOf(NotFoundMiddleware::class, $middleware);
-        $this->assertAttributeSame($this->response, 'responsePrototype', $middleware);
-        $this->assertAttributeEmpty('renderer', $middleware);
+        $handler = $factory($this->container->reveal());
+        $this->assertInstanceOf(NotFoundHandler::class, $handler);
+        $this->assertAttributeSame($this->response, 'responsePrototype', $handler);
+        $this->assertAttributeEmpty('renderer', $handler);
     }
 
     public function testFactoryCreatesInstanceUsingRendererServiceWhenPresent()
@@ -51,10 +51,10 @@ class NotFoundMiddlewareFactoryTest extends TestCase
         $this->container->has('config')->willReturn(false);
         $this->container->has(TemplateRendererInterface::class)->willReturn(true);
         $this->container->get(TemplateRendererInterface::class)->willReturn($renderer);
-        $factory = new NotFoundMiddlewareFactory();
+        $factory = new NotFoundHandlerFactory();
 
-        $middleware = $factory($this->container->reveal());
-        $this->assertAttributeSame($renderer, 'renderer', $middleware);
+        $handler = $factory($this->container->reveal());
+        $this->assertAttributeSame($renderer, 'renderer', $handler);
     }
 
     public function testFactoryUsesConfigured404TemplateWhenPresent()
@@ -70,18 +70,18 @@ class NotFoundMiddlewareFactoryTest extends TestCase
         $this->container->has('config')->willReturn(true);
         $this->container->get('config')->willReturn($config);
         $this->container->has(TemplateRendererInterface::class)->willReturn(false);
-        $factory = new NotFoundMiddlewareFactory();
+        $factory = new NotFoundHandlerFactory();
 
-        $middleware = $factory($this->container->reveal());
+        $handler = $factory($this->container->reveal());
         $this->assertAttributeEquals(
             $config['zend-expressive']['error_handler']['layout'],
             'layout',
-            $middleware
+            $handler
         );
         $this->assertAttributeEquals(
             $config['zend-expressive']['error_handler']['template_404'],
             'template',
-            $middleware
+            $handler
         );
     }
 }

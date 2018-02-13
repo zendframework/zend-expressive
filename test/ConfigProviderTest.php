@@ -14,6 +14,7 @@ use Zend\Expressive\Application;
 use Zend\Expressive\ApplicationPipeline;
 use Zend\Expressive\ConfigProvider;
 use Zend\Expressive\Delegate\DefaultDelegate;
+use Zend\Expressive\Handler\NotFoundHandler;
 use Zend\Expressive\Middleware;
 use Zend\Expressive\MiddlewareContainer;
 use Zend\Expressive\MiddlewareFactory;
@@ -53,7 +54,7 @@ class ConfigProviderTest extends TestCase
         $this->assertArrayHasKey(MiddlewareContainer::class, $factories);
         $this->assertArrayHasKey(MiddlewareFactory::class, $factories);
         $this->assertArrayHasKey(Middleware\ErrorResponseGenerator::class, $factories);
-        $this->assertArrayHasKey(Middleware\NotFoundMiddleware::class, $factories);
+        $this->assertArrayHasKey(NotFoundHandler::class, $factories);
         $this->assertArrayHasKey(NotFoundResponseInterface::class, $factories);
         $this->assertArrayHasKey(RequestHandlerRunner::class, $factories);
         $this->assertArrayHasKey(RouterResponseInterface::class, $factories);
