@@ -38,10 +38,9 @@ trait ContainerTrait
      *
      * Adjust `has('service')` and `get('service')` returns.
      *
-     * @param string $serviceName
      * @param mixed $service
      */
-    protected function injectServiceInContainer(ObjectProphecy $container, $serviceName, $service)
+    protected function injectServiceInContainer(ObjectProphecy $container, string $serviceName, $service)
     {
         $container->has($serviceName)->willReturn(true);
         $container->get($serviceName)->willReturn($service);

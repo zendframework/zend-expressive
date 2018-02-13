@@ -117,12 +117,11 @@ class ErrorResponseGeneratorTest extends TestCase
 
     /**
      * @dataProvider templates
-     *
-     * @param null|string $template
-     * @param string $expected
      */
-    public function testRendersTemplateWithoutErrorDetailsWhenRendererPresentAndNotInDebugMode($template, $expected)
-    {
+    public function testRendersTemplateWithoutErrorDetailsWhenRendererPresentAndNotInDebugMode(
+        ?string $template,
+        string $expected
+    ) {
         $error = new RuntimeException('', 0);
 
         $initialResponse   = clone $this->response;
@@ -166,12 +165,11 @@ class ErrorResponseGeneratorTest extends TestCase
 
     /**
      * @dataProvider templates
-     *
-     * @param null|string $template
-     * @param string $expected
      */
-    public function testRendersTemplateWithErrorDetailsWhenRendererPresentAndInDebugMode($template, $expected)
-    {
+    public function testRendersTemplateWithErrorDetailsWhenRendererPresentAndInDebugMode(
+        ?string $template,
+        string $expected
+    ) {
         $error = new RuntimeException('', 0);
 
         $initialResponse   = clone $this->response;

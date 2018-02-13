@@ -99,14 +99,12 @@ class IntegrationTest extends TestCase
     /**
      * Create an Application object with 2 routes, a GET and a POST
      * using Application::get() and Application::post()
-     *
-     * @param string $adapter
-     * @param null|string $getName
-     * @param null|string $postName
-     * @return Application
      */
-    private function createApplicationWithGetPost($adapter, $getName = null, $postName = null)
-    {
+    private function createApplicationWithGetPost(
+        string $adapter,
+        string $getName = null,
+        string $postName = null
+    ) : Application {
         $router = new $adapter();
         $app = $this->createApplicationFromRouter($router);
         $app->pipe(new RouteMiddleware($router));
@@ -129,14 +127,12 @@ class IntegrationTest extends TestCase
     /**
      * Create an Application object with 2 routes, a GET and a POST
      * using Application::route()
-     *
-     * @param string $adapter
-     * @param null|string $getName
-     * @param null|string $postName
-     * @return Application
      */
-    private function createApplicationWithRouteGetPost($adapter, $getName = null, $postName = null)
-    {
+    private function createApplicationWithRouteGetPost(
+        string $adapter,
+        string $getName = null,
+        string $postName = null
+    ) : Application {
         $router = new $adapter();
         $app = $this->createApplicationFromRouter($router);
         $app->pipe(new RouteMiddleware($router));
@@ -158,10 +154,8 @@ class IntegrationTest extends TestCase
 
     /**
      * @dataProvider routerAdapters
-     *
-     * @param string $adapter
      */
-    public function testRoutingDoesNotMatchMethod($adapter)
+    public function testRoutingDoesNotMatchMethod(string $adapter)
     {
         $app = $this->createApplicationWithGetPost($adapter);
         $handler = $this->prophesize(RequestHandlerInterface::class);
@@ -181,10 +175,8 @@ class IntegrationTest extends TestCase
      * @group 40
      *
      * @dataProvider routerAdapters
-     *
-     * @param string $adapter
      */
-    public function testRoutingWithSamePathWithoutName($adapter)
+    public function testRoutingWithSamePathWithoutName(string $adapter)
     {
         $app = $this->createApplicationWithGetPost($adapter);
         $app->pipe(new DispatchMiddleware());
@@ -209,10 +201,8 @@ class IntegrationTest extends TestCase
      * @group 40
      *
      * @dataProvider routerAdapters
-     *
-     * @param string $adapter
      */
-    public function testRoutingWithSamePathWithName($adapter)
+    public function testRoutingWithSamePathWithName(string $adapter)
     {
         $app = $this->createApplicationWithGetPost($adapter, 'foo-get', 'foo-post');
         $app->pipe(new DispatchMiddleware());
@@ -238,10 +228,8 @@ class IntegrationTest extends TestCase
      * @group 40
      *
      * @dataProvider routerAdapters
-     *
-     * @param string $adapter
      */
-    public function testRoutingWithSamePathWithRouteWithoutName($adapter)
+    public function testRoutingWithSamePathWithRouteWithoutName(string $adapter)
     {
         $app = $this->createApplicationWithRouteGetPost($adapter);
         $app->pipe(new DispatchMiddleware());
@@ -265,10 +253,8 @@ class IntegrationTest extends TestCase
      * @see https://github.com/zendframework/zend-expressive/issues/40
      *
      * @dataProvider routerAdapters
-     *
-     * @param string $adapter
      */
-    public function testRoutingWithSamePathWithRouteWithName($adapter)
+    public function testRoutingWithSamePathWithRouteWithName(string $adapter)
     {
         $app = $this->createApplicationWithRouteGetPost($adapter, 'foo-get', 'foo-post');
         $app->pipe(new DispatchMiddleware());
@@ -294,10 +280,8 @@ class IntegrationTest extends TestCase
      * @group 40
      *
      * @dataProvider routerAdapters
-     *
-     * @param string $adapter
      */
-    public function testRoutingWithSamePathWithRouteWithMultipleMethods($adapter)
+    public function testRoutingWithSamePathWithRouteWithMultipleMethods(string $adapter)
     {
         $router = new $adapter();
         $app = $this->createApplicationFromRouter($router);
@@ -359,11 +343,8 @@ class IntegrationTest extends TestCase
 
     /**
      * @dataProvider routerAdaptersForHttpMethods
-     *
-     * @param string $adapter
-     * @param string $method
      */
-    public function testMatchWithAllHttpMethods($adapter, $method)
+    public function testMatchWithAllHttpMethods(string $adapter, string $method)
     {
         $router = new $adapter();
         $app = $this->createApplicationFromRouter($router);
@@ -423,11 +404,8 @@ class IntegrationTest extends TestCase
 
     /**
      * @dataProvider allowedMethod
-     *
-     * @param string $adapter
-     * @param string $method
      */
-    public function testAllowedMethodsWhenOnlyPutMethodSet($adapter, $method)
+    public function testAllowedMethodsWhenOnlyPutMethodSet(string $adapter, string $method)
     {
         $router = new $adapter();
         $app = $this->createApplicationFromRouter($router);
@@ -458,11 +436,8 @@ class IntegrationTest extends TestCase
 
     /**
      * @dataProvider allowedMethod
-     *
-     * @param string $adapter
-     * @param string $method
      */
-    public function testAllowedMethodsWhenNoHttpMethodsSet($adapter, $method)
+    public function testAllowedMethodsWhenNoHttpMethodsSet(string $adapter, string $method)
     {
         $router = new $adapter();
         $app = $this->createApplicationFromRouter($router);
@@ -515,11 +490,8 @@ class IntegrationTest extends TestCase
 
     /**
      * @dataProvider notAllowedMethod
-     *
-     * @param string $adapter
-     * @param string $method
      */
-    public function testNotAllowedMethodWhenNoHttpMethodsSet($adapter, $method)
+    public function testNotAllowedMethodWhenNoHttpMethodsSet(string $adapter, string $method)
     {
         $router = new $adapter();
         $app = $this->createApplicationFromRouter($router);
@@ -548,10 +520,8 @@ class IntegrationTest extends TestCase
      * @group 74
      *
      * @dataProvider routerAdapters
-     *
-     * @param string $adapter
      */
-    public function testWithOnlyRootPathRouteDefinedRoutingToSubPathsShouldDelegate($adapter)
+    public function testWithOnlyRootPathRouteDefinedRoutingToSubPathsShouldDelegate(string $adapter)
     {
         $router = new $adapter();
         $app = $this->createApplicationFromRouter($router);
