@@ -2,6 +2,76 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 3.0.0alpha6 - TBD
+
+### Added
+
+- [#551](https://github.com/zendframework/zend-expressive/pull/551) adds
+  `Zend\Expressive\Container\StreamFactory`, for producing an empty, writable
+  PSR-7 `StreamInterface` instance using zend-diactoros. The stream produced is
+  backed by a `php://temp` stream.
+
+- [#551](https://github.com/zendframework/zend-expressive/pull/551) adds
+  the following constants under the `Zend\Expressive` namespace:
+
+  - `DEFAULT_DELEGATE` can be used to refer to the former `DefaultDelegate` FQCN service.
+  - `NOT_FOUND_MIDDLEWARE` can be used to refer to the former `Zend\Expressive\Middleware\NotFoundMiddleware` service.
+  - `NOT_FOUND_RESPONSE` can be used to refer to the former `Zend\Expressive\Response\NotFoundResponseInterface` service.
+  - `SERVER_REQUEST_ERROR_RESPONSE_GENERATOR` can be used to refer to the former `Zend\Expressive\ServerRequestErrorResponseGenerator` service.
+  - `SERVER_REQUEST_FACTORY` can be used to refer to the former `Zend\Expressive\ServerRequestFactory` service.
+
+### Changed
+
+- [#551](https://github.com/zendframework/zend-expressive/pull/551) updates
+  dependencies to pin to zend-expressive-router 3.0.0alpha2 or later.
+
+- [#551](https://github.com/zendframework/zend-expressive/pull/551) renames
+  `Zend\Expressive\Middleware\NotFoundMiddleware` to
+  `Zend\Expressive\Handler\NotFoundHandler`, which allows it to be used as a
+  PSR-15 request handler, and, when piped or routed to, also as middleware.
+  The original class name was aliased to the renamed class in the
+  `ConfigProvider`.
+
+- [#551](https://github.com/zendframework/zend-expressive/pull/551) modifies the
+  `ApplicationConfigInjectionDelegator` to raise an exception if the callback
+  passed to it does not produce an `Application` instance, instead of returning
+  the instance without changes. This allows developers to understand what they
+  need to correct in their service configuration.
+
+- [#551](https://github.com/zendframework/zend-expressive/pull/551) updates
+  the `ConfigProvider` to add entries for the following zend-expressive-router
+  constants as follows:
+
+  - `IMPLICIT_HEAD_MIDDLEWARE_RESPONSE` maps to the `ResponseFactory`.
+  - `IMPLICIT_HEAD_MIDDLEWARE_STREAM_FACTORY` maps to the `StreamFactory`.
+  - `IMPLICIT_OPTIONS_MIDDLEWARE_RESPONSE` maps to the `ResponseFactory`.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- [#551](https://github.com/zendframework/zend-expressive/pull/551) removes
+  `Zend\Expressive\Container\RouteMiddlewareFactory`, as zend-expressive-router
+  now provides a factory for the middleware.
+
+- [#551](https://github.com/zendframework/zend-expressive/pull/551) removes
+  `Zend\Expressive\Container\DispatchMiddlewareFactory`, as zend-expressive-router
+  now provides a factory for the middleware.
+
+- [#551](https://github.com/zendframework/zend-expressive/pull/551) removes
+  `Zend\Expressive\Middleware\ImplicitHeadMiddleware`, as it is now provided by
+  the zend-expressive-router package.
+
+- [#551](https://github.com/zendframework/zend-expressive/pull/551) removes
+  `Zend\Expressive\Middleware\ImplicitOptionsMiddleware`, as it is now provided
+  by the zend-expressive-router package.
+
+### Fixed
+
+- Nothing.
+
 ## 3.0.0alpha5 - 2018-02-07
 
 ### Added
