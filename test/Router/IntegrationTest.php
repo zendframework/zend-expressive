@@ -70,7 +70,7 @@ class IntegrationTest extends TestCase
         $container = new MiddlewareContainer($this->container->reveal());
         $factory = new MiddlewareFactory($container);
         $pipeline = new MiddlewarePipe();
-        $routeMiddleware = new RouteMiddleware($router, $this->response);
+        $routeMiddleware = new RouteMiddleware($router);
         $runner = $this->prophesize(RequestHandlerRunner::class)->reveal();
         return new Application(
             $factory,
@@ -105,7 +105,7 @@ class IntegrationTest extends TestCase
     {
         $router = new $adapter();
         $app = $this->createApplicationFromRouter($router);
-        $app->pipe(new RouteMiddleware($router, $this->response));
+        $app->pipe(new RouteMiddleware($router));
         $app->pipe(new MethodNotAllowedMiddleware($this->response));
 
         $app->get('/foo', function ($req, $handler) {
@@ -135,7 +135,7 @@ class IntegrationTest extends TestCase
     {
         $router = new $adapter();
         $app = $this->createApplicationFromRouter($router);
-        $app->pipe(new RouteMiddleware($router, $this->response));
+        $app->pipe(new RouteMiddleware($router));
         $app->pipe(new MethodNotAllowedMiddleware($this->response));
 
         $app->route('/foo', function ($req, $handler) {
@@ -297,7 +297,7 @@ class IntegrationTest extends TestCase
     {
         $router = new $adapter();
         $app = $this->createApplicationFromRouter($router);
-        $app->pipe(new RouteMiddleware($router, $this->response));
+        $app->pipe(new RouteMiddleware($router));
         $app->pipe(new MethodNotAllowedMiddleware($this->response));
         $app->pipe(new DispatchMiddleware());
 
@@ -363,7 +363,7 @@ class IntegrationTest extends TestCase
     {
         $router = new $adapter();
         $app = $this->createApplicationFromRouter($router);
-        $app->pipe(new RouteMiddleware($router, $this->response));
+        $app->pipe(new RouteMiddleware($router));
         $app->pipe(new MethodNotAllowedMiddleware($this->response));
         $app->pipe(new DispatchMiddleware());
 
@@ -427,7 +427,7 @@ class IntegrationTest extends TestCase
     {
         $router = new $adapter();
         $app = $this->createApplicationFromRouter($router);
-        $app->pipe(new RouteMiddleware($router, $this->response));
+        $app->pipe(new RouteMiddleware($router));
         $app->pipe(new MethodNotAllowedMiddleware($this->response));
         $app->pipe(new ImplicitHeadMiddleware($this->response, function () {
         }));
@@ -462,7 +462,7 @@ class IntegrationTest extends TestCase
     {
         $router = new $adapter();
         $app = $this->createApplicationFromRouter($router);
-        $app->pipe(new RouteMiddleware($router, $this->response));
+        $app->pipe(new RouteMiddleware($router));
         $app->pipe(new MethodNotAllowedMiddleware($this->response));
 
         // This middleware is used just to check that request has successful RouteResult
@@ -518,7 +518,7 @@ class IntegrationTest extends TestCase
     {
         $router = new $adapter();
         $app = $this->createApplicationFromRouter($router);
-        $app->pipe(new RouteMiddleware($router, $this->response));
+        $app->pipe(new RouteMiddleware($router));
         $app->pipe(new MethodNotAllowedMiddleware($this->response));
         $app->pipe(new DispatchMiddleware());
 
@@ -550,7 +550,7 @@ class IntegrationTest extends TestCase
     {
         $router = new $adapter();
         $app = $this->createApplicationFromRouter($router);
-        $app->pipe(new RouteMiddleware($router, $this->response));
+        $app->pipe(new RouteMiddleware($router));
 
         $response = clone $this->response;
         $app->route('/', function ($req, $handler) use ($response) {
