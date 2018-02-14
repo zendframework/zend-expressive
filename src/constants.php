@@ -29,6 +29,26 @@ const DEFAULT_DELEGATE = __NAMESPACE__ . '\Delegate\DefaultDelegate';
 const DISPATCH_MIDDLEWARE = __NAMESPACE__ . '\Middleware\DispatchMiddleware';
 
 /**
+ * Legacy service name for the ImplicitHeadMiddleware referenced in version 2.
+ * Should resolve to the Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware
+ * service.
+ *
+ * @deprecated To remove in version 4.0.0.
+ * @var string
+ */
+const IMPLICIT_HEAD_MIDDLEWARE = __NAMESPACE__ . '\Middleware\ImplicitHeadMiddleware';
+
+/**
+ * Legacy service name for the ImplicitOptionsMiddleware referenced in version 2.
+ * Should resolve to the Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware
+ * service.
+ *
+ * @deprecated To remove in version 4.0.0.
+ * @var string
+ */
+const IMPLICIT_OPTIONS_MIDDLEWARE = __NAMESPACE__ . '\Middleware\ImplicitOptionsMiddleware';
+
+/**
  * Legacy/transitional service name for the NotFoundMiddleware introduced in
  * 3.0.0alpha2. Should resolve to the Handler\NotFoundHandler class.
  *

@@ -12,10 +12,13 @@ All notable changes to this project will be documented in this file, in reverse 
   capable of producing an empty, writable PSR-7 `StreamInterface` instance using
   zend-diactoros. The stream produced is backed by a `php://temp` stream.
 
-- [#551](https://github.com/zendframework/zend-expressive/pull/551) adds
+- [#551](https://github.com/zendframework/zend-expressive/pull/551) and
+  [#554](https://github.com/zendframework/zend-expressive/pull/554) add
   the following constants under the `Zend\Expressive` namespace:
 
   - `DEFAULT_DELEGATE` can be used to refer to the former `DefaultDelegate` FQCN service.
+  - `IMPLICIT_HEAD_MIDDLEWARE` can be used to refer to the former `Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware` service.
+  - `IMPLICIT_OPTIONS_MIDDLEWARE` can be used to refer to the former `Zend\Expressive\Router\Middleware\ImplicitOPTIONSMiddleware` service.
   - `NOT_FOUND_MIDDLEWARE` can be used to refer to the former `Zend\Expressive\Middleware\NotFoundMiddleware` service.
   - `NOT_FOUND_RESPONSE` can be used to refer to the former `Zend\Expressive\Response\NotFoundResponseInterface` service.
   - `SERVER_REQUEST_ERROR_RESPONSE_GENERATOR` can be used to refer to the former `Zend\Expressive\ServerRequestErrorResponseGenerator` service.
@@ -46,6 +49,12 @@ All notable changes to this project will be documented in this file, in reverse 
   - `IMPLICIT_HEAD_MIDDLEWARE_RESPONSE` maps to the `ResponseFactory`.
   - `IMPLICIT_HEAD_MIDDLEWARE_STREAM_FACTORY` maps to the `StreamFactory`.
   - `IMPLICIT_OPTIONS_MIDDLEWARE_RESPONSE` maps to the `ResponseFactory`.
+
+- [#554](https://github.com/zendframework/zend-expressive/pull/554) updates
+  the `ConfigProvider` to add entries for the following constants as follows:
+
+  - `IMPLICIT_HEAD_MIDDLEWARE` aliases to the `Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware` service.
+  - `IMPLICIT_OPTIONS_MIDDLEWARE` aliases to the `Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware` service.
 
 ### Deprecated
 

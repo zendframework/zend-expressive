@@ -26,6 +26,8 @@ use Zend\Stratigility\Middleware\ErrorHandler;
 
 use const Zend\Expressive\DEFAULT_DELEGATE;
 use const Zend\Expressive\DISPATCH_MIDDLEWARE;
+use const Zend\Expressive\IMPLICIT_HEAD_MIDDLEWARE;
+use const Zend\Expressive\IMPLICIT_OPTIONS_MIDDLEWARE;
 use const Zend\Expressive\NOT_FOUND_MIDDLEWARE;
 use const Zend\Expressive\NOT_FOUND_RESPONSE;
 use const Zend\Expressive\ROUTE_MIDDLEWARE;
@@ -49,6 +51,8 @@ class ConfigProviderTest extends TestCase
         $aliases = $config['aliases'];
         $this->assertArrayHasKey(DEFAULT_DELEGATE, $aliases);
         $this->assertArrayHasKey(DISPATCH_MIDDLEWARE, $aliases);
+        $this->assertArrayHasKey(IMPLICIT_HEAD_MIDDLEWARE, $aliases);
+        $this->assertArrayHasKey(IMPLICIT_OPTIONS_MIDDLEWARE, $aliases);
         $this->assertArrayHasKey(NOT_FOUND_MIDDLEWARE, $aliases);
         $this->assertArrayHasKey(ROUTE_MIDDLEWARE, $aliases);
     }
