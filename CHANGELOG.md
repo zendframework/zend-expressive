@@ -6,10 +6,11 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- [#551](https://github.com/zendframework/zend-expressive/pull/551) adds
-  `Zend\Expressive\Container\StreamFactory`, for producing an empty, writable
-  PSR-7 `StreamInterface` instance using zend-diactoros. The stream produced is
-  backed by a `php://temp` stream.
+- [#551](https://github.com/zendframework/zend-expressive/pull/551) and
+  [#553](https://github.com/zendframework/zend-expressive/pull/553) add
+  `Zend\Expressive\Container\StreamFactoryFactory`, for producing an callable
+  capable of producing an empty, writable PSR-7 `StreamInterface` instance using
+  zend-diactoros. The stream produced is backed by a `php://temp` stream.
 
 - [#551](https://github.com/zendframework/zend-expressive/pull/551) adds
   the following constants under the `Zend\Expressive` namespace:
