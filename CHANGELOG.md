@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 3.0.0alpha7 - 2018-02-14
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- [#556](https://github.com/zendframework/zend-expressive/pull/556) modifies the
+  `ApplicationFactory` such that it now uses the
+  `Zend\Expressive\ROUTE_MIDDLEWARE` constant in order to retrieve the
+  `Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware` instance.
+  This is done to help smooth upgrades from v2 to v3, as it prevents a manual
+  step when updating the `config/pipeline.php`, and ensures that the instance
+  composed in the application is the same instance piped to the application.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 3.0.0alpha6 - 2018-02-14
 
 ### Added

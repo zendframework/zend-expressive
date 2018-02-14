@@ -70,7 +70,6 @@ const NOT_FOUND_RESPONSE = __NAMESPACE__ . '\Response\NotFoundResponseInterface'
  * Should resolve to the Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware
  * service.
  *
- * @deprecated To remove in version 4.0.0.
  * @var string
  */
 const ROUTE_MIDDLEWARE = __NAMESPACE__ . '\Middleware\RouteMiddleware';
