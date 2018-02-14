@@ -12,17 +12,20 @@ namespace ZendTest\Expressive\Container;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Zend\Diactoros\Stream;
-use Zend\Expressive\Container\StreamFactory;
+use Zend\Expressive\Container\StreamFactoryFactory;
 
-class StreamFactoryTest extends TestCase
+class StreamFactoryFactoryTest extends TestCase
 {
-    public function testFactoryProducesAStreamWhenDiactorosIsInstalled()
+    public function testFactoryProducesACallableCapableOfGeneratingAStreamWhenDiactorosIsInstalled()
     {
         $container = $this->prophesize(ContainerInterface::class)->reveal();
-        $factory = new StreamFactory();
+        $factory = new StreamFactoryFactory();
 
-        $response = $factory($container);
+        $result = $factory($container);
 
-        $this->assertInstanceOf(Stream::class, $response);
+        $this->assertInternalType('callable', $result);
+
+        $stream = $result();
+        $this->assertInstanceOf(Stream::class, $stream);
     }
 }

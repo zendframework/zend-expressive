@@ -13,9 +13,9 @@ use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Throwable;
 use Zend\Expressive\Container\Exception\InvalidServiceException;
-use Zend\Expressive\Container\StreamFactory;
+use Zend\Expressive\Container\StreamFactoryFactory;
 
-class StreamFactoryWithoutDiactorosTest extends TestCase
+class StreamFactoryFactoryWithoutDiactorosTest extends TestCase
 {
     private $autoloadFunctions = [];
 
@@ -24,7 +24,7 @@ class StreamFactoryWithoutDiactorosTest extends TestCase
         class_exists(InvalidServiceException::class);
 
         $this->container = $this->prophesize(ContainerInterface::class)->reveal();
-        $this->factory = new StreamFactory();
+        $this->factory = new StreamFactoryFactory();
 
         foreach (spl_autoload_functions() as $autoloader) {
             if (! is_array($autoloader)) {

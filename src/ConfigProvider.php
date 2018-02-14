@@ -50,7 +50,7 @@ class ConfigProvider
                 NOT_FOUND_RESPONSE                             => Container\ResponseFactory::class,
                 RequestHandlerRunner::class                    => Container\RequestHandlerRunnerFactory::class,
                 Router\IMPLICIT_HEAD_MIDDLEWARE_RESPONSE       => Container\ResponseFactory::class,
-                Router\IMPLICIT_HEAD_MIDDLEWARE_STREAM_FACTORY => Container\StreamFactory::class,
+                Router\IMPLICIT_HEAD_MIDDLEWARE_STREAM_FACTORY => Container\StreamFactoryFactory::class,
                 Router\IMPLICIT_OPTIONS_MIDDLEWARE_RESPONSE    => Container\ResponseFactory::class,
                 Router\METHOD_NOT_ALLOWED_MIDDLEWARE_RESPONSE  => Container\ResponseFactory::class,
                 SERVER_REQUEST_ERROR_RESPONSE_GENERATOR        => Container\ServerRequestErrorResponseGeneratorFactory::class,
