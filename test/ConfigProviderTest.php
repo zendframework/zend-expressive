@@ -93,13 +93,24 @@ class ConfigProviderTest extends TestCase
 
     public function testServicesDefinedInConfigProvider()
     {
-        $routerConfigProvider = new RouterConfigProvider();
+        $config = ($this->provider)();
+
+        $json = json_decode(
+            file_get_contents(__DIR__ . '/../composer.lock'),
+        true
+        );
+        foreach ($json['packages'] as $package) {
+            if (isset($package['extra']['zf']['config-provider'])) {
+                $configProvider = new $package['extra']['zf']['config-provider']();
+                $config = array_merge_recursive($config, $configProvider());
+            }
+        }
+
+        $routerInterface = $this->prophesize(RouterInterface::class)->reveal();
+        $config['dependencies']['services'][RouterInterface::class] = $routerInterface;
+        $container = new ServiceManager($config['dependencies']);
+
         $dependencies = $this->provider->getDependencies();
-
-        $config = array_merge_recursive($dependencies, $routerConfigProvider->getDependencies());
-        $config['services'][RouterInterface::class] = $this->prophesize(RouterInterface::class)->reveal();
-        $container = new ServiceManager($config);
-
         foreach ($dependencies['factories'] as $name => $factory) {
             $this->assertTrue($container->has($name), sprintf('Container does not contain service %s', $name));
             $this->assertInternalType(
