@@ -10,18 +10,15 @@ declare(strict_types=1);
 namespace Zend\Expressive\Container;
 
 use Psr\Container\ContainerInterface;
-use Psr\Http\Message\StreamInterface;
 use Zend\Diactoros\Stream;
 
 /**
- * Produces an empty stream for use with services that need to produce a stream
- * for use with a request or a response. This service should be non-shared, if
- * your container supports that possibility, to ensure that the stream it
- * composes cannot be written to by any other consumer.
+ * Produces a callable capable of producing an empty stream for use with
+ * services that need to produce a stream for use with a request or a response.
  */
-class StreamFactory
+class StreamFactoryFactory
 {
-    public function __invoke(ContainerInterface $container) : StreamInterface
+    public function __invoke(ContainerInterface $container) : callable
     {
         if (! class_exists(Stream::class)) {
             throw new Exception\InvalidServiceException(sprintf(
@@ -35,6 +32,8 @@ class StreamFactory
             ));
         }
 
-        return new Stream('php://temp', 'wb+');
+        return function () : Stream {
+            return new Stream('php://temp', 'wb+');
+        };
     }
 }
