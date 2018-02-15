@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 3.0.0alpha8 - TBD
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#558](https://github.com/zendframework/zend-expressive/pull/558) adds a
+  missing import statement for the PSR-7 `StreamInterface` to the
+  `StreamFactoryFactory`.
+
 ## 3.0.0alpha7 - 2018-02-14
 
 ### Added
