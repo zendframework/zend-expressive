@@ -33,8 +33,8 @@ class LazyLoadingMiddlewareTest extends TestCase
     protected function setUp()
     {
         $this->container = $this->prophesize(MiddlewareContainer::class);
-        $this->request   = $this->prophesize(ServerRequestInterface::class);
-        $this->handler   = $this->prophesize(RequestHandlerInterface::class);
+        $this->request = $this->prophesize(ServerRequestInterface::class);
+        $this->handler = $this->prophesize(RequestHandlerInterface::class);
     }
 
     private function buildLazyLoadingMiddleware(string $middlewareName) : LazyLoadingMiddleware

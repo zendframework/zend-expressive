@@ -33,7 +33,7 @@ class WhoopsPageHandlerFactoryTest extends TestCase
     protected function setUp()
     {
         $this->container = $this->mockContainerInterface();
-        $this->factory   = new WhoopsPageHandlerFactory();
+        $this->factory = new WhoopsPageHandlerFactory();
     }
 
     public function testReturnsAPrettyPageHandler()
@@ -50,7 +50,7 @@ class WhoopsPageHandlerFactoryTest extends TestCase
         $this->injectServiceInContainer($this->container, 'config', $config);
 
         $factory = $this->factory;
-        $result  = $factory($this->container->reveal());
+        $result = $factory($this->container->reveal());
         $this->assertInstanceOf(PrettyPageHandler::class, $result);
         $this->assertAttributeEquals($config['whoops']['editor'], 'editor', $result);
     }
@@ -80,7 +80,7 @@ class WhoopsPageHandlerFactoryTest extends TestCase
         $this->injectServiceInContainer($this->container, 'custom', $editor);
 
         $factory = $this->factory;
-        $result  = $factory($this->container->reveal());
+        $result = $factory($this->container->reveal());
         $this->assertInstanceOf(PrettyPageHandler::class, $result);
         $this->assertAttributeSame($editor, 'editor', $result);
     }

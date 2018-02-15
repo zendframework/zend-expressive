@@ -39,7 +39,7 @@ class WhoopsFactoryTest extends TestCase
 
     protected function setUp()
     {
-        $pageHandler     = $this->prophesize(PrettyPageHandler::class);
+        $pageHandler = $this->prophesize(PrettyPageHandler::class);
         $this->container = $this->mockContainerInterface();
         $this->injectServiceInContainer($this->container, 'Zend\Expressive\WhoopsPageHandler', $pageHandler->reveal());
 
@@ -49,7 +49,7 @@ class WhoopsFactoryTest extends TestCase
     public function assertWhoopsContainsHandler(string $type, Whoops $whoops, string $message = null)
     {
         $message = $message ?: sprintf('Failed to assert whoops runtime composed handler of type %s', $type);
-        $r       = new ReflectionProperty($whoops, 'handlerStack');
+        $r = new ReflectionProperty($whoops, 'handlerStack');
         $r->setAccessible(true);
         $stack = $r->getValue($whoops);
 
@@ -67,7 +67,7 @@ class WhoopsFactoryTest extends TestCase
     public function testReturnsAWhoopsRuntimeWithPageHandlerComposed()
     {
         $factory = $this->factory;
-        $result  = $factory($this->container->reveal());
+        $result = $factory($this->container->reveal());
         $this->assertInstanceOf(Whoops::class, $result);
         $this->assertWhoopsContainsHandler(PrettyPageHandler::class, $result);
     }
@@ -78,7 +78,7 @@ class WhoopsFactoryTest extends TestCase
         $this->injectServiceInContainer($this->container, 'config', $config);
 
         $factory = $this->factory;
-        $result  = $factory($this->container->reveal());
+        $result = $factory($this->container->reveal());
         $this->assertInstanceOf(Whoops::class, $result);
         $this->assertWhoopsContainsHandler(PrettyPageHandler::class, $result);
         $this->assertWhoopsContainsHandler(JsonResponseHandler::class, $result);
@@ -110,7 +110,7 @@ class WhoopsFactoryTest extends TestCase
         $this->injectServiceInContainer($this->container, 'config', $config);
 
         $factory = $this->factory;
-        $whoops  = $factory($this->container->reveal());
+        $whoops = $factory($this->container->reveal());
         $handler = $whoops->popHandler();
 
         // If ajax only, not ajax request and Whoops 2, it does not inject JsonResponseHandler

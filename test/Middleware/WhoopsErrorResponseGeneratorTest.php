@@ -47,9 +47,9 @@ class WhoopsErrorResponseGeneratorTest extends TestCase
             ? $this->prophesize(RunInterface::class)
             : $this->prophesize(Run::class);
 
-        $this->request  = $this->prophesize(ServerRequestInterface::class);
+        $this->request = $this->prophesize(ServerRequestInterface::class);
         $this->response = $this->prophesize(ResponseInterface::class);
-        $this->stream   = $this->prophesize(StreamInterface::class);
+        $this->stream = $this->prophesize(StreamInterface::class);
     }
 
     public function testWritesResultsOfWhoopsExceptionsHandlingToResponse()

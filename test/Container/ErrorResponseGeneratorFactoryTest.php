@@ -27,7 +27,7 @@ class ErrorResponseGeneratorFactoryTest extends TestCase
     protected function setUp()
     {
         $this->container = $this->prophesize(ContainerInterface::class);
-        $this->renderer  = $this->prophesize(TemplateRendererInterface::class);
+        $this->renderer = $this->prophesize(TemplateRendererInterface::class);
     }
 
     public function testNoConfigurationCreatesInstanceWithDefaults()

@@ -36,9 +36,9 @@ class ErrorResponseGeneratorTest extends TestCase
 
     protected function setUp()
     {
-        $this->request  = $this->prophesize(ServerRequestInterface::class);
+        $this->request = $this->prophesize(ServerRequestInterface::class);
         $this->response = $this->prophesize(ResponseInterface::class);
-        $this->stream   = $this->prophesize(StreamInterface::class);
+        $this->stream = $this->prophesize(StreamInterface::class);
         $this->renderer = $this->prophesize(TemplateRendererInterface::class);
     }
 
@@ -46,7 +46,7 @@ class ErrorResponseGeneratorTest extends TestCase
     {
         $error = new RuntimeException('', 0);
 
-        $initialResponse   = clone $this->response;
+        $initialResponse = clone $this->response;
         $secondaryResponse = clone $this->response;
 
         $secondaryResponse->getBody()->will([$this->stream, 'reveal']);
@@ -72,11 +72,11 @@ class ErrorResponseGeneratorTest extends TestCase
 
     public function testWritesStackTraceToResponseWhenNoRendererPresentInDebugMode()
     {
-        $leaf   = new RuntimeException('leaf', 415);
+        $leaf = new RuntimeException('leaf', 415);
         $branch = new RuntimeException('branch', 0, $leaf);
-        $error  = new RuntimeException('root', 599, $branch);
+        $error = new RuntimeException('root', 599, $branch);
 
-        $initialResponse   = clone $this->response;
+        $initialResponse = clone $this->response;
         $secondaryResponse = clone $this->response;
 
         $secondaryResponse->getBody()->will([$this->stream, 'reveal']);
@@ -124,7 +124,7 @@ class ErrorResponseGeneratorTest extends TestCase
     ) {
         $error = new RuntimeException('', 0);
 
-        $initialResponse   = clone $this->response;
+        $initialResponse = clone $this->response;
         $secondaryResponse = clone $this->response;
 
         $this->renderer
@@ -172,7 +172,7 @@ class ErrorResponseGeneratorTest extends TestCase
     ) {
         $error = new RuntimeException('', 0);
 
-        $initialResponse   = clone $this->response;
+        $initialResponse = clone $this->response;
         $secondaryResponse = clone $this->response;
 
         $secondaryResponse->getBody()->will([$this->stream, 'reveal']);

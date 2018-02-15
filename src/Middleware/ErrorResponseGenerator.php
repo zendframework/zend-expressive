@@ -53,9 +53,9 @@ EOT;
         TemplateRendererInterface $renderer = null,
         string $template = self::TEMPLATE_DEFAULT
     ) {
-        $this->debug     = $isDevelopmentMode;
-        $this->renderer  = $renderer;
-        $this->template  = $template;
+        $this->debug = $isDevelopmentMode;
+        $this->renderer = $renderer;
+        $this->template = $template;
     }
 
     public function __invoke(

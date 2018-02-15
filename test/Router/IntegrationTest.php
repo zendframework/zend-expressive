@@ -61,11 +61,11 @@ class IntegrationTest extends TestCase
 
     protected function setUp()
     {
-        $this->response  = new Response();
+        $this->response = new Response();
         $this->responseFactory = function () {
             return $this->response;
         };
-        $this->router    = $this->prophesize(RouterInterface::class);
+        $this->router = $this->prophesize(RouterInterface::class);
         $this->container = $this->mockContainerInterface();
     }
 
@@ -163,7 +163,7 @@ class IntegrationTest extends TestCase
                 ->shouldNotBeCalled();
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'DELETE'], [], '/foo', 'DELETE');
-        $result  = $app->process($request, $handler->reveal());
+        $result = $app->process($request, $handler->reveal());
 
         $this->assertSame(StatusCode::STATUS_METHOD_NOT_ALLOWED, $result->getStatusCode());
         $headers = $result->getHeaders();
@@ -186,12 +186,12 @@ class IntegrationTest extends TestCase
                 ->shouldNotBeCalled();
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');
-        $result  = $app->process($request, $handler->reveal());
+        $result = $app->process($request, $handler->reveal());
 
         $this->assertEquals('Middleware GET', (string) $result->getBody());
 
-        $request  = new ServerRequest(['REQUEST_METHOD' => 'POST'], [], '/foo', 'POST');
-        $result   = $app->process($request, $handler->reveal());
+        $request = new ServerRequest(['REQUEST_METHOD' => 'POST'], [], '/foo', 'POST');
+        $result = $app->process($request, $handler->reveal());
 
         $this->assertEquals('Middleware POST', (string) $result->getBody());
     }
@@ -213,12 +213,12 @@ class IntegrationTest extends TestCase
             ->shouldNotBeCalled();
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');
-        $result  = $app->process($request, $handler->reveal());
+        $result = $app->process($request, $handler->reveal());
 
         $this->assertEquals('Middleware GET', (string) $result->getBody());
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'POST'], [], '/foo', 'POST');
-        $result  = $app->process($request, $handler->reveal());
+        $result = $app->process($request, $handler->reveal());
 
         $this->assertEquals('Middleware POST', (string) $result->getBody());
     }
@@ -239,12 +239,12 @@ class IntegrationTest extends TestCase
                 ->shouldNotBeCalled();
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');
-        $result  = $app->process($request, $handler->reveal());
+        $result = $app->process($request, $handler->reveal());
 
         $this->assertEquals('Middleware GET', (string) $result->getBody());
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'POST'], [], '/foo', 'POST');
-        $result  = $app->process($request, $handler->reveal());
+        $result = $app->process($request, $handler->reveal());
 
         $this->assertEquals('Middleware POST', (string) $result->getBody());
     }
@@ -265,12 +265,12 @@ class IntegrationTest extends TestCase
             ->shouldNotBeCalled();
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');
-        $result  = $app->process($request, $handler->reveal());
+        $result = $app->process($request, $handler->reveal());
 
         $this->assertEquals('Middleware GET', (string) $result->getBody());
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'POST'], [], '/foo', 'POST');
-        $result  = $app->process($request, $handler->reveal());
+        $result = $app->process($request, $handler->reveal());
 
         $this->assertEquals('Middleware POST', (string) $result->getBody());
     }
@@ -309,15 +309,15 @@ class IntegrationTest extends TestCase
             ->shouldNotBeCalled();
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');
-        $result  = $app->process($request, $handler->reveal());
+        $result = $app->process($request, $handler->reveal());
         $this->assertEquals('Middleware GET, POST', (string) $result->getBody());
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'POST'], [], '/foo', 'POST');
-        $result  = $app->process($request, $handler->reveal());
+        $result = $app->process($request, $handler->reveal());
         $this->assertEquals('Middleware GET, POST', (string) $result->getBody());
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'DELETE'], [], '/foo', 'DELETE');
-        $result  = $app->process($request, $handler->reveal());
+        $result = $app->process($request, $handler->reveal());
         $this->assertEquals('Middleware DELETE', (string) $result->getBody());
     }
 
@@ -366,7 +366,7 @@ class IntegrationTest extends TestCase
             ->shouldNotBeCalled();
 
         $request = new ServerRequest(['REQUEST_METHOD' => $method], [], '/foo', $method);
-        $result  = $app->process($request, $handler->reveal());
+        $result = $app->process($request, $handler->reveal());
         $this->assertEquals('Middleware', (string) $result->getBody());
     }
 
@@ -427,8 +427,8 @@ class IntegrationTest extends TestCase
         $handler->handle(Argument::type(ServerRequest::class))
                 ->shouldNotBeCalled();
 
-        $request  = new ServerRequest(['REQUEST_METHOD' => $method], [], '/foo', $method);
-        $result   = $app->process($request, $handler->reveal());
+        $request = new ServerRequest(['REQUEST_METHOD' => $method], [], '/foo', $method);
+        $result = $app->process($request, $handler->reveal());
 
         $this->assertEquals(StatusCode::STATUS_OK, $result->getStatusCode());
         $this->assertEquals('', (string) $result->getBody());
@@ -482,7 +482,7 @@ class IntegrationTest extends TestCase
                 ->willReturn($this->response);
 
         $request = new ServerRequest(['REQUEST_METHOD' => $method], [], '/foo', $method);
-        $result  = $app->process($request, $handler->reveal());
+        $result = $app->process($request, $handler->reveal());
 
         $this->assertEquals(StatusCode::STATUS_OK, $result->getStatusCode());
         $this->assertEquals('', (string) $result->getBody());
@@ -511,7 +511,7 @@ class IntegrationTest extends TestCase
                 ->shouldNotBeCalled();
 
         $request = new ServerRequest(['REQUEST_METHOD' => $method], [], '/foo', $method);
-        $result  = $app->process($request, $handler->reveal());
+        $result = $app->process($request, $handler->reveal());
         $this->assertEquals(StatusCode::STATUS_METHOD_NOT_ALLOWED, $result->getStatusCode());
         $this->assertNotContains('Middleware', (string) $result->getBody());
     }
@@ -541,7 +541,7 @@ class IntegrationTest extends TestCase
             ->willReturn($expected);
 
         $request = new ServerRequest(['REQUEST_METHOD' => 'GET'], [], '/foo', 'GET');
-        $result  = $app->process($request, $handler->reveal());
+        $result = $app->process($request, $handler->reveal());
         $this->assertSame($expected, $result);
     }
 }

@@ -205,7 +205,7 @@ class ApplicationConfigInjectionDelegator
                 }
             }
 
-            $name  = $spec['name'] ?? null;
+            $name = $spec['name'] ?? null;
             $route = $application->route(
                 $spec['path'],
                 $spec['middleware'],
