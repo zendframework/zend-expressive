@@ -26,6 +26,10 @@ All notable changes to this project will be documented in this file, in reverse 
   missing import statement for the PSR-7 `StreamInterface` to the
   `StreamFactoryFactory`.
 
+- [#555](https://github.com/zendframework/zend-expressive/pull/555) adds tests
+  to better ensure that the entries in the `ConfigProvider` resolve to valid
+  factories, aliases, etc.
+
 ## 3.0.0alpha7 - 2018-02-14
 
 ### Added
