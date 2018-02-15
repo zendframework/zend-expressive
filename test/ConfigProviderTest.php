@@ -97,7 +97,7 @@ class ConfigProviderTest extends TestCase
 
         $json = json_decode(
             file_get_contents(__DIR__ . '/../composer.lock'),
-        true
+            true
         );
         foreach ($json['packages'] as $package) {
             if (isset($package['extra']['zf']['config-provider'])) {
