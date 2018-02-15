@@ -10,7 +10,10 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Changed
 
-- Nothing.
+- [#559](https://github.com/zendframework/zend-expressive/pull/559) reverts the
+  changes performed for [#556](https://github.com/zendframework/zend-expressive/pull/556)
+  to the `ApplicationFactory`. It now uses the canonical service name for the
+  `PathBasedRoutingMiddleware` instead of the `ROUTE_MIDDLEWARE` constant.
 
 ### Deprecated
 
