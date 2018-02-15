@@ -24,6 +24,7 @@ use Zend\Expressive\ServerRequestErrorResponseGenerator;
 use Zend\Expressive\ServerRequestFactory;
 use Zend\HttpHandlerRunner\Emitter\EmitterInterface;
 use Zend\HttpHandlerRunner\RequestHandlerRunner;
+use Zend\ServiceManager\Config;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Stratigility\Middleware\ErrorHandler;
 
@@ -108,7 +109,7 @@ class ConfigProviderTest extends TestCase
 
         $routerInterface = $this->prophesize(RouterInterface::class)->reveal();
         $config['dependencies']['services'][RouterInterface::class] = $routerInterface;
-        $container = new ServiceManager($config['dependencies']);
+        $container = $this->getContainer($config['dependencies']);
 
         $dependencies = $this->provider->getDependencies();
         foreach ($dependencies['factories'] as $name => $factory) {
@@ -131,5 +132,13 @@ class ConfigProviderTest extends TestCase
                 sprintf('Cannot get service %s using alias %s', $dependency, $alias)
             );
         }
+    }
+
+    private function getContainer(array $dependencies) : ServiceManager
+    {
+        $container = new ServiceManager();
+        (new Config($dependencies))->configureServiceManager($container);
+
+        return $container;
     }
 }
