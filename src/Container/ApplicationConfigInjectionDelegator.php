@@ -28,7 +28,7 @@ class ApplicationConfigInjectionDelegator
      *     something other than an `Application` instance, as the delegator cannot
      *     proceed with its operations.
      */
-    public function __invoke(ContainerInterface $container, string $serviceName, callable $callback) : Application
+    public function __invoke(ContainerInterface $container, callable $callback) : Application
     {
         $application = $callback();
         if (! $application instanceof Application) {
