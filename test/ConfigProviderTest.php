@@ -18,10 +18,14 @@ use Zend\Expressive\Handler\NotFoundHandler;
 use Zend\Expressive\Middleware;
 use Zend\Expressive\MiddlewareContainer;
 use Zend\Expressive\MiddlewareFactory;
+use Zend\Expressive\Router\ConfigProvider as RouterConfigProvider;
+use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\ServerRequestErrorResponseGenerator;
 use Zend\Expressive\ServerRequestFactory;
 use Zend\HttpHandlerRunner\Emitter\EmitterInterface;
 use Zend\HttpHandlerRunner\RequestHandlerRunner;
+use Zend\ServiceManager\Config;
+use Zend\ServiceManager\ServiceManager;
 use Zend\Stratigility\Middleware\ErrorHandler;
 
 use const Zend\Expressive\DEFAULT_DELEGATE;
@@ -40,6 +44,9 @@ use const Zend\Expressive\Router\METHOD_NOT_ALLOWED_MIDDLEWARE_RESPONSE;
 
 class ConfigProviderTest extends TestCase
 {
+    /** @var ConfigProvider */
+    private $provider;
+
     public function setUp()
     {
         $this->provider = new ConfigProvider();
@@ -87,5 +94,55 @@ class ConfigProviderTest extends TestCase
         $this->assertArrayHasKey('dependencies', $config);
         $this->assertArrayHasKey('aliases', $config['dependencies']);
         $this->assertArrayHasKey('factories', $config['dependencies']);
+    }
+
+    public function testServicesDefinedInConfigProvider()
+    {
+        $config = ($this->provider)();
+
+        $json = json_decode(
+            file_get_contents(__DIR__ . '/../composer.lock'),
+            true
+        );
+        foreach ($json['packages'] as $package) {
+            if (isset($package['extra']['zf']['config-provider'])) {
+                $configProvider = new $package['extra']['zf']['config-provider']();
+                $config = array_merge_recursive($config, $configProvider());
+            }
+        }
+
+        $routerInterface = $this->prophesize(RouterInterface::class)->reveal();
+        $config['dependencies']['services'][RouterInterface::class] = $routerInterface;
+        $container = $this->getContainer($config['dependencies']);
+
+        $dependencies = $this->provider->getDependencies();
+        foreach ($dependencies['factories'] as $name => $factory) {
+            $this->assertTrue($container->has($name), sprintf('Container does not contain service %s', $name));
+            $this->assertInternalType(
+                'object',
+                $container->get($name),
+                sprintf('Cannot get service %s from container using factory %s', $name, $factory)
+            );
+        }
+
+        foreach ($dependencies['aliases'] as $alias => $dependency) {
+            $this->assertTrue(
+                $container->has($alias),
+                sprintf('Container does not contain service with alias %s', $alias)
+            );
+            $this->assertInternalType(
+                'object',
+                $container->get($alias),
+                sprintf('Cannot get service %s using alias %s', $dependency, $alias)
+            );
+        }
+    }
+
+    private function getContainer(array $dependencies) : ServiceManager
+    {
+        $container = new ServiceManager();
+        (new Config($dependencies))->configureServiceManager($container);
+
+        return $container;
     }
 }
