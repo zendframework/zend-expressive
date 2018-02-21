@@ -15,7 +15,6 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Zend\Expressive\Container\NotFoundHandlerFactory;
 use Zend\Expressive\Handler\NotFoundHandler;
-use Zend\Expressive\Response\NotFoundResponseInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
 class NotFoundHandlerFactoryTest extends TestCase
@@ -30,7 +29,9 @@ class NotFoundHandlerFactoryTest extends TestCase
     {
         $this->response = $this->prophesize(ResponseInterface::class)->reveal();
         $this->container = $this->prophesize(ContainerInterface::class);
-        $this->container->get(NotFoundResponseInterface::class)->willReturn($this->response);
+        $this->container->get(ResponseInterface::class)->willReturn(function () {
+            return $this->response;
+        });
     }
 
     public function testFactoryCreatesInstanceWithoutRendererIfRendererServiceIsMissing()
@@ -41,7 +42,7 @@ class NotFoundHandlerFactoryTest extends TestCase
 
         $handler = $factory($this->container->reveal());
         $this->assertInstanceOf(NotFoundHandler::class, $handler);
-        $this->assertAttributeSame($this->response, 'responsePrototype', $handler);
+        $this->assertAttributeInternalType('callable', 'responseFactory', $handler);
         $this->assertAttributeEmpty('renderer', $handler);
     }
 

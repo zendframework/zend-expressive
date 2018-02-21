@@ -12,17 +12,20 @@ namespace ZendTest\Expressive\Container;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Zend\Diactoros\Response;
-use Zend\Expressive\Container\ResponseFactory;
+use Zend\Expressive\Container\ResponseFactoryFactory;
 
-class ResponseFactoryTest extends TestCase
+class ResponseFactoryFactoryTest extends TestCase
 {
-    public function testFactoryProducesAResponseWhenDiactorosIsInstalled()
+    public function testFactoryProducesACallableCapableOfGeneratingAResponseWhenDiactorosIsInstalled()
     {
         $container = $this->prophesize(ContainerInterface::class)->reveal();
-        $factory = new ResponseFactory();
+        $factory = new ResponseFactoryFactory();
 
-        $response = $factory($container);
+        $result = $factory($container);
 
+        $this->assertInternalType('callable', $result);
+
+        $response = $result();
         $this->assertInstanceOf(Response::class, $response);
     }
 }

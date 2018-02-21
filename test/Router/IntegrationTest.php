@@ -47,6 +47,9 @@ class IntegrationTest extends TestCase
     /** @var Response */
     private $response;
 
+    /** @var callable */
+    private $responseFactory;
+
     /** @var RouterInterface|ObjectProphecy */
     private $router;
 
@@ -56,6 +59,9 @@ class IntegrationTest extends TestCase
     public function setUp()
     {
         $this->response  = new Response();
+        $this->responseFactory = function () {
+            return $this->response;
+        };
         $this->router    = $this->prophesize(RouterInterface::class);
         $this->container = $this->mockContainerInterface();
     }
@@ -106,7 +112,7 @@ class IntegrationTest extends TestCase
         $router = new $adapter();
         $app = $this->createApplicationFromRouter($router);
         $app->pipe(new RouteMiddleware($router));
-        $app->pipe(new MethodNotAllowedMiddleware($this->response));
+        $app->pipe(new MethodNotAllowedMiddleware($this->responseFactory));
 
         $app->get('/foo', function ($req, $handler) {
             $stream = new Stream('php://temp', 'w+');
@@ -136,7 +142,7 @@ class IntegrationTest extends TestCase
         $router = new $adapter();
         $app = $this->createApplicationFromRouter($router);
         $app->pipe(new RouteMiddleware($router));
-        $app->pipe(new MethodNotAllowedMiddleware($this->response));
+        $app->pipe(new MethodNotAllowedMiddleware($this->responseFactory));
 
         $app->route('/foo', function ($req, $handler) {
             $stream = new Stream('php://temp', 'w+');
@@ -298,7 +304,7 @@ class IntegrationTest extends TestCase
         $router = new $adapter();
         $app = $this->createApplicationFromRouter($router);
         $app->pipe(new RouteMiddleware($router));
-        $app->pipe(new MethodNotAllowedMiddleware($this->response));
+        $app->pipe(new MethodNotAllowedMiddleware($this->responseFactory));
         $app->pipe(new DispatchMiddleware());
 
         $response = clone $this->response;
@@ -364,7 +370,7 @@ class IntegrationTest extends TestCase
         $router = new $adapter();
         $app = $this->createApplicationFromRouter($router);
         $app->pipe(new RouteMiddleware($router));
-        $app->pipe(new MethodNotAllowedMiddleware($this->response));
+        $app->pipe(new MethodNotAllowedMiddleware($this->responseFactory));
         $app->pipe(new DispatchMiddleware());
 
         // Add a route with Zend\Expressive\Router\Route::HTTP_METHOD_ANY
@@ -428,10 +434,10 @@ class IntegrationTest extends TestCase
         $router = new $adapter();
         $app = $this->createApplicationFromRouter($router);
         $app->pipe(new RouteMiddleware($router));
-        $app->pipe(new MethodNotAllowedMiddleware($this->response));
-        $app->pipe(new ImplicitHeadMiddleware($this->response, function () {
+        $app->pipe(new MethodNotAllowedMiddleware($this->responseFactory));
+        $app->pipe(new ImplicitHeadMiddleware($this->responseFactory, function () {
         }));
-        $app->pipe(new ImplicitOptionsMiddleware($this->response));
+        $app->pipe(new ImplicitOptionsMiddleware($this->responseFactory));
         $app->pipe(new DispatchMiddleware());
 
         // Add a PUT route
@@ -463,7 +469,7 @@ class IntegrationTest extends TestCase
         $router = new $adapter();
         $app = $this->createApplicationFromRouter($router);
         $app->pipe(new RouteMiddleware($router));
-        $app->pipe(new MethodNotAllowedMiddleware($this->response));
+        $app->pipe(new MethodNotAllowedMiddleware($this->responseFactory));
 
         // This middleware is used just to check that request has successful RouteResult
         $middleware = $this->prophesize(MiddlewareInterface::class);
@@ -482,11 +488,11 @@ class IntegrationTest extends TestCase
         $app->pipe($middleware->reveal());
 
         if ($method === 'HEAD') {
-            $app->pipe(new ImplicitHeadMiddleware($this->response, function () {
+            $app->pipe(new ImplicitHeadMiddleware($this->responseFactory, function () {
             }));
         }
         if ($method === 'OPTIONS') {
-            $app->pipe(new ImplicitOptionsMiddleware($this->response));
+            $app->pipe(new ImplicitOptionsMiddleware($this->responseFactory));
         }
         $app->pipe(new DispatchMiddleware());
 
@@ -519,7 +525,7 @@ class IntegrationTest extends TestCase
         $router = new $adapter();
         $app = $this->createApplicationFromRouter($router);
         $app->pipe(new RouteMiddleware($router));
-        $app->pipe(new MethodNotAllowedMiddleware($this->response));
+        $app->pipe(new MethodNotAllowedMiddleware($this->responseFactory));
         $app->pipe(new DispatchMiddleware());
 
         // Add a route with empty array - NO HTTP methods

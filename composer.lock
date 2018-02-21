@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "9b1d9c164b626dcb35668bcebf529f51",
+    "content-hash": "c602b615a23337d4485482ff4d79a367",
     "packages": [
         {
             "name": "fig/http-message-util",
@@ -359,16 +359,16 @@
         },
         {
             "name": "zendframework/zend-expressive-router",
-            "version": "3.0.0alpha2",
+            "version": "3.0.0alpha3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-expressive-router.git",
-                "reference": "b407fede07a1e3c48c7b3034c6258c9a0ed47b76"
+                "reference": "737f79bffa8900388367d02e66dc0d0bcdba1eed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-expressive-router/zipball/b407fede07a1e3c48c7b3034c6258c9a0ed47b76",
-                "reference": "b407fede07a1e3c48c7b3034c6258c9a0ed47b76",
+                "url": "https://api.github.com/repos/zendframework/zend-expressive-router/zipball/737f79bffa8900388367d02e66dc0d0bcdba1eed",
+                "reference": "737f79bffa8900388367d02e66dc0d0bcdba1eed",
                 "shasum": ""
             },
             "require": {
@@ -400,9 +400,6 @@
                 }
             },
             "autoload": {
-                "files": [
-                    "src/constants.php"
-                ],
                 "psr-4": {
                     "Zend\\Expressive\\Router\\": "src/"
                 }
@@ -422,7 +419,7 @@
                 "zend-expressive",
                 "zf"
             ],
-            "time": "2018-02-13T20:44:18+00:00"
+            "time": "2018-02-21T18:39:37+00:00"
         },
         {
             "name": "zendframework/zend-expressive-template",

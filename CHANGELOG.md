@@ -15,6 +15,33 @@ All notable changes to this project will be documented in this file, in reverse 
   to the `ApplicationFactory`. It now uses the canonical service name for the
   `PathBasedRoutingMiddleware` instead of the `ROUTE_MIDDLEWARE` constant.
 
+- [#561](https://github.com/zendframework/zend-expressive/pull/561) updates to
+  zend-expressive-router 3.0.0alpha3.
+
+- [#561](https://github.com/zendframework/zend-expressive/pull/561) renames
+  `Zend\Expressive\Container\ResponseFactory` to `Zend\Expressive\Container\ResponseFactoryFactory`,
+  and the factory now returns a callable that will return a zend-diactoros
+  `Response` instance, instead of returning the instance itself. Each of the
+  various services named after zend-expressive-router response constants were
+  removed in favor of a single `Psr\Http\Message\ResponseInterface` service
+  resolving to the `ResponseFactoryFactory`.
+
+- [#561](https://github.com/zendframework/zend-expressive/pull/561) modifies the
+  `Zend\Expressive\Handler\NotFoundHandler` to compose a response factory
+  instead of a response prototype. This approach allows it to use the
+  `Psr\Http\Message\ResponseInterface` service defined per the above note.
+
+- [#561](https://github.com/zendframework/zend-expressive/pull/561) renames
+  the `Zend\Expressive\Router\IMPLICIT_HEAD_MIDDLEWARE_STREAM_FACTORY` service
+  to `Psr\Http\Message\StreamInterface`, as this is what zend-expressive-router
+  now expects.
+
+- [#561](https://github.com/zendframework/zend-expressive/pull/561) renames the
+  `Zend\Expressive\ServerRequestFactory` service to
+  `Psr\Http\Message\ServerRequestInterface`. The
+  `Zend\Expressive\SERVER_REQUEST_FACTORY` constant now resolves to the
+  interface name.
+
 ### Deprecated
 
 - Nothing.

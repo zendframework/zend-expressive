@@ -10,9 +10,9 @@ declare(strict_types=1);
 namespace Zend\Expressive\Container;
 
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\ApplicationPipeline;
 use Zend\Expressive\ServerRequestErrorResponseGenerator;
-use Zend\Expressive\ServerRequestFactory;
 use Zend\HttpHandlerRunner\Emitter\EmitterInterface;
 use Zend\HttpHandlerRunner\RequestHandlerRunner;
 
@@ -25,7 +25,7 @@ use Zend\HttpHandlerRunner\RequestHandlerRunner;
  * - Zend\Expressive\ApplicationPipeline, which should resolve to a
  *   Zend\Stratigility\MiddlewarePipeInterface and/or
  *   Psr\Http\Server\RequestHandlerInterface instance.
- * - Zend\Expressive\ServerRequestFactory, which should resolve to a PHP
+ * - Psr\Http\Message\ServerRequestInterface, which should resolve to a PHP
  *   callable that will return a Psr\Http\Message\ServerRequestInterface
  *   instance.
  * - Zend\Expressive\ServerRequestErrorResponseGenerator, which should resolve
@@ -41,7 +41,7 @@ class RequestHandlerRunnerFactory
         return new RequestHandlerRunner(
             $container->get(ApplicationPipeline::class),
             $container->get(EmitterInterface::class),
-            $container->get(ServerRequestFactory::class),
+            $container->get(ServerRequestInterface::class),
             $container->get(ServerRequestErrorResponseGenerator::class)
         );
     }
