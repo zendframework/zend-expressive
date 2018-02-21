@@ -26,12 +26,9 @@ class NotFoundHandler implements RequestHandlerInterface
     private $renderer;
 
     /**
-     * This duplicates the property in StratigilityNotFoundHandler, but is done
-     * to ensure that we have access to the value in the methods we override.
-     *
-     * @var ResponseInterface
+     * @var callable
      */
-    protected $responsePrototype;
+    private $responseFactory;
 
     /**
      * @var string
@@ -44,12 +41,14 @@ class NotFoundHandler implements RequestHandlerInterface
     private $layout;
 
     public function __construct(
-        ResponseInterface $responsePrototype,
+        callable $responseFactory,
         TemplateRendererInterface $renderer = null,
         string $template = self::TEMPLATE_DEFAULT,
         string $layout = self::LAYOUT_DEFAULT
     ) {
-        $this->responsePrototype = $responsePrototype;
+        $this->responseFactory = function () use ($responseFactory) : ResponseInterface {
+            return $responseFactory();
+        };
         $this->renderer = $renderer;
         $this->template = $template;
         $this->layout = $layout;
@@ -75,7 +74,7 @@ class NotFoundHandler implements RequestHandlerInterface
      */
     private function generatePlainTextResponse(ServerRequestInterface $request) : ResponseInterface
     {
-        $response = $this->responsePrototype->withStatus(StatusCodeInterface::STATUS_NOT_FOUND);
+        $response = ($this->responseFactory)()->withStatus(StatusCodeInterface::STATUS_NOT_FOUND);
         $response->getBody()
             ->write(sprintf(
                 'Cannot %s %s',
@@ -93,7 +92,7 @@ class NotFoundHandler implements RequestHandlerInterface
      */
     private function generateTemplatedResponse(ServerRequestInterface $request) : ResponseInterface
     {
-        $response = $this->responsePrototype->withStatus(StatusCodeInterface::STATUS_NOT_FOUND);
+        $response = ($this->responseFactory)()->withStatus(StatusCodeInterface::STATUS_NOT_FOUND);
         $response->getBody()->write(
             $this->renderer->render($this->template, ['request' => $request, 'layout' => $this->layout])
         );

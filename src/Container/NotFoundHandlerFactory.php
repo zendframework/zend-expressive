@@ -10,11 +10,9 @@ declare(strict_types=1);
 namespace Zend\Expressive\Container;
 
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseInterface;
 use Zend\Expressive\Handler\NotFoundHandler;
-use Zend\Expressive\Response\NotFoundResponseInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
-
-use const Zend\Expressive\NOT_FOUND_RESPONSE;
 
 class NotFoundHandlerFactory
 {
@@ -30,7 +28,7 @@ class NotFoundHandlerFactory
             ?? NotFoundHandler::LAYOUT_DEFAULT;
 
         return new NotFoundHandler(
-            $container->get(NOT_FOUND_RESPONSE),
+            $container->get(ResponseInterface::class),
             $renderer,
             $template,
             $layout

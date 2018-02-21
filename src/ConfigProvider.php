@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace Zend\Expressive;
 
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 use Zend\HttpHandlerRunner\Emitter\EmitterInterface;
 use Zend\HttpHandlerRunner\RequestHandlerRunner;
 use Zend\Stratigility\Middleware\ErrorHandler;
@@ -29,7 +31,6 @@ class ConfigProvider
 
     public function getDependencies() : array
     {
-        // @codingStandardsIgnoreStart
         return [
             'aliases' => [
                 DEFAULT_DELEGATE            => Handler\NotFoundHandler::class,
@@ -40,25 +41,21 @@ class ConfigProvider
                 ROUTE_MIDDLEWARE            => Router\Middleware\PathBasedRoutingMiddleware::class,
             ],
             'factories' => [
-                Application::class                             => Container\ApplicationFactory::class,
-                ApplicationPipeline::class                     => Container\ApplicationPipelineFactory::class,
-                EmitterInterface::class                        => Container\EmitterFactory::class,
-                ErrorHandler::class                            => Container\ErrorHandlerFactory::class,
-                Handler\NotFoundHandler::class                 => Container\NotFoundHandlerFactory::class,
-                MiddlewareContainer::class                     => Container\MiddlewareContainerFactory::class,
-                MiddlewareFactory::class                       => Container\MiddlewareFactoryFactory::class,
+                Application::class                       => Container\ApplicationFactory::class,
+                ApplicationPipeline::class               => Container\ApplicationPipelineFactory::class,
+                EmitterInterface::class                  => Container\EmitterFactory::class,
+                ErrorHandler::class                      => Container\ErrorHandlerFactory::class,
+                Handler\NotFoundHandler::class           => Container\NotFoundHandlerFactory::class,
+                MiddlewareContainer::class               => Container\MiddlewareContainerFactory::class,
+                MiddlewareFactory::class                 => Container\MiddlewareFactoryFactory::class,
                 // Change the following in development to the WhoopsErrorResponseGeneratorFactory:
-                Middleware\ErrorResponseGenerator::class       => Container\ErrorResponseGeneratorFactory::class,
-                NOT_FOUND_RESPONSE                             => Container\ResponseFactory::class,
-                RequestHandlerRunner::class                    => Container\RequestHandlerRunnerFactory::class,
-                Router\IMPLICIT_HEAD_MIDDLEWARE_RESPONSE       => Container\ResponseFactory::class,
-                Router\IMPLICIT_HEAD_MIDDLEWARE_STREAM_FACTORY => Container\StreamFactoryFactory::class,
-                Router\IMPLICIT_OPTIONS_MIDDLEWARE_RESPONSE    => Container\ResponseFactory::class,
-                Router\METHOD_NOT_ALLOWED_MIDDLEWARE_RESPONSE  => Container\ResponseFactory::class,
-                SERVER_REQUEST_ERROR_RESPONSE_GENERATOR        => Container\ServerRequestErrorResponseGeneratorFactory::class,
-                SERVER_REQUEST_FACTORY                         => Container\ServerRequestFactoryFactory::class,
+                Middleware\ErrorResponseGenerator::class => Container\ErrorResponseGeneratorFactory::class,
+                RequestHandlerRunner::class              => Container\RequestHandlerRunnerFactory::class,
+                ResponseInterface::class                 => Container\ResponseFactoryFactory::class,
+                SERVER_REQUEST_ERROR_RESPONSE_GENERATOR  => Container\ServerRequestErrorResponseGeneratorFactory::class,
+                SERVER_REQUEST_FACTORY                   => Container\ServerRequestFactoryFactory::class,
+                StreamInterface::class                   => Container\StreamFactoryFactory::class,
             ],
         ];
-        // @codingStandardsIgnoreEnd
     }
 }

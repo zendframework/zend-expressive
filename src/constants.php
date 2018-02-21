@@ -58,14 +58,6 @@ const IMPLICIT_OPTIONS_MIDDLEWARE = __NAMESPACE__ . '\Middleware\ImplicitOptions
 const NOT_FOUND_MIDDLEWARE = __NAMESPACE__ . '\Middleware\NotFoundMiddleware';
 
 /**
- * Virtual service name that should resolve to a service returning a PSR-7
- * ResponseInterface instance for use with the Handler\NotFoundHandler class.
- *
- * @var string
- */
-const NOT_FOUND_RESPONSE = __NAMESPACE__ . '\Response\NotFoundResponseInterface';
-
-/**
  * Legacy service name for the RouteMiddleware referenced in version 2.
  * Should resolve to the Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware
  * service.

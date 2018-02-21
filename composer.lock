@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "9b1d9c164b626dcb35668bcebf529f51",
+    "content-hash": "52e5bdb5f380c2f57b65768bf879f43d",
     "packages": [
         {
             "name": "fig/http-message-util",
@@ -359,17 +359,11 @@
         },
         {
             "name": "zendframework/zend-expressive-router",
-            "version": "3.0.0alpha2",
+            "version": "dev-response-factory",
             "source": {
                 "type": "git",
-                "url": "https://github.com/zendframework/zend-expressive-router.git",
-                "reference": "b407fede07a1e3c48c7b3034c6258c9a0ed47b76"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-expressive-router/zipball/b407fede07a1e3c48c7b3034c6258c9a0ed47b76",
-                "reference": "b407fede07a1e3c48c7b3034c6258c9a0ed47b76",
-                "shasum": ""
+                "url": "https://github.com/webimpress/zend-expressive-router",
+                "reference": "139e3f3f4e91bcfa24106e6fa953df0edfc7a47e"
             },
             "require": {
                 "fig/http-message-util": "^1.1.2",
@@ -400,29 +394,59 @@
                 }
             },
             "autoload": {
-                "files": [
-                    "src/constants.php"
-                ],
                 "psr-4": {
                     "Zend\\Expressive\\Router\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "ZendTest\\Expressive\\Router\\": "test/"
+                }
+            },
+            "scripts": {
+                "check": [
+                    "@license-check",
+                    "@cs-check",
+                    "@test"
+                ],
+                "cs-check": [
+                    "phpcs"
+                ],
+                "cs-fix": [
+                    "phpcbf"
+                ],
+                "test": [
+                    "phpunit --colors=always"
+                ],
+                "test-coverage": [
+                    "phpunit --colors=always --coverage-clover clover.xml"
+                ],
+                "license-check": [
+                    "docheader check src/ test/"
+                ]
+            },
             "license": [
                 "BSD-3-Clause"
             ],
             "description": "Router subcomponent for Expressive",
             "keywords": [
-                "ZendFramework",
                 "expressive",
                 "http",
                 "middleware",
                 "psr",
                 "psr-7",
                 "zend-expressive",
+                "zendframework",
                 "zf"
             ],
-            "time": "2018-02-13T20:44:18+00:00"
+            "support": {
+                "issues": "https://github.com/zendframework/zend-expressive-router/issues",
+                "source": "https://github.com/zendframework/zend-expressive-router",
+                "rss": "https://github.com/zendframework/zend-expressive-router/releases.atom",
+                "slack": "https://zendframework-slack.herokuapp.com",
+                "forum": "https://discourse.zendframework.com/c/questions/expressive"
+            },
+            "time": "2018-02-21T17:10:25+00:00"
         },
         {
             "name": "zendframework/zend-expressive-template",
@@ -3362,10 +3386,17 @@
             "time": "2018-02-01T17:05:33+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "alias": "3.0.0alpha3",
+            "alias_normalized": "3.0.0.0-alpha3",
+            "version": "dev-response-factory",
+            "package": "zendframework/zend-expressive-router"
+        }
+    ],
     "minimum-stability": "stable",
     "stability-flags": {
-        "zendframework/zend-expressive-router": 15,
+        "zendframework/zend-expressive-router": 20,
         "zendframework/zend-expressive-template": 15,
         "zendframework/zend-stratigility": 15,
         "zendframework/zend-expressive-aurarouter": 15,

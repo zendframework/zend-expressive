@@ -30,23 +30,28 @@ class NotFoundHandlerTest extends TestCase
     /** @var ResponseInterface|ObjectProphecy */
     private $response;
 
+    /** @var callable */
+    private $responseFactory;
+
     public function setUp()
     {
         $this->request  = $this->prophesize(ServerRequestInterface::class);
         $this->response = $this->prophesize(ResponseInterface::class);
+        $this->responseFactory = function () {
+            return $this->response->reveal();
+        };
     }
 
     public function testImplementsRequesthandler()
     {
-        $handler = new NotFoundHandler($this->response->reveal());
+        $handler = new NotFoundHandler($this->responseFactory);
         $this->assertInstanceOf(RequestHandlerInterface::class, $handler);
     }
 
     public function testConstructorDoesNotRequireARenderer()
     {
-        $handler = new NotFoundHandler($this->response->reveal());
+        $handler = new NotFoundHandler($this->responseFactory);
         $this->assertInstanceOf(NotFoundHandler::class, $handler);
-        $this->assertAttributeSame($this->response->reveal(), 'responsePrototype', $handler);
     }
 
     public function testConstructorCanAcceptRendererAndTemplate()
@@ -55,7 +60,7 @@ class NotFoundHandlerTest extends TestCase
         $template = 'foo::bar';
         $layout = 'layout::error';
 
-        $handler = new NotFoundHandler($this->response->reveal(), $renderer, $template, $layout);
+        $handler = new NotFoundHandler($this->responseFactory, $renderer, $template, $layout);
 
         $this->assertInstanceOf(NotFoundHandler::class, $handler);
         $this->assertAttributeSame($renderer, 'renderer', $handler);
@@ -74,7 +79,7 @@ class NotFoundHandlerTest extends TestCase
         $this->response->withStatus(StatusCode::STATUS_NOT_FOUND)->will([$this->response, 'reveal']);
         $this->response->getBody()->will([$stream, 'reveal']);
 
-        $handler = new NotFoundHandler($this->response->reveal());
+        $handler = new NotFoundHandler($this->responseFactory);
 
         $response = $handler->handle($request->reveal());
 
@@ -102,7 +107,7 @@ class NotFoundHandlerTest extends TestCase
         $this->response->withStatus(StatusCode::STATUS_NOT_FOUND)->will([$this->response, 'reveal']);
         $this->response->getBody()->will([$stream, 'reveal']);
 
-        $handler = new NotFoundHandler($this->response->reveal(), $renderer->reveal());
+        $handler = new NotFoundHandler($this->responseFactory, $renderer->reveal());
 
         $response = $handler->handle($request);
 

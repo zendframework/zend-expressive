@@ -10,18 +10,16 @@ declare(strict_types=1);
 namespace ZendTest\Expressive;
 
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 use Zend\Expressive\Application;
 use Zend\Expressive\ApplicationPipeline;
 use Zend\Expressive\ConfigProvider;
-use Zend\Expressive\Delegate\DefaultDelegate;
 use Zend\Expressive\Handler\NotFoundHandler;
 use Zend\Expressive\Middleware;
 use Zend\Expressive\MiddlewareContainer;
 use Zend\Expressive\MiddlewareFactory;
-use Zend\Expressive\Router\ConfigProvider as RouterConfigProvider;
 use Zend\Expressive\Router\RouterInterface;
-use Zend\Expressive\ServerRequestErrorResponseGenerator;
-use Zend\Expressive\ServerRequestFactory;
 use Zend\HttpHandlerRunner\Emitter\EmitterInterface;
 use Zend\HttpHandlerRunner\RequestHandlerRunner;
 use Zend\ServiceManager\Config;
@@ -33,14 +31,9 @@ use const Zend\Expressive\DISPATCH_MIDDLEWARE;
 use const Zend\Expressive\IMPLICIT_HEAD_MIDDLEWARE;
 use const Zend\Expressive\IMPLICIT_OPTIONS_MIDDLEWARE;
 use const Zend\Expressive\NOT_FOUND_MIDDLEWARE;
-use const Zend\Expressive\NOT_FOUND_RESPONSE;
 use const Zend\Expressive\ROUTE_MIDDLEWARE;
 use const Zend\Expressive\SERVER_REQUEST_ERROR_RESPONSE_GENERATOR;
 use const Zend\Expressive\SERVER_REQUEST_FACTORY;
-use const Zend\Expressive\Router\IMPLICIT_HEAD_MIDDLEWARE_RESPONSE;
-use const Zend\Expressive\Router\IMPLICIT_HEAD_MIDDLEWARE_STREAM_FACTORY;
-use const Zend\Expressive\Router\IMPLICIT_OPTIONS_MIDDLEWARE_RESPONSE;
-use const Zend\Expressive\Router\METHOD_NOT_ALLOWED_MIDDLEWARE_RESPONSE;
 
 class ConfigProviderTest extends TestCase
 {
@@ -73,18 +66,15 @@ class ConfigProviderTest extends TestCase
         $this->assertArrayHasKey(ApplicationPipeline::class, $factories);
         $this->assertArrayHasKey(EmitterInterface::class, $factories);
         $this->assertArrayHasKey(ErrorHandler::class, $factories);
-        $this->assertArrayHasKey(IMPLICIT_HEAD_MIDDLEWARE_RESPONSE, $factories);
-        $this->assertArrayHasKey(IMPLICIT_HEAD_MIDDLEWARE_STREAM_FACTORY, $factories);
-        $this->assertArrayHasKey(IMPLICIT_OPTIONS_MIDDLEWARE_RESPONSE, $factories);
-        $this->assertArrayHasKey(METHOD_NOT_ALLOWED_MIDDLEWARE_RESPONSE, $factories);
         $this->assertArrayHasKey(MiddlewareContainer::class, $factories);
         $this->assertArrayHasKey(MiddlewareFactory::class, $factories);
         $this->assertArrayHasKey(Middleware\ErrorResponseGenerator::class, $factories);
         $this->assertArrayHasKey(NotFoundHandler::class, $factories);
-        $this->assertArrayHasKey(NOT_FOUND_RESPONSE, $factories);
         $this->assertArrayHasKey(RequestHandlerRunner::class, $factories);
+        $this->assertArrayHasKey(ResponseInterface::class, $factories);
         $this->assertArrayHasKey(SERVER_REQUEST_ERROR_RESPONSE_GENERATOR, $factories);
         $this->assertArrayHasKey(SERVER_REQUEST_FACTORY, $factories);
+        $this->assertArrayHasKey(StreamInterface::class, $factories);
     }
 
     public function testInvocationReturnsArrayWithDependencies()
