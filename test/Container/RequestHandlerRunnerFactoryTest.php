@@ -11,11 +11,11 @@ namespace ZendTest\Expressive\Container;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Expressive\ApplicationPipeline;
 use Zend\Expressive\Container\RequestHandlerRunnerFactory;
 use Zend\Expressive\ServerRequestErrorResponseGenerator;
-use Zend\Expressive\ServerRequestFactory;
 use Zend\HttpHandlerRunner\Emitter\EmitterInterface;
 use Zend\HttpHandlerRunner\RequestHandlerRunner;
 
@@ -58,7 +58,7 @@ class RequestHandlerRunnerFactoryTest extends TestCase
     {
         $factory = function () {
         };
-        $container->get(ServerRequestFactory::class)->willReturn($factory);
+        $container->get(ServerRequestInterface::class)->willReturn($factory);
         return $factory;
     }
 

@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace Zend\Expressive;
 
+use Psr\Http\Message\ServerRequestInterface;
+
 /**
  * Legacy service name for the default delegate referenced in version 2.
  * Should resolve to the Handler\NotFoundHandler class.
@@ -77,9 +79,11 @@ const ROUTE_MIDDLEWARE = __NAMESPACE__ . '\Middleware\RouteMiddleware';
 const SERVER_REQUEST_ERROR_RESPONSE_GENERATOR = __NAMESPACE__ . '\ServerRequestErrorResponseGenerator';
 
 /**
- * Virtual service name that should resolve to a service capable of producing
- * a PSR-7 ServerRequestInterface instance for the application.
+ * Legacy/transitional service name for the ServerRequestFactory virtual
+ * service introduced in 3.0.0alpha6. Should resolve to the
+ * Psr\Http\Message\ServerRequestInterface service.
  *
+ * @deprecated To remove in version 4.0.0.
  * @var string
  */
-const SERVER_REQUEST_FACTORY = __NAMESPACE__ . '\ServerRequestFactory';
+const SERVER_REQUEST_FACTORY = ServerRequestInterface::class;

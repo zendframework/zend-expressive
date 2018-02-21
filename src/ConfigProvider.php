@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Zend\Expressive;
 
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Zend\HttpHandlerRunner\Emitter\EmitterInterface;
 use Zend\HttpHandlerRunner\RequestHandlerRunner;
@@ -53,7 +54,7 @@ class ConfigProvider
                 RequestHandlerRunner::class              => Container\RequestHandlerRunnerFactory::class,
                 ResponseInterface::class                 => Container\ResponseFactoryFactory::class,
                 SERVER_REQUEST_ERROR_RESPONSE_GENERATOR  => Container\ServerRequestErrorResponseGeneratorFactory::class,
-                SERVER_REQUEST_FACTORY                   => Container\ServerRequestFactoryFactory::class,
+                ServerRequestInterface::class            => Container\ServerRequestFactoryFactory::class,
                 StreamInterface::class                   => Container\StreamFactoryFactory::class,
             ],
         ];
