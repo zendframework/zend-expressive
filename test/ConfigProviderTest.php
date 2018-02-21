@@ -11,6 +11,7 @@ namespace ZendTest\Expressive;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Zend\Expressive\Application;
 use Zend\Expressive\ApplicationPipeline;
@@ -33,7 +34,6 @@ use const Zend\Expressive\IMPLICIT_OPTIONS_MIDDLEWARE;
 use const Zend\Expressive\NOT_FOUND_MIDDLEWARE;
 use const Zend\Expressive\ROUTE_MIDDLEWARE;
 use const Zend\Expressive\SERVER_REQUEST_ERROR_RESPONSE_GENERATOR;
-use const Zend\Expressive\SERVER_REQUEST_FACTORY;
 
 class ConfigProviderTest extends TestCase
 {
@@ -72,8 +72,8 @@ class ConfigProviderTest extends TestCase
         $this->assertArrayHasKey(NotFoundHandler::class, $factories);
         $this->assertArrayHasKey(RequestHandlerRunner::class, $factories);
         $this->assertArrayHasKey(ResponseInterface::class, $factories);
+        $this->assertArrayHasKey(ServerRequestInterface::class, $factories);
         $this->assertArrayHasKey(SERVER_REQUEST_ERROR_RESPONSE_GENERATOR, $factories);
-        $this->assertArrayHasKey(SERVER_REQUEST_FACTORY, $factories);
         $this->assertArrayHasKey(StreamInterface::class, $factories);
     }
 
