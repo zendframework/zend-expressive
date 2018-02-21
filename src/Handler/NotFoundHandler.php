@@ -46,6 +46,7 @@ class NotFoundHandler implements RequestHandlerInterface
         string $template = self::TEMPLATE_DEFAULT,
         string $layout = self::LAYOUT_DEFAULT
     ) {
+        // Factory cast to closure in order to provide return type safety.
         $this->responseFactory = function () use ($responseFactory) : ResponseInterface {
             return $responseFactory();
         };
