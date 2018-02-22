@@ -21,7 +21,7 @@ class NotFoundHandler implements RequestHandlerInterface
     public const LAYOUT_DEFAULT = 'layout::default';
 
     /**
-     * @var TemplateRendererInterface
+     * @var TemplateRendererInterface|null
      */
     private $renderer;
 
@@ -59,15 +59,14 @@ class NotFoundHandler implements RequestHandlerInterface
      * Creates and returns a 404 response.
      *
      * @param ServerRequestInterface $request Passed to internal handler
-     * @param RequestHandlerInterface $handler Ignored.
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        if (! $this->renderer) {
+        if ($this->renderer === null) {
             return $this->generatePlainTextResponse($request);
         }
 
-        return $this->generateTemplatedResponse($request);
+        return $this->generateTemplatedResponse($this->renderer, $request);
     }
 
     /**
@@ -91,11 +90,14 @@ class NotFoundHandler implements RequestHandlerInterface
      *
      * Template will receive the current request via the "request" variable.
      */
-    private function generateTemplatedResponse(ServerRequestInterface $request) : ResponseInterface
-    {
+    private function generateTemplatedResponse(
+        TemplateRendererInterface $renderer,
+        ServerRequestInterface $request
+    ) : ResponseInterface {
+
         $response = ($this->responseFactory)()->withStatus(StatusCodeInterface::STATUS_NOT_FOUND);
         $response->getBody()->write(
-            $this->renderer->render($this->template, ['request' => $request, 'layout' => $this->layout])
+            $renderer->render($this->template, ['request' => $request, 'layout' => $this->layout])
         );
 
         return $response;
