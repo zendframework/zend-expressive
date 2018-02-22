@@ -130,7 +130,9 @@ class ApplicationTest extends TestCase
 
     public function testPipeNonSlashPathOnNonStringPipe()
     {
+        // @codingStandardsIgnoreStart
         $middleware1 = function ($request, $response) {};
+        // @codingStandardsIgnoreEnd
         $middleware2 = $this->createMockMiddleware();
 
         $preparedMiddleware = $this->createMockMiddleware();
