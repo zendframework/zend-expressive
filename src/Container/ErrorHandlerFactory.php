@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace Zend\Expressive\Container;
 
 use Psr\Container\ContainerInterface;
-use Zend\Diactoros\Response;
+use Psr\Http\Message\ResponseInterface;
 use Zend\Expressive\Middleware\ErrorResponseGenerator;
 use Zend\Stratigility\Middleware\ErrorHandler;
 
@@ -22,6 +22,6 @@ class ErrorHandlerFactory
             ? $container->get(ErrorResponseGenerator::class)
             : null;
 
-        return new ErrorHandler(new Response(), $generator);
+        return new ErrorHandler($container->get(ResponseInterface::class), $generator);
     }
 }

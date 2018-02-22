@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 3.0.0alpha9 - TBD
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- [#568](https://github.com/zendframework/zend-expressive/pull/568) updates the
+  zendframework/zend-stratigility dependency to require at least 3.0.0alpha4.
+
+- [#568](https://github.com/zendframework/zend-expressive/pull/568) updates the
+  `ErrorHandlerFactory` to pull the `Psr\Http\Message\ResponseInterface`
+  service, which returns a factory capable of returning a response instance,
+  and passes it to the `Zend\Stratigility\Middleware\ErrorHandler` instance it
+  creates, as that class changes in 3.0.0alpha4 such that it now expects a
+  factory instead of an instance.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 3.0.0alpha8 - 2018-02-21
 
 ### Added
