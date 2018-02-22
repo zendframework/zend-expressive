@@ -128,6 +128,19 @@ class ApplicationTest extends TestCase
         $this->assertNull($this->app->pipe('/foo', $middleware));
     }
 
+    public function testPipeNonSlashPathOnStringPipe()
+    {
+        $middleware1 = function ($request, $response) {};
+        $middleware2 = $this->createMockMiddleware();
+
+        $preparedMiddleware = $this->createMockMiddleware();
+        $this->factory
+            ->prepare($middleware2)
+            ->willReturn($preparedMiddleware);
+
+        $this->assertNull($this->app->pipe($middleware1, $middleware2));
+    }
+
     /**
      * @dataProvider validMiddleware
      * @param string|array|callable|MiddlewareInterface $middleware
