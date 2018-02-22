@@ -133,9 +133,9 @@ class ApplicationTest extends TestCase
     {
         $this->expectException(TypeError::class);
 
-        // @codingStandardsIgnoreStart
-        $middleware1 = function ($request, $response) {};
-        // @codingStandardsIgnoreEnd
+        $middleware1 = function ($request, $response) {
+            return $response;
+        };
         $middleware2 = $this->createMockMiddleware();
 
         $this->app->pipe($middleware1, $middleware2);
