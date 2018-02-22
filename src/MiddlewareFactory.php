@@ -76,11 +76,11 @@ class MiddlewareFactory
             return $this->pipeline(...$middleware);
         }
 
-        if (is_string($middleware)) {
-            return $this->lazy($middleware);
+        if (! is_string($middleware) || $middleware === '') {
+            throw Exception\InvalidMiddlewareException::forMiddleware($middleware);
         }
 
-        throw Exception\InvalidMiddlewareException::forMiddleware($middleware);
+        return $this->lazy($middleware);
     }
 
     /**
