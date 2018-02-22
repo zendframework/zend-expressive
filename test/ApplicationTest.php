@@ -131,16 +131,14 @@ class ApplicationTest extends TestCase
 
     public function testPipeNonSlashPathOnNonStringPipeProduceTypeError()
     {
+        $this->expectException(TypeError::class);
+
         // @codingStandardsIgnoreStart
         $middleware1 = function ($request, $response) {};
         // @codingStandardsIgnoreEnd
         $middleware2 = $this->createMockMiddleware();
 
-        try {
-            $this->app->pipe($middleware1, $middleware2);
-        } catch (TypeError $t) {
-            $this->assertInstanceOf(TypeError::class, $t);
-        }
+        $this->app->pipe($middleware1, $middleware2);
     }
 
     /**
