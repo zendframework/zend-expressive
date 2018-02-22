@@ -6,7 +6,11 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#562](https://github.com/zendframework/zend-expressive/pull/562) adds the
+  class `Zend\Expressive\Response\ServerRequestErrorResponseGenerator`, and maps
+  it to the `Zend\Expressive\Container\ServerRequestErrorResponseGeneratorFactory`.
+  The class generates an error response when an exeption occurs producing a
+  server request instance, and can be optionally templated.
 
 ### Changed
 
@@ -20,13 +24,28 @@ All notable changes to this project will be documented in this file, in reverse 
   creates, as that class changes in 3.0.0alpha4 such that it now expects a
   factory instead of an instance.
 
+- [#562](https://github.com/zendframework/zend-expressive/pull/562) modifies the
+  `Zend\Expressive\Container\RequestHandlerRunnerFactory` to depend on the
+  `Zend\Expressive\Response\ServerRequestErrorResponseGenerator` service instead
+  of the `Zend\Expressive\SERVER_REQUEST_ERROR_RESPONSE_GENERATOR` virtual
+  service.
+
+- [#562](https://github.com/zendframework/zend-expressive/pull/562) extracts
+  most logic from `Zend\Expressive\Middleware\ErrorResponseGenerator` to a new
+  trait, `Zend\Expressive\Response\ErrorResponseGeneratorTrait`. A trait was
+  used as the classes consuming it are from different namespaces, and thus
+  different inheritance trees. The trait is used by both the
+  `ErrorResponseGenerator` and the new `ServerRequestErrorResponseGenerator`.
+
 ### Deprecated
 
 - Nothing.
 
 ### Removed
 
-- Nothing.
+- [#562](https://github.com/zendframework/zend-expressive/pull/562) removes the
+  constant `Zend\Expressive\SERVER_REQUEST_ERROR_RESPONSE_GENERATOR`. It was
+  only used internally previously.
 
 ### Fixed
 
