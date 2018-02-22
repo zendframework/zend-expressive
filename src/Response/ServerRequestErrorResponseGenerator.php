@@ -26,7 +26,7 @@ class ServerRequestErrorResponseGenerator
     /**
      * Factory capable of generating a ResponseInterface instance.
      *
-     * @param callable
+     * @var callable
      */
     private $responseFactory;
 

@@ -76,7 +76,7 @@ class MiddlewareFactory
             return $this->pipeline(...$middleware);
         }
 
-        if (! is_string($middleware) || ! $middleware) {
+        if (! is_string($middleware) || $middleware === '') {
             throw Exception\InvalidMiddlewareException::forMiddleware($middleware);
         }
 
