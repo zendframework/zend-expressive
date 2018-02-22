@@ -11,18 +11,29 @@ namespace Zend\Expressive\Container;
 
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
-use Throwable;
-use Zend\Diactoros\Response;
-use Zend\Diactoros\ServerRequest;
 use Zend\Expressive\Middleware\ErrorResponseGenerator;
+use Zend\Expressive\Response\ServerRequestErrorResponseGenerator;
+use Zend\Expressive\Template\TemplateRendererInterface;
 
 class ServerRequestErrorResponseGeneratorFactory
 {
-    public function __invoke(ContainerInterface $container) : callable
+    public function __invoke(ContainerInterface $container) : ServerRequestErrorResponseGenerator
     {
-        return function (Throwable $e) use ($container) : ResponseInterface {
-            $generator = $container->get(ErrorResponseGenerator::class);
-            return $generator($e, new ServerRequest(), new Response());
-        };
+        $config = $container->has('config') ? $container->get('config') : [];
+        $debug  = $config['debug'] ?? false;
+
+        $renderer = $container->has(TemplateRendererInterface::class)
+            ? $container->get(TemplateRendererInterface::class)
+            : null;
+
+        $template = $config['zend-expressive']['error_handler']['template_error']
+            ?? ServerRequestErrorResponseGenerator::TEMPLATE_DEFAULT;
+
+        return new ServerRequestErrorResponseGenerator(
+            $container->get(ResponseInterface::class),
+            $debug,
+            $renderer,
+            $template
+        );
     }
 }

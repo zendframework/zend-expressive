@@ -70,15 +70,6 @@ const NOT_FOUND_MIDDLEWARE = __NAMESPACE__ . '\Middleware\NotFoundMiddleware';
 const ROUTE_MIDDLEWARE = __NAMESPACE__ . '\Middleware\RouteMiddleware';
 
 /**
- * Virtual service name that should resolve to a service returning a response
- * based on a `Throwable` argument produced when generating the application
- * request.
- *
- * @var string
- */
-const SERVER_REQUEST_ERROR_RESPONSE_GENERATOR = __NAMESPACE__ . '\ServerRequestErrorResponseGenerator';
-
-/**
  * Legacy/transitional service name for the ServerRequestFactory virtual
  * service introduced in 3.0.0alpha6. Should resolve to the
  * Psr\Http\Message\ServerRequestInterface service.

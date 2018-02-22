@@ -32,6 +32,7 @@ class ConfigProvider
 
     public function getDependencies() : array
     {
+        // @codingStandardsIgnoreStart
         return [
             'aliases' => [
                 DEFAULT_DELEGATE            => Handler\NotFoundHandler::class,
@@ -53,10 +54,11 @@ class ConfigProvider
                 Middleware\ErrorResponseGenerator::class => Container\ErrorResponseGeneratorFactory::class,
                 RequestHandlerRunner::class              => Container\RequestHandlerRunnerFactory::class,
                 ResponseInterface::class                 => Container\ResponseFactoryFactory::class,
-                SERVER_REQUEST_ERROR_RESPONSE_GENERATOR  => Container\ServerRequestErrorResponseGeneratorFactory::class,
+                Response\ServerRequestErrorResponseGenerator::class  => Container\ServerRequestErrorResponseGeneratorFactory::class,
                 ServerRequestInterface::class            => Container\ServerRequestFactoryFactory::class,
                 StreamInterface::class                   => Container\StreamFactoryFactory::class,
             ],
         ];
+        // @codingStandardsIgnoreEnd
     }
 }
