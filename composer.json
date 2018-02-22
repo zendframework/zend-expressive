@@ -37,7 +37,7 @@
         "filp/whoops": "^1.1.10 || ^2.1.13",
         "malukenho/docheader": "^0.1.6",
         "mockery/mockery": "^1.0",
-        "phpunit/phpunit": "^6.5.3",
+        "phpunit/phpunit": "^7.0.1",
         "zendframework/zend-coding-standard": "~1.0.0",
         "zendframework/zend-expressive-aurarouter": "^3.0.0alpha2",
         "zendframework/zend-expressive-fastroute": "^3.0.0alpha1",
