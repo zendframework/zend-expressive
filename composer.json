@@ -37,6 +37,8 @@
         "filp/whoops": "^1.1.10 || ^2.1.13",
         "malukenho/docheader": "^0.1.6",
         "mockery/mockery": "^1.0",
+        "phpstan/phpstan": "^0.9.2",
+        "phpstan/phpstan-strict-rules": "^0.9.0",
         "phpunit/phpunit": "^7.0.1",
         "zendframework/zend-coding-standard": "~1.0.0",
         "zendframework/zend-expressive-aurarouter": "^3.0.0alpha2",
@@ -92,6 +94,7 @@
         ],
         "cs-check": "phpcs",
         "cs-fix": "phpcbf",
+        "phpstan": "phpstan analyze -l max -c phpstan.neon ./src",
         "test": "phpunit --colors=always",
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
         "license-check": "docheader check src/ test/"
