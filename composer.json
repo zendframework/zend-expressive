@@ -31,7 +31,7 @@
         "zendframework/zend-expressive-router": "^3.0.0alpha3",
         "zendframework/zend-expressive-template": "^2.0.0alpha1",
         "zendframework/zend-httphandlerrunner": "^1.0.1",
-        "zendframework/zend-stratigility": "3.0.0alpha3"
+        "zendframework/zend-stratigility": "3.0.0alpha4"
     },
     "require-dev": {
         "filp/whoops": "^1.1.10 || ^2.1.13",

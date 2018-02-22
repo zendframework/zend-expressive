@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "924f3c60fc27a96ea6427012d2e31d56",
+    "content-hash": "d8bf4a32854c53e641d9f2cb85fbee01",
     "packages": [
         {
             "name": "fig/http-message-util",
@@ -531,19 +531,20 @@
         },
         {
             "name": "zendframework/zend-stratigility",
-            "version": "3.0.0alpha3",
+            "version": "3.0.0alpha4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-stratigility.git",
-                "reference": "e346801682bad999320ee89285b62643f27735a9"
+                "reference": "68efddda34fa8b1a9d58b0e7c02c4182800b89f0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-stratigility/zipball/e346801682bad999320ee89285b62643f27735a9",
-                "reference": "e346801682bad999320ee89285b62643f27735a9",
+                "url": "https://api.github.com/repos/zendframework/zend-stratigility/zipball/68efddda34fa8b1a9d58b0e7c02c4182800b89f0",
+                "reference": "68efddda34fa8b1a9d58b0e7c02c4182800b89f0",
                 "shasum": ""
             },
             "require": {
+                "fig/http-message-util": "^1.1",
                 "php": "^7.1",
                 "psr/http-message": "^1.0",
                 "psr/http-server-middleware": "^1.0",
@@ -551,7 +552,7 @@
             },
             "require-dev": {
                 "malukenho/docheader": "^0.1.6",
-                "phpunit/phpunit": "^6.5.5",
+                "phpunit/phpunit": "^7.0.1",
                 "zendframework/zend-coding-standard": "~1.0.0",
                 "zendframework/zend-diactoros": "^1.0"
             },
@@ -590,7 +591,7 @@
                 "psr-7",
                 "zf"
             ],
-            "time": "2018-02-05T21:18:43+00:00"
+            "time": "2018-02-22T20:09:31+00:00"
         }
     ],
     "packages-dev": [
