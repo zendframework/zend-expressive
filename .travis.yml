@@ -30,6 +30,7 @@ matrix:
     - php: 7.2
       env:
         - DEPS=locked
+        - PHPSTAN_CHECK=true
     - php: 7.2
       env:
         - DEPS=latest
@@ -48,6 +49,7 @@ script:
   - if [[ $TEST_COVERAGE == 'true' ]]; then composer test-coverage ; else composer test ; fi
   - if [[ $CS_CHECK == 'true' ]]; then composer cs-check ; fi
   - if [[ $CS_CHECK == 'true' ]]; then composer license-check ; fi
+  - if [[ $PHPSTAN_CHECK == 'true' ]]; then composer phpstan ; fi
 
 after_script:
   - if [[ $TEST_COVERAGE == 'true' ]]; then vendor/bin/php-coveralls -v ; fi
