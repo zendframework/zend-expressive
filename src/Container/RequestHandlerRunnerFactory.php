@@ -12,27 +12,26 @@ namespace Zend\Expressive\Container;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\ApplicationPipeline;
-use Zend\Expressive\ServerRequestErrorResponseGenerator;
+use Zend\Expressive\Response\ServerRequestErrorResponseGenerator;
 use Zend\HttpHandlerRunner\Emitter\EmitterInterface;
 use Zend\HttpHandlerRunner\RequestHandlerRunner;
 
 /**
  * Create an ApplicationRunner instance.
  *
- * This class consumes three pseudo-services (services that look like class
- * names, but resolve to other artifacts):
+ * This class consumes two pseudo-services (services that look like class
+ * names, but resolve to other artifacts) and two services provided within
+ * this package:
  *
  * - Zend\Expressive\ApplicationPipeline, which should resolve to a
  *   Zend\Stratigility\MiddlewarePipeInterface and/or
  *   Psr\Http\Server\RequestHandlerInterface instance.
+ * - Zend\HttpHandlerRunner\Emitter\EmitterInterface.
  * - Psr\Http\Message\ServerRequestInterface, which should resolve to a PHP
  *   callable that will return a Psr\Http\Message\ServerRequestInterface
  *   instance.
- * - Zend\Expressive\ServerRequestErrorResponseGenerator, which should resolve
- *   to a PHP callable that accepts a Throwable argument, and which will return
- *   a Psr\Http\Message\ResponseInterface instance.
+ * - Zend\Expressive\Response\ServerRequestErrorResponseGeneratorFactory,
  *
- * It also consumes the service Zend\HttpHandlerRunner\Emitter\EmitterInterface.
  */
 class RequestHandlerRunnerFactory
 {

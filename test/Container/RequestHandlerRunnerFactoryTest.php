@@ -19,7 +19,7 @@ use RuntimeException;
 use Throwable;
 use Zend\Expressive\ApplicationPipeline;
 use Zend\Expressive\Container\RequestHandlerRunnerFactory;
-use Zend\Expressive\ServerRequestErrorResponseGenerator;
+use Zend\Expressive\Response\ServerRequestErrorResponseGenerator;
 use Zend\HttpHandlerRunner\Emitter\EmitterInterface;
 use Zend\HttpHandlerRunner\RequestHandlerRunner;
 
@@ -83,10 +83,9 @@ class RequestHandlerRunnerFactoryTest extends TestCase
     public function registerServerRequestErrorResponseGeneratorInContainer($container) : callable
     {
         $response = $this->prophesize(ResponseInterface::class)->reveal();
-        $generator = function (Throwable $e) use ($response) {
-            return $response;
-        };
-        $container->get(ServerRequestErrorResponseGenerator::class)->willReturn($generator);
-        return $generator;
+        $generator = $this->prophesize(ServerRequestErrorResponseGenerator::class);
+        $generator->__invoke(Argument::type(Throwable::class))->willReturn($response);
+        $container->get(ServerRequestErrorResponseGenerator::class)->willReturn($generator->reveal());
+        return $generator->reveal();
     }
 }

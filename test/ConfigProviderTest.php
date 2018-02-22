@@ -20,6 +20,7 @@ use Zend\Expressive\Handler\NotFoundHandler;
 use Zend\Expressive\Middleware;
 use Zend\Expressive\MiddlewareContainer;
 use Zend\Expressive\MiddlewareFactory;
+use Zend\Expressive\Response\ServerRequestErrorResponseGenerator;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\HttpHandlerRunner\Emitter\EmitterInterface;
 use Zend\HttpHandlerRunner\RequestHandlerRunner;
@@ -33,7 +34,6 @@ use const Zend\Expressive\IMPLICIT_HEAD_MIDDLEWARE;
 use const Zend\Expressive\IMPLICIT_OPTIONS_MIDDLEWARE;
 use const Zend\Expressive\NOT_FOUND_MIDDLEWARE;
 use const Zend\Expressive\ROUTE_MIDDLEWARE;
-use const Zend\Expressive\SERVER_REQUEST_ERROR_RESPONSE_GENERATOR;
 
 class ConfigProviderTest extends TestCase
 {
@@ -73,7 +73,7 @@ class ConfigProviderTest extends TestCase
         $this->assertArrayHasKey(RequestHandlerRunner::class, $factories);
         $this->assertArrayHasKey(ResponseInterface::class, $factories);
         $this->assertArrayHasKey(ServerRequestInterface::class, $factories);
-        $this->assertArrayHasKey(SERVER_REQUEST_ERROR_RESPONSE_GENERATOR, $factories);
+        $this->assertArrayHasKey(ServerRequestErrorResponseGenerator::class, $factories);
         $this->assertArrayHasKey(StreamInterface::class, $factories);
     }
 
