@@ -16,6 +16,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use TypeError;
 use Zend\Expressive\Application;
 use Zend\Expressive\MiddlewareFactory;
 use Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware as RouteMiddleware;
@@ -128,19 +129,18 @@ class ApplicationTest extends TestCase
         $this->assertNull($this->app->pipe('/foo', $middleware));
     }
 
-    public function testPipeNonSlashPathOnNonStringPipe()
+    public function testPipeNonSlashPathOnNonStringPipeProduceTypeError()
     {
         // @codingStandardsIgnoreStart
         $middleware1 = function ($request, $response) {};
         // @codingStandardsIgnoreEnd
         $middleware2 = $this->createMockMiddleware();
 
-        $preparedMiddleware = $this->createMockMiddleware();
-        $this->factory
-            ->prepare($middleware2)
-            ->willReturn($preparedMiddleware);
-
-        $this->assertNull($this->app->pipe($middleware1, $middleware2));
+        try {
+            $this->app->pipe($middleware1, $middleware2);
+        } catch (TypeError $t) {
+            $this->assertInstanceOf(TypeError::class, $t);
+        }
     }
 
     /**
