@@ -47,24 +47,29 @@ EOT;
 
     private function prepareTemplatedResponse(
         Throwable $e,
-        ResponseInterface $response,
-        array $templateData
+        TemplateRendererInterface $renderer,
+        array $templateData,
+        bool $debug,
+        ResponseInterface $response
     ) : ResponseInterface {
-        if ($this->debug) {
+        if ($debug) {
             $templateData['error'] = $e;
         }
 
         $response->getBody()
-            ->write($this->renderer->render($this->template, $templateData));
+            ->write($renderer->render($this->template, $templateData));
 
         return $response;
     }
 
-    private function prepareDefaultResponse(Throwable $e, ResponseInterface $response) : ResponseInterface
-    {
+    private function prepareDefaultResponse(
+        Throwable $e,
+        bool $debug,
+        ResponseInterface $response
+    ) : ResponseInterface {
         $message = 'An unexpected error occurred';
 
-        if ($this->debug) {
+        if ($debug) {
             $message .= "; stack trace:\n\n" . $this->prepareStackTrace($e);
         }
 

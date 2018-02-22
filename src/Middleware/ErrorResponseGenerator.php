@@ -40,15 +40,21 @@ class ErrorResponseGenerator
         $response = $response->withStatus(Utils::getStatusCode($e, $response));
 
         if ($this->renderer) {
-            return $this->prepareTemplatedResponse($e, $response, [
-                'response' => $response,
-                'request'  => $request,
-                'uri'      => (string) $request->getUri(),
-                'status'   => $response->getStatusCode(),
-                'reason'   => $response->getReasonPhrase(),
-            ]);
+            return $this->prepareTemplatedResponse(
+                $e,
+                $this->renderer,
+                [
+                    'response' => $response,
+                    'request'  => $request,
+                    'uri'      => (string) $request->getUri(),
+                    'status'   => $response->getStatusCode(),
+                    'reason'   => $response->getReasonPhrase(),
+                ],
+                $this->debug,
+                $response
+            );
         }
 
-        return $this->prepareDefaultResponse($e, $response);
+        return $this->prepareDefaultResponse($e, $this->debug, $response);
     }
 }
