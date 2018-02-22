@@ -11,8 +11,12 @@ namespace ZendTest\Expressive\Container;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use ReflectionProperty;
+use RuntimeException;
+use Throwable;
 use Zend\Expressive\ApplicationPipeline;
 use Zend\Expressive\Container\RequestHandlerRunnerFactory;
 use Zend\Expressive\ServerRequestErrorResponseGenerator;
@@ -27,7 +31,7 @@ class RequestHandlerRunnerFactoryTest extends TestCase
         $handler = $this->registerHandlerInContainer($container);
         $emitter = $this->registerEmitterInContainer($container);
         $serverRequestFactory = $this->registerServerRequestFactoryInContainer($container);
-        $errorGenerator = $this->registerServerRequestErroResponseGeneratorInContainer($container);
+        $errorGenerator = $this->registerServerRequestErrorResponseGeneratorInContainer($container);
 
         $factory = new RequestHandlerRunnerFactory();
 
@@ -36,8 +40,20 @@ class RequestHandlerRunnerFactoryTest extends TestCase
         $this->assertInstanceOf(RequestHandlerRunner::class, $runner);
         $this->assertAttributeSame($handler, 'handler', $runner);
         $this->assertAttributeSame($emitter, 'emitter', $runner);
-        $this->assertAttributeSame($serverRequestFactory, 'serverRequestFactory', $runner);
-        $this->assertAttributeSame($errorGenerator, 'serverRequestErrorResponseGenerator', $runner);
+
+        $this->assertAttributeNotSame($serverRequestFactory, 'serverRequestFactory', $runner);
+        $this->assertAttributeNotSame($errorGenerator, 'serverRequestErrorResponseGenerator', $runner);
+
+        $r = new ReflectionProperty($runner, 'serverRequestFactory');
+        $r->setAccessible(true);
+        $toTest = $r->getValue($runner);
+        $this->assertSame($serverRequestFactory(), $toTest());
+
+        $r = new ReflectionProperty($runner, 'serverRequestErrorResponseGenerator');
+        $r->setAccessible(true);
+        $toTest = $r->getValue($runner);
+        $e = new RuntimeException();
+        $this->assertSame($errorGenerator($e), $toTest($e));
     }
 
     public function registerHandlerInContainer($container) : RequestHandlerInterface
@@ -56,15 +72,19 @@ class RequestHandlerRunnerFactoryTest extends TestCase
 
     public function registerServerRequestFactoryInContainer($container) : callable
     {
-        $factory = function () {
+        $request = $this->prophesize(ServerRequestInterface::class)->reveal();
+        $factory = function () use ($request) {
+            return $request;
         };
         $container->get(ServerRequestInterface::class)->willReturn($factory);
         return $factory;
     }
 
-    public function registerServerRequestErroResponseGeneratorInContainer($container) : callable
+    public function registerServerRequestErrorResponseGeneratorInContainer($container) : callable
     {
-        $generator = function ($e) {
+        $response = $this->prophesize(ResponseInterface::class)->reveal();
+        $generator = function (Throwable $e) use ($response) {
+            return $response;
         };
         $container->get(ServerRequestErrorResponseGenerator::class)->willReturn($generator);
         return $generator;

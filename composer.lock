@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "c602b615a23337d4485482ff4d79a367",
+    "content-hash": "924f3c60fc27a96ea6427012d2e31d56",
     "packages": [
         {
             "name": "fig/http-message-util",
@@ -477,16 +477,16 @@
         },
         {
             "name": "zendframework/zend-httphandlerrunner",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-httphandlerrunner.git",
-                "reference": "9010659232e98c3fbfa575c184f7945e26e20380"
+                "reference": "5e4c1e82a8bb1585020eafd32c49ece5a6ee98df"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-httphandlerrunner/zipball/9010659232e98c3fbfa575c184f7945e26e20380",
-                "reference": "9010659232e98c3fbfa575c184f7945e26e20380",
+                "url": "https://api.github.com/repos/zendframework/zend-httphandlerrunner/zipball/5e4c1e82a8bb1585020eafd32c49ece5a6ee98df",
+                "reference": "5e4c1e82a8bb1585020eafd32c49ece5a6ee98df",
                 "shasum": ""
             },
             "require": {
@@ -527,7 +527,7 @@
                 "psr-7",
                 "zf"
             ],
-            "time": "2018-02-05T14:21:31+00:00"
+            "time": "2018-02-21T20:33:02+00:00"
         },
         {
             "name": "zendframework/zend-stratigility",
