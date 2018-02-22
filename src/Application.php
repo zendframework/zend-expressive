@@ -104,7 +104,7 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
         $middleware = $middleware ?: $middlewareOrPath;
         $path = $middleware === $middlewareOrPath ? '/' : $middlewareOrPath;
 
-        $middleware = ( is_string($path) && $path !== '/' )
+        $middleware = $path !== '/'
             ? path($path, $this->factory->prepare($middleware))
             : $this->factory->prepare($middleware);
 
