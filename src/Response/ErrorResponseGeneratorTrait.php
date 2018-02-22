@@ -65,7 +65,7 @@ EOT;
         $message = 'An unexpected error occurred';
 
         if ($this->debug) {
-            $message .= "; strack trace:\n\n" . $this->prepareStackTrace($e);
+            $message .= "; stack trace:\n\n" . $this->prepareStackTrace($e);
         }
 
         $response->getBody()->write($message);

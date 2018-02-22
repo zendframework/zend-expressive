@@ -45,10 +45,10 @@ class ServerRequestErrorResponseGenerator
         $this->template  = $template;
     }
 
-    public function __invoke(Throwable $e)
+    public function __invoke(Throwable $e) : ResponseInterface
     {
-        $response = ($this->responseFactory)()
-            ->withStatus(Utils::getStatusCode($e, $response));
+        $response = ($this->responseFactory)();
+        $response = $response->withStatus(Utils::getStatusCode($e, $response));
 
         if ($this->renderer) {
             return $this->prepareTemplatedResponse($e, $response, [
