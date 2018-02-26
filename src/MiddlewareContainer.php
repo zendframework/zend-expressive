@@ -27,22 +27,16 @@ class MiddlewareContainer implements ContainerInterface
     }
 
     /**
-     * Returns true if the service is in the container, or resolves to an
-     * autoloadable class name.
+     * Returns true if the service is in the container.
      * {@inheritDocs}
      */
     public function has($service) : bool
     {
-        if ($this->container->has($service)) {
-            return true;
-        }
-
-        return class_exists($service);
+        return $this->container->has($service);
     }
 
     /**
-     * Returns middleware pulled from container, or directly instantiated if
-     * not managed by the container.
+     * Returns middleware pulled from container.
      * {@inheritDocs}
      * @throws Exception\MissingDependencyException if the service does not
      *     exist, or is not a valid class name.
@@ -53,13 +47,11 @@ class MiddlewareContainer implements ContainerInterface
             throw Exception\MissingDependencyException::forMiddlewareService($service);
         }
 
-        $middleware = $this->container->has($service)
-            ? $this->container->get($service)
-            : new $service();
+        $middleware = $this->container->get($service);
 
-        $middleware = $middleware instanceof RequestHandlerInterface
-            ? new RequestHandlerMiddleware($middleware)
-            : $middleware;
+        if ($middleware instanceof RequestHandlerInterface) {
+            return new RequestHandlerMiddleware($middleware);
+        }
 
         if (! $middleware instanceof MiddlewareInterface) {
             throw Exception\InvalidMiddlewareException::forMiddlewareService($service, $middleware);
