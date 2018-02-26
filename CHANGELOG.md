@@ -531,8 +531,8 @@ All notable changes to this project will be documented in this file, in reverse 
 - [#543](https://github.com/zendframework/zend-expressive/pull/543) removes the
   following methods from `Zend\Expressive\Application`:
 
-  - `pipeRoutingMiddleware()`: use `pipe(\Zend\Expressive\Router\PathBasedRoutingMiddleware::class)` instead.
-  - `pipeDispatchMiddleware()`: use `pipe(\Zend\Expressive\Router\DispatchMiddleware::class)` instead.
+  - `pipeRoutingMiddleware()`: use `pipe(\Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware::class)` instead.
+  - `pipeDispatchMiddleware()`: use `pipe(\Zend\Expressive\Router\Middleware\DispatchMiddleware::class)` instead.
   - `getContainer()`
   - `getDefaultDelegate()`: ensure you pipe middleware capable of returning a response at the innermost layer; this can be done by decorating a request handler using `Zend\Stratigility\Middleware\RequestHandlerMiddleware`, using `Zend\Expressive\Middleware\NotFoundMiddleware`, or other approaches.
   - `getEmitter()`: use the `Zend\HttpHandlerRunner\Emitter\EmitterInterface` service from the container.
