@@ -16,7 +16,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Expressive\Exception\InvalidMiddlewareException;
 use Zend\Expressive\MiddlewareContainer;
 
-class LazyLoadingMiddleware implements MiddlewareInterface
+final class LazyLoadingMiddleware implements MiddlewareInterface
 {
     /**
      * @var MiddlewareContainer

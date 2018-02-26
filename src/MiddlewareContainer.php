@@ -14,7 +14,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Stratigility\Middleware\RequestHandlerMiddleware;
 
-class MiddlewareContainer implements ContainerInterface
+final class MiddlewareContainer implements ContainerInterface
 {
     /**
      * @var ContainerInterface

@@ -19,7 +19,7 @@ use Zend\Stratigility\MiddlewarePipeInterface;
 
 use function Zend\Stratigility\path;
 
-class Application implements MiddlewareInterface, RequestHandlerInterface
+final class Application implements MiddlewareInterface, RequestHandlerInterface
 {
     /**
      * @var MiddlewareFactory
