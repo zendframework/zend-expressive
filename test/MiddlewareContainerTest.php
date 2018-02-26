@@ -32,12 +32,6 @@ class MiddlewareContainerTest extends TestCase
         $this->assertTrue($this->container->has('foo'));
     }
 
-    public function testHasReturnsTrueIfOriginContainerDoesNotHaveServiceButClassExists()
-    {
-        $this->originContainer->has(__CLASS__)->willReturn(false);
-        $this->assertTrue($this->container->has(__CLASS__));
-    }
-
     public function testHasReturnsFalseIfOriginContainerDoesNotHaveServiceAndClassDoesNotExist()
     {
         $this->originContainer->has('not-a-class')->willReturn(false);
@@ -77,15 +71,6 @@ class MiddlewareContainerTest extends TestCase
         $this->originContainer->get('middleware-service')->willReturn($middleware);
 
         $this->assertSame($middleware, $this->container->get('middleware-service'));
-    }
-
-    public function testGetReturnsInstantiatedClass()
-    {
-        $this->originContainer->has(DispatchMiddleware::class)->willReturn(false);
-        $this->originContainer->get(DispatchMiddleware::class)->shouldNotBeCalled();
-
-        $middleware = $this->container->get(DispatchMiddleware::class);
-        $this->assertInstanceOf(DispatchMiddleware::class, $middleware);
     }
 
     public function testGetWillDecorateARequestHandlerAsMiddleware()
