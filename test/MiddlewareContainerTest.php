@@ -55,15 +55,6 @@ class MiddlewareContainerTest extends TestCase
         $this->container->get(__CLASS__);
     }
 
-    public function testGetRaisesExceptionIfClassSpecifiedDoesNotImplementMiddlewareInterface()
-    {
-        $this->originContainer->has(__CLASS__)->willReturn(false);
-        $this->originContainer->get(__CLASS__)->shouldNotBeCalled();
-
-        $this->expectException(Exception\InvalidMiddlewareException::class);
-        $this->container->get(__CLASS__);
-    }
-
     public function testGetReturnsServiceFromOriginContainer()
     {
         $middleware = $this->prophesize(MiddlewareInterface::class)->reveal();
