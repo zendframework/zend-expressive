@@ -29,7 +29,8 @@ class MiddlewareContainer implements ContainerInterface
     /**
      * Returns true if the service is in the container, or resolves to an
      * autoloadable class name.
-     * {@inheritDocs}
+     *
+     * @param string $service
      */
     public function has($service) : bool
     {
@@ -43,9 +44,12 @@ class MiddlewareContainer implements ContainerInterface
     /**
      * Returns middleware pulled from container, or directly instantiated if
      * not managed by the container.
-     * {@inheritDocs}
+     *
+     * @param string $service
      * @throws Exception\MissingDependencyException if the service does not
      *     exist, or is not a valid class name.
+     * @throws Exception\InvalidMiddlewareException if the service is not
+     *     an instance of MiddlewareInterface.
      */
     public function get($service) : MiddlewareInterface
     {
