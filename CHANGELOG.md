@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 3.0.0rc1 - TBD
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#574](https://github.com/zendframework/zend-expressive/pull/574) updates the
+  classes `Zend\Expressive\Exception\InvalidMiddlewareException` and
+  `MissingDependencyException` to implement the
+  [PSR-11](https://www.php-fig.org/psr/psr-11/) `ContainerExceptionInterface`.
+
 ## 3.0.0alpha9 - 2018-02-22
 
 ### Added

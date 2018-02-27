@@ -9,11 +9,14 @@ declare(strict_types=1);
 
 namespace Zend\Expressive\Exception;
 
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use RuntimeException;
 
-class InvalidMiddlewareException extends RuntimeException implements ExceptionInterface
+class InvalidMiddlewareException extends RuntimeException implements
+    ContainerExceptionInterface,
+    ExceptionInterface
 {
     /**
      * @param mixed $middleware The middleware that does not fulfill the

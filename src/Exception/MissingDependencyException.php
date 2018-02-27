@@ -9,9 +9,12 @@ declare(strict_types=1);
 
 namespace Zend\Expressive\Exception;
 
+use Psr\Container\ContainerExceptionInterface;
 use RuntimeException;
 
-class MissingDependencyException extends RuntimeException implements ExceptionInterface
+class MissingDependencyException extends RuntimeException implements
+    ContainerExceptionInterface,
+    ExceptionInterface
 {
     public static function forMiddlewareService(string $service) : self
     {
