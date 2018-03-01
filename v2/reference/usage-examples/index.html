@@ -1,0 +1,1733 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="zend-expressive: PSR-7 Middleware Microframework">  
+    <link rel="shortcut icon" href="../../../img/favicon.ico">
+
+    <title>Examples - Expressive</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../../../css/styles-482aa2add1.css">
+        <link href="../../../css/zend-expressive.css" rel="stylesheet">
+
+    
+</head>
+
+<body>
+
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+            <span class="navbar-brand">
+                <a class="logo-link" href="https://framework.zend.com/" data-toggle="tooltip" data-placement="bottom" title="Go to the ZF homepage"><img src="../../../img/zf-logo-mark.svg" height="28" alt="Zend Framework" /></a>
+                <a href="../../..">Expressive</a>
+            </span>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                
+                    <li >
+                        <a href="../../..">Home</a>
+                    </li>
+                
+                
+                
+                
+                
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Getting Started <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+
+<li >
+    <a href="../../getting-started/features/">Overview and Features</a>
+</li>
+
+
+                        
+                            
+
+<li >
+    <a href="../../getting-started/standalone/">Quick Start: Standalone</a>
+</li>
+
+
+                        
+                            
+
+<li >
+    <a href="../../getting-started/skeleton/">Quick Start: Skeleton Installer</a>
+</li>
+
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                
+                
+                
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Features <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+
+<li >
+    <a href="../../features/middleware-types/">Middleware Types</a>
+</li>
+
+
+                        
+                            
+
+<li >
+    <a href="../../features/application/">Applications</a>
+</li>
+
+
+                        
+                            
+
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Containers</a>
+    <ul class="dropdown-menu">
+        
+            
+
+<li >
+    <a href="../../features/container/intro/">Introduction</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../features/container/factories/">Container Factories</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../features/container/delegator-factories/">Delegator Factories</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../features/container/zend-servicemanager/">Using zend-servicemanager</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../features/container/pimple/">Using Pimple</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../features/container/aura-di/">Using Aura.Di</a>
+</li>
+
+
+        
+    </ul>
+  </li>
+
+
+                        
+                            
+
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Routing Adapters</a>
+    <ul class="dropdown-menu">
+        
+            
+
+<li >
+    <a href="../../features/router/intro/">Introduction</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../features/router/interface/">Routing Interface</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../features/router/uri-generation/">URI Generation</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../features/router/piping/">Routing vs Piping</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../features/router/aura/">Using Aura</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../features/router/fast-route/">Using FastRoute</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../features/router/zf2/">Using the ZF2 Router</a>
+</li>
+
+
+        
+    </ul>
+  </li>
+
+
+                        
+                            
+
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Templating</a>
+    <ul class="dropdown-menu">
+        
+            
+
+<li >
+    <a href="../../features/template/intro/">Introduction</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../features/template/interface/">Template Renderer Interface</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../features/template/middleware/">Templated Middleware</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../features/template/plates/">Using Plates</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../features/template/twig/">Using Twig</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../features/template/zend-view/">Using zend-view</a>
+</li>
+
+
+        
+    </ul>
+  </li>
+
+
+                        
+                            
+
+<li >
+    <a href="../../features/error-handling/">Error Handling</a>
+</li>
+
+
+                        
+                            
+
+<li >
+    <a href="../../features/modular-applications/">Modular Applications</a>
+</li>
+
+
+                        
+                            
+
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Middleware</a>
+    <ul class="dropdown-menu">
+        
+            
+
+<li >
+    <a href="../../features/middleware/implicit-methods-middleware/">Implicit HEAD and OPTIONS Middleware</a>
+</li>
+
+
+        
+    </ul>
+  </li>
+
+
+                        
+                            
+
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Helpers</a>
+    <ul class="dropdown-menu">
+        
+            
+
+<li >
+    <a href="../../features/helpers/intro/">Introduction</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../features/helpers/url-helper/">UrlHelper</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../features/helpers/server-url-helper/">ServerUrlHelper</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../features/helpers/body-parse/">Body Parsing Middleware</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../features/helpers/content-length/">Content-Length Middleware</a>
+</li>
+
+
+        
+    </ul>
+  </li>
+
+
+                        
+                            
+
+<li >
+    <a href="../../features/emitters/">Emitters</a>
+</li>
+
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                
+                
+                
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cookbook <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+
+<li >
+    <a href="../../cookbook/autowiring-routes-and-pipelines/">Autowiring routes and pipeline middleware</a>
+</li>
+
+
+                        
+                            
+
+<li >
+    <a href="../../cookbook/common-prefix-for-routes/">Prepending a common path to all routes</a>
+</li>
+
+
+                        
+                            
+
+<li >
+    <a href="../../cookbook/route-specific-pipeline/">Route-specific middleware pipelines</a>
+</li>
+
+
+                        
+                            
+
+<li >
+    <a href="../../cookbook/using-custom-view-helpers/">Registering custom view helpers when using zend-view</a>
+</li>
+
+
+                        
+                            
+
+<li >
+    <a href="../../cookbook/using-zend-form-view-helpers/">Using zend-form view helpers</a>
+</li>
+
+
+                        
+                            
+
+<li >
+    <a href="../../cookbook/using-a-base-path/">Using Expressive from a subdirectory</a>
+</li>
+
+
+                        
+                            
+
+<li >
+    <a href="../../cookbook/setting-locale-depending-routing-parameter/">Setting a locale based on a routing parameter</a>
+</li>
+
+
+                        
+                            
+
+<li >
+    <a href="../../cookbook/setting-locale-without-routing-parameter/">Setting a locale without a routing parameter</a>
+</li>
+
+
+                        
+                            
+
+<li >
+    <a href="../../cookbook/debug-toolbars/">Enabling debug toolbars</a>
+</li>
+
+
+                        
+                            
+
+<li >
+    <a href="../../cookbook/using-routed-middleware-class-as-controller/">Handling multiple routes in a single class</a>
+</li>
+
+
+                        
+                            
+
+<li >
+    <a href="../../cookbook/flash-messengers/">Flash Messengers</a>
+</li>
+
+
+                        
+                            
+
+<li >
+    <a href="../../cookbook/passing-data-between-middleware/">Passing data between middleware</a>
+</li>
+
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                
+                
+                
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reference <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+
+<li >
+    <a href="../../why-expressive/">Why choose Expressive?</a>
+</li>
+
+
+                        
+                            
+
+<li >
+    <a href="../cli-tooling/">CLI Tooling</a>
+</li>
+
+
+                        
+                            
+
+<li class="active">
+    <a href="./">Examples</a>
+</li>
+
+
+                        
+                            
+
+<li >
+    <a href="../expressive-projects/">Expressive Projects</a>
+</li>
+
+
+                        
+                            
+
+<li >
+    <a href="../migration/">Migration</a>
+</li>
+
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                
+                
+                
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">v1 <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+
+<li >
+    <a href="../../../v1/">Home</a>
+</li>
+
+
+                        
+                            
+
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Getting Started</a>
+    <ul class="dropdown-menu">
+        
+            
+
+<li >
+    <a href="../../../v1/getting-started/features/">Overview and Features</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/getting-started/standalone/">Quick Start: Standalone</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/getting-started/skeleton/">Quick Start: Skeleton Installer</a>
+</li>
+
+
+        
+    </ul>
+  </li>
+
+
+                        
+                            
+
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Features</a>
+    <ul class="dropdown-menu">
+        
+            
+
+<li >
+    <a href="../../../v1/features/application/">Applications</a>
+</li>
+
+
+        
+            
+
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Containers</a>
+    <ul class="dropdown-menu">
+        
+            
+
+<li >
+    <a href="../../../v1/features/container/intro/">Introduction</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/features/container/factories/">Container Factories</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/features/container/zend-servicemanager/">Using zend-servicemanager</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/features/container/pimple/">Using Pimple</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/features/container/aura-di/">Using Aura.Di</a>
+</li>
+
+
+        
+    </ul>
+  </li>
+
+
+        
+            
+
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Routing Adapters</a>
+    <ul class="dropdown-menu">
+        
+            
+
+<li >
+    <a href="../../../v1/features/router/intro/">Introduction</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/features/router/interface/">Routing Interface</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/features/router/uri-generation/">URI Generation</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/features/router/piping/">Routing vs Piping</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/features/router/aura/">Using Aura</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/features/router/fast-route/">Using FastRoute</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/features/router/zf2/">Using the ZF2 Router</a>
+</li>
+
+
+        
+    </ul>
+  </li>
+
+
+        
+            
+
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Templating</a>
+    <ul class="dropdown-menu">
+        
+            
+
+<li >
+    <a href="../../../v1/features/template/intro/">Introduction</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/features/template/interface/">Template Renderer Interface</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/features/template/middleware/">Templated Middleware</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/features/template/plates/">Using Plates</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/features/template/twig/">Using Twig</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/features/template/zend-view/">Using zend-view</a>
+</li>
+
+
+        
+    </ul>
+  </li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/features/error-handling/">Error Handling</a>
+</li>
+
+
+        
+            
+
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Helpers</a>
+    <ul class="dropdown-menu">
+        
+            
+
+<li >
+    <a href="../../../v1/features/helpers/intro/">Introduction</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/features/helpers/url-helper/">UrlHelper</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/features/helpers/server-url-helper/">ServerUrlHelper</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/features/helpers/body-parse/">Body Parsing Middleware</a>
+</li>
+
+
+        
+    </ul>
+  </li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/features/emitters/">Emitters</a>
+</li>
+
+
+        
+    </ul>
+  </li>
+
+
+                        
+                            
+
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Cookbook</a>
+    <ul class="dropdown-menu">
+        
+            
+
+<li >
+    <a href="../../../v1/cookbook/common-prefix-for-routes/">Prepending a common path to all routes</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/cookbook/route-specific-pipeline/">Route-specific middleware pipelines</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/cookbook/custom-404-page-handling/">Setting custom 404 page handling</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/cookbook/using-custom-view-helpers/">Registering custom view helpers when using zend-view</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/cookbook/using-zend-form-view-helpers/">Using zend-form view helpers</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/cookbook/using-a-base-path/">Using Expressive from a subdirectory</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/cookbook/modular-layout/">Building modular applications</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/cookbook/setting-locale-depending-routing-parameter/">Setting a locale based on a routing parameter</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/cookbook/setting-locale-without-routing-parameter/">Setting a locale without a routing parameter</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/cookbook/debug-toolbars/">Enabling debug toolbars</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/cookbook/using-routed-middleware-class-as-controller/">Handling multiple routes in a single class</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/cookbook/flash-messengers/">Flash Messengers</a>
+</li>
+
+
+        
+    </ul>
+  </li>
+
+
+                        
+                            
+
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Reference</a>
+    <ul class="dropdown-menu">
+        
+            
+
+<li >
+    <a href="../../../v1/why-expressive/">Why choose Expressive?</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/reference/usage-examples/">Examples</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/reference/expressive-projects/">Expressive Projects</a>
+</li>
+
+
+        
+            
+
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Migration</a>
+    <ul class="dropdown-menu">
+        
+            
+
+<li >
+    <a href="../../../v1/reference/migration/rc-to-v1/">From RC5 and Earlier</a>
+</li>
+
+
+        
+            
+
+<li >
+    <a href="../../../v1/reference/migration/to-v1-1/">To Expressive 1.1</a>
+</li>
+
+
+        
+    </ul>
+  </li>
+
+
+        
+    </ul>
+  </li>
+
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                
+                
+                
+                </ul>
+            
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" class="component-toggle" data-toggle="tooltip" data-placement="bottom" title="Show component list">
+                        <i class="fa fa-book"></i> Components
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                
+                    <li>
+                        <a href="https://github.com/zendframework/zend-expressive/">
+                            
+                                <i class="fa fa-github"></i>
+                            
+                            GitHub
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+    <!-- content:begin -->
+    <div id="page-top" class="container docs">
+        
+        <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#usage-examples">Usage Examples</a></li>
+        
+            <li><a href="#using-the-built-in-web-server">Using the built-in web server</a></li>
+        
+            <li><a href="#setting-up-autoloading-for-the-application-namespace">Setting up autoloading for the Application namespace</a></li>
+        
+            <li><a href="#hello-world-using-a-container">Hello World using a Container</a></li>
+        
+            <li><a href="#hello-world-using-a-configuration-driven-container">Hello World using a Configuration-Driven Container</a></li>
+        
+            <li><a href="#hybrid-container-and-programmatic-creation">Hybrid Container and Programmatic Creation</a></li>
+        
+            <li><a href="#segregating-your-application-to-a-subpath">Segregating your application to a subpath</a></li>
+        
+    
+    </ul>
+
+    
+    <ul class="pager hidden-print">
+      <li class="previous">
+        <a rel="prev" href="../cli-tooling/"><i class="fa fa-arrow-left"></i> Previous</a>
+      </li>
+      <li class="next">
+        <a rel="next" href="../expressive-projects/">Next <i class="fa fa-arrow-right"></i></a>
+      </li>
+    </ul>
+    
+</div></div>
+        <div class="col-md-9" role="main">
+
+<ol class="breadcrumb" role="navigation" aria-label="breadcrumbs navigation">
+  <li><a href="../../..">Expressive</a></li>
+  
+    
+      
+        <li>Reference</li>
+      
+    
+  
+  <li class="active">Examples</li>
+</ol>
+
+<h1 id="usage-examples">Usage Examples</h1>
+<p>Below are several usage examples, covering a variety of ways of creating and
+managing an application.</p>
+<p>In all examples, the assumption is the following directory structure:</p>
+<pre class="codehilite"><code>.
+├── config
+├── data
+├── composer.json
+├── public
+│   └── index.php
+├── src
+└── vendor</code></pre>
+
+<p>We assume also that:</p>
+<ul>
+<li>You have installed zend-expressive per the <a href="../../..#installation">installation instructions</a>.</li>
+<li><code>public/</code> will be the document root of your application.</li>
+<li>Your own classes are under <code>src/</code> with the top-level namespace <code>App</code>,
+  and you have configured <a href="https://getcomposer.org/doc/01-basic-usage.md#autoloading">autoloading</a>
+  in your <code>composer.json</code> for those classes (this should be done for you during
+  installation).</li>
+</ul>
+<blockquote>
+<h2 id="using-the-built-in-web-server">Using the built-in web server</h2>
+<p>You can use the built-in web server to run the examples. Run:</p>
+<pre class="codehilite"><code class="language-bash">$ php -S 0.0.0.0:8080 -t public</code></pre>
+
+<p>from the application root to start up a web server running on port 8080, and
+then browse to http://localhost:8080/. If you used the Expressive installer,
+the following is equivalent:</p>
+<pre class="codehilite"><code class="language-bash">$ composer run --timeout=0 serve</code></pre>
+
+<h2 id="setting-up-autoloading-for-the-application-namespace">Setting up autoloading for the Application namespace</h2>
+<p>In your <code>composer.json</code> file, place the following:</p>
+<pre class="codehilite"><code class="language-json">&quot;autoload&quot;: {
+    &quot;psr-4&quot;: {
+        &quot;Application\\&quot;: &quot;src/&quot;
+    }
+},</code></pre>
+
+<p>Once done, run:</p>
+<pre class="codehilite"><code class="language-bash">$ composer dump-autoload</code></pre>
+
+</blockquote>
+<h3 id="routing">Routing</h3>
+<p>As noted in the <a href="../../features/application/#adding-routable-middleware">Application documentation</a>,
+routing is abstracted and can be accomplished by calling any of the following
+methods:</p>
+<ul>
+<li><code>route($path, $middleware, array $methods = null, $name = null)</code> to route to a
+  path and match any HTTP method, multiple HTTP methods, or custom HTTP methods.</li>
+<li><code>get($path, $middleware, $name = null)</code> to route to a path that will only
+  respond to the GET HTTP method.</li>
+<li><code>post($path, $middleware, $name = null)</code> to route to a path that will only
+  respond to the POST HTTP method.</li>
+<li><code>put($path, $middleware, $name = null)</code> to route to a path that will only
+  respond to the PUT HTTP method.</li>
+<li><code>patch($path, $middleware, $name = null)</code> to route to a path that will only
+  respond to the PATCH HTTP method.</li>
+<li><code>delete($path, $middleware, $name = null)</code> to route to a path that will only
+  respond to the DELETE HTTP method.</li>
+</ul>
+<p>All methods return a <code>Zend\Expressive\Router\Route</code> method, which allows you to
+specify additional options to associate with the route (e.g., for specifying
+criteria, default values to match, etc.).</p>
+<p>As examples:</p>
+<pre class="codehilite"><code class="language-php">// GET
+// This demonstrates passing a middleware instance (assuming $helloWorld is
+// valid middleware)
+$app-&gt;get('/', $helloWorld);
+
+// POST
+// This example specifies the middleware as a service name instead of as
+// actual executable middleware.
+$app-&gt;post('/trackback', 'TrackBack');
+
+// PUT
+// This example shows operating on the returned route. In this case, it's adding
+// regex tokens to restrict what values for {id} will match. (The tokens feature
+// is specific to Aura.Router.)
+$app-&gt;put('/post/{id}', 'ReplacePost')
+    -&gt;setOptions([
+        'tokens' =&gt; ['id' =&gt; '\d+'],
+    ]);
+
+// PATCH
+// This example builds on the one above. Expressive allows you to specify
+// the same path for a route matching on a different HTTP method, and
+// corresponding to different middleware.
+$app-&gt;patch('/post/{id}', 'UpdatePost')
+    -&gt;setOptions([
+        'tokens' =&gt; ['id' =&gt; '\d+'],
+    ]);
+
+// DELETE
+$app-&gt;delete('/post/{id}', 'DeletePost')
+    -&gt;setOptions([
+        'tokens' =&gt; ['id' =&gt; '\d+'],
+    ]);
+
+// Matching ALL HTTP methods
+// If the underlying router supports matching any HTTP method, the following
+// will do so. Note: FastRoute *requires* you to specify the HTTP methods
+// allowed explicitly, and does not support wildcard routes. As such, the
+// following example maps to the combination of HEAD, OPTIONS, GET, POST, PATCH,
+// PUT, TRACE, and DELETE.
+// Just like the previous examples, it returns a Route instance that you can
+// further manipulate.
+$app-&gt;route('/post/{id}', 'HandlePost')
+    -&gt;setOptions([
+        'tokens' =&gt; ['id' =&gt; '\d+'],
+    ]);
+
+// Matching multiple HTTP methods
+// You can pass an array of HTTP methods as a third argument to route(); in such
+// cases, routing will match if any of the specified HTTP methods are provided.
+$app-&gt;route('/post', 'HandlePostCollection', ['GET', 'POST']);
+
+// Matching NO HTTP methods
+// Pass an empty array to the HTTP methods. HEAD and OPTIONS will still be
+// honored. (In FastRoute, GET is also honored.)
+$app-&gt;route('/post', 'WillThisHandlePost', []);</code></pre>
+
+<p>Finally, if desired, you can create a <code>Zend\Expressive\Router\Route</code> instance
+manually and pass it to <code>route()</code> as the sole argument:</p>
+<pre class="codehilite"><code class="language-php">$route = new Route('/post', 'HandlePost', ['GET', 'POST']);
+$route-&gt;setOptions($options);
+
+$app-&gt;route($route);</code></pre>
+
+<h2 id="hello-world-using-a-container">Hello World using a Container</h2>
+<p>Expressive works with <a href="https://www.php-fig.org/psr/psr-11/">PSR-11 Containers</a>,
+though it's an optional feature. By default, if you use the <code>AppFactory</code>, it
+will use <a href="https://docs.zendframework.com/zend-servicemanager/">zend-servicemanager</a>
+so long as that package is installed.</p>
+<p>In the following example, we'll populate the container with our middleware, and
+the application will pull it from there when matched.</p>
+<p>Edit your <code>public/index.php</code> to read as follows:</p>
+<pre class="codehilite"><code class="language-php">use Interop\Http\ServerMiddleware\DelegateInterface;
+use Zend\Diactoros\Response\JsonResponse;
+use Zend\Diactoros\Response\TextResponse;
+use Zend\Expressive\AppFactory;
+use Zend\ServiceManager\ServiceManager;
+
+require __DIR__ . '/../vendor/autoload.php';
+
+$container = new ServiceManager();
+
+$container-&gt;setFactory('HelloWorld', function ($container) {
+    return function ($request, DelegateInterface $delegate) {
+        return new TextResponse('Hello, world!');
+    };
+});
+
+$container-&gt;setFactory('Ping', function ($container) {
+    return function ($request, DelegateInterface $delegate) {
+        return new JsonResponse(['ack' =&gt; time()]);
+    };
+});
+
+$app = AppFactory::create($container);
+$app-&gt;get('/', 'HelloWorld');
+$app-&gt;get('/ping', 'Ping');
+
+$app-&gt;pipeRoutingMiddleware();
+$app-&gt;pipeDispatchMiddleware();
+
+$app-&gt;run();</code></pre>
+
+<p>In the example above, we pass our container to <code>AppFactory</code>. We could have also
+done this instead:</p>
+<pre class="codehilite"><code class="language-php">$app = AppFactory::create();
+$container = $app-&gt;getContainer();</code></pre>
+
+<p>and then added our service definitions. We recommend passing the container to
+the factory instead; if we ever change which container we use by default, your
+code might not work!</p>
+<p>The following two lines are the ones of interest:</p>
+<pre class="codehilite"><code class="language-php">$app-&gt;get('/', 'HelloWorld');
+$app-&gt;get('/ping', 'Ping');</code></pre>
+
+<p>These map the two paths to <em>service names</em> instead of callables. When routing
+matches a path, it does the following:</p>
+<ul>
+<li>If the middleware provided when defining the route is callable, it uses it
+  directly.</li>
+<li>If the middleware is a valid service name in the container, it pulls it from
+  the container. <em>This is what happens in this example.</em></li>
+<li>Finally, if no container is available, or the service name is not found in the
+  container, it checks to see if it's a valid class name; if so, it instantiates
+  and returns the class instance.</li>
+</ul>
+<p>If you fire up your web server, you'll find that the <code>/</code> and <code>/ping</code> paths
+continue to work.</p>
+<p>One other approach you could take would be to define the application itself in
+the container, and then pull it from there:</p>
+<pre class="codehilite"><code class="language-php">$container-&gt;setFactory('Zend\Expressive\Application', function ($container) {
+    $app = AppFactory::create($container);
+    $app-&gt;get('/', 'HelloWorld');
+    $app-&gt;get('/ping', 'Ping');
+    return $app;
+});
+
+$app = $container-&gt;get('Zend\Expressive\Application');
+$app-&gt;run();</code></pre>
+
+<p>This is a nice way to encapsulate the application creation. You could then
+potentially move all service configuration to another file! (We already
+<a href="../../features/container/factories/#applicationfactory">document an ApplicationFactory for exactly this scenario.</a>)</p>
+<h2 id="hello-world-using-a-configuration-driven-container">Hello World using a Configuration-Driven Container</h2>
+<p>In the above example, we configured our middleware as services, and then passed
+our service container to the application. At the end, we hinted that you could
+potentially define the application itself as a service.</p>
+<p>Expressive already provides a service factory for the application instance
+to provide fine-grained control over your application. In this example, we'll
+leverage it, defining our routes via configuration.</p>
+<p>First, we're going to leverage zend-config to merge configuration files. This is
+important, as it allows us to define local, environment-specific configuration
+in files that we then can exclude from our repository. This practice ensures
+that things like credentials are not accidentally published in a public
+repository, and also provides a mechanism for slip-streaming in
+configuration based on our environment (you might use different settings in
+development than in production, after all!).</p>
+<p>First, install zend-config and zend-stdlib:</p>
+<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-config zendframework/zend-stdlib</code></pre>
+
+<p>Now we can start creating our configuration files and container factories.</p>
+<p>In <code>config/config.php</code>, place the following:</p>
+<pre class="codehilite"><code class="language-php">&lt;?php
+
+use Zend\Stdlib\ArrayUtils;
+use Zend\Stdlib\Glob;
+
+$config = [];
+// Load configuration from autoload path
+foreach (Glob::glob('config/autoload/{{,*.}global,{,*.}local}.php', Glob::GLOB_BRACE) as $file) {
+    $config = ArrayUtils::merge($config, include $file);
+}
+
+// Return an ArrayObject so we can inject the config as a service in Aura.Di
+// and still use array checks like ``is_array``.
+return new ArrayObject($config, ArrayObject::ARRAY_AS_PROPS);</code></pre>
+
+<p>In <code>config/container.php</code>, place the following:</p>
+<pre class="codehilite"><code class="language-php">&lt;?php
+
+use Zend\ServiceManager\Config;
+use Zend\ServiceManager\ServiceManager;
+
+// Load configuration
+$config = require __DIR__.'/config.php';
+
+// Build container
+$container = new ServiceManager();
+(new Config($config['dependencies']))-&gt;configureServiceManager($container);
+
+// Inject config
+$container-&gt;setService('config', $config);
+
+return $container;</code></pre>
+
+<p>In <code>config/autoload/dependencies.global.php</code>, place the following:</p>
+<pre class="codehilite"><code class="language-php">&lt;?php
+
+use Zend\ServiceManager\Factory\InvokableFactory;
+
+return [
+    'dependencies' =&gt; [
+        'invokables' =&gt; [
+            \Application\HelloWorldAction::class =&gt; InvokableFactory::class,
+            \Application\PingAction::class =&gt; InvokableFactory::class,
+        ],
+        'factories' =&gt; [
+            \Zend\Expressive\Application::class =&gt; \Zend\Expressive\Container\ApplicationFactory::class,
+        ],
+    ]
+];</code></pre>
+
+<p>In <code>config/autoload/routes.global.php</code>, place the following:</p>
+<pre class="codehilite"><code class="language-php">&lt;?php
+
+return [
+    'routes' =&gt; [
+        [
+            'path' =&gt; '/',
+            'middleware' =&gt; \Application\HelloWorldAction::class,
+            'allowed_methods' =&gt; ['GET'],
+        ],
+        [
+            'path' =&gt; '/ping',
+            'middleware' =&gt; \Application\PingAction::class,
+            'allowed_methods' =&gt; ['GET'],
+        ],
+    ],
+];</code></pre>
+
+<p>In <code>src/Application/HelloWorld.php</code>, place the following:</p>
+<pre class="codehilite"><code class="language-php">&lt;?php
+namespace Application;
+
+class HelloWorld
+{
+    public function __invoke($req, $res, $next)
+    {
+        $res-&gt;getBody()-&gt;write('Hello, world!');
+        return $res;
+    }
+}</code></pre>
+
+<p>In <code>src/Application/Ping.php</code>, place the following:</p>
+<pre class="codehilite"><code class="language-php">&lt;?php
+namespace Application;
+
+use Zend\Diactoros\Response\JsonResponse;
+
+class Ping
+{
+    public function __invoke($req, $res, $next)
+    {
+        return new JsonResponse(['ack' =&gt; time()]);
+    }
+}</code></pre>
+
+<p>After that’s done run:</p>
+<pre class="codehilite"><code>composer dump-autoload</code></pre>
+
+<p>Finally, in <code>public/index.php</code>, place the following:</p>
+<pre class="codehilite"><code class="language-php">&lt;?php
+// Change to the project root, to simplify resolving paths
+chdir(dirname(__DIR__));
+
+// Setup autoloading
+require 'vendor/autoload.php';
+
+$container = include 'config/container.php';
+$app       = $container-&gt;get(Zend\Expressive\Application::class);
+$app-&gt;run();</code></pre>
+
+<p>Notice that our index file now doesn't have any code related to setting up the
+application any longer! All it does is setup autoloading, retrieve our service
+container, pull the application from it, and run it. Our choices for container,
+router, etc. are all abstracted, and if we change our mind later, this code will
+continue to work.</p>
+<p>Firing up the web server, you'll see the same responses as the previous
+examples.</p>
+<h2 id="hybrid-container-and-programmatic-creation">Hybrid Container and Programmatic Creation</h2>
+<p>The above example may look a little daunting at first. By making everything
+configuration-driven, you sometimes lose a sense for how the code all fits
+together.</p>
+<p>Fortunately, you can mix the two. Building on the example above, we'll add a new
+route and middleware. Between pulling the application from the container and
+calling <code>$app-&gt;run()</code>, add the following in your <code>public/index.php</code>:</p>
+<pre class="codehilite"><code class="language-php">$app-&gt;post('/post', function ($request, \Interop\Http\ServerMiddleware\DelegateInterface $delegate) {
+    return new \Zend\Diactoros\Response\TextResponse('IN POST!');
+});</code></pre>
+
+<p>Note that we're using <code>post()</code> here; that means you'll have to use cURL, HTTPie,
+Postman, or some other tool to test making a POST request to the path:</p>
+<pre class="codehilite"><code class="language-bash">$ curl -X POST http://localhost:8080/post</code></pre>
+
+<p>You should see <code>IN POST!</code> for the response!</p>
+<p>Using this approach, you can build re-usable applications that are
+container-driven, and add one-off routes and middleware as needed.</p>
+<h3 id="using-the-container-to-register-middleware">Using the container to register middleware</h3>
+<p>If you use a container to fetch your application instance, you have an
+additional option for specifying middleware for the pipeline: configuration:</p>
+<pre class="codehilite"><code class="language-php">&lt;?php
+return [
+    'routes' =&gt; [
+        [
+            'path' =&gt; '/path/to/match',
+            'middleware' =&gt; 'Middleware Service Name or Callable',
+            'allowed_methods' =&gt; ['GET', 'POST', 'PATCH'],
+            'options' =&gt; [
+                'stuff' =&gt; 'to',
+                'pass'  =&gt; 'to',
+                'the'   =&gt; 'underlying router',
+            ],
+        ],
+        // etc.
+    ],
+    'middleware_pipeline' =&gt; [
+        // See specification below
+    ],
+];</code></pre>
+
+<p>The key to note is <code>middleware_pipeline</code>, which is an array of middlewares to
+register in the pipeline; each will each be <code>pipe()</code>'d to the Application in the
+order specified.</p>
+<p>Each middleware specified must be in the following form:</p>
+<pre class="codehilite"><code class="language-php">[
+    // required:
+    'middleware' =&gt; 'Name of middleware service, or a callable',
+    // optional:
+    'path'  =&gt; '/path/to/match',
+    'priority' =&gt; 1, // Integer
+]</code></pre>
+
+<p>Priority should be an integer, and follows the semantics of
+<a href="http://php.net/SplPriorityQueue">SplPriorityQueue</a>: higher numbers indicate
+higher priority (top of the queue; executed earliest), while lower numbers
+indicated lower priority (bottom of the queue, executed last); <em>negative values
+are low priority</em>. Items of the same priority are executed in the order in which
+they are attached.</p>
+<p>The default priority is 1, and this priority is used by the routing and dispatch
+middleware. To indicate that middleware should execute <em>before</em> these, use a
+priority higher than 1.</p>
+<p>The above specification can be used for all middleware, with one exception:
+registration of the <em>routing</em> and/or <em>dispatch</em> middleware that Expressive
+provides. In these cases, use the following constants, which will be caught by
+the factory and expanded:</p>
+<ul>
+<li><code>Zend\Expressive\Application::ROUTING_MIDDLEWARE</code> for the
+  routing middleware; this should always come before the dispatch middleware.</li>
+<li><code>Zend\Expressive\Application::DISPATCH_MIDDLEWARE</code> for the
+  dispatch middleware.</li>
+</ul>
+<p>As an example:</p>
+<pre class="codehilite"><code class="language-php">return [
+    'middleware_pipeline' =&gt; [
+        [ /* ... */ ],
+        Zend\Expressive\Application::ROUTING_MIDDLEWARE,
+        Zend\Expressive\Application::DISPATCH_MIDDLEWARE,
+        [ /* ... */ ],
+    ],
+];</code></pre>
+
+<blockquote>
+<h4 id="place-routing-middleware-correctly">Place routing middleware correctly</h4>
+<p>If you are defining routes <em>and</em> defining other middleware for the pipeline,
+you <strong>must</strong> add the routing middleware. When you do so, make sure you put
+it at the appropriate location in the pipeline.</p>
+<p>Typically, you will place any middleware you want to execute on all requests
+prior to the routing middleware. This includes utilities for bootstrapping
+the application (such as injection of the <code>ServerUrlHelper</code>),
+utilities for injecting common response headers (such as CORS support), etc.
+Make sure these middleware specifications include the <code>priority</code> key, and that
+the value of this key is greater than 1.</p>
+<p>Use priority to shape the specific workflow you want for your middleware.</p>
+</blockquote>
+<p>Middleware items may be any <a href="../../features/middleware-types/">valid middleware</a>,
+including <em>arrays</em> of middleware, which indicate a nested middleware pipeline;
+these may even contain the routing and dispatch middleware constants:</p>
+<pre class="codehilite"><code class="language-php">return [
+    'middleware_pipeline' =&gt; [
+        [ /* ... */ ],
+        'routing' =&gt; [
+            'middleware' =&gt; [
+                Zend\Expressive\Application::ROUTING_MIDDLEWARE,
+                /* ... middleware that introspects routing results ... */
+                Zend\Expressive\Application::DISPATCH_MIDDLEWARE,
+            ],
+            'priority' =&gt; 1,
+        ],
+        [ /* ... */ ],
+    ],
+];</code></pre>
+
+<blockquote>
+<h4 id="pipeline-keys-are-ignored">Pipeline keys are ignored</h4>
+<p>Keys in a <code>middleware_pipeline</code> specification are ignored. However, they can
+be useful when merging several configurations; if multiple configuration files
+specify the same key, then those entries will be merged. Be aware, however,
+that the <code>middleware</code> entry for each, since it is an indexed array, will
+merge arrays by appending; in other words, order will not be guaranteed within
+that array after merging. If order is critical, define a middleware spec with
+<code>priority</code> keys.</p>
+</blockquote>
+<p>The path, if specified, can only be a literal path to match, and is typically
+used for segregating middleware applications or applying rules to subsets of an
+application that match a common path root.</p>
+<h2 id="segregating-your-application-to-a-subpath">Segregating your application to a subpath</h2>
+<p>One benefit of a middleware-based application is the ability to compose
+middleware and segregate them by paths. <code>Zend\Expressive\Application</code> is itself
+middleware, allowing you to do exactly that if desired.</p>
+<p>In the following example, we'll assume that <code>$api</code> and <code>$blog</code> are
+<code>Zend\Expressive\Application</code> instances, and compose them into a
+<code>Zend\Stratigility\MiddlewarePipe</code>.</p>
+<pre class="codehilite"><code class="language-php">use Zend\Diactoros\Server;
+use Zend\Diactoros\ServerRequestFactory;
+use Zend\Stratigility\MiddlewarePipe;
+
+require __DIR__ . '/../vendor/autoload.php';
+
+$app = new MiddlewarePipe();
+$app-&gt;pipe('/blog', $blog);
+$app-&gt;pipe('/api', $api);
+
+$server = Server::createServerFromRequest(
+    $app,
+    ServerRequestFactory::fromGlobals()
+);
+$server-&gt;listen();</code></pre>
+
+<p>You could also compose them in an <code>Application</code> instance, and utilize <code>run()</code>:</p>
+<pre class="codehilite"><code class="language-php">$app = AppFactory::create();
+$app-&gt;pipe('/blog', $blog);
+$app-&gt;pipe('/api', $api);
+
+$app-&gt;run();</code></pre>
+
+<p>This approach allows you to develop discrete applications and compose them
+together to create a website.</p>
+
+<hr />
+
+
+<nav>
+  <ul class="pager hidden-print">
+    <li class="previous">
+      <a rel="prev" href="../cli-tooling/"><i class="fa fa-arrow-left"></i> Previous</a>
+    </li>
+    <li class="next">
+      <a rel="next" href="../expressive-projects/">Next <i class="fa fa-arrow-right"></i></a>
+    </li>
+  </ul>
+</nav>
+</div>
+        
+    </div>
+    <!-- content:end -->
+
+    <div id="footerwrap">
+    <div class="container">
+        <div class="row site-map">
+            <div class="col-lg-3">
+              <p>
+                <strong>Zend Framework</strong><br />
+                <a href="https://framework.zend.com/">framework.zend.com</a><br />
+                <a href="https://docs.zendframework.com">docs.zendframework.com</a><br />
+                <a href="https://packages.zendframework.com">packages.zendframework.com</a><br />
+                <a href="https://apigility.org">apigility.org</a><br />
+              </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12 centered">
+                <a class="back-to-top" href="#page-top"><i class="fa fa-chevron-circle-up fa-4" aria-hidden="true"></i></a>
+            </div>
+        </div>
+
+        <div class="spacing"></div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <h4>Copyright</h4>
+                <div class="hline-w"></div>
+
+                <p>&copy; 2006-2017 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+            </div>
+
+            <div class="col-lg-4">
+                <h4>Contacts</h4>
+                <div class="hline-w"></div>
+                <p>
+                    <a href="https://discourse.zendframework.com" class="btn-social btn-outline" alt="Forum" title="Forum"><i class="fa fa-comments"></i></a>
+                    <a href="https://zendframework-slack.herokuapp.com" class="btn-social btn-outline" alt="Slack" title="Slack"><i class="fa fa-slack"></i></a>
+                    <a href="https://github.com/zendframework" class="btn-social btn-outline" alt="Github" title="Github"><i class="fa fa-github"></i></a>
+                    <a href="https://twitter.com/zfdevteam" class="btn-social btn-outline" alt="Twitter" title="Twitter"><i class="fa fa-twitter"></i></a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
+    <script>var base_url = '../../..';</script>
+    <script src="../../../js/scripts-0b6185f4a5.js"></script>
+    <script data-main="../../../mkdocs/js/search.js" src="../../../mkdocs/js/require.js"></script>
+        <script src="../../../search/require.js"></script>
+        <script src="../../../search/search.js"></script>
+
+    <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        From here you can search these documents. Enter your search terms below.
+                    </p>
+                    <form role="form">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                        </div>
+                    </form>
+                    <div id="mkdocs-search-results"></div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="zf-components">
+  <div class="zf-components-grid">
+    <div class="zf-logo">
+      <a href="https://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Go to the ZF homepage"><img src="../../../img/zf-logo-mark.svg" alt="Zend Framework" width="250" /></a>
+    </div>
+
+    <div class="component-list"></div>
+
+    <p class="zf-components-rollup"><a href="#">Hide list</a></p>
+  </div>
+</div>
+
+</body>
+
+
+</html>
