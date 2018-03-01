@@ -31,7 +31,7 @@ matrix:
     - php: 7
       env:
         - DEPS=locked
-        - LEGACY_DEPS="phpunit/phpunit"
+        - LEGACY_DEPS="phpunit/phpunit symfony/debug"
     - php: 7
       env:
         - DEPS=latest
