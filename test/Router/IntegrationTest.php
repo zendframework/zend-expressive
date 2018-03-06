@@ -434,10 +434,10 @@ class IntegrationTest extends TestCase
         $router = new $adapter();
         $app = $this->createApplicationFromRouter($router);
         $app->pipe(new RouteMiddleware($router));
-        $app->pipe(new MethodNotAllowedMiddleware($this->responseFactory));
-        $app->pipe(new ImplicitHeadMiddleware($this->responseFactory, function () {
+        $app->pipe(new ImplicitHeadMiddleware($router, function () {
         }));
         $app->pipe(new ImplicitOptionsMiddleware($this->responseFactory));
+        $app->pipe(new MethodNotAllowedMiddleware($this->responseFactory));
         $app->pipe(new DispatchMiddleware());
 
         // Add a PUT route
@@ -451,11 +451,15 @@ class IntegrationTest extends TestCase
         $handler->handle(Argument::type(ServerRequest::class))
             ->shouldNotBeCalled();
 
-        $request  = new ServerRequest(['REQUEST_METHOD' => $method], [], '/foo', $method);
-        $result   = $app->process($request, $handler->reveal());
+        $request = new ServerRequest(['REQUEST_METHOD' => $method], [], '/foo', $method);
+        $result  = $app->process($request, $handler->reveal());
 
-        $this->assertEquals(StatusCode::STATUS_OK, $result->getStatusCode());
-        $this->assertEquals('', (string) $result->getBody());
+        if ($method === RequestMethod::METHOD_OPTIONS) {
+            $this->assertSame(StatusCode::STATUS_OK, $result->getStatusCode());
+        } else {
+            $this->assertSame(StatusCode::STATUS_METHOD_NOT_ALLOWED, $result->getStatusCode());
+        }
+        $this->assertSame('', (string) $result->getBody());
     }
 
     /**
@@ -469,7 +473,6 @@ class IntegrationTest extends TestCase
         $router = new $adapter();
         $app = $this->createApplicationFromRouter($router);
         $app->pipe(new RouteMiddleware($router));
-        $app->pipe(new MethodNotAllowedMiddleware($this->responseFactory));
 
         // This middleware is used just to check that request has successful RouteResult
         $middleware = $this->prophesize(MiddlewareInterface::class);
@@ -477,8 +480,8 @@ class IntegrationTest extends TestCase
             $routeResult = $req->getAttribute(RouteResult::class);
 
             Assert::assertInstanceOf(RouteResult::class, $routeResult);
-            Assert::assertTrue($routeResult->isSuccess());
-            Assert::assertFalse($routeResult->isMethodFailure());
+            Assert::assertFalse($routeResult->isSuccess());
+            Assert::assertTrue($routeResult->isMethodFailure());
 
             return true;
         }), Argument::any())->will(function (array $args) {
@@ -487,13 +490,14 @@ class IntegrationTest extends TestCase
 
         $app->pipe($middleware->reveal());
 
-        if ($method === 'HEAD') {
-            $app->pipe(new ImplicitHeadMiddleware($this->responseFactory, function () {
+        if ($method === RequestMethod::METHOD_HEAD) {
+            $app->pipe(new ImplicitHeadMiddleware($router, function () {
             }));
         }
-        if ($method === 'OPTIONS') {
+        if ($method === RequestMethod::METHOD_OPTIONS) {
             $app->pipe(new ImplicitOptionsMiddleware($this->responseFactory));
         }
+        $app->pipe(new MethodNotAllowedMiddleware($this->responseFactory));
         $app->pipe(new DispatchMiddleware());
 
         // Add a route with empty array - NO HTTP methods
@@ -510,8 +514,12 @@ class IntegrationTest extends TestCase
         $request = new ServerRequest(['REQUEST_METHOD' => $method], [], '/foo', $method);
         $result  = $app->process($request, $handler->reveal());
 
-        $this->assertEquals(StatusCode::STATUS_OK, $result->getStatusCode());
-        $this->assertEquals('', (string) $result->getBody());
+        if ($method === RequestMethod::METHOD_OPTIONS) {
+            $this->assertSame(StatusCode::STATUS_OK, $result->getStatusCode());
+        } else {
+            $this->assertSame(StatusCode::STATUS_METHOD_NOT_ALLOWED, $result->getStatusCode());
+        }
+        $this->assertSame('', (string) $result->getBody());
     }
 
     /**
