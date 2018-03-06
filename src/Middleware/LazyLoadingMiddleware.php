@@ -79,4 +79,13 @@ class LazyLoadingMiddleware implements ServerMiddlewareInterface
             return $delegate->process($request);
         });
     }
+
+    /**
+     * Getter for name of underlying Middleware
+     * @return string name of underlying middleware
+     */
+    public function getMiddlewareName()
+    {
+        return $this->middlewareName;
+    }
 }
