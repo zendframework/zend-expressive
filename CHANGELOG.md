@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 3.0.0rc2 - 2018-03-06
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#578](https://github.com/zendframework/zend-expressive/pull/578) fixes the
+  version constraint used with zend-stratigility to allow it to update to later
+  versions when released.
+
 ## 3.0.0rc1 - 2018-02-27
 
 ### Added
