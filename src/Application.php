@@ -21,6 +21,8 @@ use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Stratigility\MiddlewarePipe;
 
+use function Zend\Stratigility\path;
+
 /**
  * Middleware application providing routing based on paths and HTTP methods.
  */
@@ -230,7 +232,11 @@ class Application extends MiddlewarePipe
             return $this;
         }
 
-        parent::pipe($path, $middleware);
+        if ($path !== '/') {
+            $middleware = path($path, $middleware);
+        }
+
+        parent::pipe($middleware);
 
         if ($middleware instanceof Middleware\RouteMiddleware) {
             $this->routeMiddlewareIsRegistered = true;
