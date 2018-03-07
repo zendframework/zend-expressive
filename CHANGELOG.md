@@ -22,7 +22,10 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Removed
 
-- Nothing.
+- [#580](https://github.com/zendframework/zend-expressive/pull/580) removes
+  zend-diactoros as a requirement; all usages of it within the package are
+  currently conditional on it being installed, and can be replaced easily with
+  any other PSR-7 implementation at this time.
 
 ### Fixed
 
