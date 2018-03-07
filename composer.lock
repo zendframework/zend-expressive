@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "ac56f0abbd907e58fbbeafddb76a85fb",
+    "content-hash": "af5fdff97ef2fc22c9566d41f3a90c4c",
     "packages": [
         {
             "name": "fig/http-message-util",
@@ -359,16 +359,16 @@
         },
         {
             "name": "zendframework/zend-expressive-router",
-            "version": "3.0.0rc2",
+            "version": "3.0.0rc4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-expressive-router.git",
-                "reference": "97ea9940c72222586e832913529b097ddcc0b2e4"
+                "reference": "3b21fb4e1b568bfa8b0ae699b6f0bdd5d5644863"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-expressive-router/zipball/97ea9940c72222586e832913529b097ddcc0b2e4",
-                "reference": "97ea9940c72222586e832913529b097ddcc0b2e4",
+                "url": "https://api.github.com/repos/zendframework/zend-expressive-router/zipball/3b21fb4e1b568bfa8b0ae699b6f0bdd5d5644863",
+                "reference": "3b21fb4e1b568bfa8b0ae699b6f0bdd5d5644863",
                 "shasum": ""
             },
             "require": {
@@ -421,7 +421,7 @@
                 "zend-expressive",
                 "zf"
             ],
-            "time": "2018-03-06T22:42:26+00:00"
+            "time": "2018-03-07T16:56:58+00:00"
         },
         {
             "name": "zendframework/zend-expressive-template",
@@ -3504,16 +3504,16 @@
         },
         {
             "name": "zendframework/zend-expressive-aurarouter",
-            "version": "3.0.0rc2",
+            "version": "3.0.0rc3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-expressive-aurarouter.git",
-                "reference": "ea15927cef26dc0cbcc1d3a862cb077fa7e0b2c6"
+                "reference": "1ee5c5d9bbd658803dd0a42d5180e9413dc34164"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-expressive-aurarouter/zipball/ea15927cef26dc0cbcc1d3a862cb077fa7e0b2c6",
-                "reference": "ea15927cef26dc0cbcc1d3a862cb077fa7e0b2c6",
+                "url": "https://api.github.com/repos/zendframework/zend-expressive-aurarouter/zipball/1ee5c5d9bbd658803dd0a42d5180e9413dc34164",
+                "reference": "1ee5c5d9bbd658803dd0a42d5180e9413dc34164",
                 "shasum": ""
             },
             "require": {
@@ -3521,7 +3521,7 @@
                 "fig/http-message-util": "^1.1.2",
                 "php": "^7.1",
                 "psr/http-message": "^1.0.1",
-                "zendframework/zend-expressive-router": "^3.0.0rc2"
+                "zendframework/zend-expressive-router": "^3.0.0rc4"
             },
             "require-dev": {
                 "malukenho/docheader": "^0.1.6",
@@ -3562,20 +3562,20 @@
                 "zend-expressive",
                 "zf"
             ],
-            "time": "2018-03-06T23:13:15+00:00"
+            "time": "2018-03-07T17:14:23+00:00"
         },
         {
             "name": "zendframework/zend-expressive-fastroute",
-            "version": "3.0.0rc2",
+            "version": "3.0.0rc4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-expressive-fastroute.git",
-                "reference": "b26b9b528f78fc3b3d0c5d1d57194419c684f095"
+                "reference": "43fac9a08c4eb8587899fb1c6bb916ec8925f5d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-expressive-fastroute/zipball/b26b9b528f78fc3b3d0c5d1d57194419c684f095",
-                "reference": "b26b9b528f78fc3b3d0c5d1d57194419c684f095",
+                "url": "https://api.github.com/repos/zendframework/zend-expressive-fastroute/zipball/43fac9a08c4eb8587899fb1c6bb916ec8925f5d2",
+                "reference": "43fac9a08c4eb8587899fb1c6bb916ec8925f5d2",
                 "shasum": ""
             },
             "require": {
@@ -3584,7 +3584,7 @@
                 "php": "^7.1",
                 "psr/container": "^1.0",
                 "psr/http-message": "^1.0.1",
-                "zendframework/zend-expressive-router": "^3.0.0rc2",
+                "zendframework/zend-expressive-router": "^3.0.0rc4",
                 "zendframework/zend-stdlib": "^2.0 || ^3.1"
             },
             "conflict": {
@@ -3595,7 +3595,7 @@
                 "phpunit/phpunit": "^7.0.2",
                 "zendframework/zend-coding-standard": "~1.0.0",
                 "zendframework/zend-diactoros": "^1.7",
-                "zendframework/zend-stratigility": "^3.0.0-rc1"
+                "zendframework/zend-stratigility": "^3.0.0rc1"
             },
             "type": "library",
             "extra": {
@@ -3629,27 +3629,27 @@
                 "zend-expressive",
                 "zf"
             ],
-            "time": "2018-03-06T23:07:28+00:00"
+            "time": "2018-03-07T17:10:51+00:00"
         },
         {
             "name": "zendframework/zend-expressive-zendrouter",
-            "version": "3.0.0rc2",
+            "version": "3.0.0rc3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-expressive-zendrouter.git",
-                "reference": "759c2f9e26ff9bd41e774d5c395bed79bf1e7484"
+                "reference": "0a03edf71e89a78efee2fe18bfa092597738dbec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-expressive-zendrouter/zipball/759c2f9e26ff9bd41e774d5c395bed79bf1e7484",
-                "reference": "759c2f9e26ff9bd41e774d5c395bed79bf1e7484",
+                "url": "https://api.github.com/repos/zendframework/zend-expressive-zendrouter/zipball/0a03edf71e89a78efee2fe18bfa092597738dbec",
+                "reference": "0a03edf71e89a78efee2fe18bfa092597738dbec",
                 "shasum": ""
             },
             "require": {
                 "fig/http-message-util": "^1.1.2",
                 "php": "^7.1",
                 "psr/http-message": "^1.0.1",
-                "zendframework/zend-expressive-router": "^3.0.0rc2",
+                "zendframework/zend-expressive-router": "^3.0.0rc3",
                 "zendframework/zend-psr7bridge": "^0.2.2 || ^1.0.0",
                 "zendframework/zend-router": "^3.0.2"
             },
@@ -3691,7 +3691,7 @@
                 "zend-expressive",
                 "zf"
             ],
-            "time": "2018-03-06T23:18:58+00:00"
+            "time": "2018-03-07T17:17:26+00:00"
         },
         {
             "name": "zendframework/zend-http",

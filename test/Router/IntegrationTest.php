@@ -11,19 +11,15 @@ namespace ZendTest\Expressive\Router;
 
 use Fig\Http\Message\RequestMethodInterface as RequestMethod;
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
-use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Stream;
 use Zend\Expressive\Application;
-use Zend\Expressive\Middleware;
 use Zend\Expressive\MiddlewareContainer;
 use Zend\Expressive\MiddlewareFactory;
 use Zend\Expressive\Router\AuraRouter;
@@ -33,7 +29,6 @@ use Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware;
 use Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware;
 use Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware;
 use Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware as RouteMiddleware;
-use Zend\Expressive\Router\RouteResult;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Router\ZendRouter;
 use Zend\HttpHandlerRunner\RequestHandlerRunner;
@@ -403,26 +398,6 @@ class IntegrationTest extends TestCase
         ];
     }
 
-    public function notAllowedMethod()
-    {
-        return [
-            'aura-get'          => [AuraRouter::class, RequestMethod::METHOD_GET],
-            'aura-post'         => [AuraRouter::class, RequestMethod::METHOD_POST],
-            'aura-put'          => [AuraRouter::class, RequestMethod::METHOD_PUT],
-            'aura-delete'       => [AuraRouter::class, RequestMethod::METHOD_DELETE],
-            'aura-patch'        => [AuraRouter::class, RequestMethod::METHOD_PATCH],
-            'fast-route-post'   => [FastRouteRouter::class, RequestMethod::METHOD_POST],
-            'fast-route-put'    => [FastRouteRouter::class, RequestMethod::METHOD_PUT],
-            'fast-route-delete' => [FastRouteRouter::class, RequestMethod::METHOD_DELETE],
-            'fast-route-patch'  => [FastRouteRouter::class, RequestMethod::METHOD_PATCH],
-            'zf2-get'           => [ZendRouter::class, RequestMethod::METHOD_GET],
-            'zf2-post'          => [ZendRouter::class, RequestMethod::METHOD_POST],
-            'zf2-put'           => [ZendRouter::class, RequestMethod::METHOD_PUT],
-            'zf2-delete'        => [ZendRouter::class, RequestMethod::METHOD_DELETE],
-            'zf2-patch'         => [ZendRouter::class, RequestMethod::METHOD_PATCH],
-        ];
-    }
-
     /**
      * @dataProvider allowedMethod
      *
@@ -460,97 +435,6 @@ class IntegrationTest extends TestCase
             $this->assertSame(StatusCode::STATUS_METHOD_NOT_ALLOWED, $result->getStatusCode());
         }
         $this->assertSame('', (string) $result->getBody());
-    }
-
-    /**
-     * @dataProvider allowedMethod
-     *
-     * @param string $adapter
-     * @param string $method
-     */
-    public function testAllowedMethodsWhenNoHttpMethodsSet($adapter, $method)
-    {
-        $router = new $adapter();
-        $app = $this->createApplicationFromRouter($router);
-        $app->pipe(new RouteMiddleware($router));
-
-        // This middleware is used just to check that request has successful RouteResult
-        $middleware = $this->prophesize(MiddlewareInterface::class);
-        $middleware->process(Argument::that(function (ServerRequestInterface $req) {
-            $routeResult = $req->getAttribute(RouteResult::class);
-
-            Assert::assertInstanceOf(RouteResult::class, $routeResult);
-            Assert::assertFalse($routeResult->isSuccess());
-            Assert::assertTrue($routeResult->isMethodFailure());
-
-            return true;
-        }), Argument::any())->will(function (array $args) {
-            return $args[1]->handle($args[0]);
-        });
-
-        $app->pipe($middleware->reveal());
-
-        if ($method === RequestMethod::METHOD_HEAD) {
-            $app->pipe(new ImplicitHeadMiddleware($router, function () {
-            }));
-        }
-        if ($method === RequestMethod::METHOD_OPTIONS) {
-            $app->pipe(new ImplicitOptionsMiddleware($this->responseFactory));
-        }
-        $app->pipe(new MethodNotAllowedMiddleware($this->responseFactory));
-        $app->pipe(new DispatchMiddleware());
-
-        // Add a route with empty array - NO HTTP methods
-        $app->route('/foo', function ($req, $res, $next) {
-            $stream = new Stream('php://temp', 'w+');
-            $stream->write('Middleware');
-            return $res->withBody($stream);
-        }, []);
-
-        $handler = $this->prophesize(RequestHandlerInterface::class);
-        $handler->handle(Argument::type(ServerRequest::class))
-            ->willReturn($this->response);
-
-        $request = new ServerRequest(['REQUEST_METHOD' => $method], [], '/foo', $method);
-        $result  = $app->process($request, $handler->reveal());
-
-        if ($method === RequestMethod::METHOD_OPTIONS) {
-            $this->assertSame(StatusCode::STATUS_OK, $result->getStatusCode());
-        } else {
-            $this->assertSame(StatusCode::STATUS_METHOD_NOT_ALLOWED, $result->getStatusCode());
-        }
-        $this->assertSame('', (string) $result->getBody());
-    }
-
-    /**
-     * @dataProvider notAllowedMethod
-     *
-     * @param string $adapter
-     * @param string $method
-     */
-    public function testNotAllowedMethodWhenNoHttpMethodsSet($adapter, $method)
-    {
-        $router = new $adapter();
-        $app = $this->createApplicationFromRouter($router);
-        $app->pipe(new RouteMiddleware($router));
-        $app->pipe(new MethodNotAllowedMiddleware($this->responseFactory));
-        $app->pipe(new DispatchMiddleware());
-
-        // Add a route with empty array - NO HTTP methods
-        $app->route('/foo', function ($req, $res, $next) {
-            $stream = new Stream('php://temp', 'w+');
-            $stream->write('Middleware');
-            return $res->withBody($stream);
-        }, []);
-
-        $handler = $this->prophesize(RequestHandlerInterface::class);
-        $handler->handle(Argument::type(ServerRequest::class))
-            ->shouldNotBeCalled();
-
-        $request = new ServerRequest(['REQUEST_METHOD' => $method], [], '/foo', $method);
-        $result  = $app->process($request, $handler->reveal());
-        $this->assertEquals(StatusCode::STATUS_METHOD_NOT_ALLOWED, $result->getStatusCode());
-        $this->assertNotContains('Middleware', (string) $result->getBody());
     }
 
     /**
