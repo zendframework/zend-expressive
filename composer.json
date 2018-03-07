@@ -52,8 +52,8 @@
     },
     "suggest": {
         "filp/whoops": "^2.1 to use the Whoops error handler",
+        "psr/http-message-implementation": "Please install a psr/http-message-implementation to consume Expressive; e.g., zendframework/zend-diactoros",
         "zendframework/zend-auradi-config": "^1.0 to use Aura.Di dependency injection container",
-        "zendframework/zend-diactoros": "^1.7.1 to use diactoros with default Response, ServerRequest and Stream factories",
         "zendframework/zend-expressive-helpers": "^3.0 for its UrlHelper, ServerUrlHelper, and BodyParseMiddleware",
         "zendframework/zend-expressive-tooling": "For migration and development tools; require it with the --dev flag",
         "zendframework/zend-pimple-config": "^1.0 to use Pimple for dependency injection container",
