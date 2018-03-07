@@ -47,7 +47,8 @@
         "zendframework/zend-servicemanager": "^2.7.8 || ^3.3"
     },
     "conflict": {
-        "container-interop/container-interop": "<1.2.0"
+        "container-interop/container-interop": "<1.2.0",
+        "zendframework/zend-diactoros": "<1.7.1"
     },
     "suggest": {
         "filp/whoops": "^2.1 to use the Whoops error handler",
