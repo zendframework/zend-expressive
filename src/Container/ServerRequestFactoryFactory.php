@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Zend\Expressive\Container;
 
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\ServerRequestFactory;
 
 /**
@@ -25,6 +26,18 @@ class ServerRequestFactoryFactory
 {
     public function __invoke(ContainerInterface $container) : callable
     {
+        if (! class_exists(ServerRequestFactory::class)) {
+            throw new Exception\InvalidServiceException(sprintf(
+                'The %1$s service must map to a factory capable of returning an'
+                . ' implementation instance. By default, we assume usage of'
+                . ' zend-diactoros for PSR-7, but it does not appear to be'
+                . ' present on your system. Please install zendframework/zend-diactoros'
+                . ' or provide an alternate factory for the %1$s service that'
+                . ' can produce an appropriate %1$s instance.',
+                ServerRequestInterface::class
+            ));
+        }
+
         return function () {
             return ServerRequestFactory::fromGlobals();
         };
