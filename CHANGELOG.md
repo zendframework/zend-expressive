@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 3.0.0rc3 - 2018-03-07
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- [#579](https://github.com/zendframework/zend-expressive/pull/579) updates the
+  version constraint for zend-expressive-router to use 3.0.0rc4 or later.
+
+- [#579](https://github.com/zendframework/zend-expressive/pull/579) updates the
+  version constraint for zend-stratigility to use 3.0.0rc1 or later.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 3.0.0rc2 - 2018-03-06
 
 ### Added
