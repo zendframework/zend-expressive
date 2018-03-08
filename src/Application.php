@@ -232,7 +232,7 @@ class Application extends MiddlewarePipe
             return $this;
         }
 
-        if ($path !== '/') {
+        if (! in_array($path, ['', '/'], true)) {
             $middleware = path($path, $middleware);
         }
 

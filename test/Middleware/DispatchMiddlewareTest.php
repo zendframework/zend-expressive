@@ -92,8 +92,10 @@ class DispatchMiddlewareTest extends TestCase
         $expected = $this->prophesize(ResponseInterface::class)->reveal();
         $routedMiddleware = $this->prophesize(ServerMiddlewareInterface::class);
         $routedMiddleware
-            ->process(Argument::that([$this->request, 'reveal']), Argument::that([$this->delegate, 'reveal']))
-            ->willReturn($expected);
+            ->process(
+                Argument::that([$this->request, 'reveal']),
+                Argument::that([$this->delegate, 'reveal'])
+            )->willReturn($expected);
 
         $routeResult = RouteResult::fromRoute(new Route('/', $routedMiddleware->reveal()));
 
@@ -114,11 +116,13 @@ class DispatchMiddlewareTest extends TestCase
         $expected = $this->prophesize(ResponseInterface::class)->reveal();
         $routedMiddleware = $this->prophesize(ServerMiddlewareInterface::class);
         $routedMiddleware
-            ->process(Argument::that([$this->request, 'reveal']), Argument::that([$this->delegate, 'reveal']))
-            ->willReturn($expected);
+            ->process(
+                Argument::that([$this->request, 'reveal']),
+                Argument::that([$this->delegate, 'reveal'])
+            )->willReturn($expected);
 
         $this->container->has('RoutedMiddleware')->willReturn(true);
-        $this->container->get('RoutedMiddleware')->willReturn($routedMiddleware->reveal());
+        $this->container->get('RoutedMiddleware')->will([$routedMiddleware, 'reveal']);
 
         // Since 2.0, we never have service names in routes, only lazy-loading middleware
         $lazyMiddleware = new LazyLoadingMiddleware(

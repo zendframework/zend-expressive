@@ -59,6 +59,8 @@ class ConfigInjectionTest extends TestCase
                     return false;
                 }
 
+                // We're just testing that middleware is present; since it may
+                // be decorated, this might fail otherwise.
                 if (! $route->getMiddleware()) {
                     return false;
                 }

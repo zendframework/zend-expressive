@@ -29,6 +29,7 @@ use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Stratigility\MiddlewarePipe;
+use Zend\Stratigility\Middleware\PathMiddlewareDecorator;
 use ZendTest\Expressive\ContainerTrait;
 use ZendTest\Expressive\TestAsset\InteropMiddleware;
 use ZendTest\Expressive\TestAsset\InvokableMiddleware;
@@ -81,6 +82,8 @@ class ApplicationFactoryTest extends TestCase
                     return false;
                 }
 
+                // We're just testing that middleware is present; since it may
+                // be decorated, this might fail otherwise.
                 if (! $route->getMiddleware()) {
                     return false;
                 }
@@ -331,11 +334,12 @@ class ApplicationFactoryTest extends TestCase
      */
     public function testExceptionIsRaisedInCaseOfInvalidRouteOptionsConfiguration($configType)
     {
+        $middleware = $this->prophesize(MiddlewareInterface::class)->reveal();
         $config = [
             'routes' => [
                 [
                     'path' => '/',
-                    'middleware' => $this->prophesize(MiddlewareInterface::class)->reveal(),
+                    'middleware' => $middleware,
                     'options' => 'invalid',
                 ],
             ],
@@ -365,6 +369,7 @@ class ApplicationFactoryTest extends TestCase
         $pipelineFirst = clone $api;
         $hello         = clone $api;
         $pipelineLast  = clone $api;
+
 
         $this->injectServiceInContainer($this->container, 'DynamicPath', $dynamicPath);
         $this->injectServiceInContainer($this->container, 'Goodbye', $goodbye);
@@ -411,14 +416,20 @@ class ApplicationFactoryTest extends TestCase
         $this->assertCount(5, $pipeline, 'Did not get expected pipeline count!');
 
         $test = $pipeline->dequeue();
-        $this->assertEquals('/api', $test->path);
-        $this->assertSame($api, $test->handler);
+        $this->assertEquals('/', $test->path);
+        $this->assertInstanceOf(PathMiddlewareDecorator::class, $test->handler);
+        $handler = $test->handler;
+        $this->assertAttributeSame('/api', 'prefix', $handler);
+        $this->assertAttributeSame($api, 'middleware', $handler);
 
         // Lazy middleware is not marshaled until invocation
         $test = $pipeline->dequeue();
-        $this->assertEquals('/dynamic-path', $test->path);
-        $this->assertNotSame($dynamicPath, $test->handler);
-        $this->assertInstanceOf(LazyLoadingMiddleware::class, $test->handler);
+        $this->assertEquals('/', $test->path);
+        $this->assertInstanceOf(PathMiddlewareDecorator::class, $test->handler);
+        $handler = $test->handler;
+        $this->assertAttributeSame('/dynamic-path', 'prefix', $handler);
+        $this->assertAttributeNotSame($dynamicPath, 'middleware', $handler);
+        $this->assertAttributeInstanceOf(LazyLoadingMiddleware::class, 'middleware', $handler);
 
         $test = $pipeline->dequeue();
         $this->assertEquals('/', $test->path);

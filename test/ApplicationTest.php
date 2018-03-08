@@ -8,6 +8,7 @@
 namespace ZendTest\Expressive;
 
 use DomainException;
+use Fig\Http\Message\RequestMethodInterface as RequestMethod;
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
@@ -19,6 +20,7 @@ use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UriInterface;
 use ReflectionMethod;
 use ReflectionProperty;
 use RuntimeException;
@@ -41,6 +43,7 @@ use Zend\Expressive\Router\RouteResult;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Stratigility\MiddlewarePipe;
+use Zend\Stratigility\Middleware\PathMiddlewareDecorator;
 use Zend\Stratigility\Route as StratigilityRoute;
 
 /**
@@ -453,7 +456,12 @@ class ApplicationTest extends TestCase
         $route = $pipeline->dequeue();
         $this->assertInstanceOf(StratigilityRoute::class, $route);
         $handler = $route->handler;
-        $this->assertInstanceOf(Middleware\LazyLoadingMiddleware::class, $handler);
+        $this->assertInstanceOf(PathMiddlewareDecorator::class, $handler);
+
+        $r = new ReflectionProperty($handler, 'middleware');
+        $r->setAccessible(true);
+        $handler = $r->getValue($handler);
+
         $this->assertAttributeEquals('foo', 'middlewareName', $handler);
     }
 
@@ -478,7 +486,8 @@ class ApplicationTest extends TestCase
         $this->assertInstanceOf(StratigilityRoute::class, $route);
         $handler = $route->handler;
 
-        $request = $this->prophesize(ServerRequest::class)->reveal();
+        $request = new ServerRequest([], [], '/foo', RequestMethod::METHOD_GET);
+
         $delegate = $this->prophesize(DelegateInterface::class)->reveal();
 
         $this->expectException(InvalidMiddlewareException::class);
