@@ -252,6 +252,8 @@ class Application extends MiddlewarePipe
     /**
      * Register the routing middleware in the middleware pipeline.
      *
+     * @deprecated since 2.2.0; to be removed in 3.0.0. Use pipe() with routing
+     *     middleware or a service name resolving to routing middleware instead.
      * @return void
      */
     public function pipeRoutingMiddleware()
@@ -265,6 +267,8 @@ class Application extends MiddlewarePipe
     /**
      * Register the dispatch middleware in the middleware pipeline.
      *
+     * @deprecated since 2.2.0; to be removed in 3.0.0. Use pipe() with dispatch
+     *     middleware or a service name resolving to dispatch middleware instead.
      * @return void
      */
     public function pipeDispatchMiddleware()
@@ -382,6 +386,9 @@ class Application extends MiddlewarePipe
      *
      * If no IoC container is registered, we raise an exception.
      *
+     * @deprecated since 2.2.0; to be removed in 3.0.0. This feature is
+     *     replaced by Zend\Expressive\MiddlewareFactory in that release, which
+     *     can be retrieved as a service from the application container.
      * @return ContainerInterface
      * @throws Exception\ContainerNotRegisteredException
      */
@@ -403,6 +410,8 @@ class Application extends MiddlewarePipe
      * - If no container is composed, creates an instance of Delegate\NotFoundDelegate
      *   using the current response prototype only (i.e., no templating).
      *
+     * @deprecated since 2.2.0; to be removed in 3.0.0. This feature has no
+     *     equivalent in that version.
      * @return DelegateInterface
      */
     public function getDefaultDelegate()
@@ -432,6 +441,9 @@ class Application extends MiddlewarePipe
      * If none was registered during instantiation, this will lazy-load an
      * EmitterStack composing an SapiEmitter instance.
      *
+     * @deprecated since 2.2.0; to be removed in 3.0.0. This feature has no
+     *     equivalent in that version; the responsibility has been moved to a
+     *     new collaborator.
      * @return EmitterInterface
      */
     public function getEmitter()
