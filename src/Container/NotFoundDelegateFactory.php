@@ -12,6 +12,11 @@ use Zend\Diactoros\Response;
 use Zend\Expressive\Delegate\NotFoundDelegate;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
+/**
+ * @deprecated since 2.2.0; to be removed in 3.0.0. Use NotFoundHandlerFactory
+ *     in version 3, as it will return its replacement, the
+ *     Zend\Expressive\Handler\NotFoundHandler.
+ */
 class NotFoundDelegateFactory
 {
     /**
