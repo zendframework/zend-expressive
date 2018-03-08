@@ -12,9 +12,10 @@ use Psr\Http\Message\ResponseInterface;
 use Webimpress\HttpMiddlewareCompatibility\MiddlewareInterface;
 use Zend\Expressive\Router\Middleware\DispatchMiddleware;
 use Zend\Expressive\Router\Middleware\RouteMiddleware;
-use Zend\Stratigility\Middleware\CallableInteropMiddlewareWrapper;
-use Zend\Stratigility\Middleware\CallableMiddlewareWrapper;
 use Zend\Stratigility\MiddlewarePipe;
+
+use function Zend\Stratigility\middleware;
+use function Zend\Stratigility\doublePassMiddleware;
 
 /**
  * Trait defining methods for verifying and/or generating middleware to pipe to
@@ -40,7 +41,7 @@ trait MarshalMiddlewareTrait
      * @param Router\RouterInterface $router
      * @param ResponseInterface $responsePrototype
      * @param null|ContainerInterface $container
-     * @return ServerMiddlewareInterface
+     * @return MiddlewareInterface
      * @throws Exception\InvalidMiddlewareException
      */
     private function prepareMiddleware(
@@ -68,11 +69,12 @@ trait MarshalMiddlewareTrait
         }
 
         if ($this->isCallableInteropMiddleware($middleware)) {
-            return new CallableInteropMiddlewareWrapper($middleware);
+            return middleware($middleware);
         }
 
         if ($this->isCallable($middleware)) {
-            return new CallableMiddlewareWrapper($middleware, $responsePrototype);
+            $this->triggerDoublePassMiddlewareDeprecation($middleware);
+            return doublePassMiddleware($middleware, $responsePrototype);
         }
 
         if (is_array($middleware)) {
@@ -151,25 +153,29 @@ trait MarshalMiddlewareTrait
 
         $instance = new $middleware();
 
-        if ($instance instanceof ServerMiddlewareInterface) {
+        if ($instance instanceof MiddlewareInterface) {
             return $instance;
         }
 
         if ($this->isCallableInteropMiddleware($instance)) {
-            return new CallableInteropMiddlewareWrapper($instance);
+            return middleware($instance);
         }
 
         if (! is_callable($instance)) {
             throw new Exception\InvalidMiddlewareException(sprintf(
-                'Middleware of class "%s" is invalid; neither invokable nor %s',
-                $middleware,
-                ServerMiddlewareInterface::class
+                'Middleware of class "%s" is invalid; neither invokable nor a MiddlewareInterface instance',
+                $middleware
             ));
         }
 
-        return new CallableMiddlewareWrapper($instance, $responsePrototype);
+        $this->triggerDoublePassMiddlewareDeprecation($instance);
+        return doublePassMiddleware($instance, $responsePrototype);
     }
 
+    /**
+     * @param string $middlewareType
+     * @return void
+     */
     private function triggerLegacyMiddlewareDeprecation($middlewareType)
     {
         switch ($middlewareType) {
@@ -191,6 +197,29 @@ trait MarshalMiddlewareTrait
             $constant,
             $type,
             $useInstead
+        ), E_USER_DEPRECATED);
+    }
+
+    /**
+     * @param callable $middleware
+     * @return void
+     */
+    private function triggerDoublePassMiddlewareDeprecation(callable $middleware)
+    {
+        if (is_object($middleware)) {
+            $type = get_class($middleware);
+        } elseif (is_string($middleware)) {
+            $type = 'callable:' . $middleware;
+        } else {
+            $type = 'callable';
+        }
+        
+        trigger_error(sprintf(
+            'Detected double-pass middleware (%s).'
+            . ' Usage of callable double-pass middleware is deprecated. Before piping or routing'
+            . ' such middleware, pass it to Zend\Stratigility\doublePassMiddleware(), along with'
+            . ' a PSR-7 response instance.',
+            $type
         ), E_USER_DEPRECATED);
     }
 }

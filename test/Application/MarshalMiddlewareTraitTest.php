@@ -23,8 +23,8 @@ use Zend\Expressive\Middleware\LazyLoadingMiddleware;
 use Zend\Expressive\Router\Middleware\DispatchMiddleware;
 use Zend\Expressive\Router\Middleware\RouteMiddleware;
 use Zend\Expressive\Router\RouterInterface;
-use Zend\Stratigility\Middleware\CallableInteropMiddlewareWrapper;
-use Zend\Stratigility\Middleware\CallableMiddlewareWrapper;
+use Zend\Stratigility\Middleware\CallableMiddlewareDecorator;
+use Zend\Stratigility\Middleware\DoublePassMiddlewareDecorator;
 use Zend\Stratigility\MiddlewarePipe;
 
 class MarshalMiddlewareTraitTest extends TestCase
@@ -59,6 +59,9 @@ class MarshalMiddlewareTraitTest extends TestCase
     {
         set_error_handler(function ($errno, $errstr) {
             if (strstr($errstr, 'pipe() the middleware directly')) {
+                return true;
+            }
+            if (strstr($errstr, 'doublePassMiddleware()')) {
                 return true;
             }
             return false;
@@ -137,7 +140,7 @@ class MarshalMiddlewareTraitTest extends TestCase
         $base = function ($request, DelegateInterface $delegate) {
         };
         $middleware = $this->prepareMiddleware($base);
-        $this->assertInstanceOf(CallableInteropMiddlewareWrapper::class, $middleware);
+        $this->assertInstanceOf(CallableMiddlewareDecorator::class, $middleware);
         $this->assertAttributeSame($base, 'middleware', $middleware);
     }
 
@@ -146,7 +149,7 @@ class MarshalMiddlewareTraitTest extends TestCase
         $base = function ($request, DelegateInterface $delegate) {
         };
         $middleware = $this->prepareMiddlewareWithoutContainer($base);
-        $this->assertInstanceOf(CallableInteropMiddlewareWrapper::class, $middleware);
+        $this->assertInstanceOf(CallableMiddlewareDecorator::class, $middleware);
         $this->assertAttributeSame($base, 'middleware', $middleware);
     }
 
@@ -155,7 +158,7 @@ class MarshalMiddlewareTraitTest extends TestCase
         $base = function ($request, $response, callable $next) {
         };
         $middleware = $this->prepareMiddleware($base);
-        $this->assertInstanceOf(CallableMiddlewareWrapper::class, $middleware);
+        $this->assertInstanceOf(DoublePassMiddlewareDecorator::class, $middleware);
         $this->assertAttributeSame($base, 'middleware', $middleware);
         $this->assertAttributeSame($this->responsePrototype->reveal(), 'responsePrototype', $middleware);
     }
@@ -165,7 +168,7 @@ class MarshalMiddlewareTraitTest extends TestCase
         $base = function ($request, $response, callable $next) {
         };
         $middleware = $this->prepareMiddlewareWithoutContainer($base);
-        $this->assertInstanceOf(CallableMiddlewareWrapper::class, $middleware);
+        $this->assertInstanceOf(DoublePassMiddlewareDecorator::class, $middleware);
         $this->assertAttributeSame($base, 'middleware', $middleware);
         $this->assertAttributeSame($this->responsePrototype->reveal(), 'responsePrototype', $middleware);
     }
@@ -271,7 +274,7 @@ class MarshalMiddlewareTraitTest extends TestCase
 
         $middleware = $this->prepareMiddleware($base);
 
-        $this->assertInstanceOf(CallableInteropMiddlewareWrapper::class, $middleware);
+        $this->assertInstanceOf(CallableMiddlewareDecorator::class, $middleware);
         $this->assertAttributeInstanceOf(TestAsset\CallableInteropMiddleware::class, 'middleware', $middleware);
     }
 
@@ -280,7 +283,7 @@ class MarshalMiddlewareTraitTest extends TestCase
         $base = TestAsset\CallableMiddleware::class;
         $this->container->has(TestAsset\CallableMiddleware::class)->willReturn(false);
         $middleware = $this->prepareMiddleware($base);
-        $this->assertInstanceOf(CallableMiddlewareWrapper::class, $middleware);
+        $this->assertInstanceOf(DoublePassMiddlewareDecorator::class, $middleware);
         $this->assertAttributeInstanceOf(TestAsset\CallableMiddleware::class, 'middleware', $middleware);
     }
 

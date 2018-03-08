@@ -83,6 +83,9 @@ class ApplicationFactoryTest extends TestCase
             if (strstr($errstr, 'pipe() the middleware directly')) {
                 return true;
             }
+            if (strstr($errstr, 'doublePassMiddleware()')) {
+                return true;
+            }
             return false;
         }, E_USER_DEPRECATED);
     }
