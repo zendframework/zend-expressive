@@ -38,6 +38,8 @@ use Zend\Expressive\Exception;
 use Zend\Expressive\Exception\InvalidMiddlewareException;
 use Zend\Expressive\Middleware;
 use Zend\Expressive\Router\Exception as RouterException;
+use Zend\Expressive\Router\Middleware\DispatchMiddleware;
+use Zend\Expressive\Router\Middleware\RouteMiddleware;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouteResult;
 use Zend\Expressive\Router\RouterInterface;
@@ -64,6 +66,22 @@ class ApplicationTest extends TestCase
     {
         $this->noopMiddleware = new TestAsset\InteropMiddleware();
         $this->router = $this->prophesize(RouterInterface::class);
+        $this->disregardDeprecationNotices();
+    }
+
+    public function tearDown()
+    {
+        restore_error_handler();
+    }
+
+    public function disregardDeprecationNotices()
+    {
+        set_error_handler(function ($errno, $errstr) {
+            if (strstr($errstr, 'pipe() the middleware directly')) {
+                return true;
+            }
+            return false;
+        }, E_USER_DEPRECATED);
     }
 
     public function getApp()
@@ -262,7 +280,7 @@ class ApplicationTest extends TestCase
         $this->assertInstanceOf(StratigilityRoute::class, $route);
         $test  = $route->handler;
 
-        $this->assertInstanceOf(Middleware\RouteMiddleware::class, $test);
+        $this->assertInstanceOf(RouteMiddleware::class, $test);
     }
 
     public function testCannotPipeDispatchMiddlewareMoreThanOnce()
@@ -282,7 +300,7 @@ class ApplicationTest extends TestCase
         $this->assertInstanceOf(StratigilityRoute::class, $route);
         $test  = $route->handler;
 
-        $this->assertInstanceOf(Middleware\DispatchMiddleware::class, $test);
+        $this->assertInstanceOf(DispatchMiddleware::class, $test);
     }
 
     public function testCanInjectDefaultDelegateViaConstructor()
@@ -391,7 +409,7 @@ class ApplicationTest extends TestCase
 
         $route = $pipeline->dequeue();
         $this->assertInstanceOf(StratigilityRoute::class, $route);
-        $this->assertInstanceOf(Middleware\RouteMiddleware::class, $route->handler);
+        $this->assertInstanceOf(RouteMiddleware::class, $route->handler);
         $this->assertEquals('/', $route->path);
     }
 
@@ -408,7 +426,7 @@ class ApplicationTest extends TestCase
 
         $route = $pipeline->dequeue();
         $this->assertInstanceOf(StratigilityRoute::class, $route);
-        $this->assertInstanceOf(Middleware\DispatchMiddleware::class, $route->handler);
+        $this->assertInstanceOf(DispatchMiddleware::class, $route->handler);
         $this->assertEquals('/', $route->path);
     }
 

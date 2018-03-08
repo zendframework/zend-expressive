@@ -22,9 +22,9 @@ use Zend\Expressive\Container\ApplicationFactory;
 use Zend\Expressive\Delegate\NotFoundDelegate;
 use Zend\Expressive\Emitter\EmitterStack;
 use Zend\Expressive\Exception as ExpressiveException;
-use Zend\Expressive\Middleware\DispatchMiddleware;
+use Zend\Expressive\Router\Middleware\DispatchMiddleware;
 use Zend\Expressive\Middleware\LazyLoadingMiddleware;
-use Zend\Expressive\Middleware\RouteMiddleware;
+use Zend\Expressive\Router\Middleware\RouteMiddleware;
 use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouterInterface;
@@ -68,6 +68,23 @@ class ApplicationFactoryTest extends TestCase
         $this->injectServiceInContainer($this->container, RouterInterface::class, $this->router->reveal());
         $this->injectServiceInContainer($this->container, EmitterInterface::class, $this->emitter->reveal());
         $this->injectServiceInContainer($this->container, 'Zend\Expressive\Delegate\DefaultDelegate', $this->delegate);
+
+        $this->disregardDeprecationNotices();
+    }
+
+    public function tearDown()
+    {
+        restore_error_handler();
+    }
+
+    public function disregardDeprecationNotices()
+    {
+        set_error_handler(function ($errno, $errstr) {
+            if (strstr($errstr, 'pipe() the middleware directly')) {
+                return true;
+            }
+            return false;
+        }, E_USER_DEPRECATED);
     }
 
     public static function assertRoute($spec, array $routes)

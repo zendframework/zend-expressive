@@ -7,9 +7,11 @@
 
 namespace Zend\Expressive;
 
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
+use Webimpress\HttpMiddlewareCompatibility\MiddlewareInterface;
+use Zend\Expressive\Router\Middleware\DispatchMiddleware;
+use Zend\Expressive\Router\Middleware\RouteMiddleware;
 use Zend\Stratigility\Middleware\CallableInteropMiddlewareWrapper;
 use Zend\Stratigility\Middleware\CallableMiddlewareWrapper;
 use Zend\Stratigility\MiddlewarePipe;
@@ -48,14 +50,20 @@ trait MarshalMiddlewareTrait
         ContainerInterface $container = null
     ) {
         if ($middleware === Application::ROUTING_MIDDLEWARE) {
-            return new Middleware\RouteMiddleware($router, $responsePrototype);
+            $this->triggerLegacyMiddlewareDeprecation($middleware);
+            return $container && $container->has(RouteMiddleware::class)
+                ? $container->get(RouteMiddleware::class)
+                : new RouteMiddleware($router, $responsePrototype);
         }
 
         if ($middleware === Application::DISPATCH_MIDDLEWARE) {
-            return new Middleware\DispatchMiddleware($router, $responsePrototype, $container);
+            $this->triggerLegacyMiddlewareDeprecation($middleware);
+            return $container && $container->has(DispatchMiddleware::class)
+                ? $container->get(DispatchMiddleware::class)
+                : new DispatchMiddleware();
         }
 
-        if ($middleware instanceof ServerMiddlewareInterface) {
+        if ($middleware instanceof MiddlewareInterface) {
             return $middleware;
         }
 
@@ -80,9 +88,8 @@ trait MarshalMiddlewareTrait
         }
 
         throw new Exception\InvalidMiddlewareException(sprintf(
-            'Unable to resolve middleware "%s" to a callable or %s',
-            is_object($middleware) ? get_class($middleware) . '[Object]' : gettype($middleware) . '[Scalar]',
-            ServerMiddlewareInterface::class
+            'Unable to resolve middleware "%s" to a callable or MiddlewareInterface implementation',
+            is_object($middleware) ? get_class($middleware) . '[Object]' : gettype($middleware) . '[Scalar]'
         ));
     }
 
@@ -161,5 +168,29 @@ trait MarshalMiddlewareTrait
         }
 
         return new CallableMiddlewareWrapper($instance, $responsePrototype);
+    }
+
+    private function triggerLegacyMiddlewareDeprecation($middlewareType)
+    {
+        switch ($middlewareType) {
+            case (Application::ROUTING_MIDDLEWARE):
+                $constant   = sprintf('%s::ROUTING_MIDDLEWARE', Application::class);
+                $type       = 'routing';
+                $useInstead = RouteMiddleware::class;
+                break;
+            case (Application::DISPATCH_MIDDLEWARE):
+                $constant   = sprintf('%s::DISPATCH_MIDDLEWARE', Application::class);
+                $type       = 'dispatch';
+                $useInstead = DispatchMiddleware::class;
+                break;
+        }
+
+        trigger_error(sprintf(
+            'Usage of the %s constant for specifying %s middleware is deprecated;'
+            . ' pipe() the middleware directly, or reference it by its service name "%s"',
+            $constant,
+            $type,
+            $useInstead
+        ), E_USER_DEPRECATED);
     }
 }

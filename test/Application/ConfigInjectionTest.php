@@ -16,7 +16,8 @@ use ReflectionProperty;
 use SplQueue;
 use Zend\Expressive\Application;
 use Zend\Expressive\Exception\InvalidArgumentException;
-use Zend\Expressive\Middleware;
+use Zend\Expressive\Router\Middleware\DispatchMiddleware;
+use Zend\Expressive\Router\Middleware\RouteMiddleware;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Stratigility\MiddlewarePipe;
@@ -40,6 +41,22 @@ class ConfigInjectionTest extends TestCase
     {
         $this->container = $this->mockContainerInterface();
         $this->router = $this->prophesize(RouterInterface::class);
+        $this->disregardDeprecationNotices();
+    }
+
+    public function tearDown()
+    {
+        restore_error_handler();
+    }
+
+    public function disregardDeprecationNotices()
+    {
+        set_error_handler(function ($errno, $errstr) {
+            if (strstr($errstr, 'pipe() the middleware directly')) {
+                return true;
+            }
+            return false;
+        }, E_USER_DEPRECATED);
     }
 
     public function createApplication()
@@ -209,11 +226,11 @@ class ConfigInjectionTest extends TestCase
 
         $test = $pipeline->dequeue();
         $this->assertEquals('/', $test->path);
-        $this->assertInstanceOf(Middleware\RouteMiddleware::class, $test->handler);
+        $this->assertInstanceOf(RouteMiddleware::class, $test->handler);
 
         $test = $pipeline->dequeue();
         $this->assertEquals('/', $test->path);
-        $this->assertInstanceOf(Middleware\DispatchMiddleware::class, $test->handler);
+        $this->assertInstanceOf(DispatchMiddleware::class, $test->handler);
     }
 
     public function testPipelineContainingRoutingMiddlewareConstantPipesRoutingMiddleware()
@@ -316,10 +333,10 @@ class ConfigInjectionTest extends TestCase
         $test = $r->getValue($app);
 
         $this->assertSame($pipeline[5]['middleware'], $test->dequeue()->handler);
-        $this->assertInstanceOf(Middleware\RouteMiddleware::class, $test->dequeue()->handler);
+        $this->assertInstanceOf(RouteMiddleware::class, $test->dequeue()->handler);
         $this->assertSame($pipeline[2]['middleware'], $test->dequeue()->handler);
         $this->assertSame($pipeline[3]['middleware'], $test->dequeue()->handler);
-        $this->assertInstanceOf(Middleware\DispatchMiddleware::class, $test->dequeue()->handler);
+        $this->assertInstanceOf(DispatchMiddleware::class, $test->dequeue()->handler);
         $this->assertSame($pipeline[0]['middleware'], $test->dequeue()->handler);
     }
 
@@ -375,11 +392,11 @@ class ConfigInjectionTest extends TestCase
         foreach ($expected as $type) {
             switch ($type) {
                 case Application::ROUTING_MIDDLEWARE:
-                    $middleware = Middleware\RouteMiddleware::class;
+                    $middleware = RouteMiddleware::class;
                     $message = 'Did not find routing middleware in pipeline';
                     break;
                 case Application::DISPATCH_MIDDLEWARE:
-                    $middleware = Middleware\DispatchMiddleware::class;
+                    $middleware = DispatchMiddleware::class;
                     $message = 'Did not find dispatch middleware in pipeline';
                     break;
                 default:

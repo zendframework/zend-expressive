@@ -224,11 +224,11 @@ class Application extends MiddlewarePipe
             );
         }
 
-        if ($middleware instanceof Middleware\RouteMiddleware && $this->routeMiddlewareIsRegistered) {
+        if ($middleware instanceof Router\Middleware\RouteMiddleware && $this->routeMiddlewareIsRegistered) {
             return $this;
         }
 
-        if ($middleware instanceof Middleware\DispatchMiddleware && $this->dispatchMiddlewareIsRegistered) {
+        if ($middleware instanceof Router\Middleware\DispatchMiddleware && $this->dispatchMiddlewareIsRegistered) {
             return $this;
         }
 
@@ -238,11 +238,11 @@ class Application extends MiddlewarePipe
 
         parent::pipe($middleware);
 
-        if ($middleware instanceof Middleware\RouteMiddleware) {
+        if ($middleware instanceof Router\Middleware\RouteMiddleware) {
             $this->routeMiddlewareIsRegistered = true;
         }
 
-        if ($middleware instanceof Middleware\DispatchMiddleware) {
+        if ($middleware instanceof Router\Middleware\DispatchMiddleware) {
             $this->dispatchMiddlewareIsRegistered = true;
         }
 
