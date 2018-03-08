@@ -20,6 +20,11 @@ use function Zend\Stratigility\doublePassMiddleware;
 /**
  * Trait defining methods for verifying and/or generating middleware to pipe to
  * an application.
+ *
+ * @deprecated since 2.2.0. This feature will be removed in version 3.0.0, and
+ *     replaced with a combination of a PSR-11 container and a composable factory
+ *     class.
+ * @internal
  */
 trait MarshalMiddlewareTrait
 {
