@@ -27,10 +27,29 @@ class AppFactoryTest extends TestCase
 {
     static public $existingClasses;
 
-    protected function tearDown()
+    public function setUp()
     {
+        $this->noopMiddleware = new TestAsset\InteropMiddleware();
+        $this->router = $this->prophesize(RouterInterface::class);
+        $this->disregardDeprecationNotices();
+    }
+
+    public function tearDown()
+    {
+        restore_error_handler();
         self::$existingClasses = null;
     }
+
+    public function disregardDeprecationNotices()
+    {
+        set_error_handler(function ($errno, $errstr) {
+            if (strstr($errstr, 'AppFactory is deprecated')) {
+                return true;
+            }
+            return false;
+        }, E_USER_DEPRECATED);
+    }
+
 
     public function getRouterFromApplication(Application $app)
     {

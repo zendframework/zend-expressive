@@ -10,6 +10,16 @@ namespace Zend\Expressive;
 use Psr\Container\ContainerInterface;
 use Zend\Diactoros\Response\SapiEmitter;
 use Zend\ServiceManager\ServiceManager;
+use Zend\Stratigility\MiddlewarePipe;
+
+trigger_error(sprintf(
+    'Usage of %s is deprecated as of version 2.2.0. In version 3, you will need'
+    . ' to either instantiate an %s instance directly, or use a %s instance'
+    . ' with other collaborators.',
+    AppFactory::class,
+    Application::class,
+    MiddlewarePipe::class
+), E_USER_DEPRECATED);
 
 /**
  * Create and return an Application instance.
@@ -20,6 +30,9 @@ use Zend\ServiceManager\ServiceManager;
  * The Application instance returned is guaranteed to have a router, a
  * container, and an emitter stack; by default, the FastRoute router and the
  * ZF2 ServiceManager are used.
+ *
+ * @deprecated since 2.2.0; will be removed in 3.0.0. Directly instantiate a
+ *     Zend\Expressive\Application instance instead.
  */
 final class AppFactory
 {
