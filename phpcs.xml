@@ -5,4 +5,8 @@
     <!-- Paths to check -->
     <file>src</file>
     <file>test</file>
+
+    <rule ref="PSR1.Files.SideEffects">
+        <exclude-pattern>src/AppFactory.php</exclude-pattern>
+    </rule>
 </ruleset>

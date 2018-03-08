@@ -218,7 +218,7 @@ trait MarshalMiddlewareTrait
         } else {
             $type = 'callable';
         }
-        
+
         trigger_error(sprintf(
             'Detected double-pass middleware (%s).'
             . ' Usage of callable double-pass middleware is deprecated. Before piping or routing'
