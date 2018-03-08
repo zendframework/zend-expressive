@@ -13,6 +13,10 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
+/**
+ * @deprecated since 2.2.0; to be removed in 3.0.0. Use
+ *     Zend\Expressive\Handler\NotFoundHandler instead, available since 2.2.0.
+ */
 class NotFoundDelegate implements DelegateInterface
 {
     const TEMPLATE_DEFAULT = 'error::404';

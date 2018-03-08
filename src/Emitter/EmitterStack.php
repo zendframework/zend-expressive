@@ -20,6 +20,9 @@ use Zend\Expressive\Exception;
  *
  * When iterating the stack, the first emitter to return a value that is not
  * identical to boolean false will short-circuit iteration.
+ *
+ * @deprecated since 2.2.0; to be removed in 3.0.0. Functionality is moved to
+ *     the zend-httphandlerrunner package.
  */
 class EmitterStack extends SplStack implements EmitterInterface
 {
