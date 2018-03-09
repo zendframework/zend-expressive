@@ -9,6 +9,7 @@ namespace ZendTest\Expressive\Container;
 
 use ArrayObject;
 use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -80,7 +81,7 @@ class ApplicationFactoryTest extends TestCase
                     return false;
                 }
 
-                if ($route->getMiddleware() !== $spec['middleware']) {
+                if (! $route->getMiddleware()) {
                     return false;
                 }
 
@@ -123,8 +124,8 @@ class ApplicationFactoryTest extends TestCase
 
     public function callableMiddlewares()
     {
-        $middleware = [
-            'service-name' => 'HelloWorld',
+        $middlewareTypes = [
+            'service-name' => InvokableMiddleware::class,
             'closure' => function () {
             },
             'callable' => [InvokableMiddleware::class, 'staticallyCallableMiddleware'],
@@ -136,7 +137,7 @@ class ApplicationFactoryTest extends TestCase
         ];
 
         foreach ($configTypes as $configType => $config) {
-            foreach ($middleware as $middlewareType => $middleware) {
+            foreach ($middlewareTypes as $middlewareType => $middleware) {
                 $name = sprintf('%s-%s', $configType, $middlewareType);
                 yield $name => [$middleware, $config];
             }
@@ -151,6 +152,7 @@ class ApplicationFactoryTest extends TestCase
      */
     public function testFactorySetsUpRoutesFromConfig($middleware, $configType)
     {
+        $pingMiddleware = $this->prophesize(MiddlewareInterface::class)->reveal();
         $config = [
             'routes' => [
                 [
@@ -160,7 +162,7 @@ class ApplicationFactoryTest extends TestCase
                 ],
                 [
                     'path' => '/ping',
-                    'middleware' => 'Ping',
+                    'middleware' => $pingMiddleware,
                     'allowed_methods' => ['GET'],
                 ],
             ],
@@ -238,7 +240,7 @@ class ApplicationFactoryTest extends TestCase
             'routes' => [
                 [
                     'path' => '/',
-                    'middleware' => 'HelloWorld',
+                    'middleware' => $this->prophesize(MiddlewareInterface::class)->reveal(),
                 ],
             ],
         ];
@@ -275,7 +277,7 @@ class ApplicationFactoryTest extends TestCase
             'routes' => [
                 [
                     'path' => '/',
-                    'middleware' => 'HelloWorld',
+                    'middleware' => $this->prophesize(MiddlewareInterface::class)->reveal(),
                     'name' => 'home',
                     'allowed_methods' => ['GET'],
                     'options' => $expected,
@@ -333,7 +335,7 @@ class ApplicationFactoryTest extends TestCase
             'routes' => [
                 [
                     'path' => '/',
-                    'middleware' => 'HelloWorld',
+                    'middleware' => $this->prophesize(MiddlewareInterface::class)->reveal(),
                     'options' => 'invalid',
                 ],
             ],

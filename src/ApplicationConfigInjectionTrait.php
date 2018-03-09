@@ -163,7 +163,14 @@ trait ApplicationConfigInjectionTrait
             }
 
             $name  = isset($spec['name']) ? $spec['name'] : null;
-            $route = $this->route($spec['path'], $spec['middleware'], $methods, $name);
+            $middleware = $this->prepareMiddleware(
+                $spec['middleware'],
+                $this->router,
+                $this->responsePrototype,
+                $this->container
+            );
+
+            $route = $this->route($spec['path'], $middleware, $methods, $name);
 
             if (isset($spec['options'])) {
                 $options = $spec['options'];

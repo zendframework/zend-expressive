@@ -7,6 +7,7 @@
 
 namespace ZendTest\Expressive\Application;
 
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -58,7 +59,7 @@ class ConfigInjectionTest extends TestCase
                     return false;
                 }
 
-                if ($route->getMiddleware() !== $spec['middleware']) {
+                if (! $route->getMiddleware()) {
                     return false;
                 }
 
@@ -99,7 +100,7 @@ class ConfigInjectionTest extends TestCase
     public function callableMiddlewares()
     {
         return [
-            ['HelloWorld'],
+            [InvokableMiddleware::class],
             [
                 function () {
                 },
@@ -115,6 +116,7 @@ class ConfigInjectionTest extends TestCase
      */
     public function testInjectRoutesFromConfigSetsUpRoutesFromConfig($middleware)
     {
+        $pingMiddleware = $this->prophesize(MiddlewareInterface::class)->reveal();
         $config = [
             'routes' => [
                 [
@@ -124,7 +126,7 @@ class ConfigInjectionTest extends TestCase
                 ],
                 [
                     'path' => '/ping',
-                    'middleware' => 'Ping',
+                    'middleware' => $pingMiddleware,
                     'allowed_methods' => ['GET'],
                 ],
             ],
