@@ -7,45 +7,23 @@
 
 namespace Zend\Expressive\Middleware;
 
-use Fig\Http\Message\RequestMethodInterface as RequestMethod;
-use Fig\Http\Message\StatusCodeInterface as StatusCode;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
-use Zend\Expressive\Router\RouteResult;
+use Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware as BaseImplicitOptionsMiddleware;
 
 /**
  * Handle implicit OPTIONS requests.
  *
- * Place this middleware after the routing middleware so that it can handle
- * implicit OPTIONS requests -- requests where OPTIONS is used, but the route
- * does not explicitly handle that request method.
+ * This is an extension to the canonical version provided in
+ * zend-expressive-router v2.4 and up, and is deprecated in favor of that
+ * version starting in zend-expressive 2.2.
  *
- * When invoked, it will create a response with status code 200 and an Allow
- * header that defines all accepted request methods.
- *
- * You may optionally pass a response prototype to the constructor; when
- * present, that prototype will be used to create a new response with the
- * Allow header.
- *
- * The middleware is only invoked in these specific conditions:
- *
- * - an OPTIONS request
- * - with a `RouteResult` present
- * - where the `RouteResult` contains a `Route` instance
- * - and the `Route` instance defines implicit OPTIONS.
- *
- * In all other circumstances, it will return the result of the delegate.
+ * @deprecated since 2.2.0; to be removed in 3.0.0. Please use the version
+ *     provided in zend-expressive-router 2.4+, and use the factory from
+ *     that component to create an instance.
  */
-class ImplicitOptionsMiddleware implements ServerMiddlewareInterface
+class ImplicitOptionsMiddleware extends BaseImplicitOptionsMiddleware
 {
-    /**
-     * @var null|ResponseInterface
-     */
-    private $response;
-
     /**
      * @param null|ResponseInterface $response Response prototype to use for
      *     implicit OPTIONS requests; if not provided a zend-diactoros Response
@@ -53,42 +31,15 @@ class ImplicitOptionsMiddleware implements ServerMiddlewareInterface
      */
     public function __construct(ResponseInterface $response = null)
     {
-        $this->response = $response;
-    }
+        trigger_error(sprintf(
+            '%s is deprecated starting with zend-expressive 2.2.0; please use the %s class'
+            . ' provided in zend-expressive-router 2.4.0 and later. That class has required'
+            . ' dependencies, so please also add Zend\Expressive\Router\ConfigProvider to'
+            . ' your config/config.php file as well.',
+            __CLASS__,
+            BaseImplicitOptionsMiddleware::class
+        ), E_USER_DEPRECATED);
 
-    /**
-     * Handle an implicit OPTIONS request.
-     *
-     * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
-     * @return ResponseInterface
-     */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
-    {
-        if ($request->getMethod() !== RequestMethod::METHOD_OPTIONS) {
-            return $delegate->process($request);
-        }
-
-        if (false === ($result = $request->getAttribute(RouteResult::class, false))) {
-            return $delegate->process($request);
-        }
-
-        $route = $result->getMatchedRoute();
-        if (! $route || ! $route->implicitOptions()) {
-            return $delegate->process($request);
-        }
-
-        $methods = implode(',', $route->getAllowedMethods());
-        return $this->getResponse()->withHeader('Allow', $methods);
-    }
-
-    /**
-     * Return the response prototype to use for an implicit OPTIONS request.
-     *
-     * @return ResponseInterface
-     */
-    private function getResponse()
-    {
-        return $this->response ?: new Response('php://temp', StatusCode::STATUS_OK);
+        parent::__construct($response ?: new Response());
     }
 }

@@ -63,6 +63,9 @@ class IntegrationTest extends TestCase
             if (strstr($errstr, 'ImplicitHeadMiddleware is deprecated')) {
                 return true;
             }
+            if (strstr($errstr, 'ImplicitOptionsMiddleware is deprecated')) {
+                return true;
+            }
             return false;
         }, E_USER_DEPRECATED);
     }
