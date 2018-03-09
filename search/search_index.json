@@ -3267,182 +3267,182 @@
         },
         {
             "location": "/getting-started/features/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/getting-started/features/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/getting-started/features/';\n  });",
             "title": "_getting_started_overview"
         },
         {
             "location": "/getting-started/standalone/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/getting-started/standalone/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/getting-started/standalone/';\n  });",
             "title": "_getting_started_standalone"
         },
         {
             "location": "/getting-started/skeleton/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/getting-started/skeleton/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/getting-started/skeleton/';\n  });",
             "title": "_getting_started_skeleton"
         },
         {
             "location": "/features/middleware-types/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/features/middleware-types/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/features/middleware-types/';\n  });",
             "title": "_features_middleware_types"
         },
         {
             "location": "/features/application/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/features/application/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/features/application/';\n  });",
             "title": "_features_application"
         },
         {
             "location": "/features/container/intro/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/features/container/intro/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/features/container/intro/';\n  });",
             "title": "_features_container_intro"
         },
         {
             "location": "/features/container/factories/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/features/container/factories/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/features/container/factories/';\n  });",
             "title": "_features_container_factories"
         },
         {
             "location": "/features/container/delegator-factories/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/features/container/delegator-factories/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/features/container/delegator-factories/';\n  });",
             "title": "_features_container_delegator_factories"
         },
         {
             "location": "/features/container/zend-servicemanager/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/features/container/zend-servicemanager/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/features/container/zend-servicemanager/';\n  });",
             "title": "_features_container_using_zend-servicemanager"
         },
         {
             "location": "/features/container/pimple/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/features/container/pimple/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/features/container/pimple/';\n  });",
             "title": "_features_container_using_pimple"
         },
         {
             "location": "/features/container/aura-di/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/features/container/aura-di/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/features/container/aura-di/';\n  });",
             "title": "_features_container_using_aura.di"
         },
         {
             "location": "/features/router/intro/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/features/router/intro/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/features/router/intro/';\n  });",
             "title": "_features_router_introduction"
         },
         {
             "location": "/features/router/interface/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/features/router/interface/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/features/router/interface/';\n  });",
             "title": "_features_router_interface"
         },
         {
             "location": "/features/router/uri-generation/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/features/router/uri-generation/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/features/router/uri-generation/';\n  });",
             "title": "_features_router_uri_generation"
         },
         {
             "location": "/features/router/piping/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/features/router/piping/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/features/router/piping/';\n  });",
             "title": "_features_router_piping"
         },
         {
             "location": "/features/router/aura/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/features/router/aura/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/features/router/aura/';\n  });",
             "title": "_features_router_using_aura"
         },
         {
             "location": "/features/router/fast-route/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/features/router/fast-route/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/features/router/fast-route/';\n  });",
             "title": "_features_router_using_fastroute"
         },
         {
             "location": "/features/router/zf2/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/features/router/zf2/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/features/router/zf2/';\n  });",
             "title": "_features_router_using_the ZF2 Router"
         },
         {
             "location": "/features/template/intro/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/features/template/intro/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/features/template/intro/';\n  });",
             "title": "_features_template_intro"
         },
         {
             "location": "/features/template/interface/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/features/template/interface/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/features/template/interface/';\n  });",
             "title": "_features_template_interface"
         },
         {
             "location": "/features/template/middleware/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/features/template/middleware/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/features/template/middleware/';\n  });",
             "title": "_features_template_middleware"
         },
         {
             "location": "/features/template/plates/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/features/template/plates/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/features/template/plates/';\n  });",
             "title": "_features_template_plates"
         },
         {
             "location": "/features/template/twig/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/features/template/twig/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/features/template/twig/';\n  });",
             "title": "_features_template_twig"
         },
         {
             "location": "/features/template/zend-view/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/features/template/zend-view/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/features/template/zend-view/';\n  });",
             "title": "_features_template_zend-view"
         },
         {
             "location": "/features/error-handling/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/features/error-handling/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/features/error-handling/';\n  });",
             "title": "_features_error_handling"
         },
         {
             "location": "/features/modular-applications/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/features/modular-applications/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/features/modular-applications/';\n  });",
             "title": "_features_modular_applications"
         },
         {
             "location": "/features/middleware/implicit-methods-middleware/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/features/middleware/implicit-methods-middleware/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/features/middleware/implicit-methods-middleware/';\n  });",
             "title": "_features_middleware_implicit_head_and_options_middleware"
         },
         {
             "location": "/features/helpers/intro/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/features/helpers/intro/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/features/helpers/intro/';\n  });",
             "title": "_features_helpers_intro"
         },
         {
             "location": "/features/helpers/url-helper/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/features/helpers/url-helper/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/features/helpers/url-helper/';\n  });",
             "title": "_features_helpers_urlhelper"
         },
         {
             "location": "/features/helpers/server-url-helper/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/features/helpers/server-url-helper/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/features/helpers/server-url-helper/';\n  });",
             "title": "_features_helpers_serverurlhelper"
         },
         {
             "location": "/features/helpers/body-parse/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/features/helpers/body-parse/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/features/helpers/body-parse/';\n  });",
             "title": "_features_helpers_body_parsing_middleware"
         },
         {
             "location": "/features/helpers/content-length/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/features/helpers/content-length/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/features/helpers/content-length/';\n  });",
             "title": "_features_helpers_content_length_middleware"
         },
         {
             "location": "/features/emitters/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/features/emitters/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/features/emitters/';\n  });",
             "title": "_features_emitters"
         },
         {
             "location": "/cookbook/autowiring-routes-and-pipelines/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/cookbook/autowiring-routes-and-pipelines/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/cookbook/autowiring-routes-and-pipelines/';\n  });",
             "title": "_cookbook_autowiring_routes_and_pipeline_middleware"
         },
         {
             "location": "/cookbook/common-prefix-for-routes/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    var uri = new URL(window.location.href);\n    uri.pathname = 'v2/cookbook/common-prefix-for-routes/';\n    window.location = uri.href;\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    var uri = new URL(window.location.href);\n    uri.pathname = '/zend-expressive/v2/cookbook/common-prefix-for-routes/';\n    window.location = uri.href;\n  });",
             "title": "_cookbook_prepending_a_common_path_to_all_routes"
         },
         {
             "location": "/cookbook/route-specific-pipeline/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/cookbook/route-specific-pipeline/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/cookbook/route-specific-pipeline/';\n  });",
             "title": "_cookbook_route-specific_middleware_pipelines"
         },
         {
@@ -3452,17 +3452,17 @@
         },
         {
             "location": "/cookbook/using-custom-view-helpers/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/cookbook/using-custom-view-helpers/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/cookbook/using-custom-view-helpers/';\n  });",
             "title": "_cookbook_registering_custom_view_helpers_when_using_zend-view"
         },
         {
             "location": "/cookbook/using-zend-form-view-helpers/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/cookbook/using-zend-form-view-helpers/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/cookbook/using-zend-form-view-helpers/';\n  });",
             "title": "_cookbook_using_zend-form_view_helpers"
         },
         {
             "location": "/cookbook/using-a-base-path/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/cookbook/using-a-base-path/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/cookbook/using-a-base-path/';\n  });",
             "title": "_cookbook_using_Expressive_from_a_subdirectory"
         },
         {
@@ -3472,57 +3472,57 @@
         },
         {
             "location": "/cookbook/setting-locale-depending-routing-parameter/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/cookbook/setting-locale-depending-routing-parameter/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/cookbook/setting-locale-depending-routing-parameter/';\n  });",
             "title": "_cookbook_setting_a_locale_based_on_a_routing_parameter"
         },
         {
             "location": "/cookbook/setting-locale-without-routing-parameter/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/cookbook/setting-locale-without-routing-parameter/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/cookbook/setting-locale-without-routing-parameter/';\n  });",
             "title": "_cookbook_setting_a_locale_without_a_routing_parameter"
         },
         {
             "location": "/cookbook/debug-toolbars/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/cookbook/debug-toolbars/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/cookbook/debug-toolbars/';\n  });",
             "title": "_cookbook_enabling_debug_toolbars"
         },
         {
             "location": "/cookbook/using-routed-middleware-class-as-controller/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/cookbook/using-routed-middleware-class-as-controller/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/cookbook/using-routed-middleware-class-as-controller/';\n  });",
             "title": "_cookbook_handling_multiple_routes_in_a_single_class"
         },
         {
             "location": "/cookbook/flash-messengers/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/cookbook/flash-messengers/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/cookbook/flash-messengers/';\n  });",
             "title": "_cookbook_flash_messengers"
         },
         {
             "location": "/cookbook/passing-data-between-middleware/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/cookbook/passing-data-between-middleware/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/cookbook/passing-data-between-middleware/';\n  });",
             "title": "_cookbook_passing_data_between_middleware"
         },
         {
             "location": "/why-expressive/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/why-expressive/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/why-expressive/';\n  });",
             "title": "_reference_why_expressive?"
         },
         {
             "location": "/reference/cli-tooling/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/reference/cli-tooling/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/reference/cli-tooling/';\n  });",
             "title": "_reference_cli_tooling"
         },
         {
             "location": "/reference/usage-examples/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/reference/usage-examples/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/reference/usage-examples/';\n  });",
             "title": "_reference_usage_examples"
         },
         {
             "location": "/reference/expressive-projects/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/reference/expressive-projects/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/reference/expressive-projects/';\n  });",
             "title": "_reference_expressive_Projects"
         },
         {
             "location": "/reference/migration/to-v2/",
-            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = 'v2/reference/migration/';\n  });",
+            "text": "document.addEventListener(\"DOMContentLoaded\", function (event) {\n    window.location.pathname = '/zend-expressive/v2/reference/migration/';\n  });",
             "title": "_migration_to_v2"
         },
         {
