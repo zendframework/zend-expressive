@@ -8,7 +8,6 @@
 namespace Zend\Expressive;
 
 use SplPriorityQueue;
-use Zend\Expressive\Router\Route;
 
 trait ApplicationConfigInjectionTrait
 {
@@ -152,7 +151,7 @@ trait ApplicationConfigInjectionTrait
                 continue;
             }
 
-            $methods = Route::HTTP_METHOD_ANY;
+            $methods = null;
             if (isset($spec['allowed_methods'])) {
                 $methods = $spec['allowed_methods'];
                 if (! is_array($methods)) {
@@ -164,7 +163,14 @@ trait ApplicationConfigInjectionTrait
             }
 
             $name  = isset($spec['name']) ? $spec['name'] : null;
-            $route = new Route($spec['path'], $spec['middleware'], $methods, $name);
+            $middleware = $this->prepareMiddleware(
+                $spec['middleware'],
+                $this->router,
+                $this->responsePrototype,
+                $this->container
+            );
+
+            $route = $this->route($spec['path'], $middleware, $methods, $name);
 
             if (isset($spec['options'])) {
                 $options = $spec['options'];
@@ -177,8 +183,6 @@ trait ApplicationConfigInjectionTrait
 
                 $route->setOptions($options);
             }
-
-            $this->route($route);
         }
     }
 
