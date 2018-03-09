@@ -199,7 +199,7 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
     public function callableMiddlewares()
     {
         return [
-            ['HelloWorld'],
+            [InvokableMiddleware::class],
             [
                 function () {
                 },

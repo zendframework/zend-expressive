@@ -182,7 +182,7 @@ class ApplicationConfigInjectionDelegator
                 continue;
             }
 
-            $methods = Route::HTTP_METHOD_ANY;
+            $methods = null;
             if (isset($spec['allowed_methods'])) {
                 $methods = $spec['allowed_methods'];
                 if (! is_array($methods)) {
