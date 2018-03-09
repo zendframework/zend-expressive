@@ -27,6 +27,9 @@ All notable changes to this project will be documented in this file, in reverse 
   zend-expressive-router 2.4 version. In particular, configuration-driven routes
   will now work properly across all versions, without deprecation notices.
 
+- [#582](https://github.com/zendframework/zend-expressive/pull/582) fixes
+  redirects in the documentation.
+
 ## 2.1.0 - 2017-12-11
 
 ### Added
