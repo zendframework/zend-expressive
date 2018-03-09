@@ -1,6 +1,6 @@
-<noscript><meta http-equiv="refresh" content="0; url=v2/why-expressive/"></noscript>
+<noscript><meta http-equiv="refresh" content="0; url=/zend-expressive/v2/why-expressive/"></noscript>
 <script>
   document.addEventListener("DOMContentLoaded", function (event) {
-    window.location.pathname = 'v2/why-expressive/';
+    window.location.pathname = '/zend-expressive/v2/why-expressive/';
   });
 </script>
