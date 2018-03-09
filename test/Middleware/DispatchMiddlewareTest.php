@@ -10,11 +10,13 @@ namespace ZendTest\Expressive\Middleware;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Middleware\DispatchMiddleware;
+use Zend\Expressive\Middleware\LazyLoadingMiddleware;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouteResult;
 use Zend\Expressive\Router\RouterInterface;
@@ -88,11 +90,12 @@ class DispatchMiddlewareTest extends TestCase
         $this->delegate->process()->shouldNotBeCalled();
 
         $expected = $this->prophesize(ResponseInterface::class)->reveal();
-        $routedMiddleware = function ($request, $response, $next) use ($expected) {
-            return $expected;
-        };
+        $routedMiddleware = $this->prophesize(ServerMiddlewareInterface::class);
+        $routedMiddleware
+            ->process(Argument::that([$this->request, 'reveal']), Argument::that([$this->delegate, 'reveal']))
+            ->willReturn($expected);
 
-        $routeResult = RouteResult::fromRoute(new Route('/', $routedMiddleware));
+        $routeResult = RouteResult::fromRoute(new Route('/', $routedMiddleware->reveal()));
 
         $this->request->getAttribute(RouteResult::class, false)->willReturn($routeResult);
 
@@ -104,19 +107,27 @@ class DispatchMiddlewareTest extends TestCase
     /**
      * @group 453
      */
-    public function testCanDispatchMiddlewareServices()
+    public function testCanDispatchLazyMiddleware()
     {
         $this->delegate->process()->shouldNotBeCalled();
 
         $expected = $this->prophesize(ResponseInterface::class)->reveal();
-        $routedMiddleware = function ($request, $response, $next) use ($expected) {
-            return $expected;
-        };
+        $routedMiddleware = $this->prophesize(ServerMiddlewareInterface::class);
+        $routedMiddleware
+            ->process(Argument::that([$this->request, 'reveal']), Argument::that([$this->delegate, 'reveal']))
+            ->willReturn($expected);
 
         $this->container->has('RoutedMiddleware')->willReturn(true);
-        $this->container->get('RoutedMiddleware')->willReturn($routedMiddleware);
+        $this->container->get('RoutedMiddleware')->willReturn($routedMiddleware->reveal());
 
-        $routeResult = RouteResult::fromRoute(new Route('/', 'RoutedMiddleware'));
+        // Since 2.0, we never have service names in routes, only lazy-loading middleware
+        $lazyMiddleware = new LazyLoadingMiddleware(
+            $this->container->reveal(),
+            $this->responsePrototype->reveal(),
+            'RoutedMiddleware'
+        );
+
+        $routeResult = RouteResult::fromRoute(new Route('/', $lazyMiddleware));
 
         $this->request->getAttribute(RouteResult::class, false)->willReturn($routeResult);
 
