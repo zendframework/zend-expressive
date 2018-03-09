@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 2.1.1 - 2018-03-09
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#583](https://github.com/zendframework/zend-expressive/pull/583) provides a
+  number of minor fixes and test changes to ensure the component works with the
+  zend-expressive-router 2.4 version. In particular, configuration-driven routes
+  will now work properly across all versions, without deprecation notices.
+
 ## 2.1.0 - 2017-12-11
 
 ### Added
