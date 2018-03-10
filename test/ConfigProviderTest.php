@@ -69,7 +69,7 @@ class ConfigProviderTest extends TestCase
 
     public function testInvocationReturnsArrayWithDependencies()
     {
-        $config = ($this->provider)();
+        $config = $this->provider->__invoke();
         $this->assertInternalType('array', $config);
         $this->assertArrayHasKey('dependencies', $config);
         $this->assertArrayHasKey('aliases', $config['dependencies']);
