@@ -130,7 +130,7 @@ class ApplicationConfigInjectionDelegator
         );
 
         foreach ($queue as $spec) {
-            $path = $spec['path'] ?? '/';
+            $path = isset($spec['path']) ? $spec['path'] : '/';
             $application->pipe($path, $spec['middleware']);
         }
     }
@@ -196,7 +196,7 @@ class ApplicationConfigInjectionDelegator
                 }
             }
 
-            $name  = $spec['name'] ?? null;
+            $name  = isset($spec['name']) ? $spec['name'] : null;
             $route = $application->route(
                 $spec['path'],
                 $spec['middleware'],
