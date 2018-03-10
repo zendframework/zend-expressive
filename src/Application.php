@@ -314,14 +314,14 @@ class Application extends MiddlewarePipe
         $this->checkForDuplicateRoute($path, $methods);
 
         if (! isset($route)) {
-            $methods    = null === $methods ? Router\Route::HTTP_METHOD_ANY : $methods;
+            $methods = null === $methods ? Router\Route::HTTP_METHOD_ANY : $methods;
             $middleware = $this->prepareMiddleware(
                 $middleware,
                 $this->router,
                 $this->responsePrototype,
                 $this->container
             );
-            $route      = new Router\Route($path, $middleware, $methods, $name);
+            $route = new Router\Route($path, $middleware, $methods, $name);
         }
 
         $this->routes[] = $route;
@@ -487,9 +487,12 @@ class Application extends MiddlewarePipe
         });
 
         if (! empty($matches)) {
-            throw new Exception\DuplicateRouteException(
-                'Duplicate route detected; same name or path, and one or more HTTP methods intersect'
-            );
+            throw new Exception\DuplicateRouteException(sprintf(
+                'Duplicate route detected; same name or path ("%s"),'
+                . ' and one or more HTTP methods intersect (%s)',
+                $path,
+                is_array($methods) ? implode(', ', $methods) : '*'
+            ));
         }
     }
 

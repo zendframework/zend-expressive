@@ -31,8 +31,8 @@ use Zend\Expressive\Router\RouterInterface;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\Stratigility\Middleware\PathMiddlewareDecorator;
 use ZendTest\Expressive\ContainerTrait;
+use ZendTest\Expressive\TestAsset\CallableInteropMiddleware;
 use ZendTest\Expressive\TestAsset\InteropMiddleware;
-use ZendTest\Expressive\TestAsset\InvokableMiddleware;
 
 /**
  * @covers Zend\Expressive\Container\ApplicationFactory
@@ -145,13 +145,15 @@ class ApplicationFactoryTest extends TestCase
         $this->assertSame($this->delegate, $app->getDefaultDelegate());
     }
 
-    public function callableMiddlewares()
+    public function injectableMiddleware()
     {
         $middlewareTypes = [
-            'service-name' => InvokableMiddleware::class,
-            'closure' => function () {
-            },
-            'callable' => [InvokableMiddleware::class, 'staticallyCallableMiddleware'],
+            [CallableInteropMiddleware::class],
+            [
+                function ($request, DelegateInterface $delegate) {
+                },
+            ],
+            [[CallableInteropMiddleware::class, 'staticallyCallableMiddleware']],
         ];
 
         $configTypes = [
@@ -168,7 +170,7 @@ class ApplicationFactoryTest extends TestCase
     }
 
     /**
-     * @dataProvider callableMiddlewares
+     * @dataProvider injectableMiddleware
      *
      * @param callable|array|string $middleware
      * @param string $configType

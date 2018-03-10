@@ -17,4 +17,10 @@ class CallableInteropMiddleware
         $response = $delegate->process($request);
         return $response->withHeader('X-Callable-Interop-Middleware', __CLASS__);
     }
+
+    public static function staticallyCallableMiddleware(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
+        $response = $delegate->process($request);
+        return $response->withHeader('X-Invoked', __CLASS__);
+    }
 }

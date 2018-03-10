@@ -91,7 +91,7 @@ class ApplicationFactory
      */
     private function injectRoutesAndPipeline(Application $app, array $config)
     {
-        $app->injectRoutesFromConfig($config);
-        $app->injectPipelineFromConfig($config);
+        ApplicationConfigInjectionDelegator::injectRoutesFromConfig($app, $config);
+        ApplicationConfigInjectionDelegator::injectPipelineFromConfig($app, $config);
     }
 }
