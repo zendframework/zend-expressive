@@ -241,58 +241,6 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
         $this->assertCount(0, $routes);
     }
 
-    public function configWithRoutesButNoPipeline()
-    {
-        $middleware = function ($request, DelegateInterface $delegate) {
-        };
-
-        $routes = [
-            [
-                'path' => '/',
-                'middleware' => clone $middleware,
-                'allowed_methods' => ['GET'],
-            ],
-        ];
-
-        return [
-            'no-pipeline-defined' => [['routes' => $routes]],
-            'empty-pipeline' => [['middleware_pipeline' => [], 'routes' => $routes]],
-            'null-pipeline' => [['middleware_pipeline' => null, 'routes' => $routes]],
-        ];
-    }
-
-    /**
-     * @dataProvider configWithRoutesButNoPipeline
-     *
-     * @param array $config
-     */
-    public function testProvidingRoutesAndNoPipelineImplicitlyRegistersRoutingAndDispatchMiddleware(array $config)
-    {
-        $this->injectServiceInContainer(
-            $this->container,
-            PathBasedRoutingMiddleware::class,
-            $this->routeMiddleware
-        );
-        $this->injectServiceInContainer(
-            $this->container,
-            DispatchMiddleware::class,
-            $this->dispatchMiddleware
-        );
-        $app = $this->createApplication();
-
-        ApplicationConfigInjectionDelegator::injectPipelineFromConfig($app, $config);
-
-        $queue = $this->getQueueFromApplicationPipeline($app);
-
-        $this->assertCount(2, $queue, 'Did not get expected pipeline count!');
-
-        $test = $queue->dequeue();
-        $this->assertRouteMiddleware($test->handler);
-
-        $test = $queue->dequeue();
-        $this->assertDispatchMiddleware($test->handler);
-    }
-
     public function testInjectPipelineFromConfigHonorsPriorityOrderWhenAttachingMiddleware()
     {
         $middleware = new InteropMiddleware();

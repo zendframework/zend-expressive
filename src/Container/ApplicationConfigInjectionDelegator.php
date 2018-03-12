@@ -8,15 +8,10 @@
 namespace Zend\Expressive\Container;
 
 use Psr\Container\ContainerInterface;
-use Psr\Http\Message\ResponseInterface;
-use ReflectionProperty;
 use SplPriorityQueue;
 use Zend\Expressive\Application;
 use Zend\Expressive\Exception\InvalidArgumentException;
 use Zend\Expressive\Exception\MissingDependencyException;
-use Zend\Expressive\Router\Middleware\DispatchMiddleware;
-use Zend\Expressive\Router\Middleware\RouteMiddleware;
-use Zend\Expressive\Router\RouterInterface;
 
 class ApplicationConfigInjectionDelegator
 {
@@ -113,12 +108,6 @@ class ApplicationConfigInjectionDelegator
     public static function injectPipelineFromConfig(Application $application, array $config)
     {
         if (empty($config['middleware_pipeline'])) {
-            if (! isset($config['routes']) || ! is_array($config['routes'])) {
-                return;
-            }
-
-            self::pipeRoutingMiddleware($application);
-            self::pipeDispatchMiddleware($application);
             return;
         }
 
@@ -284,90 +273,5 @@ class ApplicationConfigInjectionDelegator
             $serial -= 1;
             return $queue;
         };
-    }
-
-    /**
-     * Pipe routing middleware into the application.
-     *
-     * Attempts to pull both the router and response interface from the application
-     * container, falling back to reflection of the application instance
-     * when unable to find either one.
-     *
-     * @return void
-     */
-    private static function pipeRoutingMiddleware(Application $application)
-    {
-        $container = $application->getContainer();
-        if ($container->has(RouteMiddleware::class)) {
-            $application->pipe(RouteMiddleware::class);
-            return;
-        }
-
-        $application->pipe(new RouteMiddleware(
-            self::getRouter($application, $container),
-            self::getResponsePrototype($application, $container)
-        ));
-    }
-
-    /**
-     * Pipe dispatch middleware into the application.
-     *
-     * If the DispatchMiddleware is present in the application's container, it
-     * pipes that service. Otherwise, instantiates it directly and pipes it.
-     *
-     * @return void
-     * @throws MissingDependencyException if the RouterInterface service is not
-     *     found when the RouteMiddleware is not present.
-     */
-    private static function pipeDispatchMiddleware(Application $application)
-    {
-        $container = $application->getContainer();
-        $application->pipe(
-            $container->has(DispatchMiddleware::class)
-            ? $container->get(DispatchMiddleware::class)
-            : new DispatchMiddleware()
-        );
-    }
-
-    /**
-     * Get the router.
-     *
-     * If not available in the container, uses reflection to pull it from the
-     * application.
-     *
-     * @return RouterInterface
-     */
-    private static function getRouter(Application $application, ContainerInterface $container)
-    {
-        if (! $container->has(RouterInterface::class)) {
-            $r = new ReflectionProperty($application, 'router');
-            $r->setAccessible(true);
-            return $r->getValue($application);
-        }
-
-        return $container->get(RouterInterface::class);
-    }
-
-    /**
-     * Get the response prototype.
-     *
-     * If not available in the container, uses reflection to pull it from the
-     * application.
-     *
-     * If in the container, fetches it. If the value is callable, uses it as
-     * a factory to generate and return the response.
-     *
-     * @return ResponseInterface
-     */
-    private static function getResponsePrototype(Application $application, ContainerInterface $container)
-    {
-        if (! $container->has(ResponseInterface::class)) {
-            $r = new ReflectionProperty($application, 'responsePrototype');
-            $r->setAccessible(true);
-            return $r->getValue($application);
-        }
-
-        $response = $container->get(ResponseInterface::class);
-        return is_callable($response) ? $response() : $response;
     }
 }

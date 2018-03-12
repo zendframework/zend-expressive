@@ -188,56 +188,6 @@ class ConfigInjectionTest extends TestCase
         $this->assertCount(0, $routes);
     }
 
-    public function configWithRoutesButNoPipeline()
-    {
-        $middleware = function ($request, DelegateInterface $delegate) {
-        };
-
-        $routes = [
-            [
-                'path' => '/',
-                'middleware' => clone $middleware,
-                'allowed_methods' => ['GET'],
-            ],
-        ];
-
-        return [
-            'no-pipeline-defined' => [['routes' => $routes]],
-            'empty-pipeline' => [['middleware_pipeline' => [], 'routes' => $routes]],
-            'null-pipeline' => [['middleware_pipeline' => null, 'routes' => $routes]],
-        ];
-    }
-
-    /**
-     * @dataProvider configWithRoutesButNoPipeline
-     *
-     * @param array $config
-     */
-    public function testProvidingRoutesAndNoPipelineImplicitlyRegistersRoutingAndDispatchMiddleware(array $config)
-    {
-        $this->injectServiceInContainer($this->container, RouterInterface::class, $this->router->reveal());
-        $app = $this->createApplication();
-
-        $app->injectPipelineFromConfig($config);
-
-        $this->assertAttributeSame(true, 'routeMiddlewareIsRegistered', $app);
-        $this->assertAttributeSame(true, 'dispatchMiddlewareIsRegistered', $app);
-
-        $r = new ReflectionProperty($app, 'pipeline');
-        $r->setAccessible(true);
-        $pipeline = $r->getValue($app);
-
-        $this->assertCount(2, $pipeline, 'Did not get expected pipeline count!');
-
-        $test = $pipeline->dequeue();
-        $this->assertEquals('/', $test->path);
-        $this->assertInstanceOf(RouteMiddleware::class, $test->handler);
-
-        $test = $pipeline->dequeue();
-        $this->assertEquals('/', $test->path);
-        $this->assertInstanceOf(DispatchMiddleware::class, $test->handler);
-    }
-
     public function testPipelineContainingRoutingMiddlewareConstantPipesRoutingMiddleware()
     {
         $config = [
