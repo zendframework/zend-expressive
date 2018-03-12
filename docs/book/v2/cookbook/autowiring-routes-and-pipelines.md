@@ -208,3 +208,35 @@ delegator factory by wiring it into their own configuration.
       occur in exactly _one_ delegator factory.
 - Distributable packages should create a delegator factory for _routes only_,
   but _should not_ register the delegator factory by default.
+
+## ApplicationConfigInjectionDelegator
+
+- Since version 2.2
+
+`Zend\Expressive\Container\ApplicationConfigInjectionDelegator` allows you to
+define configuration that is then used to call `pipe()` or the various routing
+methods of `Zend\Expressive\Application`. This is particularly useful for
+injecting _routes_.
+
+The format of routes configuration is as follows:
+
+```php
+return [
+    'routes' => [
+        [
+            'path' => '/path/to/match',
+            'middleware' => 'Middleware Service Name',
+            'allowed_methods' => ['GET', 'POST', 'PATCH'],
+            'options' => [
+                'stuff' => 'to',
+                'pass'  => 'to',
+                'the'   => 'underlying router',
+            ],
+        ],
+        // etc.
+    ],
+];
+```
+
+All your various modules could provide route configuration, and you could then
+use a single delegator to add all of them at once.

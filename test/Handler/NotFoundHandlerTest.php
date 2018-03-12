@@ -1,11 +1,11 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2018 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\Expressive\Delegate;
+namespace ZendTest\Expressive\Handler;
 
 use Fig\Http\Message\RequestMethodInterface as RequestMethod;
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
@@ -14,9 +14,10 @@ use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
+use Zend\Expressive\Handler\NotFoundHandler;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
-class NotFoundDelegateTest extends TestCase
+class NotFoundHandlerTest extends TestCase
 {
     /** @var ResponseInterface|ObjectProphecy */
     private $response;
@@ -28,9 +29,9 @@ class NotFoundDelegateTest extends TestCase
 
     public function testConstructorDoesNotRequireARenderer()
     {
-        $delegate = new NotFoundDelegate($this->response->reveal());
-        $this->assertInstanceOf(NotFoundDelegate::class, $delegate);
-        $this->assertAttributeSame($this->response->reveal(), 'responsePrototype', $delegate);
+        $handler = new NotFoundHandler($this->response->reveal());
+        $this->assertInstanceOf(NotFoundHandler::class, $handler);
+        $this->assertAttributeSame($this->response->reveal(), 'responsePrototype', $handler);
     }
 
     public function testConstructorCanAcceptRendererAndTemplate()
@@ -39,12 +40,12 @@ class NotFoundDelegateTest extends TestCase
         $template = 'foo::bar';
         $layout = 'layout::error';
 
-        $delegate = new NotFoundDelegate($this->response->reveal(), $renderer, $template, $layout);
+        $handler = new NotFoundHandler($this->response->reveal(), $renderer, $template, $layout);
 
-        $this->assertInstanceOf(NotFoundDelegate::class, $delegate);
-        $this->assertAttributeSame($renderer, 'renderer', $delegate);
-        $this->assertAttributeEquals($template, 'template', $delegate);
-        $this->assertAttributeEquals($layout, 'layout', $delegate);
+        $this->assertInstanceOf(NotFoundHandler::class, $handler);
+        $this->assertAttributeSame($renderer, 'renderer', $handler);
+        $this->assertAttributeEquals($template, 'template', $handler);
+        $this->assertAttributeEquals($layout, 'layout', $handler);
     }
 
     public function testRendersDefault404ResponseWhenNoRendererPresent()
@@ -58,9 +59,9 @@ class NotFoundDelegateTest extends TestCase
         $this->response->withStatus(StatusCode::STATUS_NOT_FOUND)->will([$this->response, 'reveal']);
         $this->response->getBody()->will([$stream, 'reveal']);
 
-        $delegate = new NotFoundDelegate($this->response->reveal());
+        $handler = new NotFoundHandler($this->response->reveal());
 
-        $response = $delegate->process($request->reveal());
+        $response = $handler->process($request->reveal());
 
         $this->assertSame($this->response->reveal(), $response);
     }
@@ -72,10 +73,10 @@ class NotFoundDelegateTest extends TestCase
         $renderer = $this->prophesize(TemplateRendererInterface::class);
         $renderer
             ->render(
-                NotFoundDelegate::TEMPLATE_DEFAULT,
+                NotFoundHandler::TEMPLATE_DEFAULT,
                 [
                     'request' => $request,
-                    'layout' => NotFoundDelegate::LAYOUT_DEFAULT,
+                    'layout' => NotFoundHandler::LAYOUT_DEFAULT,
                 ]
             )
             ->willReturn('CONTENT');
@@ -86,9 +87,9 @@ class NotFoundDelegateTest extends TestCase
         $this->response->withStatus(StatusCode::STATUS_NOT_FOUND)->will([$this->response, 'reveal']);
         $this->response->getBody()->will([$stream, 'reveal']);
 
-        $delegate = new NotFoundDelegate($this->response->reveal(), $renderer->reveal());
+        $handler = new NotFoundHandler($this->response->reveal(), $renderer->reveal());
 
-        $response = $delegate->process($request);
+        $response = $handler->process($request);
 
         $this->assertSame($this->response->reveal(), $response);
     }

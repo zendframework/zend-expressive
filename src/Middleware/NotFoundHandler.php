@@ -13,6 +13,11 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Delegate\NotFoundDelegate;
 
+/**
+ * @deprecated since 2.2.0; to be removed in 3.0.0. Version 3.0.0 will reuse
+ *     re-use the Zend\Expressive\Handler\NotFoundHandler directly within a
+ *     middleware pipeline instead.
+ */
 class NotFoundHandler implements MiddlewareInterface
 {
     /**

@@ -7,16 +7,24 @@
 
 namespace Zend\Expressive;
 
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
-use Zend\Stratigility\Middleware\CallableInteropMiddlewareWrapper;
-use Zend\Stratigility\Middleware\CallableMiddlewareWrapper;
+use Webimpress\HttpMiddlewareCompatibility\MiddlewareInterface;
+use Zend\Expressive\Router\Middleware\DispatchMiddleware;
+use Zend\Expressive\Router\Middleware\RouteMiddleware;
 use Zend\Stratigility\MiddlewarePipe;
+
+use function Zend\Stratigility\middleware;
+use function Zend\Stratigility\doublePassMiddleware;
 
 /**
  * Trait defining methods for verifying and/or generating middleware to pipe to
  * an application.
+ *
+ * @deprecated since 2.2.0. This feature will be removed in version 3.0.0, and
+ *     replaced with a combination of a PSR-11 container and a composable factory
+ *     class.
+ * @internal
  */
 trait MarshalMiddlewareTrait
 {
@@ -38,7 +46,7 @@ trait MarshalMiddlewareTrait
      * @param Router\RouterInterface $router
      * @param ResponseInterface $responsePrototype
      * @param null|ContainerInterface $container
-     * @return ServerMiddlewareInterface
+     * @return MiddlewareInterface
      * @throws Exception\InvalidMiddlewareException
      */
     private function prepareMiddleware(
@@ -48,23 +56,30 @@ trait MarshalMiddlewareTrait
         ContainerInterface $container = null
     ) {
         if ($middleware === Application::ROUTING_MIDDLEWARE) {
-            return new Middleware\RouteMiddleware($router, $responsePrototype);
+            $this->triggerLegacyMiddlewareDeprecation($middleware);
+            return $container && $container->has(RouteMiddleware::class)
+                ? $container->get(RouteMiddleware::class)
+                : new RouteMiddleware($router, $responsePrototype);
         }
 
         if ($middleware === Application::DISPATCH_MIDDLEWARE) {
-            return new Middleware\DispatchMiddleware($router, $responsePrototype, $container);
+            $this->triggerLegacyMiddlewareDeprecation($middleware);
+            return $container && $container->has(DispatchMiddleware::class)
+                ? $container->get(DispatchMiddleware::class)
+                : new DispatchMiddleware();
         }
 
-        if ($middleware instanceof ServerMiddlewareInterface) {
+        if ($middleware instanceof MiddlewareInterface) {
             return $middleware;
         }
 
         if ($this->isCallableInteropMiddleware($middleware)) {
-            return new CallableInteropMiddlewareWrapper($middleware);
+            return middleware($middleware);
         }
 
         if ($this->isCallable($middleware)) {
-            return new CallableMiddlewareWrapper($middleware, $responsePrototype);
+            $this->triggerDoublePassMiddlewareDeprecation($middleware);
+            return doublePassMiddleware($middleware, $responsePrototype);
         }
 
         if (is_array($middleware)) {
@@ -80,9 +95,8 @@ trait MarshalMiddlewareTrait
         }
 
         throw new Exception\InvalidMiddlewareException(sprintf(
-            'Unable to resolve middleware "%s" to a callable or %s',
-            is_object($middleware) ? get_class($middleware) . '[Object]' : gettype($middleware) . '[Scalar]',
-            ServerMiddlewareInterface::class
+            'Unable to resolve middleware "%s" to a callable or MiddlewareInterface implementation',
+            is_object($middleware) ? get_class($middleware) . '[Object]' : gettype($middleware) . '[Scalar]'
         ));
     }
 
@@ -144,22 +158,73 @@ trait MarshalMiddlewareTrait
 
         $instance = new $middleware();
 
-        if ($instance instanceof ServerMiddlewareInterface) {
+        if ($instance instanceof MiddlewareInterface) {
             return $instance;
         }
 
         if ($this->isCallableInteropMiddleware($instance)) {
-            return new CallableInteropMiddlewareWrapper($instance);
+            return middleware($instance);
         }
 
         if (! is_callable($instance)) {
             throw new Exception\InvalidMiddlewareException(sprintf(
-                'Middleware of class "%s" is invalid; neither invokable nor %s',
-                $middleware,
-                ServerMiddlewareInterface::class
+                'Middleware of class "%s" is invalid; neither invokable nor a MiddlewareInterface instance',
+                $middleware
             ));
         }
 
-        return new CallableMiddlewareWrapper($instance, $responsePrototype);
+        $this->triggerDoublePassMiddlewareDeprecation($instance);
+        return doublePassMiddleware($instance, $responsePrototype);
+    }
+
+    /**
+     * @param string $middlewareType
+     * @return void
+     */
+    private function triggerLegacyMiddlewareDeprecation($middlewareType)
+    {
+        switch ($middlewareType) {
+            case (Application::ROUTING_MIDDLEWARE):
+                $constant   = sprintf('%s::ROUTING_MIDDLEWARE', Application::class);
+                $type       = 'routing';
+                $useInstead = RouteMiddleware::class;
+                break;
+            case (Application::DISPATCH_MIDDLEWARE):
+                $constant   = sprintf('%s::DISPATCH_MIDDLEWARE', Application::class);
+                $type       = 'dispatch';
+                $useInstead = DispatchMiddleware::class;
+                break;
+        }
+
+        trigger_error(sprintf(
+            'Usage of the %s constant for specifying %s middleware is deprecated;'
+            . ' pipe() the middleware directly, or reference it by its service name "%s"',
+            $constant,
+            $type,
+            $useInstead
+        ), E_USER_DEPRECATED);
+    }
+
+    /**
+     * @param callable $middleware
+     * @return void
+     */
+    private function triggerDoublePassMiddlewareDeprecation(callable $middleware)
+    {
+        if (is_object($middleware)) {
+            $type = get_class($middleware);
+        } elseif (is_string($middleware)) {
+            $type = 'callable:' . $middleware;
+        } else {
+            $type = 'callable';
+        }
+
+        trigger_error(sprintf(
+            'Detected double-pass middleware (%s).'
+            . ' Usage of callable double-pass middleware is deprecated. Before piping or routing'
+            . ' such middleware, pass it to Zend\Stratigility\doublePassMiddleware(), along with'
+            . ' a PSR-7 response instance.',
+            $type
+        ), E_USER_DEPRECATED);
     }
 }

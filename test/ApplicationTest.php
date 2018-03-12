@@ -8,6 +8,7 @@
 namespace ZendTest\Expressive;
 
 use DomainException;
+use Fig\Http\Message\RequestMethodInterface as RequestMethod;
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
@@ -19,6 +20,7 @@ use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UriInterface;
 use ReflectionMethod;
 use ReflectionProperty;
 use RuntimeException;
@@ -36,11 +38,14 @@ use Zend\Expressive\Exception;
 use Zend\Expressive\Exception\InvalidMiddlewareException;
 use Zend\Expressive\Middleware;
 use Zend\Expressive\Router\Exception as RouterException;
+use Zend\Expressive\Router\Middleware\DispatchMiddleware;
+use Zend\Expressive\Router\Middleware\RouteMiddleware;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouteResult;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Stratigility\MiddlewarePipe;
+use Zend\Stratigility\Middleware\PathMiddlewareDecorator;
 use Zend\Stratigility\Route as StratigilityRoute;
 
 /**
@@ -61,6 +66,22 @@ class ApplicationTest extends TestCase
     {
         $this->noopMiddleware = new TestAsset\InteropMiddleware();
         $this->router = $this->prophesize(RouterInterface::class);
+        $this->disregardDeprecationNotices();
+    }
+
+    public function tearDown()
+    {
+        restore_error_handler();
+    }
+
+    public function disregardDeprecationNotices()
+    {
+        set_error_handler(function ($errno, $errstr) {
+            if (strstr($errstr, 'pipe() the middleware directly')) {
+                return true;
+            }
+            return false;
+        }, E_USER_DEPRECATED);
     }
 
     public function getApp()
@@ -259,7 +280,7 @@ class ApplicationTest extends TestCase
         $this->assertInstanceOf(StratigilityRoute::class, $route);
         $test  = $route->handler;
 
-        $this->assertInstanceOf(Middleware\RouteMiddleware::class, $test);
+        $this->assertInstanceOf(RouteMiddleware::class, $test);
     }
 
     public function testCannotPipeDispatchMiddlewareMoreThanOnce()
@@ -279,7 +300,7 @@ class ApplicationTest extends TestCase
         $this->assertInstanceOf(StratigilityRoute::class, $route);
         $test  = $route->handler;
 
-        $this->assertInstanceOf(Middleware\DispatchMiddleware::class, $test);
+        $this->assertInstanceOf(DispatchMiddleware::class, $test);
     }
 
     public function testCanInjectDefaultDelegateViaConstructor()
@@ -388,7 +409,7 @@ class ApplicationTest extends TestCase
 
         $route = $pipeline->dequeue();
         $this->assertInstanceOf(StratigilityRoute::class, $route);
-        $this->assertInstanceOf(Middleware\RouteMiddleware::class, $route->handler);
+        $this->assertInstanceOf(RouteMiddleware::class, $route->handler);
         $this->assertEquals('/', $route->path);
     }
 
@@ -405,7 +426,7 @@ class ApplicationTest extends TestCase
 
         $route = $pipeline->dequeue();
         $this->assertInstanceOf(StratigilityRoute::class, $route);
-        $this->assertInstanceOf(Middleware\DispatchMiddleware::class, $route->handler);
+        $this->assertInstanceOf(DispatchMiddleware::class, $route->handler);
         $this->assertEquals('/', $route->path);
     }
 
@@ -453,7 +474,12 @@ class ApplicationTest extends TestCase
         $route = $pipeline->dequeue();
         $this->assertInstanceOf(StratigilityRoute::class, $route);
         $handler = $route->handler;
-        $this->assertInstanceOf(Middleware\LazyLoadingMiddleware::class, $handler);
+        $this->assertInstanceOf(PathMiddlewareDecorator::class, $handler);
+
+        $r = new ReflectionProperty($handler, 'middleware');
+        $r->setAccessible(true);
+        $handler = $r->getValue($handler);
+
         $this->assertAttributeEquals('foo', 'middlewareName', $handler);
     }
 
@@ -478,7 +504,8 @@ class ApplicationTest extends TestCase
         $this->assertInstanceOf(StratigilityRoute::class, $route);
         $handler = $route->handler;
 
-        $request = $this->prophesize(ServerRequest::class)->reveal();
+        $request = new ServerRequest([], [], '/foo', RequestMethod::METHOD_GET);
+
         $delegate = $this->prophesize(DelegateInterface::class)->reveal();
 
         $this->expectException(InvalidMiddlewareException::class);

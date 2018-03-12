@@ -8,10 +8,15 @@
 namespace Zend\Expressive\Container;
 
 use ArrayObject;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseInterface;
+use ReflectionProperty;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Expressive\Application;
 use Zend\Expressive\Router\FastRouteRouter;
+use Zend\Expressive\Router\Middleware\DispatchMiddleware;
+use Zend\Expressive\Router\Middleware\RouteMiddleware;
 use Zend\Expressive\Router\RouterInterface;
 
 /**
@@ -76,7 +81,7 @@ class ApplicationFactory
         $app = new Application($router, $container, $delegate, $emitter);
 
         if (empty($config['zend-expressive']['programmatic_pipeline'])) {
-            $this->injectRoutesAndPipeline($app, $config);
+            $this->injectRoutesAndPipeline($container, $router, $app, $config);
         }
 
         return $app;
@@ -85,13 +90,87 @@ class ApplicationFactory
     /**
      * Injects routes and the middleware pipeline into the application.
      *
-     * @param Application $app
-     * @param array $config
      * @return void
      */
-    private function injectRoutesAndPipeline(Application $app, array $config)
+    private function injectRoutesAndPipeline(
+        ContainerInterface $container,
+        RouterInterface $router,
+        Application $app,
+        array $config
+    ) {
+        if (empty($config['middleware_pipeline'])
+            && (! isset($config['routes']) || ! is_array($config['routes']))
+        ) {
+            return;
+        }
+
+        if (empty($config['middleware_pipeline']) && isset($config['routes']) && is_array($config['routes'])) {
+            $app->pipe($this->getRoutingMiddleware($container, $router, $app));
+            $app->pipe($this->getDispatchMiddleware($container, $app));
+        }
+
+        ApplicationConfigInjectionDelegator::injectRoutesFromConfig($app, $config);
+        ApplicationConfigInjectionDelegator::injectPipelineFromConfig($app, $config);
+    }
+
+    /**
+     * Discovers or creates the route middleware.
+     *
+     * If the RouteMiddleware is present in the container, it returns the
+     * service.
+     *
+     * Otherwise, it creates RouteMiddleware using the router being composed in
+     * the application, along with a response prototype.
+     *
+     * @return MiddlewareInterface
+     */
+    private function getRoutingMiddleware(ContainerInterface $container, RouterInterface $router, Application $app)
     {
-        $app->injectRoutesFromConfig($config);
-        $app->injectPipelineFromConfig($config);
+        if ($container->has(RouteMiddleware::class)) {
+            return $container->get(RouteMiddleware::class);
+        }
+
+        return new RouteMiddleware(
+            $router,
+            $this->getResponsePrototype($container, $app)
+        );
+    }
+
+    /**
+     * Discover or create the dispatch middleware.
+     *
+     * If the DispatchMiddleware is present in the application's container, it
+     * returns the service. Otherwise, instantiates and returns it directly.
+     *
+     * @return MiddlewareInterface
+     */
+    private function getDispatchMiddleware(ContainerInterface $container, Application $app)
+    {
+        return $container->has(DispatchMiddleware::class)
+            ? $container->get(DispatchMiddleware::class)
+            : new DispatchMiddleware();
+    }
+
+    /**
+     * Get the response prototype.
+     *
+     * If not available in the container, uses reflection to pull it from the
+     * application.
+     *
+     * If in the container, fetches it. If the value is callable, uses it as
+     * a factory to generate and return the response.
+     *
+     * @return ResponseInterface
+     */
+    private function getResponsePrototype(ContainerInterface $container, Application $app)
+    {
+        if (! $container->has(ResponseInterface::class)) {
+            $r = new ReflectionProperty($app, 'responsePrototype');
+            $r->setAccessible(true);
+            return $r->getValue($app);
+        }
+
+        $response = $container->get(ResponseInterface::class);
+        return is_callable($response) ? $response() : $response;
     }
 }
