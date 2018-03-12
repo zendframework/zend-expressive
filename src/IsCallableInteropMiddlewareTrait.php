@@ -11,6 +11,10 @@ use Closure;
 use ReflectionFunction;
 use ReflectionMethod;
 
+/**
+ * @deprecated since 2.2.0; to be removed in 3.0.0.
+ * @internal
+ */
 trait IsCallableInteropMiddlewareTrait
 {
     /**

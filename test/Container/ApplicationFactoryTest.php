@@ -22,16 +22,17 @@ use Zend\Expressive\Container\ApplicationFactory;
 use Zend\Expressive\Delegate\NotFoundDelegate;
 use Zend\Expressive\Emitter\EmitterStack;
 use Zend\Expressive\Exception as ExpressiveException;
-use Zend\Expressive\Middleware\DispatchMiddleware;
+use Zend\Expressive\Router\Middleware\DispatchMiddleware;
 use Zend\Expressive\Middleware\LazyLoadingMiddleware;
-use Zend\Expressive\Middleware\RouteMiddleware;
+use Zend\Expressive\Router\Middleware\RouteMiddleware;
 use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Stratigility\MiddlewarePipe;
+use Zend\Stratigility\Middleware\PathMiddlewareDecorator;
 use ZendTest\Expressive\ContainerTrait;
+use ZendTest\Expressive\TestAsset\CallableInteropMiddleware;
 use ZendTest\Expressive\TestAsset\InteropMiddleware;
-use ZendTest\Expressive\TestAsset\InvokableMiddleware;
 
 /**
  * @covers Zend\Expressive\Container\ApplicationFactory
@@ -67,6 +68,26 @@ class ApplicationFactoryTest extends TestCase
         $this->injectServiceInContainer($this->container, RouterInterface::class, $this->router->reveal());
         $this->injectServiceInContainer($this->container, EmitterInterface::class, $this->emitter->reveal());
         $this->injectServiceInContainer($this->container, 'Zend\Expressive\Delegate\DefaultDelegate', $this->delegate);
+
+        $this->disregardDeprecationNotices();
+    }
+
+    public function tearDown()
+    {
+        restore_error_handler();
+    }
+
+    public function disregardDeprecationNotices()
+    {
+        set_error_handler(function ($errno, $errstr) {
+            if (strstr($errstr, 'pipe() the middleware directly')) {
+                return true;
+            }
+            if (strstr($errstr, 'doublePassMiddleware()')) {
+                return true;
+            }
+            return false;
+        }, E_USER_DEPRECATED);
     }
 
     public static function assertRoute($spec, array $routes)
@@ -81,6 +102,8 @@ class ApplicationFactoryTest extends TestCase
                     return false;
                 }
 
+                // We're just testing that middleware is present; since it may
+                // be decorated, this might fail otherwise.
                 if (! $route->getMiddleware()) {
                     return false;
                 }
@@ -122,13 +145,15 @@ class ApplicationFactoryTest extends TestCase
         $this->assertSame($this->delegate, $app->getDefaultDelegate());
     }
 
-    public function callableMiddlewares()
+    public function injectableMiddleware()
     {
         $middlewareTypes = [
-            'service-name' => InvokableMiddleware::class,
-            'closure' => function () {
-            },
-            'callable' => [InvokableMiddleware::class, 'staticallyCallableMiddleware'],
+            [CallableInteropMiddleware::class],
+            [
+                function ($request, DelegateInterface $delegate) {
+                },
+            ],
+            [[CallableInteropMiddleware::class, 'staticallyCallableMiddleware']],
         ];
 
         $configTypes = [
@@ -145,7 +170,7 @@ class ApplicationFactoryTest extends TestCase
     }
 
     /**
-     * @dataProvider callableMiddlewares
+     * @dataProvider injectableMiddleware
      *
      * @param callable|array|string $middleware
      * @param string $configType
@@ -331,11 +356,12 @@ class ApplicationFactoryTest extends TestCase
      */
     public function testExceptionIsRaisedInCaseOfInvalidRouteOptionsConfiguration($configType)
     {
+        $middleware = $this->prophesize(MiddlewareInterface::class)->reveal();
         $config = [
             'routes' => [
                 [
                     'path' => '/',
-                    'middleware' => $this->prophesize(MiddlewareInterface::class)->reveal(),
+                    'middleware' => $middleware,
                     'options' => 'invalid',
                 ],
             ],
@@ -365,6 +391,7 @@ class ApplicationFactoryTest extends TestCase
         $pipelineFirst = clone $api;
         $hello         = clone $api;
         $pipelineLast  = clone $api;
+
 
         $this->injectServiceInContainer($this->container, 'DynamicPath', $dynamicPath);
         $this->injectServiceInContainer($this->container, 'Goodbye', $goodbye);
@@ -411,14 +438,20 @@ class ApplicationFactoryTest extends TestCase
         $this->assertCount(5, $pipeline, 'Did not get expected pipeline count!');
 
         $test = $pipeline->dequeue();
-        $this->assertEquals('/api', $test->path);
-        $this->assertSame($api, $test->handler);
+        $this->assertEquals('/', $test->path);
+        $this->assertInstanceOf(PathMiddlewareDecorator::class, $test->handler);
+        $handler = $test->handler;
+        $this->assertAttributeSame('/api', 'prefix', $handler);
+        $this->assertAttributeSame($api, 'middleware', $handler);
 
         // Lazy middleware is not marshaled until invocation
         $test = $pipeline->dequeue();
-        $this->assertEquals('/dynamic-path', $test->path);
-        $this->assertNotSame($dynamicPath, $test->handler);
-        $this->assertInstanceOf(LazyLoadingMiddleware::class, $test->handler);
+        $this->assertEquals('/', $test->path);
+        $this->assertInstanceOf(PathMiddlewareDecorator::class, $test->handler);
+        $handler = $test->handler;
+        $this->assertAttributeSame('/dynamic-path', 'prefix', $handler);
+        $this->assertAttributeNotSame($dynamicPath, 'middleware', $handler);
+        $this->assertAttributeInstanceOf(LazyLoadingMiddleware::class, 'middleware', $handler);
 
         $test = $pipeline->dequeue();
         $this->assertEquals('/', $test->path);

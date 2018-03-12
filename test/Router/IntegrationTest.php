@@ -43,6 +43,31 @@ class IntegrationTest extends TestCase
         $this->response  = new Response();
         $this->router    = $this->prophesize(RouterInterface::class);
         $this->container = $this->mockContainerInterface();
+        $this->disregardDeprecationNotices();
+    }
+
+    public function tearDown()
+    {
+        restore_error_handler();
+    }
+
+    public function disregardDeprecationNotices()
+    {
+        set_error_handler(function ($errno, $errstr) {
+            if (strstr($errstr, 'pipe() the middleware directly')) {
+                return true;
+            }
+            if (strstr($errstr, 'doublePassMiddleware()')) {
+                return true;
+            }
+            if (strstr($errstr, 'ImplicitHeadMiddleware is deprecated')) {
+                return true;
+            }
+            if (strstr($errstr, 'ImplicitOptionsMiddleware is deprecated')) {
+                return true;
+            }
+            return false;
+        }, E_USER_DEPRECATED);
     }
 
     public function getApplication()

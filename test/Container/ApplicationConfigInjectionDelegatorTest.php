@@ -1,11 +1,11 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2016-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2016-2018 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Expressive\Application;
+namespace ZendTest\Expressive\Container;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
@@ -14,27 +14,34 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
 use ReflectionProperty;
-use SplQueue;
+use Zend\Diactoros\Response;
 use Zend\Expressive\Application;
+use Zend\Expressive\Container\ApplicationConfigInjectionDelegator;
+use Zend\Expressive\Container\Exception\InvalidServiceException;
 use Zend\Expressive\Exception\InvalidArgumentException;
+use Zend\Expressive\Middleware;
+use Zend\Expressive\MiddlewareContainer;
+use Zend\Expressive\MiddlewareFactory;
 use Zend\Expressive\Router\Middleware\DispatchMiddleware;
-use Zend\Expressive\Router\Middleware\RouteMiddleware;
+use Zend\Expressive\Router\Middleware\RouteMiddleware as PathBasedRoutingMiddleware;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouterInterface;
-use Zend\Stratigility\MiddlewarePipe;
 use ZendTest\Expressive\ContainerTrait;
 use ZendTest\Expressive\TestAsset\CallableInteropMiddleware;
-use ZendTest\Expressive\TestAsset\InvokableMiddleware;
+use ZendTest\Expressive\TestAsset\InteropMiddleware;
 
-/**
- * Tests the functionality present in the ApplicationConfigInjectionTrait.
- */
-class ConfigInjectionTest extends TestCase
+class ApplicationConfigInjectionDelegatorTest extends TestCase
 {
     use ContainerTrait;
 
     /** @var ContainerInterface|ObjectProphecy */
     private $container;
+
+    /** @var DispatchMiddleware|ObjectProphecy */
+    private $dispatchMiddleware;
+
+    /** @var PathBasedRoutingMiddleware */
+    private $routeMiddleware;
 
     /** @var RouterInterface|ObjectProphecy */
     private $router;
@@ -43,30 +50,26 @@ class ConfigInjectionTest extends TestCase
     {
         $this->container = $this->mockContainerInterface();
         $this->router = $this->prophesize(RouterInterface::class);
-        $this->disregardDeprecationNotices();
-    }
-
-    public function tearDown()
-    {
-        restore_error_handler();
-    }
-
-    public function disregardDeprecationNotices()
-    {
-        set_error_handler(function ($errno, $errstr) {
-            if (strstr($errstr, 'pipe() the middleware directly')) {
-                return true;
-            }
-            if (strstr($errstr, 'doublePassMiddleware()')) {
-                return true;
-            }
-            return false;
-        }, E_USER_DEPRECATED);
+        $this->routeMiddleware = new PathBasedRoutingMiddleware(
+            $this->router->reveal(),
+            new Response()
+        );
+        $this->dispatchMiddleware = $this->prophesize(DispatchMiddleware::class)->reveal();
     }
 
     public function createApplication()
     {
-        return new Application($this->router->reveal(), $this->container->reveal());
+        return new Application(
+            $this->router->reveal(),
+            $this->container->reveal()
+        );
+    }
+
+    public function getQueueFromApplicationPipeline(Application $app)
+    {
+        $r = new ReflectionProperty($app, 'pipeline');
+        $r->setAccessible(true);
+        return $r->getValue($app);
     }
 
     public static function assertRoute($spec, array $routes)
@@ -81,9 +84,7 @@ class ConfigInjectionTest extends TestCase
                     return false;
                 }
 
-                // We're just testing that middleware is present; since it may
-                // be decorated, this might fail otherwise.
-                if (! $route->getMiddleware()) {
+                if (! $route->getMiddleware() instanceof MiddlewareInterface) {
                     return false;
                 }
 
@@ -121,6 +122,44 @@ class ConfigInjectionTest extends TestCase
         Assert::assertThat($found, Assert::isTrue(), $message);
     }
 
+    public static function assertRouteMiddleware(MiddlewareInterface $middleware)
+    {
+        if ($middleware instanceof PathBasedRoutingMiddleware) {
+            Assert::assertInstanceOf(PathBasedRoutingMiddleware::class, $middleware);
+            return;
+        }
+
+        if (! $middleware instanceof Middleware\LazyLoadingMiddleware) {
+            Assert::fail('Middleware is not an instance of PathBasedRoutingMiddleware');
+        }
+
+        Assert::assertAttributeSame(
+            PathBasedRoutingMiddleware::class,
+            'middlewareName',
+            $middleware,
+            'Middleware is not an instance of PathBasedRoutingMiddleware'
+        );
+    }
+
+    public static function assertDispatchMiddleware(MiddlewareInterface $middleware)
+    {
+        if ($middleware instanceof DispatchMiddleware) {
+            Assert::assertInstanceOf(DispatchMiddleware::class, $middleware);
+            return;
+        }
+
+        if (! $middleware instanceof Middleware\LazyLoadingMiddleware) {
+            Assert::fail('Middleware is not an instance of DispatchMiddleware');
+        }
+
+        Assert::assertAttributeSame(
+            DispatchMiddleware::class,
+            'middlewareName',
+            $middleware,
+            'Middleware is not an instance of DispatchMiddleware'
+        );
+    }
+
     public function injectableMiddleware()
     {
         return [
@@ -133,6 +172,18 @@ class ConfigInjectionTest extends TestCase
         ];
     }
 
+    public function testInvocationAsDelegatorFactoryRaisesExceptionIfCallbackIsNotAnApplication()
+    {
+        $container = $this->prophesize(ContainerInterface::class)->reveal();
+        $callback = function () {
+            return $this;
+        };
+        $factory = new ApplicationConfigInjectionDelegator();
+        $this->expectException(InvalidServiceException::class);
+        $this->expectExceptionMessage('cannot operate');
+        $factory($container, Application::class, $callback);
+    }
+
     /**
      * @dataProvider injectableMiddleware
      *
@@ -140,7 +191,9 @@ class ConfigInjectionTest extends TestCase
      */
     public function testInjectRoutesFromConfigSetsUpRoutesFromConfig($middleware)
     {
-        $pingMiddleware = $this->prophesize(MiddlewareInterface::class)->reveal();
+        $this->container->has('HelloWorld')->willReturn(true);
+        $this->container->has('Ping')->willReturn(true);
+
         $config = [
             'routes' => [
                 [
@@ -150,7 +203,7 @@ class ConfigInjectionTest extends TestCase
                 ],
                 [
                     'path' => '/ping',
-                    'middleware' => $pingMiddleware,
+                    'middleware' => 'Ping',
                     'allowed_methods' => ['GET'],
                 ],
             ],
@@ -158,7 +211,7 @@ class ConfigInjectionTest extends TestCase
 
         $app = $this->createApplication();
 
-        $app->injectRoutesFromConfig($config);
+        ApplicationConfigInjectionDelegator::injectRoutesFromConfig($app, $config);
 
         $routes = $app->getRoutes();
 
@@ -182,43 +235,15 @@ class ConfigInjectionTest extends TestCase
 
         $app = $this->createApplication();
 
-        $app->injectRoutesFromConfig($config);
+        ApplicationConfigInjectionDelegator::injectRoutesFromConfig($app, $config);
 
         $routes = $app->getRoutes();
         $this->assertCount(0, $routes);
     }
 
-    public function testPipelineContainingRoutingMiddlewareConstantPipesRoutingMiddleware()
-    {
-        $config = [
-            'middleware_pipeline' => [
-                Application::ROUTING_MIDDLEWARE,
-            ],
-        ];
-        $app = $this->createApplication();
-
-        $app->injectPipelineFromConfig($config);
-
-        $this->assertAttributeSame(true, 'routeMiddlewareIsRegistered', $app);
-    }
-
-    public function testPipelineContainingDispatchMiddlewareConstantPipesDispatchMiddleware()
-    {
-        $config = [
-            'middleware_pipeline' => [
-                Application::DISPATCH_MIDDLEWARE,
-            ],
-        ];
-        $app = $this->createApplication();
-
-        $app->injectPipelineFromConfig($config);
-
-        $this->assertAttributeSame(true, 'dispatchMiddlewareIsRegistered', $app);
-    }
-
     public function testInjectPipelineFromConfigHonorsPriorityOrderWhenAttachingMiddleware()
     {
-        $middleware = new TestAsset\InteropMiddleware();
+        $middleware = new InteropMiddleware();
 
         $pipeline1 = [['middleware' => clone $middleware, 'priority' => 1]];
         $pipeline2 = [['middleware' => clone $middleware, 'priority' => 100]];
@@ -229,11 +254,9 @@ class ConfigInjectionTest extends TestCase
 
         $app = $this->createApplication();
 
-        $app->injectPipelineFromConfig($config);
+        ApplicationConfigInjectionDelegator::injectPipelineFromConfig($app, $config);
 
-        $r = new ReflectionProperty($app, 'pipeline');
-        $r->setAccessible(true);
-        $pipeline = $r->getValue($app);
+        $pipeline = $this->getQueueFromApplicationPipeline($app);
 
         $this->assertSame($pipeline2[0]['middleware'], $pipeline->dequeue()->handler);
         $this->assertSame($pipeline1[0]['middleware'], $pipeline->dequeue()->handler);
@@ -242,7 +265,7 @@ class ConfigInjectionTest extends TestCase
 
     public function testMiddlewareWithoutPriorityIsGivenDefaultPriorityAndRegisteredInOrderReceived()
     {
-        $middleware = new TestAsset\InteropMiddleware();
+        $middleware = new InteropMiddleware();
 
         $pipeline1 = [['middleware' => clone $middleware]];
         $pipeline2 = [['middleware' => clone $middleware]];
@@ -253,136 +276,30 @@ class ConfigInjectionTest extends TestCase
 
         $app = $this->createApplication();
 
-        $app->injectPipelineFromConfig($config);
+        ApplicationConfigInjectionDelegator::injectPipelineFromConfig($app, $config);
 
-        $r = new ReflectionProperty($app, 'pipeline');
-        $r->setAccessible(true);
-        $pipeline = $r->getValue($app);
+        $pipeline = $this->getQueueFromApplicationPipeline($app);
 
         $this->assertSame($pipeline3[0]['middleware'], $pipeline->dequeue()->handler);
         $this->assertSame($pipeline1[0]['middleware'], $pipeline->dequeue()->handler);
         $this->assertSame($pipeline2[0]['middleware'], $pipeline->dequeue()->handler);
     }
 
-    public function testRoutingAndDispatchMiddlewareUseDefaultPriority()
+    public function testInjectPipelineFromConfigWithEmptyConfigDoesNothing()
     {
-        $middleware = new TestAsset\InteropMiddleware();
-
-        $pipeline = [
-            ['middleware' => clone $middleware, 'priority' => -100],
-            Application::ROUTING_MIDDLEWARE,
-            ['middleware' => clone $middleware, 'priority' => 1],
-            ['middleware' => clone $middleware],
-            Application::DISPATCH_MIDDLEWARE,
-            ['middleware' => clone $middleware, 'priority' => 100],
-        ];
-
-        $config = ['middleware_pipeline' => $pipeline];
-
         $app = $this->createApplication();
-
-        $app->injectPipelineFromConfig($config);
-
-        $r = new ReflectionProperty($app, 'pipeline');
-        $r->setAccessible(true);
-        $test = $r->getValue($app);
-
-        $this->assertSame($pipeline[5]['middleware'], $test->dequeue()->handler);
-        $this->assertInstanceOf(RouteMiddleware::class, $test->dequeue()->handler);
-        $this->assertSame($pipeline[2]['middleware'], $test->dequeue()->handler);
-        $this->assertSame($pipeline[3]['middleware'], $test->dequeue()->handler);
-        $this->assertInstanceOf(DispatchMiddleware::class, $test->dequeue()->handler);
-        $this->assertSame($pipeline[0]['middleware'], $test->dequeue()->handler);
-    }
-
-    public function specMiddlewareContainingRoutingAndOrDispatchMiddleware()
-    {
-        // @codingStandardsIgnoreStart
-        return [
-            'routing-only'              => [[['middleware' => [Application::ROUTING_MIDDLEWARE]]]],
-            'dispatch-only'             => [[['middleware' => [Application::DISPATCH_MIDDLEWARE]]]],
-            'both-routing-and-dispatch' => [[['middleware' => [Application::ROUTING_MIDDLEWARE, Application::DISPATCH_MIDDLEWARE]]]],
-        ];
-        // @codingStandardsIgnoreEnd
-    }
-
-    /**
-     * @dataProvider specMiddlewareContainingRoutingAndOrDispatchMiddleware
-     *
-     * @param array $pipeline
-     */
-    public function testRoutingAndDispatchMiddlewareCanBeComposedWithinArrayStandardSpecification(array $pipeline)
-    {
-        $expected = $pipeline[0]['middleware'];
-        $config = ['middleware_pipeline' => $pipeline];
-
-        $app = $this->createApplication();
-
-        $app->injectPipelineFromConfig($config);
-
-        $r = new ReflectionProperty($app, 'pipeline');
-        $r->setAccessible(true);
-        $appPipeline = $r->getValue($app);
-
-        $this->assertCount(1, $appPipeline);
-
-        $innerMiddleware = $appPipeline->dequeue()->handler;
-        $this->assertInstanceOf(MiddlewarePipe::class, $innerMiddleware);
-
-        $r = new ReflectionProperty($innerMiddleware, 'pipeline');
-        $r->setAccessible(true);
-        $innerPipeline = $r->getValue($innerMiddleware);
-        $this->assertInstanceOf(SplQueue::class, $innerPipeline);
-
-        $this->assertEquals(
-            count($expected),
-            $innerPipeline->count(),
-            sprintf('Expected %d items in pipeline; received %d', count($expected), $innerPipeline->count())
-        );
-
-        foreach ($innerPipeline as $index => $route) {
-            $innerPipeline[$index] = $route->handler;
-        }
-
-        foreach ($expected as $type) {
-            switch ($type) {
-                case Application::ROUTING_MIDDLEWARE:
-                    $middleware = RouteMiddleware::class;
-                    $message = 'Did not find routing middleware in pipeline';
-                    break;
-                case Application::DISPATCH_MIDDLEWARE:
-                    $middleware = DispatchMiddleware::class;
-                    $message = 'Did not find dispatch middleware in pipeline';
-                    break;
-                default:
-                    $this->fail('Unexpected value in pipeline passed from data provider');
-            }
-            $this->assertPipelineContainsInstanceOf($middleware, $innerPipeline, $message);
-        }
-    }
-
-    public function testInjectPipelineFromConfigWithEmptyConfigAndNoConfigServiceDoesNothing()
-    {
-        $this->container->has('config')->willReturn(false);
-        $app = $this->createApplication();
-
-        $app->injectPipelineFromConfig();
-
-        $r = new ReflectionProperty($app, 'pipeline');
-        $r->setAccessible(true);
-        $pipeline = $r->getValue($app);
-        $this->assertInstanceOf(SplQueue::class, $pipeline);
-
+        ApplicationConfigInjectionDelegator::injectPipelineFromConfig($app, []);
+        $pipeline = $this->getQueueFromApplicationPipeline($app);
         $this->assertEquals(0, $pipeline->count());
     }
 
-    public function testInjectRoutesFromConfigWithEmptyConfigAndNoConfigServiceDoesNothing()
+    public function testInjectRoutesFromConfigWithEmptyConfigDoesNothing()
     {
-        $this->container->has('config')->willReturn(false);
         $app = $this->createApplication();
-
-        $app->injectRoutesFromConfig();
-        $this->assertAttributeEquals([], 'routes', $app);
+        ApplicationConfigInjectionDelegator::injectRoutesFromConfig($app, []);
+        $this->assertEquals([], $app->getRoutes());
+        $pipeline = $this->getQueueFromApplicationPipeline($app);
+        $this->assertEquals(0, $pipeline->count());
     }
 
     public function testInjectRoutesFromConfigRaisesExceptionIfAllowedMethodsIsInvalid()
@@ -391,7 +308,7 @@ class ConfigInjectionTest extends TestCase
             'routes' => [
                 [
                     'path' => '/',
-                    'middleware' => new TestAsset\InteropMiddleware(),
+                    'middleware' => new InteropMiddleware(),
                     'allowed_methods' => 'not-valid',
                 ],
             ],
@@ -401,7 +318,7 @@ class ConfigInjectionTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Allowed HTTP methods');
-        $app->injectRoutesFromConfig($config);
+        ApplicationConfigInjectionDelegator::injectRoutesFromConfig($app, $config);
     }
 
     public function testInjectRoutesFromConfigRaisesExceptionIfOptionsIsNotAnArray()
@@ -410,7 +327,7 @@ class ConfigInjectionTest extends TestCase
             'routes' => [
                 [
                     'path' => '/',
-                    'middleware' => new TestAsset\InteropMiddleware(),
+                    'middleware' => new InteropMiddleware(),
                     'allowed_methods' => ['GET'],
                     'options' => 'invalid',
                 ],
@@ -421,7 +338,7 @@ class ConfigInjectionTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Route options must be an array');
-        $app->injectRoutesFromConfig($config);
+        ApplicationConfigInjectionDelegator::injectRoutesFromConfig($app, $config);
     }
 
     public function testInjectRoutesFromConfigCanProvideRouteOptions()
@@ -430,7 +347,7 @@ class ConfigInjectionTest extends TestCase
             'routes' => [
                 [
                     'path' => '/',
-                    'middleware' => new TestAsset\InteropMiddleware(),
+                    'middleware' => new InteropMiddleware(),
                     'allowed_methods' => ['GET'],
                     'options' => [
                         'foo' => 'bar',
@@ -441,7 +358,7 @@ class ConfigInjectionTest extends TestCase
         $this->container->has('config')->willReturn(false);
         $app = $this->createApplication();
 
-        $app->injectRoutesFromConfig($config);
+        ApplicationConfigInjectionDelegator::injectRoutesFromConfig($app, $config);
 
         $routes = $app->getRoutes();
 
@@ -454,7 +371,7 @@ class ConfigInjectionTest extends TestCase
         $config = [
             'routes' => [
                 [
-                    'middleware' => new TestAsset\InteropMiddleware(),
+                    'middleware' => new InteropMiddleware(),
                     'allowed_methods' => ['GET'],
                     'options' => [
                         'foo' => 'bar',
@@ -463,10 +380,21 @@ class ConfigInjectionTest extends TestCase
             ],
         ];
         $this->container->has('config')->willReturn(false);
+        $this->injectServiceInContainer(
+            $this->container,
+            PathBasedRoutingMiddleware::class,
+            $this->routeMiddleware
+        );
+        $this->injectServiceInContainer(
+            $this->container,
+            DispatchMiddleware::class,
+            $this->dispatchMiddleware
+        );
+
         $app = $this->createApplication();
 
-        $app->injectPipelineFromConfig($config);
-        $this->assertAttributeEquals([], 'routes', $app);
+        ApplicationConfigInjectionDelegator::injectPipelineFromConfig($app, $config);
+        $this->assertEquals([], $app->getRoutes());
     }
 
     public function testInjectRoutesFromConfigWillSkipSpecsThatOmitMiddleware()
@@ -483,10 +411,21 @@ class ConfigInjectionTest extends TestCase
             ],
         ];
         $this->container->has('config')->willReturn(false);
+        $this->injectServiceInContainer(
+            $this->container,
+            PathBasedRoutingMiddleware::class,
+            $this->routeMiddleware
+        );
+        $this->injectServiceInContainer(
+            $this->container,
+            DispatchMiddleware::class,
+            $this->dispatchMiddleware
+        );
+
         $app = $this->createApplication();
 
-        $app->injectPipelineFromConfig($config);
-        $this->assertAttributeEquals([], 'routes', $app);
+        ApplicationConfigInjectionDelegator::injectPipelineFromConfig($app, $config);
+        $this->assertEquals([], $app->getRoutes());
     }
 
     public function testInjectPipelineFromConfigRaisesExceptionForSpecsOmittingMiddlewareKey()
@@ -502,6 +441,6 @@ class ConfigInjectionTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid pipeline specification received');
-        $app->injectPipelineFromConfig($config);
+        ApplicationConfigInjectionDelegator::injectPipelineFromConfig($app, $config);
     }
 }
