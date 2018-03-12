@@ -9,7 +9,7 @@
     <meta name="description" content="zend-expressive: PSR-7 Middleware Microframework">  
     <link rel="shortcut icon" href="../../../img/favicon.ico">
 
-    <title>CLI Tooling - Expressive</title>
+    <title>To version 2.2 - Expressive</title>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
@@ -521,8 +521,8 @@
                         
                             
 
-<li class="active">
-    <a href="./">CLI Tooling</a>
+<li >
+    <a href="../cli-tooling/">CLI Tooling</a>
 </li>
 
 
@@ -559,8 +559,8 @@
         
             
 
-<li >
-    <a href="../migration-to-v2-2/">To version 2.2</a>
+<li class="active">
+    <a href="./">To version 2.2</a>
 </li>
 
 
@@ -1091,19 +1091,23 @@
         <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
     
-        <li class="main active"><a href="#command-line-tooling">Command Line Tooling</a></li>
+        <li class="main active"><a href="#migration-to-expressive-22">Migration to Expressive 2.2</a></li>
         
-            <li><a href="#development-mode">Development Mode</a></li>
+            <li><a href="#config-providers">Config providers</a></li>
         
-            <li><a href="#expressive-command-line-tool">Expressive command-line tool</a></li>
+            <li><a href="#routing-and-dispatch-middleware">Routing and dispatch middleware</a></li>
         
-            <li><a href="#modules">Modules</a></li>
+            <li><a href="#routing-and-dispatch-constants">Routing and dispatch constants</a></li>
         
-            <li><a href="#migrate-to-programmatic-pipelines">Migrate to programmatic pipelines</a></li>
+            <li><a href="#implicit-head-and-options-middleware">Implicit HEAD and OPTIONS middleware</a></li>
         
-            <li><a href="#detect-usage-of-legacy-getoriginal-calls">Detect usage of legacy getOriginal*() calls</a></li>
+            <li><a href="#response-prototypes">Response prototypes</a></li>
         
-            <li><a href="#detect-usage-of-legacy-error-middleware">Detect usage of legacy error middleware</a></li>
+            <li><a href="#double-pass-middleware">Double-Pass middleware</a></li>
+        
+            <li><a href="#other-deprecations">Other deprecations</a></li>
+        
+            <li><a href="#applicationconfiginjectiondelegator">ApplicationConfigInjectionDelegator</a></li>
         
     
     </ul>
@@ -1111,10 +1115,10 @@
     
     <ul class="pager hidden-print">
       <li class="previous">
-        <a rel="prev" href="../../why-expressive/"><i class="fa fa-arrow-left"></i> Previous</a>
+        <a rel="prev" href="../migration/"><i class="fa fa-arrow-left"></i> Previous</a>
       </li>
       <li class="next">
-        <a rel="next" href="../usage-examples/">Next <i class="fa fa-arrow-right"></i></a>
+        <a rel="next" href="../../../v1/">Next <i class="fa fa-arrow-right"></i></a>
       </li>
     </ul>
     
@@ -1129,242 +1133,250 @@
         <li>Reference</li>
       
     
+      
+        <li>Migration</li>
+      
+    
   
-  <li class="active">CLI Tooling</li>
+  <li class="active">To version 2.2</li>
 </ol>
 
-<h1 id="command-line-tooling">Command Line Tooling</h1>
-<p>Expressive offers a number of tools for assisting in project development. This
-page catalogues each.</p>
-<h2 id="development-mode">Development Mode</h2>
-<p>The package <a href="https://github.com/zfcampus/zf-development-mode">zfcampus/zf-development-mode</a>
-provides a simple way to toggle in and out of <em>development mode</em>. Doing so
-allows you to ship known development-specific settings within your repository,
-while ensuring they are not enabled in production. The tooling essentially
-enables optional, development-specific configuration in your application by:</p>
-<ul>
-<li>Copying the file <code>config/development.config.php.dist</code> to
-  <code>config/development.config.php</code>; this can be used to enable
-  development-specific modules or settings (such as the <code>debug</code> flag).</li>
-<li>Copying the file <code>config/autoload/development.local.php.dist</code> to
-  <code>config/autoload/development.local.php</code>; this can be used to provide local
-  overrides of a number of configuration settings.</li>
-</ul>
-<p>The package provides the tooling via <code>vendor/bin/zf-development-mode</code>. If you
-are using the Expressive skeleton, it provides aliases via Composer:</p>
-<pre class="codehilite"><code class="language-php">$ composer development-enable
-$ composer development-disable
-$ composer development-status</code></pre>
-
-<p>Add settings to your <code>development.*.php.dist</code> files, and commit those files to
-your repository; always toggle out of and into development mode after making
-changes, to ensure they pick up in your development environment.</p>
-<h2 id="expressive-command-line-tool">Expressive command-line tool</h2>
-<p>The package <a href="https://github.com/zendframework/zend-expressive-tooling">zendframework/zend-expressive-tooling</a>
-provides the script <code>vendor/bin/expressive</code>, which contains a number of commands
-related to migration, modules, and middleware.</p>
-<p>You can install it if it is not already present in your application:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require --dev zendframework/zend-expressive-tooling</code></pre>
-
-<p>If you installed the Expressive skeleton prior to version 2.0.2, you will want
-to update the tooling to get the latest release, which contains the <code>expressive</code>
-binary, as follows:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require --dev &quot;zendframework/zend-expressive-tooling:^0.4.1&quot;</code></pre>
-
-<p>Once installed, invoking the binary without arguments will give a listing of
-available tools:</p>
-<pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive</code></pre>
-
-<p>Commands supported include:</p>
-<ul>
-<li>
-<p><strong><code>middleware:create &lt;middleware&gt;</code></strong>: Create a class file for the named
-  middleware class. The class <em>must</em> use a namespace already declared in your
-  application, and will be created relative to the path associated with that
-  namespace.</p>
-</li>
-<li>
-<p><strong><code>migrate:error-middleware-scanner [--dir|-d]</code></strong>: Scan the associated
-  directory (defaults to <code>src</code>) for declarations of legacy Stratigility v1 error
-  middleware, or invocations of <code>$next()</code> that provide an error argument. See
-  the <a href="#detect-usage-of-legacy-error-middleware">section on detecting legacy error middleware</a>
-  for more details.</p>
-</li>
-<li>
-<p><strong><code>migrate:original-messages [--src|-s]</code></strong>: Scan the associated source directory
-  (defaults to <code>src</code>) for <code>getOriginal*()</code> method calls and replace them with
-  <code>getAttribute()</code> calls. See the <a href="#detect-usage-of-legacy-getoriginal-calls">section on detecting legacy
-  calls</a> for more details.</p>
-</li>
-<li>
-<p><strong><code>migrate:pipeline [--config-file|-c]</code></strong>: Convert configuration-driven
-  pipelines and routing to programmatic declarations. See the <a href="#migrate-to-programmatic-pipelines">section on
-  migrating to programmatic pipelines</a> for
-  more details.</p>
-</li>
-<li>
-<p><strong><code>module:create [--composer|-c] [--modules-path|-p] &lt;module&gt;</code></strong>: Create the
-  named module, add and generate autoloading rules for it, and register the
-  module's <code>ConfigProvider</code> with your application.</p>
-</li>
-<li>
-<p><strong><code>module:register [--composer|-c] [--modules-path|-p] &lt;module&gt;</code></strong>: Add and
-  generate autoloading rules for the named module,  and register the module's
-  <code>ConfigProvider</code> with your application.</p>
-</li>
-<li>
-<p><strong><code>module:deregister [--composer|-c] [--modules-path|-p] &lt;module&gt;</code></strong>: Remove
-  autoloading rules for the named module and regenerate autoloading rules;
-  remove the module's <code>ConfigProvider</code> from the application configuration.</p>
-</li>
-</ul>
-<p>You may obtain full help for each command by invoking:</p>
-<pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive help &lt;command&gt;</code></pre>
-
-<h2 id="modules">Modules</h2>
-<ul>
-<li>Deprecated since zend-expressive-tooling 0.4.0; see the <a href="#expressive-command-line-tool">Expressive CLI tool
-  section above</a>.</li>
-</ul>
-<p>The package <a href="https://github.com/zendframework/zend-expressive-tooling">zendframework/zend-expressive-tooling</a>
-provides the binary <code>vendor/bin/expressive-module</code>, which allows you to create,
-register, and deregister modules, assuming you are using a <a href="../../features/modular-applications/">modular application
-layout</a>.</p>
-<p>For instance, if you wish to create a new module for managing users, you might
-execute the following:</p>
-<pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive-module create User</code></pre>
-
-<p>Which would create the following tree:</p>
-<pre class="codehilite"><code class="language-text">src/
-  User/
-    src/
-      ConfigProvider.php
-    templates/</code></pre>
-
-<p>It would also create an autoloading rule within your <code>composer.json</code> for the
-<code>User</code> namespace, pointing it at the <code>src/User/src/</code> tree (and updating the
-autoloader in the process), and register the new module's <code>ConfigProvider</code>
-within your <code>config/config.php</code>.</p>
-<p>The <code>register</code> command will take an existing module and:</p>
-<ul>
-<li>Add an autoloading rule for it to your <code>composer.json</code>, if necessary.</li>
-<li>Add an entry for the module's <code>ConfigProvider</code> class to your
-  <code>config/config.php</code>, if possible.</li>
-</ul>
-<pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive-module register Account</code></pre>
-
-<p>The <code>deregister</code> command does the opposite of <code>register</code>.</p>
-<pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive-module deregister Account</code></pre>
-
-<h2 id="migrate-to-programmatic-pipelines">Migrate to programmatic pipelines</h2>
-<ul>
-<li>Deprecated since zend-expressive-tooling 0.4.0; see the <a href="#expressive-command-line-tool">Expressive CLI tool
-  section above</a>.</li>
-</ul>
-<p>We recommend using <em>programmatic pipelines</em>, versus configuration-defined
-pipelines. For those upgrading their applications from 1.X versions, we provide
-a tool that will read their application configuration and generate:</p>
-<ul>
-<li><code>config/pipeline.php</code>, with the middleware pipeline</li>
-<li><code>config/routes.php</code>, with routing directives</li>
-<li><code>config/autoload/zend-expressive.global.php</code>, with settings to ensure
-  programmatic pipelines are used, and new middleware provided for Expressive
-  2.0 is registered.</li>
-<li>directives within <code>public/index.php</code> for using the generated pipeline and
-  routes directives.</li>
-</ul>
-<p>To use this feature, you will need to first install
-zendframework/zend-expressive-tooling:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require --dev zendframework/zend-expressive-tooling</code></pre>
-
-<p>Invoke it as follows:</p>
-<pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive-pipeline-from-config generate</code></pre>
-
-<p>The tool will notify you of any errors, including whether or not it found (and
-skipped) Stratigility v1-style "error middleware".</p>
-<h2 id="detect-usage-of-legacy-getoriginal-calls">Detect usage of legacy getOriginal*() calls</h2>
-<ul>
-<li>Deprecated since zend-expressive-tooling 0.4.0; see the <a href="#expressive-command-line-tool">Expressive CLI tool
-  section above</a>.</li>
-</ul>
-<p>When upgrading to version 2.0, you will also receive an upgrade to
-zendframework/zend-stratigility 2.0. That version eliminates internal decorator
-classes for the request and response instances, which were used to provide
-access to the outermost request/response; internal layers could use these to
-determine the full URI that resulted in their invocation, which is useful when
-you pipe using a path argument (as the path provided during piping is stripped
-from the URI when invoking the matched middleware).</p>
-<p>This affects the following methods:</p>
-<ul>
-<li><code>Request::getOriginalRequest()</code></li>
-<li><code>Request::getOriginalUri()</code></li>
-<li><code>Response::getOriginalResponse()</code></li>
-</ul>
-<p>To provide equivalent functionality, we provide a couple of tools.</p>
-<p>First, Stratigility provides middleware, <code>Zend\Stratigility\Middleware\OriginalMessages</code>,
-which will inject the current request, its URI, and, if invoked as double-pass
-middleware, current response, as <em>request attributes</em>, named, respectively,
-<code>originalRequest</code>, <code>originalUri</code>, and <code>originalResponse</code>. (Since Expressive 2.0
-decorates double-pass middleware using a wrapper that composes a response, the
-"original response" will be the response prototype composed in the <code>Application</code>
-instance.) This should be registered as the outermost middleware layer.
-Middleware that needs access to these instances can then use the following
-syntax to retrieve them:</p>
-<pre class="codehilite"><code class="language-php">$originalRequest = $request-&gt;getAttribute('originalRequest', $request);
-$originalUri = $request-&gt;getAttribute('originalUri', $request-&gt;getUri();
-$originalResponse = $request-&gt;getAttribute('originalResponse') ?: new Response();</code></pre>
+<h1 id="migration-to-expressive-22">Migration to Expressive 2.2</h1>
+<p>Version 2.2 exists to message deprecated functionality, and to provide backports
+of functionality from version 3.0 as it makes sense. In most cases, your code
+should continue to work as it did before, but may now emit deprecation notices.
+This document details some specific deprecations, and how you can change your
+code to remove the messages, and, simultaneously, help prepare your code for
+version 3.</p>
+<h2 id="config-providers">Config providers</h2>
+<p>The zend-expressive and zend-expressive-router packages now expose <em>config
+providers</em>. These are dedicated classes that return package-specific
+configuration, including dependency information. We suggest you add these to
+your application's configuration. Add the following two lines in your
+<code>config/config.php</code> file, inside the array passed to the <code>ConfigAggregator</code>
+constructor:</p>
+<pre class="codehilite"><code class="language-php">\Zend\Expressive\ConfigProvider::class,
+\Zend\Expressive\Router\ConfigProvider::class,</code></pre>
 
 <blockquote>
-<h3 id="original-response-is-not-trustworthy">Original response is not trustworthy</h3>
-<p>As noted above, the "original response" will likely be injected with the
-response prototype from the <code>Application</code> instance. We recommend not using it,
-and instead either composing a pristine response instance in your middleware,
-or creating a new instance on-the-fly.</p>
+<p>The command <code>./vendor/bin/expressive migrate:expressive-v2.2</code> will do this for
+you.</p>
 </blockquote>
-<p>To aid you in migrating your existing code to use the new <code>getAttribute()</code>
-syntax, zendframework/zend-expressive-tooling provides a binary,
-<code>vendor/bin/expressive-migrate-original-messages</code>. First, install that package:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require --dev zendframework/zend-expressive-tooling</code></pre>
+<h2 id="routing-and-dispatch-middleware">Routing and dispatch middleware</h2>
+<p>In previous releases of Expressive, you would route your routing and dispatch
+middleware using the following dedicated methods:</p>
+<pre class="codehilite"><code class="language-php">$app-&gt;pipeRoutingMiddleware();
+$app-&gt;pipeDispatchMiddleware();</code></pre>
 
-<p>Then invoke it as follows:</p>
-<pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive-migrate-original-messages scan</code></pre>
+<p>These methods are now <em>deprecated</em>, and will be removed in version 3.0.</p>
+<p>Instead, you should use <code>pipe()</code> with the following services:</p>
+<pre class="codehilite"><code class="language-php">$app-&gt;pipe(\Zend\Expressive\Router\Middleware\RouteMiddleware::class);
+$app-&gt;pipe(\Zend\Expressive\Router\Middleware\DispatchMiddleware::class);</code></pre>
 
-<p>This script will update any <code>getOriginalRequest()</code> and <code>getOriginalUri()</code> calls,
-and notify you of any <code>getOriginalResponse()</code> calls, providing you with details
-on how to correct those manually.</p>
-<h2 id="detect-usage-of-legacy-error-middleware">Detect usage of legacy error middleware</h2>
+<blockquote>
+<p>The command <code>./vendor/bin/expressive migrate:expressive-v2.2</code> will do this for
+you.</p>
+</blockquote>
+<p>This also means you can easily replace these middleware with your own at this
+time!</p>
+<h2 id="routing-and-dispatch-constants">Routing and dispatch constants</h2>
+<p>If you are using configuration-driven routes, you are likely using the constants
+<code>Zend\Expressive\Application::ROUTING_MIDDLEWARE</code> and <code>DISPATCH_MIDDLEWARE</code> to
+indicate the routing and dispatch middleware, as follows:</p>
+<pre class="codehilite"><code class="language-php">'middleware_pipeline' =&gt; [
+    Application::ROUTING_MIDDLEWARE,
+    Application::DISPATCH_MIDDLEWARE,
+],</code></pre>
+
+<p>In the above section, we detailed deprecation of the methods
+<code>pipeRoutingMiddleware()</code> and <code>pipeDispatchMiddleware()</code>; the constants above
+are the configuration equivalent of calling these methods, and are similarly
+deprecated.</p>
+<p>Change these entries to use the same syntax as other pipeline middleware, and
+have the <code>middleware</code> key indicate the appropriate middleware class as follows:</p>
+<pre class="codehilite"><code class="language-php">'middleware_pipeline' =&gt; [
+    [
+        'middleware' =&gt; \Zend\Expressive\Router\Middleware\RouteMiddleware::class,
+    ],
+    [
+        'middleware' =&gt; \Zend\Expressive\Router\Middleware\DispatchMiddleware::class,
+    ],
+],</code></pre>
+
+<h2 id="implicit-head-and-options-middleware">Implicit HEAD and OPTIONS middleware</h2>
+<p>These middleware have moved to the zend-expressive-router package. While they
+still exist within the zend-expressive package, we have added deprecation
+notices indicating their removal in v3. As such, update either of the following
+statements, if they exist in your application:</p>
+<pre class="codehilite"><code class="language-php">$app-&gt;pipe(\Zend\Expressive\Middleware\ImplicitHeadMiddleware::class);
+$app-&gt;pipe(\Zend\Expressive\Middleware\ImplicitOptionsMiddleware::class);</code></pre>
+
+<p>to:</p>
+<pre class="codehilite"><code class="language-php">$app-&gt;pipe(\Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware::class);
+$app-&gt;pipe(\Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware::class);</code></pre>
+
+<blockquote>
+<p>The command <code>./vendor/bin/expressive migrate:expressive-v2.2</code> will do this for
+you.</p>
+</blockquote>
+<h2 id="response-prototypes">Response prototypes</h2>
+<p>A number of services expect a <em>response prototype</em> which will be used in order
+to generate and return a response. Previously, we did not expose a service for
+this, and instead hard-coded factories to create a zend-diactoros <code>Response</code>
+instance when creating a service.</p>
+<p>In version 3, we plan to instead compose a <em>response factory</em> in such services.
+This is done to ensure a unique response prototype instance is generated for
+each use; this is particularly important if you wish to use such services with
+async web servers such as Swoole, ReactPHP, AMP, etc.</p>
+<p>To prepare for that, Expressive 2.2 does the following:</p>
 <ul>
-<li>Deprecated since zend-expressive-tooling 0.4.0; see the <a href="#expressive-command-line-tool">Expressive CLI tool
-  section above</a>.</li>
+<li>
+<p>Creates <code>Zend\Expressive\Container\ResponseFactoryFactory</code>, and maps it to the
+  service name <code>Psr\Http\Response\ResponseInterface</code>. It returns a <em>callable</em>
+  that will generate a zend-diactoros <code>Response</code> instance each time it is
+  called.</p>
+</li>
+<li>
+<p>Creates <code>Zend\Expressive\Container\StreamFactoryFactory</code>, and maps it to the
+  service name <code>Psr\Http\Response\StreamInterface</code>. It returns a <em>callable</em>
+  that will generate a zend-diactoros <code>Stream</code> instance (backed by a read/write
+  <code>php://temp</code> stream) each time it is called.</p>
+</li>
 </ul>
-<p>When upgrading to version 2.0, you will also receive an upgrade to
-zendframework/zend-stratigility 2.0. That version eliminates what was known as
-"error middleware", middleware that either implemented
-<code>Zend\Stratigility\ErrorMiddlewareInterface</code>, or duck-typed it by implementing
-the signature <code>function ($error, $request, $response, callable $next)</code>.</p>
-<p>Such "error middleware" allowed other middleware to invoke the <code>$next</code> argument
-with an additional, third argument representing an error condition; when that
-occurred, Stratigility/Expressive would start iterating through error middleware
-until one was able to return a response. Each would receive the error as the
-first argument, and determine how to act upon it.</p>
-<p>With version 2.0 of each project, such middleware is now no longer accepted, and
-users should instead be using <a href="../../features/error-handling/">the new error handling
-features</a>. However, you may find that:</p>
+<p>The various factories that hard-coded generation of a response previously now
+pull the <code>ResponseInterface</code> service and, if it is callable, call it to produce
+a response, but otherwise use the return value.</p>
+<p>This change should not affect most applications, <em>unless they were defining a
+<code>ResponseInterface</code> service previously</em>. In such cases, ensure your factory
+mapping has precedence by placing it in a <code>config/autoload/</code> configuration file.</p>
+<h2 id="double-pass-middleware">Double-Pass middleware</h2>
+<p><em>Double-pass middleware</em> refers to middleware that has the following signature:</p>
+<pre class="codehilite"><code class="language-php">function (
+    ServerReqeustInterface $request,
+    ResponseInterface $response,
+    callable $next
+) : ResponseInterface</code></pre>
+
+<p>where <code>$next</code> will receive <em>both</em> a request <em>and</em> a response instance (this
+latter is the origin of the "double-pass" phrasing).</p>
+<p>Such middleware was used in v1 releases of Expressive, and we have continued to
+support it through v2. However, starting in v3, we will no longer allow you to
+directly pipe or route such middleware.</p>
+<p>If you need to continue using such middleware, you will need to decorate it
+using <code>Zend\Stratigility\Middleware\DoublePassMiddlewareDecorator()</code>. This
+decorator class accepts the middleware and a response prototype as constructor
+arguments, and decorates it to be used as http-interop middleware. (In version
+3, it will decorate it as PSR-15 middleware.)</p>
+<p>The zend-stratigility package provides a convenience function,
+<code>Zend\Stratigility\doublePassMiddleware()</code>, to simplify this for you:</p>
+<pre class="codehilite"><code class="language-php">use Zend\Diactoros\Response;
+use function Zend\Stratigility\doublePassMiddleware;
+
+// Piping:
+$app-&gt;pipe(doublePassMiddleware($someMiddleware, new Response()));
+
+// Routing:
+$app-&gt;get('/foo', doublePassMiddleware($someMiddleware, new Response()));</code></pre>
+
+<h2 id="other-deprecations">Other deprecations</h2>
+<p>The following classes, traits, and instance methods were deprecated, and will be
+removed in version 3:</p>
 <ul>
-<li>You have defined error middleware in your application.</li>
-<li>You have standard middleware in your application that invokes <code>$next</code> with the
-  third, error argument.</li>
+<li>
+<p><code>Zend\Expressive\AppFactory</code>: if you are using this, you will need to switch
+  to direct usage of <code>Zend\Expressive\Application</code> or a
+  <code>Zend\Stratigility\MiddlewarePipe</code> instance.</p>
+</li>
+<li>
+<p><code>Zend\Expressive\Application</code>: deprecates the following methods:</p>
+</li>
+<li><code>pipeRoutingMiddleware()</code>: <a href="#routing-and-dispatch-middleware">see the section above</a></li>
+<li><code>pipeDispatchMiddleware()</code>: <a href="#routing-and-dispatch-middleware">see the section above</a></li>
+<li><code>getContainer()</code>: this method is removed in version 3; container access will only be via the bootstrap.</li>
+<li><code>getDefaultDelegate()</code>: the concept of a default delegate is removed in version 3.</li>
+<li><code>getEmitter()</code>: emitters move to a different collaborator in version 3.</li>
+<li>
+<p><code>injectPipelineFromConfig()</code> andd <code>injectRoutesFromConfig()</code> are methods
+    defined by the <code>ApplicationConfigInjectionTrait</code>, which will be removed in
+    version 3. See the section on the <a href="#applicationconfiginjectiondelegator">ApplicationConfigInjectionDelegator</a> 
+    for an alternate, forwards-compatible, approach.</p>
+</li>
+<li>
+<p><code>Zend\Expressive\ApplicationConfigInjectionTrait</code>: if you are using it, it is
+  marked internal, and deprecated; it will be removed in version 3.</p>
+</li>
+<li>
+<p><code>Zend\Expressive\Container\NotFoundDelegateFactory</code>: the <code>NotFoundDelegate</code>
+  will be renamed to <code>Zend\Expressive\Handler\NotFoundHandler</code> in version 3,
+  making this factory obsolete.</p>
+</li>
+<li>
+<p><code>Zend\Expressive\Delegate\NotFoundDelegate</code>: this class becomes
+  <code>Zend\Expressive\Handler\NotFoundHandler</code> in v3, and the new class is added in
+  version 2.2 as well.</p>
+</li>
+<li>
+<p><code>Zend\Expressive\Emitter\EmitterStack</code>: the emitter concept is extracted from
+  zend-diactoros to a new component, zend-httphandlerrunner. This latter
+  component is used in version 3, and defines the <code>EmitterStack</code> class. Unless
+  you are extending it or interacting with it directly, this change should not
+  affect you; the <code>Zend\Diactoros\Response\EmitterInterface</code> service will be
+  directed to the new class in that version.</p>
+</li>
+<li>
+<p><code>Zend\Expressive\IsCallableInteropMiddlewareTrait</code>: if you are using it, it is
+  marked internal, and deprecated; it will be removed in version 3.</p>
+</li>
+<li>
+<p><code>Zend\Expressive\MarshalMiddlewareTrait</code>: if you are using it, it is marked
+  internal, and deprecated; it will be removed in version 3.</p>
+</li>
+<li>
+<p><code>Zend\Expressive\Middleware\DispatchMiddleware</code>: <a href="#routing-and-dispatch-middleware">see the section above</a>.</p>
+</li>
+<li>
+<p><code>Zend\Expressive\Middleware\ImplicitHeadMiddleware</code>: <a href="#implicit-head-and-options-middleware">see the section above</a>.  </p>
+</li>
+<li>
+<p><code>Zend\Expressive\Middleware\ImplicitOptionsMiddleware</code>: <a href="#implicit-head-and-options-middleware">see the section above</a>.  </p>
+</li>
+<li>
+<p><code>Zend\Expressive\Middleware\NotFoundHandler</code>: this will be removed in version 3, where you can instead pipe <code>Zend\Expressive\Handler\NotFoundHandler</code> directly instead.</p>
+</li>
+<li>
+<p><code>Zend\Expressive\Middleware\RouteMiddleware</code>: <a href="#routing-and-dispatch-middleware">see the section above</a>.</p>
+</li>
 </ul>
-<p>To help you identify such instances, zendframework/zend-expressive-tooling
-provides the script <code>vendor/bin/expressive-scan-for-error-middleware</code>. First,
-install that package:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require --dev zendframework/zend-expressive-tooling</code></pre>
+<h2 id="applicationconfiginjectiondelegator">ApplicationConfigInjectionDelegator</h2>
+<p>In addition to the above deprecations, we also provide a new class,
+<code>Zend\Expressive\Container\ApplicationConfigInjectionDelegator</code>. This class
+services two purposes:</p>
+<ul>
+<li>It can act as a <a href="../../features/container/delegator-factories/">delegator factory</a>
+  for the <code>Zend\Expressive\Application</code> service; when enabled, it will
+  look for <code>middleware_pipeline</code> and <code>routes</code> configuration, and use them to
+  inject the <code>Application</code> instance before returning it.</li>
+<li>It defines static methods for injecting pipelines and routes to an
+  <code>Application</code> instance.</li>
+</ul>
+<p>To enable the delegator as a delegator factory, add the following configuration
+to a <code>config/autoload/</code> configuration file, or a configuration provider class:</p>
+<pre class="codehilite"><code class="language-php">'dependencies' =&gt; [
+    'delegators' =&gt; [
+        \Zend\Expressive\Application::class =&gt; [
+            \Zend\Expressive\Container\ApplicationConfigInjectionDelegator::class,
+        ],
+    ],
+],</code></pre>
 
-<p>Then invoke it as follows:</p>
-<pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive-scan-for-error-middleware scan</code></pre>
+<p>To manually inject an <code>Application</code> instance, you can do the following:</p>
+<pre class="codehilite"><code class="language-php">use Zend\Expressive\Container\ApplicationConfigInjectionDelegator;
 
-<p>The script will notify you of any places where it finds either use case, and
-provide feedback on how to update your application.</p>
+// assuming $config is the application configuration:
+ApplicationConfigInjectionDelegator::injectPipelineFromConfig($app, $config);
+ApplicationConfigInjectionDelegator::injectRoutesFromConfig($app, $config);</code></pre>
+
+<p>These changes will be forwards-compatible with version 3.</p>
 
 <hr />
 
@@ -1372,10 +1384,10 @@ provide feedback on how to update your application.</p>
 <nav>
   <ul class="pager hidden-print">
     <li class="previous">
-      <a rel="prev" href="../../why-expressive/"><i class="fa fa-arrow-left"></i> Previous</a>
+      <a rel="prev" href="../migration/"><i class="fa fa-arrow-left"></i> Previous</a>
     </li>
     <li class="next">
-      <a rel="next" href="../usage-examples/">Next <i class="fa fa-arrow-right"></i></a>
+      <a rel="next" href="../../../v1/">Next <i class="fa fa-arrow-right"></i></a>
     </li>
   </ul>
 </nav>

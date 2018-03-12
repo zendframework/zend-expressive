@@ -545,9 +545,28 @@
                         
                             
 
+  <li class="dropdown-submenu">
+    <a tabindex="-1" href="">Migration</a>
+    <ul class="dropdown-menu">
+        
+            
+
 <li >
-    <a href="../../../reference/migration/">Migration</a>
+    <a href="../../../reference/migration/">To version 2</a>
 </li>
+
+
+        
+            
+
+<li >
+    <a href="../../../reference/migration-to-v2-2/">To version 2.2</a>
+</li>
+
+
+        
+    </ul>
+  </li>
 
 
                         
@@ -1074,6 +1093,8 @@
     
         <li class="main active"><a href="#implicitheadmiddleware-and-implicitoptionsmiddleware">ImplicitHeadMiddleware and ImplicitOptionsMiddleware</a></li>
         
+            <li><a href="#versions-prior-to-22">Versions prior to 2.2</a></li>
+        
             <li><a href="#implicitheadmiddleware">ImplicitHeadMiddleware</a></li>
         
             <li><a href="#implicitoptionsmiddleware">ImplicitOptionsMiddleware</a></li>
@@ -1117,29 +1138,38 @@ requests. The HTTP/1.1 specifications indicate that all server implementations
 <code>OPTIONS</code> requests. To make this possible, we have added features to our routing
 layer, and middleware that can detect <em>implicit</em>  support for these methods
 (i.e., the route was not registered <em>explicitly</em> with the method).</p>
+<blockquote>
+<h2 id="versions-prior-to-22">Versions prior to 2.2</h2>
+<p>If you are using Expressive versions earlier than 2.2, you may define a
+<code>Zend\Expressive\Middleware\ImplicitHeadMiddleware</code> or
+<code>Zend\Expressive\Middleware\ImplicitOptionsMiddleware</code> service under the
+<code>invokables</code> service configuration.</p>
+<p>However, starting in version 2.2, these classes are deprecated in favor of their
+equivalents that are now offered in the zend-expressive-router v2.4+ releases,
+under the namespace <code>Zend\Expressive\Router\Middleware</code>.</p>
+<p>The documentation here has been updated to reflect usage under Expressive 2.2+.</p>
+</blockquote>
 <h2 id="implicitheadmiddleware">ImplicitHeadMiddleware</h2>
 <p><code>Zend\Expressive\Middleware\ImplicitHeadMiddleware</code> provides support for
 handling <code>HEAD</code> requests to routed middleware when the route does not expliclity
 allow for the method. It should be registered <em>between</em> the routing and dispatch
 middleware.</p>
-<p>By default, it can be instantiated with no extra arguments. However, you <em>may</em>
-provide a response instance to use by default to the constructor if you need to
-craft special headers, status code, etc.</p>
-<p>Register the dependency via <code>dependencies</code> configuration:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Expressive\Middleware\ImplicitHeadMiddleware;
+<p>To use it, it must first be registered with your container. The easiest way to
+do that is to register the zend-expressive-router <code>ConfigProvider</code> in your
+<code>config/config.php</code>:</p>
+<pre class="codehilite"><code class="language-php">$aggregator = new ConfigAggregator([
+    \Zend\Expressive\Router\ConfigProvider::class,</code></pre>
 
-return [
-    'dependencies' =&gt; [
-        'invokables' =&gt; [
-            ImplicitHeadMiddleware::class =&gt; ImplicitHeadMiddleware::class,
-        ],
+<p>Alternately, add the following dependency configuration in one of your
+<code>config/autoload/</code> configuration files or a <code>ConfigProvider</code> class:</p>
+<pre class="codehilite"><code class="language-php">use Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware;
+use Zend\Expressive\Router\Middleware\ImplicitHeadMiddlewareFactory;
 
-        // or, if you have defined a factory to inject a response:
-        'factories' =&gt; [
-            ImplicitHeadMiddleware::class =&gt; \Your\ImplicitHeadMiddlewareFactory::class,
-        ],
+'dependencies' =&gt; [
+    'factories' =&gt; [
+        ImplicitHeadMiddleware::class =&gt; ImplicitHeadMiddlewareFactory::class,
     ],
-];</code></pre>
+],</code></pre>
 
 <p>Within your application pipeline, add the middleware between the routing and
 dispatch middleware:</p>
@@ -1176,28 +1206,26 @@ attribute, <code>Zend\Expressive\Middleware\ImplicitHeadMiddleware::FORWARDED_HT
 with a value of <code>HEAD</code>. As such, you can check for this value in order to vary
 the headers returned if desired.</p>
 <h2 id="implicitoptionsmiddleware">ImplicitOptionsMiddleware</h2>
-<p><code>Zend\Expressive\Middleware\ImplicitOptionsMiddleware</code> provides support for
+<p><code>Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware</code> provides support for
 handling <code>OPTIONS</code> requests to routed middleware when the route does not
 expliclity allow for the method. Like the <code>ImplicitHeadMiddleware</code>, it should be
 registered <em>between</em> the routing and dispatch middleware.</p>
-<p>By default, it can be instantiated with no extra arguments. However, you <em>may</em>
-provide a response prototype instance to use by default to the constructor if
-you need to craft special headers, status code, etc.</p>
-<p>Register the dependency via <code>dependencies</code> configuration:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Expressive\Middleware\ImplicitOptionsMiddleware;
+<p>To use it, it must first be registered with your container. The easiest way to
+do that is to register the zend-expressive-router <code>ConfigProvider</code> in your
+<code>config/config.php</code>:</p>
+<pre class="codehilite"><code class="language-php">$aggregator = new ConfigAggregator([
+    \Zend\Expressive\Router\ConfigProvider::class,</code></pre>
 
-return [
-    'dependencies' =&gt; [
-        'invokables' =&gt; [
-            ImplicitOptionsMiddleware::class =&gt; ImplicitOptionsMiddleware::class,
-        ],
+<p>Alternately, add the following dependency configuration in one of your
+<code>config/autoload/</code> configuration files or a <code>ConfigProvider</code> class:</p>
+<pre class="codehilite"><code class="language-php">use Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware;
+use Zend\Expressive\Router\Middleware\ImplicitOptionsMiddlewareFactory;
 
-        // or, if you have defined a factory to inject a response:
-        'factories' =&gt; [
-            ImplicitOptionsMiddleware::class =&gt; \Your\ImplicitOptionsMiddlewareFactory::class,
-        ],
+'dependencies' =&gt; [
+    'factories' =&gt; [
+        ImplicitOptionsMiddleware::class =&gt; ImplicitOptionsMiddlewareFactory::class,
     ],
-];</code></pre>
+],</code></pre>
 
 <p>Within your application pipeline, add the middleware between the routing and
 dispatch middleware:</p>
