@@ -4,6 +4,13 @@ Expressive allows you to get started at your own pace. You can start with
 the simplest example, detailed below, or move on to a more structured,
 configuration-driven approach as detailed in the [use case examples](../reference/usage-examples.md).
 
+> ## Deprecated with version 2.2
+>
+> The `Zend\Expressive\AppFactory` detailed in this chapter is deprecated as of
+> version 2.2, and will be removed in version 3.0. We recommend instead
+> constructing `Zend\Expressive\Application` manually, or using a
+> `Zend\Stratigility\MiddlewarePipe` instance instead.
+
 ## 1. Create a new project directory
 
 First, let's create a new project directory and enter it:
