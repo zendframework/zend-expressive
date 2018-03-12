@@ -1,0 +1,15 @@
+includes:
+	- vendor/phpstan/phpstan-strict-rules/rules.neon
+parameters:
+	fileExtensions:
+		- php
+	reportUnmatchedIgnoredErrors: true
+	ignoreErrors:
+		# Virtual classes can be safely ignored
+		- '#Class Zend\\Expressive\\ApplicationPipeline not found#'
+		# @see src/Application.php and https://github.com/zendframework/zend-expressive/pull/564
+		- '#Parameter \#1 \$path of function Zend\\Stratigility\\path expects string, array\|callable\|Psr\\Http\\Server\\MiddlewareInterface\|Psr\\Http\\Server\\RequestHandlerInterface\|string given.#'
+		# @see src/Container/WhoopsFactory.php (zend-expressive supports Whoops 1.x)
+		- '#Call to an undefined method Whoops\\Handler\\JsonResponseHandler::onlyForAjaxRequests\(\).#'
+		# @see src/MiddlewareFactory
+		- '#PHPDoc tag @param for parameter \$middleware with type array\|string\|Zend\\Stratigility\\MiddlewarePipe is not subtype of native type array\<int, mixed\>#'

@@ -1,333 +1,199 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2018 Zend Technologies USA Inc. (https://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace Zend\Expressive;
 
-use Fig\Http\Message\StatusCodeInterface as StatusCode;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use InvalidArgumentException;
-use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use UnexpectedValueException;
-use Zend\Diactoros\Response;
-use Zend\Diactoros\Response\EmitterInterface;
-use Zend\Diactoros\Response\SapiEmitter;
-use Zend\Diactoros\ServerRequest;
-use Zend\Diactoros\ServerRequestFactory;
-use Zend\Stratigility\MiddlewarePipe;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware;
+use Zend\HttpHandlerRunner\RequestHandlerRunner;
+use Zend\Stratigility\MiddlewarePipeInterface;
 
 use function Zend\Stratigility\path;
 
-/**
- * Middleware application providing routing based on paths and HTTP methods.
- */
-class Application extends MiddlewarePipe
+class Application implements MiddlewareInterface, RequestHandlerInterface
 {
-    use ApplicationConfigInjectionTrait;
-    use MarshalMiddlewareTrait;
-
-    const DISPATCH_MIDDLEWARE = 'EXPRESSIVE_DISPATCH_MIDDLEWARE';
-    const ROUTING_MIDDLEWARE = 'EXPRESSIVE_ROUTING_MIDDLEWARE';
+    /**
+     * @var MiddlewareFactory
+     */
+    private $factory;
 
     /**
-     * @var null|ContainerInterface
+     * @var MiddlewarePipeInterface
      */
-    private $container;
+    private $pipeline;
 
     /**
-     * @var null|DelegateInterface
+     * @var PathBasedRoutingMiddleware
      */
-    private $defaultDelegate;
+    private $routes;
 
     /**
-     * @var bool Flag indicating whether or not the dispatch middleware is
-     *     registered in the middleware pipeline.
+     * @var RequestHandlerRunner
      */
-    private $dispatchMiddlewareIsRegistered = false;
+    private $runner;
 
-    /**
-     * @var null|EmitterInterface
-     */
-    private $emitter;
-
-    /**
-     * @var bool Flag indicating whether or not the route middleware is
-     *     registered in the middleware pipeline.
-     */
-    private $routeMiddlewareIsRegistered = false;
-
-    /**
-     * @var Router\RouterInterface
-     */
-    private $router;
-
-    /**
-     * List of all routes registered directly with the application.
-     *
-     * @var Router\Route[]
-     */
-    private $routes = [];
-
-    /**
-     * Constructor
-     *
-     * Calls on the parent constructor, and then uses the provided arguments
-     * to set internal properties.
-     *
-     * @param Router\RouterInterface $router
-     * @param null|ContainerInterface $container IoC container from which to pull services, if any.
-     * @param null|DelegateInterface $defaultDelegate Default delegate
-     *     to use when $out is not provided on invocation / run() is invoked.
-     * @param null|EmitterInterface $emitter Emitter to use when `run()` is
-     *     invoked.
-     */
     public function __construct(
-        Router\RouterInterface $router,
-        ContainerInterface $container = null,
-        DelegateInterface $defaultDelegate = null,
-        EmitterInterface $emitter = null
+        MiddlewareFactory $factory,
+        MiddlewarePipeInterface $pipeline,
+        PathBasedRoutingMiddleware $routes,
+        RequestHandlerRunner $runner
     ) {
-        parent::__construct();
-        $this->router          = $router;
-        $this->container       = $container;
-        $this->defaultDelegate = $defaultDelegate;
-        $this->emitter         = $emitter;
-
-        $this->setResponsePrototype(new Response());
+        $this->factory = $factory;
+        $this->pipeline = $pipeline;
+        $this->routes = $routes;
+        $this->runner = $runner;
     }
 
     /**
-     * @param string|Router\Route $path
-     * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
-     * @param null|string $name The name of the route.
-     * @return Router\Route
+     * Proxies to composed pipeline to handle.
+     * {@inheritDocs}
      */
-    public function get($path, $middleware, $name = null)
+    public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        return $this->route($path, $middleware, ['GET'], $name);
+        return $this->pipeline->handle($request);
     }
 
     /**
-     * @param string|Router\Route $path
-     * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
-     * @param null|string $name The name of the route.
-     * @return Router\Route
+     * Proxies to composed pipeline to process.
+     * {@inheritDocs}
      */
-    public function post($path, $middleware, $name = null)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
-        return $this->route($path, $middleware, ['POST'], $name);
+        return $this->pipeline->process($request, $handler);
     }
 
     /**
-     * @param string|Router\Route $path
-     * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
-     * @param null|string $name The name of the route.
-     * @return Router\Route
-     */
-    public function put($path, $middleware, $name = null)
-    {
-        return $this->route($path, $middleware, ['PUT'], $name);
-    }
-
-    /**
-     * @param string|Router\Route $path
-     * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
-     * @param null|string $name The name of the route.
-     * @return Router\Route
-     */
-    public function patch($path, $middleware, $name = null)
-    {
-        return $this->route($path, $middleware, ['PATCH'], $name);
-    }
-
-    /**
-     * @param string|Router\Route $path
-     * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
-     * @param null|string $name The name of the route.
-     * @return Router\Route
-     */
-    public function delete($path, $middleware, $name = null)
-    {
-        return $this->route($path, $middleware, ['DELETE'], $name);
-    }
-
-    /**
-     * @param string|Router\Route $path
-     * @param callable|string $middleware Middleware (or middleware service name) to associate with route.
-     * @param null|string $name The name of the route.
-     * @return Router\Route
-     */
-    public function any($path, $middleware, $name = null)
-    {
-        return $this->route($path, $middleware, null, $name);
-    }
-
-    /**
-     * Overload pipe() operation.
+     * Run the application.
      *
-     * Middleware piped may be either callables or service names. Middleware
-     * specified as services will be wrapped in a closure similar to the
-     * following:
-     *
-     * <code>
-     * function ($request, $response, $next = null) use ($container, $middleware) {
-     *     $invokable = $container->get($middleware);
-     *     if (! is_callable($invokable)) {
-     *         throw new Exception\InvalidMiddlewareException(sprintf(
-     *             'Lazy-loaded middleware "%s" is not invokable',
-     *             $middleware
-     *         ));
-     *     }
-     *     return $invokable($request, $response, $next);
-     * };
-     * </code>
-     *
-     * This is done to delay fetching the middleware until it is actually used;
-     * the upshot is that you will not be notified if the service is invalid to
-     * use as middleware until runtime.
-     *
-     * Middleware may also be passed as an array; each item in the array must
-     * resolve to middleware eventually (i.e., callable or service name).
-     *
-     * Finally, ensures that the route middleware is only ever registered
-     * once.
-     *
-     * @param string|array|callable $path Either a URI path prefix, or middleware.
-     * @param null|string|array|callable $middleware Middleware
-     * @return self
+     * Proxies to the RequestHandlerRunner::run() method.
      */
-    public function pipe($path, $middleware = null)
+    public function run() : void
     {
-        if (null === $middleware) {
-            $middleware = $this->prepareMiddleware(
-                $path,
-                $this->router,
-                $this->responsePrototype,
-                $this->container
-            );
-            $path = '/';
-        }
-
-        if (! is_callable($middleware)
-            && (is_string($middleware) || is_array($middleware))
-        ) {
-            $middleware = $this->prepareMiddleware(
-                $middleware,
-                $this->router,
-                $this->responsePrototype,
-                $this->container
-            );
-        }
-
-        if ($middleware instanceof Router\Middleware\RouteMiddleware && $this->routeMiddlewareIsRegistered) {
-            return $this;
-        }
-
-        if ($middleware instanceof Router\Middleware\DispatchMiddleware && $this->dispatchMiddlewareIsRegistered) {
-            return $this;
-        }
-
-        if (! in_array($path, ['', '/'], true)) {
-            $middleware = path($path, $middleware);
-        }
-
-        parent::pipe($middleware);
-
-        if ($middleware instanceof Router\Middleware\RouteMiddleware) {
-            $this->routeMiddlewareIsRegistered = true;
-        }
-
-        if ($middleware instanceof Router\Middleware\DispatchMiddleware) {
-            $this->dispatchMiddlewareIsRegistered = true;
-        }
-
-        return $this;
+        $this->runner->run();
     }
 
     /**
-     * Register the routing middleware in the middleware pipeline.
+     * Pipe middleware to the pipeline.
      *
-     * @deprecated since 2.2.0; to be removed in 3.0.0. Use pipe() with routing
-     *     middleware or a service name resolving to routing middleware instead.
-     * @return void
+     * If two arguments are present, they are passed to pipe(), after first
+     * passing the second argument to the factory's prepare() method.
+     *
+     * If only one argument is presented, it is passed to the factory prepare()
+     * method.
+     *
+     * The resulting middleware, in both cases, is piped to the pipeline.
+     *
+     * @param string|array|callable|MiddlewareInterface|RequestHandlerInterface $middlewareOrPath
+     *     Either the middleware to pipe, or the path to segregate the $middleware
+     *     by, via a PathMiddlewareDecorator.
+     * @param null|string|array|callable|MiddlewareInterface|RequestHandlerInterface $middleware
+     *     If present, middleware or request handler to segregate by the path
+     *     specified in $middlewareOrPath.
      */
-    public function pipeRoutingMiddleware()
+    public function pipe($middlewareOrPath, $middleware = null) : void
     {
-        if ($this->routeMiddlewareIsRegistered) {
-            return;
-        }
-        $this->pipe(self::ROUTING_MIDDLEWARE);
-    }
+        $middleware = $middleware ?: $middlewareOrPath;
+        $path = $middleware === $middlewareOrPath ? '/' : $middlewareOrPath;
 
-    /**
-     * Register the dispatch middleware in the middleware pipeline.
-     *
-     * @deprecated since 2.2.0; to be removed in 3.0.0. Use pipe() with dispatch
-     *     middleware or a service name resolving to dispatch middleware instead.
-     * @return void
-     */
-    public function pipeDispatchMiddleware()
-    {
-        if ($this->dispatchMiddlewareIsRegistered) {
-            return;
-        }
-        $this->pipe(self::DISPATCH_MIDDLEWARE);
+        $middleware = $path !== '/'
+            ? path($path, $this->factory->prepare($middleware))
+            : $this->factory->prepare($middleware);
+
+        $this->pipeline->pipe($middleware);
     }
 
     /**
      * Add a route for the route middleware to match.
      *
-     * Accepts either a Router\Route instance, or a combination of a path and
-     * middleware, and optionally the HTTP methods allowed.
-     *
-     * On first invocation, pipes the route middleware to the middleware
-     * pipeline.
-     *
-     * @param string|Router\Route $path
-     * @param callable|string|array $middleware Middleware (or middleware service name) to associate with route.
+     * @param string|array|callable|MiddlewareInterface|RequestHandlerInterface $middleware
+     *     Middleware or request handler (or service name resolving to one of
+     *     those types) to associate with route.
      * @param null|array $methods HTTP method to accept; null indicates any.
      * @param null|string $name The name of the route.
-     * @return Router\Route
-     * @throws Exception\InvalidArgumentException if $path is not a Router\Route AND middleware is null.
      */
-    public function route($path, $middleware = null, array $methods = null, $name = null)
+    public function route(string $path, $middleware, array $methods = null, string $name = null) : Router\Route
     {
-        if (! $path instanceof Router\Route && null === $middleware) {
-            throw new Exception\InvalidArgumentException(sprintf(
-                '%s expects either a route argument, or a combination of a path and middleware arguments',
-                __METHOD__
-            ));
-        }
+        return $this->routes->route(
+            $path,
+            $this->factory->prepare($middleware),
+            $methods,
+            $name
+        );
+    }
 
-        if ($path instanceof Router\Route) {
-            $route   = $path;
-            $path    = $route->getPath();
-            $methods = $route->getAllowedMethods();
-            $name    = $route->getName();
-        }
+    /**
+     * @param string|array|callable|MiddlewareInterface|RequestHandlerInterface $middleware
+     *     Middleware or request handler (or service name resolving to one of
+     *     those types) to associate with route.
+     * @param null|string $name The name of the route.
+     */
+    public function get(string $path, $middleware, string $name = null) : Router\Route
+    {
+        return $this->route($path, $middleware, ['GET'], $name);
+    }
 
-        $this->checkForDuplicateRoute($path, $methods);
+    /**
+     * @param string|array|callable|MiddlewareInterface|RequestHandlerInterface $middleware
+     *     Middleware or request handler (or service name resolving to one of
+     *     those types) to associate with route.
+     * @param null|string $name The name of the route.
+     */
+    public function post(string $path, $middleware, $name = null) : Router\Route
+    {
+        return $this->route($path, $middleware, ['POST'], $name);
+    }
 
-        if (! isset($route)) {
-            $methods = null === $methods ? Router\Route::HTTP_METHOD_ANY : $methods;
-            $middleware = $this->prepareMiddleware(
-                $middleware,
-                $this->router,
-                $this->responsePrototype,
-                $this->container
-            );
-            $route = new Router\Route($path, $middleware, $methods, $name);
-        }
+    /**
+     * @param string|array|callable|MiddlewareInterface|RequestHandlerInterface $middleware
+     *     Middleware or request handler (or service name resolving to one of
+     *     those types) to associate with route.
+     * @param null|string $name The name of the route.
+     */
+    public function put(string $path, $middleware, string $name = null) : Router\Route
+    {
+        return $this->route($path, $middleware, ['PUT'], $name);
+    }
 
-        $this->routes[] = $route;
-        $this->router->addRoute($route);
+    /**
+     * @param string|array|callable|MiddlewareInterface|RequestHandlerInterface $middleware
+     *     Middleware or request handler (or service name resolving to one of
+     *     those types) to associate with route.
+     * @param null|string $name The name of the route.
+     */
+    public function patch(string $path, $middleware, string $name = null) : Router\Route
+    {
+        return $this->route($path, $middleware, ['PATCH'], $name);
+    }
 
-        return $route;
+    /**
+     * @param string|array|callable|MiddlewareInterface|RequestHandlerInterface $middleware
+     *     Middleware or request handler (or service name resolving to one of
+     *     those types) to associate with route.
+     * @param null|string $name The name of the route.
+     */
+    public function delete(string $path, $middleware, string $name = null) : Router\Route
+    {
+        return $this->route($path, $middleware, ['DELETE'], $name);
+    }
+
+    /**
+     * @param string|array|callable|MiddlewareInterface|RequestHandlerInterface $middleware
+     *     Middleware or request handler (or service name resolving to one of
+     *     those types) to associate with route.
+     * @param null|string $name The name of the route.
+     */
+    public function any(string $path, $middleware, string $name = null) : Router\Route
+    {
+        return $this->route($path, $middleware, null, $name);
     }
 
     /**
@@ -335,182 +201,8 @@ class Application extends MiddlewarePipe
      *
      * @return Router\Route[]
      */
-    public function getRoutes()
+    public function getRoutes() : array
     {
-        return $this->routes;
-    }
-
-    /**
-     * Run the application
-     *
-     * If no request or response are provided, the method will use
-     * ServerRequestFactory::fromGlobals to create a request instance, and
-     * instantiate a default response instance.
-     *
-     * It retrieves the default delegate using getDefaultDelegate(), and
-     * uses that to process itself.
-     *
-     * Once it has processed itself, it emits the returned response using the
-     * composed emitter.
-     *
-     * @param null|ServerRequestInterface $request
-     * @param null|ResponseInterface $response
-     * @return void
-     */
-    public function run(ServerRequestInterface $request = null, ResponseInterface $response = null)
-    {
-        try {
-            $request  = $request ?: ServerRequestFactory::fromGlobals();
-        } catch (InvalidArgumentException $e) {
-            // Unable to parse uploaded files
-            $this->emitMarshalServerRequestException($e);
-            return;
-        } catch (UnexpectedValueException $e) {
-            // Invalid request method
-            $this->emitMarshalServerRequestException($e);
-            return;
-        }
-
-        $response = $response ?: new Response();
-        $request  = $request->withAttribute('originalResponse', $response);
-        $delegate = $this->getDefaultDelegate();
-
-        $response = $this->process($request, $delegate);
-
-        $emitter = $this->getEmitter();
-        $emitter->emit($response);
-    }
-
-    /**
-     * Retrieve the IoC container.
-     *
-     * If no IoC container is registered, we raise an exception.
-     *
-     * @deprecated since 2.2.0; to be removed in 3.0.0. This feature is
-     *     replaced by Zend\Expressive\MiddlewareFactory in that release, which
-     *     can be retrieved as a service from the application container.
-     * @return ContainerInterface
-     * @throws Exception\ContainerNotRegisteredException
-     */
-    public function getContainer()
-    {
-        if (null === $this->container) {
-            throw new Exception\ContainerNotRegisteredException();
-        }
-        return $this->container;
-    }
-
-    /**
-     * Return the default delegate to use during `run()` if the stack is exhausted.
-     *
-     * If no default delegate is present, attempts the following:
-     *
-     * - If a container is composed, and it has the 'Zend\Expressive\Delegate\DefaultDelegate'
-     *   service, pulls that service, assigns it, and returns it.
-     * - If no container is composed, creates an instance of Delegate\NotFoundDelegate
-     *   using the current response prototype only (i.e., no templating).
-     *
-     * @deprecated since 2.2.0; to be removed in 3.0.0. This feature has no
-     *     equivalent in that version.
-     * @return DelegateInterface
-     */
-    public function getDefaultDelegate()
-    {
-        if ($this->defaultDelegate) {
-            return $this->defaultDelegate;
-        }
-
-        if ($this->container && $this->container->has('Zend\Expressive\Delegate\DefaultDelegate')) {
-            $this->defaultDelegate = $this->container->get('Zend\Expressive\Delegate\DefaultDelegate');
-            return $this->defaultDelegate;
-        }
-
-        if ($this->container) {
-            $factory = new Container\NotFoundDelegateFactory();
-            $this->defaultDelegate = $factory($this->container);
-            return $this->defaultDelegate;
-        }
-
-        $this->defaultDelegate = new Delegate\NotFoundDelegate($this->responsePrototype);
-        return $this->defaultDelegate;
-    }
-
-    /**
-     * Retrieve an emitter to use during run().
-     *
-     * If none was registered during instantiation, this will lazy-load an
-     * EmitterStack composing an SapiEmitter instance.
-     *
-     * @deprecated since 2.2.0; to be removed in 3.0.0. This feature has no
-     *     equivalent in that version; the responsibility has been moved to a
-     *     new collaborator.
-     * @return EmitterInterface
-     */
-    public function getEmitter()
-    {
-        if (! $this->emitter) {
-            $this->emitter = new Emitter\EmitterStack();
-            $this->emitter->push(new SapiEmitter());
-        }
-        return $this->emitter;
-    }
-
-    /**
-     * Determine if the route is duplicated in the current list.
-     *
-     * Checks if a route with the same name or path exists already in the list;
-     * if so, and it responds to any of the $methods indicated, raises
-     * a DuplicateRouteException indicating a duplicate route.
-     *
-     * @param string $path
-     * @param null|array $methods
-     * @throws Exception\DuplicateRouteException on duplicate route detection.
-     */
-    private function checkForDuplicateRoute($path, $methods = null)
-    {
-        if (null === $methods) {
-            $methods = Router\Route::HTTP_METHOD_ANY;
-        }
-
-        $matches = array_filter($this->routes, function (Router\Route $route) use ($path, $methods) {
-            if ($path !== $route->getPath()) {
-                return false;
-            }
-
-            if ($methods === Router\Route::HTTP_METHOD_ANY) {
-                return true;
-            }
-
-            return array_reduce($methods, function ($carry, $method) use ($route) {
-                return ($carry || $route->allowsMethod($method));
-            }, false);
-        });
-
-        if (! empty($matches)) {
-            throw new Exception\DuplicateRouteException(sprintf(
-                'Duplicate route detected; same name or path ("%s"),'
-                . ' and one or more HTTP methods intersect (%s)',
-                $path,
-                is_array($methods) ? implode(', ', $methods) : '*'
-            ));
-        }
-    }
-
-    /**
-     * @param \Exception|\Throwable $exception
-     * @return void
-     */
-    private function emitMarshalServerRequestException($exception)
-    {
-        if ($this->container && $this->container->has(Middleware\ErrorResponseGenerator::class)) {
-            $generator = $this->container->get(Middleware\ErrorResponseGenerator::class);
-            $response = $generator($exception, new ServerRequest(), $this->responsePrototype);
-        } else {
-            $response = $this->responsePrototype
-                ->withStatus(StatusCode::STATUS_BAD_REQUEST);
-        }
-
-        $emitter = $this->getEmitter();
-        $emitter->emit($response);
+        return $this->routes->getRoutes();
     }
 }

@@ -1,9 +1,11 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2016-2017 Zend Technologies USA Inc. (https://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace ZendTest\Expressive\Handler;
 
@@ -14,24 +16,40 @@ use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Expressive\Handler\NotFoundHandler;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
 class NotFoundHandlerTest extends TestCase
 {
+    /** @var ServerRequestInterface|ObjectProphecy */
+    private $request;
+
     /** @var ResponseInterface|ObjectProphecy */
     private $response;
 
-    protected function setUp()
+    /** @var callable */
+    private $responseFactory;
+
+    public function setUp()
     {
+        $this->request  = $this->prophesize(ServerRequestInterface::class);
         $this->response = $this->prophesize(ResponseInterface::class);
+        $this->responseFactory = function () {
+            return $this->response->reveal();
+        };
+    }
+
+    public function testImplementsRequesthandler()
+    {
+        $handler = new NotFoundHandler($this->responseFactory);
+        $this->assertInstanceOf(RequestHandlerInterface::class, $handler);
     }
 
     public function testConstructorDoesNotRequireARenderer()
     {
-        $handler = new NotFoundHandler($this->response->reveal());
+        $handler = new NotFoundHandler($this->responseFactory);
         $this->assertInstanceOf(NotFoundHandler::class, $handler);
-        $this->assertAttributeSame($this->response->reveal(), 'responsePrototype', $handler);
     }
 
     public function testConstructorCanAcceptRendererAndTemplate()
@@ -40,7 +58,7 @@ class NotFoundHandlerTest extends TestCase
         $template = 'foo::bar';
         $layout = 'layout::error';
 
-        $handler = new NotFoundHandler($this->response->reveal(), $renderer, $template, $layout);
+        $handler = new NotFoundHandler($this->responseFactory, $renderer, $template, $layout);
 
         $this->assertInstanceOf(NotFoundHandler::class, $handler);
         $this->assertAttributeSame($renderer, 'renderer', $handler);
@@ -59,9 +77,9 @@ class NotFoundHandlerTest extends TestCase
         $this->response->withStatus(StatusCode::STATUS_NOT_FOUND)->will([$this->response, 'reveal']);
         $this->response->getBody()->will([$stream, 'reveal']);
 
-        $handler = new NotFoundHandler($this->response->reveal());
+        $handler = new NotFoundHandler($this->responseFactory);
 
-        $response = $handler->process($request->reveal());
+        $response = $handler->handle($request->reveal());
 
         $this->assertSame($this->response->reveal(), $response);
     }
@@ -87,9 +105,9 @@ class NotFoundHandlerTest extends TestCase
         $this->response->withStatus(StatusCode::STATUS_NOT_FOUND)->will([$this->response, 'reveal']);
         $this->response->getBody()->will([$stream, 'reveal']);
 
-        $handler = new NotFoundHandler($this->response->reveal(), $renderer->reveal());
+        $handler = new NotFoundHandler($this->responseFactory, $renderer->reveal());
 
-        $response = $handler->process($request);
+        $response = $handler->handle($request);
 
         $this->assertSame($this->response->reveal(), $response);
     }

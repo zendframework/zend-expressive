@@ -4,8 +4,16 @@
          bootstrap="vendor/autoload.php"
          colors="true">
     <testsuites>
-        <testsuite name="Zend\\Expressive Tests">
+        <testsuite name="zend-expressive-response-factory">
+            <file>./test/Container/ResponseFactoryFactoryWithoutDiactorosTest.php</file>
+            <file>./test/Container/ServerRequestFactoryFactoryWithoutDiactorosTest.php</file>
+            <file>./test/Container/StreamFactoryFactoryWithoutDiactorosTest.php</file>
+        </testsuite>
+        <testsuite name="zend-expressive">
             <directory>./test</directory>
+            <exclude>./test/Container/ResponseFactoryFactoryWithoutDiactorosTest.php</exclude>
+            <exclude>./test/Container/ServerRequestFactoryFactoryWithoutDiactorosTest.php</exclude>
+            <exclude>./test/Container/StreamFactoryFactoryWithoutDiactorosTest.php</exclude>
         </testsuite>
     </testsuites>
 

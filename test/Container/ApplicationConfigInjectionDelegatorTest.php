@@ -1,18 +1,19 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2016-2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2016-2018 Zend Technologies USA Inc. (https://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace ZendTest\Expressive\Container;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use ReflectionProperty;
 use Zend\Diactoros\Response;
 use Zend\Expressive\Application;
@@ -23,12 +24,15 @@ use Zend\Expressive\Middleware;
 use Zend\Expressive\MiddlewareContainer;
 use Zend\Expressive\MiddlewareFactory;
 use Zend\Expressive\Router\Middleware\DispatchMiddleware;
-use Zend\Expressive\Router\Middleware\RouteMiddleware as PathBasedRoutingMiddleware;
+use Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware;
+use Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware;
 use Zend\Expressive\Router\Route;
 use Zend\Expressive\Router\RouterInterface;
+use Zend\HttpHandlerRunner\RequestHandlerRunner;
+use Zend\Stratigility\MiddlewarePipe;
 use ZendTest\Expressive\ContainerTrait;
 use ZendTest\Expressive\TestAsset\CallableInteropMiddleware;
-use ZendTest\Expressive\TestAsset\InteropMiddleware;
+use ZendTest\Expressive\TestAsset\InvokableMiddleware;
 
 class ApplicationConfigInjectionDelegatorTest extends TestCase
 {
@@ -39,6 +43,9 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
 
     /** @var DispatchMiddleware|ObjectProphecy */
     private $dispatchMiddleware;
+
+    /** @var MethodNotAllowedMiddleware|ObjectProphecy */
+    private $methodNotAllowedMiddleware;
 
     /** @var PathBasedRoutingMiddleware */
     private $routeMiddleware;
@@ -55,13 +62,20 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
             new Response()
         );
         $this->dispatchMiddleware = $this->prophesize(DispatchMiddleware::class)->reveal();
+        $this->methodNotAllowedMiddleware = $this->prophesize(MethodNotAllowedMiddleware::class)->reveal();
     }
 
     public function createApplication()
     {
+        $container = new MiddlewareContainer($this->container->reveal());
+        $factory = new MiddlewareFactory($container);
+        $pipeline = new MiddlewarePipe();
+        $runner = $this->prophesize(RequestHandlerRunner::class)->reveal();
         return new Application(
-            $this->router->reveal(),
-            $this->container->reveal()
+            $factory,
+            $pipeline,
+            $this->routeMiddleware,
+            $runner
         );
     }
 
@@ -69,7 +83,11 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
     {
         $r = new ReflectionProperty($app, 'pipeline');
         $r->setAccessible(true);
-        return $r->getValue($app);
+        $pipeline = $r->getValue($app);
+
+        $r = new ReflectionProperty($pipeline, 'pipeline');
+        $r->setAccessible(true);
+        return $r->getValue($pipeline);
     }
 
     public static function assertRoute($spec, array $routes)
@@ -160,7 +178,26 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
         );
     }
 
-    public function injectableMiddleware()
+    public static function assertMethodNotAllowedMiddleware(MiddlewareInterface $middleware)
+    {
+        if ($middleware instanceof MethodNotAllowedMiddleware) {
+            Assert::assertInstanceOf(MethodNotAllowedMiddleware::class, $middleware);
+            return;
+        }
+
+        if (! $middleware instanceof Middleware\LazyLoadingMiddleware) {
+            Assert::fail('Middleware is not an instance of MethodNotAllowedMiddleware');
+        }
+
+        Assert::assertAttributeSame(
+            MethodNotAllowedMiddleware::class,
+            'middlewareName',
+            $middleware,
+            'Middleware is not an instance of MethodNotAllowedMiddleware'
+        );
+    }
+
+    public function callableMiddlewares()
     {
         return [
             [CallableInteropMiddleware::class],
@@ -185,7 +222,7 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
     }
 
     /**
-     * @dataProvider injectableMiddleware
+     * @dataProvider callableMiddlewares
      *
      * @param callable|array|string $middleware
      */
@@ -243,7 +280,7 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
 
     public function testInjectPipelineFromConfigHonorsPriorityOrderWhenAttachingMiddleware()
     {
-        $middleware = new InteropMiddleware();
+        $middleware = new TestAsset\InteropMiddleware();
 
         $pipeline1 = [['middleware' => clone $middleware, 'priority' => 1]];
         $pipeline2 = [['middleware' => clone $middleware, 'priority' => 100]];
@@ -258,14 +295,14 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
 
         $pipeline = $this->getQueueFromApplicationPipeline($app);
 
-        $this->assertSame($pipeline2[0]['middleware'], $pipeline->dequeue()->handler);
-        $this->assertSame($pipeline1[0]['middleware'], $pipeline->dequeue()->handler);
-        $this->assertSame($pipeline3[0]['middleware'], $pipeline->dequeue()->handler);
+        $this->assertSame($pipeline2[0]['middleware'], $pipeline->dequeue());
+        $this->assertSame($pipeline1[0]['middleware'], $pipeline->dequeue());
+        $this->assertSame($pipeline3[0]['middleware'], $pipeline->dequeue());
     }
 
     public function testMiddlewareWithoutPriorityIsGivenDefaultPriorityAndRegisteredInOrderReceived()
     {
-        $middleware = new InteropMiddleware();
+        $middleware = new TestAsset\InteropMiddleware();
 
         $pipeline1 = [['middleware' => clone $middleware]];
         $pipeline2 = [['middleware' => clone $middleware]];
@@ -280,9 +317,9 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
 
         $pipeline = $this->getQueueFromApplicationPipeline($app);
 
-        $this->assertSame($pipeline3[0]['middleware'], $pipeline->dequeue()->handler);
-        $this->assertSame($pipeline1[0]['middleware'], $pipeline->dequeue()->handler);
-        $this->assertSame($pipeline2[0]['middleware'], $pipeline->dequeue()->handler);
+        $this->assertSame($pipeline3[0]['middleware'], $pipeline->dequeue());
+        $this->assertSame($pipeline1[0]['middleware'], $pipeline->dequeue());
+        $this->assertSame($pipeline2[0]['middleware'], $pipeline->dequeue());
     }
 
     public function testInjectPipelineFromConfigWithEmptyConfigDoesNothing()
@@ -308,7 +345,7 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
             'routes' => [
                 [
                     'path' => '/',
-                    'middleware' => new InteropMiddleware(),
+                    'middleware' => new TestAsset\InteropMiddleware(),
                     'allowed_methods' => 'not-valid',
                 ],
             ],
@@ -327,7 +364,7 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
             'routes' => [
                 [
                     'path' => '/',
-                    'middleware' => new InteropMiddleware(),
+                    'middleware' => new TestAsset\InteropMiddleware(),
                     'allowed_methods' => ['GET'],
                     'options' => 'invalid',
                 ],
@@ -347,7 +384,7 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
             'routes' => [
                 [
                     'path' => '/',
-                    'middleware' => new InteropMiddleware(),
+                    'middleware' => new TestAsset\InteropMiddleware(),
                     'allowed_methods' => ['GET'],
                     'options' => [
                         'foo' => 'bar',
@@ -371,7 +408,7 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
         $config = [
             'routes' => [
                 [
-                    'middleware' => new InteropMiddleware(),
+                    'middleware' => new TestAsset\InteropMiddleware(),
                     'allowed_methods' => ['GET'],
                     'options' => [
                         'foo' => 'bar',

@@ -1,15 +1,18 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2016-2017 Zend Technologies USA Inc. (https://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Zend\Expressive\Middleware;
 
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Throwable;
 use Whoops\Handler\JsonResponseHandler;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run;
@@ -43,14 +46,11 @@ class WhoopsErrorResponseGenerator
         $this->whoops = $whoops;
     }
 
-    /**
-     * @param \Throwable|\Exception $e
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @return ResponseInterface
-     */
-    public function __invoke($e, ServerRequestInterface $request, ResponseInterface $response)
-    {
+    public function __invoke(
+        Throwable $e,
+        ServerRequestInterface $request,
+        ResponseInterface $response
+    ) : ResponseInterface {
         // Walk through all handlers
         foreach ($this->whoops->getHandlers() as $handler) {
             // Add fancy data for the PrettyPageHandler
@@ -82,18 +82,14 @@ class WhoopsErrorResponseGenerator
 
     /**
      * Prepare the Whoops page handler with a table displaying request information
-     *
-     * @param ServerRequestInterface $request
-     * @param PrettyPageHandler $handler
-     * @return void
      */
-    private function prepareWhoopsHandler(ServerRequestInterface $request, PrettyPageHandler $handler)
+    private function prepareWhoopsHandler(ServerRequestInterface $request, PrettyPageHandler $handler) : void
     {
         $uri = $request->getAttribute('originalUri', false) ?: $request->getUri();
         $request = $request->getAttribute('originalRequest', false) ?: $request;
 
         $serverParams = $request->getServerParams();
-        $scriptName = isset($serverParams['SCRIPT_NAME']) ? $serverParams['SCRIPT_NAME'] : '';
+        $scriptName = $serverParams['SCRIPT_NAME'] ?? '';
 
         $handler->addDataTable('Expressive Application Request', [
             'HTTP Method'            => $request->getMethod(),

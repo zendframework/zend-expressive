@@ -3,59 +3,125 @@ site_dir: docs/html
 pages:
     - index.md
     - 'Getting Started':
-        - 'Overview and Features': v2/getting-started/features.md
-        - 'Quick Start: Standalone': v2/getting-started/standalone.md
-        - 'Quick Start: Skeleton Installer': v2/getting-started/skeleton.md
+        - 'Overview and Features': v3/getting-started/features.md
+        - 'Quick Start: Standalone': v3/getting-started/standalone.md
+        - 'Quick Start: Skeleton Installer': v3/getting-started/skeleton.md
     - Features:
-        - "Middleware Types": v2/features/middleware-types.md
-        - Applications: v2/features/application.md
+        - "Middleware Types": v3/features/middleware-types.md
+        - Applications: v3/features/application.md
         - Containers:
-            - Introduction: v2/features/container/intro.md
-            - 'Container Factories': v2/features/container/factories.md
-            - 'Delegator Factories': v2/features/container/delegator-factories.md
-            - 'Using zend-servicemanager': v2/features/container/zend-servicemanager.md
-            - 'Using Pimple': v2/features/container/pimple.md
-            - 'Using Aura.Di': v2/features/container/aura-di.md
+            - Introduction: v3/features/container/intro.md
+            - 'Container Factories': v3/features/container/factories.md
+            - 'Delegator Factories': v3/features/container/delegator-factories.md
+            - 'Using zend-servicemanager': v3/features/container/zend-servicemanager.md
+            - 'Using Pimple': v3/features/container/pimple.md
+            - 'Using Aura.Di': v3/features/container/aura-di.md
         - 'Routing Adapters':
-            - Introduction: v2/features/router/intro.md
-            - 'Routing Interface': v2/features/router/interface.md
-            - 'URI Generation': v2/features/router/uri-generation.md
-            - 'Routing vs Piping': v2/features/router/piping.md
-            - 'Using Aura': v2/features/router/aura.md
-            - 'Using FastRoute': v2/features/router/fast-route.md
-            - 'Using the ZF2 Router': v2/features/router/zf2.md
+            - Introduction: v3/features/router/intro.md
+            - 'Routing Interface': v3/features/router/interface.md
+            - 'URI Generation': v3/features/router/uri-generation.md
+            - 'Routing vs Piping': v3/features/router/piping.md
+            - 'Using Aura': v3/features/router/aura.md
+            - 'Using FastRoute': v3/features/router/fast-route.md
+            - 'Using zend-router': v3/features/router/zf2.md
         - Templating:
-            - Introduction: v2/features/template/intro.md
-            - 'Template Renderer Interface': v2/features/template/interface.md
-            - 'Templated Middleware': v2/features/template/middleware.md
-            - 'Using Plates': v2/features/template/plates.md
-            - 'Using Twig': v2/features/template/twig.md
-            - 'Using zend-view': v2/features/template/zend-view.md
-        - 'Error Handling': v2/features/error-handling.md
-        - 'Modular Applications': v2/features/modular-applications.md
+            - Introduction: v3/features/template/intro.md
+            - 'Template Renderer Interface': v3/features/template/interface.md
+            - 'Templated Middleware': v3/features/template/middleware.md
+            - 'Using Plates': v3/features/template/plates.md
+            - 'Using Twig': v3/features/template/twig.md
+            - 'Using zend-view': v3/features/template/zend-view.md
+        - 'Error Handling': v3/features/error-handling.md
+        - 'Modular Applications': v3/features/modular-applications.md
         - Middleware:
-            - 'Implicit HEAD and OPTIONS Middleware': v2/features/middleware/implicit-methods-middleware.md
+            - 'Implicit HEAD and OPTIONS Middleware': v3/features/middleware/implicit-methods-middleware.md
         - Helpers:
-            - Introduction: v2/features/helpers/intro.md
-            - UrlHelper: v2/features/helpers/url-helper.md
-            - ServerUrlHelper: v2/features/helpers/server-url-helper.md
-            - 'Body Parsing Middleware': v2/features/helpers/body-parse.md
-            - 'Content-Length Middleware': v2/features/helpers/content-length.md
-        - Emitters: v2/features/emitters.md
+            - Introduction: v3/features/helpers/intro.md
+            - UrlHelper: v3/features/helpers/url-helper.md
+            - ServerUrlHelper: v3/features/helpers/server-url-helper.md
+            - 'Body Parsing Middleware': v3/features/helpers/body-parse.md
+            - 'Content-Length Middleware': v3/features/helpers/content-length.md
+        - Emitters: v3/features/emitters.md
     - Cookbook:
-        - 'Autowiring routes and pipeline middleware': v2/cookbook/autowiring-routes-and-pipelines.md
-        - 'Prepending a common path to all routes': v2/cookbook/common-prefix-for-routes.md
-        - 'Route-specific middleware pipelines': v2/cookbook/route-specific-pipeline.md
-        - 'Registering custom view helpers when using zend-view': v2/cookbook/using-custom-view-helpers.md
-        - 'Using zend-form view helpers': v2/cookbook/using-zend-form-view-helpers.md
-        - 'Using Expressive from a subdirectory': v2/cookbook/using-a-base-path.md
-        - 'Setting a locale based on a routing parameter': v2/cookbook/setting-locale-depending-routing-parameter.md
-        - 'Setting a locale without a routing parameter': v2/cookbook/setting-locale-without-routing-parameter.md
-        - 'Enabling debug toolbars': v2/cookbook/debug-toolbars.md
-        - 'Handling multiple routes in a single class': v2/cookbook/using-routed-middleware-class-as-controller.md
-        - 'Flash Messengers': v2/cookbook/flash-messengers.md
-        - 'Passing data between middleware': v2/cookbook/passing-data-between-middleware.md
+        - 'Autowiring routes and pipeline middleware': v3/cookbook/autowiring-routes-and-pipelines.md
+        - 'Prepending a common path to all routes': v3/cookbook/common-prefix-for-routes.md
+        - 'Route-specific middleware pipelines': v3/cookbook/route-specific-pipeline.md
+        - 'Registering custom view helpers when using zend-view': v3/cookbook/using-custom-view-helpers.md
+        - 'Using zend-form view helpers': v3/cookbook/using-zend-form-view-helpers.md
+        - 'Using Expressive from a subdirectory': v3/cookbook/using-a-base-path.md
+        - 'Setting a locale based on a routing parameter': v3/cookbook/setting-locale-depending-routing-parameter.md
+        - 'Setting a locale without a routing parameter': v3/cookbook/setting-locale-without-routing-parameter.md
+        - 'Enabling debug toolbars': v3/cookbook/debug-toolbars.md
+        - 'Handling multiple routes in a single class': v3/cookbook/using-routed-middleware-class-as-controller.md
+        - 'Flash Messengers': v3/cookbook/flash-messengers.md
+        - 'Passing data between middleware': v3/cookbook/passing-data-between-middleware.md
     - Reference:
+        - "Why choose Expressive?": v3/why-expressive.md
+        - "CLI Tooling": v3/reference/cli-tooling.md
+        - Examples: v3/reference/usage-examples.md
+        - 'Expressive Projects': v3/reference/expressive-projects.md
+        - Migration: v3/reference/migration.md
+    - v2:
+        - v2/index.md
+        - 'Getting Started':
+            - 'Overview and Features': v2/getting-started/features.md
+            - 'Quick Start: Standalone': v2/getting-started/standalone.md
+            - 'Quick Start: Skeleton Installer': v2/getting-started/skeleton.md
+        - Features:
+            - "Middleware Types": v2/features/middleware-types.md
+            - Applications: v2/features/application.md
+            - Containers:
+                - Introduction: v2/features/container/intro.md
+                - 'Container Factories': v2/features/container/factories.md
+                - 'Delegator Factories': v2/features/container/delegator-factories.md
+                - 'Using zend-servicemanager': v2/features/container/zend-servicemanager.md
+                - 'Using Pimple': v2/features/container/pimple.md
+                - 'Using Aura.Di': v2/features/container/aura-di.md
+            - 'Routing Adapters':
+                - Introduction: v2/features/router/intro.md
+                - 'Routing Interface': v2/features/router/interface.md
+                - 'URI Generation': v2/features/router/uri-generation.md
+                - 'Routing vs Piping': v2/features/router/piping.md
+                - 'Using Aura': v2/features/router/aura.md
+                - 'Using FastRoute': v2/features/router/fast-route.md
+                - 'Using the ZF2 Router': v2/features/router/zf2.md
+            - Templating:
+                - Introduction: v2/features/template/intro.md
+                - 'Template Renderer Interface': v2/features/template/interface.md
+                - 'Templated Middleware': v2/features/template/middleware.md
+                - 'Using Plates': v2/features/template/plates.md
+                - 'Using Twig': v2/features/template/twig.md
+                - 'Using zend-view': v2/features/template/zend-view.md
+            - 'Error Handling': v2/features/error-handling.md
+            - 'Modular Applications': v2/features/modular-applications.md
+            - Middleware:
+                - 'Implicit HEAD and OPTIONS Middleware': v2/features/middleware/implicit-methods-middleware.md
+            - Helpers:
+                - Introduction: v2/features/helpers/intro.md
+                - UrlHelper: v2/features/helpers/url-helper.md
+                - ServerUrlHelper: v2/features/helpers/server-url-helper.md
+                - 'Body Parsing Middleware': v2/features/helpers/body-parse.md
+                - 'Content-Length Middleware': v2/features/helpers/content-length.md
+            - Emitters: v2/features/emitters.md
+        - Cookbook:
+            - 'Autowiring routes and pipeline middleware': v2/cookbook/autowiring-routes-and-pipelines.md
+            - 'Prepending a common path to all routes': v2/cookbook/common-prefix-for-routes.md
+            - 'Route-specific middleware pipelines': v2/cookbook/route-specific-pipeline.md
+            - 'Registering custom view helpers when using zend-view': v2/cookbook/using-custom-view-helpers.md
+            - 'Using zend-form view helpers': v2/cookbook/using-zend-form-view-helpers.md
+            - 'Using Expressive from a subdirectory': v2/cookbook/using-a-base-path.md
+            - 'Setting a locale based on a routing parameter': v2/cookbook/setting-locale-depending-routing-parameter.md
+            - 'Setting a locale without a routing parameter': v2/cookbook/setting-locale-without-routing-parameter.md
+            - 'Enabling debug toolbars': v2/cookbook/debug-toolbars.md
+            - 'Handling multiple routes in a single class': v2/cookbook/using-routed-middleware-class-as-controller.md
+            - 'Flash Messengers': v2/cookbook/flash-messengers.md
+            - 'Passing data between middleware': v2/cookbook/passing-data-between-middleware.md
+        - Reference:
+            - "Why choose Expressive?": v2/why-expressive.md
+            - "CLI Tooling": v2/reference/cli-tooling.md
+            - Examples: v2/reference/usage-examples.md
+            - 'Expressive Projects': v2/reference/expressive-projects.md
+            - Migration: v2/reference/migration.md
         - "Why choose Expressive?": v2/why-expressive.md
         - "CLI Tooling": v2/reference/cli-tooling.md
         - Examples: v2/reference/usage-examples.md

@@ -1,9 +1,11 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (https://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Zend\Expressive\Container;
 
@@ -42,14 +44,11 @@ class WhoopsFactory
 {
     /**
      * Create and return an instance of the Whoops runner.
-     *
-     * @param ContainerInterface $container
-     * @return Whoops
      */
-    public function __invoke(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container) : Whoops
     {
         $config = $container->has('config') ? $container->get('config') : [];
-        $config = isset($config['whoops']) ? $config['whoops'] : [];
+        $config = $config['whoops'] ?? [];
 
         $whoops = new Whoops();
         $whoops->writeToOutput(false);
@@ -67,7 +66,7 @@ class WhoopsFactory
      * @param array|\ArrayAccess $config
      * @return void
      */
-    private function registerJsonHandler(Whoops $whoops, $config)
+    private function registerJsonHandler(Whoops $whoops, $config) : void
     {
         if (empty($config['json_exceptions']['display'])) {
             return;

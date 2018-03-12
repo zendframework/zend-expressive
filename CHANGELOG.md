@@ -2,6 +2,658 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 3.0.0rc3 - 2018-03-07
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- [#579](https://github.com/zendframework/zend-expressive/pull/579) updates the
+  version constraint for zend-expressive-router to use 3.0.0rc4 or later.
+
+- [#579](https://github.com/zendframework/zend-expressive/pull/579) updates the
+  version constraint for zend-stratigility to use 3.0.0rc1 or later.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- [#580](https://github.com/zendframework/zend-expressive/pull/580) removes
+  zend-diactoros as a requirement; all usages of it within the package are
+  currently conditional on it being installed, and can be replaced easily with
+  any other PSR-7 implementation at this time.
+
+### Fixed
+
+- Nothing.
+
+## 3.0.0rc2 - 2018-03-06
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#578](https://github.com/zendframework/zend-expressive/pull/578) fixes the
+  version constraint used with zend-stratigility to allow it to update to later
+  versions when released.
+
+## 3.0.0rc1 - 2018-02-27
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#574](https://github.com/zendframework/zend-expressive/pull/574) updates the
+  classes `Zend\Expressive\Exception\InvalidMiddlewareException` and
+  `MissingDependencyException` to implement the
+  [PSR-11](https://www.php-fig.org/psr/psr-11/) `ContainerExceptionInterface`.
+
+## 3.0.0alpha9 - 2018-02-22
+
+### Added
+
+- [#562](https://github.com/zendframework/zend-expressive/pull/562) adds the
+  class `Zend\Expressive\Response\ServerRequestErrorResponseGenerator`, and maps
+  it to the `Zend\Expressive\Container\ServerRequestErrorResponseGeneratorFactory`.
+  The class generates an error response when an exeption occurs producing a
+  server request instance, and can be optionally templated.
+
+### Changed
+
+- [#568](https://github.com/zendframework/zend-expressive/pull/568) updates the
+  zendframework/zend-stratigility dependency to require at least 3.0.0alpha4.
+
+- [#568](https://github.com/zendframework/zend-expressive/pull/568) updates the
+  `ErrorHandlerFactory` to pull the `Psr\Http\Message\ResponseInterface`
+  service, which returns a factory capable of returning a response instance,
+  and passes it to the `Zend\Stratigility\Middleware\ErrorHandler` instance it
+  creates, as that class changes in 3.0.0alpha4 such that it now expects a
+  factory instead of an instance.
+
+- [#562](https://github.com/zendframework/zend-expressive/pull/562) modifies the
+  `Zend\Expressive\Container\RequestHandlerRunnerFactory` to depend on the
+  `Zend\Expressive\Response\ServerRequestErrorResponseGenerator` service instead
+  of the `Zend\Expressive\SERVER_REQUEST_ERROR_RESPONSE_GENERATOR` virtual
+  service.
+
+- [#562](https://github.com/zendframework/zend-expressive/pull/562) extracts
+  most logic from `Zend\Expressive\Middleware\ErrorResponseGenerator` to a new
+  trait, `Zend\Expressive\Response\ErrorResponseGeneratorTrait`. A trait was
+  used as the classes consuming it are from different namespaces, and thus
+  different inheritance trees. The trait is used by both the
+  `ErrorResponseGenerator` and the new `ServerRequestErrorResponseGenerator`.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- [#562](https://github.com/zendframework/zend-expressive/pull/562) removes the
+  constant `Zend\Expressive\SERVER_REQUEST_ERROR_RESPONSE_GENERATOR`. It was
+  only used internally previously.
+
+### Fixed
+
+- Nothing.
+
+## 3.0.0alpha8 - 2018-02-21
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- [#559](https://github.com/zendframework/zend-expressive/pull/559) reverts the
+  changes performed for [#556](https://github.com/zendframework/zend-expressive/pull/556)
+  to the `ApplicationFactory`. It now uses the canonical service name for the
+  `PathBasedRoutingMiddleware` instead of the `ROUTE_MIDDLEWARE` constant.
+
+- [#561](https://github.com/zendframework/zend-expressive/pull/561) updates to
+  zend-expressive-router 3.0.0alpha3.
+
+- [#561](https://github.com/zendframework/zend-expressive/pull/561) renames
+  `Zend\Expressive\Container\ResponseFactory` to `Zend\Expressive\Container\ResponseFactoryFactory`,
+  and the factory now returns a callable that will return a zend-diactoros
+  `Response` instance, instead of returning the instance itself. Each of the
+  various services named after zend-expressive-router response constants were
+  removed in favor of a single `Psr\Http\Message\ResponseInterface` service
+  resolving to the `ResponseFactoryFactory`.
+
+- [#561](https://github.com/zendframework/zend-expressive/pull/561) modifies the
+  `Zend\Expressive\Handler\NotFoundHandler` to compose a response factory
+  instead of a response prototype. This approach allows it to use the
+  `Psr\Http\Message\ResponseInterface` service defined per the above note.
+
+- [#561](https://github.com/zendframework/zend-expressive/pull/561) renames
+  the `Zend\Expressive\Router\IMPLICIT_HEAD_MIDDLEWARE_STREAM_FACTORY` service
+  to `Psr\Http\Message\StreamInterface`, as this is what zend-expressive-router
+  now expects.
+
+- [#561](https://github.com/zendframework/zend-expressive/pull/561) renames the
+  `Zend\Expressive\ServerRequestFactory` service to
+  `Psr\Http\Message\ServerRequestInterface`. The
+  `Zend\Expressive\SERVER_REQUEST_FACTORY` constant now resolves to the
+  interface name.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#558](https://github.com/zendframework/zend-expressive/pull/558) adds a
+  missing import statement for the PSR-7 `StreamInterface` to the
+  `StreamFactoryFactory`.
+
+- [#555](https://github.com/zendframework/zend-expressive/pull/555) adds tests
+  to better ensure that the entries in the `ConfigProvider` resolve to valid
+  factories, aliases, etc.
+
+## 3.0.0alpha7 - 2018-02-14
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- [#556](https://github.com/zendframework/zend-expressive/pull/556) modifies the
+  `ApplicationFactory` such that it now uses the
+  `Zend\Expressive\ROUTE_MIDDLEWARE` constant in order to retrieve the
+  `Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware` instance.
+  This is done to help smooth upgrades from v2 to v3, as it prevents a manual
+  step when updating the `config/pipeline.php`, and ensures that the instance
+  composed in the application is the same instance piped to the application.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
+## 3.0.0alpha6 - 2018-02-14
+
+### Added
+
+- [#551](https://github.com/zendframework/zend-expressive/pull/551) and
+  [#553](https://github.com/zendframework/zend-expressive/pull/553) add
+  `Zend\Expressive\Container\StreamFactoryFactory`, for producing an callable
+  capable of producing an empty, writable PSR-7 `StreamInterface` instance using
+  zend-diactoros. The stream produced is backed by a `php://temp` stream.
+
+- [#551](https://github.com/zendframework/zend-expressive/pull/551) and
+  [#554](https://github.com/zendframework/zend-expressive/pull/554) add
+  the following constants under the `Zend\Expressive` namespace:
+
+  - `DEFAULT_DELEGATE` can be used to refer to the former `DefaultDelegate` FQCN service.
+  - `IMPLICIT_HEAD_MIDDLEWARE` can be used to refer to the former `Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware` service.
+  - `IMPLICIT_OPTIONS_MIDDLEWARE` can be used to refer to the former `Zend\Expressive\Router\Middleware\ImplicitOPTIONSMiddleware` service.
+  - `NOT_FOUND_MIDDLEWARE` can be used to refer to the former `Zend\Expressive\Middleware\NotFoundMiddleware` service.
+  - `NOT_FOUND_RESPONSE` can be used to refer to the former `Zend\Expressive\Response\NotFoundResponseInterface` service.
+  - `SERVER_REQUEST_ERROR_RESPONSE_GENERATOR` can be used to refer to the former `Zend\Expressive\ServerRequestErrorResponseGenerator` service.
+  - `SERVER_REQUEST_FACTORY` can be used to refer to the former `Zend\Expressive\ServerRequestFactory` service.
+
+### Changed
+
+- [#551](https://github.com/zendframework/zend-expressive/pull/551) updates
+  dependencies to pin to zend-expressive-router 3.0.0alpha2 or later.
+
+- [#551](https://github.com/zendframework/zend-expressive/pull/551) renames
+  `Zend\Expressive\Middleware\NotFoundMiddleware` to
+  `Zend\Expressive\Handler\NotFoundHandler`, which allows it to be used as a
+  PSR-15 request handler, and, when piped or routed to, also as middleware.
+  The original class name was aliased to the renamed class in the
+  `ConfigProvider`.
+
+- [#551](https://github.com/zendframework/zend-expressive/pull/551) modifies the
+  `ApplicationConfigInjectionDelegator` to raise an exception if the callback
+  passed to it does not produce an `Application` instance, instead of returning
+  the instance without changes. This allows developers to understand what they
+  need to correct in their service configuration.
+
+- [#551](https://github.com/zendframework/zend-expressive/pull/551) updates
+  the `ConfigProvider` to add entries for the following zend-expressive-router
+  constants as follows:
+
+  - `IMPLICIT_HEAD_MIDDLEWARE_RESPONSE` maps to the `ResponseFactory`.
+  - `IMPLICIT_HEAD_MIDDLEWARE_STREAM_FACTORY` maps to the `StreamFactory`.
+  - `IMPLICIT_OPTIONS_MIDDLEWARE_RESPONSE` maps to the `ResponseFactory`.
+
+- [#554](https://github.com/zendframework/zend-expressive/pull/554) updates
+  the `ConfigProvider` to add entries for the following constants as follows:
+
+  - `IMPLICIT_HEAD_MIDDLEWARE` aliases to the `Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware` service.
+  - `IMPLICIT_OPTIONS_MIDDLEWARE` aliases to the `Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware` service.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- [#551](https://github.com/zendframework/zend-expressive/pull/551) removes
+  `Zend\Expressive\Container\RouteMiddlewareFactory`, as zend-expressive-router
+  now provides a factory for the middleware.
+
+- [#551](https://github.com/zendframework/zend-expressive/pull/551) removes
+  `Zend\Expressive\Container\DispatchMiddlewareFactory`, as zend-expressive-router
+  now provides a factory for the middleware.
+
+- [#551](https://github.com/zendframework/zend-expressive/pull/551) removes
+  `Zend\Expressive\Middleware\ImplicitHeadMiddleware`, as it is now provided by
+  the zend-expressive-router package.
+
+- [#551](https://github.com/zendframework/zend-expressive/pull/551) removes
+  `Zend\Expressive\Middleware\ImplicitOptionsMiddleware`, as it is now provided
+  by the zend-expressive-router package.
+
+### Fixed
+
+- Nothing.
+
+## 3.0.0alpha5 - 2018-02-07
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- [#547](https://github.com/zendframework/zend-expressive/pull/547) modifies the
+  `ConfigProvider`, the `NotFoundMiddlewareFactory`, and the
+  `RouteMiddlewareFactory` to remove the concept of the _unshared_
+  `ResponseInterface` service, as service sharing is not always configurable in
+  container implementations. To resolve the ability to provide discrete
+  instances, the `ConfigProvider` defines two new virtual services that each
+  resolve to the `Zend\Expressive\Container\ResponseFactory`:
+
+  - `Zend\Expressive\Response\NotFoundResponseInterface`
+  - `Zend\Expressive\Response\RouterResponseInterface`
+
+  The related factories now consume these services in order to receive a
+  response prototype for the services they produce.
+
+- [#542](https://github.com/zendframework/zend-expressive/pull/542) modifies the
+  `composer.json` to no longer suggest the pimple/pimple package, but rather the
+  zendframework/zend-pimple-config package.
+
+- [#542](https://github.com/zendframework/zend-expressive/pull/542) modifies the
+  `composer.json` to no longer suggest the aura/di package, but rather the
+  zendframework/zend-auradi-config package.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
+## 3.0.0alpha4 - 2018-02-07
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#549](https://github.com/zendframework/zend-expressive/pull/549) modifies how
+  the `ServerRequestFactoryFactory` returns the
+  `ServerRequestFactory::fromGlobals()` mechanism, wrapping it in an anonymous
+  function. This ensures compatibility across all containers.
+
+- [#550](https://github.com/zendframework/zend-expressive/pull/550) fixes how
+  the `ConfigProvider` references the `ErrorResponseGenerator`, using the
+  `Zend\Expressive\Middleware` namespace instead of the
+  `Zend\Stratigility\Middleware` namespace.
+
+## 3.0.0alpha3 - 2018-02-06
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- [#546](https://github.com/zendframework/zend-expressive/pull/546) merges
+  `Zend\Expressive\Middleware\NotFoundHandler` into
+  `Zend\Expressive\Middleware\NotFoundMiddleware`, as well as merges
+  `Zend\Expressive\Container\NotFoundHandlerFactory` into
+  `Zend\Expressive\Container\NotFoundMiddlewareFactory`. `NotFoundMiddleware`
+  now does the work of the former `Zend\Expressive\Delegate\NotFoundDelegate`,
+  and, as such, accepts the following constructor arguments:
+
+  - PSR-7 `ResponseInterface $responsePrototype` (required)
+  - `Zend\Expressive\Template\TemplateRendererInterface $renderer` (optional)
+  - `string $template = self::TEMPLATE_DEFAULT` (optional; defaults to "error::404")
+  - `string $layout = self::LAYOUT_DEFAULT` (optional; defaults to "layout::default")
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- [#546](https://github.com/zendframework/zend-expressive/pull/546) removes the
+  class `Zend\Expressive\Delegate\DefaultDelegate`, as there is no longer a
+  concept of a default handler invoked by the application. Instead, developers
+  MUST pipe middleware at the innermost layer of the pipeline guaranteed to
+  return a response; we recommend using `Zend\Expressive\Middleware\NotFoundMiddleware` 
+  for this purpose.
+
+### Fixed
+
+- Nothing.
+
+## 3.0.0alpha2 - 2018-02-05
+
+### Added
+
+- [#543](https://github.com/zendframework/zend-expressive/pull/543) adds support
+  for the final PSR-15 interfaces, and explicitly depends on
+  psr/http-server-middleware.
+
+- [#543](https://github.com/zendframework/zend-expressive/pull/543) adds a new
+  class, `Zend\Expressive\MiddlewareContainer`. The class decorates a PSR-11
+  `ContainerInterface`, and adds the following behavior:
+
+  - If a class is not in the container, but exists, `has()` will return `true`.
+  - If a class is not in the container, but exists, `get()` will attempt to
+    instantiate it, caching the instance locally if it is valid.
+  - Any instance pulled from the container or directly instantiated is tested.
+    If it is a PSR-15 `RequestHandlerInterface`, it will decorate it in a
+    zend-stratigility `RequestHandlerMiddleware` instance. If the instance is
+    not a PSR-15 `MiddlewareInterface`, the container will raise a
+    `Zend\Expressive\Exception\InvalidMiddlewareException`.
+
+- [#543](https://github.com/zendframework/zend-expressive/pull/543) adds a new
+  class, `Zend\Expressive\MiddlewareFactory`. The class composes a
+  `MiddlewareContainer`, and exposes the following methods:
+
+  - `callable(callable $middleware) : CallableMiddlewareDecorator`
+  - `handler(RequestHandlerInterface $handler) : RequestHandlerMiddleware`
+  - `lazy(string $service) : LazyLoadingMiddleware`
+  - `prepare($middleware) : MiddlewareInterface`: accepts a string service name,
+    callable, `RequestHandlerInterface`, `MiddlewareInterface`, or array of such
+    values, and returns a `MiddlewareInterface`, raising an exception if it
+    cannot determine what to do.
+  - `pipeline(...$middleware) : MiddlewarePipe`: passes each argument to
+    `prepare()`, and the result to `MiddlewarePipe::pipe()`, returning the
+    pipeline when complete.
+
+- [#543](https://github.com/zendframework/zend-expressive/pull/543) adds
+  the following factory classes, each within the `Zend\Expressive\Container`
+  namespace:
+
+  - `ApplicationPipelineFactory`: creates and returns a
+    `Zend\Stratigility\MiddlewarePipe` to use as the application middleware
+    pipeline.
+  - `DispatchMiddlewareFactory`: creates and returns a `Zend\Expressive\Router\DispatchMiddleware` instance.
+  - `EmitterFactory`: creates and returns a
+    `Zend\HttpHandlerRunner\Emitter\EmitterStack` instance composing an
+    `SapiEmitter` from that same namespace as the only emitter on the stack.
+    This is used as a dependency for the `Zend\HttpHandlerRunner\RequestHandlerRunner`
+    service.
+  - `MiddlewareContainerFactory`: creates and returns a `Zend\Expressive\MiddlewareContainer` 
+    instance decorating the PSR-11 container passed to the factory.
+  - `MiddlewareFactoryFactory`: creates and returns a `Zend\Expressive\MiddlewareFactory` 
+    instance decorating a `MiddlewareContainer` instance as pulled from the
+    container.
+  - `RequestHandlerRunnerFactory`: creates and returns a
+    `Zend\HttpHandlerRunner\RequestHandlerRunner` instance, using the services
+    `Zend\Expressive\Application`, `Zend\HttpHandlerRunner\Emitter\EmitterInterface`,
+    `Zend\Expressive\ServerRequestFactory`, and `Zend\Expressive\ServerRequestErrorResponseGenerator`.
+  - `RouteMiddlewareFactory`: creates and returns a `Zend\Expressive\Router\PathBasedRoutingMiddleware` instance.
+  - `ServerRequestFactoryFactory`: creates and returns a `callable` factory for
+    generating a PSR-7 `ServerRequestInterface` instance; this returned factory is a
+    dependency for the `Zend\HttpHandlerRunner\RequestHandlerRunner` service.
+  - `ServerRequestErrorResponseGeneratorFactory`: creates and returns a
+    `callable` that accepts a PHP `Throwable` in order to generate a PSR-7
+    `ResponseInterface` instance; this returned factory is a dependency for the
+    `Zend\HttpHandlerRunner\RequestHandlerRunner` service, which uses it to
+    generate a response in the scenario that the `ServerRequestFactory` is
+    unable to create a request instance.
+
+- [#543](https://github.com/zendframework/zend-expressive/pull/543) adds
+  the class `Zend\Expressive\Container\ApplicationConfigInjectionDelegator`.
+  This class may be used either as a delegator factory on the
+  `Zend\Expressive\Application` instance, or you may use the two static methods
+  it defines to inject pipeline middleware and/or routes from configuration:
+
+  - `injectPipelineFromConfig(Application $application, array $config) : void`
+  - `injectRoutesFromConfig(Application $application, array $config) : void`
+
+  These methods work the same way as the associated `Application` methods from
+  version 2, accepting the same configuration.
+
+- [#543](https://github.com/zendframework/zend-expressive/pull/543) adds
+  `Zend\Expressive\ConfigProvider`, which details the default service mappings.
+
+### Changed
+
+- [#543](https://github.com/zendframework/zend-expressive/pull/543) adds
+  dependencies on each of:
+
+  - zend-stratigility 3.0.0alpha3
+  - zend-expressive-router 3.0.0alpha1
+  - zend-httphandlerrunner 1.0.0
+
+  and removes the dependency http-interop/http-server-middleware.
+
+- [#543](https://github.com/zendframework/zend-expressive/pull/543) renames
+  `Zend\Expressive\Middleware\NotFoundHandler` to
+  `Zend\Expressive\Middleware\NotFoundMiddleware`, and its accompanying factory
+  `Zend\Expressive\Container\NotFoundHandlerFactory` to
+  `Zend\Expressive\Container\NotFoundMiddlewareFactory`.
+
+- [#543](https://github.com/zendframework/zend-expressive/pull/543) renames
+  `Zend\Expressive\Delegate\NotFoundDelegate` to
+  `Zend\Expressive\Handler\NotFoundHandler`, updating it to implement the PSR-15
+  `RequestHandlerInterface`. It also renames the factory
+  `Zend\Expressive\Container\NotFoundDelegateFactory` to
+  `Zend\Expressive\Container\NotFoundHandlerFactory`.
+
+- [#543](https://github.com/zendframework/zend-expressive/pull/543) refactors
+  `Zend\Expressive\Application` completely.
+
+  The class no longer extends `Zend\Stratigility\MiddlewarePipe`, and instead
+  implements the PSR-15 `MiddlewareInterface` and `RequestHandlerInterface`.
+
+  It now **requires** the following dependencies via constructor injection, in
+  the following order:
+
+  - `Zend\Expressive\MiddlewareFactory`
+  - `Zend\Stratigility\MiddlewarePipe`; this is the pipeline representing the application.
+  - `Zend\Expressive\Router\PathBasedRoutingMiddleware`
+  - `Zend\HttpHandlerRunner\RequestHandlerRunner`
+
+  It removes all "getter" methods (as detailed in the "Removed" section of this
+  release), but retains the following methods, with the changes described below.
+  Please note: in most cases, these methods accept the same arguments as in the
+  version 2 series, with the exception of callable double-pass middleware (these
+  may be decorated manually using `Zend\Stratigility\doublePassMiddleware()`),
+  and http-interop middleware (no longer supported; rewrite as PSR-15
+  middleware).
+
+  - `pipe($middlewareOrPath, $middleware = null) : void` passes its arguments to
+    the composed `MiddlewareFactory`'s `prepare()` method; if two arguments are
+    provided, the second is passed to the factory, and the two together are
+    passed to `Zend\Stratigility\path()` in order to decorate them to work as
+    middleware.  The prepared middleware is then piped to the composed
+    `MiddlewarePipe` instance.
+
+    As a result of switching to use the `MiddlewareFactory` to prepare
+    middleware, you may now pipe `RequestHandlerInterface` instances as well.
+
+  - `route(string $path, $middleware, array $methods = null, string $name) : Route`
+    passes its `$middleware` argument to the `MiddlewareFactory::prepare()`
+    method, and then all arguments to the composed `PathBasedRoutingMiddleware`
+    instance's `route()` method.
+
+    As a result of switching to use the `MiddlewareFactory` to prepare
+    middleware, you may now route to `RequestHandlerInterface` instances as
+    well.
+
+  - Each of `get`, `post`, `patch`, `put`, `delete`, and `any` now proxy to
+    `route()` after marshaling the correct `$methods`.
+
+  - `getRoutes() : Route[]` proxies to the composed `PathBasedRoutingMiddleware`
+    instance.
+
+  - `handle(ServerRequestInterface $request) : ResponseInterface` proxies to the
+    composed `MiddlewarePipe` instance's `handle()` method.
+
+  - `process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface`
+    proxies to the composed `MiddlewarePipe` instance's `process()` method.
+
+  - `run() : void` proxies to the composed `RequestHandlerRunner` instance.
+    Please note that the method no longer accepts any arguments.
+
+- [#543](https://github.com/zendframework/zend-expressive/pull/543) modifies the
+  `Zend\Expressive\Container\ApplicationFactory` to reflect the changes to the
+  `Zend\Expressive\Application` class as detailed above. It pulls the following
+  services to inject via the constructor:
+
+  - `Zend\Expressive\MiddlewareFactory`
+  - `Zend\Stratigility\ApplicationPipeline`, which should resolve to a
+    `MiddlewarePipe` instance; use the
+    `Zend\Expressive\Container\ApplicationPipelineFactory`.
+  - `Zend\Expressive\Router\PathBasedRoutingMiddleware`
+  - `Zend\HttpHandlerRunner\RequestHandlerRunner`
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- [#543](https://github.com/zendframework/zend-expressive/pull/543) removes
+  support for http-interop/http-server-middleware.
+
+- [#543](https://github.com/zendframework/zend-expressive/pull/543) removes the
+  class `Zend\Expressive\Middleware\RouteMiddleware`. Use the
+  `PathBasedRoutingMiddleware` or `RouteMiddleware` from zend-expressive-router
+  instead; the factory `Zend\Expressive\Container\RouteMiddlewareFactory` will
+  return a `PathBasedRoutingMiddleware` instance for you.
+
+- [#543](https://github.com/zendframework/zend-expressive/pull/543) removes the
+  class `Zend\Expressive\Middleware\DispatchMiddleware`. Use the
+  `DispatchMiddleware` from zend-expressive-router instead; the factory
+  `Zend\Expressive\Container\DispatchMiddlewareFactory` will return an instance
+  for you.
+
+- [#543](https://github.com/zendframework/zend-expressive/pull/543) removes the
+  class `Zend\Expressive\Emitter\EmitterStack`; use the class
+  `Zend\HttpHandlerRunner\Emitter\EmitterStack` instead.
+
+- [#543](https://github.com/zendframework/zend-expressive/pull/543) removes the
+  following methods from `Zend\Expressive\Application`:
+
+  - `pipeRoutingMiddleware()`: use `pipe(\Zend\Expressive\Router\PathBasedRoutingMiddleware::class)` instead.
+  - `pipeDispatchMiddleware()`: use `pipe(\Zend\Expressive\Router\DispatchMiddleware::class)` instead.
+  - `getContainer()`
+  - `getDefaultDelegate()`: ensure you pipe middleware capable of returning a response at the innermost layer; this can be done by decorating a request handler using `Zend\Stratigility\Middleware\RequestHandlerMiddleware`, using `Zend\Expressive\Middleware\NotFoundMiddleware`, or other approaches.
+  - `getEmitter()`: use the `Zend\HttpHandlerRunner\Emitter\EmitterInterface` service from the container.
+  - `injectPipelineFromConfig()`: use the new `ApplicationConfigInjectionDelegator` and/or the static method of the same name it defines.
+  - `injectRoutesFromConfig()`: use the new `ApplicationConfigInjectionDelegator` and/or the static method of the same name it defines.
+
+- [#543](https://github.com/zendframework/zend-expressive/pull/543) removes the
+  class `Zend\Expressive\AppFactory`.
+
+### Fixed
+
+- Nothing.
+
+## 3.0.0alpha1 - 2018-01-22
+
+### Added
+
+- [#529](https://github.com/zendframework/zend-expressive/pull/529) adds support
+  for http-interop/http-server-middleware (PSR-15 pre-cursor).
+
+- [#538](https://github.com/zendframework/zend-expressive/pull/538) adds scalar
+  and return type hints to methods wherever possible.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- [#529](https://github.com/zendframework/zend-expressive/pull/529) removes
+  support for PHP versions prior to PHP 7.1.
+
+- [#529](https://github.com/zendframework/zend-expressive/pull/529) removes
+  support for http-interop/http-middleware (previous PSR-15 iteration).
+
+### Fixed
+
+- Nothing.
+
 ## 2.2.0 - 2018-03-12
 
 ### Added
