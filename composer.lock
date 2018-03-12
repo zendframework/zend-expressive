@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "0bc64fba488ce035a2ab2e7404b65431",
+    "content-hash": "43ef3ad68c22086ad9fa309ae57ea601",
     "packages": [
         {
             "name": "fig/http-message-util",
@@ -545,16 +545,16 @@
         },
         {
             "name": "zendframework/zend-stratigility",
-            "version": "2.2.0rc3",
+            "version": "2.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-stratigility.git",
-                "reference": "824b7fba07c81dacf54eddafc15935bf9db1a45f"
+                "reference": "e8c413fcba926ede63099936a5f86acf9b8156c5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-stratigility/zipball/824b7fba07c81dacf54eddafc15935bf9db1a45f",
-                "reference": "824b7fba07c81dacf54eddafc15935bf9db1a45f",
+                "url": "https://api.github.com/repos/zendframework/zend-stratigility/zipball/e8c413fcba926ede63099936a5f86acf9b8156c5",
+                "reference": "e8c413fcba926ede63099936a5f86acf9b8156c5",
                 "shasum": ""
             },
             "require": {
@@ -575,9 +575,8 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.1.x-dev",
-                    "dev-develop": "2.2.x-dev",
-                    "dev-release-3.0.0": "3.0.x-dev"
+                    "dev-master": "2.2.x-dev",
+                    "dev-develop": "3.0.x-dev"
                 }
             },
             "autoload": {
@@ -603,7 +602,7 @@
                 "psr-7",
                 "zf"
             ],
-            "time": "2018-03-08T20:47:18+00:00"
+            "time": "2018-03-12T21:04:19+00:00"
         }
     ],
     "packages-dev": [
@@ -3362,9 +3361,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "zendframework/zend-stratigility": 5
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
