@@ -110,13 +110,6 @@ class ApplicationConfigInjectionDelegator
     public static function injectPipelineFromConfig(Application $application, array $config) : void
     {
         if (empty($config['middleware_pipeline'])) {
-            if (! isset($config['routes']) || ! is_array($config['routes'])) {
-                return;
-            }
-
-            $application->pipe(PathBasedRoutingMiddleware::class);
-            $application->pipe(MethodNotAllowedMiddleware::class);
-            $application->pipe(DispatchMiddleware::class);
             return;
         }
 
@@ -136,38 +129,7 @@ class ApplicationConfigInjectionDelegator
     /**
      * Inject routes from configuration.
      *
-     * Introspects the provided configuration for routes to inject in the
-     * application instance.
-     *
-     * The following configuration structure can be used to define routes:
-     *
-     * <code>
-     * return [
-     *     'routes' => [
-     *         [
-     *             'path' => '/path/to/match',
-     *             'middleware' => 'Middleware Service Name or Callable',
-     *             'allowed_methods' => ['GET', 'POST', 'PATCH'],
-     *             'options' => [
-     *                 'stuff' => 'to',
-     *                 'pass'  => 'to',
-     *                 'the'   => 'underlying router',
-     *             ],
-     *         ],
-     *         // etc.
-     *     ],
-     * ];
-     * </code>
-     *
-     * Each route MUST have a path and middleware key at the minimum.
-     *
-     * The "allowed_methods" key may be omitted, can be either an array or the
-     * value of the Zend\Expressive\Router\Route::HTTP_METHOD_ANY constant; any
-     * valid HTTP method token is allowed, which means you can specify custom HTTP
-     * methods as well.
-     *
-     * The "options" key may also be omitted, and its interpretation will be
-     * dependent on the underlying router used.
+     * Proxies to ApplicationConfigInjectionDelegator::injectRoutesFromConfig
      *
      * @throws InvalidArgumentException
      */

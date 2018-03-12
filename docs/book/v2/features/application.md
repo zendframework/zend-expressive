@@ -34,49 +34,31 @@ As noted at the start of this document, we provide several ways to create an
 If you wish to manually instantiate the `Application` instance, it has the
 following constructor:
 
-- Expressive 2.X:
-
-  ```php
-  /**
-   * @param Zend\Expressive\Router\RouterInterface $router
-   * @param null|Psr\Container\ContainerInterface $container IoC container from which to pull services, if any.
-   * @param null|Interop\Http\ServerMiddleware\DelegateInterface $defaultDelegate
-   *     Delegate to invoke when the internal middleware pipeline is exhausted
-   *     without returning a response.
-   * @param null|Zend\Diactoros\Response\EmitterInterface $emitter Emitter to use when `run()` is
-   *     invoked.
-   */
-  public function __construct(
-      Zend\Expressive\Router\RouterInterface $router,
-      Psr\Container\ContainerInterface $container = null,
-      Interop\Http\ServerMiddleware\DelegateInterface $defaultDelegate = null,
-      Zend\Diactoros\Response\EmitterInterface $emitter = null
-  );
-  ```
-
-- Expressive 1.X:
-
-  ```php
-  /**
-   * @param Zend\Expressive\Router\RouterInterface $router
-   * @param null|Psr\Container\ContainerInterface $container IoC container from which to pull services, if any.
-   * @param null|callable $finalHandler Final handler to use when $out is not
-   *     provided on invocation.
-   * @param null|Zend\Diactoros\Response\EmitterInterface $emitter Emitter to use when `run()` is
-   *     invoked.
-   */
-  public function __construct(
-      Zend\Expressive\Router\RouterInterface $router,
-      Psr\Container\ContainerInterface $container = null,
-      callable $finalHandler = null,
-      Zend\Diactoros\Response\EmitterInterface $emitter = null
-  );
-  ```
+```php
+/**
+ * @param Zend\Expressive\Router\RouterInterface $router
+ * @param null|Psr\Container\ContainerInterface $container IoC container from which to pull services, if any.
+ * @param null|Interop\Http\ServerMiddleware\DelegateInterface $defaultDelegate
+ *     Delegate to invoke when the internal middleware pipeline is exhausted
+ *     without returning a response.
+ * @param null|Zend\Diactoros\Response\EmitterInterface $emitter Emitter to use when `run()` is
+ *     invoked.
+ */
+public function __construct(
+    Zend\Expressive\Router\RouterInterface $router,
+    Psr\Container\ContainerInterface $container = null,
+    Interop\Http\ServerMiddleware\DelegateInterface $defaultDelegate = null,
+    Zend\Diactoros\Response\EmitterInterface $emitter = null
+);
+```
 
 If no container is provided at instantiation, then all routed and piped
 middleware **must** be provided as callables.
 
 ### AppFactory
+
+- Deprecated since version 2.2; instantiate `Application` directly and/or use a
+  `Zend\Stratigility\MiddlewarePipe` instance instead.
 
 `Zend\Expressive\AppFactory` provides a convenience layer for creating an
 `Application` instance; it makes the assumption that you will use defaults in
@@ -210,10 +192,10 @@ Read the section on [piping vs routing](router/piping.md) for more information.
 
 ### Registering routing and dispatch middleware
 
-Routing is accomplished via a dedicated middleware method,
-`Application::routeMiddleware()`; similarly, dispatching of routed middleware
-has a corresponding instance middleware method, `Application::dispatchMiddleware()`.
-Each can be piped/registered with other middleware platforms if desired.
+Routing is accomplished via dedicated middleware, `Zend\Expressive\Middleware\RouteMiddleware`;
+similarly, dispatching of routed middleware has a corresponding middleware,
+`Zend\Expressive\Middleware\DispatchMiddleware`. Each can be piped/registered
+with other middleware platforms if desired.
 
 These methods **MUST** be piped to the application so that the application will
 route and dispatch routed middleware. This is done using the following methods:
@@ -226,6 +208,18 @@ $app->pipeDispatchMiddleware();
 See the section on [piping](router/piping.md) to see how you can register
 non-routed middleware and create layered middleware applications.
 
+> #### Changed in version 2.2
+>
+> Starting in version 2.2, the methods `pipeRoutingMiddleware` and
+> `pipeDispatchMiddleware` are deprecated in favor of piping the middleware
+> manually.
+>
+> Additionally, the middleware has been ported to the zend-expressive-router
+> package, under the namespace `Zend\Expressive\Router\Middleware`. We suggest
+> piping them by service name. Please see our [migration documentation](../reference/migration-to-v2-2.md#routing-and-dispatch-middleware)
+> for more details, and for information on how to automatically update your
+> application.
+
 ## Retrieving dependencies
 
 As noted in the intro, the `Application` class has several dependencies. Some of
@@ -237,7 +231,7 @@ methods for retrieving them. They include:
 - `getEmitter()`: returns the composed
   [emitter](https://docs.zendframework.com/zend-diactoros/emitting-responses/),
   typically a `Zend\Expressive\Emitter\EmitterStack` instance.
-- `getDefaultDelegate()`: (Since 2.0) retrieves the default delegate to use when the internal middleware pipeline is exhausted without returning a response. If none is provided at instantiation, this method will do one of the following:
+- `getDefaultDelegate()`: retrieves the default delegate to use when the internal middleware pipeline is exhausted without returning a response. If none is provided at instantiation, this method will do one of the following:
     - If no container is composed, instanatiates a
       `Zend\Expressive\Delegate\NotFoundDelegate` using the composed response
       prototype only.
@@ -247,10 +241,12 @@ methods for retrieving them. They include:
       the composed container, and uses the value created.
     - If a container is composed and contains the `Zend\Expressive\Delegate\DefaultDelegate`
       service, it returns that.
-- `getFinalHandler(ResponseInterface $response = null)`: (**REMOVED in version 2.0**)
-  retrieves the final handler instance. This is middleware with the signature
-  `function ($request, $response, $error = null)`, and it is invoked when the
-  middleware pipeline queue is depleted and no response has been returned.
+
+> #### Deprecated
+>
+> Each of the above methods are deprecated starting in version 2.2, and will be
+> removed in version 3.0.
+
 
 ## Executing the application: run()
 

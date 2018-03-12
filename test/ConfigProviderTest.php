@@ -63,17 +63,10 @@ class ConfigProviderTest extends TestCase
         $factories = $config['factories'];
 
         $this->assertArrayHasKey(Application::class, $factories);
-        $this->assertArrayHasKey(ApplicationPipeline::class, $factories);
-        $this->assertArrayHasKey(EmitterInterface::class, $factories);
         $this->assertArrayHasKey(ErrorHandler::class, $factories);
-        $this->assertArrayHasKey(MiddlewareContainer::class, $factories);
-        $this->assertArrayHasKey(MiddlewareFactory::class, $factories);
         $this->assertArrayHasKey(Middleware\ErrorResponseGenerator::class, $factories);
         $this->assertArrayHasKey(NotFoundHandler::class, $factories);
-        $this->assertArrayHasKey(RequestHandlerRunner::class, $factories);
         $this->assertArrayHasKey(ResponseInterface::class, $factories);
-        $this->assertArrayHasKey(ServerRequestInterface::class, $factories);
-        $this->assertArrayHasKey(ServerRequestErrorResponseGenerator::class, $factories);
         $this->assertArrayHasKey(StreamInterface::class, $factories);
     }
 

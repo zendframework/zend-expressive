@@ -122,6 +122,13 @@ pages:
             - Examples: v2/reference/usage-examples.md
             - 'Expressive Projects': v2/reference/expressive-projects.md
             - Migration: v2/reference/migration.md
+        - "Why choose Expressive?": v2/why-expressive.md
+        - "CLI Tooling": v2/reference/cli-tooling.md
+        - Examples: v2/reference/usage-examples.md
+        - 'Expressive Projects': v2/reference/expressive-projects.md
+        - Migration:
+            - "To version 2": v2/reference/migration.md
+            - "To version 2.2": v2/reference/migration-to-v2-2.md
     - v1:
         - v1/index.md
         - 'Getting Started':

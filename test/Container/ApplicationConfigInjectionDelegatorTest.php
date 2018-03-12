@@ -31,6 +31,7 @@ use Zend\Expressive\Router\RouterInterface;
 use Zend\HttpHandlerRunner\RequestHandlerRunner;
 use Zend\Stratigility\MiddlewarePipe;
 use ZendTest\Expressive\ContainerTrait;
+use ZendTest\Expressive\TestAsset\CallableInteropMiddleware;
 use ZendTest\Expressive\TestAsset\InvokableMiddleware;
 
 class ApplicationConfigInjectionDelegatorTest extends TestCase
@@ -199,12 +200,12 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
     public function callableMiddlewares()
     {
         return [
-            [InvokableMiddleware::class],
+            [CallableInteropMiddleware::class],
             [
-                function () {
+                function ($request, DelegateInterface $delegate) {
                 },
             ],
-            [[InvokableMiddleware::class, 'staticallyCallableMiddleware']],
+            [[CallableInteropMiddleware::class, 'staticallyCallableMiddleware']],
         ];
     }
 
@@ -275,61 +276,6 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
 
         $routes = $app->getRoutes();
         $this->assertCount(0, $routes);
-    }
-
-    public function configWithRoutesButNoPipeline()
-    {
-        $middleware = function ($request, $response, $next) {
-        };
-
-        $routes = [
-            [
-                'path' => '/',
-                'middleware' => clone $middleware,
-                'allowed_methods' => ['GET'],
-            ],
-        ];
-
-        return [
-            'no-pipeline-defined' => [['routes' => $routes]],
-            'empty-pipeline' => [['middleware_pipeline' => [], 'routes' => $routes]],
-            'null-pipeline' => [['middleware_pipeline' => null, 'routes' => $routes]],
-        ];
-    }
-
-    /**
-     * @dataProvider configWithRoutesButNoPipeline
-     *
-     * @param array $config
-     */
-    public function testProvidingRoutesAndNoPipelineImplicitlyRegistersRoutingAndDispatchMiddleware(array $config)
-    {
-        $this->injectServiceInContainer(
-            $this->container,
-            PathBasedRoutingMiddleware::class,
-            $this->routeMiddleware
-        );
-        $this->injectServiceInContainer(
-            $this->container,
-            DispatchMiddleware::class,
-            $this->dispatchMiddleware
-        );
-        $app = $this->createApplication();
-
-        ApplicationConfigInjectionDelegator::injectPipelineFromConfig($app, $config);
-
-        $queue = $this->getQueueFromApplicationPipeline($app);
-
-        $this->assertCount(3, $queue, 'Did not get expected pipeline count!');
-
-        $test = $queue->dequeue();
-        $this->assertRouteMiddleware($test);
-
-        $test = $queue->dequeue();
-        $this->assertMethodNotAllowedMiddleware($test);
-
-        $test = $queue->dequeue();
-        $this->assertDispatchMiddleware($test);
     }
 
     public function testInjectPipelineFromConfigHonorsPriorityOrderWhenAttachingMiddleware()
