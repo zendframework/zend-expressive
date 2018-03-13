@@ -61,9 +61,6 @@ class ApplicationConfigInjectionDelegator
      * Inspects the configuration provided to determine if a middleware pipeline
      * exists to inject in the application.
      *
-     * If no pipeline is defined, but routes *are*, then the method will inject
-     * the routing and dispatch middleware.
-     *
      * Use the following configuration format:
      *
      * <code>
@@ -129,7 +126,38 @@ class ApplicationConfigInjectionDelegator
     /**
      * Inject routes from configuration.
      *
-     * Proxies to ApplicationConfigInjectionDelegator::injectRoutesFromConfig
+     * Introspects the provided configuration for routes to inject in the
+     * application instance.
+     *
+     * The following configuration structure can be used to define routes:
+     *
+     * <code>
+     * return [
+     *     'routes' => [
+     *         [
+     *             'path' => '/path/to/match',
+     *             'middleware' => 'Middleware Service Name or Callable',
+     *             'allowed_methods' => ['GET', 'POST', 'PATCH'],
+     *             'options' => [
+     *                 'stuff' => 'to',
+     *                 'pass'  => 'to',
+     *                 'the'   => 'underlying router',
+     *             ],
+     *         ],
+     *         // etc.
+     *     ],
+     * ];
+     * </code>
+     *
+     * Each route MUST have a path and middleware key at the minimum.
+     *
+     * The "allowed_methods" key may be omitted, can be either an array or the
+     * value of the Zend\Expressive\Router\Route::HTTP_METHOD_ANY constant; any
+     * valid HTTP method token is allowed, which means you can specify custom HTTP
+     * methods as well.
+     *
+     * The "options" key may also be omitted, and its interpretation will be
+     * dependent on the underlying router used.
      *
      * @throws InvalidArgumentException
      */
@@ -144,7 +172,7 @@ class ApplicationConfigInjectionDelegator
                 continue;
             }
 
-            $methods = null;
+            $methods = Route::HTTP_METHOD_ANY;
             if (isset($spec['allowed_methods'])) {
                 $methods = $spec['allowed_methods'];
                 if (! is_array($methods)) {
