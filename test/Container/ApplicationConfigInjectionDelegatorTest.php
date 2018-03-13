@@ -31,7 +31,6 @@ use Zend\Expressive\Router\RouterInterface;
 use Zend\HttpHandlerRunner\RequestHandlerRunner;
 use Zend\Stratigility\MiddlewarePipe;
 use ZendTest\Expressive\ContainerTrait;
-use ZendTest\Expressive\TestAsset\CallableInteropMiddleware;
 use ZendTest\Expressive\TestAsset\InvokableMiddleware;
 
 class ApplicationConfigInjectionDelegatorTest extends TestCase
@@ -200,12 +199,12 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
     public function callableMiddlewares()
     {
         return [
-            [CallableInteropMiddleware::class],
+            ['HelloWorld'],
             [
-                function ($request, DelegateInterface $delegate) {
+                function () {
                 },
             ],
-            [[CallableInteropMiddleware::class, 'staticallyCallableMiddleware']],
+            [[InvokableMiddleware::class, 'staticallyCallableMiddleware']],
         ];
     }
 
