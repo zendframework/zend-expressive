@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 3.0.0rc4 - 2018-03-13
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Forward ports a change made in [#581](https://github.com/zendframework/zend-expressive/pull/581)
+  to how the `ApplicationConfigInjectionDelegator::injectPipelineFromConfig()`
+  method works. Previously, it would auto-inject routing and dispatch middleware
+  if routes were configured, but no `middleware_pipeline` was present.
+  Considering that this method will always be called manually, this
+  functionality was removed; the method now becomes a no-op if no
+  `middleware_pipeline` is present.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 3.0.0rc3 - 2018-03-07
 
 ### Added
