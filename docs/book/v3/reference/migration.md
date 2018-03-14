@@ -169,6 +169,16 @@ Additionally, the following methods were **removed**:
 - `injectPipelineFromConfig()`: use the new `ApplicationConfigInjectionDelegator` and/or the static method of the same name it defines.
 - `injectRoutesFromConfig()`: use the new `ApplicationConfigInjectionDelegator` and/or the static method of the same name it defines.
 
+### ApplicationFactory
+
+`Zend\Expressive\Container\ApplicationFactory` no longer looks at the
+`zend-expressive.programmatic_pipeline` flag, nor does it inject pipeline
+middleware and/or routed middleware from configuration any longer.
+
+If you want to use configuration-driven pipelines and/or middleware, you may
+register the new class `Zend\Expressive\Container\ApplicationConfigInjectionDelegator` 
+as a delegator factory on the `Zend\Expressive\Application` service.
+
 ### NotFoundHandlerFactory
 
 `Zend\Expressive\Container\NotFoundHandlerFactory` now returns an instance of
