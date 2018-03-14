@@ -43,80 +43,17 @@ In order to use the helper, you will need to inject it with the current
 `Zend\Expressive\Helper\ServerUrlMiddleware`, which composes a `ServerUrl`
 instance, and, when invoked, injects it with the URI instance.
 
-As such, you will need to:
-
-- Register the `ServerUrlHelper` as a service in your container.
-- Register the `ServerUrlMiddleware` as a service in your container.
-- Register the `ServerUrlMiddleware` as pipeline middleware, anytime
-  before the routing middleware.
-
-The following examples demonstrate registering the services.
-
-```php
-use Zend\Expressive\Helper\ServerUrlHelper;
-use Zend\Expressive\Helper\ServerUrlMiddleware;
-use Zend\Expressive\Helper\ServerUrlMiddlewareFactory;
-
-// zend-servicemanager:
-$services->setInvokableClass(ServerUrlHelper::class, ServerUrlHelper::class);
-$services->setFactory(ServerUrlMiddleware::class, ServerUrlMiddlewareFactory::class);
-
-// Pimple:
-$pimple[ServerUrlHelper::class] = function ($container) {
-    return new ServerUrlHelper();
-};
-$pimple[ServerUrlMiddleware::class] = function ($container) {
-    $factory = new ServerUrlMiddlewareFactory();
-    return $factory($container);
-};
-
-// Aura.Di:
-$container->set(ServerUrlHelper::class, $container->lazyNew(ServerUrlHelper::class));
-$container->set(ServerUrlMiddlewareFactory::class, $container->lazyNew(ServerUrlMiddlewareFactory::class));
-$container->set(
-    ServerUrlMiddleware::class,
-    $container->lazyGetCall(ServerUrlMiddlewareFactory::class, '__invoke', $container)
-);
-```
-
-To register the `ServerUrlMiddleware` as pipeline middleware anytime before the
-routing middleware:
+As such, you will need to register the `ServerUrlMiddleware` as pipeline
+middleware, anytime before the routing middleware:
 
 ```php
 use Zend\Expressive\Helper\ServerUrlMiddleware;
 
 // Programmatically:
 $app->pipe(ServerUrlMiddleware::class);
-$app->pipeRoutingMiddleware();
-$app->pipeDispatchMiddleware();
-
-// Or use configuration:
-// [
-//     'middleware_pipeline' => [
-//         ['middleware' => ServerUrlMiddleware::class, 'priority' => PHP_INT_MAX],
-//         /* ... */
-//     ],
-// ]
-```
-
-The following dependency configuration will work for all three when using the
-Expressive skeleton:
-
-```php
-return [
-    'dependencies' => [
-        'invokables' => [
-            ServerUrlHelper::class => ServerUrlHelper::class,
-        ],
-        'factories' => [
-            ServerUrlMiddleware::class => ServerUrlMiddlewareFactory::class,
-        ],
-    ],
-    'middleware_pipeline' => [
-        ['middleware' => ServerUrlMiddleware::class, 'priority' => PHP_INT_MAX],
-        /* ... */
-    ],
-];
+$app->pipe(RouteMiddleware::class);
+// ... 
+$app->pipe(DispatchMiddleware::class);
 ```
 
 > ### Skeleton configures helpers

@@ -22,7 +22,7 @@ needing to develop them from scratch.
 
 ## We Recommend Expressive
 
-[zend-mvc](https://github.com/zendframework/zend-mvc) has many preconceptions
+[zend-mvc](https://docs.zendframework.com/zend-mvc/) has many preconceptions
 about how things work, yet they're very broad and general. What’s more, it
 also has several pre-wired structures in place that may either aid you &mdash;
 or get in your way.
@@ -41,7 +41,7 @@ To quote Zend Framework project lead, [Matthew Weier O’Phinney](https://mwop.n
 > patterns.
 
 Expressive (specifically applications based on
-[the Expressive Skeleton Installer](getting-started/skeleton.md))
+[the Expressive Skeleton Installer](getting-started/quick-start.md))
 on the other hand, comes with barely any of these assumptions and requirements.
 
 It provides a very minimalist structure. Essentially all you have to become
@@ -51,7 +51,7 @@ familiar with are five core components. These are:
 - A router.
 - An error handler for development.
 - A template engine (if you’re not creating an API).
-- PSR-7 messages and http-interop (future PSR-15) middleware.
+- PSR-7 messages and PSR-15 middleware and request handlers.
 
 In many cases, these are provided for you by the skeleton, and do not require
 any additional knowledge on your part. Given that, you can quickly get up to

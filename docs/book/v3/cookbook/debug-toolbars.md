@@ -21,36 +21,10 @@ selectively enable it on-demand. See the
 [Z-Ray documentation](http://files.zend.com/help/Zend-Server/content/z-ray_concept.htm)
 for full usage details.
 
-## bitExpert/prophiler-psr7-middleware
-
-Another option is bitExpert's [prophiler-psr7-middleware](https://github.com/bitExpert/prophiler-psr7-middleware).
-This package wraps [fabfuel/prophiler](https://github.com/fabfuel/prophiler),
-which provides a PHP-based profiling tool and toolbar; the bitExpert package
-wraps this in PSR-7 middleware to make consumption in those paradigms trivial.
-
-To add the toolbar middleware to your application, use composer:
-
-```bash
-$ composer require bitExpert/prophiler-psr7-middleware
-```
-
-From there, you will need to create a factory for the middleware, and add it to
-your middleware pipeline. Stephan Hochdörfer, author of the package, has written
-a [post detailing these steps](https://blog.bitexpert.de/blog/using-prophiler-with-zend-expressive/).
-
-> ### Use locally!
->
-> One minor change we recommend over the directions Stephan provides is that you
-> configure the factory and middleware in the
-> `config/autoload/middleware-pipeline.local.php` file, vs the `.global` version.
-> Doing so enables the middleware and toolbar only in the local environment
-> &mdash; and not in production, where you likely do not want to expose such
-> information!
-
 ## php-middleware/php-debug-bar
 
 [php-middleware/php-debug-bar](https://github.com/php-middleware/phpdebugbar)
-provides a PSR-7 middleware wrapper around [maximebf/php-debugbar](https://github.com/maximebf/php-debugbar),
+provides a PSR-15 middleware wrapper around [maximebf/php-debugbar](https://github.com/maximebf/php-debugbar),
 a popular framework-agnostic debug bar for PHP projects.
 
 First, install the middleware in your application:

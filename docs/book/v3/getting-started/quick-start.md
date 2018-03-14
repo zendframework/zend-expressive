@@ -1,4 +1,4 @@
-# Quick Start: Using the Skeleton + Installer
+# Quick Start
 
 The easiest way to get started with Expressive is to use the [skeleton
 application and installer](https://github.com/zendframework/zend-expressive-skeleton).
@@ -19,10 +19,11 @@ This will prompt you to choose:
 - Whether to install a minimal skeleton (no default middleware), a flat
   application structure (all code under `src/`), or a modular structure
   (directories under `src/` are modules, each with source code and potentially
-  templates, configuration, assets, etc.).
+  templates, configuration, assets, etc.). The default is a "flat" structure;
+  you can always add modules to it later.
 
-- A dependency injection container. We recommend using the default, Zend
-  ServiceManager.
+- A dependency injection container. We recommend using the default,
+  zend-servicemanager.
 
 - A router. We recommend using the default, FastRoute.
 
@@ -113,15 +114,27 @@ vulnerabilities. Each time you run `composer update`, `composer install`, or
 `composer require`, it prevents installation of software with known and
 documented security issues.
 
+### Tooling integration
+
+The skeleton ships with [zend-expressive-tooling](https://github.com/zendframework/zend-expressive-tooling)
+by default, and integrates with it by exposing it via compser:
+
+```bash
+$ composer expressive
+```
+
+The tooling provides a number of commands; see the [CLI tooling
+chapter](../reference/cli-tooling.md) for more details.
+
 ## Modules
 
-Composer will prompt you during installation to ask if you want a
-minimal application (no structure or default middleware provided), flat
-application (all source code under the same tree, and the default selection), or
-modular application. This latter option is new in the version 2 series, and
-allows you to segregate discrete areas of application functionality into
-_modules_, which can contain source code, templates, assets, and more; these can
-later be repackaged for re-use if desired.
+Composer will prompt you during installation to ask if you want a minimal
+application (no structure or default middleware provided), flat application (all
+source code under the same tree, and the default selection), or modular
+application. This latter option allows you to segregate discrete areas of
+application functionality into _modules_, which can contain source code,
+templates, assets, and more; these can later be repackaged for re-use if
+desired.
 
 Support for modules is available via the
 [zend-component-installer](https://docs.zendframework.com/zend-component-installer/)
@@ -248,26 +261,20 @@ class ConfigProvider
 }
 ```
 
-### expressive-module command
+### expressive module commands
 
 To aid in the creation, registration, and deregistration of modules in your
-application, the installer will add the [zendframework/zend-expressive-tooling](https://github.com/zendframework/zend-expressive-tooling)
-as a development requirement when you choose the modular application layout.
+application, you can use the CLI tooling provided by default. All commands are
+exposed via `composer expressive`, and include the following:
 
-The tool is available from your application root directory via
-`./vendor/bin/expressive-module`. For brevity, we will only reference the tool's
-name, `expressive-module`, when describing its capabilities.
-
-This tool provides the following functionality:
-
-- `expressive-module create <modulename>` will create the default directory
-  structure for the named module, create a `ConfigProvider` for the module, add
-  an autoloading rule to `composer.json`, and register the `ConfigProvider` with
-  the application configuration.
-- `expressive-module register <modulename>` will add an autoloading rule to
+- `composer expressive module:create <modulename>` will create the default
+  directory structure for the named module, create a `ConfigProvider` for the
+  module, add an autoloading rule to `composer.json`, and register the
+  `ConfigProvider` with the application configuration.
+- `composer expressive module:register <modulename>` will add an autoloading rule to
   `composer.json` for the module, and register its `ConfigProvider`, if found,
   with the application configuration.
-- `expressive-module deregister <modulename>` will remove any autoloading rules
+- `expressive module:deregister <modulename>` will remove any autoloading rules
   for the module from `composer.json`, and deregister its `ConfigProvider`, if
   found, from the application configuration.
 
@@ -304,11 +311,11 @@ outgoing responses:
 $app->pipe(ServerUrlMiddleware::class);
 ```
 
-Piped middleware may be either callables or service names. Middleware may also
-be passed as an array; each item in the array must resolve to middleware
-eventually (i.e., callable or service name); underneath, Expressive creates
-`Zend\Stratigility\MiddlewarePipe` instances with each of the middleware listed
-piped to it.
+Piped middleware may be callables, middleware instances, or service names.
+Middleware may also be passed as an array; each item in the array must resolve
+to middleware eventually (i.e., callable or service name); underneath,
+Expressive creates `Zend\Stratigility\MiddlewarePipe` instances with each of the
+middleware listed piped to it.
 
 Middleware can be attached to specific paths, allowing you to mix and match
 applications under a common domain. The handlers in each middleware attached
@@ -323,7 +330,7 @@ $app->pipe('/files', $filesMiddleware);
 Next, you should register the routing middleware in the middleware pipeline:
 
 ```php
-$app->pipeRoutingMiddleware();
+$app->pipe(RouteMiddleware::class);
 ```
 
 Add more middleware that needs to introspect the routing results; this might
@@ -331,6 +338,7 @@ include:
 
 - handling for HTTP `HEAD` requests
 - handling for HTTP `OPTIONS` requests
+- handling for matched paths where the HTTP method is not allowed
 - middleware for handling URI generation
 - route-based authentication
 - route-based validation
@@ -339,13 +347,14 @@ include:
 ```php
 $app->pipe(ImplicitHeadMiddleware::class);
 $app->pipe(ImplicitOptionsMiddleware::class);
+$app->pipe(MethodNotAllowedMiddleware::class);
 $app->pipe(UrlHelperMiddleware::class);
 ```
 
 Next, register the dispatch middleware in the middleware pipeline:
 
 ```php
-$app->pipeDispatchMiddleware();
+$app->pipe(DispatchMiddleware::class);
 ```
 
 At this point, if no response is return by any middleware, we need to provide a
@@ -356,33 +365,47 @@ you can provide any other fallback middleware you wish:
 $app->pipe(NotFoundHandler::class);
 ```
 
+The `public/index.php` file will `require` the `config/pipeline.php` file, and
+_invoke_ the returned result. When it invokes it, it passes the application
+instance, a `Zend\Expressive\MiddlewareFactory` instance, and the PSR-11
+container you are using.
+
 The full example then looks something like this:
 
 ```php
 // In config/pipeline.php:
 
+use Psr\Container\ContainerInterface;
+use Zend\Expressive\Application;
+use Zend\Expressive\MiddlewareFactory;
 use Zend\Expressive\Helper\ServerUrlMiddleware;
 use Zend\Expressive\Helper\UrlHelperMiddleware;
-use Zend\Expressive\Middleware\ImplicitHeadMiddleware;
-use Zend\Expressive\Middleware\ImplicitOptionsMiddleware;
 use Zend\Expressive\Middleware\NotFoundHandler;
+use Zend\Expressive\Router\Middleware\DispatchMiddleware;
+use Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware;
+use Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware;
+use Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware;
+use Zend\Expressive\Router\Middleware\RouteMiddleware;
 use Zend\Stratigility\Middleware\ErrorHandler;
 
-$app->pipe(ErrorHandler::class);
-$app->pipe(ServerUrlMiddleware::class);
+return function (Application $app, MiddlewareFactory $factory, ContainerInterface $container) : void {
+    $app->pipe(ErrorHandler::class);
+    $app->pipe(ServerUrlMiddleware::class);
 
-// These assume that the variables listed are defined in this scope:
-$app->pipe('/api', $apiMiddleware);
-$app->pipe('/docs', $apiDocMiddleware);
-$app->pipe('/files', $filesMiddleware);
+    // These assume that the variables listed are defined in this scope:
+    $app->pipe('/api', $apiMiddleware);
+    $app->pipe('/docs', $apiDocMiddleware);
+    $app->pipe('/files', $filesMiddleware);
 
-$app->pipeRoutingMiddleware();
-$app->pipe(ImplicitHeadMiddleware::class);
-$app->pipe(ImplicitOptionsMiddleware::class);
-$app->pipe(UrlHelperMiddleware::class);
-$app->pipeDispatchMiddleware();
+    $app->pipe(RouteMiddleware::class);
+    $app->pipe(ImplicitHeadMiddleware::class);
+    $app->pipe(ImplicitOptionsMiddleware::class);
+    $app->pipe(MethodNotAllowedMiddleware::class);
+    $app->pipe(UrlHelperMiddleware::class);
+    $app->pipe(DispatchMiddleware::class);
 
-$app->pipe(NotFoundHandler::class);
+    $app->pipe(NotFoundHandler::class);
+};
 ```
 
 ### Routing
@@ -409,7 +432,7 @@ $app->route('/contact', App\Action\ContactAction::class, ['GET', 'POST', ...], '
 Or handling all request methods:
 
 ```php
-$app->route('/contact', App\Action\ContactAction::class)->setName('contact');
+$app->any('/contact', App\Action\ContactAction::class)->setName('contact');
 ```
 
 Alternately, to be explicit, the above could be written as:
@@ -426,6 +449,21 @@ $app->route(
 We recommend a single middleware class per combination of route and request
 method.
 
+Similar to the `config/pipeline.php` file, the `config/routes.php` file is
+expected to return a callable:
+
+```php
+// In config/pipeline.php:
+
+use Psr\Container\ContainerInterface;
+use Zend\Expressive\Application;
+use Zend\Expressive\MiddlewareFactory;
+
+return function (Application $app, MiddlewareFactory $factory, ContainerInterface $container) : void {
+    $app->get('/books', \App\Handler\ListBooksHandler::class, 'books');
+};
+```
+
 ## Next Steps
 
 The skeleton provides a default structure for templates, if you choose to use them.
@@ -433,97 +471,145 @@ Let's see how you can create your first vanilla middleware, and templated middle
 
 ### Creating middleware
 
-To create middleware, create a class implementing
-`Psr\Http\Server\MiddlewareInterface`. This interface defines a single method,
-`process()`, which accepts a `Psr\Http\Message\ServerRequestInterface` instance
-and a `Psr\Http\Server\RequestHandlerInterface` instance.
+Middleware must implement `Psr\Http\Server\MiddlewareInterface`; this interface
+defines a single method, `process()`, which accepts a
+`Psr\Http\Message\ServerRequestInterface` instance and a
+`Psr\Http\Server\RequestHandlerInterface` instance, and returns a
+`Psr\Http\Message\ResponseInterface` instance. Write middleware when you may
+want to delegate to another layer of the application in order to create a
+response; do this by calling the `handle()` method of the handler passed to it.
+_Generally speaking, you will write middleware when you want to conditionally
+return a response based on the request, and/or alter the response returned by
+another layer of the application_.
 
-> ### Legacy double-pass middleware
->
-> Prior to Expressive 2.0, the default middleware style was what is termed
-> "double-pass", for the fact that it passes both the request and response between
-> layers. This middleware did not require an interface, and relied on a
-> conventional definition of:
->
-> ```php
-> use Psr\Http\Message;
->
-> function (
->   Message\ServerRequestInterface $request,
->   Message\ResponseInterface $response,
->   callable $next
-> ) : Message\ResponseInterface
-> ```
->
-> While this style of middleware is still quite wide-spread and used in a number
-> of projects, it has some flaws. Chief among them is the fact that middleware
-> should not rely on the `$response` instance provided to them (as it may have
-> modifications unacceptable for the current context), and that a response
-> returned from inner layers may not be based off the `$response` provided to them
-> (as inner layers may create and return a completely different response).
->
-> Expressive 3.0 only supports [PSR-15 middleware and request handlers](https://www.php-fig.org/psr/psr-15/).
-> Double-pass middleware is no longer supported.
-> 
-> You may use
-> `Zend\Stratigility\Middleware\DoublePassMiddlewareDecorator` (or the utility
-> function `Zend\Stratigility\doublePassMiddleware()`) in order to decorate such
-> middleware for use in Expressive 3.
+The skeleton defines an `App` namespace for you; you can place middleware
+anywhere within it.
 
-The skeleton defines an `App` namespace for you, and suggests placing middleware
-under the namespace `App\Handler`.
+We'll create a simple middleware here that will run on every request, and alter
+the response to add a header.
 
-Let's create a "Hello" action. Place the following in
-`src/App/Handler/HelloHandler.php`:
+We can use our tooling to create the middleware file:
+
+```bash
+$ composer expressive middleware:create "App\XClacksOverheadMiddleware"
+```
+
+This command will create a PSR-15 middleware implementation, a factory for it,
+and register the two in the application's container configuration. It tells you
+the location of both files.
+
+Now let's edit the middleware class file. Replace the contents of the
+`process()` method with:
 
 ```php
-<?php
-namespace App\Handler;
-
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
-use Zend\Diactoros\Response\HtmlResponse;
-
-class HelloHandler implements RequestHandlerInterface
-{
-    public function handle(ServerRequestInterface $request) : ResponseInterface
-    {
-        // Or, on PHP 7+:
-        $target = $request->getQueryParams()['target'] ?? 'World';
-
-        $target = htmlspecialchars($target, ENT_HTML5, 'UTF-8');
-
-        return new HtmlResponse(sprintf(
-            '<h1>Hello, %s!</h1>',
-            $target
-        ));
-    }
-}
+$response = $handler->handle($request);
+return $response->withHeader('X-Clacks-Overhead', 'GNU Terry Pratchett');
 ```
+
+Now that we've created our middleware, we still have to tell the pipeline about
+it. Open the file `config/pipeline.php` file, and find the line that read:
+
+```php
+$app->pipe(ErrorHandler::class);
+```
+
+Add the following line after it:
+
+```php
+$app->pipe(App\XClacksOverheadMiddleware::class);
+```
+
+If you browse to the home page (or any other page, for that matter) and
+introspect the headers returned with the response using your browser's
+development tools, you'll now see the following entry:
+
+```http
+X-Clacks-Overhead: GNU Terry Pratchett
+```
+
+You've created your first middleware!
+
+### Creating request handlers
+
+You may route to either middleware or request handlers. In this section, we'll
+define a request handler and route to it.
+
+Request handlers must implement `Psr\Http\Server\RequestHandlerInterface`; this
+interface defines a single method, `handle()`, which accepts a
+`Psr\Http\Message\ServerRequestInterface` instance and returns a
+`Psr\Http\Message\ResponseInterface` instance. Write request handlers when you
+will **not** be delegating to another layer of the application, and will be
+creating and returning a response directly. _Generally speaking, you will route
+to request handlers_.
+
+The skeleton defines an `App` namespace for you, and suggests placing request
+handlers under the namespace `App\Handler`.
+
+Let's create a "Hello" request handler. We can use our tooling to create the
+file:
+
+```bash
+$ composer expressive handler:create "App\Handler\HelloHandler"
+```
+
+The command will tell you the location in the filesystem in which it created the
+new class; it will also create a factory for you, and register that factory with
+the container! Additionally, if you have a template renderer in place, it will
+create a template file for you. make a note of the locations of both the class
+file and template file.
+
+Open the class file, and now let's edit the `handle()` contents to read as
+follows:
+
+```php
+$target = $request->getQueryParams()['target'] ?? 'World';
+$target = htmlspecialchars($target, ENT_HTML5, 'UTF-8');
+return new HtmlResponse($this->renderer->render(
+    'app::hello',
+    ['target' => $target]
+);
+```
+
+> #### Templateless handler
+>
+> If you did not select a template engine when creating your application, the
+> contents of your `handle()` method will be empty to begin.
+>
+> In that case, alter the above example as follows:
+>
+> - Add the statement `use Zend\Diactoros\Response\HttpResponse;` to the `use`
+>   statements at the top of the file.
+> - Alter the response creation to read:
+>   ```php
+>   return new HtmlResponse(sprintf(
+>       '<h1>Hello %s</h1>',
+>       $target
+>   ));
+>   ```
+> 
+> You can also skip the next step below where we edit the template file.
 
 The above looks for a query string parameter "target", and uses its value to
-provide a message, which is then returned in an HTML response.
+provide to the template, which is then rendered and returned in an HTML
+response.
 
-Now we need to inform the application of this middleware, and indicate what
-path will invoke it. Open the file `config/autoload/dependencies.global.php`.
-Edit that file to add an _invokable_ entry for the new middleware:
+Now, let's edit the template file to have the following contents:
 
 ```php
-return [
-    'dependencies' => [
-        /* ... */
-        'invokables' => [
-            App\Handler\HelloHandler::class => App\Handler\HelloHandler::class,
-            /* ... */
-        ],
-        /* ... */
-    ],
-];
+<h1>Hello <?= $this->target ?></h1>
 ```
 
-Now open the file `config/routes.php`, and add the following at the bottom of
-the file:
+If you are using Twig, use this instead:
+
+```twig
+<h1>Hello {{ target }}</h1>
+```
+
+While the handler is registered with the container, the application does not yet
+know how to get to it. Let's fix that.
+
+Open the file `config/routes.php`, and add the following at the bottom of
+the function it exposes:
 
 ```php
 $app->get('/hello', App\Handler\HelloHandler::class, 'hello');
@@ -536,88 +622,6 @@ following URIs:
 - http://localhost:8080/hello?target=ME
 
 You should see the message change as you go between the two URIs!
-
-### Using templates
-
-You likely don't want to hardcode HTML into your middleware; so, let's use
-templates. This particular exercise assumes you chose to use the
-[Plates](http://platesphp.com) integration.
-
-Templates are installed under the `templates/` subdirectory. By default, we also
-register the template namespace `app` to correspond with the `templates/app`
-subdirectory. Create the file `templates/app/hello-world.phtml` with the
-following contents:
-
-```php
-<?php $this->layout('layout::default', ['title' => 'Greetings']) ?>
-
-<h2>Hello, <?= $this->e($target) ?></h2>
-```
-
-Now that we have a template, we need to:
-
-- Inject a renderer into our action class.
-- Use the renderer to render the contents.
-
-Replace your `src/App/Handler/HelloHandler.php` file with the following contents:
-
-```php
-<?php
-namespace App\Handler;
-
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
-use Zend\Diactoros\Response\HtmlResponse;
-use Zend\Expressive\Template\TemplateRendererInterface;
-
-class HelloHandler implements RequestHandlerInterface
-{
-    private $renderer;
-
-    public function __construct(TemplateRendererInterface $renderer)
-    {
-        $this->renderer = $renderer;
-    }
-
-    public function handle(ServerRequestInterface $request) : ResponseInterface
-    {
-        $target = $request->getQueryParams()['target'] ?? 'World';
-
-        return new HtmlResponse(
-            $this->renderer->render('app::hello-world', ['target' => $target])
-        );
-    }
-}
-```
-
-The above modifies the class to accept a renderer to the constructor, and then
-calls on it to render a template. Note that we no longer need to escape our
-target; the template takes care of that for us.
-
-How does the template renderer get into the action? The answer is dependency
-injection.
-
-For the next part of the example, we'll be creating and wiring a factory for
-creating the `HelloHandler` instance.
-
-zend-expressive-tooling provides a tool for generating factories based on
-reflecting a class; we'll use that to generate our factory:
-
-```bash
-$ composer expressive factory:create "App\\Handler\\HelloHandler"
-```
-
-This command not only creates the factory, but also registers it in our
-configuration!
-
-Now re-visit the URIs:
-
-- http://localhost:8080/hello
-- http://localhost:8080/hello?target=ME
-
-Your page should now have the same layout as the landing page of the skeleton
-application!
 
 ## Congratulations!
 

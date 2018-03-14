@@ -3,9 +3,8 @@
 One aspect of the `Zend\Expressive\Router\RouterInterface` is that it provides a
 `generateUri()` method. This method accepts a route name, and optionally an
 associative array of substitutions to use in the generated URI (e.g., if the URI
-has any named placeholders). Starting in zend-expressive-router 2.0, shipped
-with Expressive 2.0, you may also pass router-specific options to use during
-URI generation as a third argument.
+has any named placeholders). You may also pass router-specific options to use
+during URI generation as a third argument.
 
 ## Naming routes
 
@@ -73,6 +72,29 @@ $app->route('/foo', $middleware)->setName('foo'); // 'foo'
 We recommend that if you plan on generating URIs for given routes, you provide a
 custom name.
 
+> #### Names must be unique
+>
+> In order for the URI generation functionality to work, routes must be uniquely
+> named. This can be tricky when you use the same route path for multiple
+> routes:
+>
+> ```php
+> $app->get('/books', ListBooksHandler::class, 'books');
+> $app->post('/books', CreateBookHandler::class, 'books'); // oops!
+> ```
+>
+> You could, of course, name the second route "create-book" or similar, but you
+> then have multiple names capable of generating the same URI.
+>
+> Since URIs do not have a concept of HTTP method built in, we recommend naming
+> either the route matching `GET` or the first route in the sequence:
+>
+> ```php
+> $app->get('/books', ListBooksHandler::class, 'books');
+> $app->post('/books', CreateBookHandler::class); // no name
+> ```
+
+
 ## Generating URIs
 
 Once you know the name of a URI you wish to generate, you can do so from the
@@ -89,3 +111,5 @@ You can omit the second argument if no substitutions are necessary.
 > For this to work, you'll need to compose the router instance in any class that
 > requires the URI generation facility. Inject the
 > `Zend\Expressive\Router\RouterInterface` service in these situations.
+>
+> Alternately, use the [UrlHelper](../helpers/url-helper.md) instead.

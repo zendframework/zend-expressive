@@ -26,13 +26,13 @@ of two lowercase alphabetical characters.
 The examples assume the following middleware dependency configuration:
 
 ```php
-use Application\Action;
+use App\Handler;
 
 return [
     'dependencies' => [
         'factories' => [
-            Action\HomePageAction::class    => Action\HomePageFactory::class,
-            Action\ContactPageAction::class => Action\ContactPageFactory::class,
+            Handler\HomePageHandler::class    => Handler\HomePageHandlerFactory::class,
+            Handler\ContactPageHandler::class => Handler\ContactPageFactory::class,
         ],
     ],
 ];
@@ -44,50 +44,17 @@ The following describes routing configuration for use when using a
 programmatic application.
 
 ```php
-use Application\Action\ContactPageAction;
-use Application\Action\HomePageAction;
+use App\Handler\ContactPageHandler;
+use App\Handler\HomePageHandler;
 
 $localeOptions = ['locale' => '[a-z]{2,3}([-_][a-zA-Z]{2}|)'];
 
-$app->get('/:locale', HomePageAction::class, 'home')
+$app->get('/:locale', HomePageHandler::class, 'home')
     ->setOptions($localeOptions);
-$app->get('/:locale/contact', ContactPageAction::class, 'contact')
+$app->get('/:locale/contact', ContactPageHandler::class, 'contact')
     ->setOptions($localeOptions);
 ```
 
-### Configuration-based routes
-
-The following describes routing configuration for use when using a
-configuration-driven application.
-
-```php
-return [
-    'routes' => [
-        [
-            'name' => 'home',
-            'path' => '/:locale',
-            'middleware' => Application\Action\HomePageAction::class,
-            'allowed_methods' => ['GET'],
-            'options'         => [
-                'constraints' => [
-                    'locale' => '[a-z]{2,3}([-_][a-zA-Z]{2}|)',
-                ],
-            ],
-        ],
-        [
-            'name' => 'contact',
-            'path' => '/:locale/contact',
-            'middleware' => Application\Action\ContactPageAction::class,
-            'allowed_methods' => ['GET'],
-            'options'         => [
-                'constraints' => [
-                    'locale' => '[a-z]{2,3}([-_][a-zA-Z]{2}|)',
-                ],
-            ],
-        ],
-    ],
-];
-```
 > ### Note: Routing may differ based on router
 >
 > The routing examples in this recipe use syntax for the zend-mvc router, and,
@@ -96,30 +63,22 @@ return [
 > For Aura.Router, the 'home' route as listed above would read:
 >
 > ```php
-> [
->     'name' => 'home',
->     'path' => '/{locale}',
->     'middleware' => Application\Action\HomePageAction::class,
->     'allowed_methods' => ['GET'],
->     'options'         => [
->         'constraints' => [
->             'tokens' => [
->                 'locale' => '[a-z]{2,3}([-_][a-zA-Z]{2}|)',
->             ],
+> $app->get('/{locale}', HomePageHandler::class, 'home')
+>     ->setOptions([
+>         'tokens' => [
+>             'locale' => '[a-z]{2,3}([-_][a-zA-Z]{2}|)',
 >         ],
->     ],
-> ]
+>     ]);
 > ```
 >
 > For FastRoute:
 >
 > ```php
-> [
->     'name' => 'home',
->     'path' => '/{locale:[a-z]{2,3}([-_][a-zA-Z]{2}|)}',
->     'middleware' => Application\Action\HomePageAction::class,
->     'allowed_methods' => ['GET'],
-> ]
+> $app->get(
+>     '/{locale:[a-z]{2,3}([-_][a-zA-Z]{2}|)}',
+>     HomePageHandler::class,
+>     'home'
+> );
 > ```
 >
 > As such, be aware as you read the examples that you might not be able to
@@ -136,7 +95,7 @@ Such a `LocalizationMiddleware` class could look similar to this:
 
 ```php
 <?php
-namespace Application\I18n;
+namespace App\I18n;
 
 use Locale;
 use Psr\Http\Message\ResponseInterface;
@@ -167,7 +126,7 @@ class LocalizationMiddleware implements MiddlewareInterface
 > ### Locale::setDefault is unsafe
 >
 > Do not use `Locale::setDefault($locale)` to set a global static locale.
-> PSR-7 apps may run in async processes, which could lead to another process
+> PSR-15 apps may run in async processes, which could lead to another process
 > overwriting the value, and thus lead to unexpected results for your users.
 >
 > Use a request parameter as detailed above instead, as the request is created
@@ -188,35 +147,13 @@ return [
 ];
 ```
 
-If using a programmatic pipeline, pipe it immediately after your routing middleware:
+Pipe it immediately after your routing middleware:
 
 ```php
-use Application\I18n\LocalizationMiddleware;
+use App\I18n\LocalizationMiddleware;
 
 /* ... */
-$app->pipeRoutingMiddleware();
+$app->pipe(RouteMiddleware::class);
 $app->pipe(LocalizationMiddleware::class);
 /* ... */
-```
-
-If using a configuration-driven application, register it within your
-`config/autoload/middleware-pipeline.global.php` file, injecting it
-into the pipeline following the routing middleware:
-
-```php
-return [
-    'middleware_pipeline' => [
-        /* ... */
-        [
-            'middleware' => [
-                Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
-                Helper\UrlHelperMiddleware::class,
-                LocalizationMiddleware::class,
-                Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
-            ],
-            'priority' => 1,
-        ],
-        /* ... */
-    ],
-];
 ```

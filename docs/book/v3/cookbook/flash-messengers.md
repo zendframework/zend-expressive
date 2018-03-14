@@ -17,8 +17,58 @@ means you will need:
 
 A number of flash message libraries already exist that can be integrated via
 middleware, and these typically either use PHP's ext/session functionality or
-have a dependency on a session library. Two such libraries are slim/flash and
-damess/expressive-session-middleware.
+have a dependency on a session library. Two such libraries are:
+
+- zendframework/zend-expressive-flash
+- slim/flash
+
+## zendframework/zend-expressive-flash
+
+[zend-expressive-flash](https://docs.zendframework.com/zend-expressive-flash/)
+is a new offering from Zend Framework. Using it requires a session persistence
+engine as well, and Zend Framework provides that as well. Install the component
+using the following:
+
+```bash
+$ composer require zendframework/zend-expressive-flash zendframework/zend-expressive-session-ext
+```
+
+Once installed, you will need to pipe the middleware, along with the
+zend-expressive-session middleware, in your pipeline. This can be done at the
+application level:
+
+```php
+$app->pipe(\Zend\Expressive\Session\SessionMiddleware::class);
+$app->pipe(\Zend\Expressive\Flash\FlashMessageMiddleware::class);
+```
+
+or within a routed middleware pipeline:
+
+```php
+$app->post('/user/login', [
+    \Zend\Expressive\Session\SessionMiddleware::class,
+    \Zend\Expressive\Flash\FlashMessageMiddleware::class,
+    LoginHandler::class,
+]);
+```
+
+Once this is in place, the flash message container will be registered as a
+request attribute, which you can then pull and manipulate:
+
+```php
+$flashMessages = $request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
+// or $flashMessages = $request->getAttribute('flash');
+
+// Create a flash message for the next request:
+$flashMessages->flash($messageName, $messageValue);
+
+// Or retrieve them:
+$message = $flashMessages->getFlash($messageName);
+```
+
+The component has functionality for specifying the number of hops the message
+will be valid for, as well as accessing messages created in the current request;
+[read more in the documentation](https://docs.zendframework.com/zend-expressive-flash/intro/).
 
 ## slim/flash
 
@@ -140,126 +190,6 @@ function($request, RequestHandlerInterface $handler)
 {
     $flash = $request->getAttribute('flash');
     $messages = $flash->getMessages();
-    // ...
-}
-```
-
-From there, it's a matter of providing the flash messages to your template.
-
-## damess/expressive-session-middleware and Aura.Session
-
-[damess/expressive-session-middleware](https://github.com/dannym87/expressive-session-middleware)
-provides middleware for initializing an
-[Aura.Session](https://github.com/auraphp/Aura.Session) instance; Aura.Session
-provides flash messaging capabilities as part of its featureset.
-
-Install it via Composer:
-
-```bash
-$ composer require damess/expressive-session-middleware
-```
-
-In `config/autoload/dependencies.global.php`, add an entry for Aura.Session:
-
-```php
-return [
-    'dependencies' => [
-        'factories' => [
-            Aura\Session\Session::class => DaMess\Factory\AuraSessionFactory::class,
-            /* ... */
-        ],
-        /* ... */
-    ],
-];
-```
-
-In either `config/autoload/dependencies.global.php` or
-`config/autoload/middleware-pipeline.global.php`, add a factory entry for the
-`damess/expressive-session-middleware`:
-
-```php
-return [
-    'dependencies' => [
-        'factories' => [
-            DaMess\Http\SessionMiddleware::class => DaMess\Factory\SessionMiddlewareFactory::class,
-            /* ... */
-        ],
-        /* ... */
-    ],
-];
-```
-
-Finally, add it to your middleware pipeline. For programmatic pipelines:
-
-```php
-use DaMess\Http\SessionMiddleware;
-
-$app->pipe(SessionMiddleware::class);
-/* ... */
-```
-
-If using configuration-driven pipelines, edit `config/autoload/middleware-pipeline.global.php`
-and add an entry for the new middleware:
-
-```php
-return [
-    'middleware_pipeline' => [
-        'always' => [
-            'middleware' => [
-                DaMess\Http\SessionMiddleware::class,
-                /* ... */
-            ],
-            'priority' => 10000,
-        ],
-        /* ... */
-    ],
-];
-```
-
-> ### Where to register the session middleware
->
-> Sessions can sometimes be expensive. As such, you may not want the session
-> middleware enabled for every request. If this is the case, add the session
-> middleware as part of a route-specific pipeline instead.
-
-Once enabled, the `SessionMiddleware` will inject the Aura.Session instance into
-the request as the `session` attribute; you can thus retrieve it within
-middleware using the following:
-
-```php
-$session = $request->getAttribute('session');
-```
-
-To create and consume flash messages, use Aura.Session's
-[flash values](https://github.com/auraphp/Aura.Session#flash-values). As
-an example, the middleware that is processing a POST request might set a flash
-message:
-
-```php
-use Psr\Http\Server\RequestHandlerInterface;
-use Zend\Diactoros\Response\RedirectResponse;
-
-function($request, RequestHandlerInterface $handler)
-{
-    $session = $request->getAttribute('session');
-    $session->getSegment(__NAMESPACE__)
-            ->setFlash('message', 'Hello World!');
-
-    return new RedirectResponse('/other-middleware');
-}
-```
-
-Another middleware, to which the original middleware redirects, might look like
-this:
-
-```php
-use Psr\Http\Server\RequestHandlerInterface;
-
-function($request, RequestHandlerInterface $handler)
-{
-    $session = $request->getAttribute('session');
-    $message = $session->getSegment(__NAMESPACE__)
-                       ->getFlash('message');
     // ...
 }
 ```

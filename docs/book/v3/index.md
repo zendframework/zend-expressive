@@ -1,7 +1,7 @@
 # Expressive: PSR-7 Middleware in Minutes
 
 Expressive builds on [Stratigility](https://docs.zendframework.com/zend-stratigility/)
-to provide a minimalist [PSR-7](http://www.php-fig.org/psr/psr-7/) middleware
+to provide a minimalist [PSR-15](http://www.php-fig.org/psr/psr-15/) middleware
 framework for PHP, with the following features:
 
 - Routing. Choose your own router; we support:
@@ -26,7 +26,7 @@ framework for PHP, with the following features:
 Essentially, Expressive allows *you* to develop using the tools *you* prefer,
 and provides minimal structure and facilities to ease your development.
 
-Should I choose it over Zend\Mvc?
+Should I choose it over zend-mvc?
 That’s a good question. [Here’s what we recommend.](why-expressive.md)
 
 If you’re keen to get started, then [keep reading](getting-started/features.md)

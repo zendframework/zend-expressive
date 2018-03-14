@@ -91,64 +91,9 @@ $app = AppFactory::create(null, $router);
 
 ## Factory-Driven Creation
 
-[We recommend using an Inversion of Control container](../container/intro.md)
-for your applications; as such, in this section we will demonstrate
-two strategies for creating your Aura.Router implementation.
-
-### Basic Router
-
-If you don't need to provide any setup or configuration, you can simply
-instantiate and return an instance of `Zend\Expressive\Router\AuraRouter` for the
-service name `Zend\Expressive\Router\RouterInterface`.
-
-A factory would look like this:
-
-```php
-// in src/Application/Container/RouterFactory.php
-namespace Application\Container;
-
-use Psr\Container\ContainerInterface;
-use Zend\Expressive\Router\AuraRouter;
-
-class RouterFactory
-{
-    /**
-     * @param ContainerInterface $container
-     * @return AuraRouter
-     */
-    public function __invoke(ContainerInterface $container)
-    {
-        return new AuraRouter();
-    }
-}
-```
-
-You would register this with zend-servicemanager using:
-
-```php
-$container->setFactory(
-    Zend\Expressive\Router\RouterInterface::class,
-    Application\Container\RouterFactory::class
-);
-```
-
-And in Pimple:
-
-```php
-$pimple[Zend\Expressive\Router\RouterInterface::class] = new Application\Container\RouterFactory();
-```
-
-For zend-servicemanager, you can omit the factory entirely, and register the
-class as an invokable:
-
-```php
-$container->setInvokableClass(
-    Zend\Expressive\Router\RouterInterface::class,
-    Zend\Expressive\Router\AuraRouter::class
-);
-```
-
-### Advanced Configuration
+We provide and enable a factory for generating your Aura.Router instance when
+you install the zend-expressive-aurarouter package. This will generally serve
+your needs.
 
 If you want to provide custom setup or configuration, you can do so. In this
 example, we will be defining two factories:
@@ -158,11 +103,11 @@ example, we will be defining two factories:
   creates and returns a `Zend\Expressive\Router\AuraRouter` instance composing the
   `Aura\Router\Router` instance.
 
-Sound difficult? It's not; we've essentially done it above already!
+The factory might look like this:
 
 ```php
-// in src/Application/Container/AuraRouterFactory.php:
-namespace Application\Container;
+// in src/App/Container/AuraRouterFactory.php:
+namespace App\Container;
 
 use Aura\Router\RouterFactory;
 use Psr\Container\ContainerInterface;
@@ -185,8 +130,8 @@ class AuraRouterFactory
     }
 }
 
-// in src/Application/Container/RouterFactory.php
-namespace Application\Container;
+// in src/App/Container/RouterFactory.php
+namespace App\Container;
 
 use Psr\Container\ContainerInterface;
 use Zend\Expressive\Router\AuraRouter as AuraBridge;
@@ -204,41 +149,14 @@ class RouterFactory
 }
 ```
 
-From here, you will need to register your factories with your IoC container.
-
-If you are using zend-servicemanager, this will look like:
+From here, you will need to register your factories with your IoC container:
 
 ```php
-// Programmatically:
-use Zend\ServiceManager\ServiceManager;
-
-$container = new ServiceManager();
-$container->addFactory(
-    'Aura\Router\Router',
-    Application\Container\AuraRouterFactory::class
-);
-$container->addFactory(
-    Zend\Expressive\Router\RouterInterface::class,
-    'Application\Container\RouterFactory'
-);
-
-// Alternately, via configuration:
+// in a config/autoload/ file, or within a ConfigProvider class:
 return [
     'factories' => [
-        'Aura\Router\Router' => Application\Container\AuraRouterFactory::class,
-        Zend\Expressive\Router\RouterInterface::class => 'Application\Container\RouterFactory::class,
+        \Aura\Router\Router::class => \App\Container\AuraRouterFactory::class,
+        \Zend\Expressive\Router\RouterInterface::class => \App\Container\RouterFactory::class,
     ],
 ];
-```
-
-For Pimple, configuration looks like:
-
-```php
-use Application\Container\AuraRouterFactory;
-use Application\Container\RouterFactory;
-use Interop\Container\Pimple\PimpleInterop as Pimple;
-
-$container = new Pimple();
-$container['Aura\Router\Router'] = new AuraRouterFactory();
-$container[Zend\Expressive\Router\RouterInterface::class] = new RouterFactory();
 ```

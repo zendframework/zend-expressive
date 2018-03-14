@@ -1,32 +1,113 @@
 # How can I autowire routes and pipelines?
 
-Expressive 2.0 switched to _programmatic_ pipelines and routes, versus
-_configuration-driven_ pipelines and routing as used in version 1. One drawback
-is that with configuration-driven approaches, users could provide configuration
-via a module `ConfigProvider`, and automatically expose new pipeline middleware
-or routes; with a programmatic approach, this is no longer possible.
+Sometimes you may find you'd like to keep route definitions close to the
+handlers and middleware they will invoke. This is particularly important if you
+want to re-use a module or library in another project.
 
-Or is it?
+In this recipe, we'll demonstrate two mechanisms for doing so. One is a built-in
+[delegator factory](../features/container/delegator-factories.md), and the other
+is a custom delegator factory.
 
-## Delegator Factories
+## ApplicationConfigInjectionDelegator
 
-One possibility available to version 2 applications is to use _delegator
-factories_ on the `Zend\Expressive\Application` instance in order to inject
-these items.
+Expressive ships with the class `Zend\Expressive\Container\ApplicationConfigInjectionDelegator`, 
+which can be used as a delegator factory for the `Zend\Expressive\Application`
+class in order to automate piping of pipeline middleware and routing to request
+handlers and middleware.
 
-A _delegator factory_ is a factory that _delegates_ creation of an instance to a
-callback, and then operates on that instance for the purpose of altering the
-instance or providing a replacement (e.g., a decorator or proxy). The delegate
-callback usually wraps a service factory, or, because delegator factories
-_also_ return an instance, additional delegator factories. As such, you assign
-delegator _factories_, plural, to instances, allowing multiple delegator
-factories to intercept processing of the service initialization.
+The delegator factory looks for configuration that looks like the following:
 
-For the purposes of this particular example, we will use delegator factories to
-both _pipe_ middleware as well as _route_ middleware.
+```php
+return [
+    'pipeline_middleware' => [
+        [
+            // required:
+            'middleware' => 'Middleware service or pipeline',
+            // optional:
+            'path'  => '/path/to/match', // for path-segregated middleware
+            'priority' => 1,             // integer; to ensure specific order
+        ]
+    ],
+    'routes' => [
+        [
+            'path' => '/path/to/match',
+            'middleware' => 'Middleware service or pipeline',
+            'allowed_methods' => ['GET', 'POST', 'PATCH'],
+            'name' => 'route.name',
+            'options' => [
+                'stuff' => 'to',
+                'pass'  => 'to',
+                'the'   => 'underlying router',
+            ],
+        ],
+    ],
+];
+```
 
-To demonstrate, we'll take the default pipeline and routing from the skeleton
-application, and provide it via a delegator factory instead.
+This configuration may be placed at the application level, in a file under
+`config/autoload/`, or within a module's `ConfigProvider` class. For details on
+what values are accepted, see below.
+
+In order to enable the delegator factory, you will need to define the following
+service configuration somewhere, either at the application level in a
+`config/autoload/` file, or within a module-specific `ConfigProvider` class:
+
+```php
+return [
+    'dependencies' => [
+        'delegators' => [
+            \Zend\Expressive\Application::class => [
+                \Zend\Expressive\Container\ApplicationConfigInjectionDelegator::class,
+            ],
+        ],
+    ],
+];
+```
+
+### Pipeline middleware
+
+Pipeline middleware are each described as an associative array, with the
+following keys:
+
+- `middleware` (**required**, string or array): the value should be a middleware
+  service name, or an array of service names (in which case a `MiddlewarePipe`
+  will be created and piped).
+- `path` (optional, string): if you wish to path-segregate the middleware, provide a
+  literal path prefix that must be matched in order to dispatch the given
+  middleware.
+- `priority` (optional, integer): The elements in the `pipeline_middleware`
+  section are piped to the application in the order in which they are discovered
+  &mdash; which could have ramifications if multiple components and/or modules
+  provide pipeline middleware. If you wish to force a certain order, you may use
+  the `priority` to do so. Higher value integers are piped first, lower value
+  (including _negative_ values), last. If two middleware use the same priority,
+  they will be piped in the order discovered.
+
+### Routed middleware
+
+Routed middleware are also each described as an associative array, using the
+following keys:
+
+- `path` (**required**, string): the path specification to match; this will be
+  dependent on the router implementation you use.
+- `middleware` (**required**, string or array): the value should be a middleware
+  service name, or an array of service names (in which case a `MiddlewarePipe`
+  will be created and piped).
+- `allowed_methods` (optional, array or value of `Zend\Expressive\Route\HTTP_METHOD_ANY):
+  the HTTP methods allowed for the route. If this is omitted, the assumption is
+  any method is allowed.
+- `name` (optional, string): the name of the route, if any; this can be used
+  later to generate a URI based on the route, and must be unique.
+- `options` (optional, array): any options to provide to the generated route.
+  These might be default values or constraints, depending on the router
+  implementation.
+
+## Custom delegator factories
+
+As outlined in the introduction to this recipe, we can also create our own
+custom delegator factories in order to inject pipeline or routed middleware.
+Unlike the above solution, the solution we will outline here will exercise the
+`Zend\Expressive\Application` API in order to populate it.
 
 First, we'll create the class `App\Factory\PipelineAndRoutesDelegator`, with
 the following contents:
@@ -36,42 +117,43 @@ the following contents:
 
 namespace App\Factory;
 
-use App\Action;
+use App\Handler;
 use Psr\Container\ContainerInterface;
 use Zend\Expressive\Application;
+use Zend\Expressive\Handler\NotFoundHandler;
 use Zend\Expressive\Helper\ServerUrlMiddleware;
 use Zend\Expressive\Helper\UrlHelperMiddleware;
-use Zend\Expressive\Middleware\ImplicitHeadMiddleware;
-use Zend\Expressive\Middleware\ImplicitOptionsMiddleware;
-use Zend\Expressive\Middleware\NotFoundHandler;
+use Zend\Expressive\Router\Middleware\DispatchMiddleware;
+use Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware;
+use Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware;
+use Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware;
+use Zend\Expressive\Router\Middleware\RouteMiddleware;
 use Zend\Stratigility\Middleware\ErrorHandler;
 
 class PipelineAndRoutesDelegator
 {
-    /**
-     * @param ContainerInterface $container
-     * @param string $serviceName Name of the service being created.
-     * @param callable $callback Creates and returns the service.
-     * @return Application
-     */
-    public function __invoke(ContainerInterface $container, $serviceName, callable $callback)
-    {
+    public function __invoke(
+        ContainerInterface $container,
+        string $serviceName,
+        callable $callback
+    ) : Application {
         /** @var $app Application */
         $app = $callback();
 
         // Setup pipeline:
         $app->pipe(ErrorHandler::class);
         $app->pipe(ServerUrlMiddleware::class);
-        $app->pipeRoutingMiddleware();
+        $app->pipe(RouteMiddleware::class);
         $app->pipe(ImplicitHeadMiddleware::class);
         $app->pipe(ImplicitOptionsMiddleware::class);
+        $app->pipe(MethodNotAllowedMiddleware::class);
         $app->pipe(UrlHelperMiddleware::class);
-        $app->pipeDispatchMiddleware();
+        $app->pipe(DispatchMiddleware::class);
         $app->pipe(NotFoundHandler::class);
 
         // Setup routes:
-        $app->get('/', Action\HomePageAction::class, 'home');
-        $app->get('/api/ping', Action\PingAction::class, 'api.ping');
+        $app->get('/', Handler\HomePageHandler::class, 'home');
+        $app->get('/api/ping', Handler\PingHandler::class, 'api.ping');
 
         return $app;
     }
@@ -120,21 +202,10 @@ public function getDependencies()
 > order to shape initialization of a service. As such, they are assigned as an
 > _array_ to the service.
 
-Once you've done this, you can remove:
-
-- `config/pipeline.php`
-- `config/routes.php`
-- The following lines from `public/index.php`:
-
-  ```php
-  // Import programmatic/declarative middleware pipeline and routing
-  // configuration statements
-  require 'config/pipeline.php';
-  require 'config/routes.php';
-  ```
-
-If you reload your application at this point, you should see that everything
-continues to work as expected!
+If you're paying careful attention to this example, it essentially replaces
+both `config/pipeline.php` and `config/routes.php`! If you were to update those
+files to remove the default pipeline and routes, you should find that reloading
+your application returns the exact same results!
 
 ## Caution: pipelines
 

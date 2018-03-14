@@ -9,35 +9,32 @@ namespace Zend\Expressive\Template;
 
 interface TemplateRendererInterface
 {
+    public const TEMPLATE_ALL = '*';
+
     /**
      * Render a template, optionally with parameters.
      *
      * Implementations MUST support the `namespace::template` naming convention,
      * and allow omitting the filename extension.
      *
-     * @param string $name
      * @param array|object $params
-     * @return string
      */
-    public function render($name, $params = []);
+    public function render(string $name, $params = []) : string;
 
     /**
      * Add a template path to the engine.
      *
      * Adds a template path, with optional namespace the templates in that path
      * provide.
-     *
-     * @param string $path
-     * @param string $namespace
      */
-    public function addPath($path, $namespace = null);
+    public function addPath(string $path, string $namespace = null) : void;
 
     /**
      * Retrieve configured paths from the engine.
      *
      * @return TemplatePath[]
      */
-    public function getPaths();
+    public function getPaths() : array;
 
     /**
      * Add a default parameter to use with a template.
@@ -55,10 +52,9 @@ interface TemplateRendererInterface
      *
      * @param string $templateName Name of template to which the param applies;
      *     use TEMPLATE_ALL to apply to all templates.
-     * @param string $param Param name.
      * @param mixed $value
      */
-    public function addDefaultParam($templateName, $param, $value);
+    public function addDefaultParam(string $templateName, string $param, $value) : void;
 }
 ```
 

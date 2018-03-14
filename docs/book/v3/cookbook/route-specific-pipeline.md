@@ -26,27 +26,33 @@ using a container that supports factories.
 
 ```php
 use Psr\Container\ContainerInterface;
+use Zend\Expressive\MiddlewareFactory;
 use Zend\Stratigility\MiddlewarePipe;
 
 class ApiResourcePipelineFactory
 {
     public function __invoke(ContainerInterface $container)
     {
+        $factory = $container->get(MiddlewareFactory::class);
         $pipeline = new MiddlewarePipe();
 
         // These correspond to the bullet points above
-        $pipeline->pipe($container->get('AuthenticationMiddleware'));
-        $pipeline->pipe($container->get('AuthorizationMiddleware'));
-        $pipeline->pipe($container->get('BodyParsingMiddleware'));
-        $pipeline->pipe($container->get('ValidationMiddleware'));
+        $pipeline->pipe($factory->prepare(AuthenticationMiddleware::class));
+        $pipeline->pipe($factory->prepare(AuthorizationMiddleware::class));
+        $pipeline->pipe($factory->prepare(BodyParsingMiddleware::class));
+        $pipeline->pipe($factory->prepare(ValidationMiddleware::class));
 
-        // This is the actual middleware you're routing to.
-        $pipeline->pipe($container->get('ApiResource'));
+        // This is the actual handler you're routing to:
+        $pipeline->pipe($factory->prepare(ApiResource::class));
 
         return $pipeline;
     }
 }
 ```
+
+> `$factory->prepare()` is used here to allow lazy-loading each middleware and
+> handler. If we instead pulled each class from the container directly, each would
+> be created, even if it was not ultimately executed.
 
 This gives you full control over the creation of the pipeline. You would,
 however, need to ensure that you map the middleware to the pipeline factory when
@@ -59,45 +65,32 @@ this case, we'd do the latter. The following is an example:
 
 ```php
 use Psr\Container\ContainerInterface;
+use Zend\Expressive\MiddlewareFactory;
 use Zend\ServiceManager\DelegatorFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Stratigility\MiddlewarePipe;
 
 class ApiResourcePipelineDelegatorFactory implements DelegatorFactoryInterface
 {
-    /**
-     * zend-servicemanager v3 support
-     */
     public function __invoke(
         ContainerInterface $container,
         $name,
         callable $callback,
         array $options = null
-    ) {
+    ) : MiddlewarePipe {
+        $factory = $container->get(MiddlewareFactory::class);
         $pipeline = new MiddlewarePipe();
 
         // These correspond to the bullet points above
-        $pipeline->pipe($container->get('AuthenticationMiddleware'));
-        $pipeline->pipe($container->get('AuthorizationMiddleware'));
-        $pipeline->pipe($container->get('BodyParsingMiddleware'));
-        $pipeline->pipe($container->get('ValidationMiddleware'));
+        $pipeline->pipe($factory->prepare(AuthenticationMiddleware::class));
+        $pipeline->pipe($factory->prepare(AuthorizationMiddleware::class));
+        $pipeline->pipe($factory->prepare(BodyParsingMiddleware::class));
+        $pipeline->pipe($factory->prepare(ValidationMiddleware::class));
 
-        // This is the actual middleware you're routing to.
+        // This is the actual handler you're routing to.
         $pipeline->pipe($callback());
 
         return $pipeline;
-    }
-
-    /**
-     * zend-servicemanager v2 support
-     */
-    public function createDelegatorWithName(
-        ServiceLocatorInterface $container,
-        $name,
-        $requestedName,
-        $callback
-    ) {
-        return $this($container, $name, $callback);
     }
 }
 ```
@@ -108,15 +101,15 @@ When configuring the container, you'd do something like the following:
 return [
     'dependencies' => [
         'factories' => [
-            'AuthenticationMiddleware' => '...',
-            'AuthorizationMiddleware' => '...',
-            'BodyParsingMiddleware' => '...',
-            'ValidationMiddleware' => '...',
-            'ApiResourceMiddleware' => '...',
+            AuthenticationMiddleware::class => '...',
+            AuthorizationMiddleware::class => '...',
+            BodyParsingMiddleware::class => '...',
+            ValidationMiddleware::class => '...',
+            ApiResource::class => '...',
         ],
         'delegators' => [
-            'ApiResourceMiddleware' => [
-                'ApiResourcePipelineDelegatorFactory',
+            ApiResource::class => [
+                ApiResourcePipelineDelegatorFactory::class,
             ],
         ],
     ],
@@ -130,71 +123,26 @@ pipeline creation across multiple middleware if desired.
 ## Middleware Arrays
 
 If you'd rather not create a factory for each such middleware, the other option
-is to use arrays of middlewares in your configuration or when routing manually.
-
-Via configuration looks like this:
-
-```php
-return [
-    'routes' => [
-        [
-            'name' => 'api-resource',
-            'path' => '/api/resource[/{id:[a-f0-9]{32}}]',
-            'allowed_methods' => ['GET', 'POST', 'PATCH', 'DELETE'],
-            'middleware' => [
-                'AuthenticationMiddleware',
-                'AuthorizationMiddleware',
-                'BodyParsingMiddleware',
-                'ValidationMiddleware',
-                'ApiResourceMiddleware',
-            ],
-        ],
-    ],
-];
-```
-
-Manual routing looks like this:
+is to use arrays of middlewares when routing.
 
 ```php
 $app->route('/api/resource[/{id:[a-f0-9]{32}}]', [
-    'AuthenticationMiddleware',
-    'AuthorizationMiddleware',
-    'BodyParsingMiddleware',
-    'ValidationMiddleware',
-    'ApiResourceMiddleware',
+    AuthenticationMiddleware::class,
+    AuthorizationMiddleware::class,
+    BodyParsingMiddleware::class,
+    ValidationMiddleware::class,
+    ApiResource::class,
 ], ['GET', 'POST', 'PATCH', 'DELETE'], 'api-resource');
 ```
 
 When either of these approaches are used, the individual middleware listed
 **MUST** be one of the following:
 
-- an instance of `Interop\Http\ServerMiddleware\MiddlewareInterface`;
-- a callable middleware (will be decorated as interop middleware);
+- an instance of `Psr\Http\Middleware\MiddlewareInterface`;
+- a callable middleware (will be decorated using `Zend\Stratigility\middleware()`);
 - a service name of middleware available in the container;
 - a fully qualified class name of a directly instantiable (no constructor
   arguments) middleware class.
 
 This approach is essentially equivalent to creating a factory that returns a
 middleware pipeline.
-
-## What about pipeline middleware configuration?
-
-What if you want to do this with your pipeline middleware configuration? The
-answer is that the syntax is exactly the same!
-
-```php
-return [
-    'middleware_pipeline' => [
-        'api' => [
-            'path' => '/api',
-            'middleware' => [
-                'AuthenticationMiddleware',
-                'AuthorizationMiddleware',
-                'BodyParsingMiddleware',
-                'ValidationMiddleware',
-            ],
-            'priority' => 100,
-        ],
-    ],
-];
-```

@@ -13,12 +13,9 @@ application:
 zend-stratigility provides a mechanism termed *piping* for composing middleware
 in an application. When you *pipe* middleware to the application, it is added to
 a queue, and dequeued in order until a middleware returns a response instance.
-If none ever returns a response instance, execution is delegated to a "final
-handler", which determines whether or not to return an error, and, if so, what
-kind of error to return.
 
-Stratigility also allows you to segregate piped middleware to specific paths. As
-an example:
+Expressive adds the ability to segregate middleware to a specific path; as an
+example:
 
 ```php
 $app->pipe('/api', $apiMiddleware);
@@ -31,9 +28,16 @@ This path segregation, however, is limited: it will only match literal paths.
 This is done purposefully, to provide excellent baseline performance, and to
 prevent feature creep in the library.
 
-Expressive uses and exposes piping to users, with one addition: **middleware
-may be specified by service name, and zend-expressive will lazy-load the service
-only when the middleware is invoked**.
+> #### Path segregation
+>
+> Internally, when `Application::pipe()` detects two arguments, it calls
+> `Zend\Stratigility\path()` using the two arguments in order to create a
+> `Zend\Stratigility\Middleware\PathMiddlewareDecorator` instance; this latter is
+> what performs the actual path checking.
+
+Expressive uses and exposes piping to users, with one addition: **middleware may
+be specified by service name or an array of service names, and zend-expressive
+will lazy-load the service only when the middleware is invoked**.
 
 In order to accomplish the lazy-loading, zend-expressive wraps the calls to
 fetch and dispatch the middleware inside a
@@ -111,11 +115,6 @@ To ensure your middleware is piped correctly, keep in mind the following:
 - Pipe middleware guaranteed to return a response (such as a "not found" handler
   or similar) _last_.
 
-To use the shipped routing and dispatch middleware (likely a good idea!), use
-the dedicated application methods `pipeRoutingMiddleware()` and
-`pipeDispatchMiddleware()`; `Application` contains logic to ensure neither of
-these are called more than once.
-
 As an example:
 
 ```php
@@ -123,9 +122,12 @@ $app->pipe(OriginalMessages::class);
 $app->pipe(ServerUrlMiddleware::class);
 $app->pipe(XClacksOverhead::class);
 $app->pipe(ErrorHandler::class);
-$app->pipeRoutingMiddleware();
+$app->pipe(RouteMiddleware::class);
+$app->pipe(ImplicitHeadMiddleware::class);
+$app->pipe(ImplicitOptionsMiddleware::class);
+$app->pipe(MethodNotAllowedMiddleware::class);
 $app->pipe(UrlHelperMiddleware::class);
 $app->pipe(AuthorizationCheck::class);
-$app->pipeDispatchMiddleware();
+$app->pipe(DispatchMiddleware::class);
 $app->pipe(NotFoundHandler::class);
 ```

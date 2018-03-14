@@ -4,19 +4,21 @@ In zend-expressive, you define a `Zend\Expressive\Application` instance and
 execute it. The `Application` instance is itself [middleware](https://docs.zendframework.com/zend-stratigility/middleware/)
 that composes:
 
-- a [router](router/intro.md), for dynamically routing requests to middleware.
-- a [dependency injection container](container/intro.md), for retrieving
-  middleware to dispatch.
-- a [default delegate](error-handling.md#default-delegates) (Expressive 2.X)
-  or [final handler](error-handling.md#version-1-error-handling)
-- an [emitter](https://docs.zendframework.com/zend-httphandlerrunner/emitters/),
-  for emitting the response when application execution is complete.
+- a `Zend\Expressive\MiddlewareFactory` instance, used to prepare middleware
+  arguments to pipe into:
+- a `Zend\Stratigility\MiddlewarePipe` instance, representing the application
+  middleware pipeline.
+- a `Zend\Expressive\Router\RouteCollector` instance, used to create
+  `Zend\Expressive\Router\Route` instances based on a combination of paths and
+  HTTP methods, and which also injects created instances into the application's
+  router.
+- a `Zend\HttpHandlerRunner\RequestHandlerRunner` instance which will ultimately
+  be responsible for marshaling the incoming request, passing it to the
+  `MiddlewarePipe`, and emitting the response.
 
-You can define the `Application` instance in several ways:
+You can define the `Application` instance in two ways:
 
 - Direct instantiation, which requires providing several dependencies.
-- The `AppFactory`, which will use some common defaults, but allows injecting alternate
-  container and/or router implementations.
 - Via a dependency injection container; we provide a factory for setting up all
   aspects of the instance via configuration and other defined services.
 
@@ -24,9 +26,6 @@ Regardless of how you setup the instance, there are several methods you will
 likely interact with at some point or another.
 
 ## Instantiation
-
-As noted at the start of this document, we provide several ways to create an
-`Application` instance.
 
 ### Constructor
 
@@ -37,7 +36,7 @@ following constructor:
 public function __construct(
     Zend\Expressive\MiddlewareFactory $factory,
     Zend\Stratigility\MiddlewarePipeInterface $pipeline,
-    Zend\Expressive\Router\PathBasedRoutingMiddleware $routes,
+    Zend\Expressive\Router\RouteCollector $routes,
     Zend\HttpHandlerRunner\RequestHandlerRunner $runner
 ) {
 ```
@@ -145,9 +144,28 @@ Routing and dispatch middleware must be piped to the application like any other
 middleware. You can do so using the following:
 
 ```php
-$app->pipe(Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware::class);
+$app->pipe(Zend\Expressive\Router\Middleware\RouteMiddleware::class);
 $app->pipe(Zend\Expressive\Router\Middleware\DispatchMiddleware::class);
 ```
+
+We recommend piping the following middleware between the two as well:
+
+```php
+$app->pipe(Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware::class);
+$app->pipe(Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware::class);
+$app->pipe(Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware::class);
+```
+
+These allow your application to return:
+
+- `HEAD` requests for handlers that do not specifically allow `HEAD`; these will
+  return with a 200 status, and any headers normally returned with a `GET`
+  request.
+- `OPTIONS` requests for handlers that do not specifically allow `OPTIONS`;
+  these will return with a 200 status, and an `Allow` header indicating all
+  allowed HTTP methods for the given route match.
+- 405 statuses when the route matches, but not the HTTP method; these will also
+  include an `Allow` header indicating all allowed HTTP methods.
 
 See the section on [piping](router/piping.md) to see how you can register
 non-routed middleware and create layered middleware applications.

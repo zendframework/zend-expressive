@@ -7,128 +7,92 @@ _must_ support `HEAD` requests for any given URI, and that they _should_ support
 layer, and middleware that can detect _implicit_  support for these methods
 (i.e., the route was not registered _explicitly_ with the method).
 
+Both middleware detailed here are provided in the zend-expressive-router
+package.
+
 ## ImplicitHeadMiddleware
 
-`Zend\Expressive\Middleware\ImplicitHeadMiddleware` provides support for
+`Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware` provides support for
 handling `HEAD` requests to routed middleware when the route does not expliclity
 allow for the method. It should be registered _between_ the routing and dispatch
 middleware.
 
-By default, it can be instantiated with no extra arguments. However, you _may_
-provide a response instance to use by default to the constructor if you need to
-craft special headers, status code, etc.
+The zend-expressive-router package provides a factory for creating an instance,
+and registers it by default via its configuration provider.
 
-Register the dependency via `dependencies` configuration:
-
-```php
-use Zend\Expressive\Middleware\ImplicitHeadMiddleware;
-
-return [
-    'dependencies' => [
-        'invokables' => [
-            ImplicitHeadMiddleware::class => ImplicitHeadMiddleware::class,
-        ],
-
-        // or, if you have defined a factory to inject a response:
-        'factories' => [
-            ImplicitHeadMiddleware::class => \Your\ImplicitHeadMiddlewareFactory::class,
-        ],
-    ],
-];
-```
+> If you want to provide a response instance with additional headers or a custom
+> status code, you will need to provide your own factory.
 
 Within your application pipeline, add the middleware between the routing and
-dispatch middleware:
+dispatch middleware, generally immediately following the routing middleware:
 
 ```php
-$app->pipeRoutingMiddleware();
+$app->pipe(RouteMiddleware::class);
 $app->pipe(ImplicitHeadMiddleware::class);
 // ...
-$app->pipeDispatchMiddleware();
+$app->pipe(DispatchMiddleware::class);
 ```
 
-(Note: if you used the `expressive-pipeline-from-config` tool to create your
-programmatic pipeline, or if you used the Expressive skeleton, this middleware
-is likely already in your pipeline, as is a dependency entry.)
+(Note: if you used the Expressive skeleton, this middleware is likely already in
+your pipeline.)
 
 When in place, it will do the following:
 
 - If the request method is `HEAD`, AND
 - the request composes a `RouteResult` attribute, AND
-- the route result composes a `Route` instance, AND
-- the route returns true for the `implicitHead()` method, THEN
+- the route result indicates a routing failure due to HTTP method used, THEN
 - the middleware will return a response.
 
 In all other cases, it returns the result of delegating to the next middleware
 layer.
 
-When `implicitHead()` is matched, one of two things may occur. First, if the
-route does not support the `GET` method, then the middleware returns the
-composed response (either the one injected at instantiation, or an empty
-instance). However, if `GET` is supported, it will dispatch the next layer, but
-with a `GET` request instead of `HEAD`; additionally, it will inject the
-returned response with an empty response body before returning it.
+When the middleware decides it can answer the request, one of two things may
+occur. First, if the route does not support the `GET` method, then the
+middleware returns an empty response.  However, if `GET` is supported, it will
+dispatch the next layer, but with a `GET` request instead of `HEAD`;
+additionally, it will inject the returned response with an empty response body
+before returning it.
 
 ### Detecting forwarded requests
 
-- Since 2.1.0
-
 When the next layer is dispatched, the request will have an additional
-attribute, `Zend\Expressive\Middleware\ImplicitHeadMiddleware::FORWARDED_HTTP_METHOD_ATTRIBUTE`,
+attribute, `Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware::FORWARDED_HTTP_METHOD_ATTRIBUTE`,
 with a value of `HEAD`. As such, you can check for this value in order to vary
 the headers returned if desired.
 
 ## ImplicitOptionsMiddleware
 
-`Zend\Expressive\Middleware\ImplicitOptionsMiddleware` provides support for
+`Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware` provides support for
 handling `OPTIONS` requests to routed middleware when the route does not
 expliclity allow for the method. Like the `ImplicitHeadMiddleware`, it should be
 registered _between_ the routing and dispatch middleware.
 
-By default, it can be instantiated with no extra arguments. However, you _may_
-provide a response prototype instance to use by default to the constructor if
-you need to craft special headers, status code, etc.
+The zend-expressive-router package provides a factory for creating an instance,
+and registers it by default via its configuration provider.
 
-Register the dependency via `dependencies` configuration:
-
-```php
-use Zend\Expressive\Middleware\ImplicitOptionsMiddleware;
-
-return [
-    'dependencies' => [
-        'invokables' => [
-            ImplicitOptionsMiddleware::class => ImplicitOptionsMiddleware::class,
-        ],
-
-        // or, if you have defined a factory to inject a response:
-        'factories' => [
-            ImplicitOptionsMiddleware::class => \Your\ImplicitOptionsMiddlewareFactory::class,
-        ],
-    ],
-];
-```
+> If you want to provide a response instance with additional headers or a custom
+> status code, you will need to provide your own factory.
 
 Within your application pipeline, add the middleware between the routing and
-dispatch middleware:
+dispatch middleware, generally immediately following the routing middleware or
+`ImplicitHeadMiddleware`:
 
 ```php
-$app->pipeRoutingMiddleware();
+$app->pipe(RouteMiddleware::class);
 $app->pipe(ImplicitOptionsMiddleware::class);
 // ...
-$app->pipeDispatchMiddleware();
+$app->pipe(DispatchMiddleware::class);
 ```
 
-(Note: if you used the `expressive-pipeline-from-config` tool to create your
-programmatic pipeline, or if you used the Expressive skeleton, this middleware
-is likely already in your pipeline, as is a dependency entry.)
+(Note: if you used the Expressive skeleton, this middleware is likely already in
+your pipeline.)
 
 When in place, it will do the following:
 
 - If the request method is `OPTIONS`, AND
 - the request composes a `RouteResult` attribute, AND
-- the route result composes a `Route` instance, AND
-- the route returns true for the `implicitOptions()` method, THEN
-- the middleware will return a response with an `Allow` header indicating
+- the route result indicates a routing failure due to HTTP method used, THEN
+- the middleware will return a 200 response with an `Allow` header indicating
   methods the route allows.
 
 In all other cases, it returns the result of delegating to the next middleware

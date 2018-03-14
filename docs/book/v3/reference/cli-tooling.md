@@ -43,14 +43,6 @@ You can install it if it is not already present in your application:
 $ composer require --dev zendframework/zend-expressive-tooling
 ```
 
-If you installed the Expressive skeleton prior to version 2.0.2, you will want
-to update the tooling to get the latest release, which contains the `expressive`
-binary, as follows:
-
-```bash
-$ composer require --dev "zendframework/zend-expressive-tooling:^0.4.1"
-```
-
 Once installed, invoking the binary without arguments will give a listing of
 available tools:
 
@@ -58,32 +50,47 @@ available tools:
 $ ./vendor/bin/expressive
 ```
 
+> #### Integration with Composer
+>
+> In the skeleton application, we provide direct integration with Composer,
+> allowing you to invoke the tooling using:
+>
+> ```bash
+> $ composer expressive
+> ```
+>
+> You can use either that form, or invoke the script directly as detailed above.
+
 Commands supported include:
+
+- **`action:create [options] <action>`**: This is an alias for the
+  `handler:create` command detailed below.
+
+- **`factory:create [options] <class>`**: Create a factory for the named class.
+  By default, the command will also register the class with its factory in the
+  application container.
+
+- **`handler:create [options] <handler>`**: Create a request handler named after
+  `<action>`. By default, the command will also generate a factory, register
+  both with the application container, and, if a template renderer is
+  discovered, generate a template in an appropriate location.
 
 - **`middleware:create <middleware>`**: Create a class file for the named
   middleware class. The class _must_ use a namespace already declared in your
   application, and will be created relative to the path associated with that
   namespace.
 
-- **`migrate:error-middleware-scanner [--dir|-d]`**: Scan the associated
-  directory (defaults to `src`) for declarations of legacy Stratigility v1 error
-  middleware, or invocations of `$next()` that provide an error argument. See
-  the [section on detecting legacy error middleware](#detect-usage-of-legacy-error-middleware)
-  for more details.
+- **`migrate:interop-middleware [options]`**: Migrates former http-interop
+  middleware under the `src/` tree to PSR-15 middleware.
 
-- **`migrate:original-messages [--src|-s]`**: Scan the associated source directory
-  (defaults to `src`) for `getOriginal*()` method calls and replace them with
-  `getAttribute()` calls. See the [section on detecting legacy
-  calls](#detect-usage-of-legacy-getoriginal-calls) for more details.
-
-- **`migrate:pipeline [--config-file|-c]`**: Convert configuration-driven
-  pipelines and routing to programmatic declarations. See the [section on
-  migrating to programmatic pipelines](#migrate-to-programmatic-pipelines) for
-  more details.
+- **`migrate:middleware-to-request-handler [options]`**: Migrates PSR-15
+  middleware under the `src/` tree to PSR-15 request handlers; it will only
+  migrate those that never call on their `$handler` argument.
 
 - **`module:create [--composer|-c] [--modules-path|-p] <module>`**: Create the
-  named module, add and generate autoloading rules for it, and register the
-  module's `ConfigProvider` with your application.
+  named module including a filesystem skeleton, add and generate autoloading
+  rules for it, and register the module's `ConfigProvider` with your
+  application.
 
 - **`module:register [--composer|-c] [--modules-path|-p] <module>`**: Add and
   generate autoloading rules for the named module,  and register the module's
@@ -98,188 +105,3 @@ You may obtain full help for each command by invoking:
 ```bash
 $ ./vendor/bin/expressive help <command>
 ```
-
-## Modules
-
-- Deprecated since zend-expressive-tooling 0.4.0; see the [Expressive CLI tool
-  section above](#expressive-command-line-tool).
-
-The package [zendframework/zend-expressive-tooling](https://github.com/zendframework/zend-expressive-tooling)
-provides the binary `vendor/bin/expressive-module`, which allows you to create,
-register, and deregister modules, assuming you are using a [modular application
-layout](../features/modular-applications.md).
-
-For instance, if you wish to create a new module for managing users, you might
-execute the following:
-
-```bash
-$ ./vendor/bin/expressive-module create User
-```
-
-Which would create the following tree:
-
-```text
-src/
-  User/
-    src/
-      ConfigProvider.php
-    templates/
-```
-
-It would also create an autoloading rule within your `composer.json` for the
-`User` namespace, pointing it at the `src/User/src/` tree (and updating the
-autoloader in the process), and register the new module's `ConfigProvider`
-within your `config/config.php`.
-
-The `register` command will take an existing module and:
-
-- Add an autoloading rule for it to your `composer.json`, if necessary.
-- Add an entry for the module's `ConfigProvider` class to your
-  `config/config.php`, if possible.
-
-```bash
-$ ./vendor/bin/expressive-module register Account
-```
-
-The `deregister` command does the opposite of `register`.
-
-```bash
-$ ./vendor/bin/expressive-module deregister Account
-```
-
-## Migrate to programmatic pipelines
-
-- Deprecated since zend-expressive-tooling 0.4.0; see the [Expressive CLI tool
-  section above](#expressive-command-line-tool).
-
-We recommend using _programmatic pipelines_, versus configuration-defined
-pipelines. For those upgrading their applications from 1.X versions, we provide
-a tool that will read their application configuration and generate:
-
-- `config/pipeline.php`, with the middleware pipeline
-- `config/routes.php`, with routing directives
-- `config/autoload/zend-expressive.global.php`, with settings to ensure
-  programmatic pipelines are used, and new middleware provided for Expressive
-  2.0 is registered.
-- directives within `public/index.php` for using the generated pipeline and
-  routes directives.
-
-To use this feature, you will need to first install
-zendframework/zend-expressive-tooling:
-
-```bash
-$ composer require --dev zendframework/zend-expressive-tooling
-```
-
-Invoke it as follows:
-
-```bash
-$ ./vendor/bin/expressive-pipeline-from-config generate
-```
-
-The tool will notify you of any errors, including whether or not it found (and
-skipped) Stratigility v1-style "error middleware".
-
-## Detect usage of legacy getOriginal*() calls
-
-- Deprecated since zend-expressive-tooling 0.4.0; see the [Expressive CLI tool
-  section above](#expressive-command-line-tool).
-
-When upgrading to version 2.0, you will also receive an upgrade to
-zendframework/zend-stratigility 2.0. That version eliminates internal decorator
-classes for the request and response instances, which were used to provide
-access to the outermost request/response; internal layers could use these to
-determine the full URI that resulted in their invocation, which is useful when
-you pipe using a path argument (as the path provided during piping is stripped
-from the URI when invoking the matched middleware).
-
-This affects the following methods:
-
-- `Request::getOriginalRequest()`
-- `Request::getOriginalUri()`
-- `Response::getOriginalResponse()`
-
-To provide equivalent functionality, we provide a couple of tools.
-
-First, Stratigility provides middleware, `Zend\Stratigility\Middleware\OriginalMessages`,
-which will inject the current request, its URI, and, if invoked as double-pass
-middleware, current response, as _request attributes_, named, respectively,
-`originalRequest`, `originalUri`, and `originalResponse`. (Since Expressive 2.0
-decorates double-pass middleware using a wrapper that composes a response, the
-"original response" will be the response prototype composed in the `Application`
-instance.) This should be registered as the outermost middleware layer.
-Middleware that needs access to these instances can then use the following
-syntax to retrieve them:
-
-```php
-$originalRequest = $request->getAttribute('originalRequest', $request);
-$originalUri = $request->getAttribute('originalUri', $request->getUri();
-$originalResponse = $request->getAttribute('originalResponse') ?: new Response();
-```
-
-> ### Original response is not trustworthy
->
-> As noted above, the "original response" will likely be injected with the
-> response prototype from the `Application` instance. We recommend not using it,
-> and instead either composing a pristine response instance in your middleware,
-> or creating a new instance on-the-fly.
-
-To aid you in migrating your existing code to use the new `getAttribute()`
-syntax, zendframework/zend-expressive-tooling provides a binary,
-`vendor/bin/expressive-migrate-original-messages`. First, install that package:
-
-```bash
-$ composer require --dev zendframework/zend-expressive-tooling
-```
-
-Then invoke it as follows:
-
-```bash
-$ ./vendor/bin/expressive-migrate-original-messages scan
-```
-
-This script will update any `getOriginalRequest()` and `getOriginalUri()` calls,
-and notify you of any `getOriginalResponse()` calls, providing you with details
-on how to correct those manually.
-
-## Detect usage of legacy error middleware
-
-- Deprecated since zend-expressive-tooling 0.4.0; see the [Expressive CLI tool
-  section above](#expressive-command-line-tool).
-
-When upgrading to version 2.0, you will also receive an upgrade to
-zendframework/zend-stratigility 2.0. That version eliminates what was known as
-"error middleware", middleware that either implemented
-`Zend\Stratigility\ErrorMiddlewareInterface`, or duck-typed it by implementing
-the signature `function ($error, $request, $response, callable $next)`.
-
-Such "error middleware" allowed other middleware to invoke the `$next` argument
-with an additional, third argument representing an error condition; when that
-occurred, Stratigility/Expressive would start iterating through error middleware
-until one was able to return a response. Each would receive the error as the
-first argument, and determine how to act upon it.
-
-With version 2.0 of each project, such middleware is now no longer accepted, and
-users should instead be using [the new error handling
-features](../features/error-handling.md). However, you may find that:
-
-- You have defined error middleware in your application.
-- You have standard middleware in your application that invokes `$next` with the
-  third, error argument.
-
-To help you identify such instances, zendframework/zend-expressive-tooling
-provides the script `vendor/bin/expressive-scan-for-error-middleware`. First,
-install that package:
-
-```bash
-$ composer require --dev zendframework/zend-expressive-tooling
-```
-
-Then invoke it as follows:
-
-```bash
-$ ./vendor/bin/expressive-scan-for-error-middleware scan
-```
-
-The script will notify you of any places where it finds either use case, and
-provide feedback on how to update your application.

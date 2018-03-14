@@ -4,14 +4,8 @@ You may have multiple middleware in your project, each providing their own
 functionality:
 
 ```php
-$middleware1 = new UserMiddleware();
-$middleware2 = new ProjectMiddleware();
-
-$app = AppFactory::create();
-$app->pipe($middleware1);
-$app->pipe($middleware2);
-
-$app->run();
+$app->pipe(UserMiddleware::class);
+$app->pipe(ProjectMiddleware::class);
 ```
 
 Let's assume the above represents an API.
@@ -19,28 +13,60 @@ Let's assume the above represents an API.
 As your application progresses, you may have a mixture of different content, and now want to have
 the above segregated under the path `/api`.
 
-This is essentially the same problem as addressed in the
-["Segregating your application to a subpath"](../reference/usage-examples.md#segregating-your-application-to-a-subpath) example.
+To accomplish it, we will pipe an _array_ of middleware _under a path_, `/api`.
 
-To accomplish it:
+When we pipe an array of middleware, internally, `Zend\Expressive\Application`
+creates a new `Zend\Stratigility\MiddlewarePipe` instance, and pipes each
+middleware item to it.
 
-- Create a new application.
-- Pipe the previous application to the new one, under the path `/api`.
+When we specify a path, the middleware is decorated with a
+`Zend\Stratigility\Middleware\PathMiddlewareDecorator`. This middleware will
+compare the request path against the path with which it was created; if they
+match, it passes processing on to its middleware.
+
+The following example assumes you are using the structure of
+`config/pipeline.php` as shipped with the skeleton application.
 
 ```php
-$middleware1 = new UserMiddleware();
-$middleware2 = new ProjectMiddleware();
+use Psr\Container\ContainerInterface;
+use Zend\Expressive\Application;
+use Zend\Expressive\MiddlewareFactory;
 
-$api = AppFactory::create();
-$api->pipe($middleware1);
-$api->pipe($middleware2);
-
-$app = AppFactory::create();
-$app->pipe('/api', $api);
-
-$app->run();
+/**
+ * Setup middleware pipeline:
+ */
+return function (Application $app, MiddlewareFactory $factory, ContainerInterface $container) : void {
+    // . . .
+    $app->pipe('/api', [
+        UserMiddleware::class,
+        ProjectMiddleware::class,
+    ]);
+    // . . .
+}
 ```
 
-The above works, because every `Application` instance is itself middleware, and, more specifically,
-an instance of [Stratigility's `MiddlewarePipe`](https://github.com/zendframework/zend-stratigility/blob/master/doc/book/middleware.md),
-which provides the ability to compose middleware.
+Alternately, you can perform the path decoration manually:
+
+```php
+use Psr\Container\ContainerInterface;
+use Zend\Expressive\Application;
+use Zend\Expressive\MiddlewareFactory;
+
+use function Zend\Stratigility\path;
+
+/**
+ * Setup middleware pipeline:
+ */
+return function (Application $app, MiddlewareFactory $factory, ContainerInterface $container) : void {
+    // . . .
+    $app->pipe(path('/api', $factory->pipeline(
+        UserMiddleware::class,
+        ProjectMiddleware::class
+    )));
+    // . . .
+}
+```
+
+(Calling `$factory->pipeline()` is necessary here to ensure that we create the
+`MiddlewarePipe` instance, and so that each item in the specified pipeline will
+be decorated as `Zend\Expressive\Middleware\LazyLoadingMiddleware`.)
