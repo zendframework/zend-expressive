@@ -23,13 +23,7 @@ use Psr\Log\LoggerInterface;
 
 class UserRepositoryListenerDelegatorFactory
 {
-    /**
-     * @param ContainerInterface $container
-     * @param string $name
-     * @param callable $callback
-     * @return UserRepository
-     */
-    public function __invoke(ContainerInterface $container, $name, callable $callback)
+    public function __invoke(ContainerInterface $container, string $name, callable $callback) : UserRepository
     {
         $listener = new LoggerListener($container->get(LoggerInterface::class));
         $repository = $callback();
@@ -58,5 +52,4 @@ multiple delegator factories to any given service**, which can be a very
 powerful feature.
 
 At the time of writing, this feature works for each of the Aura.Di, Pimple, and
-zend-servicemanager container implementations. Delegator factories have been
-supported with Pimple and zend-servicemanager since the 1.X series.
+zend-servicemanager container implementations.

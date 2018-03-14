@@ -8,8 +8,9 @@ The latter aspect, emitting the response, is the responsibility of an
 An emitter accepts a response instance, and then does something with it, usually
 sending the response back to a browser.
 
-zend-httphandlerrunner defines an `EmitterInterface`, and three emitter
-implementations. Two of these, `Zend\HttpHandlerRunner\Emitter\SapiEmitter` and
+The zendframework/zend-httphandlerrunner package defines an `EmitterInterface`,
+and three emitter implementations. Two of these,
+`Zend\HttpHandlerRunner\Emitter\SapiEmitter` and
 `Zend\HttpHandlerRunner\Emitter\SapiStreamEmitter`, send headers and output
 using PHP's standard SAPI mechanisms (the `header()` method and the output
 buffer).

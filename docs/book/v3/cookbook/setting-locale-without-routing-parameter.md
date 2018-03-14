@@ -27,7 +27,7 @@ If it does find one, it uses the value to setup the locale. It also:
 
 ```php
 <?php
-namespace Application\I18n;
+namespace App\I18n;
 
 use Locale;
 use Psr\Http\Message\ResponseInterface;
@@ -53,7 +53,6 @@ class SetLocaleMiddleware implements MiddlewareInterface
 
         if (! preg_match('#^/(?P<locale>[a-z]{2,3}([-_][a-zA-Z]{2}|))/#', $path, $matches)) {
             Locale::setDefault('de_DE');
-            // Expressive 3.X:
             return $handler->handle($request);
         }
 
@@ -73,7 +72,7 @@ Then you will need a factory for the `SetLocaleMiddleware` to inject the
 
 ```php
 <?php
-namespace Application\I18n;
+namespace App\I18n;
 
 use Psr\Container\ContainerInterface;
 use Zend\Expressive\Helper\UrlHelper;
@@ -94,8 +93,8 @@ Next, map the middleware to its factory in either
 `/config/autoload/middleware-pipeline.global.php`:
 
 ```php
-use Application\I18n\SetLocaleMiddleware;
-use Application\I18n\SetLocaleMiddlewareFactory;
+use App\I18n\SetLocaleMiddleware;
+use App\I18n\SetLocaleMiddlewareFactory;
 
 return [
     'dependencies' => [
@@ -111,49 +110,18 @@ return [
 Finally, you will need to configure your middleware pipeline to ensure this
 middleware is executed on every request.
 
-If using a programmatic pipeline:
+Pipe the middleware early in your application, before routing is performed:
 
 ```php
-use Application\I18n\SetLocaleMiddleware;
-use Zend\Expressive\Helper\UrlHelperMiddleware;
+use App\I18n\SetLocaleMiddleware;
 
 /* ... */
 $app->pipe(SetLocaleMiddleware::class);
 /* ... */
-$app->pipeRoutingMiddleware();
-$app->pipe(UrlHelperMiddleware::class);
-$app->pipeDispatchMiddleware();
+$app->pipe(RouteMiddleware::class);
 /* ... */
-```
-
-If using a configuration-driven application, update
-`/config/autoload/middleware-pipeline.global.php` to add the middleware:
-
-```php
-return [
-    'middleware_pipeline' => [
-        [
-            'middleware' => [
-                Application\I18n\SetLocaleMiddleware::class,
-                /* ... */
-            ],
-            'priority' => 1000,
-        ],
-
-        /* ... */
-
-        'routing' => [
-            'middleware' => [
-                Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
-                Zend\Expressive\Helper\UrlHelperMiddleware::class,
-                Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
-            ],
-            'priority' => 1,
-        ],
-
-        /* ... */
-    ],
-];
+$app->pipe(DispatchMiddleware::class);
+/* ... */
 ```
 
 ## Url generation in the view
@@ -163,7 +131,7 @@ to worry about generating URLs within your view. Just use the helper to
 generate a URL and it will do the rest.
 
 ```php
-<?php echo $this->url('your-route') ?>
+<?= $this->url('your-route') ?>
 ```
 
 > ### Helpers differ between template renderers
@@ -179,14 +147,15 @@ handler and use it for URL generation:
 
 ```php
 <?php
-namespace Application\Action;
+namespace App\Handler;
 
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Expressive\Helper\UrlHelper;
 
-class RedirectAction implements RequestHandlerInterface
+class RedirectHandler implements RequestHandlerInterface
 {
     private $helper;
 
@@ -195,7 +164,7 @@ class RedirectAction implements RequestHandlerInterface
         $this->helper = $helper;
     }
 
-    public function handle(ServerRequestInterface $request) : RedirectResponse
+    public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $routeParams = [ /* ... */ ];
 
@@ -211,16 +180,16 @@ handler have a factory that manages the injection. As an example, the following
 would work for the above middleware:
 
 ```php
-namespace Application\Action;
+namespace App\Handler;
 
 use Psr\Container\ContainerInterface;
 use Zend\Expressive\Helper\UrlHelper;
 
-class RedirectActionFactory
+class RedirectHandlerFactory
 {
     public function __invoke(ContainerInterface $container)
     {
-        return new RedirectAction(
+        return new RedirectHandler(
             $container->get(UrlHelper::class)
         );
     }

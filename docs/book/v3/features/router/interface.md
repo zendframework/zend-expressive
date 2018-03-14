@@ -1,10 +1,11 @@
 # Routing Interface
 
 Expressive defines `Zend\Expressive\Router\RouterInterface`, which is used by
-the `Zend\Expressive\Router\PathBasedRoutingMiddleware` consumed by
-`Zend\Expressive\Application` in order to provide dynamic routing capabilities
-to middleware. The interface serves as an abstraction to allow routers with
-varying capabilities to be used with an application.
+the `Zend\Expressive\Router\RouteMiddleware` &mdash; as well as the
+`Zend\Expressive\Router\RouteCollector` consumed by
+`Zend\Expressive\Application` &mdash; in order to provide dynamic routing
+capabilities to middleware. The interface serves as an abstraction to allow
+routers with varying capabilities to be used with an application.
 
 The interface is defined as follows:
 
@@ -80,8 +81,8 @@ Routes are defined via `Zend\Expressive\Router\Route`, and aggregate the
 following information:
 
 - Path to match.
-- Middleware to use when the route is matched. This may be a callable or a
-  service name resolving to middleware.
+- Middleware to use when the route is matched. The value **must** implement
+  `Psr\Http\Server\MiddlewareInterface`.
 - HTTP methods allowed for the route; if none are provided, all are assumed.
 - Optionally, a name by which to reference the route.
 
@@ -145,24 +146,16 @@ class Route implements MiddlewareInterface
     public function setOptions(array $options) : void;
 
     public function getOptions() : array;
-
-    /**
-     * Whether or not HEAD support is implicit (i.e., not explicitly specified)
-     */
-    public function implicitHead() : bool;
-
-    /**
-     * Whether or not OPTIONS support is implicit (i.e., not explicitly specified)
-     */
-    public function implicitOptions() : bool;
 }
 ```
 
-Typically, developers will use `Zend\Expressive\Application::route()` (or one of
-the HTTP-specific routing methods) to create routes, and will not need to
-interact with `Route` instances.  Additionally, when working with `RouteResult`
-instances, you may pull the `Route` instance from that in order to obtain data
-about the matched route.
+Typically, developers will use the `route()` method of either
+`Zend\Expressive\Router\PathBasedRoutingMiddleware` or
+`Zend\Expressive\Application` (or one of the HTTP-specific routing methods of
+either class) to create routes, and will not need to interact with `Route`
+instances.  Additionally, when working with `RouteResult` instances, you may
+pull the `Route` instance from that in order to obtain data about the matched
+route.
 
 ## Matching and RouteResults
 
@@ -189,15 +182,18 @@ middleware:
 - `Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware` checks to see
   if the route failures was due to the HTTP method, and, if so, return a 405
   response with an appropriate `Allow` header.
+  ([read more](../middleware/method-not-allowed-middleware.md))
 
 - `Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware` checks to see if a
   routing failure was due to a route match using a `HEAD` request, and will then
   dispatch the appropriate route via `GET` request, and inject an empty body
   into the returned response.
+  ([read more](../middleware/implicit-methods-middleware.md#implicitheadmiddleware))
 
 - `Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware` checks to see if a
   routing failure was due to a route match using a `OPTIONS` request; if so, it
   will return a 200 response with an appropriate `Allow `header.
+  ([read more](../middleware/implicit-methods-middleware.md#implicitoptionsmiddleware))
 
 The `RouteResult` signature is as follows:
 

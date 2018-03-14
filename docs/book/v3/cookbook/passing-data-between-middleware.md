@@ -33,12 +33,7 @@ class PassingDataMiddleware implements MiddlewareInterface
         ];
 
         // Step 2: Inject data into the request, call the next middleware and wait for the response
-
-        // Expressive 3.X:
         $response = $handler->handle($request->withAttribute(self::class, $data));
-
-        // Expressive 2.X:
-        $response = $handler->process($request->withAttribute(self::class, $data));
         
         // Step 3: Optionally, do something (with the response) before returning the response
 
@@ -68,13 +63,8 @@ class ReceivingDataMiddleware implements MiddlewareInterface
         $data = $request->getAttribute(PassingDataMiddleware::class);
 
         // Step 2: Call the next middleware and wait for the response
-
-        // Expressive 3.X:
         $response = $handler->handle($request);
 
-        // Expressive 2.X:
-        $response = $handler->process($request);
-        
         // Step 3: Optionally, do something (with the response) before returning the response
 
         // Step 4: Return the response
@@ -84,11 +74,11 @@ class ReceivingDataMiddleware implements MiddlewareInterface
 ```
 
 Of course, you could also use the data in routed middleware, which is usually at
-the innermost layer of your application. The `ExampleAction` below takes that
+the innermost layer of your application. The `ExampleHandler` below takes that
 information and passes it to the template renderer to create an `HtmlResponse`:
 
 ```php
-namespace App\Action;
+namespace App\Handler;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -96,11 +86,11 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 
-class ExampleAction implements MiddlewareInterface
+class ExampleHandler implements RequestHandlerInterface
 {
     // ...
     
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
+    public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         // Step 1: Grab the data from the request
         $data = $request->getAttribute(PassingDataMiddleware::class);

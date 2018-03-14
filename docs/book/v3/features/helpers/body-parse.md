@@ -1,7 +1,7 @@
 # Body Parsing Middleware
 
 `Zend\Expressive\Helper\BodyParams\BodyParamsMiddleware` provides generic
-[PSR-7](https://www.php-fig.org/psr/psr-7/) middleware for parsing the request
+[PSR-15](https://www.php-fig.org/psr/psr-15/) middleware for parsing the request
 body into parameters, and returning a new request instance that composes them.
 The subcomponent provides a strategy pattern around matching the request
 `Content-Type`, and then parsing it, giving you a flexible approach that can
@@ -21,38 +21,6 @@ You can register it programmatically:
 $app->pipe(BodyParamsMiddleware::class);
 ```
 
-Alternately, register it via configuration, if using configuration-based applications:
-
-```php
-// config/autoload/middleware-pipeline.global.php
-use Zend\Expressive\Helper;
-
-return [
-    'dependencies' => [
-        'invokables' => [
-            Helper\BodyParams\BodyParamsMiddleware::class => Helper\BodyParams\BodyParamsMiddleware::class,
-            /* ... */
-        ],
-        'factories' => [
-            /* ... */
-        ],
-    ],
-    'middleware_pipeline' => [
-        ['middleware' => Helper\BodyParams\BodyParamsMiddleware::class, 'priority' => 100],
-        /* ... */
-        'routing' => [
-            'middleware' => [
-                Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
-                Helper\UrlHelperMiddleware::class,
-                Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
-            ],
-            'priority' => 1,
-        ],
-        /* ... */
-    ],
-];
-```
-
 Since body parsing does not necessarily need to happen for every request, you
 can also choose to incorporate it in route-specific middleware pipelines:
 
@@ -61,36 +29,6 @@ $app->post('/login', [
     BodyParamsMiddleware::class,
     LoginMiddleware::class,
 ]);
-```
-
-If using a configuration-based application:
-
-```php
-// config/autoload/routes.global.php
-use Zend\Expressive\Helper\BodyParams\BodyParamsMiddleware;
-
-return [
-    'dependencies' => [
-        'invokables' => [
-            Helper\BodyParams\BodyParamsMiddleware::class => Helper\BodyParams\BodyParamsMiddleware::class,
-            /* ... */
-        ],
-        'factories' => [
-            /* ... */
-        ],
-    ],
-    'routes' => [
-        [
-            'name' => 'contact:process',
-            'path' => '/contact/process',
-            'middleware' => [
-                BodyParamsMiddleware::class,
-                Contact\Process::class,
-            ],
-            'allowed_methods' => ['POST'],
-        ]
-    ],
-];
 ```
 
 Using route-based middleware pipelines has the advantage of ensuring that the
@@ -114,19 +52,13 @@ interface StrategyInterface
 {
     /**
      * Match the content type to the strategy criteria.
-     *
-     * @param string $contentType
-     * @return bool Whether or not the strategy matches.
      */
-    public function match($contentType);
+    public function match(string $contentType) : bool;
 
     /**
-     * Parse the body content and return a new response.
-     *
-     * @param ServerRequestInterface $request
-     * @return ServerRequestInterface
+     * Parse the body content and return a new request.
      */
-    public function parse(ServerRequestInterface $request);
+    public function parse(ServerRequestInterface $request) : ServerRequestInterface;
 }
 ```
 
@@ -172,6 +104,8 @@ return [
     ],
 ];
 ```
+
+Alternately, use a [delegator factory](../container/factories.md).
 
 ## Removing the default strategies
 

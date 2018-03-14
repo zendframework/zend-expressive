@@ -1,6 +1,6 @@
 # Templating
 
-By default, no middleware in Expressive is templated. We do not even
+By default, no middleware or handlers in Expressive are templated. We do not even
 provide a default templating engine, as the choice of templating engine is often
 very specific to the project and/or organization.
 

@@ -242,77 +242,37 @@ $app->get('/dashboard', [
 ], 'dashboard');
 ```
 
-## Default delegates
-
-`Zend\Expressive\Application` manages an internal middleware pipeline; when you
-call `$handler->handle()`, `Application` is popping off the next middleware in
-the queue and dispatching it.
-
-What happens when that queue is exhausted?
-
-That situation indicates an error condition: no middleware was capable of
-returning a response. This could either mean a problem with the request (HTTP
-400 "Bad Request" status) or inability to route the request (HTTP 404 "Not
-Found" status).
-
-In order to report that information, we provide a specialized handler,
-`Zend\Expressive\Handler\NotFoundHandler`, which you should compose as the
-innermost layer of your application pipeline. It will report a 404
-response, optionally using a composed template renderer to do so.
-
-We provide a factory, `Zend\Expressive\Container\NotFoundHandlerFactory`, for
-creating an instance, and this should be mapped to the
-`Zend\Expressive\Handler\NotFoundHandler` service:
-
-```php
-use Zend\Expressive\Container;
-use Zend\Expressive\Handler;
-
-return [
-    'dependencies' => [
-        'factories' => [
-            Handler\NotFoundHandler::class => Container\NotFoundHandlerFactory::class,
-        ],
-    ],
-];
-```
-
-The factory will consume the following services:
-
-- `Zend\Expressive\Template\TemplateRendererInterface` (optional): if present,
-  the renderer will be used to render a template for use as the response
-  content.
-
-- `config` (optional): if present, it will use the
-  `$config['zend-expressive']['error_handler']['template_404']` value
-  as the template to use when rendering; if not provided, defaults to
-  `error::404`.
-
-If you wish to provide an alternate response status or use a canned response,
-you should provide your own handler and pipe it to your application.
-
 ## Page not found
 
 Error handlers work at the outermost layer, and are used to catch exceptions and
 errors in your application. At the _innermost_ layer of your application, you
 should ensure you have middleware that is _guaranteed_ to return a response;
-this will prevent the default delegate from needing to execute by ensuring that
-the middleware queue never fully depletes. This in turn allows you to fully
-craft what sort of response is returned.
+this prevents errors in your application in the event that the application
+exhausts the middleware queue. 
+
+This in turn allows you to fully craft what sort of response is returned in such
+condidtions.
 
 Generally speaking, reaching the innermost middleware layer indicates that no
 middleware was capable of handling the request, and thus an HTTP 404 Not Found
 condition.
 
-To simplify such responses, we provide `Zend\Expressive\Handler\NotFoundHandler`,
-detailed int he above section.
+To simplify such responses, we provide
+`Zend\Expressive\Handler\NotFoundHandler`.  It will report a 404 response,
+optionally using a composed template renderer to do so.
 
-You should pipe it as the innermost layer of your application:
+We provide a factory, `Zend\Expressive\Container\NotFoundHandlerFactory`, for
+creating an instance, which we [detail elsewhere](container/factories.md#notfoundhandlerfactory). You should pipe it as the innermost layer of your application:
 
 ```php
 // A basic application:
 $app->pipe(ErrorHandler::class);
-$app->pipe(PathBasedRoutingMiddleware::class);
+// . . .
+$app->pipe(RouteMiddleware::class);
+// . . .
 $app->pipe(DispatchMiddleware::class);
 $app->pipe(NotFoundHandler::class);
 ```
+
+If you wish to provide an alternate response status or use a canned response,
+you should provide your own handler and pipe it to your application.

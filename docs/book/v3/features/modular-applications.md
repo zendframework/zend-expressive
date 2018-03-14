@@ -55,12 +55,11 @@ src/
   Acme/
     src/
       ConfigProvider.php
-      Container/
-        VerifyUserFactory.php
       Helper/
         AuthorizationHelper.php
       Middleware/
         VerifyUser.php
+        VerifyUserFactory.php
     templates/
       verify-user.php
     test/
@@ -188,6 +187,18 @@ $configManager = new ConfigManager([
 When the configuration cache path is present, if the `config_cache_enabled` flag
 is enabled, then configuration will be read from the cached configuration,
 instead of parsing and merging the various configuration sources.
+
+## Tooling support
+
+The skeleton ships with zend-expressive-tooling by default, which allows you
+to execute the following command in order to create a module skeleton, add and
+enable autoloading rules for it, and register it with your application:
+
+```bash
+$ composer expressive module:create {ModuleName}
+```
+
+We recommend using this tool when creating new modules.
 
 ## Final notes
 

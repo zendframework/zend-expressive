@@ -73,9 +73,8 @@ function (ServerRequestInterface $request, RequestHandlerInterface $handler) : R
 }
 ```
 
-One note: the `$request` argument does not require a typehint, and examples
-throughout the manual will omit the typehint when demonstrating callable
-middleware.
+One note: neither argument _require_ a typehint, and examples throughout the
+manual will omit the typehints when demonstrating callable middleware.
 
 ## Service-based middleware
 
@@ -92,9 +91,9 @@ instance, allowing it to be loaded only when dispatched.
 
 Expressive allows any pipeline or routed middleware to be self-contained
 [middleware pipelines](https://docs.zendframework.com/zend-stratigility/api/#middleware).
-To prevent the need for instantiating a `Zend\Stratigility\MiddlewarePipe` or
-`Zend\Expressive\Application` instance when defining the pipeline, Expressive
-allows you to provide an array of middleware:
+To prevent the need for instantiating a `Zend\Stratigility\MiddlewarePipe`
+instance when defining the pipeline, Expressive allows you to provide an array
+of middleware:
 
 ```php
 // Pipeline middleware:
@@ -104,7 +103,7 @@ $app->pipe([
 ]);
 
 // Routed middleware:
-$app->get([
+$app->get('/foo', [
     FirstMiddleware::class,
     SecondMiddleware::class,
 ]);

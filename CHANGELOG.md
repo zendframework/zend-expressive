@@ -300,6 +300,10 @@ All notable changes to this project will be documented in this file, in reverse 
 - [#543](https://github.com/zendframework/zend-expressive/pull/543) removes the
   class `Zend\Expressive\AppFactory`.
 
+- The internal `Zend\Expressive\MarshalMiddlewareTrait`,
+  `Zend\Expressive\ApplicationConfigInjectionTrait`, and
+  `Zend\Expressive\IsCallableMiddlewareTrait` have been removed.
+
 ### Fixed
 
 - [#574](https://github.com/zendframework/zend-expressive/pull/574) updates the

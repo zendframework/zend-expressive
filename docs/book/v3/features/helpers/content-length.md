@@ -1,7 +1,5 @@
 # Content-Length Middleware
 
-- **Available since zend-expressive-helpers version 4.1.0.**
-
 In some cases, you may want to include an explicit `Content-Length` response
 header, without having to inject it manually. To facilitate this, we provide
 `Zend\Expressive\Helper\ContentLengthMiddleware`.

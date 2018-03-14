@@ -70,146 +70,20 @@ Each method will raise an exception if:
 > zendframework/zend-expressive-helpers. Prior to that version, the helper only
 > accepted the route name and route parameters.
 
-## Creating an instance
-
-In order to use the helper, you will need to instantiate it with the current
-`RouterInterface`. The factory `Zend\Expressive\Helper\UrlHelperFactory` has
-been provided for this purpose, and can be used trivially with most
-dependency injection containers implementing
-[PSR-11 Container](https://www.php-fig.org/psr/psr-11/). Additionally,
-it is most useful when injected with the current results of routing, which
-requires registering middleware with the application that can inject the route
-result. The following steps should be followed to register and configure the helper:
-
-- Register the `UrlHelper` as a service in your container, using the provided
-  factory.
-- Register the `UrlHelperMiddleware` as a service in your container, using the
-  provided factory.
-- Register the `UrlHelperMiddleware` as pipeline middleware, immediately
-  following the routing middleware.
-
-### Registering the helper service
-
-The following examples demonstrate programmatic registration of the `UrlHelper`
-service in your selected dependency injection container.
-
-```php
-use Zend\Expressive\Helper\UrlHelper;
-use Zend\Expressive\Helper\UrlHelperFactory;
-
-// zend-servicemanager:
-$services->setFactory(UrlHelper::class, UrlHelperFactory::class);
-
-// Pimple:
-$pimple[UrlHelper::class] = function ($container) {
-    $factory = new UrlHelperFactory();
-    return $factory($container);
-};
-
-// Aura.Di:
-$container->set(UrlHelperFactory::class, $container->lazyNew(UrlHelperFactory::class));
-$container->set(
-    UrlHelper::class,
-    $container->lazyGetCall(UrlHelperFactory::class, '__invoke', $container)
-);
-```
-
-The following dependency configuration will work for all three when using the
-Expressive skeleton:
-
-```php
-return ['dependencies' => [
-    'factories' => [
-        UrlHelper::class => UrlHelperFactory::class,
-    ],
-]]
-```
-
-> #### UrlHelperFactory requires RouterInterface
->
-> The factory requires that a service named `Zend\Expressive\Router\RouterInterface` is present,
-> and will raise an exception if the service is not found.
-
 ### Registering the pipeline middleware
 
-To register the `UrlHelperMiddleware` as pipeline middleware following the
-routing middleware:
+For the `UrlHelper` to work, you must first register the `UrlHelperMiddleware`
+as pipeline middleware following the routing middleware, and before the dispatch
+middleware:
 
 ```php
 use Zend\Expressive\Helper\UrlHelperMiddleware;
 
 // Programmatically:
-$app->pipeRoutingMiddleware();
+$app->pipe(RouteMiddleware::class);
+// ...
 $app->pipe(UrlHelperMiddleware::class);
-$app->pipeDispatchMiddleware();
-
-// Or use configuration:
-// [
-//     'middleware_pipeline' => [
-//         /* ... */
-//         Zend\Expressive\Application::ROUTING_MIDDLEWARE,
-//         ['middleware' => UrlHelperMiddleware::class],
-//         Zend\Expressive\Application::DISPATCH_MIDDLEWARE,
-//         /* ... */
-//     ],
-// ]
-//
-// Alternately, create a nested middleware pipeline for the routing, UrlHelper,
-// and dispatch middleware:
-// [
-//     'middleware_pipeline' => [
-//         /* ... */
-//         'routing' => [
-//             'middleware' => [
-//                 Zend\Expressive\Application::ROUTING_MIDDLEWARE,
-//                 UrlHelperMiddleware::class
-//                 Zend\Expressive\Application::DISPATCH_MIDDLEWARE,
-//             ],
-//             'priority' => 1,
-//         ],
-//         /* ... */
-//     ],
-// ]
-
-```
-
-The following dependency configuration will work for all three when using the
-Expressive skeleton:
-
-```php
-return [
-    'dependencies' => [
-        'factories' => [
-            UrlHelper::class => UrlHelperFactory::class,
-            UrlHelperMiddleware::class => UrlHelperMiddlewareFactory::class,
-        ],
-    ],
-    'middleware_pipeline' => [
-        Zend\Expressive\Application::ROUTING_MIDDLEWARE,
-        ['middleware' => UrlHelperMiddleware::class],
-        Zend\Expressive\Application::DISPATCH_MIDDLEWARE,
-    ],
-];
-
-// OR:
-return [
-    'dependencies' => [
-        'factories' => [
-            UrlHelper::class => UrlHelperFactory::class,
-            UrlHelperMiddleware::class => UrlHelperMiddlewareFactory::class,
-        ],
-    ],
-    'middleware_pipeline' => [
-        'routing' => [
-            'middleware' => [
-                Zend\Expressive\Application::ROUTING_MIDDLEWARE,
-                UrlHelperMiddleware::class,
-                Zend\Expressive\Application::DISPATCH_MIDDLEWARE,
-            ],
-            'priority' => 1,
-        ],
-    ],
-];
+$app->pipe(DispatchMiddleware::class);
 ```
 
 > #### Skeleton configures helpers
