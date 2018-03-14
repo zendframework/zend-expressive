@@ -15,7 +15,7 @@ use Zend\Expressive\Application;
 use Zend\Expressive\ApplicationPipeline;
 use Zend\Expressive\Container\ApplicationFactory;
 use Zend\Expressive\MiddlewareFactory;
-use Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware;
+use Zend\Expressive\Router\RouteCollector;
 use Zend\HttpHandlerRunner\RequestHandlerRunner;
 use Zend\Stratigility\MiddlewarePipeInterface;
 
@@ -25,13 +25,13 @@ class ApplicationFactoryTest extends TestCase
     {
         $middlewareFactory = $this->prophesize(MiddlewareFactory::class)->reveal();
         $pipeline = $this->prophesize(MiddlewarePipeInterface::class)->reveal();
-        $routeMiddleware = $this->prophesize(PathBasedRoutingMiddleware::class)->reveal();
+        $routeCollector = $this->prophesize(RouteCollector::class)->reveal();
         $runner = $this->prophesize(RequestHandlerRunner::class)->reveal();
 
         $container = $this->prophesize(ContainerInterface::class);
         $container->get(MiddlewareFactory::class)->willReturn($middlewareFactory);
         $container->get(ApplicationPipeline::class)->willReturn($pipeline);
-        $container->get(PathBasedRoutingMiddleware::class)->willReturn($routeMiddleware);
+        $container->get(RouteCollector::class)->willReturn($routeCollector);
         $container->get(RequestHandlerRunner::class)->willReturn($runner);
 
         $factory = new ApplicationFactory();
@@ -41,7 +41,7 @@ class ApplicationFactoryTest extends TestCase
         $this->assertInstanceOf(Application::class, $application);
         $this->assertAttributeSame($middlewareFactory, 'factory', $application);
         $this->assertAttributeSame($pipeline, 'pipeline', $application);
-        $this->assertAttributeSame($routeMiddleware, 'routes', $application);
+        $this->assertAttributeSame($routeCollector, 'routes', $application);
         $this->assertAttributeSame($runner, 'runner', $application);
     }
 }

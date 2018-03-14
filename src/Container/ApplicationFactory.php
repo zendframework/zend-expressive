@@ -13,7 +13,7 @@ use Psr\Container\ContainerInterface;
 use Zend\Expressive\Application;
 use Zend\Expressive\ApplicationPipeline;
 use Zend\Expressive\MiddlewareFactory;
-use Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware;
+use Zend\Expressive\Router\RouteCollector;
 use Zend\HttpHandlerRunner\RequestHandlerRunner;
 
 /**
@@ -25,7 +25,7 @@ use Zend\HttpHandlerRunner\RequestHandlerRunner;
  * - Zend\Expressive\MiddlewareFactory.
  * - Zend\Expressive\ApplicationPipeline, which should resolve to a
  *   Zend\Stratigility\MiddlewarePipeInterface instance.
- * - Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware.
+ * - Zend\Expressive\Router\RouteCollector.
  * - Zend\HttpHandler\RequestHandlerRunner.
  */
 class ApplicationFactory
@@ -35,7 +35,7 @@ class ApplicationFactory
         return new Application(
             $container->get(MiddlewareFactory::class),
             $container->get(ApplicationPipeline::class),
-            $container->get(PathBasedRoutingMiddleware::class),
+            $container->get(RouteCollector::class),
             $container->get(RequestHandlerRunner::class)
         );
     }

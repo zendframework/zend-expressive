@@ -25,8 +25,9 @@ use Zend\Expressive\MiddlewareContainer;
 use Zend\Expressive\MiddlewareFactory;
 use Zend\Expressive\Router\Middleware\DispatchMiddleware;
 use Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware;
-use Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware;
+use Zend\Expressive\Router\Middleware\RouteMiddleware;
 use Zend\Expressive\Router\Route;
+use Zend\Expressive\Router\RouteCollector;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\HttpHandlerRunner\RequestHandlerRunner;
 use Zend\Stratigility\MiddlewarePipe;
@@ -46,7 +47,10 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
     /** @var MethodNotAllowedMiddleware|ObjectProphecy */
     private $methodNotAllowedMiddleware;
 
-    /** @var PathBasedRoutingMiddleware */
+    /** @var RouteCollector */
+    private $routeCollector;
+
+    /** @var RouteMiddleware */
     private $routeMiddleware;
 
     /** @var RouterInterface|ObjectProphecy */
@@ -56,10 +60,8 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
     {
         $this->container = $this->mockContainerInterface();
         $this->router = $this->prophesize(RouterInterface::class);
-        $this->routeMiddleware = new PathBasedRoutingMiddleware(
-            $this->router->reveal(),
-            new Response()
-        );
+        $this->routeCollector = new RouteCollector($this->router->reveal());
+        $this->routeMiddleware = new RouteMiddleware($this->router->reveal());
         $this->dispatchMiddleware = $this->prophesize(DispatchMiddleware::class)->reveal();
         $this->methodNotAllowedMiddleware = $this->prophesize(MethodNotAllowedMiddleware::class)->reveal();
     }
@@ -73,7 +75,7 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
         return new Application(
             $factory,
             $pipeline,
-            $this->routeMiddleware,
+            $this->routeCollector,
             $runner
         );
     }
@@ -137,63 +139,6 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
         }
 
         Assert::assertThat($found, Assert::isTrue(), $message);
-    }
-
-    public static function assertRouteMiddleware(MiddlewareInterface $middleware)
-    {
-        if ($middleware instanceof PathBasedRoutingMiddleware) {
-            Assert::assertInstanceOf(PathBasedRoutingMiddleware::class, $middleware);
-            return;
-        }
-
-        if (! $middleware instanceof Middleware\LazyLoadingMiddleware) {
-            Assert::fail('Middleware is not an instance of PathBasedRoutingMiddleware');
-        }
-
-        Assert::assertAttributeSame(
-            PathBasedRoutingMiddleware::class,
-            'middlewareName',
-            $middleware,
-            'Middleware is not an instance of PathBasedRoutingMiddleware'
-        );
-    }
-
-    public static function assertDispatchMiddleware(MiddlewareInterface $middleware)
-    {
-        if ($middleware instanceof DispatchMiddleware) {
-            Assert::assertInstanceOf(DispatchMiddleware::class, $middleware);
-            return;
-        }
-
-        if (! $middleware instanceof Middleware\LazyLoadingMiddleware) {
-            Assert::fail('Middleware is not an instance of DispatchMiddleware');
-        }
-
-        Assert::assertAttributeSame(
-            DispatchMiddleware::class,
-            'middlewareName',
-            $middleware,
-            'Middleware is not an instance of DispatchMiddleware'
-        );
-    }
-
-    public static function assertMethodNotAllowedMiddleware(MiddlewareInterface $middleware)
-    {
-        if ($middleware instanceof MethodNotAllowedMiddleware) {
-            Assert::assertInstanceOf(MethodNotAllowedMiddleware::class, $middleware);
-            return;
-        }
-
-        if (! $middleware instanceof Middleware\LazyLoadingMiddleware) {
-            Assert::fail('Middleware is not an instance of MethodNotAllowedMiddleware');
-        }
-
-        Assert::assertAttributeSame(
-            MethodNotAllowedMiddleware::class,
-            'middlewareName',
-            $middleware,
-            'Middleware is not an instance of MethodNotAllowedMiddleware'
-        );
     }
 
     public function callableMiddlewares()
@@ -416,16 +361,6 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
             ],
         ];
         $this->container->has('config')->willReturn(false);
-        $this->injectServiceInContainer(
-            $this->container,
-            PathBasedRoutingMiddleware::class,
-            $this->routeMiddleware
-        );
-        $this->injectServiceInContainer(
-            $this->container,
-            DispatchMiddleware::class,
-            $this->dispatchMiddleware
-        );
 
         $app = $this->createApplication();
 
@@ -447,16 +382,6 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
             ],
         ];
         $this->container->has('config')->willReturn(false);
-        $this->injectServiceInContainer(
-            $this->container,
-            PathBasedRoutingMiddleware::class,
-            $this->routeMiddleware
-        );
-        $this->injectServiceInContainer(
-            $this->container,
-            DispatchMiddleware::class,
-            $this->dispatchMiddleware
-        );
 
         $app = $this->createApplication();
 
