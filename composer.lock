@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "7de819d945c13958f83031422d14cc8c",
+    "content-hash": "ade6b84ccd703989d81a55c1afcef017",
     "packages": [
         {
             "name": "fig/http-message-util",
@@ -359,16 +359,16 @@
         },
         {
             "name": "zendframework/zend-expressive-router",
-            "version": "3.0.0rc4",
+            "version": "3.0.0rc5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-expressive-router.git",
-                "reference": "3b21fb4e1b568bfa8b0ae699b6f0bdd5d5644863"
+                "reference": "7c63fa67399ea5a1d9612d1ba156583819ac9ea1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-expressive-router/zipball/3b21fb4e1b568bfa8b0ae699b6f0bdd5d5644863",
-                "reference": "3b21fb4e1b568bfa8b0ae699b6f0bdd5d5644863",
+                "url": "https://api.github.com/repos/zendframework/zend-expressive-router/zipball/7c63fa67399ea5a1d9612d1ba156583819ac9ea1",
+                "reference": "7c63fa67399ea5a1d9612d1ba156583819ac9ea1",
                 "shasum": ""
             },
             "require": {
@@ -380,9 +380,9 @@
             },
             "require-dev": {
                 "malukenho/docheader": "^0.1.6",
-                "phpunit/phpunit": "^6.5.5",
+                "phpunit/phpunit": "^7.0.2",
                 "zendframework/zend-coding-standard": "~1.0.0",
-                "zendframework/zend-diactoros": "^1.7",
+                "zendframework/zend-diactoros": "^1.7.1",
                 "zendframework/zend-stratigility": "^3.0.0rc1"
             },
             "suggest": {
@@ -393,9 +393,8 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.3.x-dev",
-                    "dev-develop": "2.4.x-dev",
-                    "dev-release-3.0.0": "3.0.x-dev"
+                    "dev-master": "2.4.x-dev",
+                    "dev-develop": "3.0.x-dev"
                 },
                 "zf": {
                     "config-provider": "Zend\\Expressive\\Router\\ConfigProvider"
@@ -421,7 +420,7 @@
                 "zend-expressive",
                 "zf"
             ],
-            "time": "2018-03-07T16:56:58+00:00"
+            "time": "2018-03-14T15:27:08+00:00"
         },
         {
             "name": "zendframework/zend-expressive-template",

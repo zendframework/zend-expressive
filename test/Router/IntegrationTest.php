@@ -28,7 +28,8 @@ use Zend\Expressive\Router\Middleware\DispatchMiddleware;
 use Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware;
 use Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware;
 use Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware;
-use Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware as RouteMiddleware;
+use Zend\Expressive\Router\Middleware\RouteMiddleware;
+use Zend\Expressive\Router\RouteCollector;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Router\ZendRouter;
 use Zend\HttpHandlerRunner\RequestHandlerRunner;
@@ -71,12 +72,12 @@ class IntegrationTest extends TestCase
         $container = new MiddlewareContainer($this->container->reveal());
         $factory = new MiddlewareFactory($container);
         $pipeline = new MiddlewarePipe();
-        $routeMiddleware = new RouteMiddleware($router);
+        $collector = new RouteCollector($router);
         $runner = $this->prophesize(RequestHandlerRunner::class)->reveal();
         return new Application(
             $factory,
             $pipeline,
-            $routeMiddleware,
+            $collector,
             $runner
         );
     }

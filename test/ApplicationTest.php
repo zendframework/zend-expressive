@@ -19,8 +19,8 @@ use Psr\Http\Server\RequestHandlerInterface;
 use TypeError;
 use Zend\Expressive\Application;
 use Zend\Expressive\MiddlewareFactory;
-use Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware as RouteMiddleware;
 use Zend\Expressive\Router\Route;
+use Zend\Expressive\Router\RouteCollector;
 use Zend\HttpHandlerRunner\RequestHandlerRunner;
 use Zend\Stratigility\Middleware\PathMiddlewareDecorator;
 use Zend\Stratigility\MiddlewarePipe;
@@ -32,7 +32,7 @@ class ApplicationTest extends TestCase
     {
         $this->factory = $this->prophesize(MiddlewareFactory::class);
         $this->pipeline = $this->prophesize(MiddlewarePipeInterface::class);
-        $this->routes = $this->prophesize(RouteMiddleware::class);
+        $this->routes = $this->prophesize(RouteCollector::class);
         $this->runner = $this->prophesize(RequestHandlerRunner::class);
 
         $this->app = new Application(
@@ -333,7 +333,7 @@ class ApplicationTest extends TestCase
         $this->assertSame($route, $this->app->any('/foo', $middleware, 'foo'));
     }
 
-    public function testGetRoutesProxiesToRouteMiddleware()
+    public function testGetRoutesProxiesToRouteCollector()
     {
         $route = $this->prophesize(Route::class)->reveal();
         $this->routes->getRoutes()->willReturn([$route]);
