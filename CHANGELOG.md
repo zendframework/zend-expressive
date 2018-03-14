@@ -69,7 +69,6 @@ All notable changes to this project will be documented in this file, in reverse 
     `Zend\HttpHandlerRunner\RequestHandlerRunner` instance, using the services
     `Zend\Expressive\Application`, `Zend\HttpHandlerRunner\Emitter\EmitterInterface`,
     `Zend\Expressive\ServerRequestFactory`, and `Zend\Expressive\ServerRequestErrorResponseGenerator`.
-  - `RouteMiddlewareFactory`: creates and returns a `Zend\Expressive\Router\PathBasedRoutingMiddleware` instance.
   - `ServerRequestFactoryFactory`: creates and returns a `callable` factory for
     generating a PSR-7 `ServerRequestInterface` instance; this returned factory is a
     dependency for the `Zend\HttpHandlerRunner\RequestHandlerRunner` service.
@@ -146,7 +145,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
   - `Zend\Expressive\MiddlewareFactory`
   - `Zend\Stratigility\MiddlewarePipe`; this is the pipeline representing the application.
-  - `Zend\Expressive\Router\PathBasedRoutingMiddleware`
+  - `Zend\Expressive\Router\RouteCollector`
   - `Zend\HttpHandlerRunner\RequestHandlerRunner`
 
   It removes all "getter" methods (as detailed in the "Removed" section of this
@@ -169,8 +168,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
   - `route(string $path, $middleware, array $methods = null, string $name) : Route`
     passes its `$middleware` argument to the `MiddlewareFactory::prepare()`
-    method, and then all arguments to the composed `PathBasedRoutingMiddleware`
-    instance's `route()` method.
+    method, and then all arguments to the composed `RouteCollector` instance's
+    `route()` method.
 
     As a result of switching to use the `MiddlewareFactory` to prepare
     middleware, you may now route to `RequestHandlerInterface` instances as
@@ -179,8 +178,7 @@ All notable changes to this project will be documented in this file, in reverse 
   - Each of `get`, `post`, `patch`, `put`, `delete`, and `any` now proxy to
     `route()` after marshaling the correct `$methods`.
 
-  - `getRoutes() : Route[]` proxies to the composed `PathBasedRoutingMiddleware`
-    instance.
+  - `getRoutes() : Route[]` proxies to the composed `RouteCollector` instance.
 
   - `handle(ServerRequestInterface $request) : ResponseInterface` proxies to the
     composed `MiddlewarePipe` instance's `handle()` method.
@@ -200,7 +198,7 @@ All notable changes to this project will be documented in this file, in reverse 
   - `Zend\Stratigility\ApplicationPipeline`, which should resolve to a
     `MiddlewarePipe` instance; use the
     `Zend\Expressive\Container\ApplicationPipelineFactory`.
-  - `Zend\Expressive\Router\PathBasedRoutingMiddleware`
+  - `Zend\Expressive\Router\RouteCollector`
   - `Zend\HttpHandlerRunner\RequestHandlerRunner`
 
 - [#581](https://github.com/zendframework/zend-expressive/pull/581)
@@ -274,9 +272,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - [#543](https://github.com/zendframework/zend-expressive/pull/543) removes the
   class `Zend\Expressive\Middleware\RouteMiddleware`. Use the
-  `PathBasedRoutingMiddleware` or `RouteMiddleware` from zend-expressive-router
-  instead; the factory `Zend\Expressive\Container\RouteMiddlewareFactory` will
-  return a `PathBasedRoutingMiddleware` instance for you.
+  `RouteMiddleware` from zend-expressive-router instead.
 
 - [#543](https://github.com/zendframework/zend-expressive/pull/543) removes the
   class `Zend\Expressive\Middleware\DispatchMiddleware`. Use the
@@ -291,7 +287,7 @@ All notable changes to this project will be documented in this file, in reverse 
 - [#543](https://github.com/zendframework/zend-expressive/pull/543) removes the
   following methods from `Zend\Expressive\Application`:
 
-  - `pipeRoutingMiddleware()`: use `pipe(\Zend\Expressive\Router\PathBasedRoutingMiddleware::class)` instead.
+  - `pipeRoutingMiddleware()`: use `pipe(\Zend\Expressive\Router\RouteMiddleware::class)` instead.
   - `pipeDispatchMiddleware()`: use `pipe(\Zend\Expressive\Router\DispatchMiddleware::class)` instead.
   - `getContainer()`
   - `getDefaultDelegate()`: ensure you pipe middleware or a request handler
