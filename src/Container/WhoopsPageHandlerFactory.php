@@ -1,14 +1,23 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (https://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Zend\Expressive\Container;
 
 use Psr\Container\ContainerInterface;
 use Whoops\Handler\PrettyPageHandler;
+
+use function get_class;
+use function gettype;
+use function is_callable;
+use function is_object;
+use function is_string;
+use function sprintf;
 
 /**
  * Create and return an instance of the whoops PrettyPageHandler.
@@ -31,14 +40,10 @@ use Whoops\Handler\PrettyPageHandler;
  */
 class WhoopsPageHandlerFactory
 {
-    /**
-     * @param ContainerInterface $container
-     * @return PrettyPageHandler
-     */
-    public function __invoke(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container) : PrettyPageHandler
     {
         $config = $container->has('config') ? $container->get('config') : [];
-        $config = isset($config['whoops']) ? $config['whoops'] : [];
+        $config = $config['whoops'] ?? [];
 
         $pageHandler = new PrettyPageHandler();
 
@@ -51,13 +56,10 @@ class WhoopsPageHandlerFactory
      * Inject an editor into the whoops configuration.
      *
      * @see https://github.com/filp/whoops/blob/master/docs/Open%20Files%20In%20An%20Editor.md
-     * @param PrettyPageHandler $handler
      * @param array|\ArrayAccess $config
-     * @param ContainerInterface $container
-     * @return void
      * @throws Exception\InvalidServiceException for an invalid editor definition.
      */
-    private function injectEditor(PrettyPageHandler $handler, $config, ContainerInterface $container)
+    private function injectEditor(PrettyPageHandler $handler, $config, ContainerInterface $container) : void
     {
         if (! isset($config['editor'])) {
             return;

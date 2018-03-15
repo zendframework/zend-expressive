@@ -1,9 +1,11 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2018 Zend Technologies USA Inc. (https://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Zend\Expressive\Container;
 
@@ -11,7 +13,19 @@ use Psr\Container\ContainerInterface;
 use SplPriorityQueue;
 use Zend\Expressive\Application;
 use Zend\Expressive\Exception\InvalidArgumentException;
-use Zend\Expressive\Exception\MissingDependencyException;
+use Zend\Expressive\Router\Route;
+
+use function array_key_exists;
+use function array_map;
+use function array_reduce;
+use function get_class;
+use function gettype;
+use function is_array;
+use function is_int;
+use function is_object;
+use function sprintf;
+
+use const PHP_INT_MAX;
 
 class ApplicationConfigInjectionDelegator
 {
@@ -19,13 +33,11 @@ class ApplicationConfigInjectionDelegator
      * Decorate an Application instance by injecting routes and/or middleware
      * from configuration.
      *
-     * @param string $serviceName
-     * @return Application
      * @throws Exception\InvalidServiceException if the $callback produces
      *     something other than an `Application` instance, as the delegator cannot
      *     proceed with its operations.
      */
-    public function __invoke(ContainerInterface $container, $serviceName, callable $callback)
+    public function __invoke(ContainerInterface $container, string $serviceName, callable $callback) : Application
     {
         $application = $callback();
         if (! $application instanceof Application) {
@@ -58,9 +70,6 @@ class ApplicationConfigInjectionDelegator
      * Inspects the configuration provided to determine if a middleware pipeline
      * exists to inject in the application.
      *
-     * If no pipeline is defined, but routes *are*, then the method will inject
-     * the routing and dispatch middleware.
-     *
      * Use the following configuration format:
      *
      * <code>
@@ -68,7 +77,8 @@ class ApplicationConfigInjectionDelegator
      *     'middleware_pipeline' => [
      *         // An array of middleware to register with the pipeline.
      *         // entries to register prior to routing/dispatching...
-     *         // - entry for \Zend\Expressive\Router\Middleware\RouteMiddleware::class
+     *         // - entry for \Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware::class
+     *         // - entry for \Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware::class
      *         // - entry for \Zend\Expressive\Router\Middleware\DispatchMiddleware::class
      *         // entries to register after routing/dispatching...
      *     ],
@@ -102,10 +112,8 @@ class ApplicationConfigInjectionDelegator
      * the `middleware` value of a specification. Internally, this will create
      * a `Zend\Stratigility\MiddlewarePipe` instance, with the middleware
      * specified piped in the order provided.
-     *
-     * @return void
      */
-    public static function injectPipelineFromConfig(Application $application, array $config)
+    public static function injectPipelineFromConfig(Application $application, array $config) : void
     {
         if (empty($config['middleware_pipeline'])) {
             return;
@@ -119,7 +127,7 @@ class ApplicationConfigInjectionDelegator
         );
 
         foreach ($queue as $spec) {
-            $path = isset($spec['path']) ? $spec['path'] : '/';
+            $path = $spec['path'] ?? '/';
             $application->pipe($path, $spec['middleware']);
         }
     }
@@ -160,10 +168,9 @@ class ApplicationConfigInjectionDelegator
      * The "options" key may also be omitted, and its interpretation will be
      * dependent on the underlying router used.
      *
-     * @return void
      * @throws InvalidArgumentException
      */
-    public static function injectRoutesFromConfig(Application $application, array $config)
+    public static function injectRoutesFromConfig(Application $application, array $config) : void
     {
         if (! isset($config['routes']) || ! is_array($config['routes'])) {
             return;
@@ -174,7 +181,7 @@ class ApplicationConfigInjectionDelegator
                 continue;
             }
 
-            $methods = null;
+            $methods = Route::HTTP_METHOD_ANY;
             if (isset($spec['allowed_methods'])) {
                 $methods = $spec['allowed_methods'];
                 if (! is_array($methods)) {
@@ -185,7 +192,7 @@ class ApplicationConfigInjectionDelegator
                 }
             }
 
-            $name  = isset($spec['name']) ? $spec['name'] : null;
+            $name  = $spec['name'] ?? null;
             $route = $application->route(
                 $spec['path'],
                 $spec['middleware'],
@@ -219,21 +226,11 @@ class ApplicationConfigInjectionDelegator
      * If the 'middleware' value is missing, or not viable as middleware, it
      * raises an exception, to ensure the pipeline is built correctly.
      *
-     * @return callable
      * @throws InvalidArgumentException
      */
-    private static function createCollectionMapper()
+    private static function createCollectionMapper() : callable
     {
-        $appMiddleware = [
-            Application::ROUTING_MIDDLEWARE,
-            Application::DISPATCH_MIDDLEWARE,
-        ];
-
-        return function ($item) use ($appMiddleware) {
-            if (in_array($item, $appMiddleware, true)) {
-                return ['middleware' => $item];
-            }
-
+        return function ($item) {
             if (! is_array($item) || ! array_key_exists('middleware', $item)) {
                 throw new InvalidArgumentException(sprintf(
                     'Invalid pipeline specification received; must be an array'
@@ -257,10 +254,8 @@ class ApplicationConfigInjectionDelegator
      *
      * The function is useful to reduce an array of pipeline middleware to a
      * priority queue.
-     *
-     * @return callable
      */
-    private static function createPriorityQueueReducer()
+    private static function createPriorityQueueReducer() : callable
     {
         // $serial is used to ensure that items of the same priority are enqueued
         // in the order in which they are inserted.

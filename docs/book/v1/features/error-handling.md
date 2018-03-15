@@ -111,7 +111,7 @@ $finalHandler = new WhoopsErrorHandler(
 $app = new Application($router, $container, $finalHandler);
 
 // Register Whoops just before running the application, as otherwise it can
-// swallow bootstrap errors. 
+// swallow bootstrap errors.
 $whoops->register();
 $app->run();
 ```

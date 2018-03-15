@@ -2,7 +2,7 @@
   <div class="jumbotron">
     <h1>Expressive</h1>
 
-    <p>PSR-7 Middleware in Minutes</p>
+    <p>PSR-15 Middleware in Minutes</p>
 
     <pre><code class="language-bash">$ composer create-project zendframework/zend-expressive-skeleton expressive</code></pre>
   </div>
@@ -11,27 +11,27 @@
 <div class="container features">
   <div class="row row-flex row-flex-wrap">
     <div class="col-sm-6 col-md-4">
-      <div class="panel"><div class="panel-content">
-        <img src="images/check.png" alt="PSR-7" /><br />
-
-        <h3>PSR-7</h3>
-
-        <p>
-          Built to consume <a href="https://www.php-fig.org/psr/psr-7/">PSR-7</a>!
-        </p>
-      </div></div>
-    </div>
-
-    <div class="col-sm-6 col-md-4">
       <div class="panel"><div class="panel-content center-block">
         <img src="images/lambda.png" alt="Middleware" /><br />
 
-        <h3>Middleware</h3>
+        <h3>PSR-15 Middleware</h3>
 
         <p>
           Create <a href="https://docs.zendframework.com/zend-stratigility/middleware/">middleware</a>
           applications, using as many layers as you want, and the architecture
           your project needs.
+        </p>
+      </div></div>
+    </div>
+
+    <div class="col-sm-6 col-md-4">
+      <div class="panel"><div class="panel-content">
+        <img src="images/check.png" alt="PSR-7" /><br />
+
+        <h3>PSR-7 HTTP Messages</h3>
+
+        <p>
+          Built to consume <a href="https://www.php-fig.org/psr/psr-7/">PSR-7</a>!
         </p>
       </div></div>
     </div>
@@ -43,7 +43,7 @@
         <h3>Routing</h3>
 
         <p>
-          Route requests to middleware using <a href="v2/features/router/intro/">the routing library of your choice</a>.
+          Route requests to middleware using <a href="v3/features/router/intro/">the routing library of your choice</a>.
         </p>
       </div></div>
     </div>
@@ -58,7 +58,7 @@
 
         <p>
           Make your code flexible and robust, using the
-          <a href="v2/features/container/intro/">dependency injection container of your choice</a>.
+          <a href="v3/features/container/intro/">dependency injection container of your choice</a>.
         </p>
       </div></div>
     </div>
@@ -70,7 +70,7 @@
         <h3>Templating</h3>
 
         <p>
-          Create <a href="v2/features/template/intro/">templated responses</a>, using
+          Create <a href="v3/features/template/intro/">templated responses</a>, using
           a variety of template engines.
         </p>
       </div></div>
@@ -83,7 +83,7 @@
         <h3>Error Handling</h3>
 
         <p>
-          <a href="v2/features/error-handling/">Handle errors gracefully</a>, using
+          <a href="v3/features/error-handling/">Handle errors gracefully</a>, using
           templated error pages, <a href="https://filp.github.io/whoops/">whoops</a>,
           or your own solution!
         </p>
@@ -115,7 +115,7 @@ $ composer create-project zendframework/zend-expressive-skeleton expressive</cod
       </div>
       <div class="row">
         <div class="col-xs-12">
-          <a class="btn btn-lg btn-primary" href="v2/getting-started/skeleton/">Learn more</a>
+          <a class="btn btn-lg btn-primary" href="v3/getting-started/skeleton/">Learn more</a>
         </div>
     </div>
      <div class="row">
@@ -126,7 +126,7 @@ $ composer create-project zendframework/zend-expressive-skeleton expressive</cod
           <pre><code class="language-php" data-trim>
 $pathMiddleware = function (
     ServerRequestInterface $request,
-    DelegateInterface $delegate
+    RequestHandlerInterface $handler
 ) {
     $uri  = $request->getUri();
     $path = $uri->getPath();
@@ -141,15 +141,15 @@ $app->get('/path', $pathMiddleware);
       </div>
        <div class="row">
         <div class="col-xs-12">
-          <a class="btn btn-lg btn-primary" href="v2/features/application/">Learn more</a>
+          <a class="btn btn-lg btn-primary" href="v3/features/application/">Learn more</a>
     </div></div>
   <div class="row"><div class="panel"><div class="panel-content">
     <h2>Learn more</h2>
 
     <ul>
-      <li><a href="v2/getting-started/features/">Features overview</a></li>
-      <li><a href="v2/getting-started/standalone/">Getting Started: Standalone installation</a></li>
-      <li><a href="v2/getting-started/skeleton/">Getting Started: Skeleton Installer</a></li>
+      <li><a href="v3/getting-started/features/">Features overview</a></li>
+      <li><a href="v3/getting-started/standalone/">Getting Started: Standalone installation</a></li>
+      <li><a href="v3/getting-started/skeleton/">Getting Started: Skeleton Installer</a></li>
     </ul>
 
     <p>Or use the menu to navigate to the section you're interested in.</p>

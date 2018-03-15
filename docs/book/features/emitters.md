@@ -1,6 +1,6 @@
-<noscript><meta http-equiv="refresh" content="0; url=/zend-expressive/v2/features/emitters/"></noscript>
+<noscript><meta http-equiv="refresh" content="0; url=/zend-expressive/v3/features/emitters/"></noscript>
 <script>
   document.addEventListener("DOMContentLoaded", function (event) {
-    window.location.pathname = '/zend-expressive/v2/features/emitters/';
+    window.location.pathname = '/zend-expressive/v3/features/emitters/';
   });
 </script>

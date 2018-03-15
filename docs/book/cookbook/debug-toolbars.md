@@ -1,6 +1,6 @@
-<noscript><meta http-equiv="refresh" content="0; url=/zend-expressive/v2/cookbook/debug-toolbars/"></noscript>
+<noscript><meta http-equiv="refresh" content="0; url=/zend-expressive/v3/cookbook/debug-toolbars/"></noscript>
 <script>
   document.addEventListener("DOMContentLoaded", function (event) {
-    window.location.pathname = '/zend-expressive/v2/cookbook/debug-toolbars/';
+    window.location.pathname = '/zend-expressive/v3/cookbook/debug-toolbars/';
   });
 </script>

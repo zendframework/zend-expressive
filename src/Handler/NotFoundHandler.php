@@ -1,32 +1,36 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2018 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2016-2018 Zend Technologies USA Inc. (https://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
+
+declare(strict_types=1);
 
 namespace Zend\Expressive\Handler;
 
 use Fig\Http\Message\StatusCodeInterface;
-use Interop\Http\ServerMiddleware\DelegateInterface as RequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
+
+use function sprintf;
 
 class NotFoundHandler implements RequestHandlerInterface
 {
-    const TEMPLATE_DEFAULT = 'error::404';
-    const LAYOUT_DEFAULT = 'layout::default';
+    public const TEMPLATE_DEFAULT = 'error::404';
+    public const LAYOUT_DEFAULT = 'layout::default';
 
     /**
-     * @var TemplateRendererInterface
+     * @var TemplateRendererInterface|null
      */
     private $renderer;
 
     /**
-     * @var ResponseInterface
+     * @var callable
      */
-    protected $responsePrototype;
+    private $responseFactory;
 
     /**
      * @var string
@@ -38,19 +42,16 @@ class NotFoundHandler implements RequestHandlerInterface
      */
     private $layout;
 
-    /**
-     * @param ResponseInterface $responsePrototype
-     * @param TemplateRendererInterface $renderer
-     * @param string $template
-     * @param string $layout
-     */
     public function __construct(
-        ResponseInterface $responsePrototype,
+        callable $responseFactory,
         TemplateRendererInterface $renderer = null,
-        $template = self::TEMPLATE_DEFAULT,
-        $layout = self::LAYOUT_DEFAULT
+        string $template = self::TEMPLATE_DEFAULT,
+        string $layout = self::LAYOUT_DEFAULT
     ) {
-        $this->responsePrototype = $responsePrototype;
+        // Factory cast to closure in order to provide return type safety.
+        $this->responseFactory = function () use ($responseFactory) : ResponseInterface {
+            return $responseFactory();
+        };
         $this->renderer = $renderer;
         $this->template = $template;
         $this->layout = $layout;
@@ -59,33 +60,30 @@ class NotFoundHandler implements RequestHandlerInterface
     /**
      * Creates and returns a 404 response.
      *
-     * @param ServerRequestInterface $request
-     * @return ResponseInterface
+     * @param ServerRequestInterface $request Passed to internal handler
      */
-    public function process(ServerRequestInterface $request)
+    public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        if (! $this->renderer) {
+        if ($this->renderer === null) {
             return $this->generatePlainTextResponse($request);
         }
 
-        return $this->generateTemplatedResponse($request);
+        return $this->generateTemplatedResponse($this->renderer, $request);
     }
 
     /**
      * Generates a plain text response indicating the request method and URI.
-     *
-     * @param ServerRequestInterface $request
-     * @return ResponseInterface
      */
-    private function generatePlainTextResponse(ServerRequestInterface $request)
+    private function generatePlainTextResponse(ServerRequestInterface $request) : ResponseInterface
     {
-        $response = $this->responsePrototype->withStatus(StatusCodeInterface::STATUS_NOT_FOUND);
+        $response = ($this->responseFactory)()->withStatus(StatusCodeInterface::STATUS_NOT_FOUND);
         $response->getBody()
             ->write(sprintf(
                 'Cannot %s %s',
                 $request->getMethod(),
                 (string) $request->getUri()
             ));
+
         return $response;
     }
 
@@ -93,15 +91,15 @@ class NotFoundHandler implements RequestHandlerInterface
      * Generates a response using a template.
      *
      * Template will receive the current request via the "request" variable.
-     *
-     * @param ServerRequestInterface $request
-     * @return ResponseInterface
      */
-    private function generateTemplatedResponse(ServerRequestInterface $request)
-    {
-        $response = $this->responsePrototype->withStatus(StatusCodeInterface::STATUS_NOT_FOUND);
+    private function generateTemplatedResponse(
+        TemplateRendererInterface $renderer,
+        ServerRequestInterface $request
+    ) : ResponseInterface {
+
+        $response = ($this->responseFactory)()->withStatus(StatusCodeInterface::STATUS_NOT_FOUND);
         $response->getBody()->write(
-            $this->renderer->render($this->template, ['request' => $request, 'layout' => $this->layout])
+            $renderer->render($this->template, ['request' => $request, 'layout' => $this->layout])
         );
 
         return $response;

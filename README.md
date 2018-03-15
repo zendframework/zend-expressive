@@ -73,10 +73,10 @@ can recommend the following implementations:
 
 - [zend-servicemanager](https://github.com/zendframework/zend-servicemanager):
   `composer require zendframework/zend-servicemanager`
-- [pimple-container-interop](https://github.com/xtreamwayz/pimple-container-interop):
-  `composer require xtreamwayz/pimple-container-interop`
-- [Aura.Di](https://github.com/auraphp/Aura.Di):
-  `composer require aura/di`
+- [Pimple](https://github.com/silexphp/Pimple) (see [docs](docs/book/features/container/pimple.md) for more details):
+  `composer require zendframework/zend-pimple-config`
+- [Aura.Di](https://github.com/auraphp/Aura.Di) (see [docs](docs/book/features/container/aura-di.md) for more details):
+  `composer require zendframework/zend-auradi-config`
 
 Additionally, you may optionally want to install a template renderer
 implementation, and/or an error handling integration. These are covered in the

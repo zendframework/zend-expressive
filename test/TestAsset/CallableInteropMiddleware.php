@@ -1,26 +1,23 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-expressive for the canonical source repository
- * @copyright Copyright (c) 2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2017 Zend Technologies USA Inc. (https://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive/blob/master/LICENSE.md New BSD License
  */
 
+declare(strict_types=1);
+
 namespace ZendTest\Expressive\TestAsset;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 class CallableInteropMiddleware
 {
-    public function __invoke(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function __invoke(ServerRequestInterface $request, RequestHandlerInterface $handler)
     {
-        $response = $delegate->process($request);
-        return $response->withHeader('X-Callable-Interop-Middleware', __CLASS__);
-    }
+        $response = $handler->handle($request);
 
-    public static function staticallyCallableMiddleware(ServerRequestInterface $request, DelegateInterface $delegate)
-    {
-        $response = $delegate->process($request);
-        return $response->withHeader('X-Invoked', __CLASS__);
+        return $response->withHeader('X-Callable-Interop-Middleware', __CLASS__);
     }
 }

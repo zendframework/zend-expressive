@@ -13,28 +13,6 @@ env:
 
 matrix:
   include:
-    - php: 5.6
-      env:
-        - DEPS=lowest
-        - LEGACY_DEPS="phpunit/phpunit malukenho/docheader"
-    - php: 5.6
-      env:
-        - DEPS=locked
-        - LEGACY_DEPS="phpunit/phpunit malukenho/docheader"
-    - php: 5.6
-      env:
-        - DEPS=latest
-        - LEGACY_DEPS="phpunit/phpunit malukenho/docheader"
-    - php: 7
-      env:
-        - DEPS=lowest
-    - php: 7
-      env:
-        - DEPS=locked
-        - LEGACY_DEPS="phpunit/phpunit symfony/console symfony/debug symfony/finder"
-    - php: 7
-      env:
-        - DEPS=latest
     - php: 7.1
       env:
         - DEPS=lowest
@@ -52,6 +30,7 @@ matrix:
     - php: 7.2
       env:
         - DEPS=locked
+        - PHPSTAN_CHECK=true
     - php: 7.2
       env:
         - DEPS=latest
@@ -60,12 +39,10 @@ before_install:
   - if [[ $TEST_COVERAGE != 'true' ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
 
 install:
-  - travis_retry composer install $COMPOSER_ARGS --ignore-platform-reqs
-  - if [[ $LEGACY_DEPS != '' ]]; then travis_retry composer update $COMPOSER_ARGS --with-dependencies $LEGACY_DEPS ; fi
+  - travis_retry composer install $COMPOSER_ARGS
   - if [[ $DEPS == 'latest' ]]; then travis_retry composer update $COMPOSER_ARGS ; fi
   - if [[ $DEPS == 'lowest' ]]; then travis_retry composer update --prefer-lowest --prefer-stable $COMPOSER_ARGS ; fi
   - if [[ $TEST_COVERAGE == 'true' ]]; then travis_retry composer require --dev $COMPOSER_ARGS $COVERAGE_DEPS ; fi
-  - if [[ $TEST_COVERAGE == 'true' ]]; then cp phpunit.xml.dist-coverage phpunit.xml.dist ; fi
   - stty cols 120 && composer show
   - cat phpunit.xml.dist
 
@@ -73,6 +50,7 @@ script:
   - if [[ $TEST_COVERAGE == 'true' ]]; then composer test-coverage ; else composer test ; fi
   - if [[ $CS_CHECK == 'true' ]]; then composer cs-check ; fi
   - if [[ $CS_CHECK == 'true' ]]; then composer license-check ; fi
+  - if [[ $PHPSTAN_CHECK == 'true' ]]; then composer phpstan ; fi
 
 after_script:
   - if [[ $TEST_COVERAGE == 'true' ]]; then vendor/bin/php-coveralls -v ; fi
