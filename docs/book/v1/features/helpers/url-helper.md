@@ -36,7 +36,7 @@ Where:
     it, the provided `$params` will be merged with any matched parameters, with
     those provided taking precedence.
   - If a `RouteResult` is not composed, or if the composed result does not match
-    the provided `$routeName`, then only the `$params` provided will be used 
+    the provided `$routeName`, then only the `$params` provided will be used
     for substitutions.
   - If no `$params` are provided, and the `$routeName` matches the currently
     matched route, then any matched parameters found will be used.

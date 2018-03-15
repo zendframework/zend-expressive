@@ -1,4 +1,4 @@
-# Expressive: PSR-7 Middleware in Minutes
+# Expressive: PSR-15 Middleware in Minutes
 
 Expressive builds on [Stratigility](https://docs.zendframework.com/zend-stratigility/)
 to provide a minimalist [PSR-15](http://www.php-fig.org/psr/psr-15/) middleware
@@ -19,9 +19,9 @@ framework for PHP, with the following features:
   [whoops](https://github.com/filp/whoops) for debugging purposes.
 - Nested middleware applications. Write an application, and compose it later
   in another, optionally under a separate subpath.
-- [Simplified installation](getting-started/skeleton.md). Our custom
-  [Composer](https://getcomposer.org)-based installer prompts you for your
-  initial stack choices, giving you exactly the base you want to start from.
+- [Simplified installation](getting-started/quick-start.md#create-a-new-project).
+  Our custom [Composer](https://getcomposer.org)-based installer prompts you for
+  your initial stack choices, giving you exactly the base you want to start from.
 
 Essentially, Expressive allows *you* to develop using the tools *you* prefer,
 and provides minimal structure and facilities to ease your development.

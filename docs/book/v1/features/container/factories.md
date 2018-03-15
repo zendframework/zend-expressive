@@ -102,7 +102,7 @@ order to seed the `Application` instance:
 
     - `path`: the path to match. Format will be based on the router you choose for
       your project.
-  
+
     - `middleware`: a callable or a service name for the middleware to execute
       when the route matches.
 
@@ -110,10 +110,10 @@ order to seed the `Application` instance:
 
     - `allowed_methods`: an array of allowed HTTP methods. If not provided, the
       application assumes any method is allowed.
-  
+
     - `name`: if not provided, the path will be used as the route name (and, if
       specific HTTP methods are allowed, a list of those).
-  
+
     - `options`: a key/value set of additional options to pass to the underlying
       router implementation for the given route. (Typical use cases include
       passing constraints or default values.)

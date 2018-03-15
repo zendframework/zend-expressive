@@ -41,11 +41,11 @@ As a stack, execution is in LIFO (last in, first out) order; the first emitter
 on the stack will be evaluated last.
 
 > ## Deprecated with version 2.2
-> 
+>
 > Starting in version 2.2, the `EmitterStack` is deprecated, and moved, along with the
 > zend-diactoros `EmitterInterface` and implementations, to a new package,
 > [zend-httphandlerrunner](https://docs.zendframework.com/zend-httphandlerrunner).
-> 
+>
 > The interface and the `EmitterStack` are roughly identical to what is present in
 > version 2; if you are defining a `Zend\Diactoros\Emitter\EmitterInterface`
 > service of your own, you will need to update it in that version.

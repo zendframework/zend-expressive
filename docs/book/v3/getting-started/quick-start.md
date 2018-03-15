@@ -117,7 +117,7 @@ documented security issues.
 ### Tooling integration
 
 The skeleton ships with [zend-expressive-tooling](https://github.com/zendframework/zend-expressive-tooling)
-by default, and integrates with it by exposing it via compser:
+by default, and integrates with it by exposing it via composer:
 
 ```bash
 $ composer expressive
@@ -230,7 +230,7 @@ class ConfigProvider
      *
      * @return array
      */
-    public function getDependencies()
+    public function getDependencies() : array
     {
         return [
             'factories'  => [
@@ -248,7 +248,7 @@ class ConfigProvider
      *
      * @return array
      */
-    public function getConfig()
+    public function getConfig() : array
     {
         return [
             'paths' => [
@@ -277,9 +277,6 @@ exposed via `composer expressive`, and include the following:
 - `expressive module:deregister <modulename>` will remove any autoloading rules
   for the module from `composer.json`, and deregister its `ConfigProvider`, if
   found, from the application configuration.
-
-You can find out more about its features in the [command line tooling
-documentation](../reference/cli-tooling.md#modules).
 
 ## Adding Middleware
 
@@ -586,7 +583,7 @@ return new HtmlResponse($this->renderer->render(
 >       $target
 >   ));
 >   ```
-> 
+>
 > You can also skip the next step below where we edit the template file.
 
 The above looks for a query string parameter "target", and uses its value to

@@ -176,7 +176,7 @@ Additionally, the following methods were **removed**:
 middleware and/or routed middleware from configuration any longer.
 
 If you want to use configuration-driven pipelines and/or middleware, you may
-register the new class `Zend\Expressive\Container\ApplicationConfigInjectionDelegator` 
+register the new class `Zend\Expressive\Container\ApplicationConfigInjectionDelegator`
 as a delegator factory on the `Zend\Expressive\Application` service.
 
 ### NotFoundHandlerFactory
@@ -239,7 +239,7 @@ Before installing and running the migration tooling, make sure you have checked
 in your latest changes (assuming you are using version control), or have a
 backup of your existing code.
 
-Install the migration tooling using the following comamnd:
+Install the migration tooling using the following command:
 
 ```bash
 $ composer require --dev zendframework/zend-expressive-migration
