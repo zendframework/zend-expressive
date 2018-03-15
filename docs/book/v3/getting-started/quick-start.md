@@ -230,7 +230,7 @@ class ConfigProvider
      *
      * @return array
      */
-    public function getDependencies()
+    public function getDependencies() : array
     {
         return [
             'factories'  => [
@@ -248,7 +248,7 @@ class ConfigProvider
      *
      * @return array
      */
-    public function getConfig()
+    public function getConfig() : array
     {
         return [
             'paths' => [
