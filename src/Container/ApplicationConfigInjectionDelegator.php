@@ -18,6 +18,18 @@ use Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware;
 use Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware;
 use Zend\Expressive\Router\Route;
 
+use function array_key_exists;
+use function array_map;
+use function array_reduce;
+use function get_class;
+use function gettype;
+use function is_array;
+use function is_int;
+use function is_object;
+use function sprintf;
+
+use const PHP_INT_MAX;
+
 class ApplicationConfigInjectionDelegator
 {
     /**

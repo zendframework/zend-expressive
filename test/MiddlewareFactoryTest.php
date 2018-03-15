@@ -22,6 +22,9 @@ use Zend\Stratigility\Middleware\CallableMiddlewareDecorator;
 use Zend\Stratigility\Middleware\RequestHandlerMiddleware;
 use Zend\Stratigility\MiddlewarePipe;
 
+use function array_shift;
+use function iterator_to_array;
+
 class MiddlewareFactoryTest extends TestCase
 {
     public function setUp()

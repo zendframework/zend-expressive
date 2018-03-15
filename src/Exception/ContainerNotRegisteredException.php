@@ -11,6 +11,8 @@ namespace Zend\Expressive\Exception;
 
 use RuntimeException;
 
+use function sprintf;
+
 class ContainerNotRegisteredException extends RuntimeException implements ExceptionInterface
 {
     public static function forMiddlewareService(string $middleware) : self

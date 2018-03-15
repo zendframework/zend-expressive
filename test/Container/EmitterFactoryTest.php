@@ -14,6 +14,9 @@ use Psr\Container\ContainerInterface;
 use Zend\HttpHandlerRunner\Emitter\EmitterStack;
 use Zend\HttpHandlerRunner\Emitter\SapiEmitter;
 
+use function array_shift;
+use function iterator_to_array;
+
 class EmitterFactoryTest extends TestCase
 {
     public function testFactoryProducesEmitterStackWithSapiEmitterComposed()

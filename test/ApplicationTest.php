@@ -26,6 +26,10 @@ use Zend\Stratigility\Middleware\PathMiddlewareDecorator;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\Stratigility\MiddlewarePipeInterface;
 
+use function array_unshift;
+use function sprintf;
+use function strtoupper;
+
 class ApplicationTest extends TestCase
 {
     public function setUp()

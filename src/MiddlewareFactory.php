@@ -15,6 +15,12 @@ use Zend\Stratigility\Middleware\CallableMiddlewareDecorator;
 use Zend\Stratigility\Middleware\RequestHandlerMiddleware;
 use Zend\Stratigility\MiddlewarePipe;
 
+use function array_shift;
+use function count;
+use function is_array;
+use function is_callable;
+use function is_string;
+
 /**
  * Marshal middleware for use in the application.
  *

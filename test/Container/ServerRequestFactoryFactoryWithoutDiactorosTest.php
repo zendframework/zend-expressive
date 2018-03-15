@@ -15,6 +15,11 @@ use Psr\Container\ContainerInterface;
 use Zend\Expressive\Container\Exception\InvalidServiceException;
 use Zend\Expressive\Container\ServerRequestFactoryFactory;
 
+use function class_exists;
+use function spl_autoload_functions;
+use function spl_autoload_register;
+use function spl_autoload_unregister;
+
 class ServerRequestFactoryFactoryWithoutDiactorosTest extends TestCase
 {
     /** @var ContainerInterface|ObjectProphecy */

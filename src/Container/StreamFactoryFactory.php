@@ -13,6 +13,9 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Message\StreamInterface;
 use Zend\Diactoros\Stream;
 
+use function class_exists;
+use function sprintf;
+
 /**
  * Produces a callable capable of producing an empty stream for use with
  * services that need to produce a stream for use with a request or a response.

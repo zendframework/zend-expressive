@@ -15,6 +15,15 @@ use Throwable;
 use Zend\Expressive\Container\Exception\InvalidServiceException;
 use Zend\Expressive\Container\StreamFactoryFactory;
 
+use function class_exists;
+use function get_class;
+use function is_array;
+use function is_object;
+use function preg_match;
+use function spl_autoload_functions;
+use function spl_autoload_register;
+use function spl_autoload_unregister;
+
 class StreamFactoryFactoryWithoutDiactorosTest extends TestCase
 {
     private $autoloadFunctions = [];

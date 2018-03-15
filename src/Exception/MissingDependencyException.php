@@ -12,6 +12,8 @@ namespace Zend\Expressive\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use RuntimeException;
 
+use function sprintf;
+
 class MissingDependencyException extends RuntimeException implements
     ContainerExceptionInterface,
     ExceptionInterface

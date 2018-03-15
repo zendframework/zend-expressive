@@ -22,6 +22,9 @@ use Whoops\Run;
 use Whoops\RunInterface;
 use Zend\Expressive\Middleware\WhoopsErrorResponseGenerator;
 
+use function interface_exists;
+use function method_exists;
+
 class WhoopsErrorResponseGeneratorTest extends TestCase
 {
     /** @var Run|RunInterface|ObjectProphecy */

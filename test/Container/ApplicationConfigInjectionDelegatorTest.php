@@ -34,6 +34,10 @@ use Zend\Stratigility\MiddlewarePipe;
 use ZendTest\Expressive\ContainerTrait;
 use ZendTest\Expressive\TestAsset\InvokableMiddleware;
 
+use function array_merge;
+use function array_reduce;
+use function array_shift;
+
 class ApplicationConfigInjectionDelegatorTest extends TestCase
 {
     use ContainerTrait;

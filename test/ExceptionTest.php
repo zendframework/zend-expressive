@@ -16,6 +16,12 @@ use Zend\Expressive\Exception\ExceptionInterface;
 use Zend\Expressive\Exception\InvalidMiddlewareException;
 use Zend\Expressive\Exception\MissingDependencyException;
 
+use function basename;
+use function glob;
+use function is_a;
+use function strrpos;
+use function substr;
+
 class ExceptionTest extends TestCase
 {
     public function exception() : Generator

@@ -21,6 +21,9 @@ use Whoops\Util\Misc as WhoopsUtil;
 use Zend\Expressive\Container\WhoopsFactory;
 use ZendTest\Expressive\ContainerTrait;
 
+use function method_exists;
+use function sprintf;
+
 /**
  * @covers Zend\Expressive\Container\WhoopsFactory
  */

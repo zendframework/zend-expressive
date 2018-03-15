@@ -14,6 +14,11 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use RuntimeException;
 
+use function get_class;
+use function gettype;
+use function is_object;
+use function sprintf;
+
 class InvalidMiddlewareException extends RuntimeException implements
     ContainerExceptionInterface,
     ExceptionInterface

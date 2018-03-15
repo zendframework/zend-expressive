@@ -17,6 +17,8 @@ use Whoops\RunInterface;
 use Zend\Expressive\Container\WhoopsErrorResponseGeneratorFactory;
 use Zend\Expressive\Middleware\WhoopsErrorResponseGenerator;
 
+use function interface_exists;
+
 class WhoopsErrorResponseGeneratorFactoryTest extends TestCase
 {
     /** @var ContainerInterface|ObjectProphecy */
