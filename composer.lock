@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "ade6b84ccd703989d81a55c1afcef017",
+    "content-hash": "86eea9ac69bc1a13523041d4c8b9b950",
     "packages": [
         {
             "name": "fig/http-message-util",
@@ -359,16 +359,16 @@
         },
         {
             "name": "zendframework/zend-expressive-router",
-            "version": "3.0.0rc5",
+            "version": "3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-expressive-router.git",
-                "reference": "7c63fa67399ea5a1d9612d1ba156583819ac9ea1"
+                "reference": "a1298921eb486d2a093205347a394e1ec74a9c43"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-expressive-router/zipball/7c63fa67399ea5a1d9612d1ba156583819ac9ea1",
-                "reference": "7c63fa67399ea5a1d9612d1ba156583819ac9ea1",
+                "url": "https://api.github.com/repos/zendframework/zend-expressive-router/zipball/a1298921eb486d2a093205347a394e1ec74a9c43",
+                "reference": "a1298921eb486d2a093205347a394e1ec74a9c43",
                 "shasum": ""
             },
             "require": {
@@ -381,9 +381,7 @@
             "require-dev": {
                 "malukenho/docheader": "^0.1.6",
                 "phpunit/phpunit": "^7.0.2",
-                "zendframework/zend-coding-standard": "~1.0.0",
-                "zendframework/zend-diactoros": "^1.7.1",
-                "zendframework/zend-stratigility": "^3.0.0rc1"
+                "zendframework/zend-coding-standard": "~1.0.0"
             },
             "suggest": {
                 "zendframework/zend-expressive-aurarouter": "^3.0 to use the Aura.Router routing adapter",
@@ -393,8 +391,8 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.4.x-dev",
-                    "dev-develop": "3.0.x-dev"
+                    "dev-master": "3.0.x-dev",
+                    "dev-develop": "3.1.x-dev"
                 },
                 "zf": {
                     "config-provider": "Zend\\Expressive\\Router\\ConfigProvider"
@@ -420,20 +418,20 @@
                 "zend-expressive",
                 "zf"
             ],
-            "time": "2018-03-14T15:27:08+00:00"
+            "time": "2018-03-15T15:59:46+00:00"
         },
         {
             "name": "zendframework/zend-expressive-template",
-            "version": "2.0.0alpha1",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-expressive-template.git",
-                "reference": "64a8c472eda24926fb1a9466e88ba2a31198de83"
+                "reference": "b8b9ece61ed598a58223638933e2fd703ae4a5e9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-expressive-template/zipball/64a8c472eda24926fb1a9466e88ba2a31198de83",
-                "reference": "64a8c472eda24926fb1a9466e88ba2a31198de83",
+                "url": "https://api.github.com/repos/zendframework/zend-expressive-template/zipball/b8b9ece61ed598a58223638933e2fd703ae4a5e9",
+                "reference": "b8b9ece61ed598a58223638933e2fd703ae4a5e9",
                 "shasum": ""
             },
             "require": {
@@ -441,7 +439,7 @@
             },
             "require-dev": {
                 "malukenho/docheader": "^0.1.6",
-                "phpunit/phpunit": "^6.5.3",
+                "phpunit/phpunit": "^7.0.2",
                 "zendframework/zend-coding-standard": "~1.0.0"
             },
             "suggest": {
@@ -452,9 +450,8 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0.x-dev",
-                    "dev-develop": "1.1.x-dev",
-                    "dev-release-2.0.0": "2.0.x-dev"
+                    "dev-master": "2.0.x-dev",
+                    "dev-develop": "2.1.x-dev"
                 }
             },
             "autoload": {
@@ -474,7 +471,7 @@
                 "zend-expressive",
                 "zf"
             ],
-            "time": "2018-02-06T20:09:18+00:00"
+            "time": "2018-03-15T15:42:46+00:00"
         },
         {
             "name": "zendframework/zend-httphandlerrunner",
@@ -532,16 +529,16 @@
         },
         {
             "name": "zendframework/zend-stratigility",
-            "version": "3.0.0rc1",
+            "version": "3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-stratigility.git",
-                "reference": "6e76a8bd5b50d1cbd0b7f702a6f61293290b4382"
+                "reference": "89fc799df3ce7d279bc06575252d466be9c1b5d6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-stratigility/zipball/6e76a8bd5b50d1cbd0b7f702a6f61293290b4382",
-                "reference": "6e76a8bd5b50d1cbd0b7f702a6f61293290b4382",
+                "url": "https://api.github.com/repos/zendframework/zend-stratigility/zipball/89fc799df3ce7d279bc06575252d466be9c1b5d6",
+                "reference": "89fc799df3ce7d279bc06575252d466be9c1b5d6",
                 "shasum": ""
             },
             "require": {
@@ -566,9 +563,8 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.0-dev",
-                    "dev-develop": "3.1-dev",
-                    "dev-release-3.0.0": "3.0.x-dev"
+                    "dev-master": "3.0.x-dev",
+                    "dev-develop": "3.1.x-dev"
                 }
             },
             "autoload": {
@@ -595,7 +591,7 @@
                 "psr-7",
                 "zf"
             ],
-            "time": "2018-02-26T15:56:54+00:00"
+            "time": "2018-03-15T14:10:32+00:00"
         }
     ],
     "packages-dev": [
@@ -3503,16 +3499,16 @@
         },
         {
             "name": "zendframework/zend-expressive-aurarouter",
-            "version": "3.0.0rc3",
+            "version": "3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-expressive-aurarouter.git",
-                "reference": "1ee5c5d9bbd658803dd0a42d5180e9413dc34164"
+                "reference": "9ad4ec7ff74faa589c19af172054729a8defe0ed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-expressive-aurarouter/zipball/1ee5c5d9bbd658803dd0a42d5180e9413dc34164",
-                "reference": "1ee5c5d9bbd658803dd0a42d5180e9413dc34164",
+                "url": "https://api.github.com/repos/zendframework/zend-expressive-aurarouter/zipball/9ad4ec7ff74faa589c19af172054729a8defe0ed",
+                "reference": "9ad4ec7ff74faa589c19af172054729a8defe0ed",
                 "shasum": ""
             },
             "require": {
@@ -3520,21 +3516,20 @@
                 "fig/http-message-util": "^1.1.2",
                 "php": "^7.1",
                 "psr/http-message": "^1.0.1",
-                "zendframework/zend-expressive-router": "^3.0.0rc4"
+                "zendframework/zend-expressive-router": "^3.0"
             },
             "require-dev": {
                 "malukenho/docheader": "^0.1.6",
                 "phpunit/phpunit": "^7.0.2",
                 "zendframework/zend-coding-standard": "~1.0.0",
-                "zendframework/zend-diactoros": "^1.7",
-                "zendframework/zend-stratigility": "^3.0.0rc1"
+                "zendframework/zend-diactoros": "^1.7.1",
+                "zendframework/zend-stratigility": "^3.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.1.x-dev",
-                    "dev-develop": "2.2.x-dev",
-                    "dev-release-3.0.0": "3.0.x-dev"
+                    "dev-master": "3.0.x-dev",
+                    "dev-develop": "3.1.x-dev"
                 },
                 "zf": {
                     "config-provider": "Zend\\Expressive\\Router\\AuraRouter\\ConfigProvider"
@@ -3561,20 +3556,20 @@
                 "zend-expressive",
                 "zf"
             ],
-            "time": "2018-03-07T17:14:23+00:00"
+            "time": "2018-03-15T16:09:18+00:00"
         },
         {
             "name": "zendframework/zend-expressive-fastroute",
-            "version": "3.0.0rc4",
+            "version": "3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-expressive-fastroute.git",
-                "reference": "43fac9a08c4eb8587899fb1c6bb916ec8925f5d2"
+                "reference": "a4cc8081bc745f971999c08ffa6c9c58bb193b06"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-expressive-fastroute/zipball/43fac9a08c4eb8587899fb1c6bb916ec8925f5d2",
-                "reference": "43fac9a08c4eb8587899fb1c6bb916ec8925f5d2",
+                "url": "https://api.github.com/repos/zendframework/zend-expressive-fastroute/zipball/a4cc8081bc745f971999c08ffa6c9c58bb193b06",
+                "reference": "a4cc8081bc745f971999c08ffa6c9c58bb193b06",
                 "shasum": ""
             },
             "require": {
@@ -3583,7 +3578,7 @@
                 "php": "^7.1",
                 "psr/container": "^1.0",
                 "psr/http-message": "^1.0.1",
-                "zendframework/zend-expressive-router": "^3.0.0rc4",
+                "zendframework/zend-expressive-router": "^3.0",
                 "zendframework/zend-stdlib": "^2.0 || ^3.1"
             },
             "conflict": {
@@ -3591,17 +3586,17 @@
             },
             "require-dev": {
                 "malukenho/docheader": "^0.1.6",
+                "mikey179/vfsstream": "^1.6.5",
                 "phpunit/phpunit": "^7.0.2",
                 "zendframework/zend-coding-standard": "~1.0.0",
-                "zendframework/zend-diactoros": "^1.7",
-                "zendframework/zend-stratigility": "^3.0.0rc1"
+                "zendframework/zend-diactoros": "^1.7.1",
+                "zendframework/zend-stratigility": "^3.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.1-dev",
-                    "dev-develop": "2.2-dev",
-                    "dev-release-3.0.0": "3.0.x-dev"
+                    "dev-master": "3.0.x-dev",
+                    "dev-develop": "3.1.x-dev"
                 },
                 "zf": {
                     "config-provider": "Zend\\Expressive\\Router\\FastRouteRouter\\ConfigProvider"
@@ -3628,27 +3623,27 @@
                 "zend-expressive",
                 "zf"
             ],
-            "time": "2018-03-07T17:10:51+00:00"
+            "time": "2018-03-15T16:18:52+00:00"
         },
         {
             "name": "zendframework/zend-expressive-zendrouter",
-            "version": "3.0.0rc3",
+            "version": "3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-expressive-zendrouter.git",
-                "reference": "0a03edf71e89a78efee2fe18bfa092597738dbec"
+                "reference": "669ee4a1f81bdfad3571c49576c5b65811308b55"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-expressive-zendrouter/zipball/0a03edf71e89a78efee2fe18bfa092597738dbec",
-                "reference": "0a03edf71e89a78efee2fe18bfa092597738dbec",
+                "url": "https://api.github.com/repos/zendframework/zend-expressive-zendrouter/zipball/669ee4a1f81bdfad3571c49576c5b65811308b55",
+                "reference": "669ee4a1f81bdfad3571c49576c5b65811308b55",
                 "shasum": ""
             },
             "require": {
                 "fig/http-message-util": "^1.1.2",
                 "php": "^7.1",
                 "psr/http-message": "^1.0.1",
-                "zendframework/zend-expressive-router": "^3.0.0rc3",
+                "zendframework/zend-expressive-router": "^3.0",
                 "zendframework/zend-psr7bridge": "^0.2.2 || ^1.0.0",
                 "zendframework/zend-router": "^3.0.2"
             },
@@ -3657,14 +3652,13 @@
                 "phpunit/phpunit": "^7.0.2",
                 "zendframework/zend-coding-standard": "~1.0.0",
                 "zendframework/zend-i18n": "^2.7.4",
-                "zendframework/zend-stratigility": "^3.0.0rc1"
+                "zendframework/zend-stratigility": "^3.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.1.x-dev",
-                    "dev-develop": "2.2.x-dev",
-                    "dev-release-3.0.0": "3.0.x-dev"
+                    "dev-master": "3.0.x-dev",
+                    "dev-develop": "3.1.x-dev"
                 },
                 "zf": {
                     "config-provider": "Zend\\Expressive\\Router\\ZendRouter\\ConfigProvider"
@@ -3690,7 +3684,7 @@
                 "zend-expressive",
                 "zf"
             ],
-            "time": "2018-03-07T17:17:26+00:00"
+            "time": "2018-03-15T16:26:54+00:00"
         },
         {
             "name": "zendframework/zend-http",
@@ -4135,14 +4129,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "zendframework/zend-expressive-router": 5,
-        "zendframework/zend-expressive-template": 15,
-        "zendframework/zend-stratigility": 5,
-        "zendframework/zend-expressive-aurarouter": 5,
-        "zendframework/zend-expressive-fastroute": 5,
-        "zendframework/zend-expressive-zendrouter": 5
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
