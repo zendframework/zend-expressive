@@ -13,6 +13,9 @@ use Psr\Http\Message\ResponseInterface;
 use Throwable;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
+use function get_class;
+use function sprintf;
+
 trait ErrorResponseGeneratorTrait
 {
     /**

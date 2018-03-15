@@ -14,6 +14,8 @@ use Whoops\Handler\JsonResponseHandler;
 use Whoops\Run as Whoops;
 use Whoops\Util\Misc as WhoopsUtil;
 
+use function method_exists;
+
 /**
  * Create and return an instance of the Whoops runner.
  *

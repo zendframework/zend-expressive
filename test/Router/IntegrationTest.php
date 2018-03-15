@@ -36,6 +36,9 @@ use Zend\HttpHandlerRunner\RequestHandlerRunner;
 use Zend\Stratigility\MiddlewarePipe;
 use ZendTest\Expressive\ContainerTrait;
 
+use function array_pop;
+use function sprintf;
+
 class IntegrationTest extends TestCase
 {
     use ContainerTrait;

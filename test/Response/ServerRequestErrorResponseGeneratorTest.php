@@ -14,11 +14,12 @@ use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
-use Throwable;
 use RuntimeException;
 use Zend\Expressive\Response\ServerRequestErrorResponseGenerator;
 use Zend\Expressive\Template\TemplateRendererInterface;
-use Zend\Stratigility\Utils;
+
+use function preg_match;
+use function strpos;
 
 class ServerRequestErrorResponseGeneratorTest extends TestCase
 {

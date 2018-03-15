@@ -15,12 +15,10 @@ use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use ReflectionProperty;
-use Zend\Diactoros\Response;
 use Zend\Expressive\Application;
 use Zend\Expressive\Container\ApplicationConfigInjectionDelegator;
 use Zend\Expressive\Container\Exception\InvalidServiceException;
 use Zend\Expressive\Exception\InvalidArgumentException;
-use Zend\Expressive\Middleware;
 use Zend\Expressive\MiddlewareContainer;
 use Zend\Expressive\MiddlewareFactory;
 use Zend\Expressive\Router\Middleware\DispatchMiddleware;
@@ -33,6 +31,10 @@ use Zend\HttpHandlerRunner\RequestHandlerRunner;
 use Zend\Stratigility\MiddlewarePipe;
 use ZendTest\Expressive\ContainerTrait;
 use ZendTest\Expressive\TestAsset\InvokableMiddleware;
+
+use function array_merge;
+use function array_reduce;
+use function array_shift;
 
 class ApplicationConfigInjectionDelegatorTest extends TestCase
 {

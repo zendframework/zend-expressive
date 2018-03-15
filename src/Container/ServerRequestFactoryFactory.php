@@ -13,6 +13,9 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\ServerRequestFactory;
 
+use function class_exists;
+use function sprintf;
+
 /**
  * Return a factory for generating a server request.
  *
