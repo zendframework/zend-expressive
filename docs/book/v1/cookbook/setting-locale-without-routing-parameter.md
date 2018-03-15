@@ -34,27 +34,27 @@ use Zend\Expressive\Helper\UrlHelper;
 class SetLocaleMiddleware
 {
     private $helper;
-    
+
     public function __construct(UrlHelper $helper)
     {
         $this->helper = $helper;
     }
-    
+
     public function __invoke($request, $response, callable $next)
     {
         $uri = $request->getUri();
-        
+
         $path = $uri->getPath();
-        
+
         if (! preg_match('#^/(?P<locale>[a-z]{2,3}([-_][a-zA-Z]{2}|))/#', $path, $matches)) {
             Locale::setDefault('de_DE');
             return $next($request, $response);
         }
-        
+
         $locale = $matches['locale'];
         Locale::setDefault(Locale::canonicalize($locale));
         $this->helper->setBasePath($locale);
-        
+
         return $next(
             $request->withUri(
                 $uri->withPath(substr($path, 3))
@@ -85,8 +85,8 @@ class SetLocaleMiddlewareFactory
 }
 ```
 
-Afterwards, you need to configure the `SetLocaleMiddleware` in your 
-`/config/autoload/middleware-pipeline.global.php` file so that it is executed 
+Afterwards, you need to configure the `SetLocaleMiddleware` in your
+`/config/autoload/middleware-pipeline.global.php` file so that it is executed
 on every request.
 
 ```php
@@ -127,8 +127,8 @@ return [
 
 ## Url generation in the view
 
-Since the `UrlHelper` has the locale set as a base path, you don't need 
-to worry about generating URLs within your view. Just use the helper to 
+Since the `UrlHelper` has the locale set as a base path, you don't need
+to worry about generating URLs within your view. Just use the helper to
 generate a URL and it will do the rest.
 
 ```php
@@ -142,8 +142,8 @@ generate a URL and it will do the rest.
 
 ## Redirecting within your middleware
 
-If you want to add the locale parameter when creating URIs within your 
-action middleware, you just need to inject the `UrlHelper` into your 
+If you want to add the locale parameter when creating URIs within your
+action middleware, you just need to inject the `UrlHelper` into your
 middleware and use it for URL generation:
 
 ```php
@@ -157,12 +157,12 @@ use Zend\Expressive\Helper\UrlHelper;
 class RedirectAction
 {
     private $helper;
-        
+
     public function __construct(UrlHelper $helper)
     {
         $this->helper = $helper;
     }
-        
+
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response

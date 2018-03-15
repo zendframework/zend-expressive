@@ -248,7 +248,7 @@ Error handlers work at the outermost layer, and are used to catch exceptions and
 errors in your application. At the _innermost_ layer of your application, you
 should ensure you have middleware that is _guaranteed_ to return a response;
 this prevents errors in your application in the event that the application
-exhausts the middleware queue. 
+exhausts the middleware queue.
 
 This in turn allows you to fully craft what sort of response is returned in such
 conditions.

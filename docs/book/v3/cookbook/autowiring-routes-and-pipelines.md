@@ -10,7 +10,7 @@ is a custom delegator factory.
 
 ## ApplicationConfigInjectionDelegator
 
-Expressive ships with the class `Zend\Expressive\Container\ApplicationConfigInjectionDelegator`, 
+Expressive ships with the class `Zend\Expressive\Container\ApplicationConfigInjectionDelegator`,
 which can be used as a delegator factory for the `Zend\Expressive\Application`
 class in order to automate piping of pipeline middleware and routing to request
 handlers and middleware.

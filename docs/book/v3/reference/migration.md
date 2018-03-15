@@ -176,7 +176,7 @@ Additionally, the following methods were **removed**:
 middleware and/or routed middleware from configuration any longer.
 
 If you want to use configuration-driven pipelines and/or middleware, you may
-register the new class `Zend\Expressive\Container\ApplicationConfigInjectionDelegator` 
+register the new class `Zend\Expressive\Container\ApplicationConfigInjectionDelegator`
 as a delegator factory on the `Zend\Expressive\Application` service.
 
 ### NotFoundHandlerFactory

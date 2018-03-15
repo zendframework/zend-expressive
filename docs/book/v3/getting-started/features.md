@@ -159,7 +159,7 @@ The middleware pipeline is executed in the order of attachment.
 
 Expressive provides default implementations of "routing" and "dispatch"
 middleware, which you will attach to the middleware pipeline.  These are
-implemented as the classes `Zend\Expressive\Router\Middleware\RouteMiddleware` 
+implemented as the classes `Zend\Expressive\Router\Middleware\RouteMiddleware`
 and `Zend\Expressive\Router\Middleware\DispatchMiddleware`, respectively.
 
 Routing within Expressive consists of decomposing the request to match it to

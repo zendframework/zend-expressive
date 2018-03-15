@@ -583,7 +583,7 @@ return new HtmlResponse($this->renderer->render(
 >       $target
 >   ));
 >   ```
-> 
+>
 > You can also skip the next step below where we edit the template file.
 
 The above looks for a query string parameter "target", and uses its value to

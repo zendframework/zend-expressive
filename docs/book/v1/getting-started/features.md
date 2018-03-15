@@ -31,7 +31,7 @@ to provide a robust convenience layer on which to build applications. The
 features it provides include:
 
 - **Routing**
-  
+
   Stratigility provides limited, literal matching only. Expressive allows you
   to utilize dynamic routing capabilities from a variety of routers, providing
   much more fine-grained matching capabilities. The routing layer also allows
@@ -86,13 +86,13 @@ middleware*. These act like regular middleware, but accept an additional error
 argument to act on.
 
 > ### Pipelines
-> 
+>
 > The terminology "pipeline" is often used to describe the onion. One way of
 > looking at the "onion" is as a *queue*, which is first-in-first-out (FIFO) in
 > operation. This means that the first middleware on the queue is executed first,
 > and this invokes the next, and so on (and hence the "next" terminology). When
 > looked at from this perspective:
-> 
+>
 > - In most cases, the entire queue *will not* be traversed.
 > - The inner-most layer of the onion represents the last item in the queue.
 > - Responses are returned back *through* the pipeline, in reverse order of
