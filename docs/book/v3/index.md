@@ -1,4 +1,4 @@
-# Expressive: PSR-7 Middleware in Minutes
+# Expressive: PSR-15 Middleware in Minutes
 
 Expressive builds on [Stratigility](https://docs.zendframework.com/zend-stratigility/)
 to provide a minimalist [PSR-15](http://www.php-fig.org/psr/psr-15/) middleware
