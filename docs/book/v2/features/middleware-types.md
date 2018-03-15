@@ -31,7 +31,7 @@ Expressive allows you to define middleware using any of the following:
 The http-interop/http-middleware project is the basis for the proposed
 [PSR-15](https://www.php-fig.org/psr/psr-15) specification, which covers HTTP
 Server Middleware that consumes [PSR-7](http://www.php-fig.org/psr/psr-7/) HTTP
-messages. The project defines two interfaces, `Interop\Http\ServerMiddleware\MiddlewareInterface` 
+messages. The project defines two interfaces, `Interop\Http\ServerMiddleware\MiddlewareInterface`
 and `Interop\Http\ServerMiddleware\DelegateInterface`. Expressive accepts
 middleware that implements the `MiddlewareInterface`. As an example:
 

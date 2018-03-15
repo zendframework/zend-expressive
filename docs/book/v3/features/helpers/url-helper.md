@@ -168,7 +168,7 @@ class LocaleMiddleware implements MiddlewareInterface
         $this->helper->setBasePath($locale);
 
         return $handler->handle($request->withUri(
-            $uri->withPath(substr($path, (strlen($locale) + 1)))
+            $uri->withPath(substr($path, strlen($locale) + 1))
         ));
     }
 }

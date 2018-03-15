@@ -18,7 +18,7 @@ requiring any changes to existing routes.
 ## Setup a middleware to extract the locale from the URI
 
 First, we need to setup middleware that extracts the locale param directly
-from the request URI's path. If if doesn't find one, it sets a default.
+from the request URI's path. If it doesn't find one, it sets a default.
 
 If it does find one, it uses the value to setup the locale. It also:
 
@@ -44,7 +44,7 @@ class SetLocaleMiddleware implements MiddlewareInterface
     {
         $this->helper = $helper;
     }
-    
+
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         $uri = $request->getUri();
@@ -59,7 +59,7 @@ class SetLocaleMiddleware implements MiddlewareInterface
         $locale = $matches['locale'];
         Locale::setDefault(Locale::canonicalize($locale));
         $this->helper->setBasePath($locale);
-        
+
         return $handler->handle($request->withUri(
             $uri->withPath(substr($path, 3))
         ));

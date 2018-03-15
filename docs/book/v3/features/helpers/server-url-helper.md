@@ -52,7 +52,7 @@ use Zend\Expressive\Helper\ServerUrlMiddleware;
 // Programmatically:
 $app->pipe(ServerUrlMiddleware::class);
 $app->pipe(RouteMiddleware::class);
-// ... 
+// ...
 $app->pipe(DispatchMiddleware::class);
 ```
 

@@ -4,7 +4,7 @@ Expressive offers middleware for implicitly supporting `HEAD` and `OPTIONS`
 requests. The HTTP/1.1 specifications indicate that all server implementations
 _must_ support `HEAD` requests for any given URI, and that they _should_ support
 `OPTIONS` requests. To make this possible, we have added features to our routing
-layer, and middleware that can detect _implicit_  support for these methods
+layer, and middleware that can detect _implicit_ support for these methods
 (i.e., the route was not registered _explicitly_ with the method).
 
 Both middleware detailed here are provided in the zend-expressive-router
@@ -13,7 +13,7 @@ package.
 ## ImplicitHeadMiddleware
 
 `Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware` provides support for
-handling `HEAD` requests to routed middleware when the route does not expliclity
+handling `HEAD` requests to routed middleware when the route does not explicitly
 allow for the method. It should be registered _between_ the routing and dispatch
 middleware.
 
@@ -64,7 +64,7 @@ the headers returned if desired.
 
 `Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware` provides support for
 handling `OPTIONS` requests to routed middleware when the route does not
-expliclity allow for the method. Like the `ImplicitHeadMiddleware`, it should be
+explicitly allow for the method. Like the `ImplicitHeadMiddleware`, it should be
 registered _between_ the routing and dispatch middleware.
 
 The zend-expressive-router package provides a factory for creating an instance,

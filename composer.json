@@ -1,6 +1,6 @@
 {
     "name": "zendframework/zend-expressive",
-    "description": "PSR-7 Middleware Microframework based on Stratigility",
+    "description": "PSR-15 Middleware Microframework",
     "license": "BSD-3-Clause",
     "keywords": [
         "http",
@@ -8,6 +8,7 @@
         "psr",
         "psr-7",
         "psr-11",
+        "psr-15",
         "expressive",
         "zf",
         "zendframework",

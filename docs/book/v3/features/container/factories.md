@@ -490,4 +490,4 @@ When creating the `PhpRenderer` instance, it will inject it with a
 `Zend\View\HelperPluginManager` instance (either pulled from the container, or
 instantiated directly). It injects the helper plugin manager with custom url and
 serverurl helpers, `Zend\Expressive\ZendView\UrlHelper` and
-`Zend\Expressive\ZendView\ServerUrlHelper`, respetively.
+`Zend\Expressive\ZendView\ServerUrlHelper`, respectively.

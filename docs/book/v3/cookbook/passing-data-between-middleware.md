@@ -34,7 +34,7 @@ class PassingDataMiddleware implements MiddlewareInterface
 
         // Step 2: Inject data into the request, call the next middleware and wait for the response
         $response = $handler->handle($request->withAttribute(self::class, $data));
-        
+
         // Step 3: Optionally, do something (with the response) before returning the response
 
         // Step 4: Return the response
@@ -89,7 +89,7 @@ use Zend\Diactoros\Response\HtmlResponse;
 class ExampleHandler implements RequestHandlerInterface
 {
     // ...
-    
+
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         // Step 1: Grab the data from the request

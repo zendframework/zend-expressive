@@ -51,4 +51,4 @@ return $provider();
 > ### Use locally!
 >
 > Remember to enable `PhpMiddleware\PhpDebugBar\ConfigProvider` only in your
-> development enviroments!
+> development environments!
