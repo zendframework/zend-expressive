@@ -11,7 +11,6 @@ namespace Zend\Expressive\Container;
 
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
-use Zend\Expressive\Middleware\ErrorResponseGenerator;
 use Zend\Expressive\Response\ServerRequestErrorResponseGenerator;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
