@@ -127,7 +127,7 @@ the request URI and the operating system path to the application.
 
 The primary advantage of `mtymek/blast-base-url` is in its additional features:
 
-- it injects `Zend\Expressive\Helper\UrlHelper` with the base path, allowing you 
+- it injects `Zend\Expressive\Helper\UrlHelper` with the base path, allowing you
   to create relative route-based URLs.
 - it provides a new helper, `Blast\BaseUrl\BasePathHelper`, which allows you to
   create URLs relative to the base path; this is particularly useful for assets.
@@ -139,7 +139,7 @@ To enable these features, we'll add some configuration to
 return [
     'dependencies' => [
         'invokables' => [
-            Blast\BaseUrl\BasePathHelper::class => Blast\BaseUrl\BasePathHelper::class,            
+            Blast\BaseUrl\BasePathHelper::class => Blast\BaseUrl\BasePathHelper::class,
             /* ... */
         ],
     ],

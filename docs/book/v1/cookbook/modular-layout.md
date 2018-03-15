@@ -3,13 +3,13 @@
 Zend Framework 2 applications have a concept of modules, independent units that
 can provide configuration, services, and hooks into its MVC lifecycle. This
 functionality is provided by zend-modulemanager.
- 
+
 While zend-modulemanager could be used with Expressive, we suggest another
 approach: modules that are based only on configuration. This powerful approach
 doesn't affect performance, and offers extensive flexibility: each module can
-provide its own services (with factories), default configuration, and routes. 
+provide its own services (with factories), default configuration, and routes.
 
-This cookbook will show how to organize modules using 
+This cookbook will show how to organize modules using
 [mtymek/expressive-config-manager](https://github.com/mtymek/expressive-config-manager),
 a lightweight library that aggregates and merges configuration, optionally caching it.
 
@@ -25,7 +25,7 @@ $ composer require mtymek/expressive-config-manager
 
 The default Expressive skeleton installs a `config/config.php` file, which
 aggregates all configuration. When using the configuration manager, you will
-need to replace the contents of that file with the following code: 
+need to replace the contents of that file with the following code:
 
 ```php
 <?php

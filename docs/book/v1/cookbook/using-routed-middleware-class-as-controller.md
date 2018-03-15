@@ -63,7 +63,7 @@ use Zend\Expressive\Template\TemplateRendererInterface;
 
 class AlbumPage
 {
-    private $template;    
+    private $template;
 
     public function __construct(TemplateRendererInterface $template)
     {
@@ -183,7 +183,7 @@ use Zend\Expressive\Template\TemplateRendererInterface;
 
 class AlbumPage extends AbstractPage
 {
-    private $template;    
+    private $template;
 
     public function __construct(TemplateRendererInterface $template)
     {
@@ -215,11 +215,11 @@ class AlbumPage extends AbstractPage
 >         callable $next = null
 >     ) {
 >         $action = $request->getAttribute('action', 'index') . 'Action';
-> 
+>
 >         if (! method_exists($this, $action)) {
 >             return $response->withStatus(404);
 >         }
-> 
+>
 >         return $this->$action($request, $response, $next);
 >     }
 > }
@@ -229,24 +229,24 @@ class AlbumPage extends AbstractPage
 >
 > ```php
 > namespace Album\Action;
-> 
+>
 > use App\Action\ActionBasedInvocation;
 > use Psr\Http\Message\ResponseInterface;
 > use Psr\Http\Message\ServerRequestInterface;
 > use Zend\Diactoros\Response\HtmlResponse;
 > use Zend\Expressive\Template\TemplateRendererInterface;
-> 
+>
 > class AlbumPage
 > {
 >     use ActionBasedInvocation;
 >
->     private $template;    
-> 
+>     private $template;
+>
 >     public function __construct(TemplateRendererInterface $template)
 >     {
 >         $this->template = $template;
 >     }
-> 
+>
 >     public function indexAction( /* ... */ ) { /* ... */ }
 >     public function addAction( /* ... */ ) { /* ... */ }
 >     public function editAction( /* ... */ ) { /* ... */ }

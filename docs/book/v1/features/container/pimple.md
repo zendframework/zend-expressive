@@ -79,7 +79,7 @@ $app->run();
 ```
 
 > ### Environments
-> 
+>
 > In the example above, we provide two alternate definitions for the service
 > `Zend\Expressive\FinalHandler`, one for development and one for production.
 > You will need to add logic to your file to determine which definition to

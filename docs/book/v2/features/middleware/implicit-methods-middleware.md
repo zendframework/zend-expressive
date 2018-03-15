@@ -13,11 +13,11 @@ layer, and middleware that can detect _implicit_  support for these methods
 > `Zend\Expressive\Middleware\ImplicitHeadMiddleware` or
 > `Zend\Expressive\Middleware\ImplicitOptionsMiddleware` service under the
 > `invokables` service configuration.
-> 
+>
 > However, starting in version 2.2, these classes are deprecated in favor of their
 > equivalents that are now offered in the zend-expressive-router v2.4+ releases,
 > under the namespace `Zend\Expressive\Router\Middleware`.
-> 
+>
 > The documentation here has been updated to reflect usage under Expressive 2.2+.
 
 ## ImplicitHeadMiddleware

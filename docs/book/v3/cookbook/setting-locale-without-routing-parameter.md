@@ -44,7 +44,7 @@ class SetLocaleMiddleware implements MiddlewareInterface
     {
         $this->helper = $helper;
     }
-    
+
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         $uri = $request->getUri();
@@ -59,7 +59,7 @@ class SetLocaleMiddleware implements MiddlewareInterface
         $locale = $matches['locale'];
         Locale::setDefault(Locale::canonicalize($locale));
         $this->helper->setBasePath($locale);
-        
+
         return $handler->handle($request->withUri(
             $uri->withPath(substr($path, 3))
         ));

@@ -91,7 +91,7 @@ $app = AppFactory::create(null, $router);
 ## Factory-Driven Creation
 
 [We recommend using an Inversion of Control container](../container/intro.md)
-for your applications; as such, in this section we will demonstrate 
+for your applications; as such, in this section we will demonstrate
 two strategies for creating your zend-mvc router implementation.
 
 ### Basic Router

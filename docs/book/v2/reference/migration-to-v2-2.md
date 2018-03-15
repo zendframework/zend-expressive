@@ -191,7 +191,7 @@ removed in version 3:
   - `getEmitter()`: emitters move to a different collaborator in version 3.
   - `injectPipelineFromConfig()` andd `injectRoutesFromConfig()` are methods
     defined by the `ApplicationConfigInjectionTrait`, which will be removed in
-    version 3. See the section on the [ApplicationConfigInjectionDelegator](#applicationconfiginjectiondelegator) 
+    version 3. See the section on the [ApplicationConfigInjectionDelegator](#applicationconfiginjectiondelegator)
     for an alternate, forwards-compatible, approach.
 
 - `Zend\Expressive\ApplicationConfigInjectionTrait`: if you are using it, it is
@@ -220,9 +220,9 @@ removed in version 3:
 
 - `Zend\Expressive\Middleware\DispatchMiddleware`: [see the section above](#routing-and-dispatch-middleware).
 
-- `Zend\Expressive\Middleware\ImplicitHeadMiddleware`: [see the section above](#implicit-head-and-options-middleware).  
+- `Zend\Expressive\Middleware\ImplicitHeadMiddleware`: [see the section above](#implicit-head-and-options-middleware).
 
-- `Zend\Expressive\Middleware\ImplicitOptionsMiddleware`: [see the section above](#implicit-head-and-options-middleware).  
+- `Zend\Expressive\Middleware\ImplicitOptionsMiddleware`: [see the section above](#implicit-head-and-options-middleware).
 
 - `Zend\Expressive\Middleware\NotFoundHandler`: this will be removed in version 3, where you can instead pipe `Zend\Expressive\Handler\NotFoundHandler` directly instead.
 
