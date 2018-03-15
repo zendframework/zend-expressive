@@ -18,7 +18,7 @@ requiring any changes to existing routes.
 ## Setup a middleware to extract the locale from the URI
 
 First, we need to setup middleware that extracts the locale param directly
-from the request URI's path. If if doesn't find one, it sets a default.
+from the request URI's path. If it doesn't find one, it sets a default.
 
 If it does find one, it uses the value to setup the locale. It also:
 

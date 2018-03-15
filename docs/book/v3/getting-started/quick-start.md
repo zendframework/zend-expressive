@@ -117,7 +117,7 @@ documented security issues.
 ### Tooling integration
 
 The skeleton ships with [zend-expressive-tooling](https://github.com/zendframework/zend-expressive-tooling)
-by default, and integrates with it by exposing it via compser:
+by default, and integrates with it by exposing it via composer:
 
 ```bash
 $ composer expressive
