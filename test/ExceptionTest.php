@@ -42,7 +42,7 @@ class ExceptionTest extends TestCase
     public function testExceptionIsInstanceOfExceptionInterface(string $exception) : void
     {
         $this->assertContains('Exception', $exception);
-        $this->assertTrue(is_a($exception, ExceptionInterface::class, true));
+        $this->assertInstanceOf(ExceptionInterface::class, $exception);
     }
 
     public function containerException() : Generator
@@ -56,6 +56,6 @@ class ExceptionTest extends TestCase
      */
     public function testExceptionIsInstanceOfContainerExceptionInterface(string $exception) : void
     {
-        $this->assertTrue(is_a($exception, ContainerExceptionInterface::class, true));
+        $this->assertInstanceOf(ContainerExceptionInterface::class, $exception);
     }
 }
