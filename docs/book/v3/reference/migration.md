@@ -76,8 +76,8 @@ The following classes were added in version 3:
 
 - `Zend\Expressive\Container\ApplicationConfigInjectionDelegator` is a
   [delegator factory](../features/container/delegator-factories.md) capable of
-  piping and routing middleware from configuration. See the (recipe on
-  autowiring routes and pipeline middleware)(../cookbook/autowiring-routes-and-pipelines.md)
+  piping and routing middleware from configuration. See the [recipe on
+  autowiring routes and pipeline middleware](../cookbook/autowiring-routes-and-pipelines.md)
   for more information.
 
 - `Zend\Expressive\Container\ApplicationPipelineFactory` will produce an empty
@@ -233,7 +233,7 @@ container; this is to ensure that the value returned is a PSR-15
 ## Upgrading
 
 We provide a package you can add to your existing v2 application in order to
-upgrade it to version 2.
+upgrade it to version 3.
 
 Before installing and running the migration tooling, make sure you have checked
 in your latest changes (assuming you are using version control), or have a
