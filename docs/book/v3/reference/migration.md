@@ -233,7 +233,7 @@ container; this is to ensure that the value returned is a PSR-15
 ## Upgrading
 
 We provide a package you can add to your existing v2 application in order to
-upgrade it to version 2.
+upgrade it to version 3.
 
 Before installing and running the migration tooling, make sure you have checked
 in your latest changes (assuming you are using version control), or have a
