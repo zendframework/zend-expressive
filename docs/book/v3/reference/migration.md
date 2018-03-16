@@ -76,8 +76,8 @@ The following classes were added in version 3:
 
 - `Zend\Expressive\Container\ApplicationConfigInjectionDelegator` is a
   [delegator factory](../features/container/delegator-factories.md) capable of
-  piping and routing middleware from configuration. See the (recipe on
-  autowiring routes and pipeline middleware)(../cookbook/autowiring-routes-and-pipelines.md)
+  piping and routing middleware from configuration. See the [recipe on
+  autowiring routes and pipeline middleware](../cookbook/autowiring-routes-and-pipelines.md)
   for more information.
 
 - `Zend\Expressive\Container\ApplicationPipelineFactory` will produce an empty
