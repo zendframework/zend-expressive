@@ -43,13 +43,6 @@ class ConfigProviderTest extends TestCase
         $this->assertArrayHasKey('Zend\Expressive\Delegate\DefaultDelegate', $aliases);
     }
 
-    public function testProviderDefinesExpectedInvokableServices()
-    {
-        $config = $this->provider->getDependencies();
-        $invokables = $config['invokables'];
-        $this->assertArrayHasKey(RouterMiddleware\DispatchMiddleware::class, $invokables);
-    }
-
     public function testProviderDefinesExpectedFactoryServices()
     {
         $config = $this->provider->getDependencies();
@@ -62,6 +55,7 @@ class ConfigProviderTest extends TestCase
         $this->assertArrayHasKey(NotFoundHandler::class, $factories);
         $this->assertArrayHasKey(ResponseInterface::class, $factories);
         $this->assertArrayHasKey(StreamInterface::class, $factories);
+        $this->assertArrayHasKey(RouterMiddleware\DispatchMiddleware::class, $factories);
         $this->assertArrayHasKey(RouterMiddleware\ImplicitHeadMiddleware::class, $factories);
         $this->assertArrayHasKey(RouterMiddleware\ImplicitOptionsMiddleware::class, $factories);
         $this->assertArrayHasKey(RouterMiddleware\RouteMiddleware::class, $factories);
@@ -73,7 +67,6 @@ class ConfigProviderTest extends TestCase
         $this->assertInternalType('array', $config);
         $this->assertArrayHasKey('dependencies', $config);
         $this->assertArrayHasKey('aliases', $config['dependencies']);
-        $this->assertArrayHasKey('invokables', $config['dependencies']);
         $this->assertArrayHasKey('factories', $config['dependencies']);
     }
 }
