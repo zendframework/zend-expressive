@@ -32,8 +32,8 @@ accepts both middleware that implements the `MiddlewareInterface` and request
 handlers that implement `RequestHandlerInterface`. As an example:
 
 ```php
-use Interop\Http\Server\MiddlewareInterface;
-use Interop\Http\Server\RequestHandlerInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
