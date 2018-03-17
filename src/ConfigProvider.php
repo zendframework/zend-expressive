@@ -43,9 +43,6 @@ class ConfigProvider
                 Middleware\RouteMiddleware::class           => Router\Middleware\RouteMiddleware::class,
                 'Zend\Expressive\Delegate\DefaultDelegate'  => Handler\NotFoundHandler::class,
             ],
-            'invokables' => [
-                Router\Middleware\DispatchMiddleware::class => Router\Middleware\DispatchMiddleware::class,
-            ],
             'factories' => [
                 Application::class                       => Container\ApplicationFactory::class,
                 ErrorHandler::class                      => Container\ErrorHandlerFactory::class,
@@ -57,6 +54,7 @@ class ConfigProvider
                 StreamInterface::class                   => Container\StreamFactoryFactory::class,
 
                 // These are duplicates, in case the zend-expressive-router package ConfigProvider is not wired:
+                Router\Middleware\DispatchMiddleware::class        => Router\Middleware\DispatchMiddlewareFactory::class,
                 Router\Middleware\ImplicitHeadMiddleware::class    => Router\Middleware\ImplicitHeadMiddlewareFactory::class,
                 Router\Middleware\ImplicitOptionsMiddleware::class => Router\Middleware\ImplicitOptionsMiddlewareFactory::class,
                 Router\Middleware\RouteMiddleware::class           => Router\Middleware\RouteMiddlewareFactory::class,
