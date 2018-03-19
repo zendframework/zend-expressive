@@ -176,7 +176,7 @@ class ApplicationConfigInjectionDelegator
             return;
         }
 
-        foreach ($config['routes'] as $spec) {
+        foreach ($config['routes'] as $key => $spec) {
             if (! isset($spec['path']) || ! isset($spec['middleware'])) {
                 continue;
             }
@@ -192,7 +192,7 @@ class ApplicationConfigInjectionDelegator
                 }
             }
 
-            $name  = $spec['name'] ?? null;
+            $name  = $spec['name'] ?? (is_string($key) ? $key : null);
             $route = $application->route(
                 $spec['path'],
                 $spec['middleware'],
