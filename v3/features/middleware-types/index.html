@@ -1731,8 +1731,8 @@ HTTP POST requests to the path <code>/users</code>.</p>
 consume <a href="http://www.php-fig.org/psr/psr-7">PSR-7</a> HTTP messages. Expressive
 accepts both middleware that implements the <code>MiddlewareInterface</code> and request
 handlers that implement <code>RequestHandlerInterface</code>. As an example:</p>
-<pre class="codehilite"><code class="language-php">use Interop\Http\Server\MiddlewareInterface;
-use Interop\Http\Server\RequestHandlerInterface;
+<pre class="codehilite"><code class="language-php">use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
