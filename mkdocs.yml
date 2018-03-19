@@ -51,6 +51,7 @@ pages:
         - 'Prepending a common path to all routes': v3/cookbook/common-prefix-for-routes.md
         - 'Route-specific middleware pipelines': v3/cookbook/route-specific-pipeline.md
         - 'Registering custom view helpers when using zend-view': v3/cookbook/using-custom-view-helpers.md
+        - 'Using double-pass middleware': v3/cookbook/double-pass-middleware.md
         - 'Using zend-form view helpers': v3/cookbook/using-zend-form-view-helpers.md
         - 'Using Expressive from a subdirectory': v3/cookbook/using-a-base-path.md
         - 'Setting a locale based on a routing parameter': v3/cookbook/setting-locale-depending-routing-parameter.md
