@@ -1740,6 +1740,15 @@ handlers and middleware.</p>
                 'the'   =&gt; 'underlying router',
             ],
         ],
+        'another.route.name' =&gt; [
+            'path' =&gt; '/another/path/to/match',
+            'middleware' =&gt; 'Middleware service or pipeline',
+            'allowed_methods' =&gt; ['GET', 'POST'],
+            'options' =&gt; [
+                'more'    =&gt; 'router',
+                'options' =&gt; 'here',
+            ],
+        ],
     ],
 ];</code></pre>
 
@@ -1790,7 +1799,9 @@ following keys:</p>
   the HTTP methods allowed for the route. If this is omitted, the assumption is
   any method is allowed.</li>
 <li><code>name</code> (optional, string): the name of the route, if any; this can be used
-  later to generate a URI based on the route, and must be unique.</li>
+  later to generate a URI based on the route, and must be unique. The name may
+  also be set using a string key in the routes configuration array. If both are
+  set the name assigned in the spec will be used.</li>
 <li><code>options</code> (optional, array): any options to provide to the generated route.
   These might be default values or constraints, depending on the router
   implementation.</li>
