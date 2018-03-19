@@ -48,17 +48,18 @@ pages:
         - Emitters: v3/features/emitters.md
     - Cookbook:
         - 'Autowiring routes and pipeline middleware': v3/cookbook/autowiring-routes-and-pipelines.md
-        - 'Prepending a common path to all routes': v3/cookbook/common-prefix-for-routes.md
-        - 'Route-specific middleware pipelines': v3/cookbook/route-specific-pipeline.md
-        - 'Registering custom view helpers when using zend-view': v3/cookbook/using-custom-view-helpers.md
-        - 'Using double-pass middleware': v3/cookbook/double-pass-middleware.md
-        - 'Using zend-form view helpers': v3/cookbook/using-zend-form-view-helpers.md
         - 'Using Expressive from a subdirectory': v3/cookbook/using-a-base-path.md
+        - 'Prepending a common path to all routes': v3/cookbook/common-prefix-for-routes.md
+        - 'Passing data between middleware': v3/cookbook/passing-data-between-middleware.md
+        - 'Route-specific middleware pipelines': v3/cookbook/route-specific-pipeline.md
+        - 'Segregating middleware by host': v3/cookbook/host-segregated-middleware.md
+        - 'Using double-pass middleware': v3/cookbook/double-pass-middleware.md
         - 'Setting a locale based on a routing parameter': v3/cookbook/setting-locale-depending-routing-parameter.md
         - 'Setting a locale without a routing parameter': v3/cookbook/setting-locale-without-routing-parameter.md
         - 'Enabling debug toolbars': v3/cookbook/debug-toolbars.md
         - 'Flash Messengers': v3/cookbook/flash-messengers.md
-        - 'Passing data between middleware': v3/cookbook/passing-data-between-middleware.md
+        - 'Registering custom view helpers when using zend-view': v3/cookbook/using-custom-view-helpers.md
+        - 'Using zend-form view helpers': v3/cookbook/using-zend-form-view-helpers.md
     - Reference:
         - "Why choose Expressive?": v3/why-expressive.md
         - "CLI Tooling": v3/reference/cli-tooling.md
