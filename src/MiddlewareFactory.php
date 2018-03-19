@@ -71,7 +71,7 @@ class MiddlewareFactory
         }
 
         if ($middleware instanceof RequestHandlerInterface) {
-            return new RequestHandlerMiddleware($middleware);
+            return $this->handler($middleware);
         }
 
         if (is_callable($middleware)) {
