@@ -116,6 +116,12 @@
     </url>
         
     <url>
+     <loc>/v3/cookbook/double-pass-middleware/</loc>
+     <lastmod>2018-03-19</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
      <loc>/v3/cookbook/using-zend-form-view-helpers/</loc>
      <lastmod>2018-03-19</lastmod>
      <changefreq>daily</changefreq>
