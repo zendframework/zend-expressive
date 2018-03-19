@@ -40,6 +40,15 @@ return [
                 'the'   => 'underlying router',
             ],
         ],
+        'another.route.name' => [
+            'path' => '/another/path/to/match',
+            'middleware' => 'Middleware service or pipeline',
+            'allowed_methods' => ['GET', 'POST'],
+            'options' => [
+                'more'    => 'router',
+                'options' => 'here',
+            ],
+        ],
     ],
 ];
 ```
@@ -97,7 +106,9 @@ following keys:
   the HTTP methods allowed for the route. If this is omitted, the assumption is
   any method is allowed.
 - `name` (optional, string): the name of the route, if any; this can be used
-  later to generate a URI based on the route, and must be unique.
+  later to generate a URI based on the route, and must be unique. The name may
+  also be set using a string key in the routes configuration array. If both are
+  set the name assigned in the spec will be used.
 - `options` (optional, array): any options to provide to the generated route.
   These might be default values or constraints, depending on the router
   implementation.
