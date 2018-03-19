@@ -391,6 +391,49 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
         $this->assertEquals([], $app->getRoutes());
     }
 
+    public function testInjectRoutesFromConfigSetRouteNameViaArrayKey()
+    {
+        $config = [
+            'routes' => [
+                'home' => [
+                    'path' => '/',
+                    'middleware' => new TestAsset\InteropMiddleware(),
+                ],
+            ],
+        ];
+        $this->container->has('config')->willReturn(false);
+        $app = $this->createApplication();
+
+        ApplicationConfigInjectionDelegator::injectRoutesFromConfig($app, $config);
+
+        $routes = $app->getRoutes();
+
+        $route = array_shift($routes);
+        $this->assertEquals('home', $route->getName());
+    }
+
+    public function testInjectRoutesFromConfigRouteSpecNameOverrideArrayKeyName()
+    {
+        $config = [
+            'routes' => [
+                'home' => [
+                    'name' => 'homepage',
+                    'path' => '/',
+                    'middleware' => new TestAsset\InteropMiddleware(),
+                ],
+            ],
+        ];
+        $this->container->has('config')->willReturn(false);
+        $app = $this->createApplication();
+
+        ApplicationConfigInjectionDelegator::injectRoutesFromConfig($app, $config);
+
+        $routes = $app->getRoutes();
+
+        $route = array_shift($routes);
+        $this->assertEquals('homepage', $route->getName());
+    }
+
     public function testInjectPipelineFromConfigRaisesExceptionForSpecsOmittingMiddlewareKey()
     {
         $config = [
