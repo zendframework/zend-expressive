@@ -10,7 +10,11 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Changed
 
-- Nothing.
+- [#596](https://github.com/zendframework/zend-expressive/pull/596) updates the
+  `ApplicationConfigInjectionDelegator::injectRoutesFromConfig()` method to use
+  the key name associated with a route specification if no `name` member is
+  provided when creating a `Route` instance. This can help enforce name
+  uniqueness when defining routes via configuration.
 
 ### Deprecated
 
