@@ -23,7 +23,7 @@ implementations.
 Container configuration is provided within the `dependencies` key of
 configuration. That key is structured as follows:
 
-```
+```php
 return [
     'dependencies' => [
         'services' => [
