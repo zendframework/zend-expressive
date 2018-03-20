@@ -28,18 +28,27 @@ return [
     'dependencies' => [
         'services' => [
             // name => instance pairs
+            'config' => $config,
         ],
         'aliases' => [
             // alias => target pairs
+            'page-handler' => SomePageHandler::class,
         ],
         'factories' => [
             // service => factory pairs
+            SomePageHandler::class => SomePageHandlerFactory::class,
         ],
         'invokables' => [
             // service => instantiable class pairs
+            SomeInstantiableClass::class => SomeInstantiableClass::class,
+            'an-alias-for' => SomeInstantiableClass::class,
         ],
         'delegators' => [
-            // service => array of delegator factories
+            // service => array of delegator factory pairs
+            SomeInstantiableClass::class => [
+                InjectListenersDelegator::class,
+                InjectLoggerDelegator::class,
+            ],
         ],
     ],
 ];
@@ -69,20 +78,35 @@ In this case, if the service named "Zend\\Expressive\\Delegate\\DefaultDelegate"
 is requested, the container should resolve that to the service
 `Zend\Expressive\Handler\NotFoundHandler` and return that instead.
 
-When returning an aliased service, the container MUST return the same instance
-as if the target service were retrieved.
+Aliases may reference any other service defined in the container. These include
+services defined under the keys:
 
-Aliases may reference other aliases, as well. In such cases, the above rules
-apply to the final resolved service, and not any intermediary aliases.
+- `services`
+- `factories`
+- `invokables`
+- or even other `aliases`
+
+When returning an aliased service, the container MUST return the same instance
+as if the target service were retrieved. When aliases may reference other
+aliases, the rule applies to the final resolved service, and not any
+intermediary aliases.
 
 ## Factories
 
 _Factories_ map a service name to the factory capable of producing the instance.
 
-A _factory_ is any PHP callable capable of producing the instance. They may also
-be the _class name_ of a directly instantiable class (no constructor arguments)
-that defines `__invoke()`. Generally, this latter convention is used, as class
-names are serializable, while closures are not.
+A _factory_ is any PHP callable capable of producing the instance:
+
+- Function names
+- Closures
+- Class instances that define the method `__invoke()`
+- Callable references to static methods
+- Array callables referencing static or instance methods
+
+They may also be the _class name_ of a directly instantiable class (no
+constructor arguments) that defines `__invoke()`. Generally, this latter
+convention is used, as class names are serializable, while closures, objects,
+and array callables often are not.
 
 Factories are guaranteed to receive the PSR-11 container as an argument,
 allowing you to pull other services from the container as necessary to fulfill
@@ -90,17 +114,20 @@ dependencies of the class being created and returned. Additionally, containers
 SHOULD pass the service name requested as the second argument; factories can
 determine whether that argument is necessary.
 
-A typical container will generally ignore the second argument:
+A typical factory will generally ignore the second argument:
 
 ```php
 use Psr\Container\ContainerInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
-function (ContainerInterface $container)
+class SomePageHandlerFactory
 {
-    return new SomePageHandler(
-        $container->get(TemplateRendererInterface::class)
-    );
+    public function __invoke(ContainerInterface $container)
+    {
+        return new SomePageHandler(
+            $container->get(TemplateRendererInterface::class)
+        );
+    }
 }
 ```
 
@@ -185,16 +212,31 @@ function (
 
 Configuration for delegator factories is using the "delegators" sub-key of the
 "dependencies" configuration. Each entry is a service name pointing to an
-_array_ of delegator factories. Delegator factories are called in the order they
-appear in configuration; when you call the `$callback` argument, it effectively
-calls the previous delegator to get the instance to work on; the first
-delegator's `$callback` argument invokes whatever functionality is required to
-create the initial instance (be it as a [service](#services),
-[invokable](#invokables), or [factory](#factories), after [alias](#aliases)
-resolution).
+_array_ of delegator factories.
 
-Delegators MUST only be called when initially creating the service, and not
-each time a service is retrieved.
+Delegator factories are called in the order they appear in configuration. For
+the first delegator factory, the `$callback` argument will be essentially the
+return value of `$container->get()` for the given service _if there were no
+delegator factories attached to it_; in other words, it would be the
+[service](#services), [invokable](#invokables), or service returned by a
+[factory](#factories), after [alias](#aliases) resolution.
+
+Each delegator then returns a value, and that value will be what `$callback`
+returns for the next delegator. If the delegator is the last in the list, then
+what it returns becomes the final value for the service in the container;
+subsequent calls to `$container->get()` for that service will return that value.
+Delegators MUST return a value!
+
+For container implementors, delegators MUST only be called when initially
+creating the service, and not each time a service is retrieved.
+
+Common use cases for delegators include:
+
+- Decorating an instance so that it may be used in another context (e.g.,
+  decorating a PHP `callable` to be used as PSR-15 middleware).
+- Injecting collaborators (e.g., adding listeners to the `ErrorHandler`).
+- Conditionally replacing an instance based on configuration (e.g., swapping
+  debug-enabled middleware for production middleware).
 
 ## Other capabilities
 
