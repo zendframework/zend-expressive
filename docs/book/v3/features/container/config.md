@@ -218,8 +218,12 @@ Delegator factories are called in the order they appear in configuration. For
 the first delegator factory, the `$callback` argument will be essentially the
 return value of `$container->get()` for the given service _if there were no
 delegator factories attached to it_; in other words, it would be the
-[service](#services), [invokable](#invokables), or service returned by a
-[factory](#factories), after [alias](#aliases) resolution.
+[invokable](#invokables) or service returned by a [factory](#factories), after
+[alias](#aliases) resolution.
+
+> Delegators **DO NOT** operate on items in the `services` configuration!
+> All items in the `services` configuration are considered complete, and will
+> always be served as-is.
 
 Each delegator then returns a value, and that value will be what `$callback`
 returns for the next delegator. If the delegator is the last in the list, then
