@@ -1913,8 +1913,13 @@ function (
 the first delegator factory, the <code>$callback</code> argument will be essentially the
 return value of <code>$container-&gt;get()</code> for the given service <em>if there were no
 delegator factories attached to it</em>; in other words, it would be the
-<a href="#services">service</a>, <a href="#invokables">invokable</a>, or service returned by a
-<a href="#factories">factory</a>, after <a href="#aliases">alias</a> resolution.</p>
+<a href="#invokables">invokable</a> or service returned by a <a href="#factories">factory</a>, after
+<a href="#aliases">alias</a> resolution.</p>
+<blockquote>
+<p>Delegators <strong>DO NOT</strong> operate on items in the <code>services</code> configuration!
+All items in the <code>services</code> configuration are considered complete, and will
+always be served as-is.</p>
+</blockquote>
 <p>Each delegator then returns a value, and that value will be what <code>$callback</code>
 returns for the next delegator. If the delegator is the last in the list, then
 what it returns becomes the final value for the service in the container;
