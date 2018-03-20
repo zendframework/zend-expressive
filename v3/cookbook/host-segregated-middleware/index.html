@@ -9,7 +9,7 @@
     <meta name="description" content="zend-expressive: PSR-7 Middleware Microframework">  
     <link rel="shortcut icon" href="../../../img/favicon.ico">
 
-    <title>Autowiring routes and pipeline middleware - Expressive</title>
+    <title>Segregating middleware by host - Expressive</title>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
@@ -438,8 +438,8 @@
                         
                             
 
-<li class="active">
-    <a href="./">Autowiring routes and pipeline middleware</a>
+<li >
+    <a href="../autowiring-routes-and-pipelines/">Autowiring routes and pipeline middleware</a>
 </li>
 
 
@@ -478,8 +478,8 @@
                         
                             
 
-<li >
-    <a href="../host-segregated-middleware/">Segregating middleware by host</a>
+<li class="active">
+    <a href="./">Segregating middleware by host</a>
 </li>
 
 
@@ -1681,17 +1681,11 @@
         <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
     
-        <li class="main active"><a href="#how-can-i-autowire-routes-and-pipelines">How can I autowire routes and pipelines?</a></li>
+        <li class="main active"><a href="#how-does-one-segregate-middleware-by-host">How does one segregate middleware by host?</a></li>
         
-            <li><a href="#applicationconfiginjectiondelegator">ApplicationConfigInjectionDelegator</a></li>
+            <li><a href="#the-host-function">The host function</a></li>
         
-            <li><a href="#custom-delegator-factories">Custom delegator factories</a></li>
-        
-            <li><a href="#caution-pipelines">Caution: pipelines</a></li>
-        
-            <li><a href="#caution-third-party-distributed-modules">Caution: third-party, distributed modules</a></li>
-        
-            <li><a href="#synopsis">Synopsis</a></li>
+            <li><a href="#lazy-loading-host-segregated-middleware">Lazy-loading host-segregated middleware</a></li>
         
     
     </ul>
@@ -1699,10 +1693,10 @@
     
     <ul class="pager hidden-print">
       <li class="previous">
-        <a rel="prev" href="../../features/emitters/"><i class="fa fa-arrow-left"></i> Previous</a>
+        <a rel="prev" href="../route-specific-pipeline/"><i class="fa fa-arrow-left"></i> Previous</a>
       </li>
       <li class="next">
-        <a rel="next" href="../using-a-base-path/">Next <i class="fa fa-arrow-right"></i></a>
+        <a rel="next" href="../double-pass-middleware/">Next <i class="fa fa-arrow-right"></i></a>
       </li>
     </ul>
     
@@ -1718,277 +1712,64 @@
       
     
   
-  <li class="active">Autowiring routes and pipeline middleware</li>
+  <li class="active">Segregating middleware by host</li>
 </ol>
 
-<h1 id="how-can-i-autowire-routes-and-pipelines">How can I autowire routes and pipelines?</h1>
-<p>Sometimes you may find you'd like to keep route definitions close to the
-handlers and middleware they will invoke. This is particularly important if you
-want to re-use a module or library in another project.</p>
-<p>In this recipe, we'll demonstrate two mechanisms for doing so. One is a built-in
-<a href="../../features/container/delegator-factories/">delegator factory</a>, and the other
-is a custom delegator factory.</p>
-<h2 id="applicationconfiginjectiondelegator">ApplicationConfigInjectionDelegator</h2>
-<p>Expressive ships with the class <code>Zend\Expressive\Container\ApplicationConfigInjectionDelegator</code>,
-which can be used as a delegator factory for the <code>Zend\Expressive\Application</code>
-class in order to automate piping of pipeline middleware and routing to request
-handlers and middleware.</p>
-<p>The delegator factory looks for configuration that looks like the following:</p>
-<pre class="codehilite"><code class="language-php">return [
-    'pipeline_middleware' =&gt; [
-        [
-            // required:
-            'middleware' =&gt; 'Middleware service or pipeline',
-            // optional:
-            'path'  =&gt; '/path/to/match', // for path-segregated middleware
-            'priority' =&gt; 1,             // integer; to ensure specific order
-        ]
-    ],
-    'routes' =&gt; [
-        [
-            'path' =&gt; '/path/to/match',
-            'middleware' =&gt; 'Middleware service or pipeline',
-            'allowed_methods' =&gt; ['GET', 'POST', 'PATCH'],
-            'name' =&gt; 'route.name',
-            'options' =&gt; [
-                'stuff' =&gt; 'to',
-                'pass'  =&gt; 'to',
-                'the'   =&gt; 'underlying router',
-            ],
-        ],
-        'another.route.name' =&gt; [
-            'path' =&gt; '/another/path/to/match',
-            'middleware' =&gt; 'Middleware service or pipeline',
-            'allowed_methods' =&gt; ['GET', 'POST'],
-            'options' =&gt; [
-                'more'    =&gt; 'router',
-                'options' =&gt; 'here',
-            ],
-        ],
-    ],
-];</code></pre>
+<h1 id="how-does-one-segregate-middleware-by-host">How does one segregate middleware by host?</h1>
+<p>If your application is being re-used to respond to multiple host domains, how
+can you segregate middleware to work only in reponse to a specific host request?</p>
+<p>As an example, perhaps you have an "admin" area of your application you only
+want to expose via the host name "admin.example.org"; how can you do this?</p>
+<h2 id="the-host-function">The host function</h2>
+<p><a href="https://docs.zendframework.com/zend-stratigility/">Stratigility</a> provides a
+function, <code>Zend\Stratigility\host()</code> that can be used to decorate middleware in
+a <code>Zend\Stratigility\Middleware\HostMiddlewareDecorator</code> instance. These expect
+the string name of a host, and the middleware that should only trigger when that
+host is matched in the request.</p>
+<p>As a simple example:</p>
+<pre class="codehilite"><code class="language-php">// in config/pipeline.php:
+use function Zend\Stratigility\host;
 
-<p>This configuration may be placed at the application level, in a file under
-<code>config/autoload/</code>, or within a module's <code>ConfigProvider</code> class. For details on
-what values are accepted, see below.</p>
-<p>In order to enable the delegator factory, you will need to define the following
-service configuration somewhere, either at the application level in a
-<code>config/autoload/</code> file, or within a module-specific <code>ConfigProvider</code> class:</p>
-<pre class="codehilite"><code class="language-php">return [
-    'dependencies' =&gt; [
-        'delegators' =&gt; [
-            \Zend\Expressive\Application::class =&gt; [
-                \Zend\Expressive\Container\ApplicationConfigInjectionDelegator::class,
-            ],
-        ],
-    ],
-];</code></pre>
+$app-&gt;pipe(host('admin.example.org', $adminMiddleware));</code></pre>
 
-<h3 id="pipeline-middleware">Pipeline middleware</h3>
-<p>Pipeline middleware are each described as an associative array, with the
-following keys:</p>
+<p>However, you'll note that the above uses an already instantiated middleware
+instance; how can you lazy-load a named service instead?</p>
+<h2 id="lazy-loading-host-segregated-middleware">Lazy-loading host-segregated middleware</h2>
+<p>The <code>config/pipeline.php</code> file defines and returns a callable that accepts three
+arguments:</p>
 <ul>
-<li><code>middleware</code> (<strong>required</strong>, string or array): the value should be a middleware
-  service name, or an array of service names (in which case a <code>MiddlewarePipe</code>
-  will be created and piped).</li>
-<li><code>path</code> (optional, string): if you wish to path-segregate the middleware, provide a
-  literal path prefix that must be matched in order to dispatch the given
-  middleware.</li>
-<li><code>priority</code> (optional, integer): The elements in the <code>pipeline_middleware</code>
-  section are piped to the application in the order in which they are discovered
-  &mdash; which could have ramifications if multiple components and/or modules
-  provide pipeline middleware. If you wish to force a certain order, you may use
-  the <code>priority</code> to do so. Higher value integers are piped first, lower value
-  (including <em>negative</em> values), last. If two middleware use the same priority,
-  they will be piped in the order discovered.</li>
+<li>a <code>Zend\Expressive\Application $app</code> instance</li>
+<li>a <code>Zend\Expressive\MiddlewareFactory $factory</code> instance</li>
+<li>a <code>Psr\Container\ContainerInterface $container</code> instance</li>
 </ul>
-<h3 id="routed-middleware">Routed middleware</h3>
-<p>Routed middleware are also each described as an associative array, using the
-following keys:</p>
-<ul>
-<li><code>path</code> (<strong>required</strong>, string): the path specification to match; this will be
-  dependent on the router implementation you use.</li>
-<li><code>middleware</code> (<strong>required</strong>, string or array): the value should be a middleware
-  service name, or an array of service names (in which case a <code>MiddlewarePipe</code>
-  will be created and piped).</li>
-<li><code>allowed_methods</code> (optional, array or value of `Zend\Expressive\Route\HTTP_METHOD_ANY):
-  the HTTP methods allowed for the route. If this is omitted, the assumption is
-  any method is allowed.</li>
-<li><code>name</code> (optional, string): the name of the route, if any; this can be used
-  later to generate a URI based on the route, and must be unique. The name may
-  also be set using a string key in the routes configuration array. If both are
-  set the name assigned in the spec will be used.</li>
-<li><code>options</code> (optional, array): any options to provide to the generated route.
-  These might be default values or constraints, depending on the router
-  implementation.</li>
-</ul>
-<h2 id="custom-delegator-factories">Custom delegator factories</h2>
-<p>As outlined in the introduction to this recipe, we can also create our own
-custom delegator factories in order to inject pipeline or routed middleware.
-Unlike the above solution, the solution we will outline here will exercise the
-<code>Zend\Expressive\Application</code> API in order to populate it.</p>
-<p>First, we'll create the class <code>App\Factory\PipelineAndRoutesDelegator</code>, with
-the following contents:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<p>We can use the second of these to help us. We will use the <code>lazy()</code> method to
+specify a middleware service name to lazy-load:</p>
+<pre class="codehilite"><code class="language-php">$app-&gt;pipe(host('admin.example.org', $factory-&gt;lazy(AdminMiddleware::class)));</code></pre>
 
-namespace App\Factory;
+<p>What about specifying a pipeline of middleware? For that, we can use the
+<code>pipeline()</code> method of the factory:</p>
+<pre class="codehilite"><code class="language-php">$app-&gt;pipe(host('admin.example.org', $factory-&gt;pipeline(
+    SessionMiddleware::class,
+    AuthenticationMiddleware::class,
+    AuthorizationMiddleware::class,
+    AdminHandler::class
+)));</code></pre>
 
-use App\Handler;
-use Psr\Container\ContainerInterface;
-use Zend\Expressive\Application;
-use Zend\Expressive\Handler\NotFoundHandler;
-use Zend\Expressive\Helper\ServerUrlMiddleware;
-use Zend\Expressive\Helper\UrlHelperMiddleware;
-use Zend\Expressive\Router\Middleware\DispatchMiddleware;
-use Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware;
-use Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware;
-use Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware;
-use Zend\Expressive\Router\Middleware\RouteMiddleware;
-use Zend\Stratigility\Middleware\ErrorHandler;
+<p>Alternately, either of the above examples could use the <code>prepare()</code> method:</p>
+<pre class="codehilite"><code class="language-php">// lazy example:
+$app-&gt;pipe(host('admin.example.org', $factory-&gt;prepare(AdminMiddleware::class)));
 
-class PipelineAndRoutesDelegator
-{
-    public function __invoke(
-        ContainerInterface $container,
-        string $serviceName,
-        callable $callback
-    ) : Application {
-        /** @var $app Application */
-        $app = $callback();
-
-        // Setup pipeline:
-        $app-&gt;pipe(ErrorHandler::class);
-        $app-&gt;pipe(ServerUrlMiddleware::class);
-        $app-&gt;pipe(RouteMiddleware::class);
-        $app-&gt;pipe(ImplicitHeadMiddleware::class);
-        $app-&gt;pipe(ImplicitOptionsMiddleware::class);
-        $app-&gt;pipe(MethodNotAllowedMiddleware::class);
-        $app-&gt;pipe(UrlHelperMiddleware::class);
-        $app-&gt;pipe(DispatchMiddleware::class);
-        $app-&gt;pipe(NotFoundHandler::class);
-
-        // Setup routes:
-        $app-&gt;get('/', Handler\HomePageHandler::class, 'home');
-        $app-&gt;get('/api/ping', Handler\PingHandler::class, 'api.ping');
-
-        return $app;
-    }
-}</code></pre>
+// pipeline example:
+$app-&gt;pipe(host('admin.example.org', $factory-&gt;prepare([
+    SessionMiddleware::class,
+    AuthenticationMiddleware::class,
+    AuthorizationMiddleware::class,
+    AdminHandler::class,
+])));</code></pre>
 
 <blockquote>
-<h3 id="where-to-put-the-factory">Where to put the factory</h3>
-<p>You will place the factory class in one of the following locations:</p>
-<ul>
-<li><code>src/App/Factory/PipelineAndRoutesDelegator.php</code> if using the default, flat,
-  application structure.</li>
-<li><code>src/App/src/Factory/PipelineAndRoutesDelegator.php</code> if using the
-  recommended, modular, application structure.</li>
-</ul>
+<p>For more information on the <code>MiddlewareFactory</code>, <a href="../../features/container/middleware-factory/">read its documentation</a>.</p>
 </blockquote>
-<p>Once you've created this, edit the class <code>App\ConfigProvider</code>; in it, we'll
-update the <code>getDependencies()</code> method to add the delegator factory:</p>
-<pre class="codehilite"><code class="language-php">public function getDependencies()
-{
-    return [
-        /* . . . */
-        'delegators' =&gt; [
-            \Zend\Expressive\Application::class =&gt; [
-                Factory\PipelineAndRoutesDelegator::class,
-            ],
-        ],
-    ];
-}</code></pre>
-
-<blockquote>
-<h3 id="where-is-the-configprovider-class">Where is the ConfigProvider class?</h3>
-<p>The <code>ConfigProvider</code> class is in one of the following locations:</p>
-<ul>
-<li><code>src/App/ConfigProvider.php</code> if using the default, flat, application
-  structure.</li>
-<li><code>src/App/src/ConfigProvider.php</code> using the recommended, modular, application
-  structure.</li>
-</ul>
-<h3 id="why-is-an-array-assigned">Why is an array assigned?</h3>
-<p>As noted above in the description of delegator factories, since each delegator
-factory returns an instance, you can nest multiple delegator factories in
-order to shape initialization of a service. As such, they are assigned as an
-<em>array</em> to the service.</p>
-</blockquote>
-<p>If you're paying careful attention to this example, it essentially replaces
-both <code>config/pipeline.php</code> and <code>config/routes.php</code>! If you were to update those
-files to remove the default pipeline and routes, you should find that reloading
-your application returns the exact same results!</p>
-<h2 id="caution-pipelines">Caution: pipelines</h2>
-<p>Using delegator factories is a nice way to keep your routing and pipeline
-configuration close to the modules in which they are defined. However, there is
-a caveat: you likely should <strong>not</strong> register pipeline middleware in a delegator
-factory <em>other than within your root application module</em>.</p>
-<p>The reason for this is simple: pipelines are linear, and specific to your
-application. If one module pipes in middleware, there's no guarantee it will be
-piped before or after your main pipeline, and no way to pipe the middleware at a
-position in the middle of the pipeline!</p>
-<p>As such:</p>
-<ul>
-<li>Use a <code>config/pipeline.php</code> file for your pipeline, <strong>OR</strong></li>
-<li>Ensure you only define the pipeline in a <strong>single</strong> delegator factory on your
-  <code>Application</code> instance.</li>
-</ul>
-<h2 id="caution-third-party-distributed-modules">Caution: third-party, distributed modules</h2>
-<p>If you are developing a module to distribute as a package via
-<a href="https://getcomposer.org/">Composer</a>, <strong>you should not autowire any delegator
-factories that inject pipeline middleware or routes in the <code>Application</code></strong>.</p>
-<p>Why?</p>
-<p>As noted in the above section, pipelines should be created exactly once, at
-the application level. Registering pipeline middleware within a distributable
-package will very likely not have the intended consequences.</p>
-<p>If you ship with pipeline middleware, we suggest that you:</p>
-<ul>
-<li>Document the middleware, and where you anticipate it being used in the
-  middleware pipeline.</li>
-<li>Document how to add the middleware service to dependency configuration, or
-  provide the dependency configuration via your module's <code>ConfigProvider</code>.</li>
-</ul>
-<p>With regards to routes, there are other considerations:</p>
-<ul>
-<li>
-<p>Routes defined by the package might conflict with the application, or with
-  other packages used by the application.</p>
-</li>
-<li>
-<p>Routing definitions are typically highly specific to the router implementation
-  in use. As an example, each of the currently supported router implementations
-  has a different syntax for placeholders:</p>
-<ul>
-<li><code>/user/:id</code> + "constraints" configuration to define constraints (zend-router)</li>
-<li><code>/user/{id}</code> + "tokens" configuration to define constraints (Aura.Router)</li>
-<li><code>/user/{id:\d+}</code> (FastRoute)</li>
-</ul>
-</li>
-<li>
-<p>Your application may have specific routing considerations or design.</p>
-</li>
-</ul>
-<p>You could, of course, detect what router is in use, and provide routing for each
-known, supported router implementation within your delegator factory. We even
-recommend doing exactly that. However, we note that such an approach does not
-solve the other two points above.</p>
-<p>However, we still recommend <em>shipping</em> a delegator factory that would register
-your routes, since routes <em>are</em> often a part of module design; just <strong>do not
-autowire</strong> that delegator factory. This way, end-users who <em>can</em> use the
-defaults do not need to cut-and-paste routing definitions from your
-documentation into their own applications; they will instead opt-in to your
-delegator factory by wiring it into their own configuration.</p>
-<h2 id="synopsis">Synopsis</h2>
-<ul>
-<li>We recommend using delegator factories for the purpose of autowiring routes,
-  and, with caveats, pipeline middleware:<ul>
-<li>The pipeline should be created exactly once, so calls to <code>pipe()</code> should
-  occur in exactly <em>one</em> delegator factory.</li>
-</ul>
-</li>
-<li>Distributable packages should create a delegator factory for <em>routes only</em>,
-  but <em>should not</em> register the delegator factory by default.</li>
-</ul>
 
 <hr />
 
@@ -1996,10 +1777,10 @@ delegator factory by wiring it into their own configuration.</p>
 <nav>
   <ul class="pager hidden-print">
     <li class="previous">
-      <a rel="prev" href="../../features/emitters/"><i class="fa fa-arrow-left"></i> Previous</a>
+      <a rel="prev" href="../route-specific-pipeline/"><i class="fa fa-arrow-left"></i> Previous</a>
     </li>
     <li class="next">
-      <a rel="next" href="../using-a-base-path/">Next <i class="fa fa-arrow-right"></i></a>
+      <a rel="next" href="../double-pass-middleware/">Next <i class="fa fa-arrow-right"></i></a>
     </li>
   </ul>
 </nav>
