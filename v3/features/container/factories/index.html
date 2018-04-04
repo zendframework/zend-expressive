@@ -2185,18 +2185,24 @@ the <code>TwigExtension</code> instance (assuming the router was found).</p>
 <li><strong>Provides</strong>: <code>Zend\Expressive\Template\ZendViewRenderer</code></li>
 <li><strong>FactoryName</strong>: <code>Zend\Expressive\ZendView\ZendViewRendererFactory</code></li>
 <li><strong>Suggested Name</strong>: <code>Zend\Expressive\Template\TemplateRendererInterface</code></li>
-<li><strong>Requires</strong>: no additional services are required.<ul>
-<li><code>Zend\Expressive\Router\RouterInterface</code>, in order to inject the custom
-  url helper implementation.</li>
-</ul>
-</li>
+<li><strong>Requires</strong>: no additional services are required.</li>
 <li><strong>Optional</strong>:<ul>
 <li><code>config</code>, an array or <code>ArrayAccess</code> instance. This will be used to further
   configure the <code>ZendView</code> instance, specifically with the layout template
   name, entries for a <code>TemplateMapResolver</code>, and and template paths to
   inject.</li>
+<li><code>Zend\View\Renderer\PhpRenderer</code>, in order to allow providing custom
+  extensions and/or re-using an existing configuration; otherwise, a default
+  instance is created.</li>
 <li><code>Zend\View\HelperPluginManager</code>; if present, will be used to inject the
-  <code>PhpRenderer</code> instance.</li>
+  <code>PhpRenderer</code> instance; otherwise, a default instance is created.</li>
+<li><code>Zend\Expressive\Helper\UrlHelper</code>, in order to provide a URL helper
+  compatible with zend-expressive-router. If you will not be generating
+  URLs, this can be omitted.</li>
+<li><code>Zend\Expressive\Helper\ServerUrlHelper</code>, in order to provide a server URL
+  helper (which provides the scheme and authority for a generated URL)
+  compatible with zend-expressive-router. If you will not be generating
+  URLs, this can be omitted.</li>
 </ul>
 </li>
 </ul>
