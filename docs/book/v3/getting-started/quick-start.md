@@ -564,7 +564,7 @@ $target = htmlspecialchars($target, ENT_HTML5, 'UTF-8');
 return new HtmlResponse($this->renderer->render(
     'app::hello',
     ['target' => $target]
-);
+));
 ```
 
 > #### Templateless handler
