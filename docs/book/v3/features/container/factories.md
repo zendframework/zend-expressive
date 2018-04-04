@@ -368,7 +368,6 @@ accepts a `Psr\Container\ContainerInterface` instance as the sole argument.
 ### RouteCollectorFactory
 
 - **Provides**: `Zend\Expressive\Router\RouteCollector`
-- **FactoryName**: `Zend\Expressive\Twig\TwigRendererFactory`
 - **Suggested Name**: `Zend\Expressive\Router\RouteCollector`
 - **Requires**:
     - `Zend\Expressive\Router\RouterInterface`
