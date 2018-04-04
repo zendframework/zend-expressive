@@ -458,15 +458,23 @@ the `TwigExtension` instance (assuming the router was found).
 - **FactoryName**: `Zend\Expressive\ZendView\ZendViewRendererFactory`
 - **Suggested Name**: `Zend\Expressive\Template\TemplateRendererInterface`
 - **Requires**: no additional services are required.
-    - `Zend\Expressive\Router\RouterInterface`, in order to inject the custom
-      url helper implementation.
 - **Optional**:
     - `config`, an array or `ArrayAccess` instance. This will be used to further
       configure the `ZendView` instance, specifically with the layout template
       name, entries for a `TemplateMapResolver`, and and template paths to
       inject.
+    - `Zend\View\Renderer\PhpRenderer`, in order to allow providing custom
+      extensions and/or re-using an existing configuration; otherwise, a default
+      instance is created.
     - `Zend\View\HelperPluginManager`; if present, will be used to inject the
-      `PhpRenderer` instance.
+      `PhpRenderer` instance; otherwise, a default instance is created.
+    - `Zend\Expressive\Helper\UrlHelper`, in order to provide a URL helper
+      compatible with zend-expressive-router. If you will not be generating
+      URLs, this can be omitted.
+    - `Zend\Expressive\Helper\ServerUrlHelper`, in order to provide a server URL
+      helper (which provides the scheme and authority for a generated URL)
+      compatible with zend-expressive-router. If you will not be generating
+      URLs, this can be omitted.
 
 It consumes the following `config` structure:
 
