@@ -28,7 +28,7 @@ this middleware with Expressive 3?
 
 zend-stratigility v2.2 and v3.0 ship a utility function,
 `Zend\Stratigility\doublePassMiddleware()`, that will decorate a callable
-double-pass middleware using a `Zend\Stratigility\Middleware\DoublePassMiddlewareDecorator` 
+double-pass middleware using a `Zend\Stratigility\Middleware\DoublePassMiddlewareDecorator`
 instance; this latter is a PSR-15 impelementation, and can thus be used in your
 middleware pipelines.
 
