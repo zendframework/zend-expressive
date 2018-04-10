@@ -24,7 +24,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
-## 3.0.2 - TBD
+## 3.0.2 - 2018-04-10
 
 ### Added
 
@@ -44,7 +44,12 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#612](https://github.com/zendframework/zend-expressive/pull/612) updates the
+  `ApplicationConfigInjectionDelegator` delegator factory logic to cast the
+  `$config` value to an array before passing it to its
+  `injectPipelineFromConfig()` and `injectRoutesFromConfig()` methods, ensuring
+  it will work correctly with containers that store the `config` service as an
+  `ArrayObject` instead of an `array`.
 
 ## 3.0.1 - 2018-03-19
 
