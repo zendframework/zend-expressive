@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace ZendTest\Expressive\Container;
 
+use ArrayObject;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -448,5 +449,28 @@ class ApplicationConfigInjectionDelegatorTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid pipeline specification received');
         ApplicationConfigInjectionDelegator::injectPipelineFromConfig($app, $config);
+    }
+
+    public function testConfigCanBeArrayObject()
+    {
+        $config = new ArrayObject([
+            'routes' => [
+                'home' => [
+                    'name' => 'homepage',
+                    'path' => '/',
+                    'middleware' => new TestAsset\InteropMiddleware(),
+                ],
+            ],
+        ]);
+
+        $this->container->has('config')->willReturn(true);
+        $this->container->get('config')->willReturn($config);
+
+        $delegator = new ApplicationConfigInjectionDelegator();
+        $application = $delegator($this->container->reveal(), '', function () {
+            return $this->createApplication();
+        });
+
+        $this->assertCount(1, $application->getRoutes());
     }
 }
