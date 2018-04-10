@@ -58,8 +58,8 @@ class ApplicationConfigInjectionDelegator
             return $application;
         }
 
-        self::injectPipelineFromConfig($application, $config);
-        self::injectRoutesFromConfig($application, $config);
+        self::injectPipelineFromConfig($application, (array) $config);
+        self::injectRoutesFromConfig($application, (array) $config);
 
         return $application;
     }
