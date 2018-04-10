@@ -125,11 +125,11 @@ return [
             // Global variables passed to twig templates
             'ga_tracking' => 'UA-XXXXX-X'
         ],
-				'optimizations' => -1, // -1: Enable all (default), 0: disable optimizations
-				'runtime_loaders' => [
-						// runtime loader names or instances
-				],
-				'timezone' => 'default timezone identifier, e.g. America/New_York',
+        'optimizations' => -1, // -1: Enable all (default), 0: disable optimizations
+        'runtime_loaders' => [
+            // runtime loader names or instances
+        ],
+        'timezone' => 'default timezone identifier, e.g. America/New_York',
     ],
 ];
 ```
