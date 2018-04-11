@@ -71,7 +71,7 @@ Commands supported include:
   application container.
 
 - **`handler:create [options] <handler>`**: Create a request handler named after
-  `<action>`. By default, the command will also generate a factory, register
+  `<handler>`. By default, the command will also generate a factory, register
   both with the application container, and, if a template renderer is
   discovered, generate a template in an appropriate location.
 
