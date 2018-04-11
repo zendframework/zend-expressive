@@ -1821,6 +1821,7 @@ Generates: http://example.com/path/to/asset/name.ext?v=3</code></pre>
         ],
     ],
     'twig' =&gt; [
+        'autoescape' =&gt; 'html', // Auto-escaping strategy [html|js|css|url|false]
         'cache_dir' =&gt; 'path to cached templates',
         'assets_url' =&gt; 'base URL for assets',
         'assets_version' =&gt; 'base version for assets',
@@ -1831,6 +1832,11 @@ Generates: http://example.com/path/to/asset/name.ext?v=3</code></pre>
             // Global variables passed to twig templates
             'ga_tracking' =&gt; 'UA-XXXXX-X'
         ],
+        'optimizations' =&gt; -1, // -1: Enable all (default), 0: disable optimizations
+        'runtime_loaders' =&gt; [
+            // runtime loader names or instances
+        ],
+        'timezone' =&gt; 'default timezone identifier, e.g. America/New_York',
     ],
 ];</code></pre>
 
