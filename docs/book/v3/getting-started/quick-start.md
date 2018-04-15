@@ -450,7 +450,7 @@ Similar to the `config/pipeline.php` file, the `config/routes.php` file is
 expected to return a callable:
 
 ```php
-// In config/pipeline.php:
+// In config/routes.php:
 
 use Psr\Container\ContainerInterface;
 use Zend\Expressive\Application;
