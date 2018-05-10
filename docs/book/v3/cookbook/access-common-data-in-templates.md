@@ -1,8 +1,7 @@
 # How Can I Access Common Data In Templates?
 
-This is a question that's asked a lot of times. How can I make common data like
-request attributes, the current route name, etc. available into all template.
-The answer is pretty easy actually. All that is needed is a middleware and
+How can I make frequently used data like request attributes, the current route 
+name, etc. available in all template. All that is needed is a middleware and
 the `addDefaultParam()` method from the template renderer.
 
 Here is an example on how to inject the current user, matched route name and
@@ -67,9 +66,9 @@ class TemplateDefaultsMiddleware implements MiddlewareInterface
 }
 ```
 
-Next you need to create a factory and register it. This is easy with
+Next you need to create a factory and register it. You can generate a factory with
 [zend-expressive-tooling](../reference/cli-tooling.md):
 
 ```bash
-./vendor/bin/expressive factory:create App\Middleware\TemplateDefaultsMiddleware
+$ ./vendor/bin/expressive factory:create App\Middleware\TemplateDefaultsMiddleware
 ```
