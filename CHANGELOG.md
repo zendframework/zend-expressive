@@ -6,8 +6,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- [#615](https://github.com/zendframework/zend-expressive/pull/615) adds a
-  cookbook entry for accessing common data in templates.
+- [#615](https://github.com/zendframework/zend-expressive/pull/615) adds a cookbook entry for accessing common data in templates.
 
 ### Changed
 
