@@ -116,6 +116,12 @@
     </url>
         
     <url>
+     <loc>/v3/cookbook/access-common-data-in-templates/</loc>
+     <lastmod>2018-05-14</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
      <loc>/v3/cookbook/route-specific-pipeline/</loc>
      <lastmod>2018-05-14</lastmod>
      <changefreq>daily</changefreq>
