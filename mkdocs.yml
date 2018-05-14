@@ -52,6 +52,7 @@ pages:
         - 'Using Expressive from a subdirectory': v3/cookbook/using-a-base-path.md
         - 'Prepending a common path to all routes': v3/cookbook/common-prefix-for-routes.md
         - 'Passing data between middleware': v3/cookbook/passing-data-between-middleware.md
+        - 'Access Common Data In Templates': v3/cookbook/access-common-data-in-templates.md
         - 'Route-specific middleware pipelines': v3/cookbook/route-specific-pipeline.md
         - 'Segregating middleware by host': v3/cookbook/host-segregated-middleware.md
         - 'Using double-pass middleware': v3/cookbook/double-pass-middleware.md
