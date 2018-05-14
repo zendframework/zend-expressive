@@ -28,7 +28,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#615](https://github.com/zendframework/zend-expressive/pull/615) adds a cookbook entry for accessing common data in templates.
 
 ### Changed
 
@@ -157,9 +157,9 @@ All notable changes to this project will be documented in this file, in reverse 
     `SapiEmitter` from that same namespace as the only emitter on the stack.
     This is used as a dependency for the `Zend\HttpHandlerRunner\RequestHandlerRunner`
     service.
-  - `MiddlewareContainerFactory`: creates and returns a `Zend\Expressive\MiddlewareContainer` 
+  - `MiddlewareContainerFactory`: creates and returns a `Zend\Expressive\MiddlewareContainer`
     instance decorating the PSR-11 container passed to the factory.
-  - `MiddlewareFactoryFactory`: creates and returns a `Zend\Expressive\MiddlewareFactory` 
+  - `MiddlewareFactoryFactory`: creates and returns a `Zend\Expressive\MiddlewareFactory`
     instance decorating a `MiddlewareContainer` instance as pulled from the
     container.
   - `RequestHandlerRunnerFactory`: creates and returns a
@@ -452,47 +452,47 @@ All notable changes to this project will be documented in this file, in reverse 
   - `Zend\Expressive\AppFactory`: if you are using this, you will need to switch
     to direct usage of `Zend\Expressive\Application` or a
     `Zend\Stratigility\MiddlewarePipe` instance.
-  
+
   - `Zend\Expressive\ApplicationConfigInjectionTrait`: if you are using it, it is
     marked internal, and deprecated; it will be removed in version 3.
-  
+
   - `Zend\Expressive\Container\NotFoundDelegateFactory`: the `NotFoundDelegate`
     will be renamed to `Zend\Expressive\Handler\NotFoundHandler` in version 3,
     making this factory obsolete.
-  
+
   - `Zend\Expressive\Delegate\NotFoundDelegate`: this class becomes
     `Zend\Expressive\Handler\NotFoundHandler` in v3, and the new class is added in
     version 2.2 as well.
-  
+
   - `Zend\Expressive\Emitter\EmitterStack`: the emitter concept is extracted from
     zend-diactoros to a new component, zend-httphandlerrunner. This latter
     component is used in version 3, and defines the `EmitterStack` class. Unless
     you are extending it or interacting with it directly, this change should not
     affect you; the `Zend\Diactoros\Response\EmitterInterface` service will be
     directed to the new class in that version.
-  
+
   - `Zend\Expressive\IsCallableInteropMiddlewareTrait`: if you are using it, it is
     marked internal, and deprecated; it will be removed in version 3.
-  
+
   - `Zend\Expressive\MarshalMiddlewareTrait`: if you are using it, it is marked
     internal, and deprecated; it will be removed in version 3.
-  
+
   - `Zend\Expressive\Middleware\DispatchMiddleware`: this functionality has been
     moved to zend-expressive-router, under the `Zend\Expressive\Router\Middleware`
     namespace.
-  
+
   - `Zend\Expressive\Middleware\ImplicitHeadMiddleware`: this functionality has been
     moved to zend-expressive-router, under the `Zend\Expressive\Router\Middleware`
     namespace.
-  
+
   - `Zend\Expressive\Middleware\ImplicitOptionsMiddleware`: this functionality has been
     moved to zend-expressive-router, under the `Zend\Expressive\Router\Middleware`
     namespace.
-  
+
   - `Zend\Expressive\Middleware\NotFoundHandler`: this will be removed in
     version 3, where you can instead pipe `Zend\Expressive\Handler\NotFoundHandler`
     directly instead.
-  
+
   - `Zend\Expressive\Middleware\RouteMiddleware`: this functionality has been
     moved to zend-expressive-router, under the `Zend\Expressive\Router\Middleware`
     namespace.
