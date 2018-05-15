@@ -43,10 +43,10 @@ rewrite the URL accordingly.
 At the time of writing, we have two suggestions:
 
 - [los/basepath](https://github.com/Lansoweb/basepath) provides the basic
-  mechanics of rewriting the URL, and has a stable release.
+  mechanics of rewriting the URL.
 - [mtymek/blast-base-url](https://github.com/mtymek/blast-base-url) provides the
   URL rewriting mechanics, as well as utilities for generating URIs that retain
-  the base path, but does not have a stable release yet.
+  the base path.
 
 ### los/basepath
 
@@ -93,22 +93,11 @@ To install it:
 $ composer require mtymek/blast-base-url
 ```
 
-To configure it, update the file `config/autoload/middleware-pipeline.global.php`,
-or `config/autoload/dependencies.global.php` to map the middleware to its factory:
+If you are using `zend-component-installer`, you will be prompted to configure this package 
+automatically. If you don't choose to do so, you please refer to `Blast\BaseUrl\ConfigProvider` 
+class to see how to wire it manually.
 
-```php
-return [
-    'dependencies' => [
-        'factories' => [
-            Blast\BaseUrl\BaseUrlMiddleware::class => Blast\BaseUrl\BaseUrlMiddlewareFactory::class,
-            /* ... */
-        ],
-        /* ... */
-    ],
-];
-```
-
-If using programmatic pipelines, pipe the middleware early in your pipeline:
+If using programmatic pipelines, pipe the middleware early in your pipeline (before routing):
 
 ```php
 $app->pipe(\Blast\BaseUrl\BaseUrlMiddleware::class);
@@ -134,36 +123,8 @@ The primary advantage of `mtymek/blast-base-url` is in its additional features:
   to create relative route-based URLs.
 - it provides a new helper, `Blast\BaseUrl\BasePathHelper`, which allows you to
   create URLs relative to the base path; this is particularly useful for assets.
-
-To enable these features, we'll add some configuration to
-`config/autoload/dependencies.global.php` file:
-
-```php
-return [
-    'dependencies' => [
-        'invokables' => [
-            Blast\BaseUrl\BasePathHelper::class => Blast\BaseUrl\BasePathHelper::class,
-            /* ... */
-        ],
-    ],
-];
-```
-
-Finally, if you're using zend-view, you can register a new "basePath" helper in
-your `config/autoload/templates.global.php`:
-
-```php
-return [
-    /* ... */
-    'view_helpers' => [
-        'factories' => [
-            'basePath' => Blast\BaseUrl\BasePathViewHelperFactory::class,
-            /* ... */
-        ],
-        /* ... */
-    ],
-];
-```
+  If you are using Zend View as your templating engine, this view helper will
+  be available out of the box.
 
 Usage of the `BasePath` helper is as follows:
 
