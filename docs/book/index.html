@@ -1,14 +1,12 @@
-<div class="container">
-  <div class="jumbotron">
-    <h1>Expressive</h1>
+<div class="row jumbotron">
+  <h1>Expressive</h1>
 
-    <p>PSR-15 Middleware in Minutes</p>
+  <p>PSR-15 Middleware in Minutes</p>
 
-    <pre><code class="language-bash">$ composer create-project zendframework/zend-expressive-skeleton expressive</code></pre>
-  </div>
+  <pre><code class="language-bash">$ composer create-project zendframework/zend-expressive-skeleton expressive</code></pre>
 </div>
 
-<div class="container features">
+<div class="row features">
   <div class="row row-flex row-flex-wrap">
     <div class="col-sm-6 col-md-4">
       <div class="panel"><div class="panel-content center-block">
@@ -92,65 +90,76 @@
   </div>
 </div>
 
-<div class="container install">
-  <div class="row"><div class="panel"><div class="panel-content">
-    <h2>Get Started Now!</h2>
+<div class="row">
+  <h2>Get Started Now!</h2>
 
-    <p>Installation is only a <a href="https://getcomposer.org">Composer</a> command away!</p>
-    <pre><code class="language-bash" data-trim>
+  <p>Installation is only a <a href="https://getcomposer.org">Composer</a> command away!</p>
+
+  <pre><code class="language-bash" data-trim>
 $ composer create-project zendframework/zend-expressive-skeleton expressive</code></pre>
-    <p>
-      Expressive provides interfaces for routing and templating, letting <em>you</em>
-      choose what to use, and how you want to implement it.
-    </p>
 
-    <p>
-      Our unique installer allows you to select <em>your</em> choices when starting
-      your project!
-    </p>
-      <div class="row">
-        <div class="col-xs-12">
-          <img class="img-responsive screenshot" src="images/installer.png" alt="Expressive Installer" /><br />
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-xs-12">
-          <a class="btn btn-lg btn-primary" href="v3/getting-started/quick-start/">Learn more</a>
-        </div>
+  <p>
+    Expressive provides interfaces for routing and templating, letting <em>you</em>
+    choose what to use, and how you want to implement it.
+  </p>
+
+  <p>
+    Our unique installer allows you to select <em>your</em> choices when starting
+    your project!
+  </p>
+
+  <div class="row">
+    <div class="col-xs-12">
+      <img class="img-responsive screenshot" src="images/installer.png" alt="Expressive Installer" /><br />
     </div>
-     <div class="row">
-        <div class="col-xs-12">
-          <h2>Applications, Simplified</h2>
-          <p>Write middleware:</p>
+  </div>
 
-          <pre><code class="language-php" data-trim>
+  <div class="row">
+    <div class="col-xs-12">
+      <a class="btn btn-lg btn-primary" href="v3/getting-started/quick-start/">Learn more</a>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-12">
+    <h2>Applications, Simplified</h2>
+
+    <p>Write middleware:</p>
+
+    <pre><code class="language-php" data-trim>
 $pathMiddleware = function (
-    ServerRequestInterface $request,
-    RequestHandlerInterface $handler
+ServerRequestInterface $request,
+RequestHandlerInterface $handler
 ) {
     $uri  = $request->getUri();
     $path = $uri->getPath();
 
     return new TextResponse('You visited ' . $path, 200, ['X-Path' => $path]);
 };</code></pre>
-          <p>And add it to an application:</p>
-          <pre><code class="language-php" data-trim>
+
+    <p>And add it to an application:</p>
+
+    <pre><code class="language-php" data-trim>
 $app->get('/path', $pathMiddleware);
-          </code></pre>
-        </div>
-      </div>
-       <div class="row">
-        <div class="col-xs-12">
-          <a class="btn btn-lg btn-primary" href="v3/features/application/">Learn more</a>
-    </div></div>
-  <div class="row"><div class="panel"><div class="panel-content">
-    <h2>Learn more</h2>
+    </code></pre>
 
-    <ul>
-      <li><a href="v3/getting-started/features/">Features overview</a></li>
-      <li><a href="v3/getting-started/quick-start/">Quick Start</a></li>
-    </ul>
+  </div>
+</div>
 
-    <p>Or use the menu to navigate to the section you're interested in.</p>
-  </div></div></div>
-</div></div></div></div>
+<div class="row">
+  <div class="col-xs-12">
+    <a class="btn btn-lg btn-primary" href="v3/features/application/">Learn more</a>
+  </div>
+</div>
+
+<div class="row">
+  <h2>Learn more</h2>
+
+  <ul>
+    <li><a href="v3/getting-started/features/">Features overview</a></li>
+    <li><a href="v3/getting-started/quick-start/">Quick Start</a></li>
+  </ul>
+
+  <p>Or use the sidebar menu to navigate to the section you're interested in.</p>
+</div>

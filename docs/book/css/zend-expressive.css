@@ -7,24 +7,17 @@
   height: 128px;
 }
 
-.install .panel {
-  background-color: #B3FFFF;
-}
-
-.install .panel-content {
-  padding-left: 1em;
-  padding-right: 1em;
-}
-
-.install + .panel {
-  background-color: #66FFCC;
-}
-
-.container.install h2 {
-  text-align: center;
-}
-
 .screenshot {
   margin-left: auto;
   margin-right: auto;
+}
+
+.jumbotron {
+  background-color: #018D74;
+  color: white;
+}
+
+.content .jumbotron h1 {
+  color: white;
+  border-bottom: 0;
 }
