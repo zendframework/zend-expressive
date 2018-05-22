@@ -11,1673 +11,1322 @@
 
     <title>Using FastRoute - Expressive</title>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="../../../../css/styles-288837cc22.css">
+    <link rel="stylesheet" href="../../../../css/styles-e3f3751b65.css">
         <link href="../../../../css/zend-expressive.css" rel="stylesheet">
+</head>
+<body id="page-top">
 
     
-</head>
-
-<body>
-
-    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="navbar navbar-default" role="navigation">
     <div class="container">
-
-        <!-- Collapsed navigation -->
         <div class="navbar-header">
+
             
-            <!-- Expander button -->
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            
 
-            <!-- Main title -->
+            
             <span class="navbar-brand">
-                <a class="logo-link" href="https://framework.zend.com/" data-toggle="tooltip" data-placement="bottom" title="Go to the ZF homepage"><img src="../../../../img/zf-logo-mark.svg" height="28" alt="Zend Framework" /></a>
-                <a href="../../../..">Expressive</a>
+                <a class="logo-link" href="https://framework.zend.com/" data-tooltip data-placement="bottom" title="Go to the ZF homepage">
+                    <img src="../../../../img/zend-framework-logo.svg" height="28" alt="Zend Framework">
+                </a>
             </span>
         </div>
 
-        <!-- Expanded navigation -->
         <div class="navbar-collapse collapse">
-            
-                <!-- Main navigation -->
-                <ul class="nav navbar-nav">
-                
-                
-                
-                    <li >
-                        <a href="../../../..">Home</a>
-                    </li>
-                
-                
-                
-                
-                
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Getting Started <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                        
-                            
-
-<li >
-    <a href="../../../getting-started/features/">Overview and Features</a>
-</li>
-
-
-                        
-                            
-
-<li >
-    <a href="../../../getting-started/quick-start/">Quick Start</a>
-</li>
-
-
-                        
-                        </ul>
-                    </li>
-                
-                
-                
-                
-                
-                    <li class="dropdown active">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Features <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                        
-                            
-
-<li >
-    <a href="../../middleware-types/">Middleware Types</a>
-</li>
-
-
-                        
-                            
-
-<li >
-    <a href="../../application/">Applications</a>
-</li>
-
-
-                        
-                            
-
-  <li class="dropdown-submenu">
-    <a tabindex="-1" href="">Containers</a>
-    <ul class="dropdown-menu">
-        
-            
-
-<li >
-    <a href="../../container/intro/">Introduction</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../container/factories/">Container Factories</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../container/delegator-factories/">Delegator Factories</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../container/middleware-container/">The Middleware Container</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../container/middleware-factory/">The Middleware Factory</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../container/zend-servicemanager/">Using zend-servicemanager</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../container/pimple/">Using Pimple</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../container/aura-di/">Using Aura.Di</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../container/config/">Container configuration</a>
-</li>
-
-
-        
-    </ul>
-  </li>
-
-
-                        
-                            
-
-  <li class="dropdown-submenu">
-    <a tabindex="-1" href="">Routing Adapters</a>
-    <ul class="dropdown-menu">
-        
-            
-
-<li >
-    <a href="../intro/">Introduction</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../interface/">Routing Interface</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../route-collector/">The Route Collector</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../uri-generation/">URI Generation</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../piping/">Routing vs Piping</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../aura/">Using Aura</a>
-</li>
-
-
-        
-            
-
-<li class="active">
-    <a href="./">Using FastRoute</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../zf2/">Using zend-router</a>
-</li>
-
-
-        
-    </ul>
-  </li>
-
-
-                        
-                            
-
-  <li class="dropdown-submenu">
-    <a tabindex="-1" href="">Templating</a>
-    <ul class="dropdown-menu">
-        
-            
-
-<li >
-    <a href="../../template/intro/">Introduction</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../template/interface/">Template Renderer Interface</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../template/request-handlers/">Templated Request Handlers</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../template/plates/">Using Plates</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../template/twig/">Using Twig</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../template/zend-view/">Using zend-view</a>
-</li>
-
-
-        
-    </ul>
-  </li>
-
-
-                        
-                            
-
-<li >
-    <a href="../../error-handling/">Error Handling</a>
-</li>
-
-
-                        
-                            
-
-<li >
-    <a href="../../modular-applications/">Modular Applications</a>
-</li>
-
-
-                        
-                            
-
-  <li class="dropdown-submenu">
-    <a tabindex="-1" href="">Middleware</a>
-    <ul class="dropdown-menu">
-        
-            
-
-<li >
-    <a href="../../middleware/routing-and-dispatch-middleware/">Routing and Dispatch Middleware</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../middleware/implicit-methods-middleware/">Implicit HEAD and OPTIONS Middleware</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../middleware/method-not-allowed-middleware/">Returning Method Not Allowed</a>
-</li>
-
-
-        
-    </ul>
-  </li>
-
-
-                        
-                            
-
-  <li class="dropdown-submenu">
-    <a tabindex="-1" href="">Helpers</a>
-    <ul class="dropdown-menu">
-        
-            
-
-<li >
-    <a href="../../helpers/intro/">Introduction</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../helpers/url-helper/">UrlHelper</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../helpers/server-url-helper/">ServerUrlHelper</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../helpers/body-parse/">Body Parsing Middleware</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../helpers/content-length/">Content-Length Middleware</a>
-</li>
-
-
-        
-    </ul>
-  </li>
-
-
-                        
-                            
-
-<li >
-    <a href="../../emitters/">Emitters</a>
-</li>
-
-
-                        
-                        </ul>
-                    </li>
-                
-                
-                
-                
-                
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cookbook <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                        
-                            
-
-<li >
-    <a href="../../../cookbook/autowiring-routes-and-pipelines/">Autowiring routes and pipeline middleware</a>
-</li>
-
-
-                        
-                            
-
-<li >
-    <a href="../../../cookbook/using-a-base-path/">Using Expressive from a subdirectory</a>
-</li>
-
-
-                        
-                            
-
-<li >
-    <a href="../../../cookbook/common-prefix-for-routes/">Prepending a common path to all routes</a>
-</li>
-
-
-                        
-                            
-
-<li >
-    <a href="../../../cookbook/passing-data-between-middleware/">Passing data between middleware</a>
-</li>
-
-
-                        
-                            
-
-<li >
-    <a href="../../../cookbook/access-common-data-in-templates/">Provide Access to Common Data In Templates</a>
-</li>
-
-
-                        
-                            
-
-<li >
-    <a href="../../../cookbook/route-specific-pipeline/">Route-specific middleware pipelines</a>
-</li>
-
-
-                        
-                            
-
-<li >
-    <a href="../../../cookbook/host-segregated-middleware/">Segregating middleware by host</a>
-</li>
-
-
-                        
-                            
-
-<li >
-    <a href="../../../cookbook/double-pass-middleware/">Using double-pass middleware</a>
-</li>
-
-
-                        
-                            
-
-<li >
-    <a href="../../../cookbook/setting-locale-depending-routing-parameter/">Setting a locale based on a routing parameter</a>
-</li>
-
-
-                        
-                            
-
-<li >
-    <a href="../../../cookbook/setting-locale-without-routing-parameter/">Setting a locale without a routing parameter</a>
-</li>
-
-
-                        
-                            
-
-<li >
-    <a href="../../../cookbook/debug-toolbars/">Enabling debug toolbars</a>
-</li>
-
-
-                        
-                            
-
-<li >
-    <a href="../../../cookbook/flash-messengers/">Flash Messengers</a>
-</li>
-
-
-                        
-                            
-
-<li >
-    <a href="../../../cookbook/using-custom-view-helpers/">Registering custom view helpers when using zend-view</a>
-</li>
-
-
-                        
-                            
-
-<li >
-    <a href="../../../cookbook/using-zend-form-view-helpers/">Using zend-form view helpers</a>
-</li>
-
-
-                        
-                        </ul>
-                    </li>
-                
-                
-                
-                
-                
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reference <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                        
-                            
-
-<li >
-    <a href="../../../why-expressive/">Why choose Expressive?</a>
-</li>
-
-
-                        
-                            
-
-<li >
-    <a href="../../../reference/cli-tooling/">CLI Tooling</a>
-</li>
-
-
-                        
-                            
-
-<li >
-    <a href="../../../reference/expressive-projects/">Expressive Projects</a>
-</li>
-
-
-                        
-                            
-
-<li >
-    <a href="../../../reference/migration/">Migration</a>
-</li>
-
-
-                        
-                        </ul>
-                    </li>
-                
-                
-                
-                
-                
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">v2 <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                        
-                            
-
-<li >
-    <a href="../../../../v2/">Home</a>
-</li>
-
-
-                        
-                            
-
-  <li class="dropdown-submenu">
-    <a tabindex="-1" href="">Getting Started</a>
-    <ul class="dropdown-menu">
-        
-            
-
-<li >
-    <a href="../../../../v2/getting-started/features/">Overview and Features</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/getting-started/standalone/">Quick Start: Standalone</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/getting-started/skeleton/">Quick Start: Skeleton Installer</a>
-</li>
-
-
-        
-    </ul>
-  </li>
-
-
-                        
-                            
-
-  <li class="dropdown-submenu">
-    <a tabindex="-1" href="">Features</a>
-    <ul class="dropdown-menu">
-        
-            
-
-<li >
-    <a href="../../../../v2/features/middleware-types/">Middleware Types</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/features/application/">Applications</a>
-</li>
-
-
-        
-            
-
-  <li class="dropdown-submenu">
-    <a tabindex="-1" href="">Containers</a>
-    <ul class="dropdown-menu">
-        
-            
-
-<li >
-    <a href="../../../../v2/features/container/intro/">Introduction</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/features/container/factories/">Container Factories</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/features/container/delegator-factories/">Delegator Factories</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/features/container/zend-servicemanager/">Using zend-servicemanager</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/features/container/pimple/">Using Pimple</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/features/container/aura-di/">Using Aura.Di</a>
-</li>
-
-
-        
-    </ul>
-  </li>
-
-
-        
-            
-
-  <li class="dropdown-submenu">
-    <a tabindex="-1" href="">Routing Adapters</a>
-    <ul class="dropdown-menu">
-        
-            
-
-<li >
-    <a href="../../../../v2/features/router/intro/">Introduction</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/features/router/interface/">Routing Interface</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/features/router/uri-generation/">URI Generation</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/features/router/piping/">Routing vs Piping</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/features/router/aura/">Using Aura</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/features/router/fast-route/">Using FastRoute</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/features/router/zf2/">Using the ZF2 Router</a>
-</li>
-
-
-        
-    </ul>
-  </li>
-
-
-        
-            
-
-  <li class="dropdown-submenu">
-    <a tabindex="-1" href="">Templating</a>
-    <ul class="dropdown-menu">
-        
-            
-
-<li >
-    <a href="../../../../v2/features/template/intro/">Introduction</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/features/template/interface/">Template Renderer Interface</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/features/template/middleware/">Templated Middleware</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/features/template/plates/">Using Plates</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/features/template/twig/">Using Twig</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/features/template/zend-view/">Using zend-view</a>
-</li>
-
-
-        
-    </ul>
-  </li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/features/error-handling/">Error Handling</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/features/modular-applications/">Modular Applications</a>
-</li>
-
-
-        
-            
-
-  <li class="dropdown-submenu">
-    <a tabindex="-1" href="">Middleware</a>
-    <ul class="dropdown-menu">
-        
-            
-
-<li >
-    <a href="../../../../v2/features/middleware/implicit-methods-middleware/">Implicit HEAD and OPTIONS Middleware</a>
-</li>
-
-
-        
-    </ul>
-  </li>
-
-
-        
-            
-
-  <li class="dropdown-submenu">
-    <a tabindex="-1" href="">Helpers</a>
-    <ul class="dropdown-menu">
-        
-            
-
-<li >
-    <a href="../../../../v2/features/helpers/intro/">Introduction</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/features/helpers/url-helper/">UrlHelper</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/features/helpers/server-url-helper/">ServerUrlHelper</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/features/helpers/body-parse/">Body Parsing Middleware</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/features/helpers/content-length/">Content-Length Middleware</a>
-</li>
-
-
-        
-    </ul>
-  </li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/features/emitters/">Emitters</a>
-</li>
-
-
-        
-    </ul>
-  </li>
-
-
-                        
-                            
-
-  <li class="dropdown-submenu">
-    <a tabindex="-1" href="">Cookbook</a>
-    <ul class="dropdown-menu">
-        
-            
-
-<li >
-    <a href="../../../../v2/cookbook/autowiring-routes-and-pipelines/">Autowiring routes and pipeline middleware</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/cookbook/common-prefix-for-routes/">Prepending a common path to all routes</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/cookbook/route-specific-pipeline/">Route-specific middleware pipelines</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/cookbook/using-custom-view-helpers/">Registering custom view helpers when using zend-view</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/cookbook/using-zend-form-view-helpers/">Using zend-form view helpers</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/cookbook/using-a-base-path/">Using Expressive from a subdirectory</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/cookbook/setting-locale-depending-routing-parameter/">Setting a locale based on a routing parameter</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/cookbook/setting-locale-without-routing-parameter/">Setting a locale without a routing parameter</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/cookbook/debug-toolbars/">Enabling debug toolbars</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/cookbook/using-routed-middleware-class-as-controller/">Handling multiple routes in a single class</a>
-</li>
-
 
-        
             
-
-<li >
-    <a href="../../../../v2/cookbook/flash-messengers/">Flash Messengers</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/cookbook/passing-data-between-middleware/">Passing data between middleware</a>
-</li>
-
-
-        
-    </ul>
-  </li>
-
-
-                        
-                            
-
-  <li class="dropdown-submenu">
-    <a tabindex="-1" href="">Reference</a>
-    <ul class="dropdown-menu">
-        
-            
-
-<li >
-    <a href="../../../../v2/why-expressive/">Why choose Expressive?</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/reference/cli-tooling/">CLI Tooling</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/reference/usage-examples/">Examples</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/reference/expressive-projects/">Expressive Projects</a>
-</li>
-
-
-        
-            
-
-  <li class="dropdown-submenu">
-    <a tabindex="-1" href="">Migration</a>
-    <ul class="dropdown-menu">
-        
-            
-
-<li >
-    <a href="../../../../v2/reference/migration/">To version 2</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v2/reference/migration-to-v2-2/">To version 2.2</a>
-</li>
-
-
-        
-    </ul>
-  </li>
-
-
-        
-    </ul>
-  </li>
-
-
-                        
-                        </ul>
-                    </li>
-                
-                
-                
-                
-                
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">v1 <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                        
-                            
-
-<li >
-    <a href="../../../../v1/">Home</a>
-</li>
-
-
-                        
-                            
-
-  <li class="dropdown-submenu">
-    <a tabindex="-1" href="">Getting Started</a>
-    <ul class="dropdown-menu">
-        
-            
-
-<li >
-    <a href="../../../../v1/getting-started/features/">Overview and Features</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/getting-started/standalone/">Quick Start: Standalone</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/getting-started/skeleton/">Quick Start: Skeleton Installer</a>
-</li>
-
-
-        
-    </ul>
-  </li>
-
-
-                        
-                            
-
-  <li class="dropdown-submenu">
-    <a tabindex="-1" href="">Features</a>
-    <ul class="dropdown-menu">
-        
-            
-
-<li >
-    <a href="../../../../v1/features/application/">Applications</a>
-</li>
-
-
-        
-            
-
-  <li class="dropdown-submenu">
-    <a tabindex="-1" href="">Containers</a>
-    <ul class="dropdown-menu">
-        
-            
-
-<li >
-    <a href="../../../../v1/features/container/intro/">Introduction</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/features/container/factories/">Container Factories</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/features/container/zend-servicemanager/">Using zend-servicemanager</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/features/container/pimple/">Using Pimple</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/features/container/aura-di/">Using Aura.Di</a>
-</li>
-
-
-        
-    </ul>
-  </li>
-
-
-        
-            
-
-  <li class="dropdown-submenu">
-    <a tabindex="-1" href="">Routing Adapters</a>
-    <ul class="dropdown-menu">
-        
-            
-
-<li >
-    <a href="../../../../v1/features/router/intro/">Introduction</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/features/router/interface/">Routing Interface</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/features/router/uri-generation/">URI Generation</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/features/router/piping/">Routing vs Piping</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/features/router/aura/">Using Aura</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/features/router/fast-route/">Using FastRoute</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/features/router/zf2/">Using the ZF2 Router</a>
-</li>
-
-
-        
-    </ul>
-  </li>
-
-
-        
-            
-
-  <li class="dropdown-submenu">
-    <a tabindex="-1" href="">Templating</a>
-    <ul class="dropdown-menu">
-        
-            
-
-<li >
-    <a href="../../../../v1/features/template/intro/">Introduction</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/features/template/interface/">Template Renderer Interface</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/features/template/middleware/">Templated Middleware</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/features/template/plates/">Using Plates</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/features/template/twig/">Using Twig</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/features/template/zend-view/">Using zend-view</a>
-</li>
-
-
-        
-    </ul>
-  </li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/features/error-handling/">Error Handling</a>
-</li>
-
-
-        
-            
-
-  <li class="dropdown-submenu">
-    <a tabindex="-1" href="">Helpers</a>
-    <ul class="dropdown-menu">
-        
-            
-
-<li >
-    <a href="../../../../v1/features/helpers/intro/">Introduction</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/features/helpers/url-helper/">UrlHelper</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/features/helpers/server-url-helper/">ServerUrlHelper</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/features/helpers/body-parse/">Body Parsing Middleware</a>
-</li>
-
-
-        
-    </ul>
-  </li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/features/emitters/">Emitters</a>
-</li>
-
-
-        
-    </ul>
-  </li>
-
-
-                        
-                            
-
-  <li class="dropdown-submenu">
-    <a tabindex="-1" href="">Cookbook</a>
-    <ul class="dropdown-menu">
-        
-            
-
-<li >
-    <a href="../../../../v1/cookbook/common-prefix-for-routes/">Prepending a common path to all routes</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/cookbook/route-specific-pipeline/">Route-specific middleware pipelines</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/cookbook/custom-404-page-handling/">Setting custom 404 page handling</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/cookbook/using-custom-view-helpers/">Registering custom view helpers when using zend-view</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/cookbook/using-zend-form-view-helpers/">Using zend-form view helpers</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/cookbook/using-a-base-path/">Using Expressive from a subdirectory</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/cookbook/modular-layout/">Building modular applications</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/cookbook/setting-locale-depending-routing-parameter/">Setting a locale based on a routing parameter</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/cookbook/setting-locale-without-routing-parameter/">Setting a locale without a routing parameter</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/cookbook/debug-toolbars/">Enabling debug toolbars</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/cookbook/using-routed-middleware-class-as-controller/">Handling multiple routes in a single class</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/cookbook/flash-messengers/">Flash Messengers</a>
-</li>
-
-
-        
-    </ul>
-  </li>
-
-
-                        
-                            
-
-  <li class="dropdown-submenu">
-    <a tabindex="-1" href="">Reference</a>
-    <ul class="dropdown-menu">
-        
-            
-
-<li >
-    <a href="../../../../v1/why-expressive/">Why choose Expressive?</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/reference/usage-examples/">Examples</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/reference/expressive-projects/">Expressive Projects</a>
-</li>
-
-
-        
-            
-
-  <li class="dropdown-submenu">
-    <a tabindex="-1" href="">Migration</a>
-    <ul class="dropdown-menu">
-        
-            
-
-<li >
-    <a href="../../../../v1/reference/migration/rc-to-v1/">From RC5 and Earlier</a>
-</li>
-
-
-        
-            
-
-<li >
-    <a href="../../../../v1/reference/migration/to-v1-1/">To Expressive 1.1</a>
-</li>
-
-
-        
-    </ul>
-  </li>
-
-
-        
-    </ul>
-  </li>
-
-
-                        
-                        </ul>
-                    </li>
-                
-                
-                
-                
-                
-                </ul>
-            
-
             <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <a href="#" class="component-toggle" data-toggle="tooltip" data-placement="bottom" title="Show component list">
-                        <i class="fa fa-book"></i> Components
-                    </a>
+                    <a href="https://framework.zend.com/about">About</a>
                 </li>
-
                 <li>
-                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
-                        <i class="fa fa-search"></i> Search
-                    </a>
+                    <a href="https://framework.zend.com/downloads">Install</a>
                 </li>
-                
-                    <li>
-                        <a href="https://github.com/zendframework/zend-expressive/">
-                            
-                                <i class="fa fa-github"></i>
-                            
-                            GitHub
-                        </a>
-                    </li>
-                
+                <li class="active">
+                    <a href="https://docs.zendframework.com">Documentation</a>
+                </li>
+                <li>
+                    <a href="https://www.zend.com/en/services/training">Training</a>
+                </li>
+                <li>
+                    <a href="https://framework.zend.com/blog">Blog</a>
+                </li>
+                <li>
+                    <a href="https://framework.zend.com/participate">Participate</a>
+                </li>
             </ul>
+
+            
+            
+                <div class="nav navbar-nav navbar-collapse visible-xs-block ">
+                    <div class="subnavigation hidden-print">
+    <h4 class="subnavigation__title">
+        <a href="../../../..">Expressive</a>
+    </h4>
+
+    <h5 class="subnavigation__subtitle">Table of Contents</h5>
+
+    <ul class="subnavigation__list">
+        
+            
+                <li class="subnavigation__list-item">
+                    <span class="subnavigation__headline">Getting Started</span>
+                    <ul class="subnavigation__list">
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../getting-started/features/" class="subnavigation__link">Overview and Features</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../getting-started/quick-start/" class="subnavigation__link">Quick Start</a>
+    </li>
+
+                        
+                    </ul>
+                </li>
+            
+        
+            
+                <li class="subnavigation__list-item">
+                    <span class="subnavigation__headline">Features</span>
+                    <ul class="subnavigation__list">
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../middleware-types/" class="subnavigation__link">Middleware Types</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../application/" class="subnavigation__link">Applications</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Containers</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../container/intro/" class="subnavigation__link">Introduction</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../container/factories/" class="subnavigation__link">Container Factories</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../container/delegator-factories/" class="subnavigation__link">Delegator Factories</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../container/middleware-container/" class="subnavigation__link">The Middleware Container</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../container/middleware-factory/" class="subnavigation__link">The Middleware Factory</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../container/zend-servicemanager/" class="subnavigation__link">Using zend-servicemanager</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../container/pimple/" class="subnavigation__link">Using Pimple</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../container/aura-di/" class="subnavigation__link">Using Aura.Di</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../container/config/" class="subnavigation__link">Container configuration</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Routing Adapters</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../intro/" class="subnavigation__link">Introduction</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../interface/" class="subnavigation__link">Routing Interface</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../route-collector/" class="subnavigation__link">The Route Collector</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../uri-generation/" class="subnavigation__link">URI Generation</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../piping/" class="subnavigation__link">Routing vs Piping</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../aura/" class="subnavigation__link">Using Aura</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item subnavigation__list-item--active">
+        <a href="./" class="subnavigation__link">Using FastRoute</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../zf2/" class="subnavigation__link">Using zend-router</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Templating</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../template/intro/" class="subnavigation__link">Introduction</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../template/interface/" class="subnavigation__link">Template Renderer Interface</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../template/request-handlers/" class="subnavigation__link">Templated Request Handlers</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../template/plates/" class="subnavigation__link">Using Plates</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../template/twig/" class="subnavigation__link">Using Twig</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../template/zend-view/" class="subnavigation__link">Using zend-view</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../error-handling/" class="subnavigation__link">Error Handling</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../modular-applications/" class="subnavigation__link">Modular Applications</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Middleware</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../middleware/routing-and-dispatch-middleware/" class="subnavigation__link">Routing and Dispatch Middleware</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../middleware/implicit-methods-middleware/" class="subnavigation__link">Implicit HEAD and OPTIONS Middleware</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../middleware/method-not-allowed-middleware/" class="subnavigation__link">Returning Method Not Allowed</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Helpers</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../helpers/intro/" class="subnavigation__link">Introduction</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../helpers/url-helper/" class="subnavigation__link">UrlHelper</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../helpers/server-url-helper/" class="subnavigation__link">ServerUrlHelper</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../helpers/body-parse/" class="subnavigation__link">Body Parsing Middleware</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../helpers/content-length/" class="subnavigation__link">Content-Length Middleware</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../emitters/" class="subnavigation__link">Emitters</a>
+    </li>
+
+                        
+                    </ul>
+                </li>
+            
+        
+            
+                <li class="subnavigation__list-item">
+                    <span class="subnavigation__headline">Cookbook</span>
+                    <ul class="subnavigation__list">
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../cookbook/autowiring-routes-and-pipelines/" class="subnavigation__link">Autowiring routes and pipeline middleware</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../cookbook/using-a-base-path/" class="subnavigation__link">Using Expressive from a subdirectory</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../cookbook/common-prefix-for-routes/" class="subnavigation__link">Prepending a common path to all routes</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../cookbook/passing-data-between-middleware/" class="subnavigation__link">Passing data between middleware</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../cookbook/access-common-data-in-templates/" class="subnavigation__link">Provide Access to Common Data In Templates</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../cookbook/route-specific-pipeline/" class="subnavigation__link">Route-specific middleware pipelines</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../cookbook/host-segregated-middleware/" class="subnavigation__link">Segregating middleware by host</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../cookbook/double-pass-middleware/" class="subnavigation__link">Using double-pass middleware</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../cookbook/setting-locale-depending-routing-parameter/" class="subnavigation__link">Setting a locale based on a routing parameter</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../cookbook/setting-locale-without-routing-parameter/" class="subnavigation__link">Setting a locale without a routing parameter</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../cookbook/debug-toolbars/" class="subnavigation__link">Enabling debug toolbars</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../cookbook/flash-messengers/" class="subnavigation__link">Flash Messengers</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../cookbook/using-custom-view-helpers/" class="subnavigation__link">Registering custom view helpers when using zend-view</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../cookbook/using-zend-form-view-helpers/" class="subnavigation__link">Using zend-form view helpers</a>
+    </li>
+
+                        
+                    </ul>
+                </li>
+            
+        
+            
+                <li class="subnavigation__list-item">
+                    <span class="subnavigation__headline">Reference</span>
+                    <ul class="subnavigation__list">
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../why-expressive/" class="subnavigation__link">Why choose Expressive?</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../reference/cli-tooling/" class="subnavigation__link">CLI Tooling</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../reference/expressive-projects/" class="subnavigation__link">Expressive Projects</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../reference/migration/" class="subnavigation__link">Migration</a>
+    </li>
+
+                        
+                    </ul>
+                </li>
+            
+        
+            
+                <li class="subnavigation__list-item">
+                    <span class="subnavigation__headline">v2</span>
+                    <ul class="subnavigation__list">
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/" class="subnavigation__link">Home</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Getting Started</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/getting-started/features/" class="subnavigation__link">Overview and Features</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/getting-started/standalone/" class="subnavigation__link">Quick Start: Standalone</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/getting-started/skeleton/" class="subnavigation__link">Quick Start: Skeleton Installer</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Features</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/middleware-types/" class="subnavigation__link">Middleware Types</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/application/" class="subnavigation__link">Applications</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Containers</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/container/intro/" class="subnavigation__link">Introduction</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/container/factories/" class="subnavigation__link">Container Factories</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/container/delegator-factories/" class="subnavigation__link">Delegator Factories</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/container/zend-servicemanager/" class="subnavigation__link">Using zend-servicemanager</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/container/pimple/" class="subnavigation__link">Using Pimple</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/container/aura-di/" class="subnavigation__link">Using Aura.Di</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Routing Adapters</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/router/intro/" class="subnavigation__link">Introduction</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/router/interface/" class="subnavigation__link">Routing Interface</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/router/uri-generation/" class="subnavigation__link">URI Generation</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/router/piping/" class="subnavigation__link">Routing vs Piping</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/router/aura/" class="subnavigation__link">Using Aura</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/router/fast-route/" class="subnavigation__link">Using FastRoute</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/router/zf2/" class="subnavigation__link">Using the ZF2 Router</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Templating</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/template/intro/" class="subnavigation__link">Introduction</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/template/interface/" class="subnavigation__link">Template Renderer Interface</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/template/middleware/" class="subnavigation__link">Templated Middleware</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/template/plates/" class="subnavigation__link">Using Plates</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/template/twig/" class="subnavigation__link">Using Twig</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/template/zend-view/" class="subnavigation__link">Using zend-view</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/error-handling/" class="subnavigation__link">Error Handling</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/modular-applications/" class="subnavigation__link">Modular Applications</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Middleware</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/middleware/implicit-methods-middleware/" class="subnavigation__link">Implicit HEAD and OPTIONS Middleware</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Helpers</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/helpers/intro/" class="subnavigation__link">Introduction</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/helpers/url-helper/" class="subnavigation__link">UrlHelper</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/helpers/server-url-helper/" class="subnavigation__link">ServerUrlHelper</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/helpers/body-parse/" class="subnavigation__link">Body Parsing Middleware</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/helpers/content-length/" class="subnavigation__link">Content-Length Middleware</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/emitters/" class="subnavigation__link">Emitters</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Cookbook</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/cookbook/autowiring-routes-and-pipelines/" class="subnavigation__link">Autowiring routes and pipeline middleware</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/cookbook/common-prefix-for-routes/" class="subnavigation__link">Prepending a common path to all routes</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/cookbook/route-specific-pipeline/" class="subnavigation__link">Route-specific middleware pipelines</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/cookbook/using-custom-view-helpers/" class="subnavigation__link">Registering custom view helpers when using zend-view</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/cookbook/using-zend-form-view-helpers/" class="subnavigation__link">Using zend-form view helpers</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/cookbook/using-a-base-path/" class="subnavigation__link">Using Expressive from a subdirectory</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/cookbook/setting-locale-depending-routing-parameter/" class="subnavigation__link">Setting a locale based on a routing parameter</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/cookbook/setting-locale-without-routing-parameter/" class="subnavigation__link">Setting a locale without a routing parameter</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/cookbook/debug-toolbars/" class="subnavigation__link">Enabling debug toolbars</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/cookbook/using-routed-middleware-class-as-controller/" class="subnavigation__link">Handling multiple routes in a single class</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/cookbook/flash-messengers/" class="subnavigation__link">Flash Messengers</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/cookbook/passing-data-between-middleware/" class="subnavigation__link">Passing data between middleware</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Reference</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/why-expressive/" class="subnavigation__link">Why choose Expressive?</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/reference/cli-tooling/" class="subnavigation__link">CLI Tooling</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/reference/usage-examples/" class="subnavigation__link">Examples</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/reference/expressive-projects/" class="subnavigation__link">Expressive Projects</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Migration</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/reference/migration/" class="subnavigation__link">To version 2</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/reference/migration-to-v2-2/" class="subnavigation__link">To version 2.2</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+            
+        </ul>
+    </li>
+
+                        
+                    </ul>
+                </li>
+            
+        
+            
+                <li class="subnavigation__list-item">
+                    <span class="subnavigation__headline">v1</span>
+                    <ul class="subnavigation__list">
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/" class="subnavigation__link">Home</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Getting Started</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/getting-started/features/" class="subnavigation__link">Overview and Features</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/getting-started/standalone/" class="subnavigation__link">Quick Start: Standalone</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/getting-started/skeleton/" class="subnavigation__link">Quick Start: Skeleton Installer</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Features</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/application/" class="subnavigation__link">Applications</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Containers</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/container/intro/" class="subnavigation__link">Introduction</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/container/factories/" class="subnavigation__link">Container Factories</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/container/zend-servicemanager/" class="subnavigation__link">Using zend-servicemanager</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/container/pimple/" class="subnavigation__link">Using Pimple</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/container/aura-di/" class="subnavigation__link">Using Aura.Di</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Routing Adapters</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/router/intro/" class="subnavigation__link">Introduction</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/router/interface/" class="subnavigation__link">Routing Interface</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/router/uri-generation/" class="subnavigation__link">URI Generation</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/router/piping/" class="subnavigation__link">Routing vs Piping</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/router/aura/" class="subnavigation__link">Using Aura</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/router/fast-route/" class="subnavigation__link">Using FastRoute</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/router/zf2/" class="subnavigation__link">Using the ZF2 Router</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Templating</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/template/intro/" class="subnavigation__link">Introduction</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/template/interface/" class="subnavigation__link">Template Renderer Interface</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/template/middleware/" class="subnavigation__link">Templated Middleware</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/template/plates/" class="subnavigation__link">Using Plates</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/template/twig/" class="subnavigation__link">Using Twig</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/template/zend-view/" class="subnavigation__link">Using zend-view</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/error-handling/" class="subnavigation__link">Error Handling</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Helpers</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/helpers/intro/" class="subnavigation__link">Introduction</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/helpers/url-helper/" class="subnavigation__link">UrlHelper</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/helpers/server-url-helper/" class="subnavigation__link">ServerUrlHelper</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/helpers/body-parse/" class="subnavigation__link">Body Parsing Middleware</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/emitters/" class="subnavigation__link">Emitters</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Cookbook</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/cookbook/common-prefix-for-routes/" class="subnavigation__link">Prepending a common path to all routes</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/cookbook/route-specific-pipeline/" class="subnavigation__link">Route-specific middleware pipelines</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/cookbook/custom-404-page-handling/" class="subnavigation__link">Setting custom 404 page handling</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/cookbook/using-custom-view-helpers/" class="subnavigation__link">Registering custom view helpers when using zend-view</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/cookbook/using-zend-form-view-helpers/" class="subnavigation__link">Using zend-form view helpers</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/cookbook/using-a-base-path/" class="subnavigation__link">Using Expressive from a subdirectory</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/cookbook/modular-layout/" class="subnavigation__link">Building modular applications</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/cookbook/setting-locale-depending-routing-parameter/" class="subnavigation__link">Setting a locale based on a routing parameter</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/cookbook/setting-locale-without-routing-parameter/" class="subnavigation__link">Setting a locale without a routing parameter</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/cookbook/debug-toolbars/" class="subnavigation__link">Enabling debug toolbars</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/cookbook/using-routed-middleware-class-as-controller/" class="subnavigation__link">Handling multiple routes in a single class</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/cookbook/flash-messengers/" class="subnavigation__link">Flash Messengers</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Reference</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/why-expressive/" class="subnavigation__link">Why choose Expressive?</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/reference/usage-examples/" class="subnavigation__link">Examples</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/reference/expressive-projects/" class="subnavigation__link">Expressive Projects</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Migration</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/reference/migration/rc-to-v1/" class="subnavigation__link">From RC5 and Earlier</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/reference/migration/to-v1-1/" class="subnavigation__link">To Expressive 1.1</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+            
+        </ul>
+    </li>
+
+                        
+                    </ul>
+                </li>
+            
+        
+    </ul>
+</div>
+                </div>
+            
+
+            
+            <div class="nav navbar-nav navbar-collapse visible-xs-block">
+                <div class="component-selector">
+    <h4 class="component-selector__title">Components</h4>
+    <h5 class="component-selector__subtitle">Find documentation…</h5>
+    <select class="form-control component-selector__control">
+        <option value="/">Overview</option>
+        <optgroup label="Components"></optgroup>
+    </select>
+</div>
+            </div>
         </div>
     </div>
 </div>
 
-    <!-- content:begin -->
-    <div id="page-top" class="container docs">
-        
-        <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
-    <ul class="nav bs-sidenav">
     
-        <li class="main active"><a href="#using-fastroute">Using FastRoute</a></li>
-        
-            <li><a href="#installing-fastroute">Installing FastRoute</a></li>
-        
-    
-    </ul>
+    <header class="header">
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="col-xs-8">
+                <h1 class="header__title">
+                    Documentation
+
+                    
+                        <small class="header__subtitle">Expressive</small>
+                    
+                </h1>
+            </div>
+
+            
+            <div class="col-xs-4 text-right">
+                
+                    <a href="#" class="header__link header__link--search" data-toggle="modal" data-target="#mkdocs_search_modal" title="Open search">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                    <a href="https://github.com/zendframework/zend-expressive/" class="header__link header__link--github" title="Go to repository of Expressive">
+                        <i class="fa fa-github"></i> GitHub
+                    </a>
+                
+            </div>
+        </div>
+    </div>
+</header>
 
     
-    <ul class="pager hidden-print">
-      <li class="previous">
-        <a rel="prev" href="../aura/"><i class="fa fa-arrow-left"></i> Previous</a>
-      </li>
-      <li class="next">
-        <a rel="next" href="../zf2/">Next <i class="fa fa-arrow-right"></i></a>
-      </li>
-    </ul>
-    
-</div></div>
-        <div class="col-md-9" role="main">
-
-<ol class="breadcrumb" role="navigation" aria-label="breadcrumbs navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-9 col-xs-12 content" role="main">
+            <!-- content:begin -->
+                
+                    <ol class="breadcrumb" role="navigation" aria-label="breadcrumbs navigation">
+  <li><a href="https://framework.zend.com/">Home</a></li>
+  <li><a href="https://docs.zendframework.com/">Docs</a></li>
   <li><a href="../../../..">Expressive</a></li>
   
     
@@ -1693,7 +1342,26 @@
   <li class="active">Using FastRoute</li>
 </ol>
 
-<h1 id="using-fastroute">Using FastRoute</h1>
+
+    
+    
+
+    
+    
+        <div class="toc">
+            <h6 class="toc__headline">In This Article</h6>
+            <ul class="toc__list">
+                
+                    <li class="toc__entry">
+                        <a href="#installing-fastroute" class="toc__link">Installing FastRoute</a>
+                    </li>
+                
+            </ul>
+        </div>
+    
+
+
+    <h1 id="using-fastroute">Using FastRoute</h1>
 <p><a href="https://github.com/nikic/FastRoute">FastRoute</a> provides a number of different
 combinations for how to both parse routes and match incoming requests against
 them.</p>
@@ -1879,76 +1547,1325 @@ return [
   cached configuration, you will need to purge this file in order to enable any
   newly added route when FastRoute caching is enabled.</p>
 
-<hr />
 
 
-<nav>
-  <ul class="pager hidden-print">
-    <li class="previous">
-      <a rel="prev" href="../aura/"><i class="fa fa-arrow-left"></i> Previous</a>
-    </li>
-    <li class="next">
-      <a rel="next" href="../zf2/">Next <i class="fa fa-arrow-right"></i></a>
-    </li>
-  </ul>
-</nav>
-</div>
+    <nav>
+    <ul class="page-nav hidden-print">
+
         
-    </div>
-    <!-- content:end -->
+        <li class="page-nav__item">
+            
+                <a rel="prev" class="page-nav__link page-nav__link--prev" href="../aura/">
+                    <i class="fa fa-chevron-left"></i> Previous
+                </a>
+            
+        </li>
 
-    <div id="footerwrap">
-    <div class="container">
-        <div class="row site-map">
-            <div class="col-lg-3">
-              <p>
-                <strong>Zend Framework</strong><br />
-                <a href="https://framework.zend.com/">framework.zend.com</a><br />
-                <a href="https://docs.zendframework.com">docs.zendframework.com</a><br />
-                <a href="https://packages.zendframework.com">packages.zendframework.com</a><br />
-                <a href="https://apigility.org">apigility.org</a><br />
-              </p>
-            </div>
-        </div>
+        
+        <li class="page-nav__item">
+            
+                <a rel="next" class="page-nav__link page-nav__link--next" href="../zf2/">
+                    Next <i class="fa fa-chevron-right"></i>
+                </a>
+            
+        </li>
+    </ul>
+</nav>
 
-        <div class="row">
-            <div class="col-lg-12 centered">
-                <a class="back-to-top" href="#page-top"><i class="fa fa-chevron-circle-up fa-4" aria-hidden="true"></i></a>
-            </div>
-        </div>
 
-        <div class="spacing"></div>
-
-        <div class="row">
-            <div class="col-lg-8">
-                <h4>Copyright</h4>
-                <div class="hline-w"></div>
-
-                <p>&copy; 2006-2017 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
-            </div>
-
-            <div class="col-lg-4">
-                <h4>Contacts</h4>
-                <div class="hline-w"></div>
-                <p>
-                    <a href="https://discourse.zendframework.com" class="btn-social btn-outline" alt="Forum" title="Forum"><i class="fa fa-comments"></i></a>
-                    <a href="https://zendframework-slack.herokuapp.com" class="btn-social btn-outline" alt="Slack" title="Slack"><i class="fa fa-slack"></i></a>
-                    <a href="https://github.com/zendframework" class="btn-social btn-outline" alt="Github" title="Github"><i class="fa fa-github"></i></a>
-                    <a href="https://twitter.com/zfdevteam" class="btn-social btn-outline" alt="Twitter" title="Twitter"><i class="fa fa-twitter"></i></a>
-                </p>
-            </div>
-        </div>
-    </div>
+<div class="help-wanted">
+    <p>
+        Found a mistake or want to contribute to the documentation?
+        <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v3/features/router/fast-route.md" target="_blank" class="help-wanted__link">
+            Edit this page on GitHub!
+        </a>
+    </p>
 </div>
+                
+            <!-- content:end -->
+            </div>
+            <div class="col-md-3 col-xs-12 sidebar">
+                
+                    <div class="component-selector">
+    <h4 class="component-selector__title">Components</h4>
+    <h5 class="component-selector__subtitle">Find documentation…</h5>
+    <select class="form-control component-selector__control">
+        <option value="/">Overview</option>
+        <optgroup label="Components"></optgroup>
+    </select>
+</div>
+                    <div class="subnavigation hidden-print">
+    <h4 class="subnavigation__title">
+        <a href="../../../..">Expressive</a>
+    </h4>
 
-    <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
-    <script>var base_url = '../../../..';</script>
-    <script src="../../../../js/scripts-0b6185f4a5.js"></script>
-    <script data-main="../../../../mkdocs/js/search.js" src="../../../../mkdocs/js/require.js"></script>
+    <h5 class="subnavigation__subtitle">Table of Contents</h5>
+
+    <ul class="subnavigation__list">
+        
+            
+                <li class="subnavigation__list-item">
+                    <span class="subnavigation__headline">Getting Started</span>
+                    <ul class="subnavigation__list">
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../getting-started/features/" class="subnavigation__link">Overview and Features</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../getting-started/quick-start/" class="subnavigation__link">Quick Start</a>
+    </li>
+
+                        
+                    </ul>
+                </li>
+            
+        
+            
+                <li class="subnavigation__list-item">
+                    <span class="subnavigation__headline">Features</span>
+                    <ul class="subnavigation__list">
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../middleware-types/" class="subnavigation__link">Middleware Types</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../application/" class="subnavigation__link">Applications</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Containers</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../container/intro/" class="subnavigation__link">Introduction</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../container/factories/" class="subnavigation__link">Container Factories</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../container/delegator-factories/" class="subnavigation__link">Delegator Factories</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../container/middleware-container/" class="subnavigation__link">The Middleware Container</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../container/middleware-factory/" class="subnavigation__link">The Middleware Factory</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../container/zend-servicemanager/" class="subnavigation__link">Using zend-servicemanager</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../container/pimple/" class="subnavigation__link">Using Pimple</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../container/aura-di/" class="subnavigation__link">Using Aura.Di</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../container/config/" class="subnavigation__link">Container configuration</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Routing Adapters</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../intro/" class="subnavigation__link">Introduction</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../interface/" class="subnavigation__link">Routing Interface</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../route-collector/" class="subnavigation__link">The Route Collector</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../uri-generation/" class="subnavigation__link">URI Generation</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../piping/" class="subnavigation__link">Routing vs Piping</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../aura/" class="subnavigation__link">Using Aura</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item subnavigation__list-item--active">
+        <a href="./" class="subnavigation__link">Using FastRoute</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../zf2/" class="subnavigation__link">Using zend-router</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Templating</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../template/intro/" class="subnavigation__link">Introduction</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../template/interface/" class="subnavigation__link">Template Renderer Interface</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../template/request-handlers/" class="subnavigation__link">Templated Request Handlers</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../template/plates/" class="subnavigation__link">Using Plates</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../template/twig/" class="subnavigation__link">Using Twig</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../template/zend-view/" class="subnavigation__link">Using zend-view</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../error-handling/" class="subnavigation__link">Error Handling</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../modular-applications/" class="subnavigation__link">Modular Applications</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Middleware</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../middleware/routing-and-dispatch-middleware/" class="subnavigation__link">Routing and Dispatch Middleware</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../middleware/implicit-methods-middleware/" class="subnavigation__link">Implicit HEAD and OPTIONS Middleware</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../middleware/method-not-allowed-middleware/" class="subnavigation__link">Returning Method Not Allowed</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Helpers</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../helpers/intro/" class="subnavigation__link">Introduction</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../helpers/url-helper/" class="subnavigation__link">UrlHelper</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../helpers/server-url-helper/" class="subnavigation__link">ServerUrlHelper</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../helpers/body-parse/" class="subnavigation__link">Body Parsing Middleware</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../helpers/content-length/" class="subnavigation__link">Content-Length Middleware</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../emitters/" class="subnavigation__link">Emitters</a>
+    </li>
+
+                        
+                    </ul>
+                </li>
+            
+        
+            
+                <li class="subnavigation__list-item">
+                    <span class="subnavigation__headline">Cookbook</span>
+                    <ul class="subnavigation__list">
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../cookbook/autowiring-routes-and-pipelines/" class="subnavigation__link">Autowiring routes and pipeline middleware</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../cookbook/using-a-base-path/" class="subnavigation__link">Using Expressive from a subdirectory</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../cookbook/common-prefix-for-routes/" class="subnavigation__link">Prepending a common path to all routes</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../cookbook/passing-data-between-middleware/" class="subnavigation__link">Passing data between middleware</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../cookbook/access-common-data-in-templates/" class="subnavigation__link">Provide Access to Common Data In Templates</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../cookbook/route-specific-pipeline/" class="subnavigation__link">Route-specific middleware pipelines</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../cookbook/host-segregated-middleware/" class="subnavigation__link">Segregating middleware by host</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../cookbook/double-pass-middleware/" class="subnavigation__link">Using double-pass middleware</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../cookbook/setting-locale-depending-routing-parameter/" class="subnavigation__link">Setting a locale based on a routing parameter</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../cookbook/setting-locale-without-routing-parameter/" class="subnavigation__link">Setting a locale without a routing parameter</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../cookbook/debug-toolbars/" class="subnavigation__link">Enabling debug toolbars</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../cookbook/flash-messengers/" class="subnavigation__link">Flash Messengers</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../cookbook/using-custom-view-helpers/" class="subnavigation__link">Registering custom view helpers when using zend-view</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../cookbook/using-zend-form-view-helpers/" class="subnavigation__link">Using zend-form view helpers</a>
+    </li>
+
+                        
+                    </ul>
+                </li>
+            
+        
+            
+                <li class="subnavigation__list-item">
+                    <span class="subnavigation__headline">Reference</span>
+                    <ul class="subnavigation__list">
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../why-expressive/" class="subnavigation__link">Why choose Expressive?</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../reference/cli-tooling/" class="subnavigation__link">CLI Tooling</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../reference/expressive-projects/" class="subnavigation__link">Expressive Projects</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../reference/migration/" class="subnavigation__link">Migration</a>
+    </li>
+
+                        
+                    </ul>
+                </li>
+            
+        
+            
+                <li class="subnavigation__list-item">
+                    <span class="subnavigation__headline">v2</span>
+                    <ul class="subnavigation__list">
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/" class="subnavigation__link">Home</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Getting Started</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/getting-started/features/" class="subnavigation__link">Overview and Features</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/getting-started/standalone/" class="subnavigation__link">Quick Start: Standalone</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/getting-started/skeleton/" class="subnavigation__link">Quick Start: Skeleton Installer</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Features</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/middleware-types/" class="subnavigation__link">Middleware Types</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/application/" class="subnavigation__link">Applications</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Containers</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/container/intro/" class="subnavigation__link">Introduction</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/container/factories/" class="subnavigation__link">Container Factories</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/container/delegator-factories/" class="subnavigation__link">Delegator Factories</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/container/zend-servicemanager/" class="subnavigation__link">Using zend-servicemanager</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/container/pimple/" class="subnavigation__link">Using Pimple</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/container/aura-di/" class="subnavigation__link">Using Aura.Di</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Routing Adapters</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/router/intro/" class="subnavigation__link">Introduction</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/router/interface/" class="subnavigation__link">Routing Interface</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/router/uri-generation/" class="subnavigation__link">URI Generation</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/router/piping/" class="subnavigation__link">Routing vs Piping</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/router/aura/" class="subnavigation__link">Using Aura</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/router/fast-route/" class="subnavigation__link">Using FastRoute</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/router/zf2/" class="subnavigation__link">Using the ZF2 Router</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Templating</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/template/intro/" class="subnavigation__link">Introduction</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/template/interface/" class="subnavigation__link">Template Renderer Interface</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/template/middleware/" class="subnavigation__link">Templated Middleware</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/template/plates/" class="subnavigation__link">Using Plates</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/template/twig/" class="subnavigation__link">Using Twig</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/template/zend-view/" class="subnavigation__link">Using zend-view</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/error-handling/" class="subnavigation__link">Error Handling</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/modular-applications/" class="subnavigation__link">Modular Applications</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Middleware</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/middleware/implicit-methods-middleware/" class="subnavigation__link">Implicit HEAD and OPTIONS Middleware</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Helpers</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/helpers/intro/" class="subnavigation__link">Introduction</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/helpers/url-helper/" class="subnavigation__link">UrlHelper</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/helpers/server-url-helper/" class="subnavigation__link">ServerUrlHelper</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/helpers/body-parse/" class="subnavigation__link">Body Parsing Middleware</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/helpers/content-length/" class="subnavigation__link">Content-Length Middleware</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/features/emitters/" class="subnavigation__link">Emitters</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Cookbook</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/cookbook/autowiring-routes-and-pipelines/" class="subnavigation__link">Autowiring routes and pipeline middleware</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/cookbook/common-prefix-for-routes/" class="subnavigation__link">Prepending a common path to all routes</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/cookbook/route-specific-pipeline/" class="subnavigation__link">Route-specific middleware pipelines</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/cookbook/using-custom-view-helpers/" class="subnavigation__link">Registering custom view helpers when using zend-view</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/cookbook/using-zend-form-view-helpers/" class="subnavigation__link">Using zend-form view helpers</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/cookbook/using-a-base-path/" class="subnavigation__link">Using Expressive from a subdirectory</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/cookbook/setting-locale-depending-routing-parameter/" class="subnavigation__link">Setting a locale based on a routing parameter</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/cookbook/setting-locale-without-routing-parameter/" class="subnavigation__link">Setting a locale without a routing parameter</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/cookbook/debug-toolbars/" class="subnavigation__link">Enabling debug toolbars</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/cookbook/using-routed-middleware-class-as-controller/" class="subnavigation__link">Handling multiple routes in a single class</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/cookbook/flash-messengers/" class="subnavigation__link">Flash Messengers</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/cookbook/passing-data-between-middleware/" class="subnavigation__link">Passing data between middleware</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Reference</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/why-expressive/" class="subnavigation__link">Why choose Expressive?</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/reference/cli-tooling/" class="subnavigation__link">CLI Tooling</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/reference/usage-examples/" class="subnavigation__link">Examples</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/reference/expressive-projects/" class="subnavigation__link">Expressive Projects</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Migration</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/reference/migration/" class="subnavigation__link">To version 2</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v2/reference/migration-to-v2-2/" class="subnavigation__link">To version 2.2</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+            
+        </ul>
+    </li>
+
+                        
+                    </ul>
+                </li>
+            
+        
+            
+                <li class="subnavigation__list-item">
+                    <span class="subnavigation__headline">v1</span>
+                    <ul class="subnavigation__list">
+                        
+                            
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/" class="subnavigation__link">Home</a>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Getting Started</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/getting-started/features/" class="subnavigation__link">Overview and Features</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/getting-started/standalone/" class="subnavigation__link">Quick Start: Standalone</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/getting-started/skeleton/" class="subnavigation__link">Quick Start: Skeleton Installer</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Features</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/application/" class="subnavigation__link">Applications</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Containers</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/container/intro/" class="subnavigation__link">Introduction</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/container/factories/" class="subnavigation__link">Container Factories</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/container/zend-servicemanager/" class="subnavigation__link">Using zend-servicemanager</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/container/pimple/" class="subnavigation__link">Using Pimple</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/container/aura-di/" class="subnavigation__link">Using Aura.Di</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Routing Adapters</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/router/intro/" class="subnavigation__link">Introduction</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/router/interface/" class="subnavigation__link">Routing Interface</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/router/uri-generation/" class="subnavigation__link">URI Generation</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/router/piping/" class="subnavigation__link">Routing vs Piping</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/router/aura/" class="subnavigation__link">Using Aura</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/router/fast-route/" class="subnavigation__link">Using FastRoute</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/router/zf2/" class="subnavigation__link">Using the ZF2 Router</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Templating</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/template/intro/" class="subnavigation__link">Introduction</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/template/interface/" class="subnavigation__link">Template Renderer Interface</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/template/middleware/" class="subnavigation__link">Templated Middleware</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/template/plates/" class="subnavigation__link">Using Plates</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/template/twig/" class="subnavigation__link">Using Twig</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/template/zend-view/" class="subnavigation__link">Using zend-view</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/error-handling/" class="subnavigation__link">Error Handling</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Helpers</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/helpers/intro/" class="subnavigation__link">Introduction</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/helpers/url-helper/" class="subnavigation__link">UrlHelper</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/helpers/server-url-helper/" class="subnavigation__link">ServerUrlHelper</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/helpers/body-parse/" class="subnavigation__link">Body Parsing Middleware</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/features/emitters/" class="subnavigation__link">Emitters</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Cookbook</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/cookbook/common-prefix-for-routes/" class="subnavigation__link">Prepending a common path to all routes</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/cookbook/route-specific-pipeline/" class="subnavigation__link">Route-specific middleware pipelines</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/cookbook/custom-404-page-handling/" class="subnavigation__link">Setting custom 404 page handling</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/cookbook/using-custom-view-helpers/" class="subnavigation__link">Registering custom view helpers when using zend-view</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/cookbook/using-zend-form-view-helpers/" class="subnavigation__link">Using zend-form view helpers</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/cookbook/using-a-base-path/" class="subnavigation__link">Using Expressive from a subdirectory</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/cookbook/modular-layout/" class="subnavigation__link">Building modular applications</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/cookbook/setting-locale-depending-routing-parameter/" class="subnavigation__link">Setting a locale based on a routing parameter</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/cookbook/setting-locale-without-routing-parameter/" class="subnavigation__link">Setting a locale without a routing parameter</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/cookbook/debug-toolbars/" class="subnavigation__link">Enabling debug toolbars</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/cookbook/using-routed-middleware-class-as-controller/" class="subnavigation__link">Handling multiple routes in a single class</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/cookbook/flash-messengers/" class="subnavigation__link">Flash Messengers</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+                        
+                            
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Reference</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/why-expressive/" class="subnavigation__link">Why choose Expressive?</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/reference/usage-examples/" class="subnavigation__link">Examples</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/reference/expressive-projects/" class="subnavigation__link">Expressive Projects</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Migration</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/reference/migration/rc-to-v1/" class="subnavigation__link">From RC5 and Earlier</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../../../v1/reference/migration/to-v1-1/" class="subnavigation__link">To Expressive 1.1</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+            
+        </ul>
+    </li>
+
+                        
+                    </ul>
+                </li>
+            
+        
+    </ul>
+</div>
+                
+            </div>
+        </div>
+    </div>
+
+    
+    <footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-9">
+                <h5>Zend Framework</h5>
+                <ul>
+                    <li><a href="https://framework.zend.com/">framework.zend.com</a></li>
+                    <li><a href="https://docs.zendframework.com">docs.zendframework.com</a></li>
+                    <li><a href="https://packages.zendframework.com">packages.zendframework.com</a></li>
+                    <li><a href="https://apigility.org">apigility.org</a></li>
+                    <li><a href="https://getexpressive.org/">getexpressive.org</a></li>
+                </ul>
+            </div>
+        </div>
+
+        
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <a class="footer__button" href="#page-top"><i class="fa fa-chevron-up" aria-hidden="true"></i></a>
+            </div>
+        </div>
+
+        <div class="row">
+
+            
+            <div class="col-md-9">
+                <h4 class="footer__headline">Copyright</h4>
+                <p>&copy; 2006-2018 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+            </div>
+
+            
+            <div class="col-md-3">
+                <h4 class="footer__headline">Support</h4>
+                <ul class="support__list">
+                    <li class="support__list-item">
+                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                    </li>
+                    <li class="support__list-item">
+                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                    </li>
+                    <li class="support__list-item">
+                        <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
+                    </li>
+                    <li class="support__list-item">
+                        <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script>
+        var base_url = '../../../..',
+            siteName = 'Expressive';
+    </script>
+    <script src="../../../../js/scripts-dcbafde59f.js"></script>
         <script src="../../../../search/require.js"></script>
         <script src="../../../../search/search.js"></script>
 
+    
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -1976,17 +2893,7 @@ return [
         </div>
     </div>
 
-    <div class="zf-components">
-  <div class="zf-components-grid">
-    <div class="zf-logo">
-      <a href="https://framework.zend.com" data-toggle="tooltip" data-placement="bottom" title="Go to the ZF homepage"><img src="../../../../img/zf-logo-mark.svg" alt="Zend Framework" width="250" /></a>
-    </div>
 
-    <div class="component-list"></div>
-
-    <p class="zf-components-rollup"><a href="#">Hide list</a></p>
-  </div>
-</div>
 
 </body>
 
