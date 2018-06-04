@@ -169,7 +169,7 @@ return [
     ],
     'invokables' => [
         Zend\Expressive\Router\RouterInterface::class     => Zend\Expressive\Router\AuraRouter::class,
-        Zend\Expressive\Template\TemplateRendererInterface::class => 'Zend\Expressive\Plates\PlatesRenderer::class
+        Zend\Expressive\Template\TemplateRendererInterface::class => Zend\Expressive\Plates\PlatesRenderer::class
     ],
     'factories' => [
         Zend\Expressive\Application::class       => Zend\Expressive\Container\ApplicationFactory::class,
@@ -258,7 +258,7 @@ return [
     ],
     'invokables' => [
         Zend\Expressive\Router\RouterInterface::class     => Zend\Expressive\Router\AuraRouter::class,
-        Zend\Expressive\Template\TemplateRendererInterface::class => 'Zend\Expressive\Plates\PlatesRenderer::class
+        Zend\Expressive\Template\TemplateRendererInterface::class => Zend\Expressive\Plates\PlatesRenderer::class
     ],
     'factories' => [
         Zend\Expressive\Application::class       => Zend\Expressive\Container\ApplicationFactory::class,
@@ -281,7 +281,7 @@ return [
     'factories' => [
         'Zend\Expressive\Whoops'            => Zend\Expressive\Container\WhoopsFactory::class,
         'Zend\Expressive\WhoopsPageHandler' => Zend\Expressive\Container\WhoopsPageHandlerFactory::class,
-        Zend\Expressive\Middleware\ErrorResponseGenerator::class => 'Zend\Expressive\Container\WhoopsErrorResponseGeneratorFactory::class,
+        Zend\Expressive\Middleware\ErrorResponseGenerator::class => Zend\Expressive\Container\WhoopsErrorResponseGeneratorFactory::class,
     ],
 ];
 ```
