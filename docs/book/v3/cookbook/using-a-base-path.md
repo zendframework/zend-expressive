@@ -123,7 +123,7 @@ The primary advantage of `mtymek/blast-base-url` is in its additional features:
   to create relative route-based URLs.
 - it provides a new helper, `Blast\BaseUrl\BasePathHelper`, which allows you to
   create URLs relative to the base path; this is particularly useful for assets.
-  If you are using Zend View as your templating engine, this view helper will
+  If you are using zend-view as your templating engine, this view helper will
   be available out of the box.
 
 Usage of the `BasePath` helper is as follows:
