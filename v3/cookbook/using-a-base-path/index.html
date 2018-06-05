@@ -396,6 +396,12 @@
                             
                                 
     <li class="subnavigation__list-item ">
+        <a href="../path-segregated-routing/" class="subnavigation__link">Path-segregated routing</a>
+    </li>
+
+                            
+                                
+    <li class="subnavigation__list-item ">
         <a href="../access-common-data-in-templates/" class="subnavigation__link">Provide Access to Common Data In Templates</a>
     </li>
 
@@ -1396,10 +1402,10 @@ rewrite the URL accordingly.</p>
 <p>At the time of writing, we have two suggestions:</p>
 <ul>
 <li><a href="https://github.com/Lansoweb/basepath">los/basepath</a> provides the basic
-  mechanics of rewriting the URL, and has a stable release.</li>
+  mechanics of rewriting the URL.</li>
 <li><a href="https://github.com/mtymek/blast-base-url">mtymek/blast-base-url</a> provides the
   URL rewriting mechanics, as well as utilities for generating URIs that retain
-  the base path, but does not have a stable release yet.</li>
+  the base path.</li>
 </ul>
 <h3 id="losbasepath">los/basepath</h3>
 <p>To use <code>los/basepath</code>, install it via Composer, copy the configuration files to
@@ -1429,19 +1435,10 @@ configuration.</p>
 <p>To install it:</p>
 <pre class="codehilite"><code class="language-bash">$ composer require mtymek/blast-base-url</code></pre>
 
-<p>To configure it, update the file <code>config/autoload/middleware-pipeline.global.php</code>,
-or <code>config/autoload/dependencies.global.php</code> to map the middleware to its factory:</p>
-<pre class="codehilite"><code class="language-php">return [
-    'dependencies' =&gt; [
-        'factories' =&gt; [
-            Blast\BaseUrl\BaseUrlMiddleware::class =&gt; Blast\BaseUrl\BaseUrlMiddlewareFactory::class,
-            /* ... */
-        ],
-        /* ... */
-    ],
-];</code></pre>
-
-<p>If using programmatic pipelines, pipe the middleware early in your pipeline:</p>
+<p>If you are using <code>zend-component-installer</code>, you will be prompted to configure this package 
+automatically. If you don't choose to do so, you please refer to <code>Blast\BaseUrl\ConfigProvider</code> 
+class to see how to wire it manually.</p>
+<p>If using programmatic pipelines, pipe the middleware early in your pipeline (before routing):</p>
 <pre class="codehilite"><code class="language-php">$app-&gt;pipe(\Blast\BaseUrl\BaseUrlMiddleware::class);</code></pre>
 
 <p>For configuration-driven pipelines, add an entry in your
@@ -1459,32 +1456,10 @@ the request URI and the operating system path to the application.</p>
 <li>it injects <code>Zend\Expressive\Helper\UrlHelper</code> with the base path, allowing you
   to create relative route-based URLs.</li>
 <li>it provides a new helper, <code>Blast\BaseUrl\BasePathHelper</code>, which allows you to
-  create URLs relative to the base path; this is particularly useful for assets.</li>
+  create URLs relative to the base path; this is particularly useful for assets.
+  If you are using zend-view as your templating engine, this view helper will
+  be available out of the box.</li>
 </ul>
-<p>To enable these features, we'll add some configuration to
-<code>config/autoload/dependencies.global.php</code> file:</p>
-<pre class="codehilite"><code class="language-php">return [
-    'dependencies' =&gt; [
-        'invokables' =&gt; [
-            Blast\BaseUrl\BasePathHelper::class =&gt; Blast\BaseUrl\BasePathHelper::class,
-            /* ... */
-        ],
-    ],
-];</code></pre>
-
-<p>Finally, if you're using zend-view, you can register a new "basePath" helper in
-your <code>config/autoload/templates.global.php</code>:</p>
-<pre class="codehilite"><code class="language-php">return [
-    /* ... */
-    'view_helpers' =&gt; [
-        'factories' =&gt; [
-            'basePath' =&gt; Blast\BaseUrl\BasePathViewHelperFactory::class,
-            /* ... */
-        ],
-        /* ... */
-    ],
-];</code></pre>
-
 <p>Usage of the <code>BasePath</code> helper is as follows:</p>
 <pre class="codehilite"><code class="language-php">// where $basePathHelper is an instance of Blast\BaseUrl\BasePathHelper
 // as pulled from your container:
@@ -1867,6 +1842,12 @@ echo $this-&gt;basePath('/icons/favicon.ico');</code></pre>
                                 
     <li class="subnavigation__list-item ">
         <a href="../passing-data-between-middleware/" class="subnavigation__link">Passing data between middleware</a>
+    </li>
+
+                            
+                                
+    <li class="subnavigation__list-item ">
+        <a href="../path-segregated-routing/" class="subnavigation__link">Path-segregated routing</a>
     </li>
 
                             
