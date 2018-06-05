@@ -186,7 +186,7 @@ detected language prefix.
 
 Occasionally, you may want to provide a different router instance to nested
 pipeline middleware; in particular, this may occur when you want to [segregate a
-pipeline by path](https://docs.zendframework.com/zend-expressive/v3/features/router/piping/#path-segregation).
+pipeline by path](../router/piping.md#path-segregation).
 
 In such situations, you cannot reuse the `UrlHelper` instance, as a different
 router is in play; additionally, it may need to define a base path so that any

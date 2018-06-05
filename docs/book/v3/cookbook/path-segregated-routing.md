@@ -4,13 +4,13 @@
   zend-expressive-hal 1.1.0.
 
 You may want to develop a self-contained module that you can then drop in
-to an existing application; you may even want to [path-segregate](https://docs.zendframework.com/zend-expressive/v3/features/router/piping/#path-segregation) it.
+to an existing application; you may even want to [path-segregate](../features/router/piping.md#path-segregation) it.
 
 In such cases, you will want to use a different router instance, which has a
 huge number of ramifications:
 
 - You'll need separate routing middleware.
-- You'll need a separate [UrlHelper](https://docs.zendframework.com/zend-expressive/v3/features/helpers/url-helper/) instance, as well as its related middleware,
+- You'll need a separate [UrlHelper](../features/helpers/url-helper.md) instance, as well as its related middleware,
   if you are generating URIs.
 - If you are generating [HAL](https://docs.zendframework.com/zend-expressive-hal/),
   you'll need:
