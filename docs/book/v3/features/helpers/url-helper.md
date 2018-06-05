@@ -217,6 +217,7 @@ return [
           'factories' => [
               // module-specific class name => factory
               Router::class                 => FastRouteRouterFactory::class,
+              RouteMiddleware::class        => new RouteMiddlewareFactory(Router::class),
               UrlHelper::class              => new UrlHelperFactory('/auth', Router::class),
               UrlHelperMiddleware::class    => new UrlHelperMiddlewareFactory(UrlHelper::class),
           ],
