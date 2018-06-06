@@ -574,7 +574,7 @@ return new HtmlResponse($this->renderer->render(
 >
 > In that case, alter the above example as follows:
 >
-> - Add the statement `use Zend\Diactoros\Response\HttpResponse;` to the `use`
+> - Add the statement `use Zend\Diactoros\Response\HtmlResponse;` to the `use`
 >   statements at the top of the file.
 > - Alter the response creation to read:
 >   ```php
