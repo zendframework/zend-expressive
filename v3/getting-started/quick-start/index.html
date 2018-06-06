@@ -1834,7 +1834,7 @@ return new HtmlResponse($this-&gt;renderer-&gt;render(
 contents of your <code>handle()</code> method will be empty to begin.</p>
 <p>In that case, alter the above example as follows:</p>
 <ul>
-<li>Add the statement <code>use Zend\Diactoros\Response\HttpResponse;</code> to the <code>use</code>
+<li>Add the statement <code>use Zend\Diactoros\Response\HtmlResponse;</code> to the <code>use</code>
   statements at the top of the file.</li>
 <li>Alter the response creation to read:
   <pre class="codehilite"><code class="language-php">return new HtmlResponse(sprintf(
