@@ -10,12 +10,14 @@ declare(strict_types=1);
 namespace ZendTest\Expressive\Middleware;
 
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use RuntimeException;
+use stdClass;
 use Whoops\Handler\JsonResponseHandler;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run;
@@ -159,5 +161,31 @@ class WhoopsErrorResponseGeneratorTest extends TestCase
             $this->response->reveal(),
             $generator($error, $this->request->reveal(), $this->response->reveal())
         );
+    }
+
+    public function testThrowsInvalidArgumentExceptionOnNonRunForObject()
+    {
+        $whoops = new stdClass();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Zend\Expressive\Middleware\WhoopsErrorResponseGenerator expects a Whoops\Run or Whoops\RunInterface ' .
+            'instance; received stdClass'
+        );
+
+        new WhoopsErrorResponseGenerator($whoops);
+    }
+
+    public function testThrowsInvalidArgumentExceptionOnNonRunForScalar()
+    {
+        $whoops = 'foo';
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Zend\Expressive\Middleware\WhoopsErrorResponseGenerator expects a Whoops\Run or Whoops\RunInterface ' .
+            'instance; received string'
+        );
+
+        new WhoopsErrorResponseGenerator($whoops);
     }
 }
