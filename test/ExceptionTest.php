@@ -12,6 +12,7 @@ namespace ZendTest\Expressive;
 use Generator;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
+use Zend\Expressive\Exception\ContainerNotRegisteredException;
 use Zend\Expressive\Exception\ExceptionInterface;
 use Zend\Expressive\Exception\InvalidMiddlewareException;
 use Zend\Expressive\Exception\MissingDependencyException;
@@ -57,5 +58,15 @@ class ExceptionTest extends TestCase
     public function testExceptionIsInstanceOfContainerExceptionInterface(string $exception) : void
     {
         $this->assertTrue(is_a($exception, ContainerExceptionInterface::class, true));
+    }
+
+    public function testContainerNotRegisteredExceptionForMiddlewareService()
+    {
+        $exception = ContainerNotRegisteredException::forMiddlewareService('foo');
+
+        $this->assertSame(
+            'Cannot marshal middleware by service name "foo"; no container registered',
+            $exception->getMessage()
+        );
     }
 }
