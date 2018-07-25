@@ -169,8 +169,8 @@ class WhoopsErrorResponseGeneratorTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'Zend\Expressive\Middleware\WhoopsErrorResponseGenerator expects a Whoops\Run or Whoops\RunInterface ' .
-            'instance; received stdClass'
+            'Zend\Expressive\Middleware\WhoopsErrorResponseGenerator expects a Whoops\Run'
+            . ' or Whoops\RunInterface instance; received stdClass'
         );
 
         new WhoopsErrorResponseGenerator($whoops);
@@ -182,8 +182,8 @@ class WhoopsErrorResponseGeneratorTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'Zend\Expressive\Middleware\WhoopsErrorResponseGenerator expects a Whoops\Run or Whoops\RunInterface ' .
-            'instance; received string'
+            'Zend\Expressive\Middleware\WhoopsErrorResponseGenerator expects a Whoops\Run'
+            . ' or Whoops\RunInterface instance; received string'
         );
 
         new WhoopsErrorResponseGenerator($whoops);
