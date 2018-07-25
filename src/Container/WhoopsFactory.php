@@ -53,7 +53,6 @@ class WhoopsFactory
         $config = $config['whoops'] ?? [];
 
         $whoops = new Whoops();
-        $whoops->writeToOutput(false);
         $whoops->allowQuit(false);
         $whoops->pushHandler($container->get('Zend\Expressive\WhoopsPageHandler'));
         $this->registerJsonHandler($whoops, $config);
