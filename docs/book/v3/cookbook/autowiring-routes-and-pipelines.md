@@ -19,7 +19,7 @@ The delegator factory looks for configuration that looks like the following:
 
 ```php
 return [
-    'pipeline_middleware' => [
+    'middleware_pipeline' => [
         [
             // required:
             'middleware' => 'Middleware service or pipeline',
@@ -84,7 +84,7 @@ following keys:
 - `path` (optional, string): if you wish to path-segregate the middleware, provide a
   literal path prefix that must be matched in order to dispatch the given
   middleware.
-- `priority` (optional, integer): The elements in the `pipeline_middleware`
+- `priority` (optional, integer): The elements in the `middleware_pipeline`
   section are piped to the application in the order in which they are discovered
   &mdash; which could have ramifications if multiple components and/or modules
   provide pipeline middleware. If you wish to force a certain order, you may use
