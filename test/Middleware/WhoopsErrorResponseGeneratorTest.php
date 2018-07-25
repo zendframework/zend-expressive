@@ -57,13 +57,13 @@ class WhoopsErrorResponseGeneratorTest extends TestCase
     public function testWritesResultsOfWhoopsExceptionsHandlingToResponse()
     {
         $error = new RuntimeException();
-        $sendOutput = true;
+        $sendOutputFlag = true;
 
         $this->whoops->getHandlers()->willReturn([]);
         $this->whoops->handleException($error)->willReturn('WHOOPS');
-        $this->whoops->writeToOutput()->willReturn($sendOutput);
+        $this->whoops->writeToOutput()->willReturn($sendOutputFlag);
         $this->whoops->writeToOutput(false)->shouldBeCalled();
-        $this->whoops->writeToOutput($sendOutput)->shouldBeCalled();
+        $this->whoops->writeToOutput($sendOutputFlag)->shouldBeCalled();
 
         // Could do more assertions here, but these will be sufficent for
         // ensuring that the method for injecting metadata is never called.
@@ -87,7 +87,7 @@ class WhoopsErrorResponseGeneratorTest extends TestCase
     public function testAddsRequestMetadataToWhoopsPrettyPageHandler()
     {
         $error = new RuntimeException('STATUS_INTERNAL_SERVER_ERROR', StatusCode::STATUS_INTERNAL_SERVER_ERROR);
-        $sendOutput = true;
+        $sendOutputFlag = true;
 
         $handler = $this->prophesize(PrettyPageHandler::class);
         $handler
@@ -105,9 +105,9 @@ class WhoopsErrorResponseGeneratorTest extends TestCase
 
         $this->whoops->getHandlers()->willReturn([$handler->reveal()]);
         $this->whoops->handleException($error)->willReturn('WHOOPS');
-        $this->whoops->writeToOutput()->willReturn($sendOutput);
+        $this->whoops->writeToOutput()->willReturn($sendOutputFlag);
         $this->whoops->writeToOutput(false)->shouldBeCalled();
-        $this->whoops->writeToOutput($sendOutput)->shouldBeCalled();
+        $this->whoops->writeToOutput($sendOutputFlag)->shouldBeCalled();
 
         $this->request->getAttribute('originalUri', false)->willReturn('https://example.com/foo');
         $this->request->getAttribute('originalRequest', false)->will([$this->request, 'reveal']);

@@ -79,12 +79,12 @@ class WhoopsErrorResponseGenerator
 
         $response = $response->withStatus(Utils::getStatusCode($e, $response));
 
-        $sendOutput = $this->whoops->writeToOutput();
+        $sendOutputFlag = $this->whoops->writeToOutput();
         $this->whoops->writeToOutput(false);
         $response
             ->getBody()
             ->write($this->whoops->handleException($e));
-        $this->whoops->writeToOutput($sendOutput);
+        $this->whoops->writeToOutput($sendOutputFlag);
 
         return $response;
     }
