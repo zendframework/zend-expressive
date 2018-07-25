@@ -57,9 +57,13 @@ class WhoopsErrorResponseGeneratorTest extends TestCase
     public function testWritesResultsOfWhoopsExceptionsHandlingToResponse()
     {
         $error = new RuntimeException();
+        $sendOutput = true;
 
         $this->whoops->getHandlers()->willReturn([]);
         $this->whoops->handleException($error)->willReturn('WHOOPS');
+        $this->whoops->writeToOutput()->willReturn($sendOutput);
+        $this->whoops->writeToOutput(false)->shouldBeCalled();
+        $this->whoops->writeToOutput($sendOutput)->shouldBeCalled();
 
         // Could do more assertions here, but these will be sufficent for
         // ensuring that the method for injecting metadata is never called.
@@ -83,6 +87,7 @@ class WhoopsErrorResponseGeneratorTest extends TestCase
     public function testAddsRequestMetadataToWhoopsPrettyPageHandler()
     {
         $error = new RuntimeException('STATUS_INTERNAL_SERVER_ERROR', StatusCode::STATUS_INTERNAL_SERVER_ERROR);
+        $sendOutput = true;
 
         $handler = $this->prophesize(PrettyPageHandler::class);
         $handler
@@ -100,6 +105,9 @@ class WhoopsErrorResponseGeneratorTest extends TestCase
 
         $this->whoops->getHandlers()->willReturn([$handler->reveal()]);
         $this->whoops->handleException($error)->willReturn('WHOOPS');
+        $this->whoops->writeToOutput()->willReturn($sendOutput);
+        $this->whoops->writeToOutput(false)->shouldBeCalled();
+        $this->whoops->writeToOutput($sendOutput)->shouldBeCalled();
 
         $this->request->getAttribute('originalUri', false)->willReturn('https://example.com/foo');
         $this->request->getAttribute('originalRequest', false)->will([$this->request, 'reveal']);
@@ -128,6 +136,7 @@ class WhoopsErrorResponseGeneratorTest extends TestCase
     public function testJsonContentTypeResponseWithJsonResponseHandler()
     {
         $error = new RuntimeException('STATUS_NOT_IMPLEMENTED', StatusCode::STATUS_NOT_IMPLEMENTED);
+        $sendOutput = true;
 
         $handler = $this->prophesize(JsonResponseHandler::class);
 
@@ -137,6 +146,9 @@ class WhoopsErrorResponseGeneratorTest extends TestCase
 
         $this->whoops->getHandlers()->willReturn([$handler->reveal()]);
         $this->whoops->handleException($error)->willReturn('error');
+        $this->whoops->writeToOutput()->willReturn($sendOutput);
+        $this->whoops->writeToOutput(false)->shouldBeCalled();
+        $this->whoops->writeToOutput($sendOutput)->shouldBeCalled();
 
         $this->request->getAttribute('originalUri', false)->willReturn('https://example.com/foo');
         $this->request->getAttribute('originalRequest', false)->will([$this->request, 'reveal']);
