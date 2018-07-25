@@ -1395,7 +1395,7 @@ class in order to automate piping of pipeline middleware and routing to request
 handlers and middleware.</p>
 <p>The delegator factory looks for configuration that looks like the following:</p>
 <pre class="codehilite"><code class="language-php">return [
-    'pipeline_middleware' =&gt; [
+    'middleware_pipeline' =&gt; [
         [
             // required:
             'middleware' =&gt; 'Middleware service or pipeline',
@@ -1454,7 +1454,7 @@ following keys:</p>
 <li><code>path</code> (optional, string): if you wish to path-segregate the middleware, provide a
   literal path prefix that must be matched in order to dispatch the given
   middleware.</li>
-<li><code>priority</code> (optional, integer): The elements in the <code>pipeline_middleware</code>
+<li><code>priority</code> (optional, integer): The elements in the <code>middleware_pipeline</code>
   section are piped to the application in the order in which they are discovered
   &mdash; which could have ramifications if multiple components and/or modules
   provide pipeline middleware. If you wish to force a certain order, you may use
