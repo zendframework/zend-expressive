@@ -24,7 +24,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
-## 3.0.3 - TBD
+## 3.0.3 - 2018-07-25
 
 ### Added
 
@@ -44,7 +44,10 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#627](https://github.com/zendframework/zend-expressive/pull/627) fixes an issue in the Whoops response generator; previously, if an error or
+  exception occurred in an `ErrorHandler` listener or prior to handling the pipeline,
+  Whoops would fail to intercept, resulting in an empty response with status 200. With
+  the patch, it properly intercepts and displays the errors.
 
 ## 3.0.2 - 2018-04-10
 
