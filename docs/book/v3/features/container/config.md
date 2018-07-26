@@ -256,4 +256,4 @@ Examples of how the above capabilities may be implemented include:
 
 - [zendframework/zend-auradi-config](https://github.com/zendframework/zend-auradi-config)
 - [zendframework/zend-pimple-config](https://github.com/zendframework/zend-pimple-config)
-- [jsoumelidis/zend-sf-di-config](https://github.com/zendframework/jsoumelidis/zend-sf-di-config)
+- [jsoumelidis/zend-sf-di-config](https://github.com/jsoumelidis/zend-sf-di-config)
