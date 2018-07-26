@@ -4,7 +4,7 @@
     
     <url>
      <loc>/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -13,13 +13,13 @@
         
     <url>
      <loc>/v3/getting-started/features/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/v3/getting-started/quick-start/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -29,13 +29,13 @@
         
     <url>
      <loc>/v3/features/middleware-types/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/v3/features/application/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -59,13 +59,13 @@
         
     <url>
      <loc>/v3/features/error-handling/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/v3/features/modular-applications/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -83,7 +83,7 @@
         
     <url>
      <loc>/v3/features/emitters/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -93,91 +93,91 @@
         
     <url>
      <loc>/v3/cookbook/autowiring-routes-and-pipelines/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/v3/cookbook/using-a-base-path/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/v3/cookbook/common-prefix-for-routes/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/v3/cookbook/passing-data-between-middleware/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/v3/cookbook/path-segregated-routing/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/v3/cookbook/access-common-data-in-templates/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/v3/cookbook/route-specific-pipeline/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/v3/cookbook/host-segregated-middleware/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/v3/cookbook/double-pass-middleware/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/v3/cookbook/setting-locale-depending-routing-parameter/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/v3/cookbook/setting-locale-without-routing-parameter/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/v3/cookbook/debug-toolbars/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/v3/cookbook/flash-messengers/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/v3/cookbook/using-custom-view-helpers/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/v3/cookbook/using-zend-form-view-helpers/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -187,25 +187,25 @@
         
     <url>
      <loc>/v3/why-expressive/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/v3/reference/cli-tooling/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/v3/reference/expressive-projects/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/v3/reference/migration/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -215,7 +215,7 @@
         
     <url>
      <loc>/v2/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -249,7 +249,7 @@
         
     <url>
      <loc>/v1/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -283,325 +283,325 @@
         
     <url>
      <loc>/getting-started/features/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/getting-started/standalone/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/getting-started/skeleton/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/features/middleware-types/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/features/application/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/features/container/intro/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/features/container/factories/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/features/container/delegator-factories/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/features/container/zend-servicemanager/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/features/container/pimple/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/features/container/aura-di/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/features/router/intro/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/features/router/interface/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/features/router/uri-generation/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/features/router/piping/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/features/router/aura/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/features/router/fast-route/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/features/router/zf2/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/features/template/intro/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/features/template/interface/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/features/template/middleware/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/features/template/plates/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/features/template/twig/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/features/template/zend-view/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/features/error-handling/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/features/modular-applications/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/features/middleware/implicit-methods-middleware/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/features/helpers/intro/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/features/helpers/url-helper/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/features/helpers/server-url-helper/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/features/helpers/body-parse/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/features/helpers/content-length/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/features/emitters/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/cookbook/autowiring-routes-and-pipelines/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/cookbook/common-prefix-for-routes/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/cookbook/route-specific-pipeline/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/cookbook/custom-404-page-handling/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/cookbook/using-custom-view-helpers/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/cookbook/using-zend-form-view-helpers/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/cookbook/using-a-base-path/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/cookbook/modular-layout/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/cookbook/setting-locale-depending-routing-parameter/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/cookbook/setting-locale-without-routing-parameter/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/cookbook/debug-toolbars/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/cookbook/using-routed-middleware-class-as-controller/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/cookbook/flash-messengers/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/cookbook/passing-data-between-middleware/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/why-expressive/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/reference/cli-tooling/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/reference/usage-examples/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/reference/expressive-projects/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/reference/migration/to-v2/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/reference/migration/rc-to-v1/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/reference/migration/to-v1-1/</loc>
-     <lastmod>2018-07-25</lastmod>
+     <lastmod>2018-07-26</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
