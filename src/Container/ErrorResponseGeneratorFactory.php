@@ -24,10 +24,13 @@ class ErrorResponseGeneratorFactory
         $template = $config['zend-expressive']['error_handler']['template_error']
             ?? ErrorResponseGenerator::TEMPLATE_DEFAULT;
 
+        $layout   = $config['zend-expressive']['error_handler']['layout']
+            ?? ErrorResponseGenerator::LAYOUT_DEFAULT;
+
         $renderer = $container->has(TemplateRendererInterface::class)
             ? $container->get(TemplateRendererInterface::class)
             : null;
 
-        return new ErrorResponseGenerator($debug, $renderer, $template);
+        return new ErrorResponseGenerator($debug, $renderer, $template, $layout);
     }
 }

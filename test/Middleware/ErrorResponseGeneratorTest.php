@@ -135,6 +135,7 @@ class ErrorResponseGeneratorTest extends TestCase
                 'uri'      => 'https://example.com/foo',
                 'status'   => StatusCode::STATUS_INTERNAL_SERVER_ERROR,
                 'reason'   => 'Internal Server Error',
+                'layout'   => 'layout::default',
             ])
             ->willReturn('TEMPLATED CONTENTS');
 
@@ -198,6 +199,7 @@ class ErrorResponseGeneratorTest extends TestCase
                 'status'   => StatusCode::STATUS_INTERNAL_SERVER_ERROR,
                 'reason'   => 'Network Connect Timeout Error',
                 'error'    => $error,
+                'layout'   => 'layout::default',
             ])
             ->willReturn('TEMPLATED CONTENTS');
 
