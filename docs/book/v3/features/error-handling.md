@@ -71,6 +71,9 @@ We provide two error response generators for you:
   otherwise, a plain text response is generated that notes the request method
   and URI.
 
+  Since version 3.1.0, it also accepts a layout name, if you want to use one
+  other than `layout::default`.
+
 - `Zend\Expressive\Middleware\WhoopsErrorResponseGenerator`, which uses
   [whoops](http://filp.github.io/whoops/) to present detailed exception
   and request information; this implementation is intended for development
