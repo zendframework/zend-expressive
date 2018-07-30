@@ -81,7 +81,11 @@ When the `config` service is present, the factory can utilize two values:
 - `zend-expressive.error_handler.template_error`, a name of an alternate
   template to use (instead of the default represented in the
   `Zend\Expressive\Middleware\ErrorResponseGenerator::TEMPLATE_DEFAULT`
-  constant).
+  constant, which evaluates to `error::error`).
+- **Since 3.1.0**: `zend-expressive.error_handler.layout`, a name of an
+  alternate layout to use (instead of the default represented in the
+  `Zend\Expressive\Middleware\ErrorResponseGenerator::LAYOUT_DEFAULT` constant,
+  which evaluates to `layout::default`).
 
 As an example:
 
@@ -90,6 +94,7 @@ As an example:
 'zend-expressive' => [
     'error_handler' => [
         'template_error' => 'name of error template',
+        'layout' => 'layout::alternate',
     ],
 ],
 ```
@@ -150,7 +155,13 @@ When the `config` service is present, the factory can utilize two values:
 
 - `zend-expressive.error_handler.template_404`, a name of an alternate
   template to use (instead of the default represented in the
-  `Zend\Expressive\Delegate\NotFoundDelegate::TEMPLATE_DEFAULT` constant).
+  `Zend\Expressive\Delegate\NotFoundDelegate::TEMPLATE_DEFAULT` constant, which
+  evaluates to `error::404`).
+
+- `zend-expressive.error_handler.layout`, a name of an alternate
+  template to use (instead of the default represented in the
+  `Zend\Expressive\Delegate\NotFoundDelegate::TEMPLATE_DEFAULT` constant, which
+  evaluates to `layout::default`).
 
 As an example:
 
@@ -158,6 +169,7 @@ As an example:
 'zend-expressive' => [
     'error_handler' => [
         'template_404' => 'name of 404 template',
+        'layout' => 'layout::alternate',
     ],
 ],
 ```

@@ -42,6 +42,7 @@ class ErrorResponseGeneratorFactoryTest extends TestCase
         $this->assertAttributeEquals(false, 'debug', $generator);
         $this->assertAttributeEmpty('renderer', $generator);
         $this->assertAttributeEquals('error::error', 'template', $generator);
+        $this->assertAttributeEquals('layout::default', 'layout', $generator);
     }
 
     public function testUsesDebugConfigurationToSetDebugFlag()
@@ -56,6 +57,7 @@ class ErrorResponseGeneratorFactoryTest extends TestCase
         $this->assertAttributeEquals(true, 'debug', $generator);
         $this->assertAttributeEmpty('renderer', $generator);
         $this->assertAttributeEquals('error::error', 'template', $generator);
+        $this->assertAttributeEquals('layout::default', 'layout', $generator);
     }
 
     public function testUsesConfiguredTemplateRenderToSetGeneratorRenderer()
@@ -70,6 +72,7 @@ class ErrorResponseGeneratorFactoryTest extends TestCase
         $this->assertAttributeEquals(false, 'debug', $generator);
         $this->assertAttributeSame($this->renderer->reveal(), 'renderer', $generator);
         $this->assertAttributeEquals('error::error', 'template', $generator);
+        $this->assertAttributeEquals('layout::default', 'layout', $generator);
     }
 
     public function testUsesTemplateConfigurationToSetTemplate()
@@ -79,6 +82,7 @@ class ErrorResponseGeneratorFactoryTest extends TestCase
             'zend-expressive' => [
                 'error_handler' => [
                     'template_error' => 'error::custom',
+                    'layout' => 'layout::custom',
                 ],
             ],
         ]);
@@ -90,5 +94,6 @@ class ErrorResponseGeneratorFactoryTest extends TestCase
         $this->assertAttributeEquals(false, 'debug', $generator);
         $this->assertAttributeEmpty('renderer', $generator);
         $this->assertAttributeEquals('error::custom', 'template', $generator);
+        $this->assertAttributeEquals('layout::custom', 'layout', $generator);
     }
 }

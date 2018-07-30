@@ -48,6 +48,13 @@ EOT;
      */
     private $template;
 
+    /**
+     * Name of the layout to render.
+     *
+     * @var string
+     */
+    private $layout;
+
     private function prepareTemplatedResponse(
         Throwable $e,
         TemplateRendererInterface $renderer,
