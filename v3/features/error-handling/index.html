@@ -1432,19 +1432,19 @@ generating the instance; it should be mapped to the service
 <code>Zend\Stratigility\Middleware\ErrorHandler</code>.</p>
 <p>We provide two error response generators for you:</p>
 <ul>
-<li>
-<p><code>Zend\Expressive\Middleware\ErrorResponseGenerator</code>, which optionally will
+<li><code>Zend\Expressive\Middleware\ErrorResponseGenerator</code>, which optionally will
   accept a <code>Zend\Expressive\Template\TemplateRendererInterface</code> instance, and a
   template name. When present, these will be used to generate response content;
   otherwise, a plain text response is generated that notes the request method
-  and URI.</p>
-</li>
-<li>
-<p><code>Zend\Expressive\Middleware\WhoopsErrorResponseGenerator</code>, which uses
+  and URI.</li>
+</ul>
+<p>Since version 3.1.0, it also accepts a layout name, if you want to use one
+  other than <code>layout::default</code>.</p>
+<ul>
+<li><code>Zend\Expressive\Middleware\WhoopsErrorResponseGenerator</code>, which uses
   <a href="http://filp.github.io/whoops/">whoops</a> to present detailed exception
   and request information; this implementation is intended for development
-  purposes.</p>
-</li>
+  purposes.</li>
 </ul>
 <p>Each also has an accompanying factory for generating the instance:</p>
 <ul>

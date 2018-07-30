@@ -1462,13 +1462,18 @@ namespace, and define an <code>__invoke()</code> method that accepts an
 <li><code>zend-expressive.error_handler.template_error</code>, a name of an alternate
   template to use (instead of the default represented in the
   <code>Zend\Expressive\Middleware\ErrorResponseGenerator::TEMPLATE_DEFAULT</code>
-  constant).</li>
+  constant, which evaluates to <code>error::error</code>).</li>
+<li><strong>Since 3.1.0</strong>: <code>zend-expressive.error_handler.layout</code>, a name of an
+  alternate layout to use (instead of the default represented in the
+  <code>Zend\Expressive\Middleware\ErrorResponseGenerator::LAYOUT_DEFAULT</code> constant,
+  which evaluates to <code>layout::default</code>).</li>
 </ul>
 <p>As an example:</p>
 <pre class="codehilite"><code class="language-php">'debug' =&gt; true,
 'zend-expressive' =&gt; [
     'error_handler' =&gt; [
         'template_error' =&gt; 'name of error template',
+        'layout' =&gt; 'layout::alternate',
     ],
 ],</code></pre>
 
@@ -1531,14 +1536,24 @@ instances pulled are PSR-15 <code>MiddlewareInterface</code> instances:</p>
 </ul>
 <p>When the <code>config</code> service is present, the factory can utilize two values:</p>
 <ul>
-<li><code>zend-expressive.error_handler.template_404</code>, a name of an alternate
+<li>
+<p><code>zend-expressive.error_handler.template_404</code>, a name of an alternate
   template to use (instead of the default represented in the
-  <code>Zend\Expressive\Delegate\NotFoundDelegate::TEMPLATE_DEFAULT</code> constant).</li>
+  <code>Zend\Expressive\Delegate\NotFoundDelegate::TEMPLATE_DEFAULT</code> constant, which
+  evaluates to <code>error::404</code>).</p>
+</li>
+<li>
+<p><code>zend-expressive.error_handler.layout</code>, a name of an alternate
+  template to use (instead of the default represented in the
+  <code>Zend\Expressive\Delegate\NotFoundDelegate::TEMPLATE_DEFAULT</code> constant, which
+  evaluates to <code>layout::default</code>).</p>
+</li>
 </ul>
 <p>As an example:</p>
 <pre class="codehilite"><code class="language-php">'zend-expressive' =&gt; [
     'error_handler' =&gt; [
         'template_404' =&gt; 'name of 404 template',
+        'layout' =&gt; 'layout::alternate',
     ],
 ],</code></pre>
 
