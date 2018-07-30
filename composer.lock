@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "86eea9ac69bc1a13523041d4c8b9b950",
+    "content-hash": "e504ce1deb452513b32560cd99d1163c",
     "packages": [
         {
             "name": "fig/http-message-util",
