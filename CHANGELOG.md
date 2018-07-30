@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 3.1.0 - 2018-07-30
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- [#629](https://github.com/zendframework/zend-expressive/pull/629) changes the constructor of `Zend\Expressive\Middleware\ErrorResponseGenerator`
+  to accept an additional, optional argument, `$layout`, which defaults to a new
+  constant value, `ErrorResponseGenerator::LAYOUT_DEFAULT`, or `layout::default`.
+  `Zend\Expressive\Container\ErrorResponseGeneratorFactory` now also looks for
+  the configuration value `zend-expressive.error_handler.layout`, and will use
+  that value to seed the constructor argument. This change makes the
+  `ErrorResponseGenerator` mirror the `NotFoundHandler`, allowing for a
+  consistent layout between the two error pages.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 3.0.4 - TBD
 
 ### Added

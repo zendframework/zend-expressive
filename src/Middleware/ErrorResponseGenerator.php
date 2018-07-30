@@ -21,15 +21,18 @@ class ErrorResponseGenerator
     use ErrorResponseGeneratorTrait;
 
     public const TEMPLATE_DEFAULT = 'error::error';
+    public const LAYOUT_DEFAULT = 'layout::default';
 
     public function __construct(
         bool $isDevelopmentMode = false,
         TemplateRendererInterface $renderer = null,
-        string $template = self::TEMPLATE_DEFAULT
+        string $template = self::TEMPLATE_DEFAULT,
+        string $layout = self::LAYOUT_DEFAULT
     ) {
         $this->debug     = $isDevelopmentMode;
         $this->renderer  = $renderer;
         $this->template  = $template;
+        $this->layout    = $layout;
     }
 
     public function __invoke(
@@ -49,6 +52,7 @@ class ErrorResponseGenerator
                     'uri'      => (string) $request->getUri(),
                     'status'   => $response->getStatusCode(),
                     'reason'   => $response->getReasonPhrase(),
+                    'layout'   => $this->layout,
                 ],
                 $this->debug,
                 $response
