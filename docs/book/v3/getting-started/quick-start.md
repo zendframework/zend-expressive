@@ -590,7 +590,7 @@ The above looks for a query string parameter "target", and uses its value to
 provide to the template, which is then rendered and returned in an HTML
 response.
 
-Now, let's edit the template file to have the following contents:
+Now, let's edit the template file to have the one of the following header lines (use the one for your chosen template renderer):
 
 ```html
 <!-- plates -->
