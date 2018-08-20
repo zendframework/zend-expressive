@@ -590,18 +590,26 @@ The above looks for a query string parameter "target", and uses its value to
 provide to the template, which is then rendered and returned in an HTML
 response.
 
-Now, let's edit the template file to have the one of the following header lines (use the one for your chosen template renderer):
+Now, let's edit the template file to have the one of the following header lines
+(use the one for your chosen template renderer):
 
-```html
-<!-- plates -->
-<h1>Hello <?= $this->e($target) ?></h1>
+- Plates
+  ```php
+  <!-- plates -->
+  <h1>Hello <?= $this->e($target) ?></h1>
+  ```
 
-<!-- zend-view -->
-<h1>Hello <?= $this->target ?></h1>
+- zend-view
+  ```php
+  <!-- zend-view -->
+  <h1>Hello <?= $this->target ?></h1>
+  ```
 
-<!-- twig -->
-<h1>Hello {{ target }}</h1>
-```
+- Twig
+  ```twig
+  <!-- twig -->
+  <h1>Hello {{ target }}</h1>
+  ```
 
 While the handler is registered with the container, the application does not yet
 know how to get to it. Let's fix that.
