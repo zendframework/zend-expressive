@@ -11,7 +11,7 @@
 
     <title>Quick Start - Expressive</title>
 
-    <link rel="stylesheet" href="../../../css/styles-f773ae3616.css">
+    <link rel="stylesheet" href="../../../css/styles-3eb6fab3fb.css">
         <link href="../../../css/zend-expressive.css" rel="stylesheet">
 </head>
 <body id="page-top">
@@ -1847,12 +1847,25 @@ contents of your <code>handle()</code> method will be empty to begin.</p>
 <p>The above looks for a query string parameter "target", and uses its value to
 provide to the template, which is then rendered and returned in an HTML
 response.</p>
-<p>Now, let's edit the template file to have the following contents:</p>
-<pre class="codehilite"><code class="language-php">&lt;h1&gt;Hello &lt;?= $this-&gt;target ?&gt;&lt;/h1&gt;</code></pre>
-
-<p>If you are using Twig, use this instead:</p>
-<pre class="codehilite"><code class="language-twig">&lt;h1&gt;Hello {{ target }}&lt;/h1&gt;</code></pre>
-
+<p>Now, let's edit the template file to have the one of the following header lines
+(use the one for your chosen template renderer):</p>
+<ul>
+<li>
+<p>Plates
+  <pre class="codehilite"><code class="language-php">&lt;!-- plates --&gt;
+&lt;h1&gt;Hello &lt;?= $this-&gt;e($target) ?&gt;&lt;/h1&gt;</code></pre></p>
+</li>
+<li>
+<p>zend-view
+  <pre class="codehilite"><code class="language-php">&lt;!-- zend-view --&gt;
+&lt;h1&gt;Hello &lt;?= $this-&gt;target ?&gt;&lt;/h1&gt;</code></pre></p>
+</li>
+<li>
+<p>Twig
+  <pre class="codehilite"><code class="language-twig">&lt;!-- twig --&gt;
+&lt;h1&gt;Hello {{ target }}&lt;/h1&gt;</code></pre></p>
+</li>
+</ul>
 <p>While the handler is registered with the container, the application does not yet
 know how to get to it. Let's fix that.</p>
 <p>Open the file <code>config/routes.php</code>, and add the following at the bottom of
@@ -1903,14 +1916,16 @@ Expressive:</p>
 </nav>
 
 
-<div class="help-wanted">
-    <p>
-        Found a mistake or want to contribute to the documentation?
-        <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v3/getting-started/quick-start.md" target="_blank" class="help-wanted__link">
-            Edit this page on GitHub!
-        </a>
-    </p>
-</div>
+
+    <div class="help-wanted">
+        <p>
+            Found a mistake or want to contribute to the documentation?
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v3/getting-started/quick-start.md" target="_blank" class="help-wanted__link">
+                Edit this page on GitHub!
+            </a>
+        </p>
+    </div>
+
                 
             <!-- content:end -->
             </div>
@@ -3189,6 +3204,15 @@ Expressive:</p>
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
+                    <li class="support__list-item">
+                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
+                    </li>
+                    <li class="support__list-item">
+                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
+                    </li>
+                    <li class="support__list-item">
+                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -3199,7 +3223,7 @@ Expressive:</p>
         var base_url = '../../..',
             siteName = 'Expressive';
     </script>
-    <script src="../../../js/scripts-5141b2abfe.js"></script>
+    <script src="../../../js/scripts-a978f1ec1a.js"></script>
         <script src="../../../search/require.js"></script>
         <script src="../../../search/search.js"></script>
 
