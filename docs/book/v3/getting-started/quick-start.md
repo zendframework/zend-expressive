@@ -592,13 +592,14 @@ response.
 
 Now, let's edit the template file to have the following contents:
 
-```php
+```html
+<!-- plates -->
+<h1>Hello <?= $this->e($target) ?></h1>
+
+<!-- zend-view -->
 <h1>Hello <?= $this->target ?></h1>
-```
 
-If you are using Twig, use this instead:
-
-```twig
+<!-- twig -->
 <h1>Hello {{ target }}</h1>
 ```
 
