@@ -98,7 +98,7 @@ class SetLocaleMiddlewareFactory
 {
     public function __invoke(ContainerInterface $container)
     {
-        $config = $container->get('config');
+        $config = $container->has('config') ? $container->get('config') : [];
         
         return new SetLocaleMiddleware(
             $container->get(UrlHelper::class),
