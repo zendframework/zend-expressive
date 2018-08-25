@@ -68,8 +68,10 @@ class SetLocaleMiddleware implements MiddlewareInterface
         Locale::setDefault(Locale::canonicalize($locale));
         $this->helper->setBasePath($locale);
 
+        $path = substr($path, strlen($locale) + 1);
+
         return $handler->handle($request->withUri(
-            $uri->withPath(substr($path, strlen($locale) + 1))
+            $uri->withPath(path ?: '/')
         ));
     }
 }
