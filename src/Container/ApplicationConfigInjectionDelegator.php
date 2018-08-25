@@ -55,10 +55,10 @@ class ApplicationConfigInjectionDelegator
 
         $config = $container->get('config');
 
-        if (!empty($config['middleware_pipeline'])) {
+        if (! empty($config['middleware_pipeline'])) {
             self::injectPipelineFromConfig($application, (array) $config);
         }
-        if (!empty($config['routes'])) {
+        if (! empty($config['routes'])) {
             self::injectRoutesFromConfig($application, (array) $config);
         }
 
