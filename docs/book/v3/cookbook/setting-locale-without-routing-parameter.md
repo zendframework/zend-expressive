@@ -40,9 +40,17 @@ class SetLocaleMiddleware implements MiddlewareInterface
 {
     private $helper;
 
-    public function __construct(UrlHelper $helper)
+    private $defaultLocale;
+    private $fallbackLocale = 'en_US';
+
+    const REGEX_LOCALE = '#^/(?P<locale>[a-z]{2,3}|[a-z]{2}[-_][a-zA-Z]{2})(?:/|$)#';
+
+    public function __construct(UrlHelper $helper, string $defaultLocale = null)
     {
         $this->helper = $helper;
+        if ($defaultLocale) {
+            $this->defaultLocale = $defaultLocale;
+        }
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
@@ -51,8 +59,8 @@ class SetLocaleMiddleware implements MiddlewareInterface
 
         $path = $uri->getPath();
 
-        if (! preg_match('#^/(?P<locale>[a-z]{2,3}([-_][a-zA-Z]{2}|))/#', $path, $matches)) {
-            Locale::setDefault('de_DE');
+        if (! preg_match(self::REGEX_LOCALE, $path, $matches)) {
+            Locale::setDefault($this->defaultLocale ?: $this->fallbackLocale);
             return $handler->handle($request);
         }
 
@@ -61,7 +69,7 @@ class SetLocaleMiddleware implements MiddlewareInterface
         $this->helper->setBasePath($locale);
 
         return $handler->handle($request->withUri(
-            $uri->withPath(substr($path, 3))
+            $uri->withPath(substr($path, strlen($locale) + 1))
         ));
     }
 }
@@ -77,12 +85,24 @@ namespace App\I18n;
 use Psr\Container\ContainerInterface;
 use Zend\Expressive\Helper\UrlHelper;
 
+/**
+ * Configuration for setting a default locale should look like the following:
+ *
+ * <code>
+ * 'i18n' => [
+ *     'default_locale' => 'de_DE',
+ * ]
+ * </code>
+ */
 class SetLocaleMiddlewareFactory
 {
     public function __invoke(ContainerInterface $container)
     {
+        $config = $container->get('config');
+        
         return new SetLocaleMiddleware(
-            $container->get(UrlHelper::class)
+            $container->get(UrlHelper::class),
+            $config['i18n']['default_locale'] ?? null
         );
     }
 }
