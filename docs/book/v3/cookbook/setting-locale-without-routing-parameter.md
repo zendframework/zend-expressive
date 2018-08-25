@@ -71,7 +71,7 @@ class SetLocaleMiddleware implements MiddlewareInterface
         $path = substr($path, strlen($locale) + 1);
 
         return $handler->handle($request->withUri(
-            $uri->withPath(path ?: '/')
+            $uri->withPath($path ?: '/')
         ));
     }
 }
