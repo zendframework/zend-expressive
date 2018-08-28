@@ -22,7 +22,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#634](https://github.com/zendframework/zend-expressive/pull/634) provides several minor performance and maintenance improvements.
 
 ## 3.1.0 - 2018-07-30
 
