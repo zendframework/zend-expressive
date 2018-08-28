@@ -1414,9 +1414,17 @@ class SetLocaleMiddleware implements MiddlewareInterface
 {
     private $helper;
 
-    public function __construct(UrlHelper $helper)
+    private $defaultLocale;
+    private $fallbackLocale = 'en_US';
+
+    const REGEX_LOCALE = '#^/(?P&lt;locale&gt;[a-z]{2,3}|[a-z]{2}[-_][a-zA-Z]{2})(?:/|$)#';
+
+    public function __construct(UrlHelper $helper, string $defaultLocale = null)
     {
         $this-&gt;helper = $helper;
+        if ($defaultLocale) {
+            $this-&gt;defaultLocale = $defaultLocale;
+        }
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
@@ -1425,8 +1433,8 @@ class SetLocaleMiddleware implements MiddlewareInterface
 
         $path = $uri-&gt;getPath();
 
-        if (! preg_match('#^/(?P&lt;locale&gt;[a-z]{2,3}([-_][a-zA-Z]{2}|))/#', $path, $matches)) {
-            Locale::setDefault('de_DE');
+        if (! preg_match(self::REGEX_LOCALE, $path, $matches)) {
+            Locale::setDefault($this-&gt;defaultLocale ?: $this-&gt;fallbackLocale);
             return $handler-&gt;handle($request);
         }
 
@@ -1434,8 +1442,10 @@ class SetLocaleMiddleware implements MiddlewareInterface
         Locale::setDefault(Locale::canonicalize($locale));
         $this-&gt;helper-&gt;setBasePath($locale);
 
+        $path = substr($path, strlen($locale) + 1);
+
         return $handler-&gt;handle($request-&gt;withUri(
-            $uri-&gt;withPath(substr($path, 3))
+            $uri-&gt;withPath($path ?: '/')
         ));
     }
 }</code></pre>
@@ -1448,12 +1458,24 @@ namespace App\I18n;
 use Psr\Container\ContainerInterface;
 use Zend\Expressive\Helper\UrlHelper;
 
+/**
+ * Configuration for setting a default locale should look like the following:
+ *
+ * &lt;code&gt;
+ * 'i18n' =&gt; [
+ *     'default_locale' =&gt; 'de_DE',
+ * ]
+ * &lt;/code&gt;
+ */
 class SetLocaleMiddlewareFactory
 {
     public function __invoke(ContainerInterface $container)
     {
+        $config = $container-&gt;has('config') ? $container-&gt;get('config') : [];
+
         return new SetLocaleMiddleware(
-            $container-&gt;get(UrlHelper::class)
+            $container-&gt;get(UrlHelper::class),
+            $config['i18n']['default_locale'] ?? null
         );
     }
 }</code></pre>

@@ -1361,6 +1361,10 @@
             <ul class="toc__list">
                 
                     <li class="toc__entry">
+                        <a href="#configprovider" class="toc__link">ConfigProvider</a>
+                    </li>
+                
+                    <li class="toc__entry">
                         <a href="#replacing-the-helperpluginmanager-factory" class="toc__link">Replacing the HelperPluginManager factory</a>
                     </li>
                 
@@ -1391,20 +1395,29 @@ want to use the various view helpers available in other components, such as:</p>
 </ul>
 <p>By default, only the view helpers directly available in zend-view are available;
 how can you add the others?</p>
-<p>To add the zend-form view helpers create a file <code>config/autoload/zend-form.global.php</code>
-with the contents:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
-use Zend\Form\ConfigProvider;
+<h2 id="configprovider">ConfigProvider</h2>
+<p>When you install zend-form, Composer should prompt you if you want to inject one
+or more <code>ConfigProvider</code> classes, including those from zend-hydrator,
+zend-inputfilter, and several others. Always answer "yes" to these; when you do,
+a Composer plugin will add entries for their <code>ConfigProvider</code> classes to your
+<code>config/config.php</code> file.</p>
+<p>If for some reason you are not prompted, or chose "no" when answering the
+prompts, you can add them manually. Add the following entries in the array used
+to create your <code>ConfigAggregator</code> instance within <code>config/config.php</code>:</p>
+<pre class="codehilite"><code class="language-php">    \Zend\Form\ConfigProvider::class,
+    \Zend\InputFilter\ConfigProvider::class,
+    \Zend\Filter\ConfigProvider::class,
+    \Zend\Validator\ConfigProvider::class,
+    \Zend\Hydrator\ConfigProvider::class,</code></pre>
 
-$provider = new ConfigProvider();
-return $provider();</code></pre>
-
-<p>and that will essentially do everything needed.</p>
 <p>If you installed Expressive via the skeleton, the service
 <code>Zend\View\HelperPluginManager</code> is registered for you, and represents the helper
-plugin manager injected into the <code>PhpRenderer</code> instance. As such, you only need
-to configure this. The question is: where?</p>
-<p>You have three options:</p>
+plugin manager injected into the <code>PhpRenderer</code> instance. This instance gets its
+helper configuration from the <code>view_helpers</code> top-level configuration key &mdash;
+which the zend-form <code>ConfigProvider</code> helps to populate!</p>
+<p>At this point, all view helpers provided by zend-form are registered and ready
+to use.</p>
+<p>Alternative options to configure HelperPluginManager:</p>
 <ul>
 <li>Replace the <code>HelperPluginManager</code> factory with your own; or</li>
 <li>Add a delegator factory to or extend the <code>HelperPluginManager</code> service to
