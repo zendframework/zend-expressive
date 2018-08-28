@@ -54,12 +54,13 @@ class ApplicationConfigInjectionDelegator
         }
 
         $config = $container->get('config');
-        if (! isset($config['routes']) && ! isset($config['middleware_pipeline'])) {
-            return $application;
-        }
 
-        self::injectPipelineFromConfig($application, (array) $config);
-        self::injectRoutesFromConfig($application, (array) $config);
+        if (! empty($config['middleware_pipeline'])) {
+            self::injectPipelineFromConfig($application, (array) $config);
+        }
+        if (! empty($config['routes'])) {
+            self::injectRoutesFromConfig($application, (array) $config);
+        }
 
         return $application;
     }
@@ -172,7 +173,7 @@ class ApplicationConfigInjectionDelegator
      */
     public static function injectRoutesFromConfig(Application $application, array $config) : void
     {
-        if (! isset($config['routes']) || ! is_array($config['routes'])) {
+        if (empty($config['routes']) || ! is_array($config['routes'])) {
             return;
         }
 
