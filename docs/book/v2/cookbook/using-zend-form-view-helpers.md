@@ -10,25 +10,36 @@ want to use the various view helpers available in other components, such as:
 By default, only the view helpers directly available in zend-view are available;
 how can you add the others?
 
-To add the zend-form view helpers create a file `config/autoload/zend-form.global.php`
-with the contents:
+## ConfigProvider
+
+When you install zend-form, Composer should prompt you if you want to inject one
+or more `ConfigProvider` classes, including those from zend-hydrator,
+zend-inputfilter, and several others. Always answer "yes" to these; when you do,
+a Composer plugin will add entries for their `ConfigProvider` classes to your
+`config/config.php` file.
+
+If for some reason you are not prompted, or chose "no" when answering the
+prompts, you can add them manually. Add the following entries in the array used
+to create your `ConfigAggregator` instance within `config/config.php`:
 
 ```php
-<?php
-use Zend\Form\ConfigProvider;
-
-$provider = new ConfigProvider();
-return $provider();
+    \Zend\Form\ConfigProvider::class,
+    \Zend\InputFilter\ConfigProvider::class,
+    \Zend\Filter\ConfigProvider::class,
+    \Zend\Validator\ConfigProvider::class,
+    \Zend\Hydrator\ConfigProvider::class,
 ```
-
-and that will essentially do everything needed.
 
 If you installed Expressive via the skeleton, the service
 `Zend\View\HelperPluginManager` is registered for you, and represents the helper
-plugin manager injected into the `PhpRenderer` instance. As such, you only need
-to configure this. The question is: where?
+plugin manager injected into the `PhpRenderer` instance. This instance gets its
+helper configuration from the `view_helpers` top-level configuration key &mdash;
+which the zend-form `ConfigProvider` helps to populate!
 
-You have three options:
+At this point, all view helpers provided by zend-form are registered and ready
+to use.
+
+Alternative options to configure HelperPluginManager:
 
 - Replace the `HelperPluginManager` factory with your own; or
 - Add a delegator factory to or extend the `HelperPluginManager` service to
