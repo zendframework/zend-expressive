@@ -41,7 +41,7 @@
         "phpstan/phpstan-strict-rules": "^0.9",
         "phpunit/phpunit": "^7.0.1",
         "zendframework/zend-coding-standard": "~1.0.0",
-        "zendframework/zend-diactoros": "^1.7.1",
+        "zendframework/zend-diactoros": "^1.7.1 || ^2.0",
         "zendframework/zend-expressive-aurarouter": "^3.0",
         "zendframework/zend-expressive-fastroute": "^3.0",
         "zendframework/zend-expressive-zendrouter": "^3.0",
@@ -78,8 +78,8 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "3.1.x-dev",
-            "dev-develop": "3.2.x-dev"
+            "dev-master": "3.2.x-dev",
+            "dev-develop": "3.3.x-dev"
         },
         "zf": {
             "config-provider": "Zend\\Expressive\\ConfigProvider"

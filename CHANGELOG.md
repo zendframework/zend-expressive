@@ -2,11 +2,12 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 3.1.1 - TBD
+## 3.2.0 - 2018-09-27
 
 ### Added
 
-- Nothing.
+- [#637](https://github.com/zendframework/zend-expressive/pull/637) adds support for zendframework/zend-diactoros 2.0.0. You may use either
+  a 1.Y or 2.Y version of that library with Expressive applications.
 
 ### Changed
 
