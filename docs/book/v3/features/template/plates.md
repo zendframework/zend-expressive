@@ -42,7 +42,7 @@ $plates = new PlatesEngine();
 
 // Configure it:
 $plates->addFolder('error', 'templates/error/');
-$plates->loadExtension(new CustomExtension();
+$plates->loadExtension(new CustomExtension());
 
 // Inject:
 $renderer = new PlatesRenderer($plates);
