@@ -78,8 +78,8 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "3.1.x-dev",
-            "dev-develop": "3.2.x-dev"
+            "dev-master": "3.2.x-dev",
+            "dev-develop": "3.3.x-dev"
         },
         "zf": {
             "config-provider": "Zend\\Expressive\\ConfigProvider"
