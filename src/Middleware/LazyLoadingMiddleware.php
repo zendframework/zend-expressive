@@ -45,6 +45,7 @@ class LazyLoadingMiddleware implements MiddlewareInterface
         $middleware = $this->container->get($this->middlewareName);
 
         if ((!$middleware instanceof MiddlewareInterface) && $middleware instanceof RequestHandlerInterface) {
+
             return $middleware->handle($request);
         }
 
