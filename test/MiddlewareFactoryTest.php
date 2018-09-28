@@ -81,7 +81,7 @@ class MiddlewareFactoryTest extends TestCase
     {
         $handler = $this->prophesize(RequestHandlerInterface::class);
         $handler2 = $this->prophesize(RequestHandlerInterface::class);
-        $request = $this->prophesize(ServerRequestInterface::class);
+        $request = $this->prophesize(ServerRequestInterface::class)->reveal();
         $middleware = $this->factory->lazy('handler');
         
         $this->container->get('handler')
@@ -89,13 +89,14 @@ class MiddlewareFactoryTest extends TestCase
             ->willReturn(
                 $handler->reveal()
             );
-        $handler->handle($request->reveal())
+        
+        $handler->handle($request)
             ->shouldBeCalledOnce()
             ->willReturn(
                 $expectedResponse = $this->prophesize(ResponseInterface::class)->reveal()
             );
         
-        $response = $middleware->process($request->reveval(), $handler2);
+        $response = $middleware->process($request, $handler2->reveal());
         $this->assertSame($expectedResponse, $response);
     }
 
