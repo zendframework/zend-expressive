@@ -12,6 +12,8 @@ namespace ZendTest\Expressive;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use ReflectionProperty;
 use Zend\Expressive\Exception;
 use Zend\Expressive\Middleware\LazyLoadingMiddleware;
@@ -73,6 +75,28 @@ class MiddlewareFactoryTest extends TestCase
     {
         $middleware = $this->factory->lazy('service');
         $this->assertLazyLoadingMiddleware('service', $middleware);
+    }
+
+    public function testLazyLoadingRequestHandler()
+    {
+        $handler = $this->prophesize(RequestHandlerInterface::class);
+        $handler2 = $this->prophesize(RequestHandlerInterface::class);
+        $request = $this->prophesize(ServerRequestInterface::class);
+        $middleware = $this->factory->lazy('handler');
+        
+        $this->container->get('handler')
+            ->shouldBeCalledOnce()
+            ->willReturn(
+                $handler->reveal()
+            );
+        $handler->handle($request->reveal())
+            ->shouldBeCalledOnce()
+            ->willReturn(
+                $expectedResponse = $this->prophesize(ResponseInterface::class)->reveal()
+            );
+        
+        $response = $middleware->process($request->reveval(), $handler2);
+        $this->assertSame($expectedResponse, $response);
     }
 
     public function testPrepareReturnsMiddlewareImplementationsVerbatim()
