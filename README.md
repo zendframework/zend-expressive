@@ -82,6 +82,10 @@ Additionally, you may optionally want to install a template renderer
 implementation, and/or an error handling integration. These are covered in the
 documentation.
 
+Installation of Expressive in an existing project is not currently supported.
+Installation steps are covered in detail in the documentation. Please check
+for more information.
+
 ## Documentation
 
 Documentation is [in the doc tree](docs/book/), and can be compiled using [mkdocs](http://www.mkdocs.org):
