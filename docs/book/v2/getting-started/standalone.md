@@ -29,6 +29,9 @@ have, we can install Expressive, along with a router and a container:
 $ composer require zendframework/zend-expressive zendframework/zend-expressive-fastroute zendframework/zend-servicemanager
 ```
 
+*Note: Installation of Expressive in an existing project is not currently supported.
+As such we recommend it should be installed in an empty directory.*
+
 > ### Routers
 >
 > Expressive needs a routing implementation in order to create routed
