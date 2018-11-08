@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 3.2.1 - TBD
+## 3.2.1 - 2018-11-08
 
 ### Added
 
@@ -22,7 +22,12 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#646](https://github.com/zendframework/zend-expressive/pull/646) fixes behavior in the `MiddlewareContainer` when retrieving
+  services that implement both `RequestHandlerInterface` and
+  `MiddlewareInterface`. Previously, it incorrectly cast these values to
+  `RequestHandlerMiddleware`, which could cause middleware pipelines to fail if
+  they attempted to delegate back to the application middleware pipeline.  These
+  values are now correctly returned verbatim.
 
 ## 3.2.0 - 2018-09-27
 
