@@ -63,9 +63,11 @@ class MiddlewareContainer implements ContainerInterface
             ? $this->container->get($service)
             : new $service();
 
-        $middleware = $middleware instanceof RequestHandlerInterface
-            ? new RequestHandlerMiddleware($middleware)
-            : $middleware;
+        if ($middleware instanceof RequestHandlerInterface
+            && ! $middleware instanceof MiddlewareInterface
+        ) {
+            $middleware = new RequestHandlerMiddleware($middleware);
+        }
 
         if (! $middleware instanceof MiddlewareInterface) {
             throw Exception\InvalidMiddlewareException::forMiddlewareService($service, $middleware);
