@@ -101,4 +101,20 @@ class MiddlewareContainerTest extends TestCase
         $this->assertInstanceOf(RequestHandlerMiddleware::class, $middleware);
         $this->assertAttributeSame($handler, 'handler', $middleware);
     }
+
+    /**
+     * @see https://github.com/zendframework/zend-expressive/issues/645
+     */
+    public function testGetDoesNotCastMiddlewareImplementingRequestHandlerToRequestHandlerMiddleware()
+    {
+        $pipeline = $this->prophesize(RequestHandlerInterface::class);
+        $pipeline->willImplement(MiddlewareInterface::class);
+
+        $this->originContainer->has('pipeline')->willReturn(true);
+        $this->originContainer->get('pipeline')->will([$pipeline, 'reveal']);
+
+        $middleware = $this->container->get('pipeline');
+
+        $this->assertSame($middleware, $pipeline->reveal());
+    }
 }
