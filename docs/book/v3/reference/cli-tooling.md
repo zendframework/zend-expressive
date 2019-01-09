@@ -75,8 +75,8 @@ Commands supported include:
   both with the application container, and, if a template renderer is
   discovered, generate a template in an appropriate location. **Note:**
   `<handler>` will either need to be quoted or the backslashes escaped.
-  **Example:** `handler:create ModuleName\\Handler\\IndexHandler` or
-  `handler:create "ModuleName\Handler\IndexHandler"`.
+  **Example:** `handler:create "ModuleName\Handler\IndexHandler"` or
+  `handler:create ModuleName\\Handler\\IndexHandler`.
 
 - **`middleware:create <middleware>`**: Create a class file for the named
   middleware class. The class _must_ use a namespace already declared in your
