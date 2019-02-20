@@ -130,6 +130,7 @@ return [
             // runtime loader names or instances
         ],
         'timezone' => 'default timezone identifier, e.g. America/New_York',
+        'strict_variables' => false // Ignore invalid variables
     ],
 ];
 ```
