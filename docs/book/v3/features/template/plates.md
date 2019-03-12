@@ -47,3 +47,86 @@ $plates->loadExtension(new CustomExtension());
 // Inject:
 $renderer = new PlatesRenderer($plates);
 ```
+
+## Configuration and Factory
+
+zend-expressive-platesrenderer ships with the factory
+`Zend\Expressive\Plates\PlatesRendererFactory`, which will both create the
+Plates engine instance, and the `PlatesRenderer` instance. If you are using
+[zend-component-installer](https://docs.zendframework.com/zend-component-installer/),
+this will be automatically wired for you during installation.
+
+The factory looks for the following configuration in the `config` service, using
+any it finds:
+
+```php
+return [
+    'plates' => [
+        'extensions' => [
+            // string service names or class names of Plates extensions
+        ],
+    ],
+    'templates' => [
+        'extension' => 'phtml', // change this if you use a different file
+                                // extension for templates
+        'paths' => [
+            // namespace => [paths] pairs
+        ],
+    ],
+];
+```
+
+The factory will also inject two extensions by default,
+`Zend\Expressive\Plates\Extension\UrlExtension` and
+`Zend\Expressive\Plates\Extension\EscaperExtension`, both listed in more detail
+below.
+
+## Shipped Extensions
+
+zend-expressive-plates provides the following extensions.
+
+### UrlExtension
+
+`Zend\Expressive\Plates\Extension\UrlExtension` composes each of the
+[UrlHelper](../helpers/url-helper.md) and [ServerUrlHelper](../helpers/server-url-helper),
+and provides the following template methods:
+
+```php
+public function url(
+   string $routeName = null,
+   array $routeParams = [],
+   array $queryParams = [],
+   ?string $fragmentIdentifier = null,
+   array $options = []
+) : string;
+
+public function serverurl(string $path = null) : string;
+
+// Since zend-expressive-platesrender 2.1.0:
+public function route() : ?Zend\Expressive\Router\RouteResult
+```
+
+### EscaperExtension
+
+`Zend\Expressive\Plates\Extension\UrlExtension` looks for the following
+configuration in the `config` service:
+
+```php
+return [
+    'plates' => [
+        'encoding' => ?string, // character encoding of generated content
+    ],
+];
+```
+
+By default it assumes UTF-8 for the encoding.
+
+The extension registers the following template methods:
+
+```php
+public function escapeHtml(string $html) : string;
+public function escapeHtmlAttr(string $attribute) : string;
+public function escapeJs(string $js) : string;
+public function escapeCss(string $css) : string;
+public function escapeUrl(string $url) : string;
+```
