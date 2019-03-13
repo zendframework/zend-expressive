@@ -351,6 +351,12 @@
     </li>
 
             
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../helpers/template-variable-container/" class="subnavigation__link">Template Variable Container</a>
+    </li>
+
+            
         </ul>
     </li>
 
@@ -1374,6 +1380,14 @@
                         <a href="#using-the-wrapper" class="toc__link">Using the wrapper</a>
                     </li>
                 
+                    <li class="toc__entry">
+                        <a href="#configuration-and-factory" class="toc__link">Configuration and Factory</a>
+                    </li>
+                
+                    <li class="toc__entry">
+                        <a href="#shipped-extensions" class="toc__link">Shipped Extensions</a>
+                    </li>
+                
             </ul>
         </div>
     
@@ -1415,6 +1429,99 @@ $plates-&gt;loadExtension(new CustomExtension());
 
 // Inject:
 $renderer = new PlatesRenderer($plates);</code></pre>
+
+<h2 id="configuration-and-factory">Configuration and Factory</h2>
+<p>zend-expressive-platesrenderer ships with the factory
+<code>Zend\Expressive\Plates\PlatesRendererFactory</code>, which will both create the
+Plates engine instance, and the <code>PlatesRenderer</code> instance. If you are using
+<a href="https://docs.zendframework.com/zend-component-installer/">zend-component-installer</a>,
+this will be automatically wired for you during installation.</p>
+<p>The factory looks for the following configuration in the <code>config</code> service, using
+any it finds:</p>
+<pre class="codehilite"><code class="language-php">// In config/autoload/templates.global.php:
+
+return [
+    'plates' =&gt; [
+        'extensions' =&gt; [
+            // string service names or class names of Plates extensions
+        ],
+    ],
+    'templates' =&gt; [
+        'extension' =&gt; 'phtml', // change this if you use a different file
+                                // extension for templates
+        'paths' =&gt; [
+            // namespace =&gt; [paths] pairs
+        ],
+    ],
+];</code></pre>
+
+<p>The factory will also inject two extensions by default,
+<code>Zend\Expressive\Plates\Extension\UrlExtension</code> and
+<code>Zend\Expressive\Plates\Extension\EscaperExtension</code>, both listed in more detail
+below.</p>
+<h2 id="shipped-extensions">Shipped Extensions</h2>
+<p>zend-expressive-plates provides the following extensions.</p>
+<h3 id="urlextension">UrlExtension</h3>
+<p><code>Zend\Expressive\Plates\Extension\UrlExtension</code> composes each of the
+<a href="../../helpers/url-helper/">UrlHelper</a> and <a href="../../helpers/server-url-helper">ServerUrlHelper</a>,
+and provides the following template methods:</p>
+<pre class="codehilite"><code class="language-php">public function url(
+   string $routeName = null,
+   array $routeParams = [],
+   array $queryParams = [],
+   ?string $fragmentIdentifier = null,
+   array $options = []
+) : string;
+
+public function serverurl(string $path = null) : string;
+
+// Since zend-expressive-platesrender 2.1.0:
+public function route() : ?Zend\Expressive\Router\RouteResult</code></pre>
+
+<p>As an example:</p>
+<pre class="codehilite"><code class="language-php">&lt;a href=&quot;&lt;?= $this-&gt;url('blog', ['stub' =&gt; $this-&gt;stub]) ?&gt;&quot;&gt;A blog post on this&lt;/a&gt;
+
+&lt;?php
+$routing        = $this-&gt;route();
+$routingIsValid = $routing &amp;&amp; $routing-&gt;isSuccess();
+$route       = $routingIsValid ? $routing-&gt;getMatchedRouteName() : 'blog';
+$routeParams = $routingIsValid ? $routing-&gt;getMatchedParams() : [];
+?&gt;
+&lt;a href=&quot;&lt;?= $this-&gt;url($route, $routeParams) ?&gt;&quot;&gt;For more information&lt;/a&gt;</code></pre>
+
+<h3 id="escaperextension">EscaperExtension</h3>
+<p><code>Zend\Expressive\Plates\Extension\EscaperExtension</code> proxies to functionality
+provided in the <a href="https://docs.zendframework.com/zend-escaper/">zend-escaper</a>
+package. It looks for the following configuration in the <code>config</code> service:</p>
+<pre class="codehilite"><code class="language-php">// In config/autoload/templates.global.php:
+
+return [
+    'plates' =&gt; [
+        'encoding' =&gt; ?string, // character encoding of generated content
+    ],
+];</code></pre>
+
+<p>By default it assumes UTF-8 for the encoding.</p>
+<p>The extension registers the following template methods:</p>
+<pre class="codehilite"><code class="language-php">public function escapeHtml(string $html) : string;
+public function escapeHtmlAttr(string $attribute) : string;
+public function escapeJs(string $js) : string;
+public function escapeCss(string $css) : string;
+public function escapeUrl(string $url) : string;</code></pre>
+
+<p>As examples:</p>
+<pre class="codehilite"><code class="language-php">&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta name=&quot;author&quot; content=&quot;&lt;?= $this-&gt;escapeHmtmlAttr($this-&gt;author) ?&gt;&quot;&gt;
+    &lt;link rel=&quot;alternative&quot; href=&quot;&lt;?= $this-&gt;escapeUrl($this-&gt;alternative) ?&gt;&quot;&gt;
+    &lt;style&gt;&lt;?= $this-&gt;escapeCss($this-&gt;styles) ?&gt;&lt;/style&gt;
+    &lt;script&gt;&lt;?= $this-&gt;escapeJs($this-&gt;script) ?&gt;&lt;/script&gt;
+  &lt;/head&gt;
+
+  &lt;body&gt;
+    &lt;?= $this-&gt;escapeHtml($this-&gt;content) ?&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
 
 
 
@@ -1749,6 +1856,12 @@ $renderer = new PlatesRenderer($plates);</code></pre>
                 
     <li class="subnavigation__list-item ">
         <a href="../../helpers/content-length/" class="subnavigation__link">Content-Length Middleware</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../../helpers/template-variable-container/" class="subnavigation__link">Template Variable Container</a>
     </li>
 
             

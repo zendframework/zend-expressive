@@ -351,6 +351,12 @@
     </li>
 
             
+                
+    <li class="subnavigation__list-item ">
+        <a href="../template-variable-container/" class="subnavigation__link">Template Variable Container</a>
+    </li>
+
+            
         </ul>
     </li>
 
@@ -1452,6 +1458,23 @@ $url = $helper('resource', ['id' =&gt; 'sha1']);</code></pre>
 zendframework/zend-expressive-helpers. Prior to that version, the helper only
 accepted the route name and route parameters.</p>
 </blockquote>
+<h3 id="other-methods-available">Other methods available</h3>
+<ul>
+<li><code>getRouteResult() : ?Zend\Expressive\Router\RouteResult</code> (since
+  zend-expressive-helpers 5.2.0): if you want access to the result of routing —
+  and, consequently, the matched route name, matched route parameters, and
+  matched route — you can use this method. The method returns <code>null</code> if no route
+  result has been injected yet — which typically happens in the
+  <code>UrlHelperMiddleware</code>, discussed in the next section.</li>
+</ul>
+<p>As an example:</p>
+<pre class="codehilite"><code class="language-php">$templateParams = [];
+$routeResult    = $this-&gt;urlHelper-&gt;getRouteResult();
+if ($routeResult-&gt;isSuccess()) {
+    $templateParams['route']        = $routeResult-&gt;getMatchedRouteName();
+    $templateParams['route_params'] = $routeResult-&gt;getMatchedParams();
+}</code></pre>
+
 <h3 id="registering-the-pipeline-middleware">Registering the pipeline middleware</h3>
 <p>For the <code>UrlHelper</code> to work, you must first register the <code>UrlHelperMiddleware</code>
 as pipeline middleware following the routing middleware, and before the dispatch
@@ -1949,6 +1972,12 @@ module-specific router.</p>
                 
     <li class="subnavigation__list-item ">
         <a href="../content-length/" class="subnavigation__link">Content-Length Middleware</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../template-variable-container/" class="subnavigation__link">Template Variable Container</a>
     </li>
 
             
