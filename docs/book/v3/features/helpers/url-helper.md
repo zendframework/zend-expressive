@@ -79,6 +79,18 @@ Each method will raise an exception if:
   result has been injected yet — which typically happens in the
   `UrlHelperMiddleware`, discussed in the next section.
 
+  As an example:
+
+  ```php
+  $templateParams = [];
+  $routeResult    = $this->urlHelper->getRouteResult();
+  if ($routeResult->isSuccess()) {
+      $templateParams['route']        = $routeResult->getMatchedRouteName();
+      $templateParams['route_params'] = $routeResult->getMatchedParams();
+  }
+  ```
+
+
 ### Registering the pipeline middleware
 
 For the `UrlHelper` to work, you must first register the `UrlHelperMiddleware`

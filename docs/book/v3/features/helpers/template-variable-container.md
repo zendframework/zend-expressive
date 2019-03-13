@@ -25,9 +25,28 @@ As such, any middleware that is providing additional values or removing values
 **must** call `$request->withAttribute()` to replace the instance, per the
 examples below.
 
+> ### When to use the TemplateVariableContainer
+>
+> If you are calling `addDefaultParam()` only in your factory for creating your
+> template renderer instance, or within delegator factories on the renderer,
+> you do not need to make any changes.
+>
+> If you are using our [Swoole integrations](https://docs.zendframework.com/zend-expressive-swoole)
+> or other async application runners, and either currently or plan to set
+> template parameters withing pipeline middleware you definitely need to use the
+> TemplateVariableContainer in order to prevent state problems.
+>
+> We actually recommend using this approach even if you are not using Swoole or
+> other async application runners, as the approach is more explicit and easily
+> tested, and, as noted, does not depend on state within the renderer itself.
+
+## Usage
+
 As an example, consider the following pipeline:
 
 ```php
+// In config/pipeline.php
+
 use Psr\Container\ContainerInterface;
 use Zend\Expressive\Application;
 use Zend\Expressive\Handler\NotFoundHandler;
@@ -48,6 +67,7 @@ return function (Application $app, MiddlewareFactory $factory, ContainerInterfac
     $app->pipe(ErrorHandler::class);
     $app->pipe(ServerUrlMiddleware::class);
 
+		// The following entry is specific to this example:
     $app->pipe(path(
         '/api/doc',
         $factory->lazy(TemplateVariableContainerMiddleware::class)
@@ -73,38 +93,84 @@ that contains an instance of that class.
 Within middleware that responds on that path, you can then do the following:
 
 ```php
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Expressive\Helper\Template\TemplateVariableContainer;
 use Zend\Expressive\Router\RouteResult;
 
-$container = $request->getAttribute(
-    TemplateVariableContainer::class,
-    new TemplateVariableContainer()
-);
+class InjectUserAndRouteVariablesMiddleware implements MiddlewareInterface
+{
+		public function process(
+				ServerRequestInterface $request,
+				 RequestHandlerInterface $handler
+			) : ResponseInterface {
+					$container = $request->getAttribute(
+							TemplateVariableContainer::class,
+							new TemplateVariableContainer()
+					);
 
-// Since containers are immutable, we re-populate the request:
-$request = $request->withAttribute(
-    TemplateVariableContainer::class,
-    $container->merge([
-        'user'  => $user,
-        'route' => $request->getAttribute(RouteResult::class),
-    ])
-);
+					// Since containers are immutable, we re-populate the request:
+					$request = $request->withAttribute(
+							TemplateVariableContainer::class,
+							$container->merge([
+									'user'  => $user,
+									'route' => $request->getAttribute(RouteResult::class),
+							])
+					);
+
+					return $handler->handle($request);
+			}
+}
 ```
 
 In a handler, you will call `mergeForTemplate()` with any local variables you
 want to use, including those that might override the defaults:
 
 ```php
+use Psr\Http\Message\ResponseFactoryInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Expressive\Helper\Template\TemplateVariableContainer;
+use Zend\Expressive\Template\TemplateRendererInterface;
 
-$content = $this->renderer->render(
-    'some::template',
-    $request
-        ->getAttribute(TemplateVariableContainer::class)
-        ->mergeForTemplate([
-            'local' => $value,
-        ])
-);
+class SomeHandler implements RequestHandlerInterface
+{
+		private $renderer;
+		private $responseFactory;
+		private $streamFactory;
+
+		public function __construct(
+				TemplateRendererInterface $renderer,
+				ResponseFactoryInterface $responseFactory,
+				StreamFactoryInterface $streamFactory
+		) {
+				$this->renderer        = $renderer;
+				$this->responseFactory = $responseFactory;
+				$this->streamFactory   = $streamFactory;
+		}
+
+		public function handle(ServerRequestInterface $request) : ResponseInterface
+		{
+				$value = $request->getParsedBody()['key'] ?? null;
+
+				$content = $this->renderer->render(
+						'some::template',
+						$request
+								->getAttribute(TemplateVariableContainer::class)
+								->mergeForTemplate([
+										'local' => $value,
+								])
+				);
+
+				$body = $this->streamFactory()->createStream($content);
+
+				return $this->responseFactory()->createResponse(200)->withBody($body);
+		}
+}
 ```
 
 The `TemplateVariableContainer` contains the following methods:
