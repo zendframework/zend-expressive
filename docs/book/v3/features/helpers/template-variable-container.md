@@ -67,7 +67,7 @@ return function (Application $app, MiddlewareFactory $factory, ContainerInterfac
     $app->pipe(ErrorHandler::class);
     $app->pipe(ServerUrlMiddleware::class);
 
-		// The following entry is specific to this example:
+        // The following entry is specific to this example:
     $app->pipe(path(
         '/api/doc',
         $factory->lazy(TemplateVariableContainerMiddleware::class)
@@ -102,26 +102,26 @@ use Zend\Expressive\Router\RouteResult;
 
 class InjectUserAndRouteVariablesMiddleware implements MiddlewareInterface
 {
-		public function process(
-				ServerRequestInterface $request,
-				 RequestHandlerInterface $handler
-			) : ResponseInterface {
-					$container = $request->getAttribute(
-							TemplateVariableContainer::class,
-							new TemplateVariableContainer()
-					);
+    public function process(
+        ServerRequestInterface $request,
+            RequestHandlerInterface $handler
+    ) : ResponseInterface {
+        $container = $request->getAttribute(
+            TemplateVariableContainer::class,
+            new TemplateVariableContainer()
+        );
 
-					// Since containers are immutable, we re-populate the request:
-					$request = $request->withAttribute(
-							TemplateVariableContainer::class,
-							$container->merge([
-									'user'  => $user,
-									'route' => $request->getAttribute(RouteResult::class),
-							])
-					);
+        // Since containers are immutable, we re-populate the request:
+        $request = $request->withAttribute(
+            TemplateVariableContainer::class,
+            $container->merge([
+                'user'  => $user,
+                'route' => $request->getAttribute(RouteResult::class),
+            ])
+        );
 
-					return $handler->handle($request);
-			}
+        return $handler->handle($request);
+    }
 }
 ```
 
@@ -139,37 +139,37 @@ use Zend\Expressive\Template\TemplateRendererInterface;
 
 class SomeHandler implements RequestHandlerInterface
 {
-		private $renderer;
-		private $responseFactory;
-		private $streamFactory;
+    private $renderer;
+    private $responseFactory;
+    private $streamFactory;
 
-		public function __construct(
-				TemplateRendererInterface $renderer,
-				ResponseFactoryInterface $responseFactory,
-				StreamFactoryInterface $streamFactory
-		) {
-				$this->renderer        = $renderer;
-				$this->responseFactory = $responseFactory;
-				$this->streamFactory   = $streamFactory;
-		}
+    public function __construct(
+        TemplateRendererInterface $renderer,
+        ResponseFactoryInterface $responseFactory,
+        StreamFactoryInterface $streamFactory
+    ) {
+        $this->renderer        = $renderer;
+        $this->responseFactory = $responseFactory;
+        $this->streamFactory   = $streamFactory;
+    }
 
-		public function handle(ServerRequestInterface $request) : ResponseInterface
-		{
-				$value = $request->getParsedBody()['key'] ?? null;
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
+        $value = $request->getParsedBody()['key'] ?? null;
 
-				$content = $this->renderer->render(
-						'some::template',
-						$request
-								->getAttribute(TemplateVariableContainer::class)
-								->mergeForTemplate([
-										'local' => $value,
-								])
-				);
+        $content = $this->renderer->render(
+            'some::template',
+            $request
+                ->getAttribute(TemplateVariableContainer::class)
+                ->mergeForTemplate([
+                    'local' => $value,
+                ])
+        );
 
-				$body = $this->streamFactory()->createStream($content);
+        $body = $this->streamFactory()->createStream($content);
 
-				return $this->responseFactory()->createResponse(200)->withBody($body);
-		}
+        return $this->responseFactory()->createResponse(200)->withBody($body);
+    }
 }
 ```
 
