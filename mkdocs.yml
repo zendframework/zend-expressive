@@ -46,6 +46,7 @@ pages:
             - ServerUrlHelper: v3/features/helpers/server-url-helper.md
             - 'Body Parsing Middleware': v3/features/helpers/body-parse.md
             - 'Content-Length Middleware': v3/features/helpers/content-length.md
+            - 'Template Variable Container': v3/features/helpers/template-variable-container.md
         - Emitters: v3/features/emitters.md
     - Cookbook:
         - 'Autowiring routes and pipeline middleware': v3/cookbook/autowiring-routes-and-pipelines.md
