@@ -70,6 +70,27 @@ Each method will raise an exception if:
 > zendframework/zend-expressive-helpers. Prior to that version, the helper only
 > accepted the route name and route parameters.
 
+### Other methods available
+
+- `getRouteResult() : ?Zend\Expressive\Router\RouteResult` (since
+  zend-expressive-helpers 5.2.0): if you want access to the result of routing —
+  and, consequently, the matched route name, matched route parameters, and
+  matched route — you can use this method. The method returns `null` if no route
+  result has been injected yet — which typically happens in the
+  `UrlHelperMiddleware`, discussed in the next section.
+
+  As an example:
+
+  ```php
+  $templateParams = [];
+  $routeResult    = $this->urlHelper->getRouteResult();
+  if ($routeResult->isSuccess()) {
+      $templateParams['route']        = $routeResult->getMatchedRouteName();
+      $templateParams['route_params'] = $routeResult->getMatchedParams();
+  }
+  ```
+
+
 ### Registering the pipeline middleware
 
 For the `UrlHelper` to work, you must first register the `UrlHelperMiddleware`
