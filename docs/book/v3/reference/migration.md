@@ -157,9 +157,9 @@ $app->get('/foo', doublePassMiddleware($someDoublePassMiddleware, new Response()
 
 Additionally, the following methods were **removed**:
 
-- `pipeRoutingMiddleware()`: use `pipe(\Zend\Expressive\Router\RouteMiddleware::class)`
+- `pipeRoutingMiddleware()`: use `pipe(\Zend\Expressive\Router\Middleware\RouteMiddleware::class)`
   instead.
-- `pipeDispatchMiddleware()`: use `pipe(\Zend\Expressive\Router\DispatchMiddleware::class)`
+- `pipeDispatchMiddleware()`: use `pipe(\Zend\Expressive\Router\Middleware\DispatchMiddleware::class)`
   instead.
 - `getContainer()`
 - `getDefaultDelegate()`: ensure you pipe middleware or a request handler
