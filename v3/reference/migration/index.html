@@ -1565,9 +1565,9 @@ $app-&gt;get('/foo', doublePassMiddleware($someDoublePassMiddleware, new Respons
 
 <p>Additionally, the following methods were <strong>removed</strong>:</p>
 <ul>
-<li><code>pipeRoutingMiddleware()</code>: use <code>pipe(\Zend\Expressive\Router\RouteMiddleware::class)</code>
+<li><code>pipeRoutingMiddleware()</code>: use <code>pipe(\Zend\Expressive\Router\Middleware\RouteMiddleware::class)</code>
   instead.</li>
-<li><code>pipeDispatchMiddleware()</code>: use <code>pipe(\Zend\Expressive\Router\DispatchMiddleware::class)</code>
+<li><code>pipeDispatchMiddleware()</code>: use <code>pipe(\Zend\Expressive\Router\Middleware\DispatchMiddleware::class)</code>
   instead.</li>
 <li><code>getContainer()</code></li>
 <li><code>getDefaultDelegate()</code>: ensure you pipe middleware or a request handler
