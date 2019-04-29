@@ -130,6 +130,7 @@ return [
             // runtime loader names or instances
         ],
         'timezone' => 'default timezone identifier, e.g. America/New_York',
+        'auto_reload' => true, // Recompile the template whenever the source code changes
     ],
 ];
 ```
