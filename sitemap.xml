@@ -1,1058 +1,1058 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/getting-started/features/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/getting-started/quick-start/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/middleware-types/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/application/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/container/intro/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/container/factories/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/container/delegator-factories/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/container/middleware-container/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/container/middleware-factory/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/container/zend-servicemanager/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/container/pimple/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/container/aura-di/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/container/config/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/router/intro/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/router/interface/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/router/route-collector/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/router/uri-generation/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/router/piping/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/router/aura/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/router/fast-route/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/router/zf2/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/template/intro/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/template/interface/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/template/request-handlers/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/template/plates/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/template/twig/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/template/zend-view/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/error-handling/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/modular-applications/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/middleware/routing-and-dispatch-middleware/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/middleware/implicit-methods-middleware/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/middleware/method-not-allowed-middleware/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/helpers/intro/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/helpers/url-helper/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/helpers/server-url-helper/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/helpers/body-parse/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/helpers/content-length/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/helpers/template-variable-container/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/features/emitters/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/cookbook/autowiring-routes-and-pipelines/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/cookbook/using-a-base-path/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/cookbook/common-prefix-for-routes/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/cookbook/passing-data-between-middleware/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/cookbook/path-segregated-routing/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/cookbook/access-common-data-in-templates/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/cookbook/route-specific-pipeline/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/cookbook/host-segregated-middleware/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/cookbook/double-pass-middleware/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/cookbook/setting-locale-depending-routing-parameter/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/cookbook/setting-locale-without-routing-parameter/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/cookbook/debug-toolbars/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/cookbook/flash-messengers/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/cookbook/using-custom-view-helpers/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/cookbook/using-zend-form-view-helpers/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/why-expressive/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/reference/cli-tooling/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/reference/expressive-projects/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v3/reference/migration/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/getting-started/features/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/getting-started/standalone/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/getting-started/skeleton/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/features/middleware-types/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/features/application/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/features/container/intro/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/features/container/factories/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/features/container/delegator-factories/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/features/container/zend-servicemanager/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/features/container/pimple/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/features/container/aura-di/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/features/router/intro/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/features/router/interface/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/features/router/uri-generation/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/features/router/piping/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/features/router/aura/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/features/router/fast-route/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/features/router/zf2/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/features/template/intro/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/features/template/interface/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/features/template/middleware/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/features/template/plates/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/features/template/twig/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/features/template/zend-view/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/features/error-handling/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/features/modular-applications/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/features/middleware/implicit-methods-middleware/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/features/helpers/intro/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/features/helpers/url-helper/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/features/helpers/server-url-helper/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/features/helpers/body-parse/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/features/helpers/content-length/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/features/emitters/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/cookbook/autowiring-routes-and-pipelines/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/cookbook/common-prefix-for-routes/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/cookbook/route-specific-pipeline/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/cookbook/using-custom-view-helpers/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/cookbook/using-zend-form-view-helpers/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/cookbook/using-a-base-path/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/cookbook/setting-locale-depending-routing-parameter/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/cookbook/setting-locale-without-routing-parameter/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/cookbook/debug-toolbars/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/cookbook/using-routed-middleware-class-as-controller/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/cookbook/flash-messengers/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/cookbook/passing-data-between-middleware/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/why-expressive/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/reference/cli-tooling/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/reference/usage-examples/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/reference/expressive-projects/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/reference/migration/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v2/reference/migration-to-v2-2/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/getting-started/features/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/getting-started/standalone/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/getting-started/skeleton/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/features/application/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/features/container/intro/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/features/container/factories/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/features/container/zend-servicemanager/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/features/container/pimple/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/features/container/aura-di/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/features/router/intro/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/features/router/interface/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/features/router/uri-generation/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/features/router/piping/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/features/router/aura/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/features/router/fast-route/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/features/router/zf2/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/features/template/intro/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/features/template/interface/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/features/template/middleware/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/features/template/plates/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/features/template/twig/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/features/template/zend-view/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/features/error-handling/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/features/helpers/intro/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/features/helpers/url-helper/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/features/helpers/server-url-helper/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/features/helpers/body-parse/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/features/emitters/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/cookbook/common-prefix-for-routes/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/cookbook/route-specific-pipeline/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/cookbook/custom-404-page-handling/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/cookbook/using-custom-view-helpers/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/cookbook/using-zend-form-view-helpers/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/cookbook/using-a-base-path/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/cookbook/modular-layout/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/cookbook/setting-locale-depending-routing-parameter/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/cookbook/setting-locale-without-routing-parameter/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/cookbook/debug-toolbars/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/cookbook/using-routed-middleware-class-as-controller/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/cookbook/flash-messengers/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/why-expressive/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/reference/usage-examples/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/reference/expressive-projects/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/reference/migration/rc-to-v1/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/v1/reference/migration/to-v1-1/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/getting-started/features/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/getting-started/standalone/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/getting-started/skeleton/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/features/middleware-types/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/features/application/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/features/container/intro/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/features/container/factories/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/features/container/delegator-factories/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/features/container/zend-servicemanager/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/features/container/pimple/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/features/container/aura-di/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/features/router/intro/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/features/router/interface/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/features/router/uri-generation/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/features/router/piping/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/features/router/aura/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/features/router/fast-route/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/features/router/zf2/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/features/template/intro/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/features/template/interface/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/features/template/middleware/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/features/template/plates/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/features/template/twig/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/features/template/zend-view/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/features/error-handling/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/features/modular-applications/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/features/middleware/implicit-methods-middleware/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/features/helpers/intro/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/features/helpers/url-helper/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/features/helpers/server-url-helper/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/features/helpers/body-parse/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/features/helpers/content-length/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/features/emitters/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/cookbook/autowiring-routes-and-pipelines/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/cookbook/common-prefix-for-routes/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/cookbook/route-specific-pipeline/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/cookbook/custom-404-page-handling/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/cookbook/using-custom-view-helpers/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/cookbook/using-zend-form-view-helpers/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/cookbook/using-a-base-path/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/cookbook/modular-layout/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/cookbook/setting-locale-depending-routing-parameter/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/cookbook/setting-locale-without-routing-parameter/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/cookbook/debug-toolbars/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/cookbook/using-routed-middleware-class-as-controller/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/cookbook/flash-messengers/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/cookbook/passing-data-between-middleware/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/why-expressive/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/reference/cli-tooling/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/reference/usage-examples/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/reference/expressive-projects/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/reference/migration/to-v2/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/reference/migration/rc-to-v1/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-04-23</lastmod>
+     <loc>https://docs.zendframework.com/zend-expressive/reference/migration/to-v1-1/</loc>
+     <lastmod>2019-04-29</lastmod>
      <changefreq>daily</changefreq>
     </url>
 </urlset>
