@@ -27,7 +27,8 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Expressive\Router\RouteResult;
 use Zend\Expressive\Session\Authentication\UserInterface;
-use Zend\Expressive\Session\Flash\FlashMessagesInterface;
+use Zend\Expressive\Flash\FlashMessagesInterface;
+use Zend\Expressive\Flash\FlashMessageMiddleware;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
 class TemplateDefaultsMiddleware implements MiddlewareInterface
@@ -59,7 +60,7 @@ class TemplateDefaultsMiddleware implements MiddlewareInterface
 
         // Inject all flash messages
         /** @var FlashMessagesInterface $flashMessages */
-        $flashMessages = $request->getAttribute(FlashMessagesInterface::class);
+        $flashMessages = $request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
         $this->templateRenderer->addDefaultParam(
             TemplateRendererInterface::TEMPLATE_ALL,
             'notifications',
