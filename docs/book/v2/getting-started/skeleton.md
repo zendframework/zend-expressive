@@ -22,13 +22,14 @@ This will prompt you to choose:
   templates, configuration, assets, etc.).
 
 - A dependency injection container. We recommend using the default, Zend
-  ServiceManager.
+  ServiceManager. (We use ServiceManager in the examples below, so 
+  choose it if you want to code along).
 
 - A router. We recommend using the default, FastRoute.
 
 - A template renderer. You can ignore this when creating an API project, but if
-  you will be creating any HTML pages, we recommend installing one. We prefer
-  Plates.
+  you will be creating any HTML pages, we recommend installing one. (We use
+  Plates in the examples below, so choose it if you want to code along).
 
 - An error handler. Whoops is a very nice option for development, as it gives
   you extensive, browseable information for exceptions and errors raised.
@@ -549,7 +550,7 @@ You should see the message change as you go between the two URIs!
 
 You likely don't want to hardcode HTML into your middleware; so, let's use
 templates. This particular exercise assumes you chose to use the
-[Plates](http://platesphp.com) integration.
+[Plates](http://platesphp.com) integration. 
 
 Templates are installed under the `templates/` subdirectory. By default, we also
 register the template namespace `app` to correspond with the `templates/app`
@@ -615,12 +616,16 @@ For the next part of the example, we'll be creating and wiring a factory for
 creating the `HelloAction` instance; the example assumes you used the default
 selection for a dependency injection container, zend-servicemanager.
 
-zend-servicemanager provides a tool for generating factories based on
-reflecting a class; we'll use that to generate our factory:
+zend-servicemanager provides a console (command line) tool for generating factories 
+based on reflecting a class; we'll use that to generate our factory. Navigate to your
+root skeleton-app directory in the console and enter the following:
 
 ```bash
-$ ./vendor/bin/generate-factory-for-class "App\\Action\\HelloAction" > src/App/Action/HelloActionFactory.php
+$ ./vendor/bin/generate-factory-for-class \
+> "App\\Action\\HelloAction" > ./src/App/src/Action/HelloActionFactory.php
 ```
+
+> For more information see [generate-factory-for-class](https://docs.zendframework.com/zend-servicemanager/console-tools/#generate-factory-for-class)
 
 With that in place, we'll now update our configuration. Open the file
 `config/autoload/dependencies.global.php`; we'll remove the `invokables` entry
