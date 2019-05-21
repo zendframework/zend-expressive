@@ -1004,7 +1004,7 @@ with no <code>JsonResponseHandler</code> composed will be created.</p>
 pre-configured editor types), a callable, or a service name to use.</p>
 <h2 id="platesrendererfactory">PlatesRendererFactory</h2>
 <ul>
-<li><strong>Provides</strong>: <code>Zend\Expressive\Template\PlatesRenderer</code></li>
+<li><strong>Provides</strong>: <code>Zend\Expressive\Plates\PlatesRenderer</code></li>
 <li><strong>FactoryName</strong>: <code>Zend\Expressive\Plates\PlatesRendererFactory</code></li>
 <li><strong>Suggested Name</strong>: <code>Zend\Expressive\Template\TemplateRendererInterface</code></li>
 <li><strong>Requires</strong>: no additional services are required.</li>
@@ -1030,7 +1030,7 @@ pre-configured editor types), a callable, or a service name to use.</p>
 per namespace when using Plates.</p>
 <h2 id="twigrendererfactory">TwigRendererFactory</h2>
 <ul>
-<li><strong>Provides</strong>: <code>Zend\Expressive\Template\TwigRenderer</code></li>
+<li><strong>Provides</strong>: <code>Zend\Expressive\Twig\TwigRenderer</code></li>
 <li><strong>FactoryName</strong>: <code>Zend\Expressive\Twig\TwigRendererFactory</code></li>
 <li><strong>Suggested Name</strong>: <code>Zend\Expressive\Template\TemplateRendererInterface</code></li>
 <li><strong>Requires</strong>: no additional services are required.</li>
@@ -1065,7 +1065,7 @@ variables, and enables auto reloading. The <code>assets_*</code> values are used
 the <code>TwigExtension</code> instance (assuming the router was found).</p>
 <h2 id="zendviewrendererfactory">ZendViewRendererFactory</h2>
 <ul>
-<li><strong>Provides</strong>: <code>Zend\Expressive\Template\ZendViewRenderer</code></li>
+<li><strong>Provides</strong>: <code>Zend\Expressive\ZendView\ZendViewRenderer</code></li>
 <li><strong>FactoryName</strong>: <code>Zend\Expressive\ZendView\ZendViewRendererFactory</code></li>
 <li><strong>Suggested Name</strong>: <code>Zend\Expressive\Template\TemplateRendererInterface</code></li>
 <li><strong>Requires</strong>: no additional services are required.<ul>
