@@ -214,7 +214,7 @@ pre-configured editor types), a callable, or a service name to use.
 
 ## PlatesRendererFactory
 
-- **Provides**: `Zend\Expressive\Template\PlatesRenderer`
+- **Provides**: `Zend\Expressive\Plates\PlatesRenderer`
 - **FactoryName**: `Zend\Expressive\Plates\PlatesRendererFactory`
 - **Suggested Name**: `Zend\Expressive\Template\TemplateRendererInterface`
 - **Requires**: no additional services are required.
@@ -242,7 +242,7 @@ per namespace when using Plates.
 
 ## TwigRendererFactory
 
-- **Provides**: `Zend\Expressive\Template\TwigRenderer`
+- **Provides**: `Zend\Expressive\Twig\TwigRenderer`
 - **FactoryName**: `Zend\Expressive\Twig\TwigRendererFactory`
 - **Suggested Name**: `Zend\Expressive\Template\TemplateRendererInterface`
 - **Requires**: no additional services are required.
@@ -279,7 +279,7 @@ the `TwigExtension` instance (assuming the router was found).
 
 ## ZendViewRendererFactory
 
-- **Provides**: `Zend\Expressive\Template\ZendViewRenderer`
+- **Provides**: `Zend\Expressive\ZendView\ZendViewRenderer`
 - **FactoryName**: `Zend\Expressive\ZendView\ZendViewRendererFactory`
 - **Suggested Name**: `Zend\Expressive\Template\TemplateRendererInterface`
 - **Requires**: no additional services are required.
