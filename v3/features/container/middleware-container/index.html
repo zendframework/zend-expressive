@@ -700,7 +700,7 @@
 <a href="https://www.php-fig.org/psr/psr-11/">PSR-11</a> container in which to map all of
 your dependencies, this can pose problems when you are attempting to pull
 middleware and request handlers; you could potentially, accidentally, pull
-something of an entire type entirely, which may not work in either context!</p>
+something of a different type entirely, which may not work in either context!</p>
 <p>To prevent this from happening, we provide
 <code>Zend\Expressive\MiddlewareContainer</code>. It decorates your application container,
 and adds the following behavior:</p>
@@ -712,7 +712,7 @@ and adds the following behavior:</p>
   class that exists.</li>
 <li>decorate PSR-15 <code>RequestHandlerInterface</code> implementations using
   <code>Zend\Stratigiliity\RequestHandlerMiddleware</code>.</li>
-<li>raise an exception of the instance to return is no a PSR-15
+<li>raise an exception if the instance to return is not a PSR-15
   <code>MiddlewareInterface</code> implementation.</li>
 </ul>
 </li>
