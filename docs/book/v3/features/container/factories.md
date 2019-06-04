@@ -493,6 +493,7 @@ It consumes the following `config` structure:
 ```php
 'templates' => [
     'layout' => 'name of layout view to use, if any',
+    'extension' => 'file extension used by templates; defaults to phtml',
     'map'    => [
         // template => filename pairs
     ],
@@ -504,6 +505,8 @@ It consumes the following `config` structure:
     ],
 ]
 ```
+
+- `extension` parameter available since `zendframework/zend-expressive-zendviewrenderer` 2.2.0
 
 When creating the `PhpRenderer` instance, it will inject it with a
 `Zend\View\HelperPluginManager` instance (either pulled from the container, or
