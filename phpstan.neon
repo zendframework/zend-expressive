@@ -11,5 +11,3 @@ parameters:
 		- '#Parameter \#1 \$path of function Zend\\Stratigility\\path expects string, array\|callable\|Psr\\Http\\Server\\MiddlewareInterface\|Psr\\Http\\Server\\RequestHandlerInterface\|string given.#'
 		# @see src/Container/WhoopsFactory.php (zend-expressive supports Whoops 1.x)
 		- '#Call to an undefined method Whoops\\Handler\\JsonResponseHandler::onlyForAjaxRequests\(\).#'
-		# @see src/MiddlewareFactory
-		- '#PHPDoc tag @param for parameter \$middleware with type array\|string\|Zend\\Stratigility\\MiddlewarePipe is not subtype of native type array\<int, mixed\>#'

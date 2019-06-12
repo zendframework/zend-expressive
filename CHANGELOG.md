@@ -44,7 +44,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#663](https://github.com/zendframework/zend-expressive/pull/663) fixes parameter
+  types in docblock for `Zend\Expressive\MiddlewareFactory::pipeline()`
 
 ## 3.2.1 - 2018-11-08
 
