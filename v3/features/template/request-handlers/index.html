@@ -724,7 +724,7 @@ responses. To do this, you will:</p>
 <p>We encourage the use of dependency injection. As such, we recommend writing your
 request handler to accept the <code>TemplateRendererInterface</code> via either the constructor or a
 setter. As an example:</p>
-<pre class="codehilite"><code class="language-php">namespace Acme\Blog;
+<p> <pre class=codehilite><code class=language-php>namespace Acme\Blog;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -744,10 +744,9 @@ class EntryHandler implements RequestHandlerInterface
     {
         // ...
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>This will necessitate having a factory for your request handler:</p>
-<pre class="codehilite"><code class="language-php">namespace Acme\Blog\Container;
+<p> <pre class=codehilite><code class=language-php>namespace Acme\Blog\Container;
 
 use Acme\Blog\EntryHandler;
 use Psr\Container\ContainerInterface;
@@ -761,8 +760,7 @@ class EntryHandlerFactory
             $container-&gt;get(TemplateRendererInterface::class)
         );
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>And, of course, you'll need to tell your container to use the factory; see the
 <a href="../../container/intro/">container documentation</a> for more information on how you
 might accomplish that.</p>
@@ -770,7 +768,7 @@ might accomplish that.</p>
 <p>Now that we have the templating engine injected into our request handler, we can
 consume it. Most often, we will want to render a template, optionally with
 substitutions to pass to it. This will typically look like the following:</p>
-<pre class="codehilite"><code class="language-php">namespace Acme\Blog;
+<p> <pre class=codehilite><code class=language-php>namespace Acme\Blog;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -796,7 +794,7 @@ class EntryHandler implements RequestHandlerInterface
             ])
         );
     }
-}</code></pre>
+}</code></pre></p>
 
 
 
@@ -830,7 +828,7 @@ class EntryHandler implements RequestHandlerInterface
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v3/features/template/request-handlers.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v3/features/template/request-handlers.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

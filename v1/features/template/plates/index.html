@@ -659,18 +659,16 @@ it provides:</p>
 <code>Zend\Expressive\Plates\PlatesRenderer</code>.</p>
 <h2 id="installing-plates">Installing Plates</h2>
 <p>To use the Plates wrapper, you must install the Plates integration:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-expressive-platesrenderer</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-expressive-platesrenderer</code></pre></p>
 <h2 id="using-the-wrapper">Using the wrapper</h2>
 <p>If instantiated without arguments, <code>Zend\Expressive\Plates\PlatesRenderer</code> will create
 an instance of the Plates engine, which it will then proxy to.</p>
-<pre class="codehilite"><code class="language-php">use Zend\Expressive\Plates\PlatesRenderer;
+<p> <pre class=codehilite><code class=language-php>use Zend\Expressive\Plates\PlatesRenderer;
 
-$renderer = new PlatesRenderer();</code></pre>
-
+$renderer = new PlatesRenderer();</code></pre></p>
 <p>Alternately, you can instantiate and configure the engine yourself, and pass it
 to the <code>Zend\Expressive\Plates\PlatesRenderer</code> constructor:</p>
-<pre class="codehilite"><code class="language-php">use League\Plates\Engine as PlatesEngine;
+<p> <pre class=codehilite><code class=language-php>use League\Plates\Engine as PlatesEngine;
 use Zend\Expressive\Plates\PlatesRenderer;
 
 // Create the engine instance:
@@ -681,7 +679,7 @@ $plates-&gt;addFolder('error', 'templates/error/');
 $plates-&gt;loadExtension(new CustomExtension());
 
 // Inject:
-$renderer = new PlatesRenderer($plates);</code></pre>
+$renderer = new PlatesRenderer($plates);</code></pre></p>
 
 
 
@@ -715,7 +713,7 @@ $renderer = new PlatesRenderer($plates);</code></pre>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v1/features/template/plates.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v1/features/template/plates.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

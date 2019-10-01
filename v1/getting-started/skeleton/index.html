@@ -655,8 +655,7 @@ prompts you to choose a router, dependency injection container, template
 renderer, and error handler from the outset.</p>
 <h2 id="1-create-a-new-project">1. Create a new project</h2>
 <p>First, we'll create a new project, using Composer's <code>create-project</code> command:</p>
-<pre class="codehilite"><code class="language-bash">$ composer create-project zendframework/zend-expressive-skeleton expressive</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer create-project zendframework/zend-expressive-skeleton expressive</code></pre></p>
 <p>This will prompt you to choose:</p>
 <ul>
 <li>A router. We recommend using the default, FastRoute.</li>
@@ -673,8 +672,7 @@ renderer, and error handler from the outset.</p>
 when complete. You can test it out using <a href="http://php.net/manual/en/features.commandline.webserver.php">built-in web
 server</a>.</p>
 <p>From the project root directory, execute the following:</p>
-<pre class="codehilite"><code class="language-bash">$ composer serve</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer serve</code></pre></p>
 <p>This starts up a web server on localhost port 8080; browse to
 http://localhost:8080/ to see if your application responds correctly!</p>
 <h2 id="next-steps">Next Steps</h2>
@@ -682,7 +680,7 @@ http://localhost:8080/ to see if your application responds correctly!</p>
 classes, and using configuration to map routes to middleware. It also provides a
 default structure for templates, if you choose to use them. Let's see how you
 can create first vanilla middleware, and then templated middleware.</p>
-<h3 id="creating-middleware">Creating middleware</h3>
+<h3>Creating middleware</h3>
 <p>The easiest way to create middleware is to create a class that defines an
 <code>__invoke()</code> method accepting a request, response, and callable "next" argument
 (for invoking the "next" middleware in the queue). The skeleton defines an <code>App</code>
@@ -690,7 +688,7 @@ namespace for you, and suggests placing middleware under the namespace
 <code>App\Action</code>.</p>
 <p>Let's create a "Hello" action. Place the following in
 <code>src/App/Action/HelloAction.php</code>:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<p> <pre class=codehilite><code class=language-php>&lt;?php
 namespace App\Action;
 
 use Psr\Http\Message\ResponseInterface;
@@ -710,24 +708,22 @@ class HelloAction
         ));
         return $response-&gt;withHeader('Content-Type', 'text/html');
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>The above looks for a query string parameter "target", and uses its value to
 provide a message, which is then returned in an HTML response.</p>
 <p>Now we need to inform the application of this middleware, and indicate what
 path will invoke it. Open the file <code>config/autoload/routes.global.php</code>. Inside
 that file, you should have a structure similar to the following:</p>
-<pre class="codehilite"><code class="language-php">return [
+<p> <pre class=codehilite><code class=language-php>return [
     'dependencies' =&gt; [
         /* ... */
     ],
     'routes' =&gt; [
         /* ... */
     ],
-];</code></pre>
-
+];</code></pre></p>
 <p>We're going to add an entry under <code>routes</code>:</p>
-<pre class="codehilite"><code class="language-php">return [
+<p> <pre class=codehilite><code class=language-php>return [
     /* ... */
     'routes' =&gt; [
         /* ... */
@@ -738,8 +734,7 @@ that file, you should have a structure similar to the following:</p>
             'allowed_methods' =&gt; ['GET'],
         ],
     ],
-];</code></pre>
-
+];</code></pre></p>
 <p>Once you've added the above entry, give it a try by going to each of the
 following URIs:</p>
 <ul>
@@ -747,7 +742,7 @@ following URIs:</p>
 <li>http://localhost:8080/hello?target=ME</li>
 </ul>
 <p>You should see the message change as you go between the two URIs!</p>
-<h3 id="using-templates">Using templates</h3>
+<h3>Using templates</h3>
 <p>You likely don't want to hardcode HTML into your middleware; so, let's use
 templates. This particular exercise assumes you chose to use the
 <a href="http://platesphp.com">Plates</a> integration.</p>
@@ -755,17 +750,16 @@ templates. This particular exercise assumes you chose to use the
 register the template namespace <code>app</code> to correspond with the <code>templates/app</code>
 subdirectory. Create the file <code>templates/app/hello-world.phtml</code> with the
 following contents:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php $this-&gt;layout('layout::default', ['title' =&gt; 'Greetings']) ?&gt;
+<p> <pre class=codehilite><code class=language-php>&lt;?php $this-&gt;layout('layout::default', ['title' =&gt; 'Greetings']) ?&gt;
 
-&lt;h2&gt;Hello, &lt;?= $this-&gt;e($target) ?&gt;&lt;/h2&gt;</code></pre>
-
+&lt;h2&gt;Hello, &lt;?= $this-&gt;e($target) ?&gt;&lt;/h2&gt;</code></pre></p>
 <p>Now that we have a template, we need to:</p>
 <ul>
 <li>Inject a renderer into our action class.</li>
 <li>Use the renderer to render the contents.</li>
 </ul>
 <p>Replace your <code>src/App/Action/HelloAction.php</code> file with the following contents:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<p> <pre class=codehilite><code class=language-php>&lt;?php
 namespace App\Action;
 
 use Psr\Http\Message\ResponseInterface;
@@ -791,8 +785,7 @@ class HelloAction
             $this-&gt;renderer-&gt;render('app::hello-world', ['target' =&gt; $target])
         );
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>The above modifies the class to accept a renderer to the constructor, and then
 calls on it to render a template. A few things to note:</p>
 <ul>
@@ -809,7 +802,7 @@ creating the <code>HelloAction</code> instance; the example assumes you used the
 selection for a dependency injection container, Zend ServiceManager.</p>
 <p>Let's create a factory. Create the file <code>src/App/Action/HelloActionFactory.php</code> with
 the following contents:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<p> <pre class=codehilite><code class=language-php>&lt;?php
 namespace App\Action;
 
 use Interop\Container\ContainerInterface;
@@ -823,12 +816,11 @@ class HelloActionFactory
             $container-&gt;get(TemplateRendererInterface::class)
         );
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>With that in place, we'll now update our configuration. Open the file
 <code>config/autoload/routes.global.php</code>; it should have a structure similar to
 the following:</p>
-<pre class="codehilite"><code class="language-php">return [
+<p> <pre class=codehilite><code class=language-php>return [
     'dependencies' =&gt; [
         'invokables' =&gt; [
             /* ... */
@@ -837,11 +829,10 @@ the following:</p>
     'routes' =&gt; [
         /* ... */
     ],
-];</code></pre>
-
+];</code></pre></p>
 <p>We're going to tell our application that we have a <em>factory</em> for our
 <code>HelloAction</code> class:</p>
-<pre class="codehilite"><code class="language-php">return [
+<p> <pre class=codehilite><code class=language-php>return [
     'dependencies' =&gt; [
         /* ... */
         'factories' =&gt; [
@@ -852,8 +843,7 @@ the following:</p>
     'routes' =&gt; [
         /* ... */
     ],
-];</code></pre>
-
+];</code></pre></p>
 <p>Save that file, and now re-visit the URIs:</p>
 <ul>
 <li>http://localhost:8080/hello</li>
@@ -904,7 +894,7 @@ Expressive:</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v1/getting-started/skeleton.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v1/getting-started/skeleton.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

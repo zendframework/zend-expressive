@@ -706,13 +706,12 @@ features:</p>
 <a href="https://www.php-fig.org/psr/psr-11/">PSR-11 Container</a>; as
 such, you need to install the <code>xtreamwayz/pimple-container-interop</code> project,
 which provides a PSR-11 container wrapper around Pimple v3:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require xtreamwayz/pimple-container-interop</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer require xtreamwayz/pimple-container-interop</code></pre></p>
 <h2 id="configuring-pimple">Configuring Pimple</h2>
 <p>To configure Pimple, instantiate it, and then add the factories desired. We
 recommend doing this in a dedicated script that returns the Pimple instance; in
 this example, we'll have that in <code>config/container.php</code>.</p>
-<pre class="codehilite"><code class="language-php">use Xtreamwayz\Pimple\Container as Pimple;
+<p> <pre class=codehilite><code class=language-php>use Xtreamwayz\Pimple\Container as Pimple;
 use Zend\Expressive\Container;
 use Zend\Expressive\Plates\PlatesRenderer;
 use Zend\Expressive\Router;
@@ -763,10 +762,9 @@ $container[Zend\Expressive\Middleware\ErrorResponseGenerator::class] = new Conta
 // If in production:
 $container[Zend\Expressive\Middleware\ErrorResponseGenerator::class] = new Container\ErrorResponseGeneratorFactory();
 
-return $container;</code></pre>
-
+return $container;</code></pre></p>
 <p>Your bootstrap (typically <code>public/index.php</code>) will then look like this:</p>
-<pre class="codehilite"><code class="language-php">chdir(dirname(__DIR__));
+<p> <pre class=codehilite><code class=language-php>chdir(dirname(__DIR__));
 $container = require 'config/container.php';
 $app = $container-&gt;get(Zend\Expressive\Application::class);
 
@@ -774,10 +772,9 @@ require 'config/pipeline.php';
 require 'config/routes.php';
 
 // All versions:
-$app-&gt;run();</code></pre>
-
+$app-&gt;run();</code></pre></p>
 <blockquote>
-<h3 id="environments">Environments</h3>
+<h3>Environments</h3>
 <p>In the example above, we provide two alternate definitions for the
 service <code>Zend\Expressive\Middleware\ErrorResponseGenerator</code>, one for
 development and one for production. You will need to add logic to your file to
@@ -817,7 +814,7 @@ environment variable.</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v2/features/container/pimple.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v2/features/container/pimple.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

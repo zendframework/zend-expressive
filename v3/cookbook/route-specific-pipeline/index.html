@@ -725,7 +725,7 @@ middleware's context.</p>
 <h2 id="resolving-to-a-middlewarepipe">Resolving to a MiddlewarePipe</h2>
 <p>You can do this programmatically within a container factory, assuming you are
 using a container that supports factories.</p>
-<pre class="codehilite"><code class="language-php">use Psr\Container\ContainerInterface;
+<p> <pre class=codehilite><code class=language-php>use Psr\Container\ContainerInterface;
 use Zend\Expressive\MiddlewareFactory;
 use Zend\Stratigility\MiddlewarePipe;
 
@@ -747,8 +747,7 @@ class ApiResourcePipelineFactory
 
         return $pipeline;
     }
-}</code></pre>
-
+}</code></pre></p>
 <blockquote>
 <p><code>$factory-&gt;prepare()</code> is used here to allow lazy-loading each middleware and
 handler. If we instead pulled each class from the container directly, each would
@@ -761,7 +760,7 @@ setting up your container configuration.</p>
 Delegator factories allow you to decorate the primary factory used to create the
 middleware in order to change the instance or return an alternate instance. In
 this case, we'd do the latter. The following is an example:</p>
-<pre class="codehilite"><code class="language-php">use Psr\Container\ContainerInterface;
+<p> <pre class=codehilite><code class=language-php>use Psr\Container\ContainerInterface;
 use Zend\Expressive\MiddlewareFactory;
 use Zend\ServiceManager\DelegatorFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -789,10 +788,9 @@ class ApiResourcePipelineDelegatorFactory implements DelegatorFactoryInterface
 
         return $pipeline;
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>When configuring the container, you'd do something like the following:</p>
-<pre class="codehilite"><code class="language-php">return [
+<p> <pre class=codehilite><code class=language-php>return [
     'dependencies' =&gt; [
         'factories' =&gt; [
             AuthenticationMiddleware::class =&gt; '...',
@@ -807,22 +805,20 @@ class ApiResourcePipelineDelegatorFactory implements DelegatorFactoryInterface
             ],
         ],
     ],
-];</code></pre>
-
+];</code></pre></p>
 <p>This approach allows you to cleanly separate the factory for your middleware
 from the pipeline you want to compose it in, and allows you to re-use the
 pipeline creation across multiple middleware if desired.</p>
 <h2 id="middleware-arrays">Middleware Arrays</h2>
 <p>If you'd rather not create a factory for each such middleware, the other option
 is to use arrays of middlewares when routing.</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;route('/api/resource[/{id:[a-f0-9]{32}}]', [
+<p> <pre class=codehilite><code class=language-php>$app-&gt;route('/api/resource[/{id:[a-f0-9]{32}}]', [
     AuthenticationMiddleware::class,
     AuthorizationMiddleware::class,
     BodyParsingMiddleware::class,
     ValidationMiddleware::class,
     ApiResource::class,
-], ['GET', 'POST', 'PATCH', 'DELETE'], 'api-resource');</code></pre>
-
+], ['GET', 'POST', 'PATCH', 'DELETE'], 'api-resource');</code></pre></p>
 <p>When either of these approaches are used, the individual middleware listed
 <strong>MUST</strong> be one of the following:</p>
 <ul>
@@ -867,7 +863,7 @@ middleware pipeline.</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v3/cookbook/route-specific-pipeline.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v3/cookbook/route-specific-pipeline.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

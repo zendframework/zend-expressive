@@ -658,55 +658,52 @@ the name:</p>
 <li>If you call <code>route()</code> with no HTTP methods, the name is the literal path with
   no changes.</li>
 </ul>
-<pre class="codehilite"><code class="language-php">$app-&gt;route('/foo', $middleware); // "foo"</code></pre>
-
+<p><code>php
+  $app-&gt;route('/foo', $middleware); // "foo"</code></p>
 <ul>
 <li>If you call <code>get()</code>, <code>post()</code>, <code>put()</code>, <code>patch()</code>, or <code>delete()</code>, the name
   will be the literal path, followed by a caret (<code>^</code>), followed by the
   uppercase HTTP method name:</li>
 </ul>
-<pre class="codehilite"><code class="language-php">$app-&gt;get('/foo', $middleware); // "foo^GET"</code></pre>
-
+<p><code>php
+  $app-&gt;get('/foo', $middleware); // "foo^GET"</code></p>
 <p>Alternately, these methods return a <code>Route</code> instance, and you can set the
   name on it:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;get('/foo', $middleware)-&gt;setName('foo'); // "foo"</code></pre>
-
+<p><code>php
+  $app-&gt;get('/foo', $middleware)-&gt;setName('foo'); // "foo"</code></p>
 <ul>
 <li>If you call <code>route()</code> and specify a list of HTTP methods accepted, the name
   will be the literal path, followed by a caret (<code>^</code>), followed by a colon
   (<code>:</code>)-separated list of the uppercase HTTP method names, in the order in which
   they were added.</li>
 </ul>
-<pre class="codehilite"><code class="language-php">$app-&gt;route('/foo', $middleware, ['GET', 'POST']); // "foo^GET:POST"</code></pre>
-
+<p><code>php
+  $app-&gt;route('/foo', $middleware, ['GET', 'POST']); // "foo^GET:POST"</code></p>
 <p>Like the HTTP-specific methods, <code>route()</code> also returns a <code>Route</code> instance,
   and you can set the name on it:</p>
-<pre class="codehilite"><code class="language-php">$route = $app-&gt;route('/foo', $middleware, ['GET', 'POST']); // "foo^GET:POST"
-$route-&gt;setName('foo'); // "foo"</code></pre>
-
+<p><code>php
+  $route = $app-&gt;route('/foo', $middleware, ['GET', 'POST']); // "foo^GET:POST"
+  $route-&gt;setName('foo'); // "foo"</code></p>
 <p>Clearly, this can become difficult to remember. As such, Expressive offers the
 ability to specify a custom string for the route name as an additional, optional
 argument to any of the above:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;route('/foo', $middleware, 'foo'); // 'foo'
+<p> <pre class=codehilite><code class=language-php>$app-&gt;route('/foo', $middleware, 'foo'); // 'foo'
 $app-&gt;get('/foo/:id', $middleware, 'foo-item'); // 'foo-item'
-$app-&gt;route('/foo', $middleware, ['GET', 'POST'], 'foo-collection'); // 'foo-collection'</code></pre>
-
+$app-&gt;route('/foo', $middleware, ['GET', 'POST'], 'foo-collection'); // 'foo-collection'</code></pre></p>
 <p>As noted above, these methods also return <code>Route</code> instances, allowing you to
 set the name after-the-fact; this is particularly useful with the <code>route()</code>
 method, where you may want to omit the HTTP methods if any HTTP method is
 allowed:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;route('/foo', $middleware)-&gt;setName('foo'); // 'foo'</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>$app-&gt;route('/foo', $middleware)-&gt;setName('foo'); // 'foo'</code></pre></p>
 <p>We recommend that if you plan on generating URIs for given routes, you provide a
 custom name.</p>
 <h2 id="generating-uris">Generating URIs</h2>
 <p>Once you know the name of a URI you wish to generate, you can do so from the
 router instance:</p>
-<pre class="codehilite"><code class="language-php">$uri = $router-&gt;generateUri('foo-item', ['id' =&gt; 'bar']); // "/foo/bar"</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>$uri = $router-&gt;generateUri('foo-item', ['id' =&gt; 'bar']); // &quot;/foo/bar&quot;</code></pre></p>
 <p>You can omit the second argument if no substitutions are necessary.</p>
 <blockquote>
-<h3 id="compose-the-router">Compose the router</h3>
+<h3>Compose the router</h3>
 <p>For this to work, you'll need to compose the router instance in any class that
 requires the URI generation facility. Inject the
 <code>Zend\Expressive\Router\RouterInterface</code> service in these situations.</p>
@@ -744,7 +741,7 @@ requires the URI generation facility. Inject the
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v1/features/router/uri-generation.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v1/features/router/uri-generation.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

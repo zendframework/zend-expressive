@@ -661,20 +661,18 @@ the simplest example, detailed below, or move on to a more structured,
 configuration-driven approach as detailed in the <a href="../../reference/usage-examples/">use case examples</a>.</p>
 <h2 id="1-create-a-new-project-directory">1. Create a new project directory</h2>
 <p>First, let's create a new project directory and enter it:</p>
-<pre class="codehilite"><code class="language-bash">$ mkdir expressive
-$ cd expressive</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ mkdir expressive
+$ cd expressive</code></pre></p>
 <h2 id="2-install-expressive">2. Install Expressive</h2>
 <p>If you haven't already, <a href="https://getcomposer.org">install Composer</a>. Once you
 have, we can install Expressive, along with a router and a container:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-expressive zendframework/zend-expressive-fastroute zendframework/zend-servicemanager</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-expressive zendframework/zend-expressive-fastroute zendframework/zend-servicemanager</code></pre></p>
 <blockquote>
-<h3 id="routers">Routers</h3>
+<h3>Routers</h3>
 <p>Expressive needs a routing implementation in order to create routed
 middleware. We suggest FastRoute in the quick start, but you can also
 currently choose from Aura.Router and zend-router.</p>
-<h3 id="containers">Containers</h3>
+<h3>Containers</h3>
 <p>We highly recommend using dependency injection containers with Expressive;
 they allow you to define dependencies for your middleware, as well as to lazy
 load your middleware only when it needs to be executed. We suggest
@@ -685,14 +683,13 @@ supporting <a href="https://github.com/container-interop/container-interop">cont
 <p>You'll need a directory from which to serve your application, and for security
 reasons, it's a good idea to keep it separate from your source code. We'll
 create a <code>public/</code> directory for this:</p>
-<pre class="codehilite"><code class="language-bash">$ mkdir public</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ mkdir public</code></pre></p>
 <h2 id="4-create-your-bootstrap-script">4. Create your bootstrap script</h2>
 <p>Next, we'll create a bootstrap script. Such scripts typically setup the
 environment, setup the application, and invoke it. This needs to be in our web
 root, and we want it to intercept any incoming request; as such, we'll use
 <code>public/index.php</code>:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<p> <pre class=codehilite><code class=language-php>&lt;?php
 use Zend\Expressive\AppFactory;
 
 chdir(dirname(__DIR__));
@@ -707,19 +704,18 @@ $app-&gt;get('/', function ($request, $response, $next) {
 
 $app-&gt;pipeRoutingMiddleware();
 $app-&gt;pipeDispatchMiddleware();
-$app-&gt;run();</code></pre>
-
+$app-&gt;run();</code></pre></p>
 <blockquote>
-<h3 id="rewriting-urls">Rewriting URLs</h3>
+<h3>Rewriting URLs</h3>
 <p>Many web servers will not rewrite URLs to the bootstrap script by default. If
 you use Apache, for instance, you'll need to setup rewrite rules to ensure
 your bootstrap is invoked for unknown URLs. We'll cover that in a later
 chapter.</p>
-<h3 id="routing-and-dispatching">Routing and dispatching</h3>
+<h3>Routing and dispatching</h3>
 <p>Note the lines from the above:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;pipeRoutingMiddleware();
-$app-&gt;pipeDispatchMiddleware();</code></pre>
-
+<p><code>php
+$app-&gt;pipeRoutingMiddleware();
+$app-&gt;pipeDispatchMiddleware();</code></p>
 <p>Expressive's <code>Application</code> class provides two separate middlewares, one for
 routing, and one for dispatching middleware matched by routing. This allows
 you to slip in validations between the two activities if desired. They are
@@ -730,21 +726,20 @@ situation, which means they must be piped manually.</p>
 <p>Since we're just testing out the basic functionality of our application, we'll
 use PHP's <a href="http://php.net/manual/en/features.commandline.webserver.php">built-in web server</a>.</p>
 <p>From the project root directory, execute the following:</p>
-<pre class="codehilite"><code class="language-bash">$ php -S 0.0.0.0:8080 -t public/</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ php -S 0.0.0.0:8080 -t public/</code></pre></p>
 <p>This starts up a web server on localhost port 8080; browse to
 http://localhost:8080/ to see if your application responds correctly!</p>
 <blockquote>
-<h3 id="tip-serve-via-composer">Tip: Serve via Composer</h3>
+<h3>Tip: Serve via Composer</h3>
 <p>To simplify starting up a local web server, try adding the following to your
 <code>composer.json</code>:</p>
-<pre class="codehilite"><code class="language-json">"scripts": {
+<p><code>json
+"scripts": {
     "serve": "php -S 0.0.0.0:8080 -t public/"
-}</code></pre>
-
+}</code></p>
 <p>Once you've added that, you can fire up the web server using:</p>
-<pre class="codehilite"><code class="language-bash">$ composer serve</code></pre>
-
+<p><code>bash
+$ composer serve</code></p>
 </blockquote>
 <h2 id="next-steps">Next steps</h2>
 <p>At this point, you have a working zend-expressive application, that responds to
@@ -790,7 +785,7 @@ a single route. From here, you may want to read up on:</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v1/getting-started/standalone.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v1/getting-started/standalone.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

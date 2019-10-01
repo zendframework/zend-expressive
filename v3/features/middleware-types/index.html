@@ -739,7 +739,7 @@ HTTP POST requests to the path <code>/users</code>.</p>
 consume <a href="http://www.php-fig.org/psr/psr-7">PSR-7</a> HTTP messages. Expressive
 accepts both middleware that implements the <code>MiddlewareInterface</code> and request
 handlers that implement <code>RequestHandlerInterface</code>. As an example:</p>
-<pre class="codehilite"><code class="language-php">use Psr\Http\Server\MiddlewareInterface;
+<p> <pre class=codehilite><code class=language-php>use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -754,14 +754,13 @@ class SomeMiddleware implements MiddlewareInterface
         //
         // return $handler-&gt;handle($request);
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>You could also implement such middleware via an anonymous class.</p>
 <h2 id="callable-middleware">Callable middleware</h2>
 <p>Sometimes you may not want to create a class for one-off middleware. As such,
 Expressive allows you to provide a PHP callable that uses the same signature as
 <code>Psr\Http\Server\MiddlewareInterface</code>:</p>
-<pre class="codehilite"><code class="language-php">use Psr\Http\Server\RequestHandlerInterface;
+<p> <pre class=codehilite><code class=language-php>use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -772,8 +771,7 @@ function (ServerRequestInterface $request, RequestHandlerInterface $handler) : R
     // of returning a response via:
     //
     // return $handler-&gt;handle($request);
-}</code></pre>
-
+}</code></pre></p>
 <p>One note: neither argument <em>require</em> a typehint, and examples throughout the
 manual will omit the typehints when demonstrating callable middleware.</p>
 <h2 id="service-based-middleware">Service-based middleware</h2>
@@ -790,7 +788,7 @@ instance, allowing it to be loaded only when dispatched.</p>
 To prevent the need for instantiating a <code>Zend\Stratigility\MiddlewarePipe</code>
 instance when defining the pipeline, Expressive allows you to provide an array
 of middleware:</p>
-<pre class="codehilite"><code class="language-php">// Pipeline middleware:
+<p> <pre class=codehilite><code class=language-php>// Pipeline middleware:
 $app-&gt;pipe([
     FirstMiddleware::class,
     SecondMiddleware::class,
@@ -800,8 +798,7 @@ $app-&gt;pipe([
 $app-&gt;get('/foo', [
     FirstMiddleware::class,
     SecondMiddleware::class,
-]);</code></pre>
-
+]);</code></pre></p>
 <p>The values in these arrays may be any valid middleware type as defined in this
 chapter.</p>
 
@@ -837,7 +834,7 @@ chapter.</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v3/features/middleware-types.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v3/features/middleware-types.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

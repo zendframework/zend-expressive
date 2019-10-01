@@ -709,7 +709,7 @@ dependency injection containers supported by Expressive.</p>
 event manager. We might want to attach listeners to that event manager, but not
 wish to alter the basic creation logic for the repository itself. As such, we
 might write a <em>delegator factory</em> as follows:</p>
-<pre class="codehilite"><code class="language-php">namespace Acme;
+<p> <pre class=codehilite><code class=language-php>namespace Acme;
 
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -723,18 +723,16 @@ class UserRepositoryListenerDelegatorFactory
         $repository-&gt;getEventManager()-&gt;attach($listener);
         return $repository;
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>To notify the container about this delegator factory, we would add the following
 configuration to our application:</p>
-<pre class="codehilite"><code class="language-php">'dependencies' =&gt; [
+<p> <pre class=codehilite><code class=language-php>'dependencies' =&gt; [
     'delegators' =&gt; [
         Acme\UserRepository::class =&gt; [
             Acme\UserRepositoryListenerDelegatorFactory::class,
         ],
     ],
-],</code></pre>
-
+],</code></pre></p>
 <p>Note that you specify delegator factories using the service name being decorated
 as the key, with an <em>array</em> of delegator factories as a value. <strong>You may attach
 multiple delegator factories to any given service</strong>, which can be a very
@@ -774,7 +772,7 @@ zend-servicemanager container implementations.</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v3/features/container/delegator-factories.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v3/features/container/delegator-factories.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

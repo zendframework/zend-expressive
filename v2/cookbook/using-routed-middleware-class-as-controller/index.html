@@ -702,7 +702,7 @@ all three of the above?</p>
 <p>In the following example, we'll use an <code>action</code> routing parameter which our
 middleware class will use in order to determine which internal method to invoke.</p>
 <p>Consider the following route configuration:</p>
-<p><pre class="codehilite"><code class="language-php">use Album\Action\AlbumPage;
+<p> <pre class=codehilite><code class=language-php>use Album\Action\AlbumPage;
 
 // Programmatic:
 $app-&gt;get('/album[/{action:add|edit}[/{id}]]', AlbumPage::class, 'album');
@@ -720,8 +720,8 @@ return [
         ],
         /* ... */
     ],
-];</code></pre>
-The above each define a route that will match any of the following:</p>
+];</code></pre></p>
+<p>The above each define a route that will match any of the following:</p>
 <ul>
 <li><code>/album</code></li>
 <li><code>/album/add</code></li>
@@ -736,7 +736,7 @@ definition may differ. The above example uses the default <code>FastRoute</code>
 implementation.</p>
 </blockquote>
 <p>We might then implement <code>Album\Action\AlbumPage</code> as follows:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<p> <pre class=codehilite><code class=language-php>&lt;?php
 namespace Album\Action;
 
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
@@ -792,14 +792,13 @@ class AlbumPage implements MiddlewareInterface
             $this-&gt;template-&gt;render('album::album-page-edit', ['id' =&gt; $id])
         );
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>This allows us to have the same dependencies for a set of related actions, and,
 if desired, even have common internal methods each can utilize.</p>
 <p>This approach is reasonable, but requires that I create a similar <code>process()</code>
 implementation every time I want to accomplish a similar workflow. Let's create
 a generic implementation, via an <code>AbstractPage</code> class:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<p> <pre class=codehilite><code class=language-php>&lt;?php
 namespace App\Action;
 
 use Fig\Http\Message\StatusCodeInterface as StatusCode;
@@ -820,15 +819,14 @@ abstract class AbstractPage implements MiddlewareInterface
 
         return $this-&gt;$action($request, $delegate);
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>The above abstract class pulls the <code>action</code> attribute on invocation, and
 concatenates it with the word <code>Action</code>. It then uses this value to determine if
 a corresponding method exists in the current class, and, if so, calls it with
 the arguments it received; otherwise, it returns an empty 404 response.</p>
 <p>Our original <code>AlbumPage</code> implementation could then be modified to extend
 <code>AbstractPage</code>:</p>
-<pre class="codehilite"><code class="language-php">namespace Album\Action;
+<p> <pre class=codehilite><code class=language-php>namespace Album\Action;
 
 use App\Action\AbstractPage;
 use Interop\Http\ServerMiddleware\DelegateInterface;
@@ -848,57 +846,56 @@ class AlbumPage extends AbstractPage
     public function indexAction( /* ... */ ) { /* ... */ }
     public function addAction( /* ... */ ) { /* ... */ }
     public function editAction( /* ... */ ) { /* ... */ }
-}</code></pre>
-
+}</code></pre></p>
 <blockquote>
 <h2 id="or-use-a-trait">Or use a trait</h2>
 <p>As an alternative to an abstract class, you could define the <code>__invoke()</code>
 logic in a trait, which you then compose into your middleware:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
-namespace App\Action;
-
-use Fig\Http\Message\StatusCodeInterface as StatusCode;
+<p>```php
+&lt;?php
+namespace App\Action;</p>
+<p>use Fig\Http\Message\StatusCodeInterface as StatusCode;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\EmptyResponse;
-
-trait ActionBasedInvocation
+use Zend\Diactoros\Response\EmptyResponse;</p>
+<p>trait ActionBasedInvocation
 {
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $action = $request-&gt;getAttribute('action', 'index') . 'Action';
-
-        if (! method_exists($this, $action)) {
-            return new EmptyResponse(StatusCode::STATUS_NOT_FOUND);
-        }
-
-        return $this-&gt;$action($request, $delegate);
+        $action = $request-&gt;getAttribute('action', 'index') . 'Action';</p>
+<pre class="codehilite"><code>    if (! method_exists($this, $action)) {
+        return new EmptyResponse(StatusCode::STATUS_NOT_FOUND);
     }
+
+    return $this-&gt;$action($request, $delegate);
 }</code></pre>
 
+
+<p>}
+```</p>
 <p>You would then compose it into a class as follows:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
-namespace Album\Action;
-
-use App\Action\ActionBasedInvocation;
-use Zend\Expressive\Template\TemplateRendererInterface;
-
-class AlbumPage
+<p>```php
+&lt;?php
+namespace Album\Action;</p>
+<p>use App\Action\ActionBasedInvocation;
+use Zend\Expressive\Template\TemplateRendererInterface;</p>
+<p>class AlbumPage
 {
-    use ActionBasedInvocation;
+    use ActionBasedInvocation;</p>
+<pre class="codehilite"><code>private $template;
 
-    private $template;
+public function __construct(TemplateRendererInterface $template)
+{
+    $this-&gt;template = $template;
+}
 
-    public function __construct(TemplateRendererInterface $template)
-    {
-        $this-&gt;template = $template;
-    }
+public function indexAction( /* ... */ ) { /* ... */ }
+public function addAction( /* ... */ ) { /* ... */ }
+public function editAction( /* ... */ ) { /* ... */ }</code></pre>
 
-    public function indexAction( /* ... */ ) { /* ... */ }
-    public function addAction( /* ... */ ) { /* ... */ }
-    public function editAction( /* ... */ ) { /* ... */ }
-}</code></pre>
 
+<p>}
+```</p>
 </blockquote>
 
 
@@ -933,7 +930,7 @@ class AlbumPage
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v2/cookbook/using-routed-middleware-class-as-controller.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v2/cookbook/using-routed-middleware-class-as-controller.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

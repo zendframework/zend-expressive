@@ -734,7 +734,7 @@ from the request URI's path. If it doesn't find one, it sets a default.</p>
 <li>amends the request with a truncated path (removing the locale segment).</li>
 <li>adds the locale segment as the base path of the <code>UrlHelper</code>.</li>
 </ul>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<p> <pre class=codehilite><code class=language-php>&lt;?php
 namespace App\I18n;
 
 use Locale;
@@ -782,11 +782,10 @@ class SetLocaleMiddleware implements MiddlewareInterface
             $uri-&gt;withPath($path ?: '/')
         ));
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>Then you will need a factory for the <code>SetLocaleMiddleware</code> to inject the
 <code>UrlHelper</code> instance.</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<p> <pre class=codehilite><code class=language-php>&lt;?php
 namespace App\I18n;
 
 use Psr\Container\ContainerInterface;
@@ -812,12 +811,11 @@ class SetLocaleMiddlewareFactory
             $config['i18n']['default_locale'] ?? null
         );
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>Next, map the middleware to its factory in either
 <code>/config/autoload/dependencies.global.php</code> or
 <code>/config/autoload/middleware-pipeline.global.php</code>:</p>
-<pre class="codehilite"><code class="language-php">use App\I18n\SetLocaleMiddleware;
+<p> <pre class=codehilite><code class=language-php>use App\I18n\SetLocaleMiddleware;
 use App\I18n\SetLocaleMiddlewareFactory;
 
 return [
@@ -828,12 +826,11 @@ return [
             /* ... */
         ],
     ],
-];</code></pre>
-
+];</code></pre></p>
 <p>Finally, you will need to configure your middleware pipeline to ensure this
 middleware is executed on every request.</p>
 <p>Pipe the middleware early in your application, before routing is performed:</p>
-<pre class="codehilite"><code class="language-php">use App\I18n\SetLocaleMiddleware;
+<p> <pre class=codehilite><code class=language-php>use App\I18n\SetLocaleMiddleware;
 
 /* ... */
 $app-&gt;pipe(SetLocaleMiddleware::class);
@@ -841,16 +838,14 @@ $app-&gt;pipe(SetLocaleMiddleware::class);
 $app-&gt;pipe(RouteMiddleware::class);
 /* ... */
 $app-&gt;pipe(DispatchMiddleware::class);
-/* ... */</code></pre>
-
+/* ... */</code></pre></p>
 <h2 id="url-generation-in-the-view">Url generation in the view</h2>
 <p>Since the <code>UrlHelper</code> has the locale set as a base path, you don't need
 to worry about generating URLs within your view. Just use the helper to
 generate a URL and it will do the rest.</p>
-<pre class="codehilite"><code class="language-php">&lt;?= $this-&gt;url('your-route') ?&gt;</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>&lt;?= $this-&gt;url('your-route') ?&gt;</code></pre></p>
 <blockquote>
-<h3 id="helpers-differ-between-template-renderers">Helpers differ between template renderers</h3>
+<h3>Helpers differ between template renderers</h3>
 <p>The above example is specific to zend-view; syntax will differ for
 Twig and Plates.</p>
 </blockquote>
@@ -858,7 +853,7 @@ Twig and Plates.</p>
 <p>If you want to add the locale parameter when creating URIs within your
 request handlers, you just need to inject the <code>UrlHelper</code> into your
 handler and use it for URL generation:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<p> <pre class=codehilite><code class=language-php>&lt;?php
 namespace App\Handler;
 
 use Psr\Http\Message\ResponseInterface;
@@ -884,12 +879,11 @@ class RedirectHandler implements RequestHandlerInterface
             $this-&gt;helper-&gt;generate('your-route', $routeParams)
         );
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>Injecting the <code>UrlHelper</code> into your request handler will also require that the
 handler have a factory that manages the injection. As an example, the following
 would work for the above middleware:</p>
-<pre class="codehilite"><code class="language-php">namespace App\Handler;
+<p> <pre class=codehilite><code class=language-php>namespace App\Handler;
 
 use Psr\Container\ContainerInterface;
 use Zend\Expressive\Helper\UrlHelper;
@@ -902,7 +896,7 @@ class RedirectHandlerFactory
             $container-&gt;get(UrlHelper::class)
         );
     }
-}</code></pre>
+}</code></pre></p>
 
 
 
@@ -936,7 +930,7 @@ class RedirectHandlerFactory
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v3/cookbook/setting-locale-without-routing-parameter.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v3/cookbook/setting-locale-without-routing-parameter.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

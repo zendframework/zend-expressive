@@ -721,27 +721,24 @@ middleware.</p>
 <p>To use it, it must first be registered with your container. The easiest way to
 do that is to register the zend-expressive-router <code>ConfigProvider</code> in your
 <code>config/config.php</code>:</p>
-<pre class="codehilite"><code class="language-php">$aggregator = new ConfigAggregator([
-    \Zend\Expressive\Router\ConfigProvider::class,</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>$aggregator = new ConfigAggregator([
+    \Zend\Expressive\Router\ConfigProvider::class,</code></pre></p>
 <p>Alternately, add the following dependency configuration in one of your
 <code>config/autoload/</code> configuration files or a <code>ConfigProvider</code> class:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware;
+<p> <pre class=codehilite><code class=language-php>use Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware;
 use Zend\Expressive\Router\Middleware\ImplicitHeadMiddlewareFactory;
 
 'dependencies' =&gt; [
     'factories' =&gt; [
         ImplicitHeadMiddleware::class =&gt; ImplicitHeadMiddlewareFactory::class,
     ],
-],</code></pre>
-
+],</code></pre></p>
 <p>Within your application pipeline, add the middleware between the routing and
 dispatch middleware:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;pipeRoutingMiddleware();
+<p> <pre class=codehilite><code class=language-php>$app-&gt;pipeRoutingMiddleware();
 $app-&gt;pipe(ImplicitHeadMiddleware::class);
 // ...
-$app-&gt;pipeDispatchMiddleware();</code></pre>
-
+$app-&gt;pipeDispatchMiddleware();</code></pre></p>
 <p>(Note: if you used the <code>expressive-pipeline-from-config</code> tool to create your
 programmatic pipeline, or if you used the Expressive skeleton, this middleware
 is likely already in your pipeline, as is a dependency entry.)</p>
@@ -761,7 +758,7 @@ composed response (either the one injected at instantiation, or an empty
 instance). However, if <code>GET</code> is supported, it will dispatch the next layer, but
 with a <code>GET</code> request instead of <code>HEAD</code>; additionally, it will inject the
 returned response with an empty response body before returning it.</p>
-<h3 id="detecting-forwarded-requests">Detecting forwarded requests</h3>
+<h3>Detecting forwarded requests</h3>
 <ul>
 <li>Since 2.1.0</li>
 </ul>
@@ -777,27 +774,24 @@ registered <em>between</em> the routing and dispatch middleware.</p>
 <p>To use it, it must first be registered with your container. The easiest way to
 do that is to register the zend-expressive-router <code>ConfigProvider</code> in your
 <code>config/config.php</code>:</p>
-<pre class="codehilite"><code class="language-php">$aggregator = new ConfigAggregator([
-    \Zend\Expressive\Router\ConfigProvider::class,</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>$aggregator = new ConfigAggregator([
+    \Zend\Expressive\Router\ConfigProvider::class,</code></pre></p>
 <p>Alternately, add the following dependency configuration in one of your
 <code>config/autoload/</code> configuration files or a <code>ConfigProvider</code> class:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware;
+<p> <pre class=codehilite><code class=language-php>use Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware;
 use Zend\Expressive\Router\Middleware\ImplicitOptionsMiddlewareFactory;
 
 'dependencies' =&gt; [
     'factories' =&gt; [
         ImplicitOptionsMiddleware::class =&gt; ImplicitOptionsMiddlewareFactory::class,
     ],
-],</code></pre>
-
+],</code></pre></p>
 <p>Within your application pipeline, add the middleware between the routing and
 dispatch middleware:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;pipeRoutingMiddleware();
+<p> <pre class=codehilite><code class=language-php>$app-&gt;pipeRoutingMiddleware();
 $app-&gt;pipe(ImplicitOptionsMiddleware::class);
 // ...
-$app-&gt;pipeDispatchMiddleware();</code></pre>
-
+$app-&gt;pipeDispatchMiddleware();</code></pre></p>
 <p>(Note: if you used the <code>expressive-pipeline-from-config</code> tool to create your
 programmatic pipeline, or if you used the Expressive skeleton, this middleware
 is likely already in your pipeline, as is a dependency entry.)</p>
@@ -850,7 +844,7 @@ explicitly by the matched route.</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v2/features/middleware/implicit-methods-middleware.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v2/features/middleware/implicit-methods-middleware.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

@@ -722,20 +722,17 @@ generate a fully qualified URI.</p>
 <h2 id="usage">Usage</h2>
 <p>When you have an instance, use either its <code>generate()</code> method, or call the
 instance as an invokable:</p>
-<pre class="codehilite"><code class="language-php">// Using the generate() method:
+<p> <pre class=codehilite><code class=language-php>// Using the generate() method:
 $url = $helper-&gt;generate('/foo');
 
 // is equivalent to invocation:
-$url = $helper('/foo');</code></pre>
-
+$url = $helper('/foo');</code></pre></p>
 <p>The helper is particularly useful when used in conjunction with the
 <a href="../url-helper/">UrlHelper</a>, as you can then create fully qualified URIs for use
 with headers, API hypermedia links, etc.:</p>
-<pre class="codehilite"><code class="language-php">$url = $serverUrl($url('resource', ['id' =&gt; 'sha1']));</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>$url = $serverUrl($url('resource', ['id' =&gt; 'sha1']));</code></pre></p>
 <p>The signature for the ServerUrlHelper <code>generate()</code> and <code>__invoke()</code> methods is:</p>
-<pre class="codehilite"><code class="language-php">function ($path = null) : string</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>function ($path = null) : string</code></pre></p>
 <p>Where:</p>
 <ul>
 <li><code>$path</code>, when provided, can be a string path to use to generate a URI.</li>
@@ -747,16 +744,15 @@ with headers, API hypermedia links, etc.:</p>
 instance, and, when invoked, injects it with the URI instance.</p>
 <p>As such, you will need to register the <code>ServerUrlMiddleware</code> as pipeline
 middleware, anytime before the routing middleware:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Expressive\Helper\ServerUrlMiddleware;
+<p> <pre class=codehilite><code class=language-php>use Zend\Expressive\Helper\ServerUrlMiddleware;
 
 // Programmatically:
 $app-&gt;pipe(ServerUrlMiddleware::class);
 $app-&gt;pipe(RouteMiddleware::class);
 // ...
-$app-&gt;pipe(DispatchMiddleware::class);</code></pre>
-
+$app-&gt;pipe(DispatchMiddleware::class);</code></pre></p>
 <blockquote>
-<h3 id="skeleton-configures-helpers">Skeleton configures helpers</h3>
+<h3>Skeleton configures helpers</h3>
 <p>If you started your project using the Expressive skeleton package, the
 <code>ServerUrlHelper</code> and <code>ServerUrlMiddleware</code> factories are already registered
 for you, as is the <code>ServerUrlMiddleware</code> pipeline middleware.</p>
@@ -764,7 +760,7 @@ for you, as is the <code>ServerUrlMiddleware</code> pipeline middleware.</p>
 <h2 id="using-the-helper-in-middleware">Using the helper in middleware</h2>
 <p>Compose the helper in your middleware (or elsewhere), and then use it to
 generate URI paths:</p>
-<pre class="codehilite"><code class="language-php">use Psr\Http\Message\ResponseInterface;
+<p> <pre class=codehilite><code class=language-php>use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterfacel
 use Psr\Http\Server\RequestHandlerInterface;
@@ -785,10 +781,10 @@ class FooMiddleware implements MiddlewareInterface
 
         return $response-&gt;withHeader(
             'Link',
-            $this-&gt;helper-&gt;generate() . '; rel="self"'
+            $this-&gt;helper-&gt;generate() . '; rel=&quot;self&quot;'
         );
     }
-}</code></pre>
+}</code></pre></p>
 
 
 
@@ -822,7 +818,7 @@ class FooMiddleware implements MiddlewareInterface
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v3/features/helpers/server-url-helper.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v3/features/helpers/server-url-helper.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

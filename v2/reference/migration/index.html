@@ -892,7 +892,7 @@ recommend updating them to instead typehint against PSR-11, which will allow
 you to drop the container-interop requirement once your chosen container
 implementation no longer requires it.</p>
 <blockquote>
-<h3 id="do-not-update-blindly">Do not update blindly!</h3>
+<h3>Do not update blindly!</h3>
 <p>If you are implementing interfaces from other packages in your factory
 implementations, be sure to check and see if those interfaces update to PSR-11
 before making changes.</p>
@@ -935,7 +935,7 @@ signature, but will require that you either:</p>
 outset.</p>
 <p>We recommend that you begin writing middleware to follow the http-interop
 standard at this time. As an example:</p>
-<pre class="codehilite"><code class="language-php">namespace App\Middleware;
+<p> <pre class=codehilite><code class=language-php>namespace App\Middleware;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
@@ -951,10 +951,9 @@ class XClacksOverheadMiddleware implements MiddlewareInterface
         $response = $delegate-&gt;process($request);
         return $response-&gt;withHeader('X-Clacks-Overhead', 'GNU Terry Pratchett');
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>Alternately, you can write this as a callable:</p>
-<pre class="codehilite"><code class="language-php">namespace App\Middleware;
+<p> <pre class=codehilite><code class=language-php>namespace App\Middleware;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -972,8 +971,7 @@ class XClacksOverheadMiddleware
         $response = $delegate-&gt;process($request);
         return $response-&gt;withHeader('X-Clacks-Overhead', 'GNU Terry Pratchett');
     }
-}</code></pre>
-
+}</code></pre></p>
 <h2 id="original-messages">Original messages</h2>
 <p>In the <a href="../../../v1/reference/migration/to-v1-1/">migration to version 1.1 guide</a>, we detail the fact that
 Stratigility 1.3 deprecated its internal request and response decorators.
@@ -994,11 +992,9 @@ details how to update your configuration or programmatic pipeline.</p>
 <a href="https://github.com/zendframework/zend-expressive-tooling">zendframework/zend-expressive-tooling</a>
 package which will help you in this latter part of the migration. Install it as
 a development requirement via composer:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require --dev zendframework/zend-expressive-tooling</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer require --dev zendframework/zend-expressive-tooling</code></pre></p>
 <p>And then execute it via:</p>
-<pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive-migrate-original-messages</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ ./vendor/bin/expressive-migrate-original-messages</code></pre></p>
 <p>This tool will update calls to <code>getOriginalRequest()</code> and <code>getOriginalUri()</code> to
 instead use the new request attributes that the <code>OriginalMessages</code> middleware
 injects:</p>
@@ -1025,7 +1021,7 @@ internally, removes the <code>ErrorMiddlewareInterface</code> entirely, and thus
 <code>$e</code>/<code>$error</code> argument to final handlers.</p>
 <p>As such, you <strong>MUST</strong> provide your own error handling with Expressive 2.0.</p>
 <p>Error handling middleware will typically introduce a try/catch block:</p>
-<pre class="codehilite"><code class="language-php">function (
+<p> <pre class=codehilite><code class=language-php>function (
     ServerRequestInterface $request,
     ResponseInterface $response,
     callable $next
@@ -1044,8 +1040,7 @@ internally, removes the <code>ErrorMiddlewareInterface</code> entirely, and thus
     // ...
 
     return $response;
-}</code></pre>
-
+}</code></pre></p>
 <p>Additionally, you will need middleware registered as your innermost layer that
 is guaranteed to return a response. Generally, if you hit that layer, no other
 middleware is capable of handling the request, indicating a 400 (Bad Request) or
@@ -1060,12 +1055,11 @@ type <code>ErrorException</code> with the PHP error details.</p>
 <p><code>ErrorHandler</code> allows injection of an "error response generator", which allows
 you to alter how the error response is generated based on the current
 environment. Error response generators are callables with the signature:</p>
-<pre class="codehilite"><code class="language-php">function (
+<p> <pre class=codehilite><code class=language-php>function (
     Throwable|Exception $e,
     ServerRequestInterface $request,
     ResponseInterface $response
-) : ResponseInterface</code></pre>
-
+) : ResponseInterface</code></pre></p>
 <p>Expressive 2.0 provides the following functionality to assist with your error
 handling needs:</p>
 <ul>
@@ -1177,11 +1171,11 @@ handling needs:</p>
 </ul>
 </li>
 </ul>
-<h3 id="error-handler-configuration-example">Error handler configuration example</h3>
+<h3>Error handler configuration example</h3>
 <p>If you are using configuration-driven middleware, your middleware pipeline
 configuration may look like this in order to make use of the new error handling
 facilities:</p>
-<pre class="codehilite"><code class="language-php">// config/autoload/middleware-pipeline.global.php
+<p> <pre class=codehilite><code class=language-php>// config/autoload/middleware-pipeline.global.php
 
 use Zend\Expressive\Application;
 use Zend\Expressive\Container;
@@ -1198,7 +1192,7 @@ return [
 
     'dependencies' =&gt; [
         'invokables' =&gt; [
-            // See above section on "Original messages":
+            // See above section on &quot;Original messages&quot;:
             OriginalMessages::class =&gt; OriginalMessages::class,
         ],
         'factories' =&gt; [
@@ -1237,21 +1231,19 @@ return [
             'priority' =&gt; 0,
         ],
 
-        // Remove the section "error""
+        // Remove the section &quot;error&quot;&quot;
     ],
-];</code></pre>
-
+];</code></pre></p>
 <p>If you are defining a programmatic pipeline (see more below on this), the
 pipeline might look like:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;pipe(OriginalMessages::class);
+<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe(OriginalMessages::class);
 $app-&gt;pipe(Helper\ServerUrlMiddleware::class);
 $app-&gt;pipe(ErrorHandler::class);
 $app-&gt;pipeRoutingMiddleware();
 $app-&gt;pipe(Helper\UrlHelperMiddleware::class);
 $app-&gt;pipeDispatchMiddleware();
-$app-&gt;pipe(Middleware\NotFoundHandler::class);</code></pre>
-
-<h3 id="error-handling-and-php-errors">Error handling and PHP errors</h3>
+$app-&gt;pipe(Middleware\NotFoundHandler::class);</code></pre></p>
+<h3>Error handling and PHP errors</h3>
 <p>As noted above, <code>Zend\Stratigility\Middleware\ErrorHandler</code> also creates a PHP
 error handler that casts PHP errors to <code>ErrorException</code> instances. More
 specifically, it uses the current <code>error_reporting</code> value to determine <em>which</em>
@@ -1260,11 +1252,10 @@ errors it should cast this way.</p>
 to exceptions, code that would normally run will now result in error pages.</p>
 <p>We recommend adding the following line to your <code>public/index.php</code> towards the
 top of the file:</p>
-<pre class="codehilite"><code class="language-php">error_reporting(error_reporting() &amp; ~E_USER_DEPRECATED);</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>error_reporting(error_reporting() &amp; ~E_USER_DEPRECATED);</code></pre></p>
 <p>This will prevent the error handler from casting deprecation notices to
 exceptions, while keeping the rest of your error reporting mask intact.</p>
-<h3 id="removing-legacy-error-middleware">Removing legacy error middleware</h3>
+<h3>Removing legacy error middleware</h3>
 <p>Stratigility version 1-style error middleware (middleware implementing
 <code>Zend\Stratigility\ErrorMiddlewareInterface</code>, or duck-typing its signature,
 which included an <code>$error</code> argument as the first argument to the middleware) is
@@ -1334,7 +1325,7 @@ otherwise producing a plain text response.</p>
 <p>Application's built using the 2.0 version of the skeleton application will have
 these features enabled by default.</p>
 <blockquote>
-<h3 id="notfounddelegate-and-notfoundhandler">NotFoundDelegate and NotFoundHandler</h3>
+<h3>NotFoundDelegate and NotFoundHandler</h3>
 <p><code>Zend\Expressive\Middleware\NotFoundHandler</code>, which is intended as innermost
 middleware for producing a 404 response, composes and proxies to a
 <code>NotFoundDelegate</code> instance to produce its response.</p>
@@ -1353,15 +1344,15 @@ You may install this package in one of the following ways:</p>
 <ul>
 <li>Via the vendor binary <code>./vendor/bin/expressive-tooling</code>:</li>
 </ul>
-<pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive-tooling        # install
-$ ./vendor/bin/expressive-tooling remove # uninstall</code></pre>
-
+<p><code>bash
+  $ ./vendor/bin/expressive-tooling        # install
+  $ ./vendor/bin/expressive-tooling remove # uninstall</code></p>
 <ul>
 <li>Using Composer:</li>
 </ul>
-<pre class="codehilite"><code class="language-bash">$ composer require --dev zendframework/zend-expressive-tooling # install
-$ composer remove --dev zendframework/zend-expressive-tooling  # uninstall</code></pre>
-
+<p><code>bash
+  $ composer require --dev zendframework/zend-expressive-tooling # install
+  $ composer remove --dev zendframework/zend-expressive-tooling  # uninstall</code></p>
 <p>Once installed, you will use the <code>vendor/bin/expressive-pipeline-from-config</code>
 command.</p>
 <p>This command does the following:</p>
@@ -1406,7 +1397,7 @@ the configuration in <code>config/autoload/programmatic-pipeline.global.php</cod
 are now ignored.</p>
 <p>If you wish to use Whoops in your development environment, you may add the
 following to a local configuration file (e.g., <code>config/autoload/local.php</code>):</p>
-<pre class="codehilite"><code class="language-php">use Zend\Expressive\Container\WhoopsErrorResponseGeneratorFactory;
+<p> <pre class=codehilite><code class=language-php>use Zend\Expressive\Container\WhoopsErrorResponseGeneratorFactory;
 use Zend\Expressive\Middleware\ErrorResponseGenerator;
 
 return [
@@ -1415,8 +1406,7 @@ return [
             ErrorResponseGenerator::class =&gt; WhoopsErrorResponseGeneratorFactory::class,
         ],
     ],
-];</code></pre>
-
+];</code></pre></p>
 <p>Other things you may want to do:</p>
 <ul>
 <li>
@@ -1485,29 +1475,26 @@ the currently selected locale.</p>
 opt-in to the new argument at will. For those implementing the interface,
 upgrading will require updating your router implementation's signature to match
 the new interface:</p>
-<pre class="codehilite"><code class="language-php">public function generateUri(
+<p> <pre class=codehilite><code class=language-php>public function generateUri(
     string $name,
     array $substitutions = [],
     array $options = []
-) : string</code></pre>
-
+) : string</code></pre></p>
 <h2 id="url-helper-changes">URL helper changes</h2>
 <p>Expressive 2.0 uses zendframework/zend-expressive-helpers version 3.0+. This new
 version updates the signature of the <code>Zend\Expressive\Helper\UrlHelper</code> from:</p>
-<pre class="codehilite"><code class="language-php">function (
+<p> <pre class=codehilite><code class=language-php>function (
     $routeName,
     array $routeParams = []
-) : string</code></pre>
-
+) : string</code></pre></p>
 <p>to:</p>
-<pre class="codehilite"><code class="language-php">function (
+<p> <pre class=codehilite><code class=language-php>function (
     $routeName,
     array $routeParams = [],
     $queryParams = [],
     $fragmentIdentifier = null,
     array $options = []
-) : string</code></pre>
-
+) : string</code></pre></p>
 <p>For consumers, this should represent a widening of features, and will not
 require any changes, unless you wish to opt-in to the new arguments. See the
 <a href="../../features/helpers/url-helper/">UrlHelper documentation</a> for information
@@ -1532,12 +1519,11 @@ install the following packages:</p>
 <li>zendframework/zend-component-installer</li>
 </ul>
 <p>As an example:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-config-aggregator \
-&gt; zendframework/zend-component-installer</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-config-aggregator \
+&gt; zendframework/zend-component-installer</code></pre></p>
 <p>Once installed, you should update your <code>config/config.php</code> file to read as
 follows:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<p> <pre class=codehilite><code class=language-php>&lt;?php
 
 use Zend\ConfigAggregator\ArrayProvider;
 use Zend\ConfigAggregator\ConfigAggregator;
@@ -1568,8 +1554,7 @@ $aggregator = new ConfigAggregator([
     new PhpFileProvider('config/development.config.php'),
 ], $cacheConfig['config_cache_path']);
 
-return $aggregator-&gt;getMergedConfig();</code></pre>
-
+return $aggregator-&gt;getMergedConfig();</code></pre></p>
 <p>The above should mimic what you already had in place; if it does not, check to
 see if there are additional paths you were globbing previously.</p>
 
@@ -1605,7 +1590,7 @@ see if there are additional paths you were globbing previously.</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v2/reference/migration.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v2/reference/migration.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

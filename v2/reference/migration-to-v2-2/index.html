@@ -729,9 +729,8 @@ configuration, including dependency information. We suggest you add these to
 your application's configuration. Add the following two lines in your
 <code>config/config.php</code> file, inside the array passed to the <code>ConfigAggregator</code>
 constructor:</p>
-<pre class="codehilite"><code class="language-php">\Zend\Expressive\ConfigProvider::class,
-\Zend\Expressive\Router\ConfigProvider::class,</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>\Zend\Expressive\ConfigProvider::class,
+\Zend\Expressive\Router\ConfigProvider::class,</code></pre></p>
 <blockquote>
 <p>The command <code>./vendor/bin/expressive migrate:expressive-v2.2</code> will do this for
 you.</p>
@@ -739,14 +738,12 @@ you.</p>
 <h2 id="routing-and-dispatch-middleware">Routing and dispatch middleware</h2>
 <p>In previous releases of Expressive, you would route your routing and dispatch
 middleware using the following dedicated methods:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;pipeRoutingMiddleware();
-$app-&gt;pipeDispatchMiddleware();</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>$app-&gt;pipeRoutingMiddleware();
+$app-&gt;pipeDispatchMiddleware();</code></pre></p>
 <p>These methods are now <em>deprecated</em>, and will be removed in version 3.0.</p>
 <p>Instead, you should use <code>pipe()</code> with the following services:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;pipe(\Zend\Expressive\Router\Middleware\RouteMiddleware::class);
-$app-&gt;pipe(\Zend\Expressive\Router\Middleware\DispatchMiddleware::class);</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe(\Zend\Expressive\Router\Middleware\RouteMiddleware::class);
+$app-&gt;pipe(\Zend\Expressive\Router\Middleware\DispatchMiddleware::class);</code></pre></p>
 <blockquote>
 <p>The command <code>./vendor/bin/expressive migrate:expressive-v2.2</code> will do this for
 you.</p>
@@ -757,38 +754,34 @@ time!</p>
 <p>If you are using configuration-driven routes, you are likely using the constants
 <code>Zend\Expressive\Application::ROUTING_MIDDLEWARE</code> and <code>DISPATCH_MIDDLEWARE</code> to
 indicate the routing and dispatch middleware, as follows:</p>
-<pre class="codehilite"><code class="language-php">'middleware_pipeline' =&gt; [
+<p> <pre class=codehilite><code class=language-php>'middleware_pipeline' =&gt; [
     Application::ROUTING_MIDDLEWARE,
     Application::DISPATCH_MIDDLEWARE,
-],</code></pre>
-
+],</code></pre></p>
 <p>In the above section, we detailed deprecation of the methods
 <code>pipeRoutingMiddleware()</code> and <code>pipeDispatchMiddleware()</code>; the constants above
 are the configuration equivalent of calling these methods, and are similarly
 deprecated.</p>
 <p>Change these entries to use the same syntax as other pipeline middleware, and
 have the <code>middleware</code> key indicate the appropriate middleware class as follows:</p>
-<pre class="codehilite"><code class="language-php">'middleware_pipeline' =&gt; [
+<p> <pre class=codehilite><code class=language-php>'middleware_pipeline' =&gt; [
     [
         'middleware' =&gt; \Zend\Expressive\Router\Middleware\RouteMiddleware::class,
     ],
     [
         'middleware' =&gt; \Zend\Expressive\Router\Middleware\DispatchMiddleware::class,
     ],
-],</code></pre>
-
+],</code></pre></p>
 <h2 id="implicit-head-and-options-middleware">Implicit HEAD and OPTIONS middleware</h2>
 <p>These middleware have moved to the zend-expressive-router package. While they
 still exist within the zend-expressive package, we have added deprecation
 notices indicating their removal in v3. As such, update either of the following
 statements, if they exist in your application:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;pipe(\Zend\Expressive\Middleware\ImplicitHeadMiddleware::class);
-$app-&gt;pipe(\Zend\Expressive\Middleware\ImplicitOptionsMiddleware::class);</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe(\Zend\Expressive\Middleware\ImplicitHeadMiddleware::class);
+$app-&gt;pipe(\Zend\Expressive\Middleware\ImplicitOptionsMiddleware::class);</code></pre></p>
 <p>to:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;pipe(\Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware::class);
-$app-&gt;pipe(\Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware::class);</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe(\Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware::class);
+$app-&gt;pipe(\Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware::class);</code></pre></p>
 <blockquote>
 <p>The command <code>./vendor/bin/expressive migrate:expressive-v2.2</code> will do this for
 you.</p>
@@ -825,12 +818,11 @@ a response, but otherwise use the return value.</p>
 mapping has precedence by placing it in a <code>config/autoload/</code> configuration file.</p>
 <h2 id="double-pass-middleware">Double-Pass middleware</h2>
 <p><em>Double-pass middleware</em> refers to middleware that has the following signature:</p>
-<pre class="codehilite"><code class="language-php">function (
+<p> <pre class=codehilite><code class=language-php>function (
     ServerReqeustInterface $request,
     ResponseInterface $response,
     callable $next
-) : ResponseInterface</code></pre>
-
+) : ResponseInterface</code></pre></p>
 <p>where <code>$next</code> will receive <em>both</em> a request <em>and</em> a response instance (this
 latter is the origin of the "double-pass" phrasing).</p>
 <p>Such middleware was used in v1 releases of Expressive, and we have continued to
@@ -843,15 +835,14 @@ arguments, and decorates it to be used as http-interop middleware. (In version
 3, it will decorate it as PSR-15 middleware.)</p>
 <p>The zend-stratigility package provides a convenience function,
 <code>Zend\Stratigility\doublePassMiddleware()</code>, to simplify this for you:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Diactoros\Response;
+<p> <pre class=codehilite><code class=language-php>use Zend\Diactoros\Response;
 use function Zend\Stratigility\doublePassMiddleware;
 
 // Piping:
 $app-&gt;pipe(doublePassMiddleware($someMiddleware, new Response()));
 
 // Routing:
-$app-&gt;get('/foo', doublePassMiddleware($someMiddleware, new Response()));</code></pre>
-
+$app-&gt;get('/foo', doublePassMiddleware($someMiddleware, new Response()));</code></pre></p>
 <h2 id="other-deprecations">Other deprecations</h2>
 <p>The following classes, traits, and instance methods were deprecated, and will be
 removed in version 3:</p>
@@ -935,21 +926,19 @@ services two purposes:</p>
 </ul>
 <p>To enable the delegator as a delegator factory, add the following configuration
 to a <code>config/autoload/</code> configuration file, or a configuration provider class:</p>
-<pre class="codehilite"><code class="language-php">'dependencies' =&gt; [
+<p> <pre class=codehilite><code class=language-php>'dependencies' =&gt; [
     'delegators' =&gt; [
         \Zend\Expressive\Application::class =&gt; [
             \Zend\Expressive\Container\ApplicationConfigInjectionDelegator::class,
         ],
     ],
-],</code></pre>
-
+],</code></pre></p>
 <p>To manually inject an <code>Application</code> instance, you can do the following:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Expressive\Container\ApplicationConfigInjectionDelegator;
+<p> <pre class=codehilite><code class=language-php>use Zend\Expressive\Container\ApplicationConfigInjectionDelegator;
 
 // assuming $config is the application configuration:
 ApplicationConfigInjectionDelegator::injectPipelineFromConfig($app, $config);
-ApplicationConfigInjectionDelegator::injectRoutesFromConfig($app, $config);</code></pre>
-
+ApplicationConfigInjectionDelegator::injectRoutesFromConfig($app, $config);</code></pre></p>
 <p>These changes will be forwards-compatible with version 3.</p>
 
 
@@ -984,7 +973,7 @@ ApplicationConfigInjectionDelegator::injectRoutesFromConfig($app, $config);</cod
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v2/reference/migration-to-v2-2.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v2/reference/migration-to-v2-2.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

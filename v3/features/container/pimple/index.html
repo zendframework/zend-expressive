@@ -721,22 +721,20 @@ It features:</p>
 as of version 3.2. To use Pimple as a dependency injection container, we
 recommend using <a href="https://github.com/zendframework/zend-pimple-config">zendframework/zend-pimple-config</a>,
 which helps you to configure the PSR-11 container. First install the package:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-pimple-config</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-pimple-config</code></pre></p>
 <p>Now, create the file <code>config/container.php</code> with the following contents:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<p> <pre class=codehilite><code class=language-php>&lt;?php
 use Zend\Pimple\Config\Config;
 use Zend\Pimple\Config\ContainerFactory;
 
 $config  = require __DIR__ . '/config.php';
 $factory = new ContainerFactory();
 
-return $factory(new Config($config));</code></pre>
-
+return $factory(new Config($config));</code></pre></p>
 <p>For more information, please see the
 <a href="https://github.com/zendframework/zend-pimple-config/blob/master/README.md">zend-pimple-config documentation</a>.</p>
 <p>Your bootstrap (typically <code>public/index.php</code>) will then look like this:</p>
-<pre class="codehilite"><code class="language-php">chdir(dirname(__DIR__));
+<p> <pre class=codehilite><code class=language-php>chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
 
 $container = require 'config/container.php';
@@ -745,7 +743,7 @@ $app = $container-&gt;get(Zend\Expressive\Application::class);
 require 'config/pipeline.php';
 require 'config/routes.php';
 
-$app-&gt;run();</code></pre>
+$app-&gt;run();</code></pre></p>
 
 
 
@@ -779,7 +777,7 @@ $app-&gt;run();</code></pre>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v3/features/container/pimple.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v3/features/container/pimple.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

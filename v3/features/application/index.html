@@ -733,17 +733,16 @@ that composes:</p>
 <p>Regardless of how you setup the instance, there are several methods you will
 likely interact with at some point or another.</p>
 <h2 id="instantiation">Instantiation</h2>
-<h3 id="constructor">Constructor</h3>
+<h3>Constructor</h3>
 <p>If you wish to manually instantiate the <code>Application</code> instance, it has the
 following constructor:</p>
-<pre class="codehilite"><code class="language-php">public function __construct(
+<p> <pre class=codehilite><code class=language-php>public function __construct(
     Zend\Expressive\MiddlewareFactory $factory,
     Zend\Stratigility\MiddlewarePipeInterface $pipeline,
     Zend\Expressive\Router\RouteCollector $routes,
     Zend\HttpHandlerRunner\RequestHandlerRunner $runner
-) {</code></pre>
-
-<h3 id="container-factory">Container factory</h3>
+) {</code></pre></p>
+<h3>Container factory</h3>
 <p>We also provide a factory that can be consumed by a <a href="https://www.php-fig.org/psr/psr-11/">PSR-11</a>
 dependency injection container; see the <a href="../container/factories/">container factories documentation</a>
 for details.</p>
@@ -753,15 +752,14 @@ of dynamically matching an incoming request against criteria, and it is one of
 the primary features of zend-expressive.</p>
 <p>Regardless of which <a href="../router/interface/">router implementation</a> you use, you
 can use the following <code>Application</code> methods to provide routable middleware:</p>
-<h3 id="route">route()</h3>
+<h3>route()</h3>
 <p><code>route()</code> has the following signature:</p>
-<pre class="codehilite"><code class="language-php">public function route(
+<p> <pre class=codehilite><code class=language-php>public function route(
     string $path,
     $middleware,
     array $methods = null,
     string $name = null
-) : Zend\Expressive\Router\Route</code></pre>
-
+) : Zend\Expressive\Router\Route</code></pre></p>
 <p>where:</p>
 <ul>
 <li><code>$path</code> must be a string path to match.</li>
@@ -781,26 +779,24 @@ can use the following <code>Application</code> methods to provide routable middl
 </ul>
 <p>This method is typically only used if you want a single middleware to handle
 multiple HTTP request methods.</p>
-<h3 id="get-post-put-patch-delete-any">get(), post(), put(), patch(), delete(), any()</h3>
+<h3>get(), post(), put(), patch(), delete(), any()</h3>
 <p>Each of the methods <code>get()</code>, <code>post()</code>, <code>put()</code>, <code>patch()</code>, <code>delete()</code>, and <code>any()</code>
 proxies to <code>route()</code> and has the signature:</p>
-<pre class="codehilite"><code class="language-php">function (
+<p> <pre class=codehilite><code class=language-php>function (
     string $path,
     $middleware,
     string $name = null
-) : Zend\Expressive\Router\Route</code></pre>
-
+) : Zend\Expressive\Router\Route</code></pre></p>
 <p>Essentially, each calls <code>route()</code> and specifies an array consisting solely of
 the corresponding HTTP method for the <code>$methods</code> argument.</p>
-<h3 id="piping">Piping</h3>
+<h3>Piping</h3>
 <p>Because zend-expressive builds on <a href="https://docs.zendframework.com/zend-stratigility/">zend-stratigility</a>,
 and, more specifically, its <code>MiddlewarePipe</code> definition, you can also pipe
 (queue) middleware to the application. This is useful for adding middleware that
 should execute on each request, defining error handlers, and/or segregating
 applications by subpath.</p>
 <p>The signature of <code>pipe()</code> is:</p>
-<pre class="codehilite"><code class="language-php">public function pipe($middlewareOrPath, $middleware = null)</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>public function pipe($middlewareOrPath, $middleware = null)</code></pre></p>
 <p>where:</p>
 <ul>
 <li><code>$middlewareOrPath</code> is either a string URI path (for path segregation), PSR-15
@@ -822,17 +818,15 @@ lazy-loading of middleware only when it is invoked. Internally, it wraps the
 call to fetch and dispatch the middleware inside a
 <code>Zend\Expressive\Middleware\LazyLoadingMiddleware</code> instance.</p>
 <p>Read the section on <a href="../router/piping/">piping vs routing</a> for more information.</p>
-<h3 id="registering-routing-and-dispatch-middleware">Registering routing and dispatch middleware</h3>
+<h3>Registering routing and dispatch middleware</h3>
 <p>Routing and dispatch middleware must be piped to the application like any other
 middleware. You can do so using the following:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;pipe(Zend\Expressive\Router\Middleware\RouteMiddleware::class);
-$app-&gt;pipe(Zend\Expressive\Router\Middleware\DispatchMiddleware::class);</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe(Zend\Expressive\Router\Middleware\RouteMiddleware::class);
+$app-&gt;pipe(Zend\Expressive\Router\Middleware\DispatchMiddleware::class);</code></pre></p>
 <p>We recommend piping the following middleware between the two as well:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;pipe(Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware::class);
+<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe(Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware::class);
 $app-&gt;pipe(Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware::class);
-$app-&gt;pipe(Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware::class);</code></pre>
-
+$app-&gt;pipe(Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware::class);</code></pre></p>
 <p>These allow your application to return:</p>
 <ul>
 <li><code>HEAD</code> requests for handlers that do not specifically allow <code>HEAD</code>; these will
@@ -884,7 +878,7 @@ pipeline, and then emit the response returned.</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v3/features/application.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v3/features/application.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

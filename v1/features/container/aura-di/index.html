@@ -661,14 +661,13 @@ injection container with the following features:</p>
 <h2 id="installing-auradi">Installing Aura.Di</h2>
 <p>Aura.Di only implements <a href="https://github.com/container-interop/container-interop">container-interop</a>
 as of version 3 (in beta at the time of writing).</p>
-<pre class="codehilite"><code class="language-bash">$ composer require "aura/di:3.0.*@beta"</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer require &quot;aura/di:3.0.*@beta&quot;</code></pre></p>
 <h2 id="configuration">Configuration</h2>
 <p>Aura.Di can help you to organize your code better with
 <a href="http://auraphp.com/packages/Aura.Di/config.html">ContainerConfig classes</a> and
 <a href="http://auraphp.com/blog/2014/04/07/two-stage-config/">two step configuration</a>.
 In this example, we'll put that in <code>config/services.php</code>:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<p> <pre class=codehilite><code class=language-php>&lt;?php
 use Aura\Di\ContainerBuilder;
 
 $containerBuilder = new ContainerBuilder();
@@ -677,10 +676,9 @@ $containerBuilder = new ContainerBuilder();
 // ContainerConfig classes. Make sure the classes can be autoloaded!
 return $containerBuilder-&gt;newConfiguredInstance([
     'Application\Config\Common',
-]);</code></pre>
-
+]);</code></pre></p>
 <p>The bare minimum <code>ContainerConfig</code> code needed to make zend-expressive work is:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<p> <pre class=codehilite><code class=language-php>&lt;?php
 // In src/Config/Common.php:
 namespace Application\Config;
 
@@ -749,14 +747,13 @@ class Common extends ContainerConfig
         }, Route::HTTP_METHOD_ANY, 'hello'));
         */
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>Your bootstrap (typically <code>public/index.php</code>) will then look like this:</p>
-<pre class="codehilite"><code class="language-php">chdir(dirname(__DIR__));
+<p> <pre class=codehilite><code class=language-php>chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
 $container = require 'config/services.php';
 $app = $container-&gt;get('Zend\Expressive\Application');
-$app-&gt;run();</code></pre>
+$app-&gt;run();</code></pre></p>
 
 
 
@@ -790,7 +787,7 @@ $app-&gt;run();</code></pre>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v1/features/container/aura-di.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v1/features/container/aura-di.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

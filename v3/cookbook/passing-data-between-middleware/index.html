@@ -698,7 +698,7 @@ data contains an attribute containing data passed by outer middleware.</p>
 request attribute to nested middleware. We use the fully qualified class name
 for the attribute name to ensure uniqueness, but you can name it anything you
 want.</p>
-<pre class="codehilite"><code class="language-php">namespace App\Middleware;
+<p> <pre class=codehilite><code class=language-php>namespace App\Middleware;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -724,10 +724,9 @@ class PassingDataMiddleware implements MiddlewareInterface
         // Step 4: Return the response
         return $response;
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>Later, <code>ReceivingDataMiddleware</code> grabs the data and processes it:</p>
-<pre class="codehilite"><code class="language-php">namespace App\Middleware;
+<p> <pre class=codehilite><code class=language-php>namespace App\Middleware;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -751,12 +750,11 @@ class ReceivingDataMiddleware implements MiddlewareInterface
         // Step 4: Return the response
         return $response;
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>Of course, you could also use the data in routed middleware, which is usually at
 the innermost layer of your application. The <code>ExampleHandler</code> below takes that
 information and passes it to the template renderer to create an <code>HtmlResponse</code>:</p>
-<pre class="codehilite"><code class="language-php">namespace App\Handler;
+<p> <pre class=codehilite><code class=language-php>namespace App\Handler;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -784,7 +782,7 @@ class ExampleHandler implements RequestHandlerInterface
             ])
         );
     }
-}</code></pre>
+}</code></pre></p>
 
 
 
@@ -818,7 +816,7 @@ class ExampleHandler implements RequestHandlerInterface
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v3/cookbook/passing-data-between-middleware.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v3/cookbook/passing-data-between-middleware.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

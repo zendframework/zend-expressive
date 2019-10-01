@@ -713,22 +713,20 @@ constructor, and provides the following methods:</p>
 <p>These methods allow you to add routes to the underlying router. The last five
 all reference the HTTP method the generated route will answer to, and each have
 the same signature:</p>
-<pre class="codehilite"><code class="language-php">public function {method}(
+<p> <pre class=codehilite><code class=language-php>public function {method}(
     string $path,
     Psr\Http\Server\MiddlewareInterface $middleware,
     string $name = null
-) : Zend\Expressive\Router\Route</code></pre>
-
+) : Zend\Expressive\Router\Route</code></pre></p>
 <p>The <code>any()</code> method has the same signature, but indicates that it will answer to
 <em>any</em> HTTP method.</p>
 <p>Finally, <code>route()</code> has the following signature:</p>
-<pre class="codehilite"><code class="language-php">public function route(
+<p> <pre class=codehilite><code class=language-php>public function route(
     string $path,
     Psr\Http\Server\MiddlewareInterface $middleware,
     array $methods = null,
     string $name = null
-) : Zend\Expressive\Router\Route</code></pre>
-
+) : Zend\Expressive\Router\Route</code></pre></p>
 <p>A <code>null</code> value for the <code>$methods</code> indicates any HTTP method is allowed.</p>
 <p><code>Zend\Expressive\Application</code> composes an instance of this class
 and proxies to it when any of the above methods are called.
@@ -767,7 +765,7 @@ same router instance, allowing it to honor the definitions created.</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v3/features/router/route-collector.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v3/features/router/route-collector.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

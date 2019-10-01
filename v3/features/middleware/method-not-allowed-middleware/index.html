@@ -716,13 +716,12 @@ zend-expressive-router package.</p>
 <p>Pipe the middleware after the routing middleware; if using one or more of the
 <a href="../implicit-methods-middleware/">implicit methods middleware</a>, this middleware
 <strong>must</strong> be piped after them, as it will respond for <em>any</em> HTTP method!</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;pipe(RouteMiddleware::class);
+<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe(RouteMiddleware::class);
 $app-&gt;pipe(ImplicitHeadMiddleware::class);
 $app-&gt;pipe(ImplicitOptionsMiddleware::class);
 $app-&gt;pipe(MethodNotAllowedMiddleware::class);
 // ...
-$app-&gt;pipe(DispatchMiddleware::class);</code></pre>
-
+$app-&gt;pipe(DispatchMiddleware::class);</code></pre></p>
 <p>(Note: if you used the Expressive skeleton, this middleware is likely already in
 your pipeline.)</p>
 
@@ -758,7 +757,7 @@ your pipeline.)</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v3/features/middleware/method-not-allowed-middleware.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v3/features/middleware/method-not-allowed-middleware.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

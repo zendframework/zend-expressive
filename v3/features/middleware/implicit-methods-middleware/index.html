@@ -732,11 +732,10 @@ status code, you will need to provide your own factory.</p>
 </blockquote>
 <p>Within your application pipeline, add the middleware between the routing and
 dispatch middleware, generally immediately following the routing middleware:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;pipe(RouteMiddleware::class);
+<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe(RouteMiddleware::class);
 $app-&gt;pipe(ImplicitHeadMiddleware::class);
 // ...
-$app-&gt;pipe(DispatchMiddleware::class);</code></pre>
-
+$app-&gt;pipe(DispatchMiddleware::class);</code></pre></p>
 <p>(Note: if you used the Expressive skeleton, this middleware is likely already in
 your pipeline.)</p>
 <p>When in place, it will do the following:</p>
@@ -754,7 +753,7 @@ middleware returns an empty response.  However, if <code>GET</code> is supported
 dispatch the next layer, but with a <code>GET</code> request instead of <code>HEAD</code>;
 additionally, it will inject the returned response with an empty response body
 before returning it.</p>
-<h3 id="detecting-forwarded-requests">Detecting forwarded requests</h3>
+<h3>Detecting forwarded requests</h3>
 <p>When the next layer is dispatched, the request will have an additional
 attribute, <code>Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware::FORWARDED_HTTP_METHOD_ATTRIBUTE</code>,
 with a value of <code>HEAD</code>. As such, you can check for this value in order to vary
@@ -773,11 +772,10 @@ status code, you will need to provide your own factory.</p>
 <p>Within your application pipeline, add the middleware between the routing and
 dispatch middleware, generally immediately following the routing middleware or
 <code>ImplicitHeadMiddleware</code>:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;pipe(RouteMiddleware::class);
+<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe(RouteMiddleware::class);
 $app-&gt;pipe(ImplicitOptionsMiddleware::class);
 // ...
-$app-&gt;pipe(DispatchMiddleware::class);</code></pre>
-
+$app-&gt;pipe(DispatchMiddleware::class);</code></pre></p>
 <p>(Note: if you used the Expressive skeleton, this middleware is likely already in
 your pipeline.)</p>
 <p>When in place, it will do the following:</p>
@@ -828,7 +826,7 @@ explicitly by the matched route.</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v3/features/middleware/implicit-methods-middleware.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v3/features/middleware/implicit-methods-middleware.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

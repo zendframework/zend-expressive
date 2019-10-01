@@ -698,7 +698,7 @@ can you make such data available to all templates?</p>
 on the template renderer's <code>addDefaultParam()</code> method.</p>
 <p>Foolowing is an example that injects the current user, the matched route name,
 and all flash messages via a single middleware.</p>
-<pre class="codehilite"><code class="language-php">// In src/App/Middleware/TemplateDefaultsMiddleware.php (flat structure), or
+<p> <pre class=codehilite><code class=language-php>// In src/App/Middleware/TemplateDefaultsMiddleware.php (flat structure), or
 // in src/App/src/Middleware/TemplateDefaultsMiddleware.php (modular structure):
 &lt;?php
 
@@ -756,27 +756,23 @@ class TemplateDefaultsMiddleware implements MiddlewareInterface
 
         return $handler-&gt;handle($request);
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>Next you need to create a factory for this middleware and register it with the
 DI container; <a href="../../reference/cli-tooling/">zend-expressive-tooling</a> provides
 functionality for doing so:</p>
-<pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive factory:create "App\Middleware\TemplateDefaultsMiddleware"</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ ./vendor/bin/expressive factory:create &quot;App\Middleware\TemplateDefaultsMiddleware&quot;</code></pre></p>
 <p>Once the factory is created, you can add this to any route that may generate a
 template:</p>
-<pre class="codehilite"><code class="language-php">// In config/routes.php:
+<p> <pre class=codehilite><code class=language-php>// In config/routes.php:
 $app-&gt;get('/some/resource/{id}', [
     App\Middleware\TemplateDefaultsMiddleware::class,
     SomeResourceHandler::class,
-]);</code></pre>
-
+]);</code></pre></p>
 <p>Alternately, if you want it to apply to any handler, place it in your
 application pipeline immediately before the <code>DispatchMiddleware</code>:</p>
-<pre class="codehilite"><code class="language-php">// In config/pipeline.php:
+<p> <pre class=codehilite><code class=language-php>// In config/pipeline.php:
 $app-&gt;pipe(App\Middleware\TemplateDefaultsMiddleware::class);
-$app-&gt;pipe(DispatchMiddleware::class);</code></pre>
-
+$app-&gt;pipe(DispatchMiddleware::class);</code></pre></p>
 <blockquote>
 <p>Be aware, however, that if authentication is performed in per-handler
 pipelines, you will need to use the first approach to ensure that the
@@ -815,7 +811,7 @@ authenticated user has been discovered.</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v3/cookbook/access-common-data-in-templates.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v3/cookbook/access-common-data-in-templates.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

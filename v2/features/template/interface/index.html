@@ -678,10 +678,6 @@
             <ul class="toc__list">
                 
                     <li class="toc__entry">
-                        <a href="#namespaces" class="toc__link">Namespaces</a>
-                    </li>
-                
-                    <li class="toc__entry">
                         <a href="#paths" class="toc__link">Paths</a>
                     </li>
                 
@@ -699,7 +695,7 @@
 <p>Expressive defines <code>Zend\Expressive\Template\TemplateRendererInterface</code>, which can be
 injected into middleware in order to create templated response bodies. The
 interface is defined as follows:</p>
-<pre class="codehilite"><code class="language-php">namespace Zend\Expressive\Template;
+<p> <pre class=codehilite><code class=language-php>namespace Zend\Expressive\Template;
 
 interface TemplateRendererInterface
 {
@@ -753,10 +749,9 @@ interface TemplateRendererInterface
      * @param mixed $value
      */
     public function addDefaultParam($templateName, $param, $value);
-}</code></pre>
-
+}</code></pre></p>
 <blockquote>
-<h3 id="namespaces">Namespaces</h3>
+<h3>Namespaces</h3>
 <p>Unfortunately, namespace syntax varies between different template engine
 implementations. As an example:</p>
 <ul>
@@ -777,45 +772,39 @@ and allow it to use alternate template engines.</p>
 <p>Most template engines and implementations will require that you specify one or
 more paths to templates; these are then used when resolving a template name to
 the actual template. You may use the <code>addPath()</code> method to do so:</p>
-<pre class="codehilite"><code class="language-php">$renderer-&gt;addPath('templates');</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>$renderer-&gt;addPath('templates');</code></pre></p>
 <p>Template engines adapted for zend-expressive are also required to allow
 <em>namespacing</em> templates; when adding a path, you specify the template
 <em>namespace</em> that it fulfills, and the engine will only return a template from
 that path if the namespace provided matches the namespace for the path.</p>
-<pre class="codehilite"><code class="language-php">// Resolves to a path registered with the namespace "error";
+<p> <pre class=codehilite><code class=language-php>// Resolves to a path registered with the namespace &quot;error&quot;;
 // this example is specific to the Plates engine.
-$content = $renderer-&gt;render('error::404');</code></pre>
-
+$content = $renderer-&gt;render('error::404');</code></pre></p>
 <p>You can provide a namespace when registering a path via an optional second
 argument:</p>
-<pre class="codehilite"><code class="language-php">// Registers the "error" namespace to the path "templates/error/"
-$renderer-&gt;addPath('templates/error/', 'error');</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>// Registers the &quot;error&quot; namespace to the path &quot;templates/error/&quot;
+$renderer-&gt;addPath('templates/error/', 'error');</code></pre></p>
 <h2 id="rendering">Rendering</h2>
 <p>To render a template, call the <code>render()</code> method. This method requires the name
 of a template as the first argument:</p>
-<pre class="codehilite"><code class="language-php">$content = $renderer-&gt;render('foo');</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>$content = $renderer-&gt;render('foo');</code></pre></p>
 <p>You can specify a namespaced template using the syntax <code>namespace::template</code>;
 the <code>template</code> segment of the template name may use additional directory
 separators when necessary.</p>
 <p>One key reason to use templates is to dynamically provide data to inject in the
 template. You may do so by passing either an associative array or an object as
 the second argument to <code>render()</code>:</p>
-<pre class="codehilite"><code class="language-php">$content = $renderer-&gt;render('message', [
+<p> <pre class=codehilite><code class=language-php>$content = $renderer-&gt;render('message', [
     'greeting'  =&gt; 'Hello',
     'recipient' =&gt; 'World',
-]);</code></pre>
-
+]);</code></pre></p>
 <p>It is up to the underlying template engine to determine how to perform the
 injections.</p>
-<h3 id="default-params">Default params</h3>
+<h3>Default params</h3>
 <p>The <code>TemplateRendererInterface</code> defines the method <code>addDefaultParam()</code>. This
 method can be used to specify default parameters to use when rendering a
 template. The signature is:</p>
-<pre class="codehilite"><code class="language-php">public function addDefaultParam($templateName, $param, $value)</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>public function addDefaultParam($templateName, $param, $value)</code></pre></p>
 <p>If you want a parameter to be used for <em>every</em> template, you can specify the
 constant <code>TemplateRendererInterface::TEMPLATE_ALL</code> for the <code>$templateName</code>
 parameter.</p>
@@ -827,7 +816,7 @@ items having precedence over earlier ones:</p>
 <li>Parameters specified when rendering.</li>
 </ul>
 <p>As an example, if we did the following:</p>
-<pre class="codehilite"><code class="language-php">$renderer-&gt;addDefaultParam($renderer::TEMPLATE_ALL, 'foo', 'bar');
+<p> <pre class=codehilite><code class=language-php>$renderer-&gt;addDefaultParam($renderer::TEMPLATE_ALL, 'foo', 'bar');
 $renderer-&gt;addDefaultParam($renderer::TEMPLATE_ALL, 'bar', 'baz');
 $renderer-&gt;addDefaultParam($renderer::TEMPLATE_ALL, 'baz', 'bat');
 
@@ -836,8 +825,7 @@ $renderer-&gt;addDefaultParam('example', 'bar', 'template default bar');
 
 $content = $renderer-&gt;render('example', [
     'foo' =&gt; 'override',
-]);</code></pre>
-
+]);</code></pre></p>
 <p>Then we can expect the following substitutions will occur when rendering:</p>
 <ul>
 <li>References to the "foo" variable will contain "override".</li>
@@ -845,7 +833,7 @@ $content = $renderer-&gt;render('example', [
 <li>References to the "baz" variable will contain "bat".</li>
 </ul>
 <blockquote>
-<h4 id="support-for-default-params">Support for default params</h4>
+<h4>Support for default params</h4>
 <p>The support for default params will often be renderer-specific. The reason is
 because the <code>render()</code> signature does not specify a type for <code>$params</code>, in
 order to allow passing alternative arguments such as view models. In such
@@ -887,7 +875,7 @@ implementations support the feature.</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v2/features/template/interface.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v2/features/template/interface.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

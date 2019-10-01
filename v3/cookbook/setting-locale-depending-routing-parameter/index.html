@@ -690,10 +690,6 @@
             <ul class="toc__list">
                 
                     <li class="toc__entry">
-                        <a href="#routing-parameters" class="toc__link">Routing parameters</a>
-                    </li>
-                
-                    <li class="toc__entry">
                         <a href="#setting-up-the-route" class="toc__link">Setting up the route</a>
                     </li>
                 
@@ -712,7 +708,7 @@
 based on a routing parameter, the session, or a specialized sub-domain.
 In this recipe we will concentrate on using a routing parameter.</p>
 <blockquote>
-<h3 id="routing-parameters">Routing parameters</h3>
+<h3>Routing parameters</h3>
 <p>Using the approach in this chapter requires that you add a <code>/:locale</code> (or
 similar) segment to each and every route that can be localized, and, depending
 on the router used, may also require additional options for specifying
@@ -725,9 +721,9 @@ on <a href="../setting-locale-without-routing-parameter/">setting the locale wit
 to add a locale parameter to each route that requires localization.</p>
 <p>In the following examples, we use the <code>locale</code> parameter, which should consist
 of two lowercase alphabetical characters.</p>
-<h3 id="dependency-configuration">Dependency configuration</h3>
+<h3>Dependency configuration</h3>
 <p>The examples assume the following middleware dependency configuration:</p>
-<pre class="codehilite"><code class="language-php">use App\Handler;
+<p> <pre class=codehilite><code class=language-php>use App\Handler;
 
 return [
     'dependencies' =&gt; [
@@ -736,12 +732,11 @@ return [
             Handler\ContactPageHandler::class =&gt; Handler\ContactPageFactory::class,
         ],
     ],
-];</code></pre>
-
-<h3 id="programmatic-routes">Programmatic routes</h3>
+];</code></pre></p>
+<h3>Programmatic routes</h3>
 <p>The following describes routing configuration for use when using a
 programmatic application.</p>
-<pre class="codehilite"><code class="language-php">use App\Handler\ContactPageHandler;
+<p> <pre class=codehilite><code class=language-php>use App\Handler\ContactPageHandler;
 use App\Handler\HomePageHandler;
 
 $localeOptions = ['locale' =&gt; '[a-z]{2,3}([-_][a-zA-Z]{2}|)'];
@@ -749,27 +744,26 @@ $localeOptions = ['locale' =&gt; '[a-z]{2,3}([-_][a-zA-Z]{2}|)'];
 $app-&gt;get('/:locale', HomePageHandler::class, 'home')
     -&gt;setOptions($localeOptions);
 $app-&gt;get('/:locale/contact', ContactPageHandler::class, 'contact')
-    -&gt;setOptions($localeOptions);</code></pre>
-
+    -&gt;setOptions($localeOptions);</code></pre></p>
 <blockquote>
-<h3 id="note-routing-may-differ-based-on-router">Note: Routing may differ based on router</h3>
+<h3>Note: Routing may differ based on router</h3>
 <p>The routing examples in this recipe use syntax for the zend-mvc router, and,
 as such, may not work in your application.</p>
 <p>For Aura.Router, the 'home' route as listed above would read:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;get('/{locale}', HomePageHandler::class, 'home')
+<p><code>php
+$app-&gt;get('/{locale}', HomePageHandler::class, 'home')
     -&gt;setOptions([
         'tokens' =&gt; [
             'locale' =&gt; '[a-z]{2,3}([-_][a-zA-Z]{2}|)',
         ],
-    ]);</code></pre>
-
+    ]);</code></p>
 <p>For FastRoute:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;get(
+<p><code>php
+$app-&gt;get(
     '/{locale:[a-z]{2,3}([-_][a-zA-Z]{2}|)}',
     HomePageHandler::class,
     'home'
-);</code></pre>
-
+);</code></p>
 <p>As such, be aware as you read the examples that you might not be able to
 simply cut-and-paste them without modification.</p>
 </blockquote>
@@ -778,7 +772,7 @@ simply cut-and-paste them without modification.</p>
 you need to implement localization middleware that acts on the route result, and
 registered in the pipeline immediately following the routing middleware.</p>
 <p>Such a <code>LocalizationMiddleware</code> class could look similar to this:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<p> <pre class=codehilite><code class=language-php>&lt;?php
 namespace App\I18n;
 
 use Locale;
@@ -804,10 +798,9 @@ class LocalizationMiddleware implements MiddlewareInterface
         // Store the locale as a request attribute
         return $handler-&gt;handle($request-&gt;withAttribute(self::LOCALIZATION_ATTRIBUTE, $locale));
     }
-}</code></pre>
-
+}</code></pre></p>
 <blockquote>
-<h3 id="localesetdefault-is-unsafe">Locale::setDefault is unsafe</h3>
+<h3>Locale::setDefault is unsafe</h3>
 <p>Do not use <code>Locale::setDefault($locale)</code> to set a global static locale.
 PSR-15 apps may run in async processes, which could lead to another process
 overwriting the value, and thus lead to unexpected results for your users.</p>
@@ -816,7 +809,7 @@ specific to each process.</p>
 </blockquote>
 <p>Register this new middleware in either <code>config/autoload/middleware-pipeline.global.php</code>
 or <code>config/autoload/dependencies.global.php</code>:</p>
-<pre class="codehilite"><code class="language-php">return [
+<p> <pre class=codehilite><code class=language-php>return [
     'dependencies' =&gt; [
         'invokables' =&gt; [
             LocalizationMiddleware::class =&gt; LocalizationMiddleware::class,
@@ -824,15 +817,14 @@ or <code>config/autoload/dependencies.global.php</code>:</p>
         ],
         /* ... */
     ],
-];</code></pre>
-
+];</code></pre></p>
 <p>Pipe it immediately after your routing middleware:</p>
-<pre class="codehilite"><code class="language-php">use App\I18n\LocalizationMiddleware;
+<p> <pre class=codehilite><code class=language-php>use App\I18n\LocalizationMiddleware;
 
 /* ... */
 $app-&gt;pipe(RouteMiddleware::class);
 $app-&gt;pipe(LocalizationMiddleware::class);
-/* ... */</code></pre>
+/* ... */</code></pre></p>
 
 
 
@@ -866,7 +858,7 @@ $app-&gt;pipe(LocalizationMiddleware::class);
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v3/cookbook/setting-locale-depending-routing-parameter.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v3/cookbook/setting-locale-depending-routing-parameter.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

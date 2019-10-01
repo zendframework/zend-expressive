@@ -667,13 +667,12 @@ This package wraps <a href="https://github.com/fabfuel/prophiler">fabfuel/prophi
 which provides a PHP-based profiling tool and toolbar; the bitExpert package
 wraps this in PSR-7 middleware to make consumption in those paradigms trivial.</p>
 <p>To add the toolbar middleware to your application, use composer:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require bitExpert/prophiler-psr7-middleware</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer require bitExpert/prophiler-psr7-middleware</code></pre></p>
 <p>From there, you will need to create a factory for the middleware, and add it to
 your middleware pipeline. Stephan Hochdörfer, author of the package, has written
 a <a href="https://blog.bitexpert.de/blog/using-prophiler-with-zend-expressive/">post detailing these steps</a>.</p>
 <blockquote>
-<h3 id="use-locally">Use locally!</h3>
+<h3>Use locally!</h3>
 <p>One minor change we recommend over the directions Stephan provides is that you
 configure the factory and middleware in the
 <code>config/autoload/middleware-pipeline.local.php</code> file, vs the <code>.global</code> version.
@@ -686,30 +685,29 @@ information!</p>
 provides a PSR-7 middleware wrapper around <a href="https://github.com/maximebf/php-debugbar">maximebf/php-debugbar</a>,
 a popular framework-agnostic debug bar for PHP projects.</p>
 <p>First, install the middleware in your application:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require php-middleware/php-debug-bar</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer require php-middleware/php-debug-bar</code></pre></p>
 <p>This package provides a config provider. You can add it to your application in
 one of two ways:</p>
 <ul>
 <li>If you are using the <a href="../modular-layout/">ConfigManager</a>, add an entry for it:</li>
 </ul>
-<pre class="codehilite"><code class="language-php">$configManager = new Zend\Expressive\ConfigManager\ConfigManager([
-    PhpMiddleware\PhpDebugBar\ConfigProvider::class,
-    new Zend\Expressive\ConfigManager\PhpFileProvider('config/autoload/{{,*.}global,{,*.}local}.php'),
-]);</code></pre>
-
+<p><code>php
+  $configManager = new Zend\Expressive\ConfigManager\ConfigManager([
+      PhpMiddleware\PhpDebugBar\ConfigProvider::class,
+      new Zend\Expressive\ConfigManager\PhpFileProvider('config/autoload/{{,*.}global,{,*.}local}.php'),
+  ]);</code></p>
 <ul>
 <li>If you are not using the ConfigManager, create a new configuration file,
   <code>config/autoload/php-debugbar.global.php</code>, with the following contents:</li>
 </ul>
-<pre class="codehilite"><code class="language-php">&lt;?php
-use PhpMiddleware\PhpDebugBar\ConfigProvider;
-
-$provider = new ConfigProvider();
-return $provider();</code></pre>
-
+<p>```php
+  &lt;?php
+  use PhpMiddleware\PhpDebugBar\ConfigProvider;</p>
+<p>$provider = new ConfigProvider();
+  return $provider();
+  ```</p>
 <blockquote>
-<h3 id="use-locally_1">Use locally!</h3>
+<h3>Use locally!</h3>
 <p>Remember to enable <code>PhpMiddleware\PhpDebugBar\ConfigProvider</code> only in your
 development enviroments!</p>
 </blockquote>
@@ -746,7 +744,7 @@ development enviroments!</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v1/cookbook/debug-toolbars.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v1/cookbook/debug-toolbars.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

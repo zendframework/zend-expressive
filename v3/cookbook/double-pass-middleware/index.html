@@ -690,10 +690,6 @@
             <ul class="toc__list">
                 
                     <li class="toc__entry">
-                        <a href="#what-is-double-pass-middleware" class="toc__link">What is Double-Pass Middleware?</a>
-                    </li>
-                
-                    <li class="toc__entry">
                         <a href="#doublepassmiddleware-function" class="toc__link">doublePassMiddleware function</a>
                     </li>
                 
@@ -714,16 +710,16 @@ request handlers exclusively as of version 3.</p>
 number of third-party packages provided double-pass middleware. How can you use
 this middleware with Expressive 3?</p>
 <blockquote>
-<h3 id="what-is-double-pass-middleware">What is Double-Pass Middleware?</h3>
+<h3>What is Double-Pass Middleware?</h3>
 <p>Double pass middleware receives both the request and a response in addition to
 the handler, and passes both the request and response to the handler when
 invoking it:</p>
-<pre class="codehilite"><code class="language-php">function (ServerRequestInterface $request, ResponseInterface $response, callable $next)
+<p><code>php
+function (ServerRequestInterface $request, ResponseInterface $response, callable $next)
 {
     $response = $next($request, $response);
     return $response-&gt;withHeader('X-Test', time());
-}</code></pre>
-
+}</code></p>
 <p>It is termed "double pass" because you pass <em>both</em> the request <em>and</em> response when
 delegating to the next layer.</p>
 </blockquote>
@@ -738,7 +734,7 @@ middleware pipelines.</p>
 <code>$response</code> argument to the double-pass middleware. The following examples
 demostrate both piping and routing to double pass middleware using this
 technique, and using zend-diactoros to provide the response instance.</p>
-<pre class="codehilite"><code class="language-php">use Zend\Diactoros\Response;
+<p> <pre class=codehilite><code class=language-php>use Zend\Diactoros\Response;
 
 use function Zend\Stratigility\doublePassMiddleware;
 
@@ -751,8 +747,7 @@ $app-&gt;get('/api/ping', doublePassMiddleware(function ($request, $response, $n
     return new Response\JsonResponse([
         'ack' =&gt; time(),
     ]);
-}, new Response())); // &lt;-- note the response</code></pre>
-
+}, new Response())); // &lt;-- note the response</code></pre></p>
 <h2 id="double-pass-middleware-services">Double-Pass Middleware Services</h2>
 <p>What if you're piping or routing to a <em>service</em> &mdash; for instance, a class
 provided by a third-party implementation?</p>
@@ -762,13 +757,13 @@ provided by a third-party implementation?</p>
 <li>Use a <a href="../../features/container/delegator-factories/">delegator factory</a> to
   decorate the middleware.</li>
 </ul>
-<h3 id="decorating-via-factory">Decorating via factory</h3>
+<h3>Decorating via factory</h3>
 <p>If you have control of the factory that creates the double-pass middleware you
 will be using in your application, you can use the strategy outlined above to
 decorate your middleware before returning it, with one minor change: you can
 pull a response factory from the container as well.</p>
 <p>To demonstrate:</p>
-<pre class="codehilite"><code class="language-php">use Psr\Container\ContainerInterface;
+<p> <pre class=codehilite><code class=language-php>use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 
 use function Zend\Stratigility\doublePassMiddleware;
@@ -785,8 +780,7 @@ class SomeDoublePassMiddlewareFactory
             ($container-&gt;get(ResponseInterface::class))()
         );
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>That last line may look a little strange.</p>
 <p>The <code>Psr\Http\Response\ResponseInterface</code> service returns a callable <em>factory</em>
 for producing response instances, and not a response instance itself. As such,
@@ -794,11 +788,11 @@ we pull it, and then invoke it to produce the response instance for our
 double-pass middleware.</p>
 <p>This approach will work, but it means code duplication everywhere you have
 double-pass middleware. Let's look at the delegator factory solution.</p>
-<h3 id="decorating-via-delegator-factory">Decorating via delegator factory</h3>
+<h3>Decorating via delegator factory</h3>
 <p>Delegator factories can be re-used for multiple services. In our case, we'll
 re-use it to decorate double-pass middleware.</p>
 <p>The delegator factory would look like this:</p>
-<pre class="codehilite"><code class="language-php">use Psr\Container\ContainerInterface;
+<p> <pre class=codehilite><code class=language-php>use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 
 use function Zend\Stratigility\doublePassMiddleware;
@@ -812,13 +806,12 @@ class DoublePassMiddlewareDelegator
             ($container-&gt;get(ResponseInterface::class))()
         );
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>This looks similar to our previous solution, but is self-contained; we rely on
 the <code>$callback</code> argument to produce the middleware we want to decorate.</p>
 <p>Then, for each service we have that represents double-pass middleware, we can
 provide configuration like the following:</p>
-<pre class="codehilite"><code class="language-php">return [
+<p> <pre class=codehilite><code class=language-php>return [
     'dependencies' =&gt; [
         'delegators' =&gt; [
             SomeDoublePassMiddleware::class =&gt; [
@@ -826,8 +819,7 @@ provide configuration like the following:</p>
             ],
         ],
     ],
-];</code></pre>
-
+];</code></pre></p>
 <p>This approach has a couple of benefits:</p>
 <ul>
 <li>We do not need to change existing factories.</li>
@@ -837,7 +829,7 @@ provide configuration like the following:</p>
   contribute PSR-15 patches to, or potentially migrate away from, or middleware
   of our own we need to refactor.</li>
 </ul>
-<h3 id="extending-the-middlewarecontainer">Extending the MiddlewareContainer</h3>
+<h3>Extending the MiddlewareContainer</h3>
 <p>Another possibility is to extend <code>Zend\Expressive\MiddlewareContainer</code> to add
 awareness of double-pass middleware, and have it auto-decorate them for you.</p>
 <p>A contributor has created such a library:</p>
@@ -887,7 +879,7 @@ double-pass middleware in your system.</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v3/cookbook/double-pass-middleware.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v3/cookbook/double-pass-middleware.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

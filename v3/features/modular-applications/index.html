@@ -764,7 +764,7 @@ array.</p>
 structure, and that the module contain a <code>src/</code> directory at the minimum, along
 with directories for other module-specific content, such as templates, tests, and
 assets:</p>
-<pre class="codehilite"><code class="language-text">src/
+<p> <pre class=codehilite><code class=language-text>src/
   Acme/
     src/
       ConfigProvider.php
@@ -779,16 +779,14 @@ assets:</p>
       Helper/
         AuthorizationHelperTest.php
       Middleware/
-        VerifyUserTest.php</code></pre>
-
+        VerifyUserTest.php</code></pre></p>
 <p>If you use the above structure, you would then add an entry in your
 <code>composer.json</code> file to provide autoloading:</p>
-<pre class="codehilite"><code class="language-json">"autoload": {
-    "psr-4": {
-        "Acme\\": "src/Acme/src/"
+<p> <pre class=codehilite><code class=language-json>&quot;autoload&quot;: {
+    &quot;psr-4&quot;: {
+        &quot;Acme\\&quot;: &quot;src/Acme/src/&quot;
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>Don't forget to execute <code>composer dump-autoload</code> after making the change!</p>
 <h2 id="creating-and-enabling-a-module">Creating and enabling a module</h2>
 <p>The only <em>requirement</em> for creating a module is that you define a "config
@@ -796,7 +794,7 @@ provider", which is simply an invokable class that returns a configuration
 array.</p>
 <p>Generally, a config provider will return dependency information, and
 module-specific configuration:</p>
-<pre class="codehilite"><code class="language-php">namespace Acme;
+<p> <pre class=codehilite><code class=language-php>namespace Acme;
 
 class ConfigProvider
 {
@@ -826,14 +824,12 @@ class ConfigProvider
             ],
         ];
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>You would then add the config provider to the top (or towards the top) of your
 <code>config/config.php</code>:</p>
-<pre class="codehilite"><code class="language-php">$aggregator = new ConfigAggregator([
+<p> <pre class=codehilite><code class=language-php>$aggregator = new ConfigAggregator([
     Acme\ConfigProvider::class,
-    /* ... */</code></pre>
-
+    /* ... */</code></pre></p>
 <p>This approach allows your <code>config/autoload/*</code> files to take precedence over the
 module configuration, allowing you to override the values.</p>
 <h2 id="caching-configuration">Caching configuration</h2>
@@ -854,7 +850,7 @@ them in two locations:</p>
   appropriate to the current environment. In development, for instance, this
   would be <code>false</code>.</li>
 </ul>
-<pre class="codehilite"><code class="language-php">// config/autoload/global.php
+<p> <pre class=codehilite><code class=language-php>// config/autoload/global.php
 
 return [
     'config_cache_enabled' =&gt; true,
@@ -866,17 +862,15 @@ return [
 return [
     'config_cache_enabled' =&gt; false, // &lt;- development!
     /* ... */
-];</code></pre>
-
+];</code></pre></p>
 <p>You would then alter your <code>config/config.php</code> file to add the second argument.
 The following example builds on the previous, and demonstrates having the
 <code>AppConfig</code> entry enabled. The configuration will be cached to
 <code>data/config-cache.php</code> in the application root:</p>
-<pre class="codehilite"><code class="language-php">$configManager = new ConfigManager([
+<p> <pre class=codehilite><code class=language-php>$configManager = new ConfigManager([
     App\AppConfig::class,
     new PhpFileProvider('config/autoload/{{,*.}global,{,*.}local}.php'),
-], 'data/config-cache.php');</code></pre>
-
+], 'data/config-cache.php');</code></pre></p>
 <p>When the configuration cache path is present, if the <code>config_cache_enabled</code> flag
 is enabled, then configuration will be read from the cached configuration,
 instead of parsing and merging the various configuration sources.</p>
@@ -884,8 +878,7 @@ instead of parsing and merging the various configuration sources.</p>
 <p>The skeleton ships with zend-expressive-tooling by default, which allows you
 to execute the following command in order to create a module skeleton, add and
 enable autoloading rules for it, and register it with your application:</p>
-<pre class="codehilite"><code class="language-bash">$ composer expressive module:create {ModuleName}</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer expressive module:create {ModuleName}</code></pre></p>
 <p>We recommend using this tool when creating new modules.</p>
 <h2 id="final-notes">Final notes</h2>
 <p>This approach may look simple, but it is flexible and powerful:</p>
@@ -931,7 +924,7 @@ documentation</a>.</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v3/features/modular-applications.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v3/features/modular-applications.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

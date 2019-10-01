@@ -662,11 +662,10 @@ damess/expressive-session-middleware.</p>
 <p>Slim's <a href="https://github.com/slimphp/Slim-Flash">Flash messages service provider</a> can be
 used in Expressive. It uses PHP's native session support.</p>
 <p>First, you'll need to add it to your application:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require slim/flash</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer require slim/flash</code></pre></p>
 <p>Once you have, you'll need to create a factory to return middleware that will
 add the flash message provider to the request:</p>
-<pre class="codehilite"><code class="language-php">namespace App;
+<p> <pre class=codehilite><code class=language-php>namespace App;
 
 use Slim\Flash\Messages;
 
@@ -684,11 +683,10 @@ class SlimFlashMiddlewareFactory
             );
         };
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>Now, let's register it with our middleware pipeline. In
 <code>config/autoload/middleware-pipeline.global.php</code>, make the following additions:</p>
-<pre class="codehilite"><code class="language-php">return [
+<p> <pre class=codehilite><code class=language-php>return [
     'dependencies' =&gt; [
         'factories' =&gt; [
             'App\SlimFlashMiddleware' =&gt; App\SlimFlashMiddlewareFactory::class,
@@ -706,17 +704,16 @@ class SlimFlashMiddlewareFactory
         ],
         /* ... */
     ],
-];</code></pre>
-
+];</code></pre></p>
 <blockquote>
-<h3 id="where-to-register-the-flash-middleware">Where to register the flash middleware</h3>
+<h3>Where to register the flash middleware</h3>
 <p>Sessions can sometimes be expensive. As such, you may not want the flash
 middleware enabled for every request. If this is the case, add the flash
 middleware as part of a route-specific pipeline instead.</p>
 </blockquote>
 <p>From here, you can add and read messages by accessing the request's flash
 attribute. As an example, middleware generating messages might read as follows:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Diactoros\Response\RedirectResponse;
+<p> <pre class=codehilite><code class=language-php>use Zend\Diactoros\Response\RedirectResponse;
 
 public function __invoke($request, $response, $next)
 {
@@ -724,16 +721,14 @@ public function __invoke($request, $response, $next)
     $flash-&gt;addMessage('message', 'Hello World!');
 
     return new RedirectResponse('/other-middleware');
-}</code></pre>
-
+}</code></pre></p>
 <p>And middleware consuming the message might read:</p>
-<pre class="codehilite"><code class="language-php">public function __invoke($request, $response, $next)
+<p> <pre class=codehilite><code class=language-php>public function __invoke($request, $response, $next)
 {
     $flash = $request-&gt;getAttribute('flash');
     $messages = $flash-&gt;getMessages();
     // ...
-}</code></pre>
-
+}</code></pre></p>
 <p>From there, it's a matter of providing the flash messages to your template.</p>
 <h2 id="damessexpressive-session-middleware-and-aurasession">damess/expressive-session-middleware and Aura.Session</h2>
 <p><a href="https://github.com/dannym87/expressive-session-middleware">damess/expressive-session-middleware</a>
@@ -741,10 +736,9 @@ provides middleware for initializing an
 <a href="https://github.com/auraphp/Aura.Session">Aura.Session</a> instance; Aura.Session
 provides flash messaging capabilities as part of its featureset.</p>
 <p>Install it via Composer:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require damess/expressive-session-middleware</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer require damess/expressive-session-middleware</code></pre></p>
 <p>In <code>config/autoload/dependencies.global.php</code>, add an entry for Aura.Session:</p>
-<pre class="codehilite"><code class="language-php">return [
+<p> <pre class=codehilite><code class=language-php>return [
     'dependencies' =&gt; [
         'factories' =&gt; [
             Aura\Session\Session::class =&gt; DaMess\Factory\AuraSessionFactory::class,
@@ -752,11 +746,10 @@ provides flash messaging capabilities as part of its featureset.</p>
         ],
         /* ... */
     ],
-];</code></pre>
-
+];</code></pre></p>
 <p>In <code>config/autoload/middleware-pipeline.global.php</code>, add a factory entry for the
 <code>damess/expressive-session-middleware</code>, and add it to the middleware pipeline:</p>
-<pre class="codehilite"><code class="language-php">return [
+<p> <pre class=codehilite><code class=language-php>return [
     'dependencies' =&gt; [
         'factories' =&gt; [
             DaMess\Http\SessionMiddleware::class =&gt; DaMess\Factory\SessionMiddlewareFactory::class,
@@ -774,10 +767,9 @@ provides flash messaging capabilities as part of its featureset.</p>
         ],
         /* ... */
     ],
-];</code></pre>
-
+];</code></pre></p>
 <blockquote>
-<h3 id="where-to-register-the-session-middleware">Where to register the session middleware</h3>
+<h3>Where to register the session middleware</h3>
 <p>Sessions can sometimes be expensive. As such, you may not want the session
 middleware enabled for every request. If this is the case, add the session
 middleware as part of a route-specific pipeline instead.</p>
@@ -785,13 +777,12 @@ middleware as part of a route-specific pipeline instead.</p>
 <p>Once enabled, the <code>SessionMiddleware</code> will inject the Aura.Session instance into
 the request as the <code>session</code> attribute; you can thus retrieve it within
 middleware using the following:</p>
-<pre class="codehilite"><code class="language-php">$session = $request-&gt;getAttribute('session');</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>$session = $request-&gt;getAttribute('session');</code></pre></p>
 <p>To create and consume flash messages, use Aura.Session's
 <a href="https://github.com/auraphp/Aura.Session#flash-values">flash values</a>. As
 an example, the middleware that is processing a POST request might set a flash
 message:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Diactoros\Response\RedirectResponse;
+<p> <pre class=codehilite><code class=language-php>use Zend\Diactoros\Response\RedirectResponse;
 
 public function __invoke($request, $response, $next)
 {
@@ -800,18 +791,16 @@ public function __invoke($request, $response, $next)
             -&gt;setFlash('message', 'Hello World!');
 
     return new RedirectResponse('/other-middleware');
-}</code></pre>
-
+}</code></pre></p>
 <p>Another middleware, to which the original middleware redirects, might look like
 this:</p>
-<pre class="codehilite"><code class="language-php">public function __invoke($request, $response, $next)
+<p> <pre class=codehilite><code class=language-php>public function __invoke($request, $response, $next)
 {
     $session = $request-&gt;getAttribute('session');
     $message = $session-&gt;getSegment(__NAMESPACE__)
                        -&gt;getFlash('message');
     // ...
-}</code></pre>
-
+}</code></pre></p>
 <p>From there, it's a matter of providing the flash messages to your template.</p>
 
 
@@ -846,7 +835,7 @@ this:</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v1/cookbook/flash-messengers.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v1/cookbook/flash-messengers.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

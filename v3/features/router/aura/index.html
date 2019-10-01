@@ -725,25 +725,25 @@ configuration is to provide default specifications:</p>
 <ul>
 <li>A regular expression that applies the same for a given routing match:</li>
 </ul>
-<pre class="codehilite"><code class="language-php">// Parameters named "id" will only match digits by default:
-$router-&gt;addTokens([
-  'id' =&gt; '\d+',
-]);</code></pre>
-
+<p><code>php
+  // Parameters named "id" will only match digits by default:
+  $router-&gt;addTokens([
+    'id' =&gt; '\d+',
+  ]);</code></p>
 <ul>
 <li>A default parameter and/or its default value to always provide:</li>
 </ul>
-<pre class="codehilite"><code class="language-php">// mediatype defaults to "application/xhtml+xml" and will be available in all
-// requests:
-$router-&gt;addValues([
-  'mediatype' =&gt; 'application/xhtml+xml',
-]);</code></pre>
-
+<p><code>php
+  // mediatype defaults to "application/xhtml+xml" and will be available in all
+  // requests:
+  $router-&gt;addValues([
+    'mediatype' =&gt; 'application/xhtml+xml',
+  ]);</code></p>
 <ul>
 <li>Only match if secure (i.e., under HTTPS):</li>
 </ul>
-<pre class="codehilite"><code class="language-php">$router-&gt;setSecure(true);</code></pre>
-
+<p><code>php
+  $router-&gt;setSecure(true);</code></p>
 <p>In order to specify these, you need access to the underlying Aura.Router
 instance, however, and the <code>RouterInterface</code> does not provide an accessor!</p>
 <p>The answer, then, is to use dependency injection. This can be done in two ways:
@@ -751,21 +751,19 @@ programmatically, or via a factory to use in conjunction with your container
 instance.</p>
 <h2 id="installing-aurarouter">Installing Aura.Router</h2>
 <p>To use Aura.Router, you will first need to install the Aura.Router integration:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-expressive-aurarouter</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-expressive-aurarouter</code></pre></p>
 <h2 id="quick-start">Quick Start</h2>
 <p>At its simplest, you can instantiate a <code>Zend\Expressive\Router\AuraRouter</code> instance
 with no arguments; it will create the underlying Aura.Router objects required
 and compose them for you:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Expressive\Router\AuraRouter;
+<p> <pre class=codehilite><code class=language-php>use Zend\Expressive\Router\AuraRouter;
 
-$router = new AuraRouter();</code></pre>
-
+$router = new AuraRouter();</code></pre></p>
 <h2 id="programmatic-creation">Programmatic Creation</h2>
 <p>If you need greater control over the Aura.Router setup and configuration, you
 can create the instances necessary and inject them into
 <code>Zend\Expressive\Router\AuraRouter</code> during instantiation.</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<p> <pre class=codehilite><code class=language-php>&lt;?php
 use Aura\Router\RouterFactory;
 use Zend\Expressive\AppFactory;
 use Zend\Expressive\Router\AuraRouter as AuraBridge;
@@ -780,10 +778,9 @@ $router = new AuraBridge($auraRouter);
 
 // First argument is the container to use, if not using the default;
 // second is the router.
-$app = AppFactory::create(null, $router);</code></pre>
-
+$app = AppFactory::create(null, $router);</code></pre></p>
 <blockquote>
-<h3 id="piping-the-route-middleware">Piping the route middleware</h3>
+<h3>Piping the route middleware</h3>
 <p>As a reminder, you will need to ensure that middleware is piped in the order
 in which it needs to be executed; please see the section on "Controlling
 middleware execution order" in the <a href="../piping/">piping documentation</a>. This is
@@ -803,7 +800,7 @@ example, we will be defining two factories:</p>
   <code>Aura\Router\Router</code> instance.</li>
 </ul>
 <p>The factory might look like this:</p>
-<pre class="codehilite"><code class="language-php">// in src/App/Container/AuraRouterFactory.php:
+<p> <pre class=codehilite><code class=language-php>// in src/App/Container/AuraRouterFactory.php:
 namespace App\Container;
 
 use Aura\Router\RouterFactory;
@@ -843,16 +840,15 @@ class RouterFactory
     {
         return new AuraBridge($container-&gt;get('Aura\Router\Router'));
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>From here, you will need to register your factories with your IoC container:</p>
-<pre class="codehilite"><code class="language-php">// in a config/autoload/ file, or within a ConfigProvider class:
+<p> <pre class=codehilite><code class=language-php>// in a config/autoload/ file, or within a ConfigProvider class:
 return [
     'factories' =&gt; [
         \Aura\Router\Router::class =&gt; \App\Container\AuraRouterFactory::class,
         \Zend\Expressive\Router\RouterInterface::class =&gt; \App\Container\RouterFactory::class,
     ],
-];</code></pre>
+];</code></pre></p>
 
 
 
@@ -886,7 +882,7 @@ return [
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v3/features/router/aura.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v3/features/router/aura.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

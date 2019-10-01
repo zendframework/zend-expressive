@@ -728,7 +728,7 @@ which can be used as a delegator factory for the <code>Zend\Expressive\Applicati
 class in order to automate piping of pipeline middleware and routing to request
 handlers and middleware.</p>
 <p>The delegator factory looks for configuration that looks like the following:</p>
-<pre class="codehilite"><code class="language-php">return [
+<p> <pre class=codehilite><code class=language-php>return [
     'middleware_pipeline' =&gt; [
         [
             // required:
@@ -760,15 +760,14 @@ handlers and middleware.</p>
             ],
         ],
     ],
-];</code></pre>
-
+];</code></pre></p>
 <p>This configuration may be placed at the application level, in a file under
 <code>config/autoload/</code>, or within a module's <code>ConfigProvider</code> class. For details on
 what values are accepted, see below.</p>
 <p>In order to enable the delegator factory, you will need to define the following
 service configuration somewhere, either at the application level in a
 <code>config/autoload/</code> file, or within a module-specific <code>ConfigProvider</code> class:</p>
-<pre class="codehilite"><code class="language-php">return [
+<p> <pre class=codehilite><code class=language-php>return [
     'dependencies' =&gt; [
         'delegators' =&gt; [
             \Zend\Expressive\Application::class =&gt; [
@@ -776,9 +775,8 @@ service configuration somewhere, either at the application level in a
             ],
         ],
     ],
-];</code></pre>
-
-<h3 id="pipeline-middleware">Pipeline middleware</h3>
+];</code></pre></p>
+<h3>Pipeline middleware</h3>
 <p>Pipeline middleware are each described as an associative array, with the
 following keys:</p>
 <ul>
@@ -796,7 +794,7 @@ following keys:</p>
   (including <em>negative</em> values), last. If two middleware use the same priority,
   they will be piped in the order discovered.</li>
 </ul>
-<h3 id="routed-middleware">Routed middleware</h3>
+<h3>Routed middleware</h3>
 <p>Routed middleware are also each described as an associative array, using the
 following keys:</p>
 <ul>
@@ -823,7 +821,7 @@ Unlike the above solution, the solution we will outline here will exercise the
 <code>Zend\Expressive\Application</code> API in order to populate it.</p>
 <p>First, we'll create the class <code>App\Factory\PipelineAndRoutesDelegator</code>, with
 the following contents:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<p> <pre class=codehilite><code class=language-php>&lt;?php
 
 namespace App\Factory;
 
@@ -867,10 +865,9 @@ class PipelineAndRoutesDelegator
 
         return $app;
     }
-}</code></pre>
-
+}</code></pre></p>
 <blockquote>
-<h3 id="where-to-put-the-factory">Where to put the factory</h3>
+<h3>Where to put the factory</h3>
 <p>You will place the factory class in one of the following locations:</p>
 <ul>
 <li><code>src/App/Factory/PipelineAndRoutesDelegator.php</code> if using the default, flat,
@@ -881,7 +878,7 @@ class PipelineAndRoutesDelegator
 </blockquote>
 <p>Once you've created this, edit the class <code>App\ConfigProvider</code>; in it, we'll
 update the <code>getDependencies()</code> method to add the delegator factory:</p>
-<pre class="codehilite"><code class="language-php">public function getDependencies()
+<p> <pre class=codehilite><code class=language-php>public function getDependencies()
 {
     return [
         /* . . . */
@@ -891,10 +888,9 @@ update the <code>getDependencies()</code> method to add the delegator factory:</
             ],
         ],
     ];
-}</code></pre>
-
+}</code></pre></p>
 <blockquote>
-<h3 id="where-is-the-configprovider-class">Where is the ConfigProvider class?</h3>
+<h3>Where is the ConfigProvider class?</h3>
 <p>The <code>ConfigProvider</code> class is in one of the following locations:</p>
 <ul>
 <li><code>src/App/ConfigProvider.php</code> if using the default, flat, application
@@ -902,7 +898,7 @@ update the <code>getDependencies()</code> method to add the delegator factory:</
 <li><code>src/App/src/ConfigProvider.php</code> using the recommended, modular, application
   structure.</li>
 </ul>
-<h3 id="why-is-an-array-assigned">Why is an array assigned?</h3>
+<h3>Why is an array assigned?</h3>
 <p>As noted above in the description of delegator factories, since each delegator
 factory returns an instance, you can nest multiple delegator factories in
 order to shape initialization of a service. As such, they are assigned as an
@@ -1016,7 +1012,7 @@ delegator factory by wiring it into their own configuration.</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v3/cookbook/autowiring-routes-and-pipelines.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v3/cookbook/autowiring-routes-and-pipelines.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

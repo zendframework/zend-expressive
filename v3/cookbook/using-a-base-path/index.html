@@ -706,24 +706,22 @@
     <h1 id="how-can-i-tell-my-application-about-a-base-path">How can I tell my application about a base path?</h1>
 <p>In some environments, your application may be running in a subdirectory of your
 web root. For example:</p>
-<pre class="codehilite"><code>var/
+<p> <pre class=codehilite><code>var/
 |- www/
 |  |- wordpress/
 |  |- expressive/
 |  |  |- public/
-|  |  |  |- index.php</code></pre>
-
+|  |  |  |- index.php</code></pre></p>
 <p>where <code>/var/www</code> is the web root, and your Expressive application is in the
 <code>expressive/</code> subdirectory. How can you make your application work correctly in
 this environment?</p>
 <h2 id="htaccess-in-the-application-root">.htaccess in the application root.</h2>
 <p>If you are using Apache, your first step is to add an <code>.htaccess</code> file to your
 application root, with directives for rewriting to the <code>public/</code> directory:</p>
-<pre class="codehilite"><code class="language-ApacheConf">RewriteEngine On
-RewriteRule (.*) ./public/$1</code></pre>
-
+<p> <pre class=codehilite><code class=language-ApacheConf>RewriteEngine On
+RewriteRule (.*) ./public/$1</code></pre></p>
 <blockquote>
-<h3 id="using-other-web-servers">Using other web servers</h3>
+<h3>Using other web servers</h3>
 <p>If you are using a web-server other than Apache, and know how to do a similar
 rewrite, we'd love to know! Please submit ideas/instructions to
 <a href="https://github.com/zendframework/zend-expressive/issues">our issue tracker</a>!</p>
@@ -741,47 +739,41 @@ rewrite the URL accordingly.</p>
   URL rewriting mechanics, as well as utilities for generating URIs that retain
   the base path.</li>
 </ul>
-<h3 id="losbasepath">los/basepath</h3>
+<h3>los/basepath</h3>
 <p>To use <code>los/basepath</code>, install it via Composer, copy the configuration files to
 your application, and then edit the configuration.</p>
 <p>To install and copy the configuration:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require los/basepath
-$ cp vendor/los/basepath/config/los-basepath.global.php.dist config/autoload/los-basepath.global.php</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer require los/basepath
+$ cp vendor/los/basepath/config/los-basepath.global.php.dist config/autoload/los-basepath.global.php</code></pre></p>
 <p>We recommend copying the global configuration to a local configuration file as
 well; this allows you to have the production settings in your global
 configuration, and development settings in a local configuration (which is
 excluded from git by default):</p>
-<pre class="codehilite"><code class="language-bash">$ cp config/autoload/los-basepath.global.php config/autoload/los-basepath.local.php</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ cp config/autoload/los-basepath.global.php config/autoload/los-basepath.local.php</code></pre></p>
 <p>Then edit one or both, to change the <code>los_basepath</code> settings:</p>
-<pre class="codehilite"><code class="language-php">return [
+<p> <pre class=codehilite><code class=language-php>return [
     'los_basepath' =&gt; '&lt;base path here&gt;',
     /* ... */
-];</code></pre>
-
+];</code></pre></p>
 <p>The base path should be the portion of the web root leading up to the
 <code>index.php</code> of your application. In the above example, this would be
 <code>/expressive</code>.</p>
-<h3 id="mtymekblast-base-url">mtymek/blast-base-url</h3>
+<h3>mtymek/blast-base-url</h3>
 <p>To use <code>mtymek/blast-base-url</code>, install it via Composer, and register some
 configuration.</p>
 <p>To install it:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require mtymek/blast-base-url</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer require mtymek/blast-base-url</code></pre></p>
 <p>If you are using <code>zend-component-installer</code>, you will be prompted to configure this package 
 automatically. If you don't choose to do so, you please refer to <code>Blast\BaseUrl\ConfigProvider</code> 
 class to see how to wire it manually.</p>
 <p>If using programmatic pipelines, pipe the middleware early in your pipeline (before routing):</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;pipe(\Blast\BaseUrl\BaseUrlMiddleware::class);</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe(\Blast\BaseUrl\BaseUrlMiddleware::class);</code></pre></p>
 <p>For configuration-driven pipelines, add an entry in your
 <code>config/autoload/middleware-pipeline.global.php</code> file:</p>
-<pre class="codehilite"><code class="language-php">'middleware_pipeline' =&gt; [
+<p> <pre class=codehilite><code class=language-php>'middleware_pipeline' =&gt; [
     ['middleware' =&gt; [Blast\BaseUrl\BaseUrlMiddleware::class], 'priority' =&gt; 1000],
     /* ... */
-],</code></pre>
-
+],</code></pre></p>
 <p>At this point, the middleware will take care of the rewriting for you. No
 configuration is necessary, as it does auto-detection of the base path based on
 the request URI and the operating system path to the application.</p>
@@ -795,12 +787,12 @@ the request URI and the operating system path to the application.</p>
   be available out of the box.</li>
 </ul>
 <p>Usage of the <code>BasePath</code> helper is as follows:</p>
-<pre class="codehilite"><code class="language-php">// where $basePathHelper is an instance of Blast\BaseUrl\BasePathHelper
+<p> <pre class=codehilite><code class=language-php>// where $basePathHelper is an instance of Blast\BaseUrl\BasePathHelper
 // as pulled from your container:
 echo $basePathHelper('/icons/favicon.ico');
 
 // or, from zend-view's PhpRenderer:
-echo $this-&gt;basePath('/icons/favicon.ico');</code></pre>
+echo $this-&gt;basePath('/icons/favicon.ico');</code></pre></p>
 
 
 
@@ -834,7 +826,7 @@ echo $this-&gt;basePath('/icons/favicon.ico');</code></pre>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v3/cookbook/using-a-base-path.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v3/cookbook/using-a-base-path.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

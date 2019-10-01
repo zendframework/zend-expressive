@@ -697,10 +697,6 @@
             <ul class="toc__list">
                 
                     <li class="toc__entry">
-                        <a href="#when-to-use-this-middleware" class="toc__link">When to use this middleware</a>
-                    </li>
-                
-                    <li class="toc__entry">
                         <a href="#caveats" class="toc__link">Caveats</a>
                     </li>
                 
@@ -715,7 +711,7 @@
 header, without having to inject it manually. To facilitate this, we provide
 <code>Zend\Expressive\Helper\ContentLengthMiddleware</code>.</p>
 <blockquote>
-<h3 id="when-to-use-this-middleware">When to use this middleware</h3>
+<h3>When to use this middleware</h3>
 <p>In most cases, you do not need to provide an explicit Content-Length value
 in your responses. While the HTTP/1.1 specification indicates the header
 SHOULD be provided, most clients will not degrade to HTTP/1.0 if the header
@@ -736,7 +732,7 @@ following conditions:</p>
 middleware with the container, and register the middleware in either your
 application pipeline, or within routed middleware.</p>
 <p>To add it to your container, add the following configuration:</p>
-<pre class="codehilite"><code class="language-php">// In a `config/autoload/*.global.php` file, or a `ConfigProvider` class:
+<p> <pre class=codehilite><code class=language-php>// In a `config/autoload/*.global.php` file, or a `ConfigProvider` class:
 
 use Zend\Expressive\Helper;
 
@@ -746,25 +742,22 @@ return [
             Helper\ContentLengthMiddleware::class =&gt; Helper\ContentLengthMiddleware::class,
         ],
     ],
-];</code></pre>
-
+];</code></pre></p>
 <p>To register it as pipeline middleware to execute on any request:</p>
-<pre class="codehilite"><code class="language-php">// In `config/pipeline.php`:
+<p> <pre class=codehilite><code class=language-php>// In `config/pipeline.php`:
 
 use Zend\Expressive\Helper;
 
-$app-&gt;pipe(Helper\ContentLengthMiddleware::class);</code></pre>
-
+$app-&gt;pipe(Helper\ContentLengthMiddleware::class);</code></pre></p>
 <p>To register it within a routed middleware pipeline:</p>
-<pre class="codehilite"><code class="language-php">// In `config/routes.php`:
+<p> <pre class=codehilite><code class=language-php>// In `config/routes.php`:
 
 use Zend\Expressive\Helper;
 
 $app-&gt;get('/download/tarball', [
     Helper\ContentLengthMiddleware::class,
     Download\Tarball::class,
-], 'download-tar');</code></pre>
-
+], 'download-tar');</code></pre></p>
 <h2 id="caveats">Caveats</h2>
 <p>One caveat to note is that if you use this middleware, but also write directly
 to the output buffer (e.g., via a <code>var_dump</code>, or if <code>display_errors</code> is on and
@@ -807,7 +800,7 @@ exception handler that logs errors in order to prevent truncated output.</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v3/features/helpers/content-length.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v3/features/helpers/content-length.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

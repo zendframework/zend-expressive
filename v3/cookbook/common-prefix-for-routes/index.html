@@ -691,9 +691,8 @@
     <h1 id="how-can-i-prepend-a-common-path-to-all-my-routes">How can I prepend a common path to all my routes?</h1>
 <p>You may have multiple middleware in your project, each providing their own
 functionality:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;pipe(UserMiddleware::class);
-$app-&gt;pipe(ProjectMiddleware::class);</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe(UserMiddleware::class);
+$app-&gt;pipe(ProjectMiddleware::class);</code></pre></p>
 <p>Let's assume the above represents an API.</p>
 <p>As your application progresses, you may have a mixture of different content, and now want to have
 the above segregated under the path <code>/api</code>.</p>
@@ -707,7 +706,7 @@ compare the request path against the path with which it was created; if they
 match, it passes processing on to its middleware.</p>
 <p>The following example assumes you are using the structure of
 <code>config/pipeline.php</code> as shipped with the skeleton application.</p>
-<pre class="codehilite"><code class="language-php">use Psr\Container\ContainerInterface;
+<p> <pre class=codehilite><code class=language-php>use Psr\Container\ContainerInterface;
 use Zend\Expressive\Application;
 use Zend\Expressive\MiddlewareFactory;
 
@@ -721,10 +720,9 @@ return function (Application $app, MiddlewareFactory $factory, ContainerInterfac
         ProjectMiddleware::class,
     ]);
     // . . .
-}</code></pre>
-
+}</code></pre></p>
 <p>Alternately, you can perform the path decoration manually:</p>
-<pre class="codehilite"><code class="language-php">use Psr\Container\ContainerInterface;
+<p> <pre class=codehilite><code class=language-php>use Psr\Container\ContainerInterface;
 use Zend\Expressive\Application;
 use Zend\Expressive\MiddlewareFactory;
 
@@ -740,8 +738,7 @@ return function (Application $app, MiddlewareFactory $factory, ContainerInterfac
         ProjectMiddleware::class
     )));
     // . . .
-}</code></pre>
-
+}</code></pre></p>
 <p>(Calling <code>$factory-&gt;pipeline()</code> is necessary here to ensure that we create the
 <code>MiddlewarePipe</code> instance, and so that each item in the specified pipeline will
 be decorated as <code>Zend\Expressive\Middleware\LazyLoadingMiddleware</code>.)</p>
@@ -778,7 +775,7 @@ be decorated as <code>Zend\Expressive\Middleware\LazyLoadingMiddleware</code>.)<
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v3/cookbook/common-prefix-for-routes.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v3/cookbook/common-prefix-for-routes.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

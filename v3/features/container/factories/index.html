@@ -728,7 +728,7 @@ application.</p>
 <p>All factories, unless noted otherwise, are in the <code>Zend\Expressive\Container</code>
 namespace, and define an <code>__invoke()</code> method that accepts an
 <code>Psr\Container\ContainerInterface</code> instance as the sole argument.</p>
-<h3 id="applicationfactory">ApplicationFactory</h3>
+<h3>ApplicationFactory</h3>
 <ul>
 <li><strong>Provides</strong>: <code>Zend\Expressive\Application</code></li>
 <li><strong>Suggested Name</strong>: <code>Zend\Expressive\Application</code></li>
@@ -742,7 +742,7 @@ namespace, and define an <code>__invoke()</code> method that accepts an
 </li>
 <li><strong>Optional</strong>: no optional services are used.</li>
 </ul>
-<h3 id="applicationpipelinefactory">ApplicationPipelineFactory</h3>
+<h3>ApplicationPipelineFactory</h3>
 <ul>
 <li><strong>Provides</strong>: a <code>Zend\Stratigility\MiddlewarePipe</code> for use with the
   <code>Application</code> instance.</li>
@@ -750,7 +750,7 @@ namespace, and define an <code>__invoke()</code> method that accepts an
 <li><strong>Requires</strong>: no additional services are required.</li>
 <li><strong>Optional</strong>: no optional services are used.</li>
 </ul>
-<h3 id="emitterfactory">EmitterFactory</h3>
+<h3>EmitterFactory</h3>
 <ul>
 <li><strong>Provides</strong>: <code>Zend\HttpHandlerRunner\Emitter\EmitterInterface</code></li>
 <li><strong>Suggested Name</strong>: <code>Zend\HttpHandlerRunner\Emitter\EmitterInterface</code></li>
@@ -760,7 +760,7 @@ namespace, and define an <code>__invoke()</code> method that accepts an
 <p>This factory creates an instance of
 <code>Zend\HttpHandlerRunner\Emitter\EmitterStack</code>, pushing a
 <code>Zend\HttpHandlerRunner\Emitter\SapiEmitter</code> to it.</p>
-<h3 id="errorhandlerfactory">ErrorHandlerFactory</h3>
+<h3>ErrorHandlerFactory</h3>
 <ul>
 <li><strong>Provides</strong>: <code>Zend\Stratigility\Middleware\ErrorHandler</code></li>
 <li><strong>Suggested Name</strong>: <code>Zend\Stratigility\Middleware\ErrorHandler</code></li>
@@ -777,7 +777,7 @@ namespace, and define an <code>__invoke()</code> method that accepts an
 </ul>
 </li>
 </ul>
-<h3 id="errorresponsegeneratorfactory">ErrorResponseGeneratorFactory</h3>
+<h3>ErrorResponseGeneratorFactory</h3>
 <ul>
 <li><strong>Provides</strong>: <code>Zend\Expressive\Middleware\ErrorResponseGenerator</code></li>
 <li><strong>Suggested Name</strong>: <code>Zend\Expressive\Middleware\ErrorResponseGenerator</code></li>
@@ -806,15 +806,14 @@ namespace, and define an <code>__invoke()</code> method that accepts an
   which evaluates to <code>layout::default</code>).</li>
 </ul>
 <p>As an example:</p>
-<pre class="codehilite"><code class="language-php">'debug' =&gt; true,
+<p> <pre class=codehilite><code class=language-php>'debug' =&gt; true,
 'zend-expressive' =&gt; [
     'error_handler' =&gt; [
         'template_error' =&gt; 'name of error template',
         'layout' =&gt; 'layout::alternate',
     ],
-],</code></pre>
-
-<h3 id="middlewarecontainerfactory">MiddlewareContainerFactory</h3>
+],</code></pre></p>
+<h3>MiddlewareContainerFactory</h3>
 <ul>
 <li><strong>Provides</strong>: a <code>Zend\Expressive\MiddlewareContainer</code></li>
 <li><strong>Suggested Name</strong>: <code>Zend\Expressive\MiddlewareContainer</code></li>
@@ -832,7 +831,7 @@ instances pulled are PSR-15 <code>MiddlewareInterface</code> instances:</p>
 <li>Any service retrieved that is not a <code>MiddlewareInterface</code> instance will result
   in an exception, ensuring that nothing invalid is piped or routed.</li>
 </ul>
-<h3 id="middlewarefactoryfactory">MiddlewareFactoryFactory</h3>
+<h3>MiddlewareFactoryFactory</h3>
 <ul>
 <li><strong>Provides</strong>: a <code>Zend\Expressive\MiddlewareFactory</code></li>
 <li><strong>Suggested Name</strong>: <code>Zend\Expressive\MiddlewareFactory</code></li>
@@ -853,7 +852,7 @@ instances pulled are PSR-15 <code>MiddlewareInterface</code> instances:</p>
   instance (which will also receive the <code>MiddlewareContainer.</code>)</li>
 <li>Or an <code>array</code> of any of the above types.</li>
 </ul>
-<h3 id="notfoundhandlerfactory">NotFoundHandlerFactory</h3>
+<h3>NotFoundHandlerFactory</h3>
 <ul>
 <li><strong>Provides</strong>: <code>Zend\Expressive\Handler\NotFoundHandler</code></li>
 <li><strong>Suggested Name</strong>: <code>Zend\Expressive\Handler\NotFoundHandler</code></li>
@@ -887,14 +886,13 @@ instances pulled are PSR-15 <code>MiddlewareInterface</code> instances:</p>
 </li>
 </ul>
 <p>As an example:</p>
-<pre class="codehilite"><code class="language-php">'zend-expressive' =&gt; [
+<p> <pre class=codehilite><code class=language-php>'zend-expressive' =&gt; [
     'error_handler' =&gt; [
         'template_404' =&gt; 'name of 404 template',
         'layout' =&gt; 'layout::alternate',
     ],
-],</code></pre>
-
-<h3 id="requesthandlerrunnerfactory">RequestHandlerRunnerFactory</h3>
+],</code></pre></p>
+<h3>RequestHandlerRunnerFactory</h3>
 <ul>
 <li><strong>Provides</strong>: <code>Zend\HttpHandler\RequestHandlerRunner</code></li>
 <li><strong>Suggested Name</strong>: <code>Zend\HttpHandler\RequestHandlerRunner</code></li>
@@ -915,7 +913,7 @@ instances pulled are PSR-15 <code>MiddlewareInterface</code> instances:</p>
 passes it to the application pipeline to handle, and emits the returned
 response. If an error occurs during request generation, it uses the
 <code>ServerRequestErrorResponseGenerator</code> to generate the response to emit.</p>
-<h3 id="responsefactoryfactory">ResponseFactoryFactory</h3>
+<h3>ResponseFactoryFactory</h3>
 <ul>
 <li><strong>Provides</strong>: a PHP callable capable of producing
   <code>Psr\Http\Message\ResponseInterface</code> instances.</li>
@@ -926,7 +924,7 @@ response. If an error occurs during request generation, it uses the
 <p>By default, this uses zend-diactoros to produce a response, and will raise an
 exception if that package is not installed. You can provide an alternate factory
 if you want to use an alternate PSR-7 implementation.</p>
-<h3 id="serverrequesterrorresponsegeneratorfactory">ServerRequestErrorResponseGeneratorFactory</h3>
+<h3>ServerRequestErrorResponseGeneratorFactory</h3>
 <ul>
 <li><strong>Provides</strong>: <code>Zend\Expressive\Response\ServerRequestErrorResponseGenerator</code></li>
 <li><strong>Suggested Name</strong>: <code>Zend\Expressive\Response\ServerRequestErrorResponseGenerator</code></li>
@@ -956,14 +954,13 @@ if you want to use an alternate PSR-7 implementation.</p>
   constant).</li>
 </ul>
 <p>As an example:</p>
-<pre class="codehilite"><code class="language-php">'debug' =&gt; true,
+<p> <pre class=codehilite><code class=language-php>'debug' =&gt; true,
 'zend-expressive' =&gt; [
     'error_handler' =&gt; [
         'template_error' =&gt; 'name of error template',
     ],
-],</code></pre>
-
-<h3 id="serverrequestfactoryfactory">ServerRequestFactoryFactory</h3>
+],</code></pre></p>
+<h3>ServerRequestFactoryFactory</h3>
 <ul>
 <li><strong>Provides</strong>: a PHP callable capable of producing
   <code>Psr\Http\Message\ServerRequestInterface</code> instances.</li>
@@ -974,7 +971,7 @@ if you want to use an alternate PSR-7 implementation.</p>
 <p>By default, this uses zend-diactoros to produce a request, and will raise an
 exception if that package is not installed. You can provide an alternate factory
 if you want to use an alternate PSR-7 implementation.</p>
-<h3 id="streamfactoryfactory">StreamFactoryFactory</h3>
+<h3>StreamFactoryFactory</h3>
 <ul>
 <li><strong>Provides</strong>: a PHP callable capable of producing
   <code>Psr\Http\Message\StreamInterface</code> instances.</li>
@@ -985,14 +982,14 @@ if you want to use an alternate PSR-7 implementation.</p>
 <p>By default, this uses zend-diactoros to produce a stream, and will raise an
 exception if that package is not installed. You can provide an alternate factory
 if you want to use an alternate PSR-7 implementation.</p>
-<h3 id="whoopserrorresponsegeneratorfactory">WhoopsErrorResponseGeneratorFactory</h3>
+<h3>WhoopsErrorResponseGeneratorFactory</h3>
 <ul>
 <li><strong>Provides</strong>: <code>Zend\Expressive\Middleware\WhoopsErrorResponseGenerator</code></li>
 <li><strong>Suggested Name</strong>: <code>Zend\Expressive\Middleware\ErrorResponseGenerator</code></li>
 <li><strong>Requires</strong>: <code>Zend\Expressive\Whoops</code> (see <a href="#whoopsfactory">WhoopsFactory</a>,
 below)</li>
 </ul>
-<h3 id="whoopsfactory">WhoopsFactory</h3>
+<h3>WhoopsFactory</h3>
 <ul>
 <li><strong>Provides</strong>: <code>Whoops\Run</code></li>
 <li><strong>Suggested Name</strong>: <code>Zend\Expressive\Whoops</code></li>
@@ -1012,17 +1009,16 @@ properly with <code>Zend\Expressive\Application</code>; this includes disabling 
 write-to-output, disabling immediate quit, etc. The <code>PrettyPageHandler</code> returned
 for the <code>Zend\Expressive\WhoopsPageHandler</code> service will be injected.</p>
 <p>It consumes the following <code>config</code> structure:</p>
-<pre class="codehilite"><code class="language-php">'whoops' =&gt; [
+<p> <pre class=codehilite><code class=language-php>'whoops' =&gt; [
     'json_exceptions' =&gt; [
         'display'    =&gt; true,
         'show_trace' =&gt; true,
         'ajax_only'  =&gt; true,
     ],
-],</code></pre>
-
+],</code></pre></p>
 <p>If no <code>whoops</code> top-level key is present in the configuration, a default instance
 with no <code>JsonResponseHandler</code> composed will be created.</p>
-<h3 id="whoopspagehandlerfactory">WhoopsPageHandlerFactory</h3>
+<h3>WhoopsPageHandlerFactory</h3>
 <ul>
 <li><strong>Provides</strong>: <code>Whoops\Handler\PrettyPageHandler</code></li>
 <li><strong>Suggested Name</strong>: <code>Zend\Expressive\WhoopsPageHandler</code></li>
@@ -1035,10 +1031,9 @@ with no <code>JsonResponseHandler</code> composed will be created.</p>
 </li>
 </ul>
 <p>It consumes the following <code>config</code> structure:</p>
-<pre class="codehilite"><code class="language-php">'whoops' =&gt; [
+<p> <pre class=codehilite><code class=language-php>'whoops' =&gt; [
     'editor' =&gt; 'editor name, editor service name, or callable',
-],</code></pre>
-
+],</code></pre></p>
 <p>The <code>editor</code> value must be a known editor name (see the Whoops documentation for
 pre-configured editor types), a callable, or a service name to use.</p>
 <h2 id="zend-expressive-router">zend-expressive-router</h2>
@@ -1051,14 +1046,14 @@ application.</p>
 <p>All factories listed below are under the <code>Zend\Expressive\Router\Middleware</code>
 namespace (unless otherwise specified), and define an <code>__invoke()</code> method that
 accepts a <code>Psr\Container\ContainerInterface</code> instance as the sole argument.</p>
-<h3 id="dispatchmiddlewarefactory">DispatchMiddlewareFactory</h3>
+<h3>DispatchMiddlewareFactory</h3>
 <ul>
 <li><strong>Provides</strong>: <code>Zend\Expressive\Router\Middleware\DispatchMiddleware</code></li>
 <li><strong>Suggested Name</strong>: <code>Zend\Expressive\Router\Middleware\DispatchMiddleware</code></li>
 <li><strong>Requires</strong>: no additional services are required.</li>
 <li><strong>Optional</strong>: no optional services are used.</li>
 </ul>
-<h3 id="implicitheadmiddlewarefactory">ImplicitHeadMiddlewareFactory</h3>
+<h3>ImplicitHeadMiddlewareFactory</h3>
 <ul>
 <li><strong>Provides</strong>: <code>Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware</code></li>
 <li><strong>Suggested Name</strong>: <code>Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware</code></li>
@@ -1071,7 +1066,7 @@ accepts a <code>Psr\Container\ContainerInterface</code> instance as the sole arg
 </li>
 <li><strong>Optional</strong>: no optional services are used.</li>
 </ul>
-<h3 id="implicitoptionsmiddlewarefactory">ImplicitOptionsMiddlewareFactory</h3>
+<h3>ImplicitOptionsMiddlewareFactory</h3>
 <ul>
 <li><strong>Provides</strong>: <code>Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware</code></li>
 <li><strong>Suggested Name</strong>: <code>Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware</code></li>
@@ -1083,7 +1078,7 @@ accepts a <code>Psr\Container\ContainerInterface</code> instance as the sole arg
 </li>
 <li><strong>Optional</strong>: no optional services are used.</li>
 </ul>
-<h3 id="methodnotallowedmiddlewarefactory">MethodNotAllowedMiddlewareFactory</h3>
+<h3>MethodNotAllowedMiddlewareFactory</h3>
 <ul>
 <li><strong>Provides</strong>: <code>Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware</code></li>
 <li><strong>Suggested Name</strong>: <code>Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware</code></li>
@@ -1095,7 +1090,7 @@ accepts a <code>Psr\Container\ContainerInterface</code> instance as the sole arg
 </li>
 <li><strong>Optional</strong>: no optional services are used.</li>
 </ul>
-<h3 id="routecollectorfactory">RouteCollectorFactory</h3>
+<h3>RouteCollectorFactory</h3>
 <ul>
 <li><strong>Provides</strong>: <code>Zend\Expressive\Router\RouteCollector</code></li>
 <li><strong>Suggested Name</strong>: <code>Zend\Expressive\Router\RouteCollector</code></li>
@@ -1105,7 +1100,7 @@ accepts a <code>Psr\Container\ContainerInterface</code> instance as the sole arg
 </li>
 <li><strong>Optional</strong>: no optional services are used.</li>
 </ul>
-<h3 id="routemiddlewarefactory">RouteMiddlewareFactory</h3>
+<h3>RouteMiddlewareFactory</h3>
 <ul>
 <li><strong>Provides</strong>: <code>Zend\Expressive\Router\Middleware\RouteMiddleware</code></li>
 <li><strong>Suggested Name</strong>: <code>Zend\Expressive\Router\Middleware\RouteMiddleware</code></li>
@@ -1119,7 +1114,7 @@ accepts a <code>Psr\Container\ContainerInterface</code> instance as the sole arg
 <p>The following factories are provided by individual template engine packages.
 Generally speaking, these will be provided to your container configuration
 during installation.</p>
-<h3 id="platesrendererfactory">PlatesRendererFactory</h3>
+<h3>PlatesRendererFactory</h3>
 <ul>
 <li><strong>Provides</strong>: <code>Zend\Expressive\Plates\PlatesRenderer</code></li>
 <li><strong>FactoryName</strong>: <code>Zend\Expressive\Plates\PlatesRendererFactory</code></li>
@@ -1133,7 +1128,7 @@ during installation.</p>
 </li>
 </ul>
 <p>It consumes the following <code>config</code> structure:</p>
-<pre class="codehilite"><code class="language-php">'templates' =&gt; [
+<p> <pre class=codehilite><code class=language-php>'templates' =&gt; [
     'extension' =&gt; 'file extension used by templates; defaults to html',
     'paths' =&gt; [
         // namespace / path pairs
@@ -1141,11 +1136,10 @@ during installation.</p>
         // Numeric namespaces imply the default/main namespace. Paths may be
         // strings or arrays of string paths to associate with the namespace.
     ],
-]</code></pre>
-
+]</code></pre></p>
 <p>One note: Due to a limitation in the Plates engine, you can only map one path
 per namespace when using Plates.</p>
-<h3 id="twigrendererfactory">TwigRendererFactory</h3>
+<h3>TwigRendererFactory</h3>
 <ul>
 <li><strong>Provides</strong>: <code>Zend\Expressive\Twig\TwigRenderer</code></li>
 <li><strong>FactoryName</strong>: <code>Zend\Expressive\Twig\TwigRendererFactory</code></li>
@@ -1163,7 +1157,7 @@ per namespace when using Plates.</p>
 </li>
 </ul>
 <p>It consumes the following <code>config</code> structure:</p>
-<pre class="codehilite"><code class="language-php">'debug' =&gt; boolean,
+<p> <pre class=codehilite><code class=language-php>'debug' =&gt; boolean,
 'templates' =&gt; [
     'cache_dir' =&gt; 'path to cached templates',
     'assets_url' =&gt; 'base URL for assets',
@@ -1175,12 +1169,11 @@ per namespace when using Plates.</p>
         // Numeric namespaces imply the default/main namespace. Paths may be
         // strings or arrays of string paths to associate with the namespace.
     ],
-]</code></pre>
-
+]</code></pre></p>
 <p>When <code>debug</code> is true, it disables caching, enables debug mode, enables strict
 variables, and enables auto reloading. The <code>assets_*</code> values are used to seed
 the <code>TwigExtension</code> instance (assuming the router was found).</p>
-<h3 id="zendviewrendererfactory">ZendViewRendererFactory</h3>
+<h3>ZendViewRendererFactory</h3>
 <ul>
 <li><strong>Provides</strong>: <code>Zend\Expressive\ZendView\ZendViewRenderer</code></li>
 <li><strong>FactoryName</strong>: <code>Zend\Expressive\ZendView\ZendViewRendererFactory</code></li>
@@ -1207,7 +1200,7 @@ the <code>TwigExtension</code> instance (assuming the router was found).</p>
 </li>
 </ul>
 <p>It consumes the following <code>config</code> structure:</p>
-<pre class="codehilite"><code class="language-php">'templates' =&gt; [
+<p> <pre class=codehilite><code class=language-php>'templates' =&gt; [
     'layout' =&gt; 'name of layout view to use, if any',
     'map'    =&gt; [
         // template =&gt; filename pairs
@@ -1218,8 +1211,7 @@ the <code>TwigExtension</code> instance (assuming the router was found).</p>
         // Numeric namespaces imply the default/main namespace. Paths may be
         // strings or arrays of string paths to associate with the namespace.
     ],
-]</code></pre>
-
+]</code></pre></p>
 <p>When creating the <code>PhpRenderer</code> instance, it will inject it with a
 <code>Zend\View\HelperPluginManager</code> instance (either pulled from the container, or
 instantiated directly). It injects the helper plugin manager with custom url and
@@ -1258,7 +1250,7 @@ serverurl helpers, <code>Zend\Expressive\ZendView\UrlHelper</code> and
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v3/features/container/factories.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v3/features/container/factories.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

@@ -704,15 +704,14 @@
 <p>Below are several usage examples, covering a variety of ways of creating and
 managing an application.</p>
 <p>In all examples, the assumption is the following directory structure:</p>
-<pre class="codehilite"><code>.
+<p> <pre class=codehilite><code>.
 ├── config
 ├── data
 ├── composer.json
 ├── public
 │   └── index.php
 ├── src
-└── vendor</code></pre>
-
+└── vendor</code></pre></p>
 <p>We assume also that:</p>
 <ul>
 <li>You have installed zend-expressive per the <a href="../../..#installation">installation instructions</a>.</li>
@@ -725,26 +724,26 @@ managing an application.</p>
 <blockquote>
 <h2 id="using-the-built-in-web-server">Using the built-in web server</h2>
 <p>You can use the built-in web server to run the examples. Run:</p>
-<pre class="codehilite"><code class="language-bash">$ php -S 0.0.0.0:8080 -t public</code></pre>
-
+<p><code>bash
+$ php -S 0.0.0.0:8080 -t public</code></p>
 <p>from the application root to start up a web server running on port 8080, and
 then browse to http://localhost:8080/. If you used the Expressive installer,
 the following is equivalent:</p>
-<pre class="codehilite"><code class="language-bash">$ composer run --timeout=0 serve</code></pre>
-
+<p><code>bash
+$ composer run --timeout=0 serve</code></p>
 <h2 id="setting-up-autoloading-for-the-application-namespace">Setting up autoloading for the Application namespace</h2>
 <p>In your <code>composer.json</code> file, place the following:</p>
-<pre class="codehilite"><code class="language-json">"autoload": {
+<p><code>json
+"autoload": {
     "psr-4": {
         "Application\\": "src/"
     }
-},</code></pre>
-
+},</code></p>
 <p>Once done, run:</p>
-<pre class="codehilite"><code class="language-bash">$ composer dump-autoload</code></pre>
-
+<p><code>bash
+$ composer dump-autoload</code></p>
 </blockquote>
-<h3 id="routing">Routing</h3>
+<h3>Routing</h3>
 <p>As noted in the <a href="../../features/application/#adding-routable-middleware">Application documentation</a>,
 routing is abstracted and can be accomplished by calling any of the following
 methods:</p>
@@ -766,7 +765,7 @@ methods:</p>
 specify additional options to associate with the route (e.g., for specifying
 criteria, default values to match, etc.).</p>
 <p>As examples:</p>
-<pre class="codehilite"><code class="language-php">// GET
+<p> <pre class=codehilite><code class=language-php>// GET
 // This demonstrates passing a middleware instance (assuming $helloWorld is
 // valid middleware)
 $app-&gt;get('/', $helloWorld);
@@ -821,15 +820,13 @@ $app-&gt;route('/post', 'HandlePostCollection', ['GET', 'POST']);
 // Matching NO HTTP methods
 // Pass an empty array to the HTTP methods. HEAD and OPTIONS will still be
 // honored. (In FastRoute, GET is also honored.)
-$app-&gt;route('/post', 'WillThisHandlePost', []);</code></pre>
-
+$app-&gt;route('/post', 'WillThisHandlePost', []);</code></pre></p>
 <p>Finally, if desired, you can create a <code>Zend\Expressive\Router\Route</code> instance
 manually and pass it to <code>route()</code> as the sole argument:</p>
-<pre class="codehilite"><code class="language-php">$route = new Route('/post', 'HandlePost', ['GET', 'POST']);
+<p> <pre class=codehilite><code class=language-php>$route = new Route('/post', 'HandlePost', ['GET', 'POST']);
 $route-&gt;setOptions($options);
 
-$app-&gt;route($route);</code></pre>
-
+$app-&gt;route($route);</code></pre></p>
 <h2 id="hello-world-using-a-container">Hello World using a Container</h2>
 <p>Expressive works with <a href="https://www.php-fig.org/psr/psr-11/">PSR-11 Containers</a>,
 though it's an optional feature. By default, if you use the <code>AppFactory</code>, it
@@ -838,7 +835,7 @@ so long as that package is installed.</p>
 <p>In the following example, we'll populate the container with our middleware, and
 the application will pull it from there when matched.</p>
 <p>Edit your <code>public/index.php</code> to read as follows:</p>
-<pre class="codehilite"><code class="language-php">use Interop\Http\ServerMiddleware\DelegateInterface;
+<p> <pre class=codehilite><code class=language-php>use Interop\Http\ServerMiddleware\DelegateInterface;
 use Zend\Diactoros\Response\JsonResponse;
 use Zend\Diactoros\Response\TextResponse;
 use Zend\Expressive\AppFactory;
@@ -867,20 +864,17 @@ $app-&gt;get('/ping', 'Ping');
 $app-&gt;pipeRoutingMiddleware();
 $app-&gt;pipeDispatchMiddleware();
 
-$app-&gt;run();</code></pre>
-
+$app-&gt;run();</code></pre></p>
 <p>In the example above, we pass our container to <code>AppFactory</code>. We could have also
 done this instead:</p>
-<pre class="codehilite"><code class="language-php">$app = AppFactory::create();
-$container = $app-&gt;getContainer();</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>$app = AppFactory::create();
+$container = $app-&gt;getContainer();</code></pre></p>
 <p>and then added our service definitions. We recommend passing the container to
 the factory instead; if we ever change which container we use by default, your
 code might not work!</p>
 <p>The following two lines are the ones of interest:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;get('/', 'HelloWorld');
-$app-&gt;get('/ping', 'Ping');</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>$app-&gt;get('/', 'HelloWorld');
+$app-&gt;get('/ping', 'Ping');</code></pre></p>
 <p>These map the two paths to <em>service names</em> instead of callables. When routing
 matches a path, it does the following:</p>
 <ul>
@@ -896,7 +890,7 @@ matches a path, it does the following:</p>
 continue to work.</p>
 <p>One other approach you could take would be to define the application itself in
 the container, and then pull it from there:</p>
-<pre class="codehilite"><code class="language-php">$container-&gt;setFactory('Zend\Expressive\Application', function ($container) {
+<p> <pre class=codehilite><code class=language-php>$container-&gt;setFactory('Zend\Expressive\Application', function ($container) {
     $app = AppFactory::create($container);
     $app-&gt;get('/', 'HelloWorld');
     $app-&gt;get('/ping', 'Ping');
@@ -904,8 +898,7 @@ the container, and then pull it from there:</p>
 });
 
 $app = $container-&gt;get('Zend\Expressive\Application');
-$app-&gt;run();</code></pre>
-
+$app-&gt;run();</code></pre></p>
 <p>This is a nice way to encapsulate the application creation. You could then
 potentially move all service configuration to another file! (We already
 <a href="../../features/container/factories/#applicationfactory">document an ApplicationFactory for exactly this scenario.</a>)</p>
@@ -924,11 +917,10 @@ repository, and also provides a mechanism for slip-streaming in
 configuration based on our environment (you might use different settings in
 development than in production, after all!).</p>
 <p>First, install zend-config and zend-stdlib:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-config zendframework/zend-stdlib</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-config zendframework/zend-stdlib</code></pre></p>
 <p>Now we can start creating our configuration files and container factories.</p>
 <p>In <code>config/config.php</code>, place the following:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<p> <pre class=codehilite><code class=language-php>&lt;?php
 
 use Zend\Stdlib\ArrayUtils;
 use Zend\Stdlib\Glob;
@@ -941,10 +933,9 @@ foreach (Glob::glob('config/autoload/{{,*.}global,{,*.}local}.php', Glob::GLOB_B
 
 // Return an ArrayObject so we can inject the config as a service in Aura.Di
 // and still use array checks like ``is_array``.
-return new ArrayObject($config, ArrayObject::ARRAY_AS_PROPS);</code></pre>
-
+return new ArrayObject($config, ArrayObject::ARRAY_AS_PROPS);</code></pre></p>
 <p>In <code>config/container.php</code>, place the following:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<p> <pre class=codehilite><code class=language-php>&lt;?php
 
 use Zend\ServiceManager\Config;
 use Zend\ServiceManager\ServiceManager;
@@ -959,10 +950,9 @@ $container = new ServiceManager();
 // Inject config
 $container-&gt;setService('config', $config);
 
-return $container;</code></pre>
-
+return $container;</code></pre></p>
 <p>In <code>config/autoload/dependencies.global.php</code>, place the following:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<p> <pre class=codehilite><code class=language-php>&lt;?php
 
 use Zend\ServiceManager\Factory\InvokableFactory;
 
@@ -976,10 +966,9 @@ return [
             \Zend\Expressive\Application::class =&gt; \Zend\Expressive\Container\ApplicationFactory::class,
         ],
     ]
-];</code></pre>
-
+];</code></pre></p>
 <p>In <code>config/autoload/routes.global.php</code>, place the following:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<p> <pre class=codehilite><code class=language-php>&lt;?php
 
 return [
     'routes' =&gt; [
@@ -994,10 +983,9 @@ return [
             'allowed_methods' =&gt; ['GET'],
         ],
     ],
-];</code></pre>
-
+];</code></pre></p>
 <p>In <code>src/Application/HelloWorld.php</code>, place the following:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<p> <pre class=codehilite><code class=language-php>&lt;?php
 namespace Application;
 
 class HelloWorld
@@ -1007,10 +995,9 @@ class HelloWorld
         $res-&gt;getBody()-&gt;write('Hello, world!');
         return $res;
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>In <code>src/Application/Ping.php</code>, place the following:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<p> <pre class=codehilite><code class=language-php>&lt;?php
 namespace Application;
 
 use Zend\Diactoros\Response\JsonResponse;
@@ -1021,13 +1008,11 @@ class Ping
     {
         return new JsonResponse(['ack' =&gt; time()]);
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>After that’s done run:</p>
-<pre class="codehilite"><code>composer dump-autoload</code></pre>
-
+<p> <pre class=codehilite><code>composer dump-autoload</code></pre></p>
 <p>Finally, in <code>public/index.php</code>, place the following:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<p> <pre class=codehilite><code class=language-php>&lt;?php
 // Change to the project root, to simplify resolving paths
 chdir(dirname(__DIR__));
 
@@ -1036,8 +1021,7 @@ require 'vendor/autoload.php';
 
 $container = include 'config/container.php';
 $app       = $container-&gt;get(Zend\Expressive\Application::class);
-$app-&gt;run();</code></pre>
-
+$app-&gt;run();</code></pre></p>
 <p>Notice that our index file now doesn't have any code related to setting up the
 application any longer! All it does is setup autoloading, retrieve our service
 container, pull the application from it, and run it. Our choices for container,
@@ -1052,21 +1036,19 @@ together.</p>
 <p>Fortunately, you can mix the two. Building on the example above, we'll add a new
 route and middleware. Between pulling the application from the container and
 calling <code>$app-&gt;run()</code>, add the following in your <code>public/index.php</code>:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;post('/post', function ($request, \Interop\Http\ServerMiddleware\DelegateInterface $delegate) {
+<p> <pre class=codehilite><code class=language-php>$app-&gt;post('/post', function ($request, \Interop\Http\ServerMiddleware\DelegateInterface $delegate) {
     return new \Zend\Diactoros\Response\TextResponse('IN POST!');
-});</code></pre>
-
+});</code></pre></p>
 <p>Note that we're using <code>post()</code> here; that means you'll have to use cURL, HTTPie,
 Postman, or some other tool to test making a POST request to the path:</p>
-<pre class="codehilite"><code class="language-bash">$ curl -X POST http://localhost:8080/post</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ curl -X POST http://localhost:8080/post</code></pre></p>
 <p>You should see <code>IN POST!</code> for the response!</p>
 <p>Using this approach, you can build re-usable applications that are
 container-driven, and add one-off routes and middleware as needed.</p>
-<h3 id="using-the-container-to-register-middleware">Using the container to register middleware</h3>
+<h3>Using the container to register middleware</h3>
 <p>If you use a container to fetch your application instance, you have an
 additional option for specifying middleware for the pipeline: configuration:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<p> <pre class=codehilite><code class=language-php>&lt;?php
 return [
     'routes' =&gt; [
         [
@@ -1084,20 +1066,18 @@ return [
     'middleware_pipeline' =&gt; [
         // See specification below
     ],
-];</code></pre>
-
+];</code></pre></p>
 <p>The key to note is <code>middleware_pipeline</code>, which is an array of middlewares to
 register in the pipeline; each will each be <code>pipe()</code>'d to the Application in the
 order specified.</p>
 <p>Each middleware specified must be in the following form:</p>
-<pre class="codehilite"><code class="language-php">[
+<p> <pre class=codehilite><code class=language-php>[
     // required:
     'middleware' =&gt; 'Name of middleware service, or a callable',
     // optional:
     'path'  =&gt; '/path/to/match',
     'priority' =&gt; 1, // Integer
-]</code></pre>
-
+]</code></pre></p>
 <p>Priority should be an integer, and follows the semantics of
 <a href="http://php.net/SplPriorityQueue">SplPriorityQueue</a>: higher numbers indicate
 higher priority (top of the queue; executed earliest), while lower numbers
@@ -1118,17 +1098,16 @@ the factory and expanded:</p>
   dispatch middleware.</li>
 </ul>
 <p>As an example:</p>
-<pre class="codehilite"><code class="language-php">return [
+<p> <pre class=codehilite><code class=language-php>return [
     'middleware_pipeline' =&gt; [
         [ /* ... */ ],
         Zend\Expressive\Application::ROUTING_MIDDLEWARE,
         Zend\Expressive\Application::DISPATCH_MIDDLEWARE,
         [ /* ... */ ],
     ],
-];</code></pre>
-
+];</code></pre></p>
 <blockquote>
-<h4 id="place-routing-middleware-correctly">Place routing middleware correctly</h4>
+<h4>Place routing middleware correctly</h4>
 <p>If you are defining routes <em>and</em> defining other middleware for the pipeline,
 you <strong>must</strong> add the routing middleware. When you do so, make sure you put
 it at the appropriate location in the pipeline.</p>
@@ -1143,7 +1122,7 @@ the value of this key is greater than 1.</p>
 <p>Middleware items may be any <a href="../../features/middleware-types/">valid middleware</a>,
 including <em>arrays</em> of middleware, which indicate a nested middleware pipeline;
 these may even contain the routing and dispatch middleware constants:</p>
-<pre class="codehilite"><code class="language-php">return [
+<p> <pre class=codehilite><code class=language-php>return [
     'middleware_pipeline' =&gt; [
         [ /* ... */ ],
         'routing' =&gt; [
@@ -1156,10 +1135,9 @@ these may even contain the routing and dispatch middleware constants:</p>
         ],
         [ /* ... */ ],
     ],
-];</code></pre>
-
+];</code></pre></p>
 <blockquote>
-<h4 id="pipeline-keys-are-ignored">Pipeline keys are ignored</h4>
+<h4>Pipeline keys are ignored</h4>
 <p>Keys in a <code>middleware_pipeline</code> specification are ignored. However, they can
 be useful when merging several configurations; if multiple configuration files
 specify the same key, then those entries will be merged. Be aware, however,
@@ -1178,7 +1156,7 @@ middleware, allowing you to do exactly that if desired.</p>
 <p>In the following example, we'll assume that <code>$api</code> and <code>$blog</code> are
 <code>Zend\Expressive\Application</code> instances, and compose them into a
 <code>Zend\Stratigility\MiddlewarePipe</code>.</p>
-<pre class="codehilite"><code class="language-php">use Zend\Diactoros\Server;
+<p> <pre class=codehilite><code class=language-php>use Zend\Diactoros\Server;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Stratigility\MiddlewarePipe;
 
@@ -1192,15 +1170,13 @@ $server = Server::createServerFromRequest(
     $app,
     ServerRequestFactory::fromGlobals()
 );
-$server-&gt;listen();</code></pre>
-
+$server-&gt;listen();</code></pre></p>
 <p>You could also compose them in an <code>Application</code> instance, and utilize <code>run()</code>:</p>
-<pre class="codehilite"><code class="language-php">$app = AppFactory::create();
+<p> <pre class=codehilite><code class=language-php>$app = AppFactory::create();
 $app-&gt;pipe('/blog', $blog);
 $app-&gt;pipe('/api', $api);
 
-$app-&gt;run();</code></pre>
-
+$app-&gt;run();</code></pre></p>
 <p>This approach allows you to develop discrete applications and compose them
 together to create a website.</p>
 
@@ -1236,7 +1212,7 @@ together to create a website.</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v2/reference/usage-examples.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v2/reference/usage-examples.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

@@ -737,15 +737,14 @@ in an application. When you <em>pipe</em> middleware to the application, it is a
 a queue, and dequeued in order until a middleware returns a response instance.</p>
 <p>Expressive adds the ability to segregate middleware to a specific path; as an
 example:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;pipe('/api', $apiMiddleware);</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe('/api', $apiMiddleware);</code></pre></p>
 <p>will execute <code>$apiMiddleware</code> only if the path matches <code>/api</code>; otherwise, it
 will skip over that middleware.</p>
 <p>This path segregation, however, is limited: it will only match literal paths.
 This is done purposefully, to provide excellent baseline performance, and to
 prevent feature creep in the library.</p>
 <blockquote>
-<h4 id="path-segregation">Path segregation</h4>
+<h4>Path segregation</h4>
 <p>Internally, when <code>Application::pipe()</code> detects two arguments, it calls
 <code>Zend\Stratigility\path()</code> using the two arguments in order to create a
 <code>Zend\Stratigility\Middleware\PathMiddlewareDecorator</code> instance; this latter is
@@ -824,7 +823,7 @@ implemented as piped middleware.</p>
   or similar) <em>last</em>.</li>
 </ul>
 <p>As an example:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;pipe(OriginalMessages::class);
+<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe(OriginalMessages::class);
 $app-&gt;pipe(ServerUrlMiddleware::class);
 $app-&gt;pipe(XClacksOverhead::class);
 $app-&gt;pipe(ErrorHandler::class);
@@ -835,7 +834,7 @@ $app-&gt;pipe(MethodNotAllowedMiddleware::class);
 $app-&gt;pipe(UrlHelperMiddleware::class);
 $app-&gt;pipe(AuthorizationCheck::class);
 $app-&gt;pipe(DispatchMiddleware::class);
-$app-&gt;pipe(NotFoundHandler::class);</code></pre>
+$app-&gt;pipe(NotFoundHandler::class);</code></pre></p>
 
 
 
@@ -869,7 +868,7 @@ $app-&gt;pipe(NotFoundHandler::class);</code></pre>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v3/features/router/piping.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v3/features/router/piping.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

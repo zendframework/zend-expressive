@@ -755,7 +755,7 @@ queue of middleware, and invokes the next in the queue when invoked.</p>
 <p>Any given middleware can return a <em>response</em>, at which point execution winds
 its way back out the onion.</p>
 <blockquote>
-<h3 id="pipelines">Pipelines</h3>
+<h3>Pipelines</h3>
 <p>The terminology "pipeline" is often used to describe the onion. One way of
 looking at the "onion" is as a <em>queue</em>, which is first-in-first-out (FIFO) in
 operation. This means that the first middleware on the queue is executed first,
@@ -770,26 +770,26 @@ looked at from this perspective:</p>
 <li>Responses are returned back <em>through</em> the pipeline, in reverse order of
   traversal.</li>
 </ul>
-<h3 id="double-pass-middleware">Double pass middleware</h3>
+<h3>Double pass middleware</h3>
 <p>The system described above is what is known as <em>lambda middleware</em>. Each
 middleware receives the request and the delegate, and you pass only the
 request to the delegate when wanting to hand off processing:</p>
-<pre class="codehilite"><code class="language-php">function (ServerRequestInterface $request, DelegateInterface $delegate)
+<p><code>php
+function (ServerRequestInterface $request, DelegateInterface $delegate)
 {
     $response = $delegate-&gt;process($request);
     return $response-&gt;withHeader('X-Test', time());
-}</code></pre>
-
+}</code></p>
 <p>In Expressive 1.X, the default middleware style was what is known as <em>double
 pass</em> middleware. Double pass middleware receives both the request and a
 response in addition to the delegate, and passes both the request and response
 to the delegate when invoking it:</p>
-<pre class="codehilite"><code class="language-php">function (ServerRequestInterface $request, ResponseInterface $response, callable $next)
+<p><code>php
+function (ServerRequestInterface $request, ResponseInterface $response, callable $next)
 {
     $response = $next($request, $response);
     return $response-&gt;withHeader('X-Test', time());
-}</code></pre>
-
+}</code></p>
 <p>It is termed "double pass" because you pass both the request and response when
 delegating to the next layer.</p>
 <p>Expressive 2.X still supports double-pass middleware, though we recommend the
@@ -888,7 +888,7 @@ error response for your application, usually as an HTTP 404 Not Found response.<
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v2/getting-started/features.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v2/getting-started/features.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

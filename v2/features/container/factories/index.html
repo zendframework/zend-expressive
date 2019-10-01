@@ -778,34 +778,38 @@ order to seed the <code>Application</code> instance:</p>
 <p><code>middleware_pipeline</code> can be used to seed the middleware pipeline:</p>
 </li>
 </ul>
-<pre class="codehilite"><code class="language-php">'middleware_pipeline' =&gt; [
-    // An array of middleware to register.
-    [ /* ... */ ],
+<p>```php
+  'middleware_pipeline' =&gt; [
+      // An array of middleware to register.
+      [ /<em> ... </em>/ ],</p>
+<pre class="codehilite"><code>  // Expressive 1.0:
+  Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+  Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
 
-    // Expressive 1.0:
-    Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
-    Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+  // Expressive 1.1 and above (above constants will still work, though):
+  Zend\Expressive\Application::ROUTING_MIDDLEWARE,
+  Zend\Expressive\Application::DISPATCH_MIDDLEWARE,
 
-    // Expressive 1.1 and above (above constants will still work, though):
-    Zend\Expressive\Application::ROUTING_MIDDLEWARE,
-    Zend\Expressive\Application::DISPATCH_MIDDLEWARE,
+  [ /* ... */ ],</code></pre>
 
-    [ /* ... */ ],
-],</code></pre>
 
+<p>],
+  ```</p>
 <p>Each item of the array, other than the entries for routing and dispatch
   middleware, must be an array itself, with the following structure:</p>
-<pre class="codehilite"><code class="language-php">[
-    // required:
-    'middleware' =&gt; 'Name of middleware service, valid middleware, or an array of these',
-    // optional:
-    'path'  =&gt; '/path/to/match',
-    'priority' =&gt; 1, // Integer
+<p>```php
+  [
+      // required:
+      'middleware' =&gt; 'Name of middleware service, valid middleware, or an array of these',
+      // optional:
+      'path'  =&gt; '/path/to/match',
+      'priority' =&gt; 1, // Integer</p>
+<pre class="codehilite"><code>  // optional under Expressive 1.X; ignored under 2.X:
+  'error' =&gt; false, // boolean</code></pre>
 
-    // optional under Expressive 1.X; ignored under 2.X:
-    'error' =&gt; false, // boolean
-],</code></pre>
 
+<p>],
+  ```</p>
 <p>The <code>middleware</code> key itself is the middleware to execute, and must be a
   service name resolving to valid middleware, middleware instances (either
   http-interop middleware or callable double-pass middleware), or an array of
@@ -832,20 +836,20 @@ order to seed the <code>Application</code> instance:</p>
 <li><code>routes</code> is used to define routed middleware. The value must be an array,
   consisting of arrays defining each middleware:</li>
 </ul>
-<pre class="codehilite"><code class="language-php">'routes' =&gt; [
-    [
-        'path' =&gt; '/path/to/match',
-        'middleware' =&gt; 'Middleware service name, valid middleware, or array of these values',
-        'allowed_methods' =&gt; ['GET', 'POST', 'PATCH'],
-        'options' =&gt; [
-            'stuff' =&gt; 'to',
-            'pass'  =&gt; 'to',
-            'the'   =&gt; 'underlying router',
-        ],
-    ],
-    // etc.
-],</code></pre>
-
+<p><code>php
+  'routes' =&gt; [
+      [
+          'path' =&gt; '/path/to/match',
+          'middleware' =&gt; 'Middleware service name, valid middleware, or array of these values',
+          'allowed_methods' =&gt; ['GET', 'POST', 'PATCH'],
+          'options' =&gt; [
+              'stuff' =&gt; 'to',
+              'pass'  =&gt; 'to',
+              'the'   =&gt; 'underlying router',
+          ],
+      ],
+      // etc.
+  ],</code></p>
 <p>Each route <em>requires</em>:</p>
 <pre class="codehilite"><code>- `path`: the path to match. Format will be based on the router you choose for
   your project.
@@ -906,13 +910,12 @@ order to seed the <code>Application</code> instance:</p>
   constant).</li>
 </ul>
 <p>As an example:</p>
-<pre class="codehilite"><code class="language-php">'debug' =&gt; true,
+<p> <pre class=codehilite><code class=language-php>'debug' =&gt; true,
 'zend-expressive' =&gt; [
     'error_handler' =&gt; [
         'template_error' =&gt; 'name of error template',
     ],
-],</code></pre>
-
+],</code></pre></p>
 <h2 id="notfounddelegatefactory">NotFoundDelegateFactory</h2>
 <ul>
 <li><strong>Provides</strong>: <code>Zend\Expressive\Delegate\NotFoundDelegate</code></li>
@@ -934,12 +937,11 @@ order to seed the <code>Application</code> instance:</p>
   <code>Zend\Expressive\Delegate\NotFoundDelegate::TEMPLATE_DEFAULT</code> constant).</li>
 </ul>
 <p>As an example:</p>
-<pre class="codehilite"><code class="language-php">'zend-expressive' =&gt; [
+<p> <pre class=codehilite><code class=language-php>'zend-expressive' =&gt; [
     'error_handler' =&gt; [
         'template_404' =&gt; 'name of 404 template',
     ],
-],</code></pre>
-
+],</code></pre></p>
 <h2 id="notfoundhandlerfactory">NotFoundHandlerFactory</h2>
 <ul>
 <li><strong>Provides</strong>: <code>Zend\Expressive\Middleware\NotFoundHandler</code></li>
@@ -973,14 +975,13 @@ properly with <code>Zend\Expressive\Application</code>; this includes disabling 
 write-to-output, disabling immediate quit, etc. The <code>PrettyPageHandler</code> returned
 for the <code>Zend\Expressive\WhoopsPageHandler</code> service will be injected.</p>
 <p>It consumes the following <code>config</code> structure:</p>
-<pre class="codehilite"><code class="language-php">'whoops' =&gt; [
+<p> <pre class=codehilite><code class=language-php>'whoops' =&gt; [
     'json_exceptions' =&gt; [
         'display'    =&gt; true,
         'show_trace' =&gt; true,
         'ajax_only'  =&gt; true,
     ],
-],</code></pre>
-
+],</code></pre></p>
 <p>If no <code>whoops</code> top-level key is present in the configuration, a default instance
 with no <code>JsonResponseHandler</code> composed will be created.</p>
 <h2 id="whoopspagehandlerfactory">WhoopsPageHandlerFactory</h2>
@@ -996,10 +997,9 @@ with no <code>JsonResponseHandler</code> composed will be created.</p>
 </li>
 </ul>
 <p>It consumes the following <code>config</code> structure:</p>
-<pre class="codehilite"><code class="language-php">'whoops' =&gt; [
+<p> <pre class=codehilite><code class=language-php>'whoops' =&gt; [
     'editor' =&gt; 'editor name, editor service name, or callable',
-],</code></pre>
-
+],</code></pre></p>
 <p>The <code>editor</code> value must be a known editor name (see the Whoops documentation for
 pre-configured editor types), a callable, or a service name to use.</p>
 <h2 id="platesrendererfactory">PlatesRendererFactory</h2>
@@ -1016,7 +1016,7 @@ pre-configured editor types), a callable, or a service name to use.</p>
 </li>
 </ul>
 <p>It consumes the following <code>config</code> structure:</p>
-<pre class="codehilite"><code class="language-php">'templates' =&gt; [
+<p> <pre class=codehilite><code class=language-php>'templates' =&gt; [
     'extension' =&gt; 'file extension used by templates; defaults to html',
     'paths' =&gt; [
         // namespace / path pairs
@@ -1024,8 +1024,7 @@ pre-configured editor types), a callable, or a service name to use.</p>
         // Numeric namespaces imply the default/main namespace. Paths may be
         // strings or arrays of string paths to associate with the namespace.
     ],
-]</code></pre>
-
+]</code></pre></p>
 <p>One note: Due to a limitation in the Plates engine, you can only map one path
 per namespace when using Plates.</p>
 <h2 id="twigrendererfactory">TwigRendererFactory</h2>
@@ -1046,7 +1045,7 @@ per namespace when using Plates.</p>
 </li>
 </ul>
 <p>It consumes the following <code>config</code> structure:</p>
-<pre class="codehilite"><code class="language-php">'debug' =&gt; boolean,
+<p> <pre class=codehilite><code class=language-php>'debug' =&gt; boolean,
 'templates' =&gt; [
     'cache_dir' =&gt; 'path to cached templates',
     'assets_url' =&gt; 'base URL for assets',
@@ -1058,8 +1057,7 @@ per namespace when using Plates.</p>
         // Numeric namespaces imply the default/main namespace. Paths may be
         // strings or arrays of string paths to associate with the namespace.
     ],
-]</code></pre>
-
+]</code></pre></p>
 <p>When <code>debug</code> is true, it disables caching, enables debug mode, enables strict
 variables, and enables auto reloading. The <code>assets_*</code> values are used to seed
 the <code>TwigExtension</code> instance (assuming the router was found).</p>
@@ -1084,7 +1082,7 @@ the <code>TwigExtension</code> instance (assuming the router was found).</p>
 </li>
 </ul>
 <p>It consumes the following <code>config</code> structure:</p>
-<pre class="codehilite"><code class="language-php">'templates' =&gt; [
+<p> <pre class=codehilite><code class=language-php>'templates' =&gt; [
     'layout' =&gt; 'name of layout view to use, if any',
     'map'    =&gt; [
         // template =&gt; filename pairs
@@ -1095,8 +1093,7 @@ the <code>TwigExtension</code> instance (assuming the router was found).</p>
         // Numeric namespaces imply the default/main namespace. Paths may be
         // strings or arrays of string paths to associate with the namespace.
     ],
-]</code></pre>
-
+]</code></pre></p>
 <p>When creating the <code>PhpRenderer</code> instance, it will inject it with a
 <code>Zend\View\HelperPluginManager</code> instance (either pulled from the container, or
 instantiated directly). It injects the helper plugin manager with custom url and
@@ -1135,7 +1132,7 @@ serverurl helpers, <code>Zend\Expressive\ZendView\UrlHelper</code> and
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v2/features/container/factories.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v2/features/container/factories.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

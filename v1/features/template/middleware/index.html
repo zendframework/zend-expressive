@@ -660,7 +660,7 @@ responses. To do this, you will:</p>
 <p>We encourage the use of dependency injection. As such, we recommend writing your
 middleware to accept the <code>TemplateRendererInterface</code> via either the constructor or a
 setter. As an example:</p>
-<pre class="codehilite"><code class="language-php">namespace Acme\Blog;
+<p> <pre class=codehilite><code class=language-php>namespace Acme\Blog;
 
 use Zend\Expressive\Template\TemplateRendererInterface;
 
@@ -677,10 +677,9 @@ class EntryMiddleware
     {
         // ...
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>This will necessitate having a factory for your middleware:</p>
-<pre class="codehilite"><code class="language-php">namespace Acme\Blog\Container;
+<p> <pre class=codehilite><code class=language-php>namespace Acme\Blog\Container;
 
 use Acme\Blog\EntryMiddleware;
 use Interop\Container\ContainerInterface;
@@ -693,8 +692,7 @@ class EntryMiddlewareFactory
             $container-&gt;get('Zend\Expressive\Template\TemplateRendererInterface')
         );
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>And, of course, you'll need to tell your container to use the factory; see the
 <a href="../../container/intro/">container documentation</a> for more information on how you
 might accomplish that.</p>
@@ -702,7 +700,7 @@ might accomplish that.</p>
 <p>Now that we have the templating engine injected into our middleware, we can
 consume it. Most often, we will want to render a template, optionally with
 substitutions to pass to it. This will typically look like the following:</p>
-<pre class="codehilite"><code class="language-php">&lt;?php
+<p> <pre class=codehilite><code class=language-php>&lt;?php
 namespace Acme\Blog;
 
 use Zend\Diactoros\Response\HtmlResponse;
@@ -726,13 +724,12 @@ class EntryMiddleware
             ])
         );
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>Alternately, you can write to the composed response:</p>
-<pre class="codehilite"><code class="language-php">$response-&gt;getBody()-&gt;write($this-&gt;templateRenderer-&gt;render('blog::entry', [
+<p> <pre class=codehilite><code class=language-php>$response-&gt;getBody()-&gt;write($this-&gt;templateRenderer-&gt;render('blog::entry', [
     'entry' =&gt; $entry,
 ]));
-return $response;</code></pre>
+return $response;</code></pre></p>
 
 
 
@@ -766,7 +763,7 @@ return $response;</code></pre>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v1/features/template/middleware.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v1/features/template/middleware.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

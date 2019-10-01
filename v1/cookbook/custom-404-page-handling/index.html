@@ -660,7 +660,7 @@ was able to complete the request.</p>
 </ul>
 <h2 id="calling-next-with-an-error-condition">Calling next with an error condition</h2>
 <p>In the first approach, the <code>NotFound</code> middleware can be as simple as this:</p>
-<pre class="codehilite"><code class="language-php">namespace Application;
+<p> <pre class=codehilite><code class=language-php>namespace Application;
 
 class NotFound
 {
@@ -669,8 +669,7 @@ class NotFound
         // Other things can be done here; e.g., logging
         return $next($req, $res-&gt;withStatus(404), 'Page Not Found');
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>This example uses the third, optional argument to <code>$next()</code>, which is an error
 condition. Internally, the final handler will typically see this, and return an
 error page of some sort. Since we set the response status, and it's an error
@@ -682,7 +681,7 @@ template if you choose this approach.</p>
 <p>In the second approach, the <code>NotFound</code> middleware will return a full response.
 In our example here, we will render a specific template, and use this to seed
 and return a response.</p>
-<pre class="codehilite"><code class="language-php">namespace Application;
+<p> <pre class=codehilite><code class=language-php>namespace Application;
 
 use Zend\Expressive\Template\TemplateRendererInterface;
 
@@ -703,8 +702,7 @@ class NotFound
         $response-&gt;getBody()-&gt;write($this-&gt;renderer-&gt;render('error::not-found'));
         return $response;
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>This approach allows you to have an application-specific workflow for 404 errors
 that does not rely on the final handler.</p>
 <h2 id="registering-custom-404-handlers">Registering custom 404 handlers</h2>
@@ -717,7 +715,7 @@ routed, and thus needs to be piped to the application instance. You can do this
 via either configuration, or manually.</p>
 <p>To do this via configuration, add an entry under the <code>middleware_pipeline</code>
 configuration, after the dispatch middleware:</p>
-<pre class="codehilite"><code class="language-php">'middleware_pipeline' =&gt; [
+<p> <pre class=codehilite><code class=language-php>'middleware_pipeline' =&gt; [
     /* ... */
     'routing' =&gt; [
         'middleware' =&gt; [
@@ -732,14 +730,12 @@ configuration, after the dispatch middleware:</p>
         'priority' =&gt; -1,
     ],
     /* ... */
-],</code></pre>
-
+],</code></pre></p>
 <p>The above example assumes you are using the <code>ApplicationFactory</code> and/or the
 Expressive skeleton to manage your application instantiation and configuration.</p>
 <p>To manually add the middleware, you will need to pipe it to the application
 instance:</p>
-<pre class="codehilite"><code class="language-php">$app-&gt;pipe($container-&gt;get('Application\NotFound'));</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe($container-&gt;get('Application\NotFound'));</code></pre></p>
 <p>This must be done <em>after</em>:</p>
 <ul>
 <li>calling <code>$app-&gt;pipeDispatchMiddleware()</code>, <strong>OR</strong></li>
@@ -781,7 +777,7 @@ middleware, as you only want it to execute if no routed middleware was selected.
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v1/cookbook/custom-404-page-handling.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v1/cookbook/custom-404-page-handling.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

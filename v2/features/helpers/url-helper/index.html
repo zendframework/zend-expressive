@@ -708,21 +708,19 @@ not provided will be pulled from those matched.</p>
 <h2 id="usage">Usage</h2>
 <p>When you have an instance, use either its <code>generate()</code> method, or call the
 instance as an invokable:</p>
-<pre class="codehilite"><code class="language-php">// Using the generate() method:
+<p> <pre class=codehilite><code class=language-php>// Using the generate() method:
 $url = $helper-&gt;generate('resource', ['id' =&gt; 'sha1']);
 
 // is equivalent to invocation:
-$url = $helper('resource', ['id' =&gt; 'sha1']);</code></pre>
-
+$url = $helper('resource', ['id' =&gt; 'sha1']);</code></pre></p>
 <p>The signature for both is:</p>
-<pre class="codehilite"><code class="language-php">function (
+<p> <pre class=codehilite><code class=language-php>function (
     $routeName,
     array $routeParams = [],
     $queryParams = [],
     $fragmentIdentifier = null,
     array $options = []
-) : string</code></pre>
-
+) : string</code></pre></p>
 <p>Where:</p>
 <ul>
 <li><code>$routeName</code> is the name of a route defined in the composed router. You may
@@ -759,7 +757,7 @@ $url = $helper('resource', ['id' =&gt; 'sha1']);</code></pre>
 <li>The given <code>$routeName</code> is not defined in the router.</li>
 </ul>
 <blockquote>
-<h3 id="signature-changes">Signature changes</h3>
+<h3>Signature changes</h3>
 <p>The signature listed above is current as of version 3.0.0 of
 zendframework/zend-expressive-helpers. Prior to that version, the helper only
 accepted the route name and route parameters.</p>
@@ -781,10 +779,10 @@ result. The following steps should be followed to register and configure the hel
 <li>Register the <code>UrlHelperMiddleware</code> as pipeline middleware, immediately
   following the routing middleware.</li>
 </ul>
-<h3 id="registering-the-helper-service">Registering the helper service</h3>
+<h3>Registering the helper service</h3>
 <p>The following examples demonstrate programmatic registration of the <code>UrlHelper</code>
 service in your selected dependency injection container.</p>
-<pre class="codehilite"><code class="language-php">use Zend\Expressive\Helper\UrlHelper;
+<p> <pre class=codehilite><code class=language-php>use Zend\Expressive\Helper\UrlHelper;
 use Zend\Expressive\Helper\UrlHelperFactory;
 
 // zend-servicemanager:
@@ -801,25 +799,23 @@ $container-&gt;set(UrlHelperFactory::class, $container-&gt;lazyNew(UrlHelperFact
 $container-&gt;set(
     UrlHelper::class,
     $container-&gt;lazyGetCall(UrlHelperFactory::class, '__invoke', $container)
-);</code></pre>
-
+);</code></pre></p>
 <p>The following dependency configuration will work for all three when using the
 Expressive skeleton:</p>
-<pre class="codehilite"><code class="language-php">return ['dependencies' =&gt; [
+<p> <pre class=codehilite><code class=language-php>return ['dependencies' =&gt; [
     'factories' =&gt; [
         UrlHelper::class =&gt; UrlHelperFactory::class,
     ],
-]]</code></pre>
-
+]]</code></pre></p>
 <blockquote>
-<h4 id="urlhelperfactory-requires-routerinterface">UrlHelperFactory requires RouterInterface</h4>
+<h4>UrlHelperFactory requires RouterInterface</h4>
 <p>The factory requires that a service named <code>Zend\Expressive\Router\RouterInterface</code> is present,
 and will raise an exception if the service is not found.</p>
 </blockquote>
-<h3 id="registering-the-pipeline-middleware">Registering the pipeline middleware</h3>
+<h3>Registering the pipeline middleware</h3>
 <p>To register the <code>UrlHelperMiddleware</code> as pipeline middleware following the
 routing middleware:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Expressive\Helper\UrlHelperMiddleware;
+<p> <pre class=codehilite><code class=language-php>use Zend\Expressive\Helper\UrlHelperMiddleware;
 
 // Programmatically:
 $app-&gt;pipeRoutingMiddleware();
@@ -852,12 +848,10 @@ $app-&gt;pipeDispatchMiddleware();
 //         ],
 //         /* ... */
 //     ],
-// ]
-</code></pre>
-
+// ]</code></pre></p>
 <p>The following dependency configuration will work for all three when using the
 Expressive skeleton:</p>
-<pre class="codehilite"><code class="language-php">return [
+<p> <pre class=codehilite><code class=language-php>return [
     'dependencies' =&gt; [
         'factories' =&gt; [
             UrlHelper::class =&gt; UrlHelperFactory::class,
@@ -889,10 +883,9 @@ return [
             'priority' =&gt; 1,
         ],
     ],
-];</code></pre>
-
+];</code></pre></p>
 <blockquote>
-<h4 id="skeleton-configures-helpers">Skeleton configures helpers</h4>
+<h4>Skeleton configures helpers</h4>
 <p>If you started your project using the Expressive skeleton package, the
 <code>UrlHelper</code> and <code>UrlHelperMiddleware</code> factories are already registered for
 you, as is the <code>UrlHelperMiddleware</code> pipeline middleware.</p>
@@ -900,7 +893,7 @@ you, as is the <code>UrlHelperMiddleware</code> pipeline middleware.</p>
 <h2 id="using-the-helper-in-middleware">Using the helper in middleware</h2>
 <p>Compose the helper in your middleware (or elsewhere), and then use it to
 generate URI paths:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Expressive\Helper\UrlHelper;
+<p> <pre class=codehilite><code class=language-php>use Zend\Expressive\Helper\UrlHelper;
 
 class FooMiddleware
 {
@@ -919,8 +912,7 @@ class FooMiddleware
         );
         return $next($request, $response);
     }
-}</code></pre>
-
+}</code></pre></p>
 <h2 id="base-path-support">Base Path support</h2>
 <p>If your application is running under a subdirectory, or if you are running
 pipeline middleware that is intercepting on a subpath, the paths generated
@@ -931,7 +923,7 @@ present, it will be prepended to the path generated by the router.</p>
 prefix in the URL; this middleware could then inject the <code>UrlHelper</code> with the
 detected language, before stripping it off the request URI instance to pass on
 to the router:</p>
-<pre class="codehilite"><code class="language-php">use Interop\Http\ServerMiddleware\DelegateInterface;
+<p> <pre class=codehilite><code class=language-php>use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Locale;
 use Psr\Http\Message\ServerRequestInterface;
@@ -962,8 +954,7 @@ class LocaleMiddleware implements MiddlewareInterface
             $uri-&gt;withPath(substr($path, (strlen($locale) + 1)))
         ));
     }
-}</code></pre>
-
+}</code></pre></p>
 <p>(Note: if the base path injected is not prefixed with <code>/</code>, the helper will add
 the slash.)</p>
 <p>Paths generated by the <code>UriHelper</code> from this point forward will have the
@@ -1001,7 +992,7 @@ detected language prefix.</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v2/features/helpers/url-helper.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v2/features/helpers/url-helper.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

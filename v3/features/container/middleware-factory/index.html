@@ -734,7 +734,7 @@ inconvenience to the user and lead to an explosion in code verbosity.</p>
 and the various methods it exposes for piping and routing middleware. If we made
 each of these strictly typed, users would be forced to write code that looks
 like the following:</p>
-<pre class="codehilite"><code class="language-php">use Psr\Container\ContainerInterface;
+<p> <pre class=codehilite><code class=language-php>use Psr\Container\ContainerInterface;
 use Zend\Expressive\Application;
 use Zend\Expressive\Middleware\LazyLoadingMiddleware;
 use Zend\Stratigility\MiddlewarePipe;
@@ -782,44 +782,38 @@ return function (Application $app, ContainerInterface $container) : void {
         $container
     ));
     $app-&gt;post('/books/{id:\d+}', $booksPipeline);
-};</code></pre>
-
+};</code></pre></p>
 <p>Additionally, this would pose an enormous burden when migrating to version 3.</p>
 <p>For these reasons, we developed the class <code>Zend\Expressive\MiddlewareFactory</code>.
 It composes a <a href="../middleware-container/">MiddlewareContainer</a> in order to back
 the following operations.</p>
 <h2 id="callable">callable</h2>
-<pre class="codehilite"><code class="language-php">$middleware = $factory-&gt;callable(function ($request, $handler) {
-});</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>$middleware = $factory-&gt;callable(function ($request, $handler) {
+});</code></pre></p>
 <p>This method takes a callable middleware, and decorates it as a
 <code>Zend\Stratigility\Middleware\CallableMiddlewareDecorator</code> instance.</p>
 <h2 id="handler">handler</h2>
-<pre class="codehilite"><code class="language-php">$middleware = $factory-&gt;handler($requestHandler);</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>$middleware = $factory-&gt;handler($requestHandler);</code></pre></p>
 <p>This method takes a PSR-15 request handler instance and decorates it as a
 <code>Zend\Stratigility\Middleware\RequestHandlerMiddleware</code> instance.</p>
 <h2 id="lazy">lazy</h2>
-<pre class="codehilite"><code class="language-php">$middleware = $factory-&gt;lazy(App\Middleware\FooMiddleware::class);</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>$middleware = $factory-&gt;lazy(App\Middleware\FooMiddleware::class);</code></pre></p>
 <p>This method decorates the service name using
 <code>Zend\Expressive\Middlware\LazyLoadingMiddleware</code>, passing the composed
 <code>MiddlewareContainer</code> to the instance during instantiation.</p>
 <h2 id="pipeline">pipeline</h2>
-<pre class="codehilite"><code class="language-php">$pipeline = $factory-&gt;pipeline(
+<p> <pre class=codehilite><code class=language-php>$pipeline = $factory-&gt;pipeline(
     $middlewareInstance,
     'MiddlewareServiceName',
     function ($request, $handler) {
     },
     $requestHandlerInstance
-);</code></pre>
-
+);</code></pre></p>
 <p>Creates and returns a <code>Zend\Stratigility\MiddlewarePipe</code>, after passing each
 argument to <code>prepare()</code> first.</p>
 <p>(You may pass an array of values instead of individual arguments as well.)</p>
 <h2 id="prepare">prepare</h2>
-<pre class="codehilite"><code class="language-php">$middleware = $factory-&gt;prepare($middleware);</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>$middleware = $factory-&gt;prepare($middleware);</code></pre></p>
 <p>Inspects the provided middleware argument, with the following behavior:</p>
 <ul>
 <li><code>MiddlewareInterface</code> instances are returned verbatim.</li>
@@ -831,18 +825,17 @@ argument to <code>prepare()</code> first.</p>
 <h2 id="usage-in-bootstrapping">Usage in bootstrapping</h2>
 <p>The skeleton defines two files <code>config/pipeline.php</code> and <code>config/routes.php</code>.
 These are expected to return a callable with the following signature:</p>
-<pre class="codehilite"><code class="language-php">use Psr\Container\ContainerInterface;
+<p> <pre class=codehilite><code class=language-php>use Psr\Container\ContainerInterface;
 use Zend\Expressive\Application;
 use Zend\Expressive\MiddlewareFactory;
 
 return function (Application $app, MiddlewareFactory $factory, ContainerInterface $container) : void {
-};</code></pre>
-
+};</code></pre></p>
 <p>Note that the <code>MiddlewareFactory</code> is passed to these callables; this gives you
 the ability to use it for more complex piping and routing needs, including
 creating nested pipelines.</p>
 <p>As an example, we'll rewrite our initial example to use the <code>MiddlewareFactory</code>:</p>
-<pre class="codehilite"><code class="language-php">use Psr\Container\ContainerInterface;
+<p> <pre class=codehilite><code class=language-php>use Psr\Container\ContainerInterface;
 use Zend\Expressive\Application;
 use Zend\Expressive\MiddlewareFactory;
 
@@ -864,10 +857,9 @@ return function (Application $app, MiddlewareFactory $factory, ContainerInterfac
         App\ValidationMiddleware::class,
         App\Handler\CreateBookHandler::class
     ));
-};</code></pre>
-
+};</code></pre></p>
 <blockquote>
-<h4 id="further-simplifications">Further simplifications</h4>
+<h4>Further simplifications</h4>
 <p>Internally, <code>Application</code>'s <code>pipe()</code> and various routing methods make use of
 the <code>MiddlewareFactory</code> already; <code>pipe()</code> also already makes use of <code>path()</code>
 as well. As such, usage of the <code>MiddlewareFactory</code> is not strictly necessary
@@ -906,7 +898,7 @@ in the above example; it is used for illustrative purposes only.</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v3/features/container/middleware-factory.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v3/features/container/middleware-factory.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

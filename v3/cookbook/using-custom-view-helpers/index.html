@@ -697,12 +697,11 @@ be injected into the <code>PhpRenderer</code> instance used. Since the <code>Hel
 is available, we can configure it.</p>
 <p>Open the file <code>config/autoload/templates.global.php</code>. In that file, you'll see
 three top-level keys:</p>
-<pre class="codehilite"><code class="language-php">return [
+<p> <pre class=codehilite><code class=language-php>return [
     'dependencies' =&gt; [ /* ... */ ],
     'templates' =&gt; [ /* ... */ ],
     'view_helpers' =&gt; [ /* ... */ ],
-];</code></pre>
-
+];</code></pre></p>
 <p>The last is the one you want. In this, you can define service mappings,
 including aliases, invokables, factories, and abstract factories to define how
 helpers are named and created.
@@ -741,7 +740,7 @@ for information on how to populate this configuration.</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v3/cookbook/using-custom-view-helpers.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v3/cookbook/using-custom-view-helpers.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

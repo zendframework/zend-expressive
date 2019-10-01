@@ -767,8 +767,7 @@ changes were made throughout Expressive:</p>
 written, and your middleware will need to be update. We provide a tool for this
 via zend-expressive-tooling. Make sure that package is up-to-date (a version 1
 release should be installed), and run the following:</p>
-<pre class="codehilite"><code class="language-php">$ ./vendor/bin/expressive migrate:interop-middleware</code></pre>
-
+<p> <pre class=codehilite><code class=language-php>$ ./vendor/bin/expressive migrate:interop-middleware</code></pre></p>
 <p>This tool will locate any http-interop middleware and update it to PSR-15
 middleware.</p>
 <h2 id="new-dependencies">New dependencies</h2>
@@ -863,7 +862,7 @@ middleware.</p>
 <h2 id="signature-and-behavior-changes">Signature and behavior changes</h2>
 <p>The following signature changes were made that could affect <em>class extensions</em>
 and/or consumers.</p>
-<h3 id="application">Application</h3>
+<h3>Application</h3>
 <p><code>Zend\Expressive\Application</code> was refactored dramatically for version 3.</p>
 <p>If you were instantiating it directly previously, the constructor arguments are
 now, in order:</p>
@@ -878,13 +877,12 @@ now, in order:</p>
 you continue to need double-pass middleware (e.g., defined by a third-party
 library), use <code>Zend\Stratigility\doublePassMiddleware()</code> to decorate it prior to
 piping or routing to it:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Diactoros\Response;
+<p> <pre class=codehilite><code class=language-php>use Zend\Diactoros\Response;
 use function Zend\Stratigility\doublePassMiddleware;
 
 $app-&gt;pipe(doublePassMiddleware($someDoublePassMiddleware, new Response()));
 
-$app-&gt;get('/foo', doublePassMiddleware($someDoublePassMiddleware, new Response()));</code></pre>
-
+$app-&gt;get('/foo', doublePassMiddleware($someDoublePassMiddleware, new Response()));</code></pre></p>
 <p>Additionally, the following methods were <strong>removed</strong>:</p>
 <ul>
 <li><code>pipeRoutingMiddleware()</code>: use <code>pipe(\Zend\Expressive\Router\Middleware\RouteMiddleware::class)</code>
@@ -899,18 +897,18 @@ $app-&gt;get('/foo', doublePassMiddleware($someDoublePassMiddleware, new Respons
 <li><code>injectPipelineFromConfig()</code>: use the new <code>ApplicationConfigInjectionDelegator</code> and/or the static method of the same name it defines.</li>
 <li><code>injectRoutesFromConfig()</code>: use the new <code>ApplicationConfigInjectionDelegator</code> and/or the static method of the same name it defines.</li>
 </ul>
-<h3 id="applicationfactory">ApplicationFactory</h3>
+<h3>ApplicationFactory</h3>
 <p><code>Zend\Expressive\Container\ApplicationFactory</code> no longer looks at the
 <code>zend-expressive.programmatic_pipeline</code> flag, nor does it inject pipeline
 middleware and/or routed middleware from configuration any longer.</p>
 <p>If you want to use configuration-driven pipelines and/or middleware, you may
 register the new class <code>Zend\Expressive\Container\ApplicationConfigInjectionDelegator</code>
 as a delegator factory on the <code>Zend\Expressive\Application</code> service.</p>
-<h3 id="notfoundhandlerfactory">NotFoundHandlerFactory</h3>
+<h3>NotFoundHandlerFactory</h3>
 <p><code>Zend\Expressive\Container\NotFoundHandlerFactory</code> now returns an instance of
 <code>Zend\Expressive\Handler\NotFoundHandler</code>, instead of
 <code>Zend\Expressive\Middleware\NotFoundHandler</code> (which has been removed).</p>
-<h3 id="lazyloadingmiddleware">LazyLoadingMiddleware</h3>
+<h3>LazyLoadingMiddleware</h3>
 <p><code>Zend\Expressive\Middleware\LazyLoadingMiddleware</code> now composes a
 <code>Zend\Expressive\MiddlewareContainer</code> instance instead of a more general PSR-11
 container; this is to ensure that the value returned is a PSR-15
@@ -972,11 +970,9 @@ upgrade it to version 3.</p>
 in your latest changes (assuming you are using version control), or have a
 backup of your existing code.</p>
 <p>Install the migration tooling using the following command:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require --dev zendframework/zend-expressive-migration</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer require --dev zendframework/zend-expressive-migration</code></pre></p>
 <p>Once installed, run the following command to migrate your application:</p>
-<pre class="codehilite"><code class="language-bash">$ ./vendor/bin/expressive-migration migrate</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ ./vendor/bin/expressive-migration migrate</code></pre></p>
 <p>This package does the following:</p>
 <ul>
 <li>Uninstalls all current dependencies (by removing the <code>vendor/</code> directory).</li>
@@ -1069,7 +1065,7 @@ this document to determine what else you may need to change.</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v3/reference/migration.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v3/reference/migration.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

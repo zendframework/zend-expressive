@@ -713,7 +713,7 @@ error occurred, at which point it can call on the next <em>error handling
 middleware</em>. These act like regular middleware, but accept an additional error
 argument to act on.</p>
 <blockquote>
-<h3 id="pipelines">Pipelines</h3>
+<h3>Pipelines</h3>
 <p>The terminology "pipeline" is often used to describe the onion. One way of
 looking at the "onion" is as a <em>queue</em>, which is first-in-first-out (FIFO) in
 operation. This means that the first middleware on the queue is executed first,
@@ -779,12 +779,11 @@ authorization failures).</p>
 <p>Another possibility is to provide post-processing on the response before
 returning it. However, this is typically better handled via middleware piped
 early, by capturing the response before returning it:</p>
-<pre class="codehilite"><code class="language-php">function ($request, $response, $next)
+<p> <pre class=codehilite><code class=language-php>function ($request, $response, $next)
 {
     $response = $next($request, $response);
     return $response-&gt;withHeader('X-Clacks-Overhead', 'GNU Terry Pratchett');
-}</code></pre>
-
+}</code></pre></p>
 <p>The main points to remember are:</p>
 <ul>
 <li>The application is a queue, and operates in FIFO order.</li>
@@ -828,7 +827,7 @@ early, by capturing the response before returning it:</p>
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v1/getting-started/features.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v1/getting-started/features.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>

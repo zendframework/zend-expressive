@@ -734,18 +734,16 @@ provides:</p>
 <code>PhpRenderer</code> via <code>Zend\Expressive\ZendView\ZendViewRenderer</code>.</p>
 <h2 id="installing-zend-view">Installing zend-view</h2>
 <p>To use the zend-view wrapper, you must first install the zend-view integration:</p>
-<pre class="codehilite"><code class="language-bash">$ composer require zendframework/zend-expressive-zendviewrenderer</code></pre>
-
+<p> <pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-expressive-zendviewrenderer</code></pre></p>
 <h2 id="using-the-wrapper">Using the wrapper</h2>
 <p>If instantiated without arguments, <code>Zend\Expressive\ZendView\ZendViewRenderer</code> will create
 an instance of the <code>PhpRenderer</code>, which it will then proxy to.</p>
-<pre class="codehilite"><code class="language-php">use Zend\Expressive\ZendView\ZendViewRenderer;
+<p> <pre class=codehilite><code class=language-php>use Zend\Expressive\ZendView\ZendViewRenderer;
 
-$renderer = new ZendViewRenderer();</code></pre>
-
+$renderer = new ZendViewRenderer();</code></pre></p>
 <p>Alternately, you can instantiate and configure the engine yourself, and pass it
 to the <code>Zend\Expressive\ZendView\ZendViewRenderer</code> constructor:</p>
-<pre class="codehilite"><code class="language-php">use Zend\Expressive\ZendView\ZendViewRenderer;
+<p> <pre class=codehilite><code class=language-php>use Zend\Expressive\ZendView\ZendViewRenderer;
 use Zend\View\Renderer\PhpRenderer;
 use Zend\View\Resolver;
 
@@ -765,10 +763,9 @@ $resolver-&gt;attach(
 $renderer-&gt;setResolver($resolver);
 
 // Inject:
-$renderer = new ZendViewRenderer($renderer);</code></pre>
-
+$renderer = new ZendViewRenderer($renderer);</code></pre></p>
 <blockquote>
-<h3 id="namespaced-path-resolving">Namespaced path resolving</h3>
+<h3>Namespaced path resolving</h3>
 <p>Expressive defines a custom zend-view resolver,
 <code>Zend\Expressive\ZendView\NamespacedPathStackResolver</code>. This resolver
 provides the ability to segregate paths by namespace, and later resolve a
@@ -805,14 +802,13 @@ render in order to provide content within the selected layout.</p>
   <code>addDefaultParam()</code> or via the template variables for the <code>layout</code> key; doing
   so will disable the layout.</li>
 </ul>
-<h3 id="layout-name-passed-to-constructor">Layout name passed to constructor</h3>
-<pre class="codehilite"><code class="language-php">use Zend\Expressive\ZendView\ZendViewRenderer;
+<h3>Layout name passed to constructor</h3>
+<p> <pre class=codehilite><code class=language-php>use Zend\Expressive\ZendView\ZendViewRenderer;
 
 // Create the engine instance with a layout name:
-$renderer = new ZendViewRenderer(null, 'layout::layout');</code></pre>
-
-<h3 id="layout-view-model-passed-to-constructor">Layout view model passed to constructor</h3>
-<pre class="codehilite"><code class="language-php">use Zend\Expressive\ZendView\ZendViewRenderer;
+$renderer = new ZendViewRenderer(null, 'layout::layout');</code></pre></p>
+<h3>Layout view model passed to constructor</h3>
+<p> <pre class=codehilite><code class=language-php>use Zend\Expressive\ZendView\ZendViewRenderer;
 use Zend\View\Model\ViewModel;
 
 // Create the layout view model:
@@ -823,16 +819,14 @@ $layout = new ViewModel([
 $layout-&gt;setTemplate('layout::layout');
 
 // Create the engine instance with the layout:
-$renderer = new ZendViewRenderer(null, $layout);</code></pre>
-
-<h3 id="provide-a-layout-name-when-rendering">Provide a layout name when rendering</h3>
-<pre class="codehilite"><code class="language-php">$content = $renderer-&gt;render('blog/entry', [
+$renderer = new ZendViewRenderer(null, $layout);</code></pre></p>
+<h3>Provide a layout name when rendering</h3>
+<p> <pre class=codehilite><code class=language-php>$content = $renderer-&gt;render('blog/entry', [
     'layout' =&gt; 'layout::blog',
     'entry'  =&gt; $entry,
-]);</code></pre>
-
-<h3 id="provide-a-layout-view-model-when-rendering">Provide a layout view model when rendering</h3>
-<pre class="codehilite"><code class="language-php">use Zend\View\Model\ViewModel;
+]);</code></pre></p>
+<h3>Provide a layout view model when rendering</h3>
+<p> <pre class=codehilite><code class=language-php>use Zend\View\Model\ViewModel;
 
 // Create the layout view model:
 $layout = new ViewModel([
@@ -844,8 +838,7 @@ $layout-&gt;setTemplate('layout::layout');
 $content = $renderer-&gt;render('blog/entry', [
     'layout' =&gt; $layout,
     'entry'  =&gt; $entry,
-]);</code></pre>
-
+]);</code></pre></p>
 <h2 id="helpers">Helpers</h2>
 <p>Expressive provides overrides of specific view helpers in order to better
 integrate with <a href="https://www.php-fig.org/psr/psr-7/">PSR-7</a>. These include:</p>
@@ -860,8 +853,8 @@ integrate with <a href="https://www.php-fig.org/psr/psr-7/">PSR-7</a>. These inc
 </ul>
 <p>To use this particular helper, you will need to inject it with the request URI
   somewhere within your application:</p>
-<pre class="codehilite"><code class="language-php">$serverUrlHelper-&gt;setUri($request-&gt;getUri());</code></pre>
-
+<p><code>php
+  $serverUrlHelper-&gt;setUri($request-&gt;getUri());</code></p>
 <p>We recommend doing this within a pre-pipeline middleware.</p>
 <h2 id="recommendations">Recommendations</h2>
 <p>We recommend the following practices when using the zend-view adapter:</p>
@@ -904,7 +897,7 @@ integrate with <a href="https://www.php-fig.org/psr/psr-7/">PSR-7</a>. These inc
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/v3/features/template/zend-view.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v3/features/template/zend-view.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>
