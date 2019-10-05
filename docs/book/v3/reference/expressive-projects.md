@@ -15,3 +15,7 @@ zend-expressive.
 - [xtreamwayz.com](https://xtreamwayz.com/) - [*source*](https://github.com/xtreamwayz/xtreamwayz.com)
 - [alejandrocelaya.com](http://www.alejandrocelaya.com/) - [*source*](https://github.com/acelaya/website-expressive)
 - [zimuel.it](http://www.zimuel.it) - [*source*](https://github.com/ezimuel/zimuel.it)
+
+## Applications
+
+- [Shlink: A self-hosted URL shortener](https://shlink.io/) - [*source*](https://github.com/shlinkio/shlink)
