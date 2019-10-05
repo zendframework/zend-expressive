@@ -6,8 +6,7 @@ zend-expressive.
 
 ## Sample Code & Tutorials
 - Expressive Tutorial (WIP) - [*source*](https://github.com/RalfEggert/zend-expressive-tutorial)
-- [AstroSplash](http://astrosplash.com/) - [*source*](https://github.com/AndrewCarterUK/AstroSplash)
-  (Also, read the [related article on sitepoint](http://www.sitepoint.com/build-nasa-photo-gallery-zend-expressive/))
+- [AstroSplash](http://www.sitepoint.com/build-nasa-photo-gallery-zend-expressive/) - [*source*](https://github.com/AndrewCarterUK/AstroSplash)
 - [php-ddd-cargo-sample](https://codeliner.github.io/php-ddd-cargo-sample/) - [*source*](https://github.com/codeliner/php-ddd-cargo-sample)
 
 ## Personal Sites
