@@ -155,7 +155,7 @@ As examples:
 ```php
 <html>
   <head>
-    <meta name="author" content="<?= $this->escapeHmtmlAttr($this->author) ?>">
+    <meta name="author" content="<?= $this->escapeHtmlAttr($this->author) ?>">
     <link rel="alternative" href="<?= $this->escapeUrl($this->alternative) ?>">
     <style><?= $this->escapeCss($this->styles) ?></style>
     <script><?= $this->escapeJs($this->script) ?></script>
