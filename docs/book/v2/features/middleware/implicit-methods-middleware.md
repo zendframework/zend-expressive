@@ -7,7 +7,7 @@ _must_ support `HEAD` requests for any given URI, and that they _should_ support
 layer, and middleware that can detect _implicit_  support for these methods
 (i.e., the route was not registered _explicitly_ with the method).
 
-> ## Versions prior to 2.2
+> ### Versions prior to 2.2
 >
 > If you are using Expressive versions earlier than 2.2, you may define a
 > `Zend\Expressive\Middleware\ImplicitHeadMiddleware` or

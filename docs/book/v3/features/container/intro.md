@@ -31,7 +31,7 @@ At this time, we document support for the following specific containers:
 - [pimple-interop](pimple.md)
 - [aura.di](aura-di.md)
 
-> ## Service Names
+> ### Service Names
 >
 > We recommend using fully-qualified class names whenever possible as service
 > names, with one exception: in cases where a service provides an implementation

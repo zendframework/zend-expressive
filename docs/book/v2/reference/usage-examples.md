@@ -25,7 +25,7 @@ We assume also that:
   in your `composer.json` for those classes (this should be done for you during
   installation).
 
-> ## Using the built-in web server
+> ### Using the built-in web server
 >
 > You can use the built-in web server to run the examples. Run:
 >
@@ -41,7 +41,7 @@ We assume also that:
 > $ composer run --timeout=0 serve
 > ```
 
-> ## Setting up autoloading for the Application namespace
+> ### Setting up autoloading for the Application namespace
 >
 > In your `composer.json` file, place the following:
 >
