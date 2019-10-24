@@ -690,10 +690,6 @@
             <ul class="toc__list">
                 
                     <li class="toc__entry">
-                        <a href="#distinguishing-between-routes-that-require-localization" class="toc__link">Distinguishing between routes that require localization</a>
-                    </li>
-                
-                    <li class="toc__entry">
                         <a href="#setup-a-middleware-to-extract-the-locale-from-the-uri" class="toc__link">Setup a middleware to extract the locale from the URI</a>
                     </li>
                 
@@ -718,7 +714,7 @@ In this recipe we will concentrate on introspecting the URI path via middleware,
 which allows you to have a global mechanism for detecting the locale without
 requiring any changes to existing routes.</p>
 <blockquote>
-<h2 id="distinguishing-between-routes-that-require-localization">Distinguishing between routes that require localization</h2>
+<h3>Distinguishing between routes that require localization</h3>
 <p>If your application has a mixture of routes that require localization, and
 those that do not, the solution in this recipe may lead to multiple URIs
 that resolve to the identical action, which may be undesirable. In such

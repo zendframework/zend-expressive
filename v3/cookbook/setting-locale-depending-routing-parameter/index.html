@@ -750,20 +750,22 @@ $app-&gt;get('/:locale/contact', ContactPageHandler::class, 'contact')
 <p>The routing examples in this recipe use syntax for the zend-mvc router, and,
 as such, may not work in your application.</p>
 <p>For Aura.Router, the 'home' route as listed above would read:</p>
-<p><code>php
+<p><pre class=codehilite><code class=language-php>
 $app-&gt;get('/{locale}', HomePageHandler::class, 'home')
     -&gt;setOptions([
         'tokens' =&gt; [
             'locale' =&gt; '[a-z]{2,3}([-_][a-zA-Z]{2}|)',
         ],
-    ]);</code></p>
+    ]);
+</code></pre></p>
 <p>For FastRoute:</p>
-<p><code>php
+<p><pre class=codehilite><code class=language-php>
 $app-&gt;get(
     '/{locale:[a-z]{2,3}([-_][a-zA-Z]{2}|)}',
     HomePageHandler::class,
     'home'
-);</code></p>
+);
+</code></pre></p>
 <p>As such, be aware as you read the examples that you might not be able to
 simply cut-and-paste them without modification.</p>
 </blockquote>

@@ -713,9 +713,10 @@ your bootstrap is invoked for unknown URLs. We'll cover that in a later
 chapter.</p>
 <h3>Routing and dispatching</h3>
 <p>Note the lines from the above:</p>
-<p><code>php
+<p><pre class=codehilite><code class=language-php>
 $app-&gt;pipeRoutingMiddleware();
-$app-&gt;pipeDispatchMiddleware();</code></p>
+$app-&gt;pipeDispatchMiddleware();
+</code></pre></p>
 <p>Expressive's <code>Application</code> class provides two separate middlewares, one for
 routing, and one for dispatching middleware matched by routing. This allows
 you to slip in validations between the two activities if desired. They are
@@ -733,13 +734,15 @@ http://localhost:8080/ to see if your application responds correctly!</p>
 <h3>Tip: Serve via Composer</h3>
 <p>To simplify starting up a local web server, try adding the following to your
 <code>composer.json</code>:</p>
-<p><code>json
-"scripts": {
-    "serve": "php -S 0.0.0.0:8080 -t public/"
-}</code></p>
+<p><pre class=codehilite><code class=language-json>
+&quot;scripts&quot;: {
+    &quot;serve&quot;: &quot;php -S 0.0.0.0:8080 -t public/&quot;
+}
+</code></pre></p>
 <p>Once you've added that, you can fire up the web server using:</p>
-<p><code>bash
-$ composer serve</code></p>
+<p><pre class=codehilite><code class=language-bash>
+$ composer serve
+</code></pre></p>
 </blockquote>
 <h2 id="next-steps">Next steps</h2>
 <p>At this point, you have a working zend-expressive application, that responds to

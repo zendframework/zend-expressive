@@ -626,14 +626,6 @@
             <ul class="toc__list">
                 
                     <li class="toc__entry">
-                        <a href="#using-the-built-in-web-server" class="toc__link">Using the built-in web server</a>
-                    </li>
-                
-                    <li class="toc__entry">
-                        <a href="#setting-up-autoloading-for-the-application-namespace" class="toc__link">Setting up autoloading for the Application namespace</a>
-                    </li>
-                
-                    <li class="toc__entry">
                         <a href="#hello-world-using-a-container" class="toc__link">Hello World using a Container</a>
                     </li>
                 
@@ -675,26 +667,30 @@ managing an application.</p>
   and you have configured <a href="https://getcomposer.org/doc/01-basic-usage.md#autoloading">autoloading</a> in your <code>composer.json</code> for those classes.</li>
 </ul>
 <blockquote>
-<h2 id="using-the-built-in-web-server">Using the built-in web server</h2>
+<h3>Using the built-in web server</h3>
 <p>You can use the built-in web server to run the examples. Run:</p>
-<p><code>bash
-$ php -S 0.0.0.0:8080 -t public</code></p>
+<p><pre class=codehilite><code class=language-bash>
+$ php -S 0.0.0.0:8080 -t public
+</code></pre></p>
 <p>from the application root to start up a web server running on port 8080, and
 then browse to http://localhost:8080/. If you used the Expressive installer,
 the following is equivalent:</p>
-<p><code>bash
-$ composer serve</code></p>
-<h2 id="setting-up-autoloading-for-the-application-namespace">Setting up autoloading for the Application namespace</h2>
+<p><pre class=codehilite><code class=language-bash>
+$ composer serve
+</code></pre></p>
+<h3>Setting up autoloading for the Application namespace</h3>
 <p>In your <code>composer.json</code> file, place the following:</p>
-<p><code>javascript
-"autoload": {
-    "psr-4": {
-        "Application\\": "src/"
+<p><pre class=codehilite><code class=language-javascript>
+&quot;autoload&quot;: {
+    &quot;psr-4&quot;: {
+        &quot;Application\\&quot;: &quot;src/&quot;
     }
-},</code></p>
+},
+</code></pre></p>
 <p>Once done, run:</p>
-<p><code>bash
-$ composer dump-autoload</code></p>
+<p><pre class=codehilite><code class=language-bash>
+$ composer dump-autoload
+</code></pre></p>
 </blockquote>
 <h3>Routing</h3>
 <p>As noted in the <a href="../../features/application/#adding-routable-middleware">Application documentation</a>,
@@ -1115,31 +1111,33 @@ this is done to ensure that lazy-loading of error middleware works as expected.<
 <h4>Lazy-loaded Middleware</h4>
 <p>One feature of the <code>middleware_pipeline</code> is that any middleware service pulled
 from the container is actually wrapped in a closure:</p>
-<p><code>php
+<p><pre class=codehilite><code class=language-php>
 function ($request, $response, $next = null) use ($container, $middleware) {
     $invokable = $container-&gt;get($middleware);
     if (! is_callable($invokable)) {
         throw new Exception\InvalidMiddlewareException(sprintf(
-            'Lazy-loaded middleware "%s" is not invokable',
+            'Lazy-loaded middleware &quot;%s&quot; is not invokable',
             $middleware
         ));
     }
     return $invokable($request, $response, $next);
-};</code></p>
+};
+</code></pre></p>
 <p>If the <code>error</code> flag is specified and is truthy, the closure looks like this
 instead, to ensure the middleware is treated by Stratigility as error
 middleware:</p>
-<p><code>php
+<p><pre class=codehilite><code class=language-php>
 function ($error, $request, $response, $next) use ($container, $middleware) {
     $invokable = $container-&gt;get($middleware);
     if (! is_callable($invokable)) {
         throw new Exception\InvalidMiddlewareException(sprintf(
-            'Lazy-loaded middleware "%s" is not invokable',
+            'Lazy-loaded middleware &quot;%s&quot; is not invokable',
             $middleware
         ));
     }
     return $invokable($error, $request, $response, $next);
-};</code></p>
+};
+</code></pre></p>
 <p>This implements <em>lazy-loading</em> for middleware pipeline services, delaying
 retrieval from the container until the middleware is actually invoked.</p>
 <p>This also means that if the service specified is not valid middleware, you

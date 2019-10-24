@@ -666,21 +666,6 @@
 
     
     
-        <div class="toc">
-            <h6 class="toc__headline">In This Article</h6>
-            <ul class="toc__list">
-                
-                    <li class="toc__entry">
-                        <a href="#routing-definitions-may-vary" class="toc__link">Routing definitions may vary</a>
-                    </li>
-                
-                    <li class="toc__entry">
-                        <a href="#or-use-a-trait" class="toc__link">Or use a trait</a>
-                    </li>
-                
-            </ul>
-        </div>
-    
 
     </div>
 
@@ -730,7 +715,7 @@ return [
 <p>The <code>action</code> attribute can thus be one of <code>add</code> or <code>edit</code>, and we can optionally
 also receive an <code>id</code> attribute (in the latter example, it would be <code>3</code>).</p>
 <blockquote>
-<h2 id="routing-definitions-may-vary">Routing definitions may vary</h2>
+<h3>Routing definitions may vary</h3>
 <p>Depending on the router you chose when starting your project, your routing
 definition may differ. The above example uses the default <code>FastRoute</code>
 implementation.</p>
@@ -848,54 +833,56 @@ class AlbumPage extends AbstractPage
     public function editAction( /* ... */ ) { /* ... */ }
 }</code></pre></p>
 <blockquote>
-<h2 id="or-use-a-trait">Or use a trait</h2>
+<h3>Or use a trait</h3>
 <p>As an alternative to an abstract class, you could define the <code>__invoke()</code>
 logic in a trait, which you then compose into your middleware:</p>
-<p>```php
+<p><pre class=codehilite><code class=language-php>
 &lt;?php
-namespace App\Action;</p>
-<p>use Fig\Http\Message\StatusCodeInterface as StatusCode;
+namespace App\Action;
+
+use Fig\Http\Message\StatusCodeInterface as StatusCode;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\EmptyResponse;</p>
-<p>trait ActionBasedInvocation
+use Zend\Diactoros\Response\EmptyResponse;
+
+trait ActionBasedInvocation
 {
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $action = $request-&gt;getAttribute('action', 'index') . 'Action';</p>
-<pre class="codehilite"><code>    if (! method_exists($this, $action)) {
-        return new EmptyResponse(StatusCode::STATUS_NOT_FOUND);
+        $action = $request-&gt;getAttribute('action', 'index') . 'Action';
+
+        if (! method_exists($this, $action)) {
+            return new EmptyResponse(StatusCode::STATUS_NOT_FOUND);
+        }
+
+        return $this-&gt;$action($request, $delegate);
+    }
+}
+</code></pre></p>
+<p>You would then compose it into a class as follows:</p>
+<p><pre class=codehilite><code class=language-php>
+&lt;?php
+namespace Album\Action;
+
+use App\Action\ActionBasedInvocation;
+use Zend\Expressive\Template\TemplateRendererInterface;
+
+class AlbumPage
+{
+    use ActionBasedInvocation;
+
+    private $template;
+
+    public function __construct(TemplateRendererInterface $template)
+    {
+        $this-&gt;template = $template;
     }
 
-    return $this-&gt;$action($request, $delegate);
-}</code></pre>
-
-
-<p>}
-```</p>
-<p>You would then compose it into a class as follows:</p>
-<p>```php
-&lt;?php
-namespace Album\Action;</p>
-<p>use App\Action\ActionBasedInvocation;
-use Zend\Expressive\Template\TemplateRendererInterface;</p>
-<p>class AlbumPage
-{
-    use ActionBasedInvocation;</p>
-<pre class="codehilite"><code>private $template;
-
-public function __construct(TemplateRendererInterface $template)
-{
-    $this-&gt;template = $template;
+    public function indexAction( /* ... */ ) { /* ... */ }
+    public function addAction( /* ... */ ) { /* ... */ }
+    public function editAction( /* ... */ ) { /* ... */ }
 }
-
-public function indexAction( /* ... */ ) { /* ... */ }
-public function addAction( /* ... */ ) { /* ... */ }
-public function editAction( /* ... */ ) { /* ... */ }</code></pre>
-
-
-<p>}
-```</p>
+</code></pre></p>
 </blockquote>
 
 

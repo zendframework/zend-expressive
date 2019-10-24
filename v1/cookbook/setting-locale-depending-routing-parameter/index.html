@@ -626,10 +626,6 @@
             <ul class="toc__list">
                 
                     <li class="toc__entry">
-                        <a href="#routing-parameters" class="toc__link">Routing parameters</a>
-                    </li>
-                
-                    <li class="toc__entry">
                         <a href="#setting-up-the-route" class="toc__link">Setting up the route</a>
                     </li>
                 
@@ -648,7 +644,7 @@
 based on a routing parameter, the session, or a specialized sub-domain.
 In this recipe we will concentrate on using a routing parameter.</p>
 <blockquote>
-<h2 id="routing-parameters">Routing parameters</h2>
+<h3>Routing parameters</h3>
 <p>Using the approach in this chapter requires that you add a <code>/:locale</code> (or
 similar) segment to each and every route that can be localized, and, depending
 on the router used, may also require additional options for specifying
@@ -704,7 +700,7 @@ lowercase alphabetical characters:</p>
 <p>The routing examples in this recipe use syntax for the zend-mvc router, and,
 as such, may not work in your application.</p>
 <p>For Aura.Router, the 'home' route as listed above would read:</p>
-<p><code>php
+<p><pre class=codehilite><code class=language-php>
 [
     'name' =&gt; 'home',
     'path' =&gt; '/{locale}',
@@ -717,15 +713,17 @@ as such, may not work in your application.</p>
             ],
         ],
     ],
-]</code></p>
+]
+</code></pre></p>
 <p>For FastRoute:</p>
-<p><code>php
+<p><pre class=codehilite><code class=language-php>
 [
     'name' =&gt; 'home',
     'path' =&gt; '/{locale:[a-z]{2,3}([-_][a-zA-Z]{2}|)}',
     'middleware' =&gt; Application\Action\HomePageAction::class,
     'allowed_methods' =&gt; ['GET'],
-]</code></p>
+]
+</code></pre></p>
 <p>As such, be aware as you read the examples that you might not be able to
 simply cut-and-paste them without modification.</p>
 </blockquote>

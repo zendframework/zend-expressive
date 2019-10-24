@@ -758,8 +758,9 @@ be done by using <code>composer run</code> to execute the <code>serve</code> scr
 will be used, and it will run until you cancel the process (usually via
 <code>Ctrl-C</code>). Alternately, you can specify a finite timeout; as an example,
 the following will extend the timeout to a full day:</p>
-<p><code>bash
-$ composer run --timeout=86400 serve</code></p>
+<p><pre class=codehilite><code class=language-bash>
+$ composer run --timeout=86400 serve
+</code></pre></p>
 </blockquote>
 <h2 id="development-tools">Development Tools</h2>
 <p>We ship tools in our skeleton application to make development easier.</p>
@@ -1039,14 +1040,15 @@ single method, <code>process()</code>, which accepts a
 "double-pass", for the fact that it passes both the request and response between
 layers. This middleware did not require an interface, and relied on a
 conventional definition of:</p>
-<p>```php
-use Psr\Http\Message;</p>
-<p>function (
+<p><pre class=codehilite><code class=language-php>
+use Psr\Http\Message;
+
+function (
   Message\ServerRequestInterface $request,
   Message\ResponseInterface $response,
   callable $next
 ) : Message\ResponseInterface
-```</p>
+</code></pre></p>
 <p>While this style of middleware is still quite wide-spread and used in a number
 of projects, it has some flaws. Chief among them is the fact that middleware
 should not rely on the <code>$response</code> instance provided to them (as it may have

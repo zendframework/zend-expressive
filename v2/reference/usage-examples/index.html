@@ -671,14 +671,6 @@
             <ul class="toc__list">
                 
                     <li class="toc__entry">
-                        <a href="#using-the-built-in-web-server" class="toc__link">Using the built-in web server</a>
-                    </li>
-                
-                    <li class="toc__entry">
-                        <a href="#setting-up-autoloading-for-the-application-namespace" class="toc__link">Setting up autoloading for the Application namespace</a>
-                    </li>
-                
-                    <li class="toc__entry">
                         <a href="#hello-world-using-a-container" class="toc__link">Hello World using a Container</a>
                     </li>
                 
@@ -722,26 +714,30 @@ managing an application.</p>
   installation).</li>
 </ul>
 <blockquote>
-<h2 id="using-the-built-in-web-server">Using the built-in web server</h2>
+<h3>Using the built-in web server</h3>
 <p>You can use the built-in web server to run the examples. Run:</p>
-<p><code>bash
-$ php -S 0.0.0.0:8080 -t public</code></p>
+<p><pre class=codehilite><code class=language-bash>
+$ php -S 0.0.0.0:8080 -t public
+</code></pre></p>
 <p>from the application root to start up a web server running on port 8080, and
 then browse to http://localhost:8080/. If you used the Expressive installer,
 the following is equivalent:</p>
-<p><code>bash
-$ composer run --timeout=0 serve</code></p>
-<h2 id="setting-up-autoloading-for-the-application-namespace">Setting up autoloading for the Application namespace</h2>
+<p><pre class=codehilite><code class=language-bash>
+$ composer run --timeout=0 serve
+</code></pre></p>
+<h3>Setting up autoloading for the Application namespace</h3>
 <p>In your <code>composer.json</code> file, place the following:</p>
-<p><code>json
-"autoload": {
-    "psr-4": {
-        "Application\\": "src/"
+<p><pre class=codehilite><code class=language-json>
+&quot;autoload&quot;: {
+    &quot;psr-4&quot;: {
+        &quot;Application\\&quot;: &quot;src/&quot;
     }
-},</code></p>
+},
+</code></pre></p>
 <p>Once done, run:</p>
-<p><code>bash
-$ composer dump-autoload</code></p>
+<p><pre class=codehilite><code class=language-bash>
+$ composer dump-autoload
+</code></pre></p>
 </blockquote>
 <h3>Routing</h3>
 <p>As noted in the <a href="../../features/application/#adding-routable-middleware">Application documentation</a>,

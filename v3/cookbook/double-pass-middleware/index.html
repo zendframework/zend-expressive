@@ -714,12 +714,13 @@ this middleware with Expressive 3?</p>
 <p>Double pass middleware receives both the request and a response in addition to
 the handler, and passes both the request and response to the handler when
 invoking it:</p>
-<p><code>php
+<p><pre class=codehilite><code class=language-php>
 function (ServerRequestInterface $request, ResponseInterface $response, callable $next)
 {
     $response = $next($request, $response);
     return $response-&gt;withHeader('X-Test', time());
-}</code></p>
+}
+</code></pre></p>
 <p>It is termed "double pass" because you pass <em>both</em> the request <em>and</em> response when
 delegating to the next layer.</p>
 </blockquote>

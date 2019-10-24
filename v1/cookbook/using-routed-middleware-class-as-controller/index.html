@@ -621,25 +621,6 @@
 
     
     
-        <div class="toc">
-            <h6 class="toc__headline">In This Article</h6>
-            <ul class="toc__list">
-                
-                    <li class="toc__entry">
-                        <a href="#routing-definitions-may-vary" class="toc__link">Routing definitions may vary</a>
-                    </li>
-                
-                    <li class="toc__entry">
-                        <a href="#invoking-the-error-stack" class="toc__link">Invoking the error stack</a>
-                    </li>
-                
-                    <li class="toc__entry">
-                        <a href="#or-use-a-trait" class="toc__link">Or use a trait</a>
-                    </li>
-                
-            </ul>
-        </div>
-    
 
     </div>
 
@@ -683,7 +664,7 @@ middleware class will use in order to determine which internal method to invoke.
 <p>The <code>action</code> attribute can thus be one of <code>add</code> or <code>edit</code>, and we can optionally
 also receive an <code>id</code> attribute (in the latter example, it would be <code>3</code>).</p>
 <blockquote>
-<h2 id="routing-definitions-may-vary">Routing definitions may vary</h2>
+<h3>Routing definitions may vary</h3>
 <p>Depending on the router you chose when starting your project, your routing
 definition may differ. The above example uses the default <code>FastRoute</code>
 implementation.</p>
@@ -785,11 +766,12 @@ concatenates it with the word <code>Action</code>. It then uses this value to de
 a corresponding method exists in the current class, and, if so, calls it with
 the arguments it received; otherwise, it returns a 404 response.</p>
 <blockquote>
-<h2 id="invoking-the-error-stack">Invoking the error stack</h2>
+<h3>Invoking the error stack</h3>
 <p>Instead of returning a 404 response, you could also invoke <code>$next()</code> with an
 error:</p>
-<p><code>php
-return $next($request, $response, new NotFoundError());</code></p>
+<p><pre class=codehilite><code class=language-php>
+return $next($request, $response, new NotFoundError());
+</code></pre></p>
 <p>This will then invoke the first error handler middleware capable of handling
 the error.</p>
 </blockquote>
@@ -817,56 +799,58 @@ class AlbumPage extends AbstractPage
     public function editAction( /* ... */ ) { /* ... */ }
 }</code></pre></p>
 <blockquote>
-<h2 id="or-use-a-trait">Or use a trait</h2>
+<h3>Or use a trait</h3>
 <p>As an alternative to an abstract class, you could define the <code>__invoke()</code>
 logic in a trait, which you then compose into your middleware:</p>
-<p>```php
-namespace App\Action;</p>
-<p>use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;</p>
-<p>trait ActionBasedInvocation
+<p><pre class=codehilite><code class=language-php>
+namespace App\Action;
+
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
+trait ActionBasedInvocation
 {
     public function __invoke(
         ServerRequestInterface $request,
         ResponseInterface $response,
         callable $next = null
     ) {
-        $action = $request-&gt;getAttribute('action', 'index') . 'Action';</p>
-<pre class="codehilite"><code>    if (! method_exists($this, $action)) {
-        return $response-&gt;withStatus(404);
+        $action = $request-&gt;getAttribute('action', 'index') . 'Action';
+
+        if (! method_exists($this, $action)) {
+            return $response-&gt;withStatus(404);
+        }
+
+        return $this-&gt;$action($request, $response, $next);
     }
-
-    return $this-&gt;$action($request, $response, $next);
-}</code></pre>
-
-
-<p>}
-```</p>
+}
+</code></pre></p>
 <p>You would then compose it into a class as follows:</p>
-<p>```php
-namespace Album\Action;</p>
-<p>use App\Action\ActionBasedInvocation;
+<p><pre class=codehilite><code class=language-php>
+namespace Album\Action;
+
+use App\Action\ActionBasedInvocation;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
-use Zend\Expressive\Template\TemplateRendererInterface;</p>
-<p>class AlbumPage
-{
-    use ActionBasedInvocation;</p>
-<pre class="codehilite"><code>private $template;
+use Zend\Expressive\Template\TemplateRendererInterface;
 
-public function __construct(TemplateRendererInterface $template)
+class AlbumPage
 {
-    $this-&gt;template = $template;
+    use ActionBasedInvocation;
+
+    private $template;
+
+    public function __construct(TemplateRendererInterface $template)
+    {
+        $this-&gt;template = $template;
+    }
+
+    public function indexAction( /* ... */ ) { /* ... */ }
+    public function addAction( /* ... */ ) { /* ... */ }
+    public function editAction( /* ... */ ) { /* ... */ }
 }
-
-public function indexAction( /* ... */ ) { /* ... */ }
-public function addAction( /* ... */ ) { /* ... */ }
-public function editAction( /* ... */ ) { /* ... */ }</code></pre>
-
-
-<p>}
-```</p>
+</code></pre></p>
 </blockquote>
 
 

@@ -786,17 +786,18 @@ to ensure you have a production-capable error response generator.</p>
 in your application (which is provided by default in the skeleton
 application), you can toggle usage of whoops by adding configuration to the file
 <code>config/autoload/development.local.php.dist</code>:</p>
-<p>```php
+<p><pre class=codehilite><code class=language-php>
 use Zend\Expressive\Container;
-use Zend\Expressive\Middleware;</p>
-<p>return [
+use Zend\Expressive\Middleware;
+
+return [
     'dependencies' =&gt; [
         'factories' =&gt; [
             Middleware\WhoopsErrorResponseGenerator::class =&gt; Container\WhoopsErrorResponseGeneratorFactory::class,
         ],
     ],
 ];
-```</p>
+</code></pre></p>
 <p>When you enable development mode, whoops will then be enabled; when you
 disable development mode, you'll be using your production generator.</p>
 <p>If you are not using zf-development-mode, you can define a

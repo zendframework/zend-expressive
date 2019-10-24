@@ -671,10 +671,6 @@
             <ul class="toc__list">
                 
                     <li class="toc__entry">
-                        <a href="#deprecated-with-version-22" class="toc__link">Deprecated with version 2.2</a>
-                    </li>
-                
-                    <li class="toc__entry">
                         <a href="#1-create-a-new-project-directory" class="toc__link">1. Create a new project directory</a>
                     </li>
                 
@@ -709,7 +705,7 @@
 the simplest example, detailed below, or move on to a more structured,
 configuration-driven approach as detailed in the <a href="../../reference/usage-examples/">use case examples</a>.</p>
 <blockquote>
-<h2 id="deprecated-with-version-22">Deprecated with version 2.2</h2>
+<h3>Deprecated with version 2.2</h3>
 <p>The <code>Zend\Expressive\AppFactory</code> detailed in this chapter is deprecated as of
 version 2.2, and will be removed in version 3.0. We recommend instead
 constructing <code>Zend\Expressive\Application</code> manually, or using a
@@ -770,9 +766,10 @@ your bootstrap is invoked for unknown URLs. We'll cover that in a later
 chapter.</p>
 <h3>Routing and dispatching</h3>
 <p>Note the lines from the above:</p>
-<p><code>php
+<p><pre class=codehilite><code class=language-php>
 $app-&gt;pipeRoutingMiddleware();
-$app-&gt;pipeDispatchMiddleware();</code></p>
+$app-&gt;pipeDispatchMiddleware();
+</code></pre></p>
 <p>Expressive's <code>Application</code> class provides two separate middlewares, one for
 routing, and one for dispatching middleware matched by routing. This allows
 you to slip in validations between the two activities if desired. They are
@@ -790,13 +787,15 @@ http://localhost:8080/ to see if your application responds correctly!</p>
 <h3>Tip: Serve via Composer</h3>
 <p>To simplify starting up a local web server, try adding the following to your
 <code>composer.json</code>:</p>
-<p><code>json
-"scripts": {
-    "serve": "php -S 0.0.0.0:8080 -t public/"
-}</code></p>
+<p><pre class=codehilite><code class=language-json>
+&quot;scripts&quot;: {
+    &quot;serve&quot;: &quot;php -S 0.0.0.0:8080 -t public/&quot;
+}
+</code></pre></p>
 <p>Once you've added that, you can fire up the web server using:</p>
-<p><code>bash
-$ composer serve</code></p>
+<p><pre class=codehilite><code class=language-bash>
+$ composer serve
+</code></pre></p>
 <h3>Setting a timeout</h3>
 <p>Composer commands time out after 300 seconds (5 minutes). On Linux-based
 systems, the <code>php -S</code> command that <code>composer serve</code> spawns continues running
@@ -807,8 +806,9 @@ be done by using <code>composer run</code> to execute the <code>serve</code> scr
 will be used, and it will run until you cancel the process (usually via
 <code>Ctrl-C</code>). Alternately, you can specify a finite timeout; as an example,
 the following will extend the timeout to a full day:</p>
-<p><code>bash
-$ composer run --timeout=86400 serve</code></p>
+<p><pre class=codehilite><code class=language-bash>
+$ composer run --timeout=86400 serve
+</code></pre></p>
 </blockquote>
 <h2 id="next-steps">Next steps</h2>
 <p>At this point, you have a working zend-expressive application, that responds to
