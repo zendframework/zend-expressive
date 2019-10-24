@@ -40,7 +40,7 @@ $stack->push($emitterInstance);
 As a stack, execution is in LIFO (last in, first out) order; the first emitter
 on the stack will be evaluated last.
 
-> ## Deprecated with version 2.2
+> ### Deprecated with version 2.2
 >
 > Starting in version 2.2, the `EmitterStack` is deprecated, and moved, along with the
 > zend-diactoros `EmitterInterface` and implementations, to a new package,

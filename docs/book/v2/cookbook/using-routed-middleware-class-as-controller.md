@@ -51,7 +51,7 @@ The above each define a route that will match any of the following:
 The `action` attribute can thus be one of `add` or `edit`, and we can optionally
 also receive an `id` attribute (in the latter example, it would be `3`).
 
-> ## Routing definitions may vary
+> ### Routing definitions may vary
 >
 > Depending on the router you chose when starting your project, your routing
 > definition may differ. The above example uses the default `FastRoute`
@@ -183,7 +183,7 @@ class AlbumPage extends AbstractPage
 }
 ```
 
-> ## Or use a trait
+> ### Or use a trait
 >
 > As an alternative to an abstract class, you could define the `__invoke()`
 > logic in a trait, which you then compose into your middleware:

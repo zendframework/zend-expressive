@@ -4,7 +4,7 @@ Localized web applications often set the locale (and therefor the language)
 based on a routing parameter, the session, or a specialized sub-domain.
 In this recipe we will concentrate on using a routing parameter.
 
-> ## Routing parameters
+> ### Routing parameters
 >
 > Using the approach in this chapter requires that you add a `/:locale` (or
 > similar) segment to each and every route that can be localized, and, depending
