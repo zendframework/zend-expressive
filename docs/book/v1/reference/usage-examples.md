@@ -23,7 +23,7 @@ We assume also that:
 - Your own classes are under `src/` with the top-level namespace `Application`,
   and you have configured [autoloading](https://getcomposer.org/doc/01-basic-usage.md#autoloading) in your `composer.json` for those classes.
 
-> ## Using the built-in web server
+> ### Using the built-in web server
 >
 > You can use the built-in web server to run the examples. Run:
 >
@@ -39,7 +39,7 @@ We assume also that:
 > $ composer serve
 > ```
 
-> ## Setting up autoloading for the Application namespace
+> ### Setting up autoloading for the Application namespace
 >
 > In your `composer.json` file, place the following:
 >
