@@ -7,7 +7,7 @@ extra:
     - v3
     - v2
     - v1
-pages:
+nav:
     - Home: index.md
     - v3:
       - 'Getting Started':
