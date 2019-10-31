@@ -252,7 +252,7 @@ pages:
             - '_migration_from_rc5_and_earlier': reference/migration/rc-to-v1.md
             - '_migration_to_expressive_1.1': reference/migration/to-v1-1.md
 site_name: Expressive
-site_description: 'zend-expressive: PSR-7 Middleware Microframework'
+site_description: 'PSR-15 Middleware in Minutes'
 repo_url: 'https://github.com/zendframework/zend-expressive'
 copyright: 'Copyright (c) 2015-2018 <a href="https://www.zend.com/">Zend Technologies USA Inc.</a>'
 extra_css:
