@@ -97,8 +97,8 @@ Write middleware:
 
 ```php
 $pathMiddleware = function (
-ServerRequestInterface $request,
-RequestHandlerInterface $handler
+    ServerRequestInterface $request,
+    RequestHandlerInterface $handler
 ) {
     $uri  = $request->getUri();
     $path = $uri->getPath();
