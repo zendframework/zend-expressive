@@ -254,6 +254,5 @@ nav:
 site_name: Expressive
 site_description: 'PSR-15 Middleware in Minutes'
 repo_url: 'https://github.com/zendframework/zend-expressive'
-copyright: 'Copyright (c) 2015-2018 <a href="https://www.zend.com/">Zend Technologies USA Inc.</a>'
 extra_css:
     - css/zend-expressive.css
