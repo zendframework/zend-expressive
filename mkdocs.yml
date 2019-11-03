@@ -1,7 +1,7 @@
 docs_dir: docs/book
 site_dir: docs/html
 extra:
-  show_special_homepage : true
+  show_special_homepage: true
   current_version: v3
   versions:
     - v3
