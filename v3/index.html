@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="zend-expressive: PSR-7 Middleware Microframework">  
+    <meta name="description" content="PSR-15 Middleware in Minutes">  
     <link rel="canonical" href="https://docs.zendframework.com/zend-expressive/v3/">
     <link rel="shortcut icon" href="../img/favicon.ico">
 
@@ -662,12 +662,45 @@
 
 
     <h1>Expressive</h1>
-<p>zend-expressive: PSR-7 Middleware Microframework</p>
+<p>PSR-15 Middleware in Minutes</p>
 
 
-    <h2>Installation</h2>
-    <h3>Using Composer</h3>
-    <pre><code class="language-bash">$ composer require zendframework/Expressive</code></pre>
+    <h1 id="expressive-psr-15-middleware-in-minutes">Expressive: PSR-15 Middleware in Minutes</h1>
+<p>Expressive builds on <a href="https://docs.zendframework.com/zend-stratigility/">Stratigility</a>
+to provide a minimalist <a href="http://www.php-fig.org/psr/psr-15/">PSR-15</a> middleware
+framework for PHP, with the following features:</p>
+<ul>
+<li>Routing. Choose your own router; we support:<ul>
+<li><a href="https://github.com/auraphp/Aura.Router">Aura.Router</a></li>
+<li><a href="https://github.com/nikic/FastRoute">FastRoute</a></li>
+<li><a href="https://github.com/zendframework/zend-router">zend-router</a></li>
+</ul>
+</li>
+<li>DI Containers, via <a href="https://www.php-fig.org/psr/psr-11/">PSR-11 Container</a>.
+  All middleware composed in Expressive may be retrieved from the composed
+  container.</li>
+<li>Optionally, templating. We support:<ul>
+<li><a href="http://platesphp.com/">Plates</a></li>
+<li><a href="http://twig.sensiolabs.org/">Twig</a></li>
+<li><a href="https://docs.zendeframework..com/zend-view/">zend-view's PhpRenderer</a></li>
+</ul>
+</li>
+<li>Error handling. Create templated error pages, or use tools like
+  <a href="https://github.com/filp/whoops">whoops</a> for debugging purposes.</li>
+<li>Nested middleware applications. Write an application, and compose it later
+  in another, optionally under a separate subpath.</li>
+<li><a href="getting-started/quick-start/#create-a-new-project">Simplified installation</a>.
+  Our custom <a href="https://getcomposer.org">Composer</a>-based installer prompts you for
+  your initial stack choices, giving you exactly the base you want to start from.</li>
+</ul>
+<p>Essentially, Expressive allows <em>you</em> to develop using the tools <em>you</em> prefer,
+and provides minimal structure and facilities to ease your development.</p>
+<p>Should I choose it over zend-mvc?
+That’s a good question. <a href="why-expressive/">Here’s what we recommend.</a></p>
+<p>If you’re keen to get started, then <a href="getting-started/features/">keep reading</a>
+and get started writing your first middleware application today!</p>
+
+    
 
 
 <h2>Support</h2>
@@ -683,6 +716,15 @@
 
 
 
+
+    <div class="help-wanted">
+        <p>
+            Found a mistake or want to contribute to the documentation?
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/v3/index.md" target="_blank" class="help-wanted__link">
+                Edit this page on GitHub!
+            </a>
+        </p>
+    </div>
 
                 
             <!-- content:end -->
@@ -1272,5 +1314,5 @@
 
 <!--
 MkDocs version : 1.0.4
-Build Date UTC : 2019-10-25 17:37:54
+Build Date UTC : 2019-11-04 09:31:36
 -->

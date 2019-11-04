@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="zend-expressive: PSR-7 Middleware Microframework">  
+    <meta name="description" content="PSR-15 Middleware in Minutes">  
     <link rel="canonical" href="https://docs.zendframework.com/zend-expressive/">
     <link rel="shortcut icon" href="img/favicon.ico">
 
@@ -639,172 +639,179 @@
     <div class="container">
         <div class="row">
             <div class="col-md-9 col-xs-12 content" role="main">
-            <div class="row jumbotron">
-  <h1>Expressive</h1>
+            <!-- content:begin -->
+                
+                    <ol class="breadcrumb" role="navigation" aria-label="breadcrumbs navigation">
+    <li><a href="https://framework.zend.com/">Home</a></li>
 
-  <p>PSR-15 Middleware in Minutes</p>
+    
+        <li><a href="https://docs.zendframework.com/">Documentation</a></li>
 
-  <pre><code class="language-bash">$ composer create-project zendframework/zend-expressive-skeleton expressive</code></pre>
+        
+            <li>Expressive</li>
+        
+    
+</ol>
+
+
+
+
+
+    <h1>Expressive</h1>
+<p>PSR-15 Middleware in Minutes</p>
+
+
+    <h2 id="features">Features</h2>
+<div class="features">
+    <div class="row">
+        <div class="col-sm-6 col-md-4 text-center">
+            <img src="images/lambda.png" alt="Middleware">
+
+            <h3>PSR-15 Middleware</h3>
+
+            <p>
+                Create <a href="https://docs.zendframework.com/zend-stratigility/middleware/">middleware</a>
+                applications, using as many layers as you want, and the architecture
+                your project needs.
+            </p>
+        </div>
+
+        <div class="col-sm-6 col-md-4 text-center">
+            <img src="images/check.png" alt="PSR-7">
+
+            <h3>PSR-7 HTTP Messages</h3>
+
+            <p>
+                Built to consume <a href="https://www.php-fig.org/psr/psr-7/">PSR-7</a>!
+            </p>
+        </div>
+
+        <div class="col-sm-6 col-md-4 text-center">
+            <img src="images/network.png" alt="Routing">
+
+            <h3>Routing</h3>
+
+            <p>
+                Route requests to middleware using <a href="v3/features/router/intro/">the routing library of your choice</a>.
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6 col-md-4 text-center">
+            <img src="images/syringe.png" alt="Dependency Injection">
+
+            <h3>Dependency Injection</h3>
+
+            <p>
+                Make your code flexible and robust, using the
+                <a href="v3/features/container/intro/">dependency injection container of your choice</a>.
+            </p>
+        </div>
+
+        <div class="col-sm-6 col-md-4 text-center">
+            <img src="images/pencil.png" alt="Templating">
+
+            <h3>Templating</h3>
+
+            <p>
+                Create <a href="v3/features/template/intro/">templated responses</a>, using
+                a variety of template engines.
+            </p>
+        </div>
+
+        <div class="col-sm-6 col-md-4 text-center">
+            <img src="images/error.png" alt="Error Handling">
+
+            <h3>Error Handling</h3>
+
+            <p>
+                <a href="v3/features/error-handling/">Handle errors gracefully</a>, using
+                templated error pages, <a href="https://filp.github.io/whoops/">whoops</a>,
+                or your own solution!
+            </p>
+        </div>
+    </div>
 </div>
 
-<div class="row features">
-  <div class="row row-flex row-flex-wrap">
-    <div class="col-sm-6 col-md-4">
-      <div class="panel"><div class="panel-content center-block">
-        <img src="images/lambda.png" alt="Middleware" /><br />
-
-        <h3>PSR-15 Middleware</h3>
-
-        <p>
-          Create <a href="https://docs.zendframework.com/zend-stratigility/middleware/">middleware</a>
-          applications, using as many layers as you want, and the architecture
-          your project needs.
-        </p>
-      </div></div>
-    </div>
-
-    <div class="col-sm-6 col-md-4">
-      <div class="panel"><div class="panel-content">
-        <img src="images/check.png" alt="PSR-7" /><br />
-
-        <h3>PSR-7 HTTP Messages</h3>
-
-        <p>
-          Built to consume <a href="https://www.php-fig.org/psr/psr-7/">PSR-7</a>!
-        </p>
-      </div></div>
-    </div>
-
-    <div class="col-sm-6 col-md-4">
-      <div class="panel"><div class="panel-content center-block">
-        <img src="images/network.png" alt="Routing" /><br />
-
-        <h3>Routing</h3>
-
-        <p>
-          Route requests to middleware using <a href="v3/features/router/intro/">the routing library of your choice</a>.
-        </p>
-      </div></div>
-    </div>
-  </div>
-
-  <div class="row row-flex row-flex-wrap">
-    <div class="col-sm-6 col-md-4">
-      <div class="panel"><div class="panel-content">
-        <img src="images/syringe.png" alt="Dependency Injection" /><br />
-
-        <h3>Dependency Injection</h3>
-
-        <p>
-          Make your code flexible and robust, using the
-          <a href="v3/features/container/intro/">dependency injection container of your choice</a>.
-        </p>
-      </div></div>
-    </div>
-
-    <div class="col-sm-6 col-md-4">
-      <div class="panel"><div class="panel-content center-block">
-        <img src="images/pencil.png" alt="Templating" /><br />
-
-        <h3>Templating</h3>
-
-        <p>
-          Create <a href="v3/features/template/intro/">templated responses</a>, using
-          a variety of template engines.
-        </p>
-      </div></div>
-    </div>
-
-    <div class="col-sm-6 col-md-4">
-      <div class="panel"><div class="panel-content center-block">
-        <img src="images/error.png" alt="Error Handling" /><br />
-
-        <h3>Error Handling</h3>
-
-        <p>
-          <a href="v3/features/error-handling/">Handle errors gracefully</a>, using
-          templated error pages, <a href="https://filp.github.io/whoops/">whoops</a>,
-          or your own solution!
-        </p>
-      </div></div>
-    </div>
-  </div>
-</div>
-
-<div class="row">
-  <h2>Get Started Now!</h2>
-
-  <p>Installation is only a <a href="https://getcomposer.org">Composer</a> command away!</p>
-
-  <pre><code class="language-bash" data-trim>
-$ composer create-project zendframework/zend-expressive-skeleton expressive</code></pre>
-
-  <p>
-    Expressive provides interfaces for routing and templating, letting <em>you</em>
-    choose what to use, and how you want to implement it.
-  </p>
-
-  <p>
-    Our unique installer allows you to select <em>your</em> choices when starting
-    your project!
-  </p>
-
-  <div class="row">
-    <div class="col-xs-12">
-      <img class="img-responsive screenshot" src="images/installer.png" alt="Expressive Installer" /><br />
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-xs-12">
-      <a class="btn btn-lg btn-primary" href="v3/getting-started/quick-start/">Learn more</a>
-    </div>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-xs-12">
-    <h2>Applications, Simplified</h2>
-
-    <p>Write middleware:</p>
-
-    <pre><code class="language-php" data-trim>
-$pathMiddleware = function (
-ServerRequestInterface $request,
-RequestHandlerInterface $handler
+<h2 id="get-started-now">Get Started Now!</h2>
+<p>Installation is only a <a href="https://getcomposer.org">Composer</a> command away!</p>
+<p> <pre class=codehilite><code class=language-bash>$ composer create-project zendframework/zend-expressive-skeleton expressive</code></pre></p>
+<p>Expressive provides interfaces for routing and templating, letting <em>you</em>
+choose what to use, and how you want to implement it.</p>
+<p>Our unique installer allows you to select <em>your</em> choices when starting
+your project!</p>
+<p><img alt="Expressive Installer" src="images/installer.png" />
+{: .center-block }</p>
+<p><a href="v3/getting-started/quick-start/">Learn More</a>{: .btn .btn-lg .btn-primary}</p>
+<h2 id="applications-simplified">Applications, Simplified</h2>
+<p>Write middleware:</p>
+<p> <pre class=codehilite><code class=language-php>$pathMiddleware = function (
+    ServerRequestInterface $request,
+    RequestHandlerInterface $handler
 ) {
-    $uri  = $request->getUri();
-    $path = $uri->getPath();
+    $uri  = $request-&gt;getUri();
+    $path = $uri-&gt;getPath();
 
-    return new TextResponse('You visited ' . $path, 200, ['X-Path' => $path]);
-};</code></pre>
+    return new TextResponse('You visited ' . $path, 200, ['X-Path' =&gt; $path]);
+};</code></pre></p>
+<p>And add it to an application:</p>
+<p> <pre class=codehilite><code class=language-php>$app-&gt;get('/path', $pathMiddleware);</code></pre></p>
+<p><a href="v3/features/application/">Learn More</a>{: .btn .btn-lg .btn-primary}</p>
+<h2 id="learn-more">Learn more</h2>
+<ul>
+<li><a href="v3/getting-started/features/">Features overview</a></li>
+<li><a href="v3/getting-started/quick-start/">Quick Start</a></li>
+</ul>
+<p>Or use the sidebar menu to navigate to the section you're interested in.</p>
 
-    <p>And add it to an application:</p>
+    
 
-    <pre><code class="language-php" data-trim>
-$app->get('/path', $pathMiddleware);
-    </code></pre>
 
-  </div>
-</div>
+<h2>Support</h2>
+<ul>
+    <li>Issues: <a href="https://github.com/zendframework/Expressive/issues/">github.com/zendframework/Expressive/issues</a></li>
+    <li>Source: <a href="https://github.com/zendframework/Expressive/">github.com/zendframework/Expressive</a></li>
+    <li>Chat: <a href="https://zendframework-slack.herokuapp.com">zendframework-slack.herokuapp.com</a></li>
+    <li>Forum: <a href="https://discourse.zendframework.com/">discourse.zendframework.com</a></li>
+</ul>
 
-<div class="row">
-  <div class="col-xs-12">
-    <a class="btn btn-lg btn-primary" href="v3/features/application/">Learn more</a>
-  </div>
-</div>
 
-<div class="row">
-  <h2>Learn more</h2>
 
-  <ul>
-    <li><a href="v3/getting-started/features/">Features overview</a></li>
-    <li><a href="v3/getting-started/quick-start/">Quick Start</a></li>
-  </ul>
 
-  <p>Or use the sidebar menu to navigate to the section you're interested in.</p>
-</div>
+    <nav>
+    <ul class="page-nav hidden-print">
 
+        
+        <li class="page-nav__item">
+            
+        </li>
+
+        
+        <li class="page-nav__item">
+            
+                <a rel="next" class="page-nav__link page-nav__link--next" href="v3/getting-started/features/">
+                    Next <i class="fa fa-chevron-right"></i>
+                </a>
+            
+        </li>
+    </ul>
+</nav>
+
+
+
+
+    <div class="help-wanted">
+        <p>
+            Found a mistake or want to contribute to the documentation?
+            <a href="https://github.com/zendframework/zend-expressive/edit/master/docs/book/index.md" target="_blank" class="help-wanted__link">
+                Edit this page on GitHub!
+            </a>
+        </p>
+    </div>
+
+                
+            <!-- content:end -->
             </div>
             <div class="col-md-3 col-xs-12 sidebar">
                 
@@ -1391,5 +1398,5 @@ $app->get('/path', $pathMiddleware);
 
 <!--
 MkDocs version : 1.0.4
-Build Date UTC : 2019-10-25 17:37:50
+Build Date UTC : 2019-11-04 09:31:32
 -->
