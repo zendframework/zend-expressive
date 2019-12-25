@@ -718,11 +718,11 @@ a Composer plugin will add entries for their <code>ConfigProvider</code> classes
 <p>If for some reason you are not prompted, or chose "no" when answering the
 prompts, you can add them manually. Add the following entries in the array used
 to create your <code>ConfigAggregator</code> instance within <code>config/config.php</code>:</p>
-<p> <pre class=codehilite><code class=language-php>    \Zend\Form\ConfigProvider::class,
+<pre class=codehilite><code class=language-php>    \Zend\Form\ConfigProvider::class,
     \Zend\InputFilter\ConfigProvider::class,
     \Zend\Filter\ConfigProvider::class,
     \Zend\Validator\ConfigProvider::class,
-    \Zend\Hydrator\ConfigProvider::class,</code></pre></p>
+    \Zend\Hydrator\ConfigProvider::class,</code></pre>
 <p>If you installed Expressive via the skeleton, the service
 <code>Zend\View\HelperPluginManager</code> is registered for you, and represents the helper
 plugin manager injected into the <code>PhpRenderer</code> instance. This instance gets its

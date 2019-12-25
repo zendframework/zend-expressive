@@ -715,10 +715,10 @@ a <code>Zend\Stratigility\Middleware\HostMiddlewareDecorator</code> instance. Th
 the string name of a host, and the middleware that should only trigger when that
 host is matched in the request.</p>
 <p>As a simple example:</p>
-<p> <pre class=codehilite><code class=language-php>// in config/pipeline.php:
+<pre class=codehilite><code class=language-php>// in config/pipeline.php:
 use function Zend\Stratigility\host;
 
-$app-&gt;pipe(host('admin.example.org', $adminMiddleware));</code></pre></p>
+$app-&gt;pipe(host('admin.example.org', $adminMiddleware));</code></pre>
 <p>However, you'll note that the above uses an already instantiated middleware
 instance; how can you lazy-load a named service instead?</p>
 <h2 id="lazy-loading-host-segregated-middleware">Lazy-loading host-segregated middleware</h2>
@@ -731,17 +731,17 @@ arguments:</p>
 </ul>
 <p>We can use the second of these to help us. We will use the <code>lazy()</code> method to
 specify a middleware service name to lazy-load:</p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe(host('admin.example.org', $factory-&gt;lazy(AdminMiddleware::class)));</code></pre></p>
+<pre class=codehilite><code class=language-php>$app-&gt;pipe(host('admin.example.org', $factory-&gt;lazy(AdminMiddleware::class)));</code></pre>
 <p>What about specifying a pipeline of middleware? For that, we can use the
 <code>pipeline()</code> method of the factory:</p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe(host('admin.example.org', $factory-&gt;pipeline(
+<pre class=codehilite><code class=language-php>$app-&gt;pipe(host('admin.example.org', $factory-&gt;pipeline(
     SessionMiddleware::class,
     AuthenticationMiddleware::class,
     AuthorizationMiddleware::class,
     AdminHandler::class
-)));</code></pre></p>
+)));</code></pre>
 <p>Alternately, either of the above examples could use the <code>prepare()</code> method:</p>
-<p> <pre class=codehilite><code class=language-php>// lazy example:
+<pre class=codehilite><code class=language-php>// lazy example:
 $app-&gt;pipe(host('admin.example.org', $factory-&gt;prepare(AdminMiddleware::class)));
 
 // pipeline example:
@@ -750,7 +750,7 @@ $app-&gt;pipe(host('admin.example.org', $factory-&gt;prepare([
     AuthenticationMiddleware::class,
     AuthorizationMiddleware::class,
     AdminHandler::class,
-])));</code></pre></p>
+])));</code></pre>
 <blockquote>
 <p>For more information on the <code>MiddlewareFactory</code>, <a href="../../features/container/middleware-factory/">read its documentation</a>.</p>
 </blockquote>

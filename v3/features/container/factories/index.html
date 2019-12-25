@@ -806,13 +806,13 @@ namespace, and define an <code>__invoke()</code> method that accepts an
   which evaluates to <code>layout::default</code>).</li>
 </ul>
 <p>As an example:</p>
-<p> <pre class=codehilite><code class=language-php>'debug' =&gt; true,
+<pre class=codehilite><code class=language-php>'debug' =&gt; true,
 'zend-expressive' =&gt; [
     'error_handler' =&gt; [
         'template_error' =&gt; 'name of error template',
         'layout' =&gt; 'layout::alternate',
     ],
-],</code></pre></p>
+],</code></pre>
 <h3>MiddlewareContainerFactory</h3>
 <ul>
 <li><strong>Provides</strong>: a <code>Zend\Expressive\MiddlewareContainer</code></li>
@@ -886,12 +886,12 @@ instances pulled are PSR-15 <code>MiddlewareInterface</code> instances:</p>
 </li>
 </ul>
 <p>As an example:</p>
-<p> <pre class=codehilite><code class=language-php>'zend-expressive' =&gt; [
+<pre class=codehilite><code class=language-php>'zend-expressive' =&gt; [
     'error_handler' =&gt; [
         'template_404' =&gt; 'name of 404 template',
         'layout' =&gt; 'layout::alternate',
     ],
-],</code></pre></p>
+],</code></pre>
 <h3>RequestHandlerRunnerFactory</h3>
 <ul>
 <li><strong>Provides</strong>: <code>Zend\HttpHandler\RequestHandlerRunner</code></li>
@@ -954,12 +954,12 @@ if you want to use an alternate PSR-7 implementation.</p>
   constant).</li>
 </ul>
 <p>As an example:</p>
-<p> <pre class=codehilite><code class=language-php>'debug' =&gt; true,
+<pre class=codehilite><code class=language-php>'debug' =&gt; true,
 'zend-expressive' =&gt; [
     'error_handler' =&gt; [
         'template_error' =&gt; 'name of error template',
     ],
-],</code></pre></p>
+],</code></pre>
 <h3>ServerRequestFactoryFactory</h3>
 <ul>
 <li><strong>Provides</strong>: a PHP callable capable of producing
@@ -1009,13 +1009,13 @@ properly with <code>Zend\Expressive\Application</code>; this includes disabling 
 write-to-output, disabling immediate quit, etc. The <code>PrettyPageHandler</code> returned
 for the <code>Zend\Expressive\WhoopsPageHandler</code> service will be injected.</p>
 <p>It consumes the following <code>config</code> structure:</p>
-<p> <pre class=codehilite><code class=language-php>'whoops' =&gt; [
+<pre class=codehilite><code class=language-php>'whoops' =&gt; [
     'json_exceptions' =&gt; [
         'display'    =&gt; true,
         'show_trace' =&gt; true,
         'ajax_only'  =&gt; true,
     ],
-],</code></pre></p>
+],</code></pre>
 <p>If no <code>whoops</code> top-level key is present in the configuration, a default instance
 with no <code>JsonResponseHandler</code> composed will be created.</p>
 <h3>WhoopsPageHandlerFactory</h3>
@@ -1031,9 +1031,9 @@ with no <code>JsonResponseHandler</code> composed will be created.</p>
 </li>
 </ul>
 <p>It consumes the following <code>config</code> structure:</p>
-<p> <pre class=codehilite><code class=language-php>'whoops' =&gt; [
+<pre class=codehilite><code class=language-php>'whoops' =&gt; [
     'editor' =&gt; 'editor name, editor service name, or callable',
-],</code></pre></p>
+],</code></pre>
 <p>The <code>editor</code> value must be a known editor name (see the Whoops documentation for
 pre-configured editor types), a callable, or a service name to use.</p>
 <h2 id="zend-expressive-router">zend-expressive-router</h2>
@@ -1128,7 +1128,7 @@ during installation.</p>
 </li>
 </ul>
 <p>It consumes the following <code>config</code> structure:</p>
-<p> <pre class=codehilite><code class=language-php>'templates' =&gt; [
+<pre class=codehilite><code class=language-php>'templates' =&gt; [
     'extension' =&gt; 'file extension used by templates; defaults to html',
     'paths' =&gt; [
         // namespace / path pairs
@@ -1136,7 +1136,7 @@ during installation.</p>
         // Numeric namespaces imply the default/main namespace. Paths may be
         // strings or arrays of string paths to associate with the namespace.
     ],
-]</code></pre></p>
+]</code></pre>
 <p>One note: Due to a limitation in the Plates engine, you can only map one path
 per namespace when using Plates.</p>
 <h3>TwigRendererFactory</h3>
@@ -1157,7 +1157,7 @@ per namespace when using Plates.</p>
 </li>
 </ul>
 <p>It consumes the following <code>config</code> structure:</p>
-<p> <pre class=codehilite><code class=language-php>'debug' =&gt; boolean,
+<pre class=codehilite><code class=language-php>'debug' =&gt; boolean,
 'templates' =&gt; [
     'cache_dir' =&gt; 'path to cached templates',
     'assets_url' =&gt; 'base URL for assets',
@@ -1169,7 +1169,7 @@ per namespace when using Plates.</p>
         // Numeric namespaces imply the default/main namespace. Paths may be
         // strings or arrays of string paths to associate with the namespace.
     ],
-]</code></pre></p>
+]</code></pre>
 <p>When <code>debug</code> is true, it disables caching, enables debug mode, enables strict
 variables, and enables auto reloading. The <code>assets_*</code> values are used to seed
 the <code>TwigExtension</code> instance (assuming the router was found).</p>
@@ -1200,7 +1200,7 @@ the <code>TwigExtension</code> instance (assuming the router was found).</p>
 </li>
 </ul>
 <p>It consumes the following <code>config</code> structure:</p>
-<p> <pre class=codehilite><code class=language-php>'templates' =&gt; [
+<pre class=codehilite><code class=language-php>'templates' =&gt; [
     'layout' =&gt; 'name of layout view to use, if any',
     'map'    =&gt; [
         // template =&gt; filename pairs
@@ -1211,7 +1211,7 @@ the <code>TwigExtension</code> instance (assuming the router was found).</p>
         // Numeric namespaces imply the default/main namespace. Paths may be
         // strings or arrays of string paths to associate with the namespace.
     ],
-]</code></pre></p>
+]</code></pre>
 <p>When creating the <code>PhpRenderer</code> instance, it will inject it with a
 <code>Zend\View\HelperPluginManager</code> instance (either pulled from the container, or
 instantiated directly). It injects the helper plugin manager with custom url and

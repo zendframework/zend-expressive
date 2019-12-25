@@ -697,11 +697,11 @@ be injected into the <code>PhpRenderer</code> instance used. Since the <code>Hel
 is available, we can configure it.</p>
 <p>Open the file <code>config/autoload/templates.global.php</code>. In that file, you'll see
 three top-level keys:</p>
-<p> <pre class=codehilite><code class=language-php>return [
+<pre class=codehilite><code class=language-php>return [
     'dependencies' =&gt; [ /* ... */ ],
     'templates' =&gt; [ /* ... */ ],
     'view_helpers' =&gt; [ /* ... */ ],
-];</code></pre></p>
+];</code></pre>
 <p>The last is the one you want. In this, you can define service mappings,
 including aliases, invokables, factories, and abstract factories to define how
 helpers are named and created.

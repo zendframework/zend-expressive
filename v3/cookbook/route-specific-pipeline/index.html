@@ -725,7 +725,7 @@ middleware's context.</p>
 <h2 id="resolving-to-a-middlewarepipe">Resolving to a MiddlewarePipe</h2>
 <p>You can do this programmatically within a container factory, assuming you are
 using a container that supports factories.</p>
-<p> <pre class=codehilite><code class=language-php>use Psr\Container\ContainerInterface;
+<pre class=codehilite><code class=language-php>use Psr\Container\ContainerInterface;
 use Zend\Expressive\MiddlewareFactory;
 use Zend\Stratigility\MiddlewarePipe;
 
@@ -747,7 +747,7 @@ class ApiResourcePipelineFactory
 
         return $pipeline;
     }
-}</code></pre></p>
+}</code></pre>
 <blockquote>
 <p><code>$factory-&gt;prepare()</code> is used here to allow lazy-loading each middleware and
 handler. If we instead pulled each class from the container directly, each would
@@ -760,7 +760,7 @@ setting up your container configuration.</p>
 Delegator factories allow you to decorate the primary factory used to create the
 middleware in order to change the instance or return an alternate instance. In
 this case, we'd do the latter. The following is an example:</p>
-<p> <pre class=codehilite><code class=language-php>use Psr\Container\ContainerInterface;
+<pre class=codehilite><code class=language-php>use Psr\Container\ContainerInterface;
 use Zend\Expressive\MiddlewareFactory;
 use Zend\ServiceManager\DelegatorFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -788,9 +788,9 @@ class ApiResourcePipelineDelegatorFactory implements DelegatorFactoryInterface
 
         return $pipeline;
     }
-}</code></pre></p>
+}</code></pre>
 <p>When configuring the container, you'd do something like the following:</p>
-<p> <pre class=codehilite><code class=language-php>return [
+<pre class=codehilite><code class=language-php>return [
     'dependencies' =&gt; [
         'factories' =&gt; [
             AuthenticationMiddleware::class =&gt; '...',
@@ -805,20 +805,20 @@ class ApiResourcePipelineDelegatorFactory implements DelegatorFactoryInterface
             ],
         ],
     ],
-];</code></pre></p>
+];</code></pre>
 <p>This approach allows you to cleanly separate the factory for your middleware
 from the pipeline you want to compose it in, and allows you to re-use the
 pipeline creation across multiple middleware if desired.</p>
 <h2 id="middleware-arrays">Middleware Arrays</h2>
 <p>If you'd rather not create a factory for each such middleware, the other option
 is to use arrays of middlewares when routing.</p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;route('/api/resource[/{id:[a-f0-9]{32}}]', [
+<pre class=codehilite><code class=language-php>$app-&gt;route('/api/resource[/{id:[a-f0-9]{32}}]', [
     AuthenticationMiddleware::class,
     AuthorizationMiddleware::class,
     BodyParsingMiddleware::class,
     ValidationMiddleware::class,
     ApiResource::class,
-], ['GET', 'POST', 'PATCH', 'DELETE'], 'api-resource');</code></pre></p>
+], ['GET', 'POST', 'PATCH', 'DELETE'], 'api-resource');</code></pre>
 <p>When either of these approaches are used, the individual middleware listed
 <strong>MUST</strong> be one of the following:</p>
 <ul>

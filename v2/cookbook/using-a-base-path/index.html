@@ -687,20 +687,20 @@
     <h1 id="how-can-i-tell-my-application-about-a-base-path">How can I tell my application about a base path?</h1>
 <p>In some environments, your application may be running in a subdirectory of your
 web root. For example:</p>
-<p> <pre class=codehilite><code>var/
+<pre class=codehilite><code>var/
 |- www/
 |  |- wordpress/
 |  |- expressive/
 |  |  |- public/
-|  |  |  |- index.php</code></pre></p>
+|  |  |  |- index.php</code></pre>
 <p>where <code>/var/www</code> is the web root, and your Expressive application is in the
 <code>expressive/</code> subdirectory. How can you make your application work correctly in
 this environment?</p>
 <h2 id="htaccess-in-the-application-root">.htaccess in the application root.</h2>
 <p>If you are using Apache, your first step is to add an <code>.htaccess</code> file to your
 application root, with directives for rewriting to the <code>public/</code> directory:</p>
-<p> <pre class=codehilite><code class=language-ApacheConf>RewriteEngine On
-RewriteRule (.*) ./public/$1</code></pre></p>
+<pre class=codehilite><code class=language-ApacheConf>RewriteEngine On
+RewriteRule (.*) ./public/$1</code></pre>
 <blockquote>
 <h3>Using other web servers</h3>
 <p>If you are using a web-server other than Apache, and know how to do a similar
@@ -724,18 +724,18 @@ rewrite the URL accordingly.</p>
 <p>To use <code>los/basepath</code>, install it via Composer, copy the configuration files to
 your application, and then edit the configuration.</p>
 <p>To install and copy the configuration:</p>
-<p> <pre class=codehilite><code class=language-bash>$ composer require los/basepath
-$ cp vendor/los/basepath/config/los-basepath.global.php.dist config/autoload/los-basepath.global.php</code></pre></p>
+<pre class=codehilite><code class=language-bash>$ composer require los/basepath
+$ cp vendor/los/basepath/config/los-basepath.global.php.dist config/autoload/los-basepath.global.php</code></pre>
 <p>We recommend copying the global configuration to a local configuration file as
 well; this allows you to have the production settings in your global
 configuration, and development settings in a local configuration (which is
 excluded from git by default):</p>
-<p> <pre class=codehilite><code class=language-bash>$ cp config/autoload/los-basepath.global.php config/autoload/los-basepath.local.php</code></pre></p>
+<pre class=codehilite><code class=language-bash>$ cp config/autoload/los-basepath.global.php config/autoload/los-basepath.local.php</code></pre>
 <p>Then edit one or both, to change the <code>los_basepath</code> settings:</p>
-<p> <pre class=codehilite><code class=language-php>return [
+<pre class=codehilite><code class=language-php>return [
     'los_basepath' =&gt; '&lt;base path here&gt;',
     /* ... */
-];</code></pre></p>
+];</code></pre>
 <p>The base path should be the portion of the web root leading up to the
 <code>index.php</code> of your application. In the above example, this would be
 <code>/expressive</code>.</p>
@@ -743,10 +743,10 @@ excluded from git by default):</p>
 <p>To use <code>mtymek/blast-base-url</code>, install it via Composer, and register some
 configuration.</p>
 <p>To install it:</p>
-<p> <pre class=codehilite><code class=language-bash>$ composer require mtymek/blast-base-url</code></pre></p>
+<pre class=codehilite><code class=language-bash>$ composer require mtymek/blast-base-url</code></pre>
 <p>To configure it, update the file <code>config/autoload/middleware-pipeline.global.php</code>,
 or <code>config/autoload/dependencies.global.php</code> to map the middleware to its factory:</p>
-<p> <pre class=codehilite><code class=language-php>return [
+<pre class=codehilite><code class=language-php>return [
     'dependencies' =&gt; [
         'factories' =&gt; [
             Blast\BaseUrl\BaseUrlMiddleware::class =&gt; Blast\BaseUrl\BaseUrlMiddlewareFactory::class,
@@ -754,15 +754,15 @@ or <code>config/autoload/dependencies.global.php</code> to map the middleware to
         ],
         /* ... */
     ],
-];</code></pre></p>
+];</code></pre>
 <p>If using programmatic pipelines, pipe the middleware early in your pipeline:</p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe(\Blast\BaseUrl\BaseUrlMiddleware::class);</code></pre></p>
+<pre class=codehilite><code class=language-php>$app-&gt;pipe(\Blast\BaseUrl\BaseUrlMiddleware::class);</code></pre>
 <p>For configuration-driven pipelines, add an entry in your
 <code>config/autoload/middleware-pipeline.global.php</code> file:</p>
-<p> <pre class=codehilite><code class=language-php>'middleware_pipeline' =&gt; [
+<pre class=codehilite><code class=language-php>'middleware_pipeline' =&gt; [
     ['middleware' =&gt; [Blast\BaseUrl\BaseUrlMiddleware::class], 'priority' =&gt; 1000],
     /* ... */
-],</code></pre></p>
+],</code></pre>
 <p>At this point, the middleware will take care of the rewriting for you. No
 configuration is necessary, as it does auto-detection of the base path based on
 the request URI and the operating system path to the application.</p>
@@ -775,17 +775,17 @@ the request URI and the operating system path to the application.</p>
 </ul>
 <p>To enable these features, we'll add some configuration to
 <code>config/autoload/dependencies.global.php</code> file:</p>
-<p> <pre class=codehilite><code class=language-php>return [
+<pre class=codehilite><code class=language-php>return [
     'dependencies' =&gt; [
         'invokables' =&gt; [
             Blast\BaseUrl\BasePathHelper::class =&gt; Blast\BaseUrl\BasePathHelper::class,
             /* ... */
         ],
     ],
-];</code></pre></p>
+];</code></pre>
 <p>Finally, if you're using zend-view, you can register a new "basePath" helper in
 your <code>config/autoload/templates.global.php</code>:</p>
-<p> <pre class=codehilite><code class=language-php>return [
+<pre class=codehilite><code class=language-php>return [
     /* ... */
     'view_helpers' =&gt; [
         'factories' =&gt; [
@@ -794,14 +794,14 @@ your <code>config/autoload/templates.global.php</code>:</p>
         ],
         /* ... */
     ],
-];</code></pre></p>
+];</code></pre>
 <p>Usage of the <code>BasePath</code> helper is as follows:</p>
-<p> <pre class=codehilite><code class=language-php>// where $basePathHelper is an instance of Blast\BaseUrl\BasePathHelper
+<pre class=codehilite><code class=language-php>// where $basePathHelper is an instance of Blast\BaseUrl\BasePathHelper
 // as pulled from your container:
 echo $basePathHelper('/icons/favicon.ico');
 
 // or, from zend-view's PhpRenderer:
-echo $this-&gt;basePath('/icons/favicon.ico');</code></pre></p>
+echo $this-&gt;basePath('/icons/favicon.ico');</code></pre>
 
 
 

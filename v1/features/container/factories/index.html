@@ -797,12 +797,12 @@ order to seed the <code>Application</code> instance:</p>
 <p>When the <code>config</code> service is present, the factory can utilize the
 <code>zend-expressive</code> top-level key, with the <code>error_handler</code> second-level key, to
 seed the <code>Templated</code> instance:</p>
-<p> <pre class=codehilite><code class=language-php>'zend-expressive' =&gt; [
+<pre class=codehilite><code class=language-php>'zend-expressive' =&gt; [
     'error_handler' =&gt; [
         'template_404'   =&gt; 'name of 404 template',
         'template_error' =&gt; 'name of error template',
     ],
-],</code></pre></p>
+],</code></pre>
 <h2 id="whoopserrorhandlerfactory">WhoopsErrorHandlerFactory</h2>
 <ul>
 <li><strong>Provides</strong>: <code>Zend\Expressive\TemplatedErrorHandler</code></li>
@@ -843,13 +843,13 @@ properly with <code>Zend\Expressive\Application</code>; this includes disabling 
 write-to-output, disabling immediate quit, etc. The <code>PrettyPageHandler</code> returned
 for the <code>Zend\Expressive\WhoopsPageHandler</code> service will be injected.</p>
 <p>It consumes the following <code>config</code> structure:</p>
-<p> <pre class=codehilite><code class=language-php>'whoops' =&gt; [
+<pre class=codehilite><code class=language-php>'whoops' =&gt; [
     'json_exceptions' =&gt; [
         'display'    =&gt; true,
         'show_trace' =&gt; true,
         'ajax_only'  =&gt; true,
     ],
-],</code></pre></p>
+],</code></pre>
 <p>If no <code>whoops</code> top-level key is present in the configuration, a default instance
 with no <code>JsonResponseHandler</code> composed will be created.</p>
 <h2 id="whoopspagehandlerfactory">WhoopsPageHandlerFactory</h2>
@@ -865,9 +865,9 @@ with no <code>JsonResponseHandler</code> composed will be created.</p>
 </li>
 </ul>
 <p>It consumes the following <code>config</code> structure:</p>
-<p> <pre class=codehilite><code class=language-php>'whoops' =&gt; [
+<pre class=codehilite><code class=language-php>'whoops' =&gt; [
     'editor' =&gt; 'editor name, editor service name, or callable',
-],</code></pre></p>
+],</code></pre>
 <p>The <code>editor</code> value must be a known editor name (see the Whoops documentation for
 pre-configured editor types), a callable, or a service name to use.</p>
 <h2 id="platesrendererfactory">PlatesRendererFactory</h2>
@@ -884,7 +884,7 @@ pre-configured editor types), a callable, or a service name to use.</p>
 </li>
 </ul>
 <p>It consumes the following <code>config</code> structure:</p>
-<p> <pre class=codehilite><code class=language-php>'templates' =&gt; [
+<pre class=codehilite><code class=language-php>'templates' =&gt; [
     'extension' =&gt; 'file extension used by templates; defaults to html',
     'paths' =&gt; [
         // namespace / path pairs
@@ -892,7 +892,7 @@ pre-configured editor types), a callable, or a service name to use.</p>
         // Numeric namespaces imply the default/main namespace. Paths may be
         // strings or arrays of string paths to associate with the namespace.
     ],
-]</code></pre></p>
+]</code></pre>
 <p>One note: Due to a limitation in the Plates engine, you can only map one path
 per namespace when using Plates.</p>
 <h2 id="twigrendererfactory">TwigRendererFactory</h2>
@@ -913,7 +913,7 @@ per namespace when using Plates.</p>
 </li>
 </ul>
 <p>It consumes the following <code>config</code> structure:</p>
-<p> <pre class=codehilite><code class=language-php>'debug' =&gt; boolean,
+<pre class=codehilite><code class=language-php>'debug' =&gt; boolean,
 'templates' =&gt; [
     'cache_dir' =&gt; 'path to cached templates',
     'assets_url' =&gt; 'base URL for assets',
@@ -925,7 +925,7 @@ per namespace when using Plates.</p>
         // Numeric namespaces imply the default/main namespace. Paths may be
         // strings or arrays of string paths to associate with the namespace.
     ],
-]</code></pre></p>
+]</code></pre>
 <p>When <code>debug</code> is true, it disables caching, enables debug mode, enables strict
 variables, and enables auto reloading. The <code>assets_*</code> values are used to seed
 the <code>TwigExtension</code> instance (assuming the router was found).</p>
@@ -950,7 +950,7 @@ the <code>TwigExtension</code> instance (assuming the router was found).</p>
 </li>
 </ul>
 <p>It consumes the following <code>config</code> structure:</p>
-<p> <pre class=codehilite><code class=language-php>'templates' =&gt; [
+<pre class=codehilite><code class=language-php>'templates' =&gt; [
     'layout' =&gt; 'name of layout view to use, if any',
     'map'    =&gt; [
         // template =&gt; filename pairs
@@ -961,7 +961,7 @@ the <code>TwigExtension</code> instance (assuming the router was found).</p>
         // Numeric namespaces imply the default/main namespace. Paths may be
         // strings or arrays of string paths to associate with the namespace.
     ],
-]</code></pre></p>
+]</code></pre>
 <p>When creating the <code>PhpRenderer</code> instance, it will inject it with a
 <code>Zend\View\HelperPluginManager</code> instance (either pulled from the container, or
 instantiated directly). It injects the helper plugin manager with custom url and

@@ -728,7 +728,7 @@ which can be used as a delegator factory for the <code>Zend\Expressive\Applicati
 class in order to automate piping of pipeline middleware and routing to request
 handlers and middleware.</p>
 <p>The delegator factory looks for configuration that looks like the following:</p>
-<p> <pre class=codehilite><code class=language-php>return [
+<pre class=codehilite><code class=language-php>return [
     'middleware_pipeline' =&gt; [
         [
             // required:
@@ -760,14 +760,14 @@ handlers and middleware.</p>
             ],
         ],
     ],
-];</code></pre></p>
+];</code></pre>
 <p>This configuration may be placed at the application level, in a file under
 <code>config/autoload/</code>, or within a module's <code>ConfigProvider</code> class. For details on
 what values are accepted, see below.</p>
 <p>In order to enable the delegator factory, you will need to define the following
 service configuration somewhere, either at the application level in a
 <code>config/autoload/</code> file, or within a module-specific <code>ConfigProvider</code> class:</p>
-<p> <pre class=codehilite><code class=language-php>return [
+<pre class=codehilite><code class=language-php>return [
     'dependencies' =&gt; [
         'delegators' =&gt; [
             \Zend\Expressive\Application::class =&gt; [
@@ -775,7 +775,7 @@ service configuration somewhere, either at the application level in a
             ],
         ],
     ],
-];</code></pre></p>
+];</code></pre>
 <h3>Pipeline middleware</h3>
 <p>Pipeline middleware are each described as an associative array, with the
 following keys:</p>
@@ -821,7 +821,7 @@ Unlike the above solution, the solution we will outline here will exercise the
 <code>Zend\Expressive\Application</code> API in order to populate it.</p>
 <p>First, we'll create the class <code>App\Factory\PipelineAndRoutesDelegator</code>, with
 the following contents:</p>
-<p> <pre class=codehilite><code class=language-php>&lt;?php
+<pre class=codehilite><code class=language-php>&lt;?php
 
 namespace App\Factory;
 
@@ -865,7 +865,7 @@ class PipelineAndRoutesDelegator
 
         return $app;
     }
-}</code></pre></p>
+}</code></pre>
 <blockquote>
 <h3>Where to put the factory</h3>
 <p>You will place the factory class in one of the following locations:</p>
@@ -878,7 +878,7 @@ class PipelineAndRoutesDelegator
 </blockquote>
 <p>Once you've created this, edit the class <code>App\ConfigProvider</code>; in it, we'll
 update the <code>getDependencies()</code> method to add the delegator factory:</p>
-<p> <pre class=codehilite><code class=language-php>public function getDependencies()
+<pre class=codehilite><code class=language-php>public function getDependencies()
 {
     return [
         /* . . . */
@@ -888,7 +888,7 @@ update the <code>getDependencies()</code> method to add the delegator factory:</
             ],
         ],
     ];
-}</code></pre></p>
+}</code></pre>
 <blockquote>
 <h3>Where is the ConfigProvider class?</h3>
 <p>The <code>ConfigProvider</code> class is in one of the following locations:</p>

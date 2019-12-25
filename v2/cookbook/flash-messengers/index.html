@@ -707,9 +707,9 @@ damess/expressive-session-middleware.</p>
 <p>Slim's <a href="https://github.com/slimphp/Slim-Flash">Flash messages service provider</a> can be
 used in Expressive. It uses PHP's native session support.</p>
 <p>First, you'll need to add it to your application:</p>
-<p> <pre class=codehilite><code class=language-bash>$ composer require slim/flash</code></pre></p>
+<pre class=codehilite><code class=language-bash>$ composer require slim/flash</code></pre>
 <p>Second, create middleware that will add the flash message provider to the request:</p>
-<p> <pre class=codehilite><code class=language-php>&lt;?php
+<pre class=codehilite><code class=language-php>&lt;?php
 namespace App;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
@@ -728,11 +728,11 @@ class SlimFlashMiddleware implements MiddlewareInterface
             $request-&gt;withAttribute('flash', new Messages())
         );
     }
-}</code></pre></p>
+}</code></pre>
 <p>Third, we will register the new middleware with our container as an invokable.
 Edit either the file <code>config/autoload/dependencies.global.php</code> or
 <code>config/autoload/middleware-pipeline.global.php</code> to add the following:</p>
-<p> <pre class=codehilite><code class=language-php>return [
+<pre class=codehilite><code class=language-php>return [
     'dependencies' =&gt; [
         'invokables' =&gt; [
             App\SlimFlashMiddleware::class =&gt; App\SlimFlashMiddleware::class,
@@ -740,19 +740,19 @@ Edit either the file <code>config/autoload/dependencies.global.php</code> or
         ],
         /* ... */
     ],
-];</code></pre></p>
+];</code></pre>
 <p>Finally, let's register it with our middleware pipeline. For programmatic
 pipelines, pipe the middleware somewhere, generally before the routing middleware:</p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe(App\SlimFlashMiddleware::class);</code></pre></p>
+<pre class=codehilite><code class=language-php>$app-&gt;pipe(App\SlimFlashMiddleware::class);</code></pre>
 <p>Or as part of a routed middleware pipeline:</p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;post('/form/handler', [
+<pre class=codehilite><code class=language-php>$app-&gt;post('/form/handler', [
     App\SlimFlashMiddleware::class,
     FormHandlerMiddleware::class,
-]);</code></pre></p>
+]);</code></pre>
 <p>If using configuration-driven pipelines, edit
 <code>config/autoload/middleware-pipeline.global.php</code> to make the following
 additions:</p>
-<p> <pre class=codehilite><code class=language-php>return [
+<pre class=codehilite><code class=language-php>return [
     'middleware_pipeline' =&gt; [
         'always' =&gt; [
             'middleware' =&gt; [
@@ -763,7 +763,7 @@ additions:</p>
         ],
         /* ... */
     ],
-];</code></pre></p>
+];</code></pre>
 <blockquote>
 <h3>Where to register the flash middleware</h3>
 <p>Sessions can sometimes be expensive. As such, you may not want the flash
@@ -773,7 +773,7 @@ in the programmatic pipelines above.</p>
 </blockquote>
 <p>From here, you can add and read messages by accessing the request's flash
 attribute. As an example, middleware generating messages might read as follows:</p>
-<p> <pre class=codehilite><code class=language-php>use Interop\Http\ServerMiddleware\DelegateInterface;
+<pre class=codehilite><code class=language-php>use Interop\Http\ServerMiddleware\DelegateInterface;
 use Zend\Diactoros\Response\RedirectResponse;
 
 function($request, DelegateInterface $delegate)
@@ -782,16 +782,16 @@ function($request, DelegateInterface $delegate)
     $flash-&gt;addMessage('message', 'Hello World!');
 
     return new RedirectResponse('/other-middleware');
-}</code></pre></p>
+}</code></pre>
 <p>And middleware consuming the message might read:</p>
-<p> <pre class=codehilite><code class=language-php>use Interop\Http\ServerMiddleware\DelegateInterface;
+<pre class=codehilite><code class=language-php>use Interop\Http\ServerMiddleware\DelegateInterface;
 
 function($request, DelegateInterface $delegate)
 {
     $flash = $request-&gt;getAttribute('flash');
     $messages = $flash-&gt;getMessages();
     // ...
-}</code></pre></p>
+}</code></pre>
 <p>From there, it's a matter of providing the flash messages to your template.</p>
 <h2 id="damessexpressive-session-middleware-and-aurasession">damess/expressive-session-middleware and Aura.Session</h2>
 <p><a href="https://github.com/dannym87/expressive-session-middleware">damess/expressive-session-middleware</a>
@@ -799,9 +799,9 @@ provides middleware for initializing an
 <a href="https://github.com/auraphp/Aura.Session">Aura.Session</a> instance; Aura.Session
 provides flash messaging capabilities as part of its featureset.</p>
 <p>Install it via Composer:</p>
-<p> <pre class=codehilite><code class=language-bash>$ composer require damess/expressive-session-middleware</code></pre></p>
+<pre class=codehilite><code class=language-bash>$ composer require damess/expressive-session-middleware</code></pre>
 <p>In <code>config/autoload/dependencies.global.php</code>, add an entry for Aura.Session:</p>
-<p> <pre class=codehilite><code class=language-php>return [
+<pre class=codehilite><code class=language-php>return [
     'dependencies' =&gt; [
         'factories' =&gt; [
             Aura\Session\Session::class =&gt; DaMess\Factory\AuraSessionFactory::class,
@@ -809,11 +809,11 @@ provides flash messaging capabilities as part of its featureset.</p>
         ],
         /* ... */
     ],
-];</code></pre></p>
+];</code></pre>
 <p>In either <code>config/autoload/dependencies.global.php</code> or
 <code>config/autoload/middleware-pipeline.global.php</code>, add a factory entry for the
 <code>damess/expressive-session-middleware</code>:</p>
-<p> <pre class=codehilite><code class=language-php>return [
+<pre class=codehilite><code class=language-php>return [
     'dependencies' =&gt; [
         'factories' =&gt; [
             DaMess\Http\SessionMiddleware::class =&gt; DaMess\Factory\SessionMiddlewareFactory::class,
@@ -821,15 +821,15 @@ provides flash messaging capabilities as part of its featureset.</p>
         ],
         /* ... */
     ],
-];</code></pre></p>
+];</code></pre>
 <p>Finally, add it to your middleware pipeline. For programmatic pipelines:</p>
-<p> <pre class=codehilite><code class=language-php>use DaMess\Http\SessionMiddleware;
+<pre class=codehilite><code class=language-php>use DaMess\Http\SessionMiddleware;
 
 $app-&gt;pipe(SessionMiddleware::class);
-/* ... */</code></pre></p>
+/* ... */</code></pre>
 <p>If using configuration-driven pipelines, edit <code>config/autoload/middleware-pipeline.global.php</code>
 and add an entry for the new middleware:</p>
-<p> <pre class=codehilite><code class=language-php>return [
+<pre class=codehilite><code class=language-php>return [
     'middleware_pipeline' =&gt; [
         'always' =&gt; [
             'middleware' =&gt; [
@@ -840,7 +840,7 @@ and add an entry for the new middleware:</p>
         ],
         /* ... */
     ],
-];</code></pre></p>
+];</code></pre>
 <blockquote>
 <h3>Where to register the session middleware</h3>
 <p>Sessions can sometimes be expensive. As such, you may not want the session
@@ -850,12 +850,12 @@ middleware as part of a route-specific pipeline instead.</p>
 <p>Once enabled, the <code>SessionMiddleware</code> will inject the Aura.Session instance into
 the request as the <code>session</code> attribute; you can thus retrieve it within
 middleware using the following:</p>
-<p> <pre class=codehilite><code class=language-php>$session = $request-&gt;getAttribute('session');</code></pre></p>
+<pre class=codehilite><code class=language-php>$session = $request-&gt;getAttribute('session');</code></pre>
 <p>To create and consume flash messages, use Aura.Session's
 <a href="https://github.com/auraphp/Aura.Session#flash-values">flash values</a>. As
 an example, the middleware that is processing a POST request might set a flash
 message:</p>
-<p> <pre class=codehilite><code class=language-php>use Interop\Http\ServerMiddleware\DelegateInterface;
+<pre class=codehilite><code class=language-php>use Interop\Http\ServerMiddleware\DelegateInterface;
 use Zend\Diactoros\Response\RedirectResponse;
 
 function($request, DelegateInterface $delegate)
@@ -865,10 +865,10 @@ function($request, DelegateInterface $delegate)
             -&gt;setFlash('message', 'Hello World!');
 
     return new RedirectResponse('/other-middleware');
-}</code></pre></p>
+}</code></pre>
 <p>Another middleware, to which the original middleware redirects, might look like
 this:</p>
-<p> <pre class=codehilite><code class=language-php>use Interop\Http\ServerMiddleware\DelegateInterface;
+<pre class=codehilite><code class=language-php>use Interop\Http\ServerMiddleware\DelegateInterface;
 
 function($request, DelegateInterface $delegate)
 {
@@ -876,7 +876,7 @@ function($request, DelegateInterface $delegate)
     $message = $session-&gt;getSegment(__NAMESPACE__)
                        -&gt;getFlash('message');
     // ...
-}</code></pre></p>
+}</code></pre>
 <p>From there, it's a matter of providing the flash messages to your template.</p>
 
 

@@ -706,13 +706,13 @@ injection container with the following features:</p>
 <h2 id="installing-auradi">Installing Aura.Di</h2>
 <p>Aura.Di implements <a href="https://www.php-fig.org/psr/psr-11/">PSR-11</a> as of version
 3.</p>
-<p> <pre class=codehilite><code class=language-bash>$ composer require aura/di</code></pre></p>
+<pre class=codehilite><code class=language-bash>$ composer require aura/di</code></pre>
 <h2 id="configuration">Configuration</h2>
 <p>Aura.Di can help you to organize your code better with
 <a href="http://auraphp.com/packages/Aura.Di/config.html">ContainerConfig classes</a> and
 <a href="http://auraphp.com/blog/2014/04/07/two-stage-config/">two step configuration</a>.
 In this example, we'll put that in <code>config/container.php</code>:</p>
-<p> <pre class=codehilite><code class=language-php>&lt;?php
+<pre class=codehilite><code class=language-php>&lt;?php
 use Aura\Di\ContainerBuilder;
 
 $containerBuilder = new ContainerBuilder();
@@ -721,9 +721,9 @@ $containerBuilder = new ContainerBuilder();
 // ContainerConfig classes. Make sure the classes can be autoloaded!
 return $containerBuilder-&gt;newConfiguredInstance([
     'Application\Config\Common',
-]);</code></pre></p>
+]);</code></pre>
 <p>The bare minimum <code>ContainerConfig</code> code needed to make zend-expressive work is:</p>
-<p> <pre class=codehilite><code class=language-php>&lt;?php
+<pre class=codehilite><code class=language-php>&lt;?php
 // In src/Config/Common.php:
 namespace Application\Config;
 
@@ -801,15 +801,15 @@ class Common extends ContainerConfig
         }, Route::HTTP_METHOD_ANY, 'hello'));
         */
     }
-}</code></pre></p>
+}</code></pre>
 <p>Your bootstrap (typically <code>public/index.php</code>) will then look like this:</p>
-<p> <pre class=codehilite><code class=language-php>chdir(dirname(__DIR__));
+<pre class=codehilite><code class=language-php>chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
 $container = require 'config/container.php';
 $app = $container-&gt;get(Zend\Expressive\Application::class);
 require 'config/pipeline.php';
 require 'config/routes.php';
-$app-&gt;run();</code></pre></p>
+$app-&gt;run();</code></pre>
 
 
 

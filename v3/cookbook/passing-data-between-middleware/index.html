@@ -698,7 +698,7 @@ data contains an attribute containing data passed by outer middleware.</p>
 request attribute to nested middleware. We use the fully qualified class name
 for the attribute name to ensure uniqueness, but you can name it anything you
 want.</p>
-<p> <pre class=codehilite><code class=language-php>namespace App\Middleware;
+<pre class=codehilite><code class=language-php>namespace App\Middleware;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -724,9 +724,9 @@ class PassingDataMiddleware implements MiddlewareInterface
         // Step 4: Return the response
         return $response;
     }
-}</code></pre></p>
+}</code></pre>
 <p>Later, <code>ReceivingDataMiddleware</code> grabs the data and processes it:</p>
-<p> <pre class=codehilite><code class=language-php>namespace App\Middleware;
+<pre class=codehilite><code class=language-php>namespace App\Middleware;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -750,11 +750,11 @@ class ReceivingDataMiddleware implements MiddlewareInterface
         // Step 4: Return the response
         return $response;
     }
-}</code></pre></p>
+}</code></pre>
 <p>Of course, you could also use the data in routed middleware, which is usually at
 the innermost layer of your application. The <code>ExampleHandler</code> below takes that
 information and passes it to the template renderer to create an <code>HtmlResponse</code>:</p>
-<p> <pre class=codehilite><code class=language-php>namespace App\Handler;
+<pre class=codehilite><code class=language-php>namespace App\Handler;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -782,7 +782,7 @@ class ExampleHandler implements RequestHandlerInterface
             ])
         );
     }
-}</code></pre></p>
+}</code></pre>
 
 
 

@@ -672,14 +672,14 @@
     <h1 id="how-can-i-prepend-a-common-path-to-all-my-routes">How can I prepend a common path to all my routes?</h1>
 <p>You may have multiple middleware in your project, each providing their own
 functionality:</p>
-<p> <pre class=codehilite><code class=language-php>$middleware1 = new UserMiddleware();
+<pre class=codehilite><code class=language-php>$middleware1 = new UserMiddleware();
 $middleware2 = new ProjectMiddleware();
 
 $app = AppFactory::create();
 $app-&gt;pipe($middleware1);
 $app-&gt;pipe($middleware2);
 
-$app-&gt;run();</code></pre></p>
+$app-&gt;run();</code></pre>
 <p>Let's assume the above represents an API.</p>
 <p>As your application progresses, you may have a mixture of different content, and now want to have
 the above segregated under the path <code>/api</code>.</p>
@@ -690,7 +690,7 @@ the above segregated under the path <code>/api</code>.</p>
 <li>Create a new application.</li>
 <li>Pipe the previous application to the new one, under the path <code>/api</code>.</li>
 </ul>
-<p> <pre class=codehilite><code class=language-php>$middleware1 = new UserMiddleware();
+<pre class=codehilite><code class=language-php>$middleware1 = new UserMiddleware();
 $middleware2 = new ProjectMiddleware();
 
 $api = AppFactory::create();
@@ -700,7 +700,7 @@ $api-&gt;pipe($middleware2);
 $app = AppFactory::create();
 $app-&gt;pipe('/api', $api);
 
-$app-&gt;run();</code></pre></p>
+$app-&gt;run();</code></pre>
 <p>The above works, because every <code>Application</code> instance is itself middleware, and, more specifically,
 an instance of <a href="https://github.com/zendframework/zend-stratigility/blob/master/doc/book/middleware.md">Stratigility's <code>MiddlewarePipe</code></a>,
 which provides the ability to compose middleware.</p>

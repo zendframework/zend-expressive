@@ -714,13 +714,13 @@ this middleware with Expressive 3?</p>
 <p>Double pass middleware receives both the request and a response in addition to
 the handler, and passes both the request and response to the handler when
 invoking it:</p>
-<p><pre class=codehilite><code class=language-php>
+<pre class=codehilite><code class=language-php>
 function (ServerRequestInterface $request, ResponseInterface $response, callable $next)
 {
     $response = $next($request, $response);
     return $response-&gt;withHeader('X-Test', time());
 }
-</code></pre></p>
+</code></pre>
 <p>It is termed "double pass" because you pass <em>both</em> the request <em>and</em> response when
 delegating to the next layer.</p>
 </blockquote>
@@ -735,7 +735,7 @@ middleware pipelines.</p>
 <code>$response</code> argument to the double-pass middleware. The following examples
 demostrate both piping and routing to double pass middleware using this
 technique, and using zend-diactoros to provide the response instance.</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\Diactoros\Response;
+<pre class=codehilite><code class=language-php>use Zend\Diactoros\Response;
 
 use function Zend\Stratigility\doublePassMiddleware;
 
@@ -748,7 +748,7 @@ $app-&gt;get('/api/ping', doublePassMiddleware(function ($request, $response, $n
     return new Response\JsonResponse([
         'ack' =&gt; time(),
     ]);
-}, new Response())); // &lt;-- note the response</code></pre></p>
+}, new Response())); // &lt;-- note the response</code></pre>
 <h2 id="double-pass-middleware-services">Double-Pass Middleware Services</h2>
 <p>What if you're piping or routing to a <em>service</em> &mdash; for instance, a class
 provided by a third-party implementation?</p>
@@ -764,7 +764,7 @@ will be using in your application, you can use the strategy outlined above to
 decorate your middleware before returning it, with one minor change: you can
 pull a response factory from the container as well.</p>
 <p>To demonstrate:</p>
-<p> <pre class=codehilite><code class=language-php>use Psr\Container\ContainerInterface;
+<pre class=codehilite><code class=language-php>use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 
 use function Zend\Stratigility\doublePassMiddleware;
@@ -781,7 +781,7 @@ class SomeDoublePassMiddlewareFactory
             ($container-&gt;get(ResponseInterface::class))()
         );
     }
-}</code></pre></p>
+}</code></pre>
 <p>That last line may look a little strange.</p>
 <p>The <code>Psr\Http\Response\ResponseInterface</code> service returns a callable <em>factory</em>
 for producing response instances, and not a response instance itself. As such,
@@ -793,7 +793,7 @@ double-pass middleware. Let's look at the delegator factory solution.</p>
 <p>Delegator factories can be re-used for multiple services. In our case, we'll
 re-use it to decorate double-pass middleware.</p>
 <p>The delegator factory would look like this:</p>
-<p> <pre class=codehilite><code class=language-php>use Psr\Container\ContainerInterface;
+<pre class=codehilite><code class=language-php>use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 
 use function Zend\Stratigility\doublePassMiddleware;
@@ -807,12 +807,12 @@ class DoublePassMiddlewareDelegator
             ($container-&gt;get(ResponseInterface::class))()
         );
     }
-}</code></pre></p>
+}</code></pre>
 <p>This looks similar to our previous solution, but is self-contained; we rely on
 the <code>$callback</code> argument to produce the middleware we want to decorate.</p>
 <p>Then, for each service we have that represents double-pass middleware, we can
 provide configuration like the following:</p>
-<p> <pre class=codehilite><code class=language-php>return [
+<pre class=codehilite><code class=language-php>return [
     'dependencies' =&gt; [
         'delegators' =&gt; [
             SomeDoublePassMiddleware::class =&gt; [
@@ -820,7 +820,7 @@ provide configuration like the following:</p>
             ],
         ],
     ],
-];</code></pre></p>
+];</code></pre>
 <p>This approach has a couple of benefits:</p>
 <ul>
 <li>We do not need to change existing factories.</li>

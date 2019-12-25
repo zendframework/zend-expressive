@@ -698,7 +698,7 @@ can you make such data available to all templates?</p>
 on the template renderer's <code>addDefaultParam()</code> method.</p>
 <p>Foolowing is an example that injects the current user, the matched route name,
 and all flash messages via a single middleware.</p>
-<p> <pre class=codehilite><code class=language-php>// In src/App/Middleware/TemplateDefaultsMiddleware.php (flat structure), or
+<pre class=codehilite><code class=language-php>// In src/App/Middleware/TemplateDefaultsMiddleware.php (flat structure), or
 // in src/App/src/Middleware/TemplateDefaultsMiddleware.php (modular structure):
 &lt;?php
 
@@ -756,23 +756,23 @@ class TemplateDefaultsMiddleware implements MiddlewareInterface
 
         return $handler-&gt;handle($request);
     }
-}</code></pre></p>
+}</code></pre>
 <p>Next you need to create a factory for this middleware and register it with the
 DI container; <a href="../../reference/cli-tooling/">zend-expressive-tooling</a> provides
 functionality for doing so:</p>
-<p> <pre class=codehilite><code class=language-bash>$ ./vendor/bin/expressive factory:create &quot;App\Middleware\TemplateDefaultsMiddleware&quot;</code></pre></p>
+<pre class=codehilite><code class=language-bash>$ ./vendor/bin/expressive factory:create &quot;App\Middleware\TemplateDefaultsMiddleware&quot;</code></pre>
 <p>Once the factory is created, you can add this to any route that may generate a
 template:</p>
-<p> <pre class=codehilite><code class=language-php>// In config/routes.php:
+<pre class=codehilite><code class=language-php>// In config/routes.php:
 $app-&gt;get('/some/resource/{id}', [
     App\Middleware\TemplateDefaultsMiddleware::class,
     SomeResourceHandler::class,
-]);</code></pre></p>
+]);</code></pre>
 <p>Alternately, if you want it to apply to any handler, place it in your
 application pipeline immediately before the <code>DispatchMiddleware</code>:</p>
-<p> <pre class=codehilite><code class=language-php>// In config/pipeline.php:
+<pre class=codehilite><code class=language-php>// In config/pipeline.php:
 $app-&gt;pipe(App\Middleware\TemplateDefaultsMiddleware::class);
-$app-&gt;pipe(DispatchMiddleware::class);</code></pre></p>
+$app-&gt;pipe(DispatchMiddleware::class);</code></pre>
 <blockquote>
 <p>Be aware, however, that if authentication is performed in per-handler
 pipelines, you will need to use the first approach to ensure that the

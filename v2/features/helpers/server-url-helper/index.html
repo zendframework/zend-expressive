@@ -703,17 +703,17 @@ generate a fully qualified URI.</p>
 <h2 id="usage">Usage</h2>
 <p>When you have an instance, use either its <code>generate()</code> method, or call the
 instance as an invokable:</p>
-<p> <pre class=codehilite><code class=language-php>// Using the generate() method:
+<pre class=codehilite><code class=language-php>// Using the generate() method:
 $url = $helper-&gt;generate('/foo');
 
 // is equivalent to invocation:
-$url = $helper('/foo');</code></pre></p>
+$url = $helper('/foo');</code></pre>
 <p>The helper is particularly useful when used in conjunction with the
 <a href="../url-helper/">UrlHelper</a>, as you can then create fully qualified URIs for use
 with headers, API hypermedia links, etc.:</p>
-<p> <pre class=codehilite><code class=language-php>$url = $serverUrl($url('resource', ['id' =&gt; 'sha1']));</code></pre></p>
+<pre class=codehilite><code class=language-php>$url = $serverUrl($url('resource', ['id' =&gt; 'sha1']));</code></pre>
 <p>The signature for the ServerUrlHelper <code>generate()</code> and <code>__invoke()</code> methods is:</p>
-<p> <pre class=codehilite><code class=language-php>function ($path = null) : string</code></pre></p>
+<pre class=codehilite><code class=language-php>function ($path = null) : string</code></pre>
 <p>Where:</p>
 <ul>
 <li><code>$path</code>, when provided, can be a string path to use to generate a URI.</li>
@@ -731,7 +731,7 @@ instance, and, when invoked, injects it with the URI instance.</p>
   before the routing middleware.</li>
 </ul>
 <p>The following examples demonstrate registering the services.</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\Expressive\Helper\ServerUrlHelper;
+<pre class=codehilite><code class=language-php>use Zend\Expressive\Helper\ServerUrlHelper;
 use Zend\Expressive\Helper\ServerUrlMiddleware;
 use Zend\Expressive\Helper\ServerUrlMiddlewareFactory;
 
@@ -754,10 +754,10 @@ $container-&gt;set(ServerUrlMiddlewareFactory::class, $container-&gt;lazyNew(Ser
 $container-&gt;set(
     ServerUrlMiddleware::class,
     $container-&gt;lazyGetCall(ServerUrlMiddlewareFactory::class, '__invoke', $container)
-);</code></pre></p>
+);</code></pre>
 <p>To register the <code>ServerUrlMiddleware</code> as pipeline middleware anytime before the
 routing middleware:</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\Expressive\Helper\ServerUrlMiddleware;
+<pre class=codehilite><code class=language-php>use Zend\Expressive\Helper\ServerUrlMiddleware;
 
 // Programmatically:
 $app-&gt;pipe(ServerUrlMiddleware::class);
@@ -770,10 +770,10 @@ $app-&gt;pipeDispatchMiddleware();
 //         ['middleware' =&gt; ServerUrlMiddleware::class, 'priority' =&gt; PHP_INT_MAX],
 //         /* ... */
 //     ],
-// ]</code></pre></p>
+// ]</code></pre>
 <p>The following dependency configuration will work for all three when using the
 Expressive skeleton:</p>
-<p> <pre class=codehilite><code class=language-php>return [
+<pre class=codehilite><code class=language-php>return [
     'dependencies' =&gt; [
         'invokables' =&gt; [
             ServerUrlHelper::class =&gt; ServerUrlHelper::class,
@@ -786,7 +786,7 @@ Expressive skeleton:</p>
         ['middleware' =&gt; ServerUrlMiddleware::class, 'priority' =&gt; PHP_INT_MAX],
         /* ... */
     ],
-];</code></pre></p>
+];</code></pre>
 <blockquote>
 <h3>Skeleton configures helpers</h3>
 <p>If you started your project using the Expressive skeleton package, the
@@ -796,7 +796,7 @@ for you, as is the <code>ServerUrlMiddleware</code> pipeline middleware.</p>
 <h2 id="using-the-helper-in-middleware">Using the helper in middleware</h2>
 <p>Compose the helper in your middleware (or elsewhere), and then use it to
 generate URI paths:</p>
-<p> <pre class=codehilite><code class=language-php>use Interop\Http\ServerMiddleware\DelegateInterface;
+<pre class=codehilite><code class=language-php>use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Helper\ServerUrlHelper;
@@ -818,7 +818,7 @@ class FooMiddleware implements MiddlewareInterface
             $this-&gt;helper-&gt;generate() . '; rel=&quot;self&quot;'
         );
     }
-}</code></pre></p>
+}</code></pre>
 
 
 

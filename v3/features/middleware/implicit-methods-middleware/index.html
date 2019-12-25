@@ -732,10 +732,10 @@ status code, you will need to provide your own factory.</p>
 </blockquote>
 <p>Within your application pipeline, add the middleware between the routing and
 dispatch middleware, generally immediately following the routing middleware:</p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe(RouteMiddleware::class);
+<pre class=codehilite><code class=language-php>$app-&gt;pipe(RouteMiddleware::class);
 $app-&gt;pipe(ImplicitHeadMiddleware::class);
 // ...
-$app-&gt;pipe(DispatchMiddleware::class);</code></pre></p>
+$app-&gt;pipe(DispatchMiddleware::class);</code></pre>
 <p>(Note: if you used the Expressive skeleton, this middleware is likely already in
 your pipeline.)</p>
 <p>When in place, it will do the following:</p>
@@ -772,10 +772,10 @@ status code, you will need to provide your own factory.</p>
 <p>Within your application pipeline, add the middleware between the routing and
 dispatch middleware, generally immediately following the routing middleware or
 <code>ImplicitHeadMiddleware</code>:</p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe(RouteMiddleware::class);
+<pre class=codehilite><code class=language-php>$app-&gt;pipe(RouteMiddleware::class);
 $app-&gt;pipe(ImplicitOptionsMiddleware::class);
 // ...
-$app-&gt;pipe(DispatchMiddleware::class);</code></pre></p>
+$app-&gt;pipe(DispatchMiddleware::class);</code></pre>
 <p>(Note: if you used the Expressive skeleton, this middleware is likely already in
 your pipeline.)</p>
 <p>When in place, it will do the following:</p>

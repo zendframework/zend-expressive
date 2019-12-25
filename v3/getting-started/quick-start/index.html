@@ -731,7 +731,7 @@ prompts you to choose a router, dependency injection container, template
 renderer, and error handler from the outset.</p>
 <h2 id="create-a-new-project">Create a new project</h2>
 <p>First, we'll create a new project, using Composer's <code>create-project</code> command:</p>
-<p> <pre class=codehilite><code class=language-bash>$ composer create-project zendframework/zend-expressive-skeleton expressive</code></pre></p>
+<pre class=codehilite><code class=language-bash>$ composer create-project zendframework/zend-expressive-skeleton expressive</code></pre>
 <p>This will prompt you to choose:</p>
 <ul>
 <li>
@@ -763,7 +763,7 @@ renderer, and error handler from the outset.</p>
 when complete. You can test it out using <a href="http://php.net/manual/en/features.commandline.webserver.php">built-in web
 server</a>.</p>
 <p>From the project root directory, execute the following:</p>
-<p> <pre class=codehilite><code class=language-bash>$ composer run --timeout=0 serve</code></pre></p>
+<pre class=codehilite><code class=language-bash>$ composer run --timeout=0 serve</code></pre>
 <p>This starts up a web server on localhost port 8080; browse to
 http://localhost:8080/ to see if your application responds correctly!</p>
 <blockquote>
@@ -777,18 +777,18 @@ be done by using <code>composer run</code> to execute the <code>serve</code> scr
 will be used, and it will run until you cancel the process (usually via
 <code>Ctrl-C</code>). Alternately, you can specify a finite timeout; as an example,
 the following will extend the timeout to a full day:</p>
-<p><pre class=codehilite><code class=language-bash>
+<pre class=codehilite><code class=language-bash>
 $ composer run --timeout=86400 serve
-</code></pre></p>
+</code></pre>
 </blockquote>
 <h2 id="development-tools">Development Tools</h2>
 <p>We ship tools in our skeleton application to make development easier.</p>
 <h3>Development Mode</h3>
 <p><a href="https://github.com/zfcampus/zf-development-mode">zf-development-mode</a> allows
 you to enable and disable development mode from your cli.</p>
-<p> <pre class=codehilite><code class=language-bash>$ composer development-enable  # enable development mode
+<pre class=codehilite><code class=language-bash>$ composer development-enable  # enable development mode
 $ composer development-disable # disable development mode
-$ composer development-status  # show development status</code></pre></p>
+$ composer development-status  # show development status</code></pre>
 <p>The development configuration is set in <code>config/autoload/development.local.php.dist</code>.
 It also allows you to specify configuration and modules that should only be enabled
 when in development, and not when in production.</p>
@@ -796,13 +796,13 @@ when in development, and not when in production.</p>
 <p>Production settings are the default, which means enabling the configuration cache.
 However, it must be easy for developers to clear the configuration cache. That's
 what this command does.</p>
-<p> <pre class=codehilite><code class=language-bash>$ composer clear-config-cache</code></pre></p>
+<pre class=codehilite><code class=language-bash>$ composer clear-config-cache</code></pre>
 <h3>Testing Your Code</h3>
 <p><a href="https://phpunit.de">PHPUnit</a> and
 <a href="https://github.com/squizlabs/PHP_CodeSniffer">PHP_CodeSniffer</a> are now
 installed by default. To execute tests and detect coding standards violations,
 run the following command:</p>
-<p> <pre class=codehilite><code class=language-bash>$ composer check</code></pre></p>
+<pre class=codehilite><code class=language-bash>$ composer check</code></pre>
 <h3>Security Advisories</h3>
 <p>We have included the <a href="https://github.com/Roave/SecurityAdvisories">security-advisories</a>
 package to notify you about installed dependencies with known security
@@ -812,7 +812,7 @@ documented security issues.</p>
 <h3>Tooling integration</h3>
 <p>The skeleton ships with <a href="https://github.com/zendframework/zend-expressive-tooling">zend-expressive-tooling</a>
 by default, and integrates with it by exposing it via composer:</p>
-<p> <pre class=codehilite><code class=language-bash>$ composer expressive</code></pre></p>
+<pre class=codehilite><code class=language-bash>$ composer expressive</code></pre>
 <p>The tooling provides a number of commands; see the <a href="../../reference/cli-tooling/">CLI tooling
 chapter</a> for more details.</p>
 <h2 id="modules">Modules</h2>
@@ -844,7 +844,7 @@ configuration caching.</p>
 <p>As an example, your <code>config/config.php</code> file might read as follows in order to
 aggregate configuration from development mode settings, application
 configuration, and theoretical <code>User</code>, <code>Blog</code>, and <code>App</code> modules:</p>
-<p> <pre class=codehilite><code class=language-php>&lt;?php // config/config.php
+<pre class=codehilite><code class=language-php>&lt;?php // config/config.php
 
 $aggregator = new ConfigAggregator([
     // Module configuration
@@ -864,7 +864,7 @@ $aggregator = new ConfigAggregator([
     new PhpFileProvider('config/development.config.php'),
 ], 'data/config-cache.php');
 
-return $aggregator-&gt;getMergedConfig();</code></pre></p>
+return $aggregator-&gt;getMergedConfig();</code></pre>
 <p>The configuration is merged in the same order as it is passed, with later entries
 having precedence.</p>
 <h3>Config Providers</h3>
@@ -875,7 +875,7 @@ generator) to be merged.</p>
 <p>Libraries or modules can have configuration providers that provide default values
 for a library or module. For the <code>UserModule\ConfigProvider</code> class loaded in the
 <code>ConfigAggregator</code> above, the <code>ConfigProvider</code> might look like this:</p>
-<p> <pre class=codehilite><code class=language-php>&lt;?php
+<pre class=codehilite><code class=language-php>&lt;?php
 
 namespace UserModule;
 
@@ -930,7 +930,7 @@ class ConfigProvider
             ],
         ];
     }
-}</code></pre></p>
+}</code></pre>
 <h3>expressive module commands</h3>
 <p>To aid in the creation, registration, and deregistration of modules in your
 application, you can use the CLI tooling provided by default. All commands are
@@ -959,12 +959,12 @@ In this section, we'll demonstrate setting up a basic pipeline that includes
 error handling, segregated applications, routing, middleware dispatch, and more.</p>
 <p>The error handler should be the first (most outer) middleware to catch all
 exceptions.</p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe(ErrorHandler::class);
-$app-&gt;pipe(ServerUrlMiddleware::class);</code></pre></p>
+<pre class=codehilite><code class=language-php>$app-&gt;pipe(ErrorHandler::class);
+$app-&gt;pipe(ServerUrlMiddleware::class);</code></pre>
 <p>After the <code>ErrorHandler</code> you can pipe more middleware that you want to execute
 on every request, such as bootstrapping, pre-conditions, and modifications to
 outgoing responses:</p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe(ServerUrlMiddleware::class);</code></pre></p>
+<pre class=codehilite><code class=language-php>$app-&gt;pipe(ServerUrlMiddleware::class);</code></pre>
 <p>Piped middleware may be callables, middleware instances, or service names.
 Middleware may also be passed as an array; each item in the array must resolve
 to middleware eventually (i.e., callable or service name); underneath,
@@ -973,11 +973,11 @@ middleware listed piped to it.</p>
 <p>Middleware can be attached to specific paths, allowing you to mix and match
 applications under a common domain. The handlers in each middleware attached
 this way will see a URI with the <strong>MATCHED PATH SEGMENT REMOVED!!!</strong></p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe('/api', $apiMiddleware);
+<pre class=codehilite><code class=language-php>$app-&gt;pipe('/api', $apiMiddleware);
 $app-&gt;pipe('/docs', $apiDocMiddleware);
-$app-&gt;pipe('/files', $filesMiddleware);</code></pre></p>
+$app-&gt;pipe('/files', $filesMiddleware);</code></pre>
 <p>Next, you should register the routing middleware in the middleware pipeline:</p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe(RouteMiddleware::class);</code></pre></p>
+<pre class=codehilite><code class=language-php>$app-&gt;pipe(RouteMiddleware::class);</code></pre>
 <p>Add more middleware that needs to introspect the routing results; this might
 include:</p>
 <ul>
@@ -989,22 +989,22 @@ include:</p>
 <li>route-based validation</li>
 <li>etc.</li>
 </ul>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe(ImplicitHeadMiddleware::class);
+<pre class=codehilite><code class=language-php>$app-&gt;pipe(ImplicitHeadMiddleware::class);
 $app-&gt;pipe(ImplicitOptionsMiddleware::class);
 $app-&gt;pipe(MethodNotAllowedMiddleware::class);
-$app-&gt;pipe(UrlHelperMiddleware::class);</code></pre></p>
+$app-&gt;pipe(UrlHelperMiddleware::class);</code></pre>
 <p>Next, register the dispatch middleware in the middleware pipeline:</p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe(DispatchMiddleware::class);</code></pre></p>
+<pre class=codehilite><code class=language-php>$app-&gt;pipe(DispatchMiddleware::class);</code></pre>
 <p>At this point, if no response is return by any middleware, we need to provide a
 way of notifying the user of this; by default, we use the <code>NotFoundHandler</code>, but
 you can provide any other fallback middleware you wish:</p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe(NotFoundHandler::class);</code></pre></p>
+<pre class=codehilite><code class=language-php>$app-&gt;pipe(NotFoundHandler::class);</code></pre>
 <p>The <code>public/index.php</code> file will <code>require</code> the <code>config/pipeline.php</code> file, and
 <em>invoke</em> the returned result. When it invokes it, it passes the application
 instance, a <code>Zend\Expressive\MiddlewareFactory</code> instance, and the PSR-11
 container you are using.</p>
 <p>The full example then looks something like this:</p>
-<p> <pre class=codehilite><code class=language-php>// In config/pipeline.php:
+<pre class=codehilite><code class=language-php>// In config/pipeline.php:
 
 use Psr\Container\ContainerInterface;
 use Zend\Expressive\Application;
@@ -1036,32 +1036,32 @@ return function (Application $app, MiddlewareFactory $factory, ContainerInterfac
     $app-&gt;pipe(DispatchMiddleware::class);
 
     $app-&gt;pipe(NotFoundHandler::class);
-};</code></pre></p>
+};</code></pre>
 <h3>Routing</h3>
 <p><a href="../../features/router/piping/#routing">Routing</a> is an additional feature
 provided by Expressive. Routing is setup in <code>config/routes.php</code>.</p>
 <p>You can setup routes with a single request method:</p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;get('/', App\Action\HomePageAction::class, 'home');
+<pre class=codehilite><code class=language-php>$app-&gt;get('/', App\Action\HomePageAction::class, 'home');
 $app-&gt;post('/album', App\Action\AlbumCreateAction::class, 'album.create');
 $app-&gt;put('/album/:id', App\Action\AlbumUpdateAction::class, 'album.put');
 $app-&gt;patch('/album/:id', App\Action\AlbumUpdateAction::class, 'album.patch');
-$app-&gt;delete('/album/:id', App\Action\AlbumDeleteAction::class, 'album.delete');</code></pre></p>
+$app-&gt;delete('/album/:id', App\Action\AlbumDeleteAction::class, 'album.delete');</code></pre>
 <p>Or with multiple request methods:</p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;route('/contact', App\Action\ContactAction::class, ['GET', 'POST', ...], 'contact');</code></pre></p>
+<pre class=codehilite><code class=language-php>$app-&gt;route('/contact', App\Action\ContactAction::class, ['GET', 'POST', ...], 'contact');</code></pre>
 <p>Or handling all request methods:</p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;any('/contact', App\Action\ContactAction::class)-&gt;setName('contact');</code></pre></p>
+<pre class=codehilite><code class=language-php>$app-&gt;any('/contact', App\Action\ContactAction::class)-&gt;setName('contact');</code></pre>
 <p>Alternately, to be explicit, the above could be written as:</p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;route(
+<pre class=codehilite><code class=language-php>$app-&gt;route(
   '/contact',
   App\Action\ContactAction::class,
   Zend\Expressive\Router\Route::HTTP_METHOD_ANY,
   'contact'
-);</code></pre></p>
+);</code></pre>
 <p>We recommend a single middleware class per combination of route and request
 method.</p>
 <p>Similar to the <code>config/pipeline.php</code> file, the <code>config/routes.php</code> file is
 expected to return a callable:</p>
-<p> <pre class=codehilite><code class=language-php>// In config/routes.php:
+<pre class=codehilite><code class=language-php>// In config/routes.php:
 
 use Psr\Container\ContainerInterface;
 use Zend\Expressive\Application;
@@ -1069,7 +1069,7 @@ use Zend\Expressive\MiddlewareFactory;
 
 return function (Application $app, MiddlewareFactory $factory, ContainerInterface $container) : void {
     $app-&gt;get('/books', \App\Handler\ListBooksHandler::class, 'books');
-};</code></pre></p>
+};</code></pre>
 <h2 id="next-steps">Next Steps</h2>
 <p>The skeleton provides a default structure for templates, if you choose to use them.
 Let's see how you can create your first vanilla middleware, and templated middleware.</p>
@@ -1089,23 +1089,23 @@ anywhere within it.</p>
 <p>We'll create a simple middleware here that will run on every request, and alter
 the response to add a header.</p>
 <p>We can use our tooling to create the middleware file:</p>
-<p> <pre class=codehilite><code class=language-bash>$ composer expressive middleware:create &quot;App\XClacksOverheadMiddleware&quot;</code></pre></p>
+<pre class=codehilite><code class=language-bash>$ composer expressive middleware:create &quot;App\XClacksOverheadMiddleware&quot;</code></pre>
 <p>This command will create a PSR-15 middleware implementation, a factory for it,
 and register the two in the application's container configuration. It tells you
 the location of both files.</p>
 <p>Now let's edit the middleware class file. Replace the contents of the
 <code>process()</code> method with:</p>
-<p> <pre class=codehilite><code class=language-php>$response = $handler-&gt;handle($request);
-return $response-&gt;withHeader('X-Clacks-Overhead', 'GNU Terry Pratchett');</code></pre></p>
+<pre class=codehilite><code class=language-php>$response = $handler-&gt;handle($request);
+return $response-&gt;withHeader('X-Clacks-Overhead', 'GNU Terry Pratchett');</code></pre>
 <p>Now that we've created our middleware, we still have to tell the pipeline about
 it. Open the file <code>config/pipeline.php</code> file, and find the line that read:</p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe(ErrorHandler::class);</code></pre></p>
+<pre class=codehilite><code class=language-php>$app-&gt;pipe(ErrorHandler::class);</code></pre>
 <p>Add the following line after it:</p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe(App\XClacksOverheadMiddleware::class);</code></pre></p>
+<pre class=codehilite><code class=language-php>$app-&gt;pipe(App\XClacksOverheadMiddleware::class);</code></pre>
 <p>If you browse to the home page (or any other page, for that matter) and
 introspect the headers returned with the response using your browser's
 development tools, you'll now see the following entry:</p>
-<p> <pre class=codehilite><code class=language-http>X-Clacks-Overhead: GNU Terry Pratchett</code></pre></p>
+<pre class=codehilite><code class=language-http>X-Clacks-Overhead: GNU Terry Pratchett</code></pre>
 <p>You've created your first middleware!</p>
 <h3>Creating request handlers</h3>
 <p>You may route to either middleware or request handlers. In this section, we'll
@@ -1121,7 +1121,7 @@ to request handlers</em>.</p>
 handlers under the namespace <code>App\Handler</code>.</p>
 <p>Let's create a "Hello" request handler. We can use our tooling to create the
 file:</p>
-<p> <pre class=codehilite><code class=language-bash>$ composer expressive handler:create &quot;App\Handler\HelloHandler&quot;</code></pre></p>
+<pre class=codehilite><code class=language-bash>$ composer expressive handler:create &quot;App\Handler\HelloHandler&quot;</code></pre>
 <p>The command will tell you the location in the filesystem in which it created the
 new class; it will also create a factory for you, and register that factory with
 the container! Additionally, if you have a template renderer in place, it will
@@ -1129,12 +1129,12 @@ create a template file for you. make a note of the locations of both the class
 file and template file.</p>
 <p>Open the class file, and now let's edit the <code>handle()</code> contents to read as
 follows:</p>
-<p> <pre class=codehilite><code class=language-php>$target = $request-&gt;getQueryParams()['target'] ?? 'World';
+<pre class=codehilite><code class=language-php>$target = $request-&gt;getQueryParams()['target'] ?? 'World';
 $target = htmlspecialchars($target, ENT_HTML5, 'UTF-8');
 return new HtmlResponse($this-&gt;renderer-&gt;render(
     'app::hello',
     ['target' =&gt; $target]
-));</code></pre></p>
+));</code></pre>
 <blockquote>
 <h4>Templateless handler</h4>
 <p>If you did not select a template engine when creating your application, the
@@ -1143,13 +1143,14 @@ contents of your <code>handle()</code> method will be empty to begin.</p>
 <ul>
 <li>Add the statement <code>use Zend\Diactoros\Response\HtmlResponse;</code> to the <code>use</code>
   statements at the top of the file.</li>
-<li>Alter the response creation to read:
-  <code>php
-  return new HtmlResponse(sprintf(
-      '&lt;h1&gt;Hello %s&lt;/h1&gt;',
-      $target
-  ));</code></li>
+<li>Alter the response creation to read:</li>
 </ul>
+<pre class=codehilite><code class=language-php>
+return new HtmlResponse(sprintf(
+    '&lt;h1&gt;Hello %s&lt;/h1&gt;',
+    $target
+));
+</code></pre>
 <p>You can also skip the next step below where we edit the template file.</p>
 </blockquote>
 <p>The above looks for a query string parameter "target", and uses its value to
@@ -1181,7 +1182,7 @@ response.</p>
 know how to get to it. Let's fix that.</p>
 <p>Open the file <code>config/routes.php</code>, and add the following at the bottom of
 the function it exposes:</p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;get('/hello', App\Handler\HelloHandler::class, 'hello');</code></pre></p>
+<pre class=codehilite><code class=language-php>$app-&gt;get('/hello', App\Handler\HelloHandler::class, 'hello');</code></pre>
 <p>Once you've completed the above, give it a try by going to each of the
 following URIs:</p>
 <ul>

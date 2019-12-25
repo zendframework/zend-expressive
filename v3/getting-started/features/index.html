@@ -797,24 +797,24 @@ looked at from this perspective:</p>
 <p>The system described above is what is known as <em>lambda middleware</em>. Each
 middleware receives the request and a handler, and you pass only the
 request to the handler when wanting to hand off processing:</p>
-<p><pre class=codehilite><code class=language-php>
+<pre class=codehilite><code class=language-php>
 function (ServerRequestInterface $request, RequestHandlerInterface $handler)
 {
     $response = $handler-&gt;handle($request);
     return $response-&gt;withHeader('X-Test', time());
 }
-</code></pre></p>
+</code></pre>
 <p>In Expressive 1.X, the default middleware style was what is known as <em>double
 pass</em> middleware. Double pass middleware receives both the request and a
 response in addition to the handler, and passes both the request and response
 to the handler when invoking it:</p>
-<p><pre class=codehilite><code class=language-php>
+<pre class=codehilite><code class=language-php>
 function (ServerRequestInterface $request, ResponseInterface $response, callable $next)
 {
     $response = $next($request, $response);
     return $response-&gt;withHeader('X-Test', time());
 }
-</code></pre></p>
+</code></pre>
 <p>It is termed "double pass" because you pass both the request and response when
 delegating to the next layer.</p>
 <p>Expressive 3 no longer supports double-pass middleware directly. However, if
@@ -822,13 +822,13 @@ you decorate it using <code>Zend\Stratigility\doublePassMiddleware()</code>, we 
 consume it. That function requires first the double-pass middleware, and then
 a response prototype (which will be passed as the <code>$response</code> argument to the
 middleware):</p>
-<p><pre class=codehilite><code class=language-php>
+<pre class=codehilite><code class=language-php>
 use function Zend\Stratigility\doublePassMiddleware;
 
 $app-&gt;pipe(doublePassMiddleware(function ($request, $response, $next) {
     // ...
 }, new Response()));
-</code></pre></p>
+</code></pre>
 <p>If you use double-pass middleware, <em>do not</em> use the <code>$response</code> instance
 passed to it unless you are returning it specifically (e.g., because you are not
 delegating to another layer).</p>

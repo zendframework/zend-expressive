@@ -660,7 +660,7 @@ responses. To do this, you will:</p>
 <p>We encourage the use of dependency injection. As such, we recommend writing your
 middleware to accept the <code>TemplateRendererInterface</code> via either the constructor or a
 setter. As an example:</p>
-<p> <pre class=codehilite><code class=language-php>namespace Acme\Blog;
+<pre class=codehilite><code class=language-php>namespace Acme\Blog;
 
 use Zend\Expressive\Template\TemplateRendererInterface;
 
@@ -677,9 +677,9 @@ class EntryMiddleware
     {
         // ...
     }
-}</code></pre></p>
+}</code></pre>
 <p>This will necessitate having a factory for your middleware:</p>
-<p> <pre class=codehilite><code class=language-php>namespace Acme\Blog\Container;
+<pre class=codehilite><code class=language-php>namespace Acme\Blog\Container;
 
 use Acme\Blog\EntryMiddleware;
 use Interop\Container\ContainerInterface;
@@ -692,7 +692,7 @@ class EntryMiddlewareFactory
             $container-&gt;get('Zend\Expressive\Template\TemplateRendererInterface')
         );
     }
-}</code></pre></p>
+}</code></pre>
 <p>And, of course, you'll need to tell your container to use the factory; see the
 <a href="../../container/intro/">container documentation</a> for more information on how you
 might accomplish that.</p>
@@ -700,7 +700,7 @@ might accomplish that.</p>
 <p>Now that we have the templating engine injected into our middleware, we can
 consume it. Most often, we will want to render a template, optionally with
 substitutions to pass to it. This will typically look like the following:</p>
-<p> <pre class=codehilite><code class=language-php>&lt;?php
+<pre class=codehilite><code class=language-php>&lt;?php
 namespace Acme\Blog;
 
 use Zend\Diactoros\Response\HtmlResponse;
@@ -724,12 +724,12 @@ class EntryMiddleware
             ])
         );
     }
-}</code></pre></p>
+}</code></pre>
 <p>Alternately, you can write to the composed response:</p>
-<p> <pre class=codehilite><code class=language-php>$response-&gt;getBody()-&gt;write($this-&gt;templateRenderer-&gt;render('blog::entry', [
+<pre class=codehilite><code class=language-php>$response-&gt;getBody()-&gt;write($this-&gt;templateRenderer-&gt;render('blog::entry', [
     'entry' =&gt; $entry,
 ]));
-return $response;</code></pre></p>
+return $response;</code></pre>
 
 
 

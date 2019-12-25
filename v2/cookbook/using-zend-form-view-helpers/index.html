@@ -715,11 +715,11 @@ a Composer plugin will add entries for their <code>ConfigProvider</code> classes
 <p>If for some reason you are not prompted, or chose "no" when answering the
 prompts, you can add them manually. Add the following entries in the array used
 to create your <code>ConfigAggregator</code> instance within <code>config/config.php</code>:</p>
-<p> <pre class=codehilite><code class=language-php>    \Zend\Form\ConfigProvider::class,
+<pre class=codehilite><code class=language-php>    \Zend\Form\ConfigProvider::class,
     \Zend\InputFilter\ConfigProvider::class,
     \Zend\Filter\ConfigProvider::class,
     \Zend\Validator\ConfigProvider::class,
-    \Zend\Hydrator\ConfigProvider::class,</code></pre></p>
+    \Zend\Hydrator\ConfigProvider::class,</code></pre>
 <p>If you installed Expressive via the skeleton, the service
 <code>Zend\View\HelperPluginManager</code> is registered for you, and represents the helper
 plugin manager injected into the <code>PhpRenderer</code> instance. This instance gets its
@@ -741,7 +741,7 @@ and the Expressive skeleton registers it be default. The simplest solution for
 adding other helpers is to replace it with your own. In your own factory, you
 will <em>also</em> configure the plugin manager with the configuration from the
 zend-form component (or whichever other components you wish to use).</p>
-<p> <pre class=codehilite><code class=language-php>namespace Your\Application;
+<pre class=codehilite><code class=language-php>namespace Your\Application;
 
 use Psr\Container\ContainerInterface;
 use Zend\ServiceManager\Config;
@@ -759,11 +759,11 @@ class HelperPluginManagerFactory
 
         return $manager;
     }
-}</code></pre></p>
+}</code></pre>
 <p>In your <code>config/autoload/templates.global.php</code> file, change the line that reads:</p>
-<p> <pre class=codehilite><code class=language-php>Zend\View\HelperPluginManager::class =&gt; Zend\Expressive\ZendView\HelperPluginManagerFactory::class,</code></pre></p>
+<pre class=codehilite><code class=language-php>Zend\View\HelperPluginManager::class =&gt; Zend\Expressive\ZendView\HelperPluginManagerFactory::class,</code></pre>
 <p>to instead read as:</p>
-<p> <pre class=codehilite><code class=language-php>Zend\View\HelperPluginManager::class =&gt; Your\Application\HelperPluginManagerFactory::class,</code></pre></p>
+<pre class=codehilite><code class=language-php>Zend\View\HelperPluginManager::class =&gt; Your\Application\HelperPluginManagerFactory::class,</code></pre>
 <p>This approach will work for any of the various containers supported.</p>
 <h2 id="delegator-factoriesservice-extension">Delegator factories/service extension</h2>
 <p><a href="https://docs.zendframework.com/zend-servicemanager/delegators/">Delegator factories</a>
@@ -774,7 +774,7 @@ replacing it. We'll demonstrate this for zend-servicemanager and Pimple; at the
 time of writing, we're unaware of a mechanism for doing so in Aura.Di.</p>
 <h3>zend-servicemanager</h3>
 <p>You'll first need to create a delegator factory:</p>
-<p> <pre class=codehilite><code class=language-php>namespace Your\Application;
+<pre class=codehilite><code class=language-php>namespace Your\Application;
 
 use Psr\Container\ContainerInterface;
 use Zend\ServiceManager\Config;
@@ -811,13 +811,13 @@ class FormHelpersDelegatorFactory
     ) {
         return $this($container, $name, $callback);
     }
-}</code></pre></p>
+}</code></pre>
 <p>The above creates an instance of <code>Zend\ServiceManager\Config</code>, uses it to
 configure the already created <code>Zend\View\HelperPluginManager</code> instance, and then
 returns the plugin manager instance.</p>
 <p>From here, you'll add a <code>delegators</code> configuration key in your
 <code>config/autoload/templates.global.php</code> file:</p>
-<p> <pre class=codehilite><code class=language-php>return [
+<pre class=codehilite><code class=language-php>return [
     'dependencies' =&gt; [
         'delegators' =&gt; [
             Zend\View\HelperPluginManager::class =&gt; [
@@ -832,7 +832,7 @@ returns the plugin manager instance.</p>
     'view_helpers' =&gt; [
         /* ... */
     ],
-];</code></pre></p>
+];</code></pre>
 <p>Note: delegator factories are keyed by the service they modify, and the value is
 an <em>array</em> of delegator factories, to allow multiple such factories to be in
 use.</p>
@@ -841,7 +841,7 @@ use.</p>
 you'll need to edit the main container configuration file,
 <code>config/container.php</code>. Place the following anywhere after the factories and
 invokables are defined:</p>
-<p> <pre class=codehilite><code class=language-php>// The following assumes you've added the following import statements to
+<pre class=codehilite><code class=language-php>// The following assumes you've added the following import statements to
 // the start of the file:
 // use Zend\ServiceManager\Config as ServiceConfig;
 // use Zend\View\HelperPluginManager;
@@ -853,14 +853,14 @@ $container[HelperPluginManager::class] = $container-&gt;extend(
         $config-&gt;configureServiceManager($helpers);
         return $helpers;
     }
-);</code></pre></p>
+);</code></pre>
 <h2 id="pipeline-middleware">Pipeline middleware</h2>
 <p>Another option is to use pipeline middleware. This approach will
 require that the middleware execute on every request, which introduces (very
 slight) performance overhead. However, it's a portable method that works
 regardless of the container implementation you choose.</p>
 <p>First, define the middleware:</p>
-<p> <pre class=codehilite><code class=language-php>namespace Your\Application
+<pre class=codehilite><code class=language-php>namespace Your\Application
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
@@ -883,10 +883,10 @@ class FormHelpersMiddleware implements MiddlewareInterface
         $config-&gt;configureServiceManager($this-&gt;helpers);
         return $delegate-&gt;process($request);
     }
-}</code></pre></p>
+}</code></pre>
 <p>You'll also need a factory for the middleware, to ensure it receives the
 <code>HelperPluginManager</code>:</p>
-<p> <pre class=codehilite><code class=language-php>namespace Your\Application
+<pre class=codehilite><code class=language-php>namespace Your\Application
 
 use Zend\View\HelperPluginManager;
 
@@ -898,11 +898,11 @@ class FormHelpersMiddlewareFactory
             $container-&gt;get(HelperPluginManager::class)
         );
     }
-}</code></pre></p>
+}</code></pre>
 <p>Next, register the middleware with its factory in one of
 <code>config/autoload/middleware-pipeline.global.php</code> or
 <code>config/autoload/dependencies.global.php</code>:</p>
-<p> <pre class=codehilite><code class=language-php>return [
+<pre class=codehilite><code class=language-php>return [
     'dependencies' =&gt; [
         'factories' =&gt; [
             Your\Application\FormHelpersMiddleware::class =&gt; Your\Application\FormHelpersMiddlewareFactory::class
@@ -910,18 +910,18 @@ class FormHelpersMiddlewareFactory
         ],
         /* ... */
     ],
-];</code></pre></p>
+];</code></pre>
 <p>If using programmatic pipelines, pipe the middleware in an appropriate location
 in your pipeline:</p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe(FormHelpersMiddleware::class);
+<pre class=codehilite><code class=language-php>$app-&gt;pipe(FormHelpersMiddleware::class);
 
 // or, perhaps, in a route-specific middleware pipeline:
 $app-&gt;post('/register', [
     FormHelpersMiddleware::class,
     RegisterMiddleware::class,
-], 'register');</code></pre></p>
+], 'register');</code></pre>
 <p>If using configuration-driven pipelines or routing:</p>
-<p> <pre class=codehilite><code>// Via the middleware pipeline:
+<pre class=codehilite><code>// Via the middleware pipeline:
 'middleware_pipeline' =&gt; [
     ['middleware' =&gt; Your\Application\FormHelpersMiddleware::class, 'priority' =&gt; 1000],
 ],
@@ -937,7 +937,7 @@ $app-&gt;post('/register', [
         ],
         'allowed_methods' =&gt; ['POST'],
     ]
-]</code></pre></p>
+]</code></pre>
 <p>At that point, you're all set!</p>
 <h2 id="registering-more-helpers">Registering more helpers</h2>
 <p>What if you need to register helpers from multiple components?</p>

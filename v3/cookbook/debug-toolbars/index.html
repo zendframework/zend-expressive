@@ -726,18 +726,18 @@ for full usage details.</p>
 provides a PSR-15 middleware wrapper around <a href="https://github.com/maximebf/php-debugbar">maximebf/php-debugbar</a>,
 a popular framework-agnostic debug bar for PHP projects.</p>
 <p>First, install the middleware in your application:</p>
-<p> <pre class=codehilite><code class=language-bash>$ composer require php-middleware/php-debug-bar</code></pre></p>
+<pre class=codehilite><code class=language-bash>$ composer require php-middleware/php-debug-bar</code></pre>
 <p>This package supplies a config provider, which could be added to your
 <code>config/config.php</code> when using zend-config-aggregator or
 expressive-config-manager. However, because it should only be enabled in
 development, we recommend creating a "local" configuration file (e.g.,
 <code>config/autoload/php-debugbar.local.php</code>) when you need to enable it, with the
 following contents:</p>
-<p> <pre class=codehilite><code class=language-php>&lt;?php
+<pre class=codehilite><code class=language-php>&lt;?php
 use PhpMiddleware\PhpDebugBar\ConfigProvider;
 
 $provider = new ConfigProvider();
-return $provider();</code></pre></p>
+return $provider();</code></pre>
 <blockquote>
 <h3>Use locally!</h3>
 <p>Remember to enable <code>PhpMiddleware\PhpDebugBar\ConfigProvider</code> only in your

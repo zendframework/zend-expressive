@@ -736,7 +736,7 @@
 
 <h2 id="get-started-now">Get Started Now!</h2>
 <p>Installation is only a <a href="https://getcomposer.org">Composer</a> command away!</p>
-<p> <pre class=codehilite><code class=language-bash>$ composer create-project zendframework/zend-expressive-skeleton expressive</code></pre></p>
+<pre class=codehilite><code class=language-bash>$ composer create-project zendframework/zend-expressive-skeleton expressive</code></pre>
 <p>Expressive provides interfaces for routing and templating, letting <em>you</em>
 choose what to use, and how you want to implement it.</p>
 <p>Our unique installer allows you to select <em>your</em> choices when starting
@@ -746,7 +746,7 @@ your project!</p>
 <p><a href="v3/getting-started/quick-start/">Learn More</a>{: .btn .btn-lg .btn-primary}</p>
 <h2 id="applications-simplified">Applications, Simplified</h2>
 <p>Write middleware:</p>
-<p> <pre class=codehilite><code class=language-php>$pathMiddleware = function (
+<pre class=codehilite><code class=language-php>$pathMiddleware = function (
     ServerRequestInterface $request,
     RequestHandlerInterface $handler
 ) {
@@ -754,9 +754,9 @@ your project!</p>
     $path = $uri-&gt;getPath();
 
     return new TextResponse('You visited ' . $path, 200, ['X-Path' =&gt; $path]);
-};</code></pre></p>
+};</code></pre>
 <p>And add it to an application:</p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;get('/path', $pathMiddleware);</code></pre></p>
+<pre class=codehilite><code class=language-php>$app-&gt;get('/path', $pathMiddleware);</code></pre>
 <p><a href="v3/features/application/">Learn More</a>{: .btn .btn-lg .btn-primary}</p>
 <h2 id="learn-more">Learn more</h2>
 <ul>
@@ -1398,5 +1398,5 @@ your project!</p>
 
 <!--
 MkDocs version : 1.0.4
-Build Date UTC : 2019-11-04 09:31:32
+Build Date UTC : 2019-12-25 19:52:16
 -->

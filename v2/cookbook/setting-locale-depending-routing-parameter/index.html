@@ -704,7 +704,7 @@ to add a locale parameter to each route that requires localization.</p>
 of two lowercase alphabetical characters.</p>
 <h3>Dependency configuration</h3>
 <p>The examples assume the following middleware dependency configuration:</p>
-<p> <pre class=codehilite><code class=language-php>use Application\Action;
+<pre class=codehilite><code class=language-php>use Application\Action;
 
 return [
     'dependencies' =&gt; [
@@ -713,11 +713,11 @@ return [
             Action\ContactPageAction::class =&gt; Action\ContactPageFactory::class,
         ],
     ],
-];</code></pre></p>
+];</code></pre>
 <h3>Programmatic routes</h3>
 <p>The following describes routing configuration for use when using a
 programmatic application.</p>
-<p> <pre class=codehilite><code class=language-php>use Application\Action\ContactPageAction;
+<pre class=codehilite><code class=language-php>use Application\Action\ContactPageAction;
 use Application\Action\HomePageAction;
 
 $localeOptions = ['locale' =&gt; '[a-z]{2,3}([-_][a-zA-Z]{2}|)'];
@@ -725,11 +725,11 @@ $localeOptions = ['locale' =&gt; '[a-z]{2,3}([-_][a-zA-Z]{2}|)'];
 $app-&gt;get('/:locale', HomePageAction::class, 'home')
     -&gt;setOptions($localeOptions);
 $app-&gt;get('/:locale/contact', ContactPageAction::class, 'contact')
-    -&gt;setOptions($localeOptions);</code></pre></p>
+    -&gt;setOptions($localeOptions);</code></pre>
 <h3>Configuration-based routes</h3>
 <p>The following describes routing configuration for use when using a
 configuration-driven application.</p>
-<p> <pre class=codehilite><code class=language-php>return [
+<pre class=codehilite><code class=language-php>return [
     'routes' =&gt; [
         [
             'name' =&gt; 'home',
@@ -754,13 +754,13 @@ configuration-driven application.</p>
             ],
         ],
     ],
-];</code></pre></p>
+];</code></pre>
 <blockquote>
 <h3>Note: Routing may differ based on router</h3>
 <p>The routing examples in this recipe use syntax for the zend-mvc router, and,
 as such, may not work in your application.</p>
 <p>For Aura.Router, the 'home' route as listed above would read:</p>
-<p><pre class=codehilite><code class=language-php>
+<pre class=codehilite><code class=language-php>
 [
     'name' =&gt; 'home',
     'path' =&gt; '/{locale}',
@@ -774,16 +774,16 @@ as such, may not work in your application.</p>
         ],
     ],
 ]
-</code></pre></p>
+</code></pre>
 <p>For FastRoute:</p>
-<p><pre class=codehilite><code class=language-php>
+<pre class=codehilite><code class=language-php>
 [
     'name' =&gt; 'home',
     'path' =&gt; '/{locale:[a-z]{2,3}([-_][a-zA-Z]{2}|)}',
     'middleware' =&gt; Application\Action\HomePageAction::class,
     'allowed_methods' =&gt; ['GET'],
 ]
-</code></pre></p>
+</code></pre>
 <p>As such, be aware as you read the examples that you might not be able to
 simply cut-and-paste them without modification.</p>
 </blockquote>
@@ -792,7 +792,7 @@ simply cut-and-paste them without modification.</p>
 you need to implement localization middleware that acts on the route result, and
 registered in the pipeline immediately following the routing middleware.</p>
 <p>Such a <code>LocalizationMiddleware</code> class could look similar to this:</p>
-<p> <pre class=codehilite><code class=language-php>&lt;?php
+<pre class=codehilite><code class=language-php>&lt;?php
 
 namespace Application\I18n;
 
@@ -818,7 +818,7 @@ class LocalizationMiddleware implements MiddlewareInterface
         // Store the locale as a request attribute
         return $delegate-&gt;process($request-&gt;withAttribute(self::LOCALIZATION_ATTRIBUTE, $locale));
     }
-}</code></pre></p>
+}</code></pre>
 <blockquote>
 <h3>Locale::setDefault is unsafe</h3>
 <p>Do not use <code>Locale::setDefault($locale)</code> to set a global static locale.
@@ -829,7 +829,7 @@ specific to each process.</p>
 </blockquote>
 <p>Register this new middleware in either <code>config/autoload/middleware-pipeline.global.php</code>
 or <code>config/autoload/dependencies.global.php</code>:</p>
-<p> <pre class=codehilite><code class=language-php>return [
+<pre class=codehilite><code class=language-php>return [
     'dependencies' =&gt; [
         'invokables' =&gt; [
             LocalizationMiddleware::class =&gt; LocalizationMiddleware::class,
@@ -837,18 +837,18 @@ or <code>config/autoload/dependencies.global.php</code>:</p>
         ],
         /* ... */
     ],
-];</code></pre></p>
+];</code></pre>
 <p>If using a programmatic pipeline, pipe it immediately after your routing middleware:</p>
-<p> <pre class=codehilite><code class=language-php>use Application\I18n\LocalizationMiddleware;
+<pre class=codehilite><code class=language-php>use Application\I18n\LocalizationMiddleware;
 
 /* ... */
 $app-&gt;pipeRoutingMiddleware();
 $app-&gt;pipe(LocalizationMiddleware::class);
-/* ... */</code></pre></p>
+/* ... */</code></pre>
 <p>If using a configuration-driven application, register it within your
 <code>config/autoload/middleware-pipeline.global.php</code> file, injecting it
 into the pipeline following the routing middleware:</p>
-<p> <pre class=codehilite><code class=language-php>return [
+<pre class=codehilite><code class=language-php>return [
     'middleware_pipeline' =&gt; [
         /* ... */
         [
@@ -862,7 +862,7 @@ into the pipeline following the routing middleware:</p>
         ],
         /* ... */
     ],
-];</code></pre></p>
+];</code></pre>
 
 
 

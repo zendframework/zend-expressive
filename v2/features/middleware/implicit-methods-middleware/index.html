@@ -717,24 +717,24 @@ middleware.</p>
 <p>To use it, it must first be registered with your container. The easiest way to
 do that is to register the zend-expressive-router <code>ConfigProvider</code> in your
 <code>config/config.php</code>:</p>
-<p> <pre class=codehilite><code class=language-php>$aggregator = new ConfigAggregator([
-    \Zend\Expressive\Router\ConfigProvider::class,</code></pre></p>
+<pre class=codehilite><code class=language-php>$aggregator = new ConfigAggregator([
+    \Zend\Expressive\Router\ConfigProvider::class,</code></pre>
 <p>Alternately, add the following dependency configuration in one of your
 <code>config/autoload/</code> configuration files or a <code>ConfigProvider</code> class:</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware;
+<pre class=codehilite><code class=language-php>use Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware;
 use Zend\Expressive\Router\Middleware\ImplicitHeadMiddlewareFactory;
 
 'dependencies' =&gt; [
     'factories' =&gt; [
         ImplicitHeadMiddleware::class =&gt; ImplicitHeadMiddlewareFactory::class,
     ],
-],</code></pre></p>
+],</code></pre>
 <p>Within your application pipeline, add the middleware between the routing and
 dispatch middleware:</p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;pipeRoutingMiddleware();
+<pre class=codehilite><code class=language-php>$app-&gt;pipeRoutingMiddleware();
 $app-&gt;pipe(ImplicitHeadMiddleware::class);
 // ...
-$app-&gt;pipeDispatchMiddleware();</code></pre></p>
+$app-&gt;pipeDispatchMiddleware();</code></pre>
 <p>(Note: if you used the <code>expressive-pipeline-from-config</code> tool to create your
 programmatic pipeline, or if you used the Expressive skeleton, this middleware
 is likely already in your pipeline, as is a dependency entry.)</p>
@@ -770,24 +770,24 @@ registered <em>between</em> the routing and dispatch middleware.</p>
 <p>To use it, it must first be registered with your container. The easiest way to
 do that is to register the zend-expressive-router <code>ConfigProvider</code> in your
 <code>config/config.php</code>:</p>
-<p> <pre class=codehilite><code class=language-php>$aggregator = new ConfigAggregator([
-    \Zend\Expressive\Router\ConfigProvider::class,</code></pre></p>
+<pre class=codehilite><code class=language-php>$aggregator = new ConfigAggregator([
+    \Zend\Expressive\Router\ConfigProvider::class,</code></pre>
 <p>Alternately, add the following dependency configuration in one of your
 <code>config/autoload/</code> configuration files or a <code>ConfigProvider</code> class:</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware;
+<pre class=codehilite><code class=language-php>use Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware;
 use Zend\Expressive\Router\Middleware\ImplicitOptionsMiddlewareFactory;
 
 'dependencies' =&gt; [
     'factories' =&gt; [
         ImplicitOptionsMiddleware::class =&gt; ImplicitOptionsMiddlewareFactory::class,
     ],
-],</code></pre></p>
+],</code></pre>
 <p>Within your application pipeline, add the middleware between the routing and
 dispatch middleware:</p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;pipeRoutingMiddleware();
+<pre class=codehilite><code class=language-php>$app-&gt;pipeRoutingMiddleware();
 $app-&gt;pipe(ImplicitOptionsMiddleware::class);
 // ...
-$app-&gt;pipeDispatchMiddleware();</code></pre></p>
+$app-&gt;pipeDispatchMiddleware();</code></pre>
 <p>(Note: if you used the <code>expressive-pipeline-from-config</code> tool to create your
 programmatic pipeline, or if you used the Expressive skeleton, this middleware
 is likely already in your pipeline, as is a dependency entry.)</p>

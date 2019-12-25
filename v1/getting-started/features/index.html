@@ -779,11 +779,11 @@ authorization failures).</p>
 <p>Another possibility is to provide post-processing on the response before
 returning it. However, this is typically better handled via middleware piped
 early, by capturing the response before returning it:</p>
-<p> <pre class=codehilite><code class=language-php>function ($request, $response, $next)
+<pre class=codehilite><code class=language-php>function ($request, $response, $next)
 {
     $response = $next($request, $response);
     return $response-&gt;withHeader('X-Clacks-Overhead', 'GNU Terry Pratchett');
-}</code></pre></p>
+}</code></pre>
 <p>The main points to remember are:</p>
 <ul>
 <li>The application is a queue, and operates in FIFO order.</li>

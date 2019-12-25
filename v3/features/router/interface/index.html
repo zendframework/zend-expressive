@@ -718,7 +718,7 @@ the <code>Zend\Expressive\Router\RouteMiddleware</code> &mdash; as well as the
 capabilities to middleware. The interface serves as an abstraction to allow
 routers with varying capabilities to be used with an application.</p>
 <p>The interface is defined as follows:</p>
-<p> <pre class=codehilite><code class=language-php>namespace Zend\Expressive\Router;
+<pre class=codehilite><code class=language-php>namespace Zend\Expressive\Router;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -771,7 +771,7 @@ interface RouterInterface
      * @throws Exception\RuntimeException if unable to generate the given URI.
      */
     public function generateUri(string $name, array $substitutions = [], array $options = []) : string;
-}</code></pre></p>
+}</code></pre>
 <p>Developers may create and use their own implementations. We recommend
 registering your implementation as the service
 <code>Zend\Expressive\Router\RouterInterface</code> in your container to ensure other
@@ -790,7 +790,7 @@ following information:</p>
 <li>Optionally, a name by which to reference the route.</li>
 </ul>
 <p>The <code>Route</code> class has the following signature:</p>
-<p> <pre class=codehilite><code class=language-php>namespace Zend\Expressive\Router;
+<pre class=codehilite><code class=language-php>namespace Zend\Expressive\Router;
 
 use Fig\Http\Message\RequestMethodInterface as RequestMethod;
 use Psr\Http\Message\ResponseInterface;
@@ -847,7 +847,7 @@ class Route implements MiddlewareInterface
     public function setOptions(array $options) : void;
 
     public function getOptions() : array;
-}</code></pre></p>
+}</code></pre>
 <p>Typically, developers will use the <code>route()</code> method of either
 <code>Zend\Expressive\Router\PathBasedRoutingMiddleware</code> or
 <code>Zend\Expressive\Application</code> (or one of the HTTP-specific routing methods of
@@ -894,7 +894,7 @@ middleware:</p>
 </li>
 </ul>
 <p>The <code>RouteResult</code> signature is as follows:</p>
-<p> <pre class=codehilite><code class=language-php>namespace Zend\Expressive\Router;
+<pre class=codehilite><code class=language-php>namespace Zend\Expressive\Router;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -972,7 +972,7 @@ class RouteResult implements MiddlewareInterface
      * @return string[] HTTP methods allowed
      */
     public function getAllowedMethods() : array;
-}</code></pre></p>
+}</code></pre>
 <p>Typically, only those implementing routers will interact with this class.</p>
 
 

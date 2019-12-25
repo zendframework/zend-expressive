@@ -729,13 +729,13 @@ grow with your accepted content types.</p>
 </ul>
 <h2 id="registering-the-middleware">Registering the middleware</h2>
 <p>You can register it programmatically:</p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe(BodyParamsMiddleware::class);</code></pre></p>
+<pre class=codehilite><code class=language-php>$app-&gt;pipe(BodyParamsMiddleware::class);</code></pre>
 <p>Since body parsing does not necessarily need to happen for every request, you
 can also choose to incorporate it in route-specific middleware pipelines:</p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;post('/login', [
+<pre class=codehilite><code class=language-php>$app-&gt;post('/login', [
     BodyParamsMiddleware::class,
     LoginMiddleware::class,
-]);</code></pre></p>
+]);</code></pre>
 <p>Using route-based middleware pipelines has the advantage of ensuring that the
 body parsing middleware only executes for routes that require the processing.
 While the middleware has some checks to ensure it only triggers for HTTP
@@ -745,7 +745,7 @@ can accomplish that.</p>
 <h2 id="strategies">Strategies</h2>
 <p>If you want to intercept and parse other payload types, you can add <em>strategies</em>
 to the middleware. Strategies implement <code>Zend\Expressive\Helper\BodyParams\StrategyInterface</code>:</p>
-<p> <pre class=codehilite><code class=language-php>namespace Zend\Expressive\Helper\BodyParams;
+<pre class=codehilite><code class=language-php>namespace Zend\Expressive\Helper\BodyParams;
 
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -760,14 +760,14 @@ interface StrategyInterface
      * Parse the body content and return a new request.
      */
     public function parse(ServerRequestInterface $request) : ServerRequestInterface;
-}</code></pre></p>
+}</code></pre>
 <p>You then register them with the middleware using the <code>addStrategy()</code> method:</p>
-<p> <pre class=codehilite><code class=language-php>$bodyParams-&gt;addStrategy(new MyCustomBodyParamsStrategy());</code></pre></p>
+<pre class=codehilite><code class=language-php>$bodyParams-&gt;addStrategy(new MyCustomBodyParamsStrategy());</code></pre>
 <p>To automate the registration, we recommend writing a factory for the
 <code>BodyParamsMiddleware</code>, and replacing the <code>invokables</code> registration with a
 registration in the <code>factories</code> section of the <code>middleware-pipeline.config.php</code>
 file:</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\Expressive\Helper\BodyParams\BodyParamsMiddleware;
+<pre class=codehilite><code class=language-php>use Zend\Expressive\Helper\BodyParams\BodyParamsMiddleware;
 
 class MyCustomBodyParamsStrategyFactory
 {
@@ -795,7 +795,7 @@ return [
             /* ... */
         ],
     ],
-];</code></pre></p>
+];</code></pre>
 <p>Alternately, use a <a href="../../container/factories/">delegator factory</a>.</p>
 <h2 id="removing-the-default-strategies">Removing the default strategies</h2>
 <p>By default, <code>BodyParamsMiddleware</code> composes the following strategies:</p>
@@ -809,7 +809,7 @@ operate in the order they do to ensure the most common content type &mdash;
 delegates parsing to the first match.</p>
 <p>If you do not want to use these default strategies, you can clear them from the
 middleware using <code>clearStrategies()</code>:</p>
-<p> <pre class=codehilite><code class=language-php>$bodyParamsMiddleware-&gt;clearStrategies();</code></pre></p>
+<pre class=codehilite><code class=language-php>$bodyParamsMiddleware-&gt;clearStrategies();</code></pre>
 <p>Note: if you do this, <strong>all</strong> strategies will be removed! As such, we recommend
 doing this only immediately before registering any custom strategies you might
 be using.</p>

@@ -733,20 +733,20 @@ the name:</p>
 <p>Clearly, this can become difficult to remember. As such, Expressive offers the
 ability to specify a custom string for the route name as an additional, optional
 argument to any of the above:</p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;route('/foo', $middleware, 'foo'); // 'foo'
+<pre class=codehilite><code class=language-php>$app-&gt;route('/foo', $middleware, 'foo'); // 'foo'
 $app-&gt;get('/foo/:id', $middleware, 'foo-item'); // 'foo-item'
-$app-&gt;route('/foo', $middleware, ['GET', 'POST'], 'foo-collection'); // 'foo-collection'</code></pre></p>
+$app-&gt;route('/foo', $middleware, ['GET', 'POST'], 'foo-collection'); // 'foo-collection'</code></pre>
 <p>As noted above, these methods also return <code>Route</code> instances, allowing you to
 set the name after-the-fact; this is particularly useful with the <code>route()</code>
 method, where you may want to omit the HTTP methods if any HTTP method is
 allowed:</p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;route('/foo', $middleware)-&gt;setName('foo'); // 'foo'</code></pre></p>
+<pre class=codehilite><code class=language-php>$app-&gt;route('/foo', $middleware)-&gt;setName('foo'); // 'foo'</code></pre>
 <p>We recommend that if you plan on generating URIs for given routes, you provide a
 custom name.</p>
 <h2 id="generating-uris">Generating URIs</h2>
 <p>Once you know the name of a URI you wish to generate, you can do so from the
 router instance:</p>
-<p> <pre class=codehilite><code class=language-php>$uri = $router-&gt;generateUri('foo-item', ['id' =&gt; 'bar']); // &quot;/foo/bar&quot;</code></pre></p>
+<pre class=codehilite><code class=language-php>$uri = $router-&gt;generateUri('foo-item', ['id' =&gt; 'bar']); // &quot;/foo/bar&quot;</code></pre>
 <p>You can omit the second argument if no substitutions are necessary.</p>
 <blockquote>
 <h3>Compose the router</h3>

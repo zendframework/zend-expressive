@@ -661,12 +661,12 @@ features:</p>
 <a href="https://github.com/container-interop/container-interop">container-interop</a>; as
 such, you need to install the <code>xtreamwayz/pimple-container-interop</code> project,
 which provides a container-interop wrapper around Pimple v3:</p>
-<p> <pre class=codehilite><code class=language-bash>$ composer require xtreamwayz/pimple-container-interop</code></pre></p>
+<pre class=codehilite><code class=language-bash>$ composer require xtreamwayz/pimple-container-interop</code></pre>
 <h2 id="configuring-pimple">Configuring Pimple</h2>
 <p>To configure Pimple, instantiate it, and then add the factories desired. We
 recommend doing this in a dedicated script that returns the Pimple instance; in
 this example, we'll have that in <code>config/services.php</code>.</p>
-<p> <pre class=codehilite><code class=language-php>use Xtreamwayz\Pimple\Container as Pimple;
+<pre class=codehilite><code class=language-php>use Xtreamwayz\Pimple\Container as Pimple;
 use Zend\Expressive\Container;
 use Zend\Expressive\Plates\PlatesRenderer;
 use Zend\Expressive\Router;
@@ -704,12 +704,12 @@ $container['Zend\Expressive\FinalHandler'] = new Container\WhoopsErrorHandlerFac
 // If in production:
 $container['Zend\Expressive\FinalHandler'] = new Container\TemplatedErrorHandlerFactory();
 
-return $container;</code></pre></p>
+return $container;</code></pre>
 <p>Your bootstrap (typically <code>public/index.php</code>) will then look like this:</p>
-<p> <pre class=codehilite><code class=language-php>chdir(dirname(__DIR__));
+<pre class=codehilite><code class=language-php>chdir(dirname(__DIR__));
 $container = require 'config/services.php';
 $app = $container-&gt;get('Zend\Expressive\Application');
-$app-&gt;run();</code></pre></p>
+$app-&gt;run();</code></pre>
 <blockquote>
 <h3>Environments</h3>
 <p>In the example above, we provide two alternate definitions for the service

@@ -749,7 +749,7 @@ instance that includes each of the route match parameters as attributes.</p>
 includes the result as the attribute <code>Zend\Expressive\Router\RouteResult</code>.</p>
 <p>It then invokes the handler; all later middleware can then access the route
 result using:</p>
-<p> <pre class=codehilite><code class=language-php>$result = $request-&gt;getAttribute(\Zend\Expressive\Router\RouteResult::class);</code></pre></p>
+<pre class=codehilite><code class=language-php>$result = $request-&gt;getAttribute(\Zend\Expressive\Router\RouteResult::class);</code></pre>
 <h2 id="dispatchmiddleware">DispatchMiddleware</h2>
 <p><code>Zend\Expressive\Router\Middleware\DispatchMiddleware</code> defines only the
 <code>process()</code> method required by the PSR-15 <code>MiddlewareInterface</code>. Internally, it:</p>

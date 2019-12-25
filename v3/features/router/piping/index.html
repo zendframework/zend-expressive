@@ -737,7 +737,7 @@ in an application. When you <em>pipe</em> middleware to the application, it is a
 a queue, and dequeued in order until a middleware returns a response instance.</p>
 <p>Expressive adds the ability to segregate middleware to a specific path; as an
 example:</p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe('/api', $apiMiddleware);</code></pre></p>
+<pre class=codehilite><code class=language-php>$app-&gt;pipe('/api', $apiMiddleware);</code></pre>
 <p>will execute <code>$apiMiddleware</code> only if the path matches <code>/api</code>; otherwise, it
 will skip over that middleware.</p>
 <p>This path segregation, however, is limited: it will only match literal paths.
@@ -823,7 +823,7 @@ implemented as piped middleware.</p>
   or similar) <em>last</em>.</li>
 </ul>
 <p>As an example:</p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe(OriginalMessages::class);
+<pre class=codehilite><code class=language-php>$app-&gt;pipe(OriginalMessages::class);
 $app-&gt;pipe(ServerUrlMiddleware::class);
 $app-&gt;pipe(XClacksOverhead::class);
 $app-&gt;pipe(ErrorHandler::class);
@@ -834,7 +834,7 @@ $app-&gt;pipe(MethodNotAllowedMiddleware::class);
 $app-&gt;pipe(UrlHelperMiddleware::class);
 $app-&gt;pipe(AuthorizationCheck::class);
 $app-&gt;pipe(DispatchMiddleware::class);
-$app-&gt;pipe(NotFoundHandler::class);</code></pre></p>
+$app-&gt;pipe(NotFoundHandler::class);</code></pre>
 
 
 

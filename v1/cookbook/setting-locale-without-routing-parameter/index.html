@@ -666,7 +666,7 @@ from the request URI's path. If if doesn't find one, it sets a default.</p>
 <li>amends the request with a truncated path (removing the locale segment).</li>
 <li>adds the locale segment as the base path of the <code>UrlHelper</code>.</li>
 </ul>
-<p> <pre class=codehilite><code class=language-php>namespace Application\I18n;
+<pre class=codehilite><code class=language-php>namespace Application\I18n;
 
 use Locale;
 use Zend\Expressive\Helper\UrlHelper;
@@ -702,10 +702,10 @@ class SetLocaleMiddleware
             $response
         );
     }
-}</code></pre></p>
+}</code></pre>
 <p>Then you will need a factory for the <code>SetLocaleMiddleware</code> to inject the
 <code>UrlHelper</code> instance.</p>
-<p> <pre class=codehilite><code class=language-php>namespace Application\I18n;
+<pre class=codehilite><code class=language-php>namespace Application\I18n;
 
 use Interop\Container\ContainerInterface;
 use Zend\Expressive\Helper\UrlHelper;
@@ -718,11 +718,11 @@ class SetLocaleMiddlewareFactory
             $container-&gt;get(UrlHelper::class)
         );
     }
-}</code></pre></p>
+}</code></pre>
 <p>Afterwards, you need to configure the <code>SetLocaleMiddleware</code> in your
 <code>/config/autoload/middleware-pipeline.global.php</code> file so that it is executed
 on every request.</p>
-<p> <pre class=codehilite><code class=language-php>return [
+<pre class=codehilite><code class=language-php>return [
     'dependencies' =&gt; [
         /* ... */
         'factories' =&gt; [
@@ -754,12 +754,12 @@ on every request.</p>
 
         /* ... */
     ],
-];</code></pre></p>
+];</code></pre>
 <h2 id="url-generation-in-the-view">Url generation in the view</h2>
 <p>Since the <code>UrlHelper</code> has the locale set as a base path, you don't need
 to worry about generating URLs within your view. Just use the helper to
 generate a URL and it will do the rest.</p>
-<p> <pre class=codehilite><code class=language-php>&lt;?php echo $this-&gt;url('your-route') ?&gt;</code></pre></p>
+<pre class=codehilite><code class=language-php>&lt;?php echo $this-&gt;url('your-route') ?&gt;</code></pre>
 <blockquote>
 <h3>Helpers differ between template renderers</h3>
 <p>The above example is specific to zend-view; syntax will differ for
@@ -769,7 +769,7 @@ Twig and Plates.</p>
 <p>If you want to add the locale parameter when creating URIs within your
 action middleware, you just need to inject the <code>UrlHelper</code> into your
 middleware and use it for URL generation:</p>
-<p> <pre class=codehilite><code class=language-php>namespace Application\Action;
+<pre class=codehilite><code class=language-php>namespace Application\Action;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -803,11 +803,11 @@ class RedirectAction
             $this-&gt;helper-&gt;generate('your-route', $routeParams)
         );
     }
-}</code></pre></p>
+}</code></pre>
 <p>Injecting the <code>UrlHelper</code> into your middleware will also require that the
 middleware have a factory that manages the injection. As an example, the
 following would work for the above middleware:</p>
-<p> <pre class=codehilite><code class=language-php>namespace Application\Action;
+<pre class=codehilite><code class=language-php>namespace Application\Action;
 
 use Interop\Container\ContainerInterface;
 use Zend\Expressive\Helper\UrlHelper;
@@ -820,7 +820,7 @@ class RedirectActionFactory
             $container-&gt;get(UrlHelper::class)
         );
     }
-}</code></pre></p>
+}</code></pre>
 
 
 

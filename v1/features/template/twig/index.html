@@ -666,16 +666,16 @@ as a standalone component by SensioLabs. It provides:</p>
 <code>Zend\Expressive\Twig\TwigRenderer</code>.</p>
 <h2 id="installing-twig">Installing Twig</h2>
 <p>To use the Twig wrapper, you must first install the Twig integration:</p>
-<p> <pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-expressive-twigrenderer</code></pre></p>
+<pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-expressive-twigrenderer</code></pre>
 <h2 id="using-the-wrapper">Using the wrapper</h2>
 <p>If instantiated without arguments, <code>Zend\Expressive\Twig\TwigRenderer</code> will create
 an instance of the Twig engine, which it will then proxy to.</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\Expressive\Twig\TwigRenderer;
+<pre class=codehilite><code class=language-php>use Zend\Expressive\Twig\TwigRenderer;
 
-$renderer = new TwigRenderer();</code></pre></p>
+$renderer = new TwigRenderer();</code></pre>
 <p>Alternately, you can instantiate and configure the engine yourself, and pass it
 to the <code>Zend\Expressive\Twig\TwigRenderer</code> constructor:</p>
-<p> <pre class=codehilite><code class=language-php>use Twig_Environment;
+<pre class=codehilite><code class=language-php>use Twig_Environment;
 use Twig_Loader_Array;
 use Zend\Expressive\Twig\TwigRenderer;
 
@@ -688,7 +688,7 @@ $twig-&gt;addExtension(new CustomExtension());
 $twig-&gt;loadExtension(new CustomExtension();
 
 // Inject:
-$renderer = new TwigRenderer($twig);</code></pre></p>
+$renderer = new TwigRenderer($twig);</code></pre>
 <h2 id="included-extensions-and-functions">Included extensions and functions</h2>
 <p>The included Twig extension adds support for url generation. The extension is
 automatically activated if the <a href="../../helpers/url-helper/">UrlHelper</a> and
@@ -729,7 +729,7 @@ container.</p>
 <h2 id="configuration">Configuration</h2>
 <p>The following details configuration specific to Twig, as consumed by the
 <code>TwigRendererFactory</code>:</p>
-<p> <pre class=codehilite><code class=language-php>return [
+<pre class=codehilite><code class=language-php>return [
     'templates' =&gt; [
         'extension' =&gt; 'file extension used by templates; defaults to html.twig',
         'paths' =&gt; [
@@ -751,7 +751,7 @@ container.</p>
             'ga_tracking' =&gt; 'UA-XXXXX-X'
         ],
     ],
-];</code></pre></p>
+];</code></pre>
 
 
 

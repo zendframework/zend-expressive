@@ -749,7 +749,7 @@ tested, and, as noted, does not depend on state within the renderer itself.</p>
 </blockquote>
 <h2 id="usage">Usage</h2>
 <p>As an example, consider the following pipeline:</p>
-<p> <pre class=codehilite><code class=language-php>// In config/pipeline.php
+<pre class=codehilite><code class=language-php>// In config/pipeline.php
 
 use Psr\Container\ContainerInterface;
 use Zend\Expressive\Application;
@@ -787,12 +787,12 @@ return function (Application $app, MiddlewareFactory $factory, ContainerInterfac
     $app-&gt;pipe(DispatchMiddleware::class);
 
     $app-&gt;pipe(NotFoundHandler::class);
-};</code></pre></p>
+};</code></pre>
 <p>Any middleware or handler that responds to a path beginning with <code>/api/doc</code> will
 now have a <code>Zend\Expressive\Helper\Template\TemplateVariableContainer</code> attribute
 that contains an instance of that class.</p>
 <p>Within middleware that responds on that path, you can then do the following:</p>
-<p> <pre class=codehilite><code class=language-php>use Psr\Http\Message\ResponseInterface;
+<pre class=codehilite><code class=language-php>use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -821,10 +821,10 @@ class InjectUserAndRouteVariablesMiddleware implements MiddlewareInterface
 
         return $handler-&gt;handle($request);
     }
-}</code></pre></p>
+}</code></pre>
 <p>In a handler, you will call <code>mergeForTemplate()</code> with any local variables you
 want to use, including those that might override the defaults:</p>
-<p> <pre class=codehilite><code class=language-php>use Psr\Http\Message\ResponseFactoryInterface;
+<pre class=codehilite><code class=language-php>use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -865,7 +865,7 @@ class SomeHandler implements RequestHandlerInterface
 
         return $this-&gt;responseFactory()-&gt;createResponse(200)-&gt;withBody($body);
     }
-}</code></pre></p>
+}</code></pre>
 <p>The <code>TemplateVariableContainer</code> contains the following methods:</p>
 <ul>
 <li><code>count() : int</code>: return a count of variables in the container.</li>

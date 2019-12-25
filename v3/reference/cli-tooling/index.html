@@ -722,9 +722,9 @@ enables optional, development-specific configuration in your application by:</p>
 </ul>
 <p>The package provides the tooling via <code>vendor/bin/zf-development-mode</code>. If you
 are using the Expressive skeleton, it provides aliases via Composer:</p>
-<p> <pre class=codehilite><code class=language-php>$ composer development-enable
+<pre class=codehilite><code class=language-php>$ composer development-enable
 $ composer development-disable
-$ composer development-status</code></pre></p>
+$ composer development-status</code></pre>
 <p>Add settings to your <code>development.*.php.dist</code> files, and commit those files to
 your repository; always toggle out of and into development mode after making
 changes, to ensure they pick up in your development environment.</p>
@@ -733,17 +733,17 @@ changes, to ensure they pick up in your development environment.</p>
 provides the script <code>vendor/bin/expressive</code>, which contains a number of commands
 related to migration, modules, and middleware.</p>
 <p>You can install it if it is not already present in your application:</p>
-<p> <pre class=codehilite><code class=language-bash>$ composer require --dev zendframework/zend-expressive-tooling</code></pre></p>
+<pre class=codehilite><code class=language-bash>$ composer require --dev zendframework/zend-expressive-tooling</code></pre>
 <p>Once installed, invoking the binary without arguments will give a listing of
 available tools:</p>
-<p> <pre class=codehilite><code class=language-bash>$ ./vendor/bin/expressive</code></pre></p>
+<pre class=codehilite><code class=language-bash>$ ./vendor/bin/expressive</code></pre>
 <blockquote>
 <h4>Integration with Composer</h4>
 <p>In the skeleton application, we provide direct integration with Composer,
 allowing you to invoke the tooling using:</p>
-<p><pre class=codehilite><code class=language-bash>
+<pre class=codehilite><code class=language-bash>
 $ composer expressive
-</code></pre></p>
+</code></pre>
 <p>You can use either that form, or invoke the script directly as detailed above.</p>
 </blockquote>
 <p>Commands supported include:</p>
@@ -799,7 +799,7 @@ $ composer expressive
 </li>
 </ul>
 <p>You may obtain full help for each command by invoking:</p>
-<p> <pre class=codehilite><code class=language-bash>$ ./vendor/bin/expressive help &lt;command&gt;</code></pre></p>
+<pre class=codehilite><code class=language-bash>$ ./vendor/bin/expressive help &lt;command&gt;</code></pre>
 
 
 

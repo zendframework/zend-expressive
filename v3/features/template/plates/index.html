@@ -731,16 +731,16 @@ it provides:</p>
 <code>Zend\Expressive\Plates\PlatesRenderer</code>.</p>
 <h2 id="installing-plates">Installing Plates</h2>
 <p>To use the Plates wrapper, you must install the Plates integration:</p>
-<p> <pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-expressive-platesrenderer</code></pre></p>
+<pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-expressive-platesrenderer</code></pre>
 <h2 id="using-the-wrapper">Using the wrapper</h2>
 <p>If instantiated without arguments, <code>Zend\Expressive\Plates\PlatesRenderer</code> will create
 an instance of the Plates engine, which it will then proxy to.</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\Expressive\Plates\PlatesRenderer;
+<pre class=codehilite><code class=language-php>use Zend\Expressive\Plates\PlatesRenderer;
 
-$renderer = new PlatesRenderer();</code></pre></p>
+$renderer = new PlatesRenderer();</code></pre>
 <p>Alternately, you can instantiate and configure the engine yourself, and pass it
 to the <code>Zend\Expressive\Plates\PlatesRenderer</code> constructor:</p>
-<p> <pre class=codehilite><code class=language-php>use League\Plates\Engine as PlatesEngine;
+<pre class=codehilite><code class=language-php>use League\Plates\Engine as PlatesEngine;
 use Zend\Expressive\Plates\PlatesRenderer;
 
 // Create the engine instance:
@@ -751,7 +751,7 @@ $plates-&gt;addFolder('error', 'templates/error/');
 $plates-&gt;loadExtension(new CustomExtension());
 
 // Inject:
-$renderer = new PlatesRenderer($plates);</code></pre></p>
+$renderer = new PlatesRenderer($plates);</code></pre>
 <h2 id="configuration-and-factory">Configuration and Factory</h2>
 <p>zend-expressive-platesrenderer ships with the factory
 <code>Zend\Expressive\Plates\PlatesRendererFactory</code>, which will both create the
@@ -760,7 +760,7 @@ Plates engine instance, and the <code>PlatesRenderer</code> instance. If you are
 this will be automatically wired for you during installation.</p>
 <p>The factory looks for the following configuration in the <code>config</code> service, using
 any it finds:</p>
-<p> <pre class=codehilite><code class=language-php>// In config/autoload/templates.global.php:
+<pre class=codehilite><code class=language-php>// In config/autoload/templates.global.php:
 
 return [
     'plates' =&gt; [
@@ -775,7 +775,7 @@ return [
             // namespace =&gt; [paths] pairs
         ],
     ],
-];</code></pre></p>
+];</code></pre>
 <p>The factory will also inject two extensions by default,
 <code>Zend\Expressive\Plates\Extension\UrlExtension</code> and
 <code>Zend\Expressive\Plates\Extension\EscaperExtension</code>, both listed in more detail
@@ -786,7 +786,7 @@ below.</p>
 <p><code>Zend\Expressive\Plates\Extension\UrlExtension</code> composes each of the
 <a href="../../helpers/url-helper/">UrlHelper</a> and <a href="../helpers/server-url-helper">ServerUrlHelper</a>,
 and provides the following template methods:</p>
-<p> <pre class=codehilite><code class=language-php>public function url(
+<pre class=codehilite><code class=language-php>public function url(
    string $routeName = null,
    array $routeParams = [],
    array $queryParams = [],
@@ -797,9 +797,9 @@ and provides the following template methods:</p>
 public function serverurl(string $path = null) : string;
 
 // Since zend-expressive-platesrender 2.1.0:
-public function route() : ?Zend\Expressive\Router\RouteResult</code></pre></p>
+public function route() : ?Zend\Expressive\Router\RouteResult</code></pre>
 <p>As an example:</p>
-<p> <pre class=codehilite><code class=language-php>&lt;a href=&quot;&lt;?= $this-&gt;url('blog', ['stub' =&gt; $this-&gt;stub]) ?&gt;&quot;&gt;A blog post on this&lt;/a&gt;
+<pre class=codehilite><code class=language-php>&lt;a href=&quot;&lt;?= $this-&gt;url('blog', ['stub' =&gt; $this-&gt;stub]) ?&gt;&quot;&gt;A blog post on this&lt;/a&gt;
 
 &lt;?php
 $routing        = $this-&gt;route();
@@ -807,27 +807,27 @@ $routingIsValid = $routing &amp;&amp; $routing-&gt;isSuccess();
 $route       = $routingIsValid ? $routing-&gt;getMatchedRouteName() : 'blog';
 $routeParams = $routingIsValid ? $routing-&gt;getMatchedParams() : [];
 ?&gt;
-&lt;a href=&quot;&lt;?= $this-&gt;url($route, $routeParams) ?&gt;&quot;&gt;For more information&lt;/a&gt;</code></pre></p>
+&lt;a href=&quot;&lt;?= $this-&gt;url($route, $routeParams) ?&gt;&quot;&gt;For more information&lt;/a&gt;</code></pre>
 <h3>EscaperExtension</h3>
 <p><code>Zend\Expressive\Plates\Extension\EscaperExtension</code> proxies to functionality
 provided in the <a href="https://docs.zendframework.com/zend-escaper/">zend-escaper</a>
 package. It looks for the following configuration in the <code>config</code> service:</p>
-<p> <pre class=codehilite><code class=language-php>// In config/autoload/templates.global.php:
+<pre class=codehilite><code class=language-php>// In config/autoload/templates.global.php:
 
 return [
     'plates' =&gt; [
         'encoding' =&gt; ?string, // character encoding of generated content
     ],
-];</code></pre></p>
+];</code></pre>
 <p>By default it assumes UTF-8 for the encoding.</p>
 <p>The extension registers the following template methods:</p>
-<p> <pre class=codehilite><code class=language-php>public function escapeHtml(string $html) : string;
+<pre class=codehilite><code class=language-php>public function escapeHtml(string $html) : string;
 public function escapeHtmlAttr(string $attribute) : string;
 public function escapeJs(string $js) : string;
 public function escapeCss(string $css) : string;
-public function escapeUrl(string $url) : string;</code></pre></p>
+public function escapeUrl(string $url) : string;</code></pre>
 <p>As examples:</p>
-<p> <pre class=codehilite><code class=language-php>&lt;html&gt;
+<pre class=codehilite><code class=language-php>&lt;html&gt;
   &lt;head&gt;
     &lt;meta name=&quot;author&quot; content=&quot;&lt;?= $this-&gt;escapeHtmlAttr($this-&gt;author) ?&gt;&quot;&gt;
     &lt;link rel=&quot;alternative&quot; href=&quot;&lt;?= $this-&gt;escapeUrl($this-&gt;alternative) ?&gt;&quot;&gt;
@@ -838,7 +838,7 @@ public function escapeUrl(string $url) : string;</code></pre></p>
   &lt;body&gt;
     &lt;?= $this-&gt;escapeHtml($this-&gt;content) ?&gt;
   &lt;/body&gt;
-&lt;/html&gt;</code></pre></p>
+&lt;/html&gt;</code></pre>
 
 
 

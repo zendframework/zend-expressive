@@ -736,12 +736,12 @@ likely interact with at some point or another.</p>
 <h3>Constructor</h3>
 <p>If you wish to manually instantiate the <code>Application</code> instance, it has the
 following constructor:</p>
-<p> <pre class=codehilite><code class=language-php>public function __construct(
+<pre class=codehilite><code class=language-php>public function __construct(
     Zend\Expressive\MiddlewareFactory $factory,
     Zend\Stratigility\MiddlewarePipeInterface $pipeline,
     Zend\Expressive\Router\RouteCollector $routes,
     Zend\HttpHandlerRunner\RequestHandlerRunner $runner
-) {</code></pre></p>
+) {</code></pre>
 <h3>Container factory</h3>
 <p>We also provide a factory that can be consumed by a <a href="https://www.php-fig.org/psr/psr-11/">PSR-11</a>
 dependency injection container; see the <a href="../container/factories/">container factories documentation</a>
@@ -754,12 +754,12 @@ the primary features of zend-expressive.</p>
 can use the following <code>Application</code> methods to provide routable middleware:</p>
 <h3>route()</h3>
 <p><code>route()</code> has the following signature:</p>
-<p> <pre class=codehilite><code class=language-php>public function route(
+<pre class=codehilite><code class=language-php>public function route(
     string $path,
     $middleware,
     array $methods = null,
     string $name = null
-) : Zend\Expressive\Router\Route</code></pre></p>
+) : Zend\Expressive\Router\Route</code></pre>
 <p>where:</p>
 <ul>
 <li><code>$path</code> must be a string path to match.</li>
@@ -782,11 +782,11 @@ multiple HTTP request methods.</p>
 <h3>get(), post(), put(), patch(), delete(), any()</h3>
 <p>Each of the methods <code>get()</code>, <code>post()</code>, <code>put()</code>, <code>patch()</code>, <code>delete()</code>, and <code>any()</code>
 proxies to <code>route()</code> and has the signature:</p>
-<p> <pre class=codehilite><code class=language-php>function (
+<pre class=codehilite><code class=language-php>function (
     string $path,
     $middleware,
     string $name = null
-) : Zend\Expressive\Router\Route</code></pre></p>
+) : Zend\Expressive\Router\Route</code></pre>
 <p>Essentially, each calls <code>route()</code> and specifies an array consisting solely of
 the corresponding HTTP method for the <code>$methods</code> argument.</p>
 <h3>Piping</h3>
@@ -796,7 +796,7 @@ and, more specifically, its <code>MiddlewarePipe</code> definition, you can also
 should execute on each request, defining error handlers, and/or segregating
 applications by subpath.</p>
 <p>The signature of <code>pipe()</code> is:</p>
-<p> <pre class=codehilite><code class=language-php>public function pipe($middlewareOrPath, $middleware = null)</code></pre></p>
+<pre class=codehilite><code class=language-php>public function pipe($middlewareOrPath, $middleware = null)</code></pre>
 <p>where:</p>
 <ul>
 <li><code>$middlewareOrPath</code> is either a string URI path (for path segregation), PSR-15
@@ -821,12 +821,12 @@ call to fetch and dispatch the middleware inside a
 <h3>Registering routing and dispatch middleware</h3>
 <p>Routing and dispatch middleware must be piped to the application like any other
 middleware. You can do so using the following:</p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe(Zend\Expressive\Router\Middleware\RouteMiddleware::class);
-$app-&gt;pipe(Zend\Expressive\Router\Middleware\DispatchMiddleware::class);</code></pre></p>
+<pre class=codehilite><code class=language-php>$app-&gt;pipe(Zend\Expressive\Router\Middleware\RouteMiddleware::class);
+$app-&gt;pipe(Zend\Expressive\Router\Middleware\DispatchMiddleware::class);</code></pre>
 <p>We recommend piping the following middleware between the two as well:</p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe(Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware::class);
+<pre class=codehilite><code class=language-php>$app-&gt;pipe(Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware::class);
 $app-&gt;pipe(Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware::class);
-$app-&gt;pipe(Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware::class);</code></pre></p>
+$app-&gt;pipe(Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware::class);</code></pre>
 <p>These allow your application to return:</p>
 <ul>
 <li><code>HEAD</code> requests for handlers that do not specifically allow <code>HEAD</code>; these will

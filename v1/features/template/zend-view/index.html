@@ -670,16 +670,16 @@ provides:</p>
 <code>PhpRenderer</code> via <code>Zend\Expressive\ZendView\ZendViewRenderer</code>.</p>
 <h2 id="installing-zend-view">Installing zend-view</h2>
 <p>To use the zend-view wrapper, you must first install the zend-view integration:</p>
-<p> <pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-expressive-zendviewrenderer</code></pre></p>
+<pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-expressive-zendviewrenderer</code></pre>
 <h2 id="using-the-wrapper">Using the wrapper</h2>
 <p>If instantiated without arguments, <code>Zend\Expressive\ZendView\ZendViewRenderer</code> will create
 an instance of the <code>PhpRenderer</code>, which it will then proxy to.</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\Expressive\ZendView\ZendViewRenderer;
+<pre class=codehilite><code class=language-php>use Zend\Expressive\ZendView\ZendViewRenderer;
 
-$renderer = new ZendViewRenderer();</code></pre></p>
+$renderer = new ZendViewRenderer();</code></pre>
 <p>Alternately, you can instantiate and configure the engine yourself, and pass it
 to the <code>Zend\Expressive\ZendView\ZendViewRenderer</code> constructor:</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\Expressive\ZendView\ZendViewRenderer;
+<pre class=codehilite><code class=language-php>use Zend\Expressive\ZendView\ZendViewRenderer;
 use Zend\View\Renderer\PhpRenderer;
 use Zend\View\Resolver;
 
@@ -699,7 +699,7 @@ $resolver-&gt;attach(
 $renderer-&gt;setResolver($resolver);
 
 // Inject:
-$renderer = new ZendViewRenderer($renderer);</code></pre></p>
+$renderer = new ZendViewRenderer($renderer);</code></pre>
 <blockquote>
 <h3>Namespaced path resolving</h3>
 <p>Expressive defines a custom zend-view resolver,
@@ -734,12 +734,12 @@ for doing so:</p>
 <p>In each case, the zend-view implementation will do a depth-first, recursive
 render in order to provide content within the selected layout.</p>
 <h3>Layout name passed to constructor</h3>
-<p> <pre class=codehilite><code class=language-php>use Zend\Expressive\ZendView\ZendViewRenderer;
+<pre class=codehilite><code class=language-php>use Zend\Expressive\ZendView\ZendViewRenderer;
 
 // Create the engine instance with a layout name:
-$renderer = new ZendViewRenderer(null, 'layout::layout');</code></pre></p>
+$renderer = new ZendViewRenderer(null, 'layout::layout');</code></pre>
 <h3>Layout view model passed to constructor</h3>
-<p> <pre class=codehilite><code class=language-php>use Zend\Expressive\ZendView\ZendViewRenderer;
+<pre class=codehilite><code class=language-php>use Zend\Expressive\ZendView\ZendViewRenderer;
 use Zend\View\Model\ViewModel;
 
 // Create the layout view model:
@@ -750,14 +750,14 @@ $layout = new ViewModel([
 $layout-&gt;setTemplate('layout::layout');
 
 // Create the engine instance with the layout:
-$renderer = new ZendViewRenderer(null, $layout);</code></pre></p>
+$renderer = new ZendViewRenderer(null, $layout);</code></pre>
 <h3>Provide a layout name when rendering</h3>
-<p> <pre class=codehilite><code class=language-php>$content = $renderer-&gt;render('blog/entry', [
+<pre class=codehilite><code class=language-php>$content = $renderer-&gt;render('blog/entry', [
     'layout' =&gt; 'layout::blog',
     'entry'  =&gt; $entry,
-]);</code></pre></p>
+]);</code></pre>
 <h3>Provide a layout view model when rendering</h3>
-<p> <pre class=codehilite><code class=language-php>use Zend\View\Model\ViewModel;
+<pre class=codehilite><code class=language-php>use Zend\View\Model\ViewModel;
 
 // Create the layout view model:
 $layout = new ViewModel([
@@ -769,7 +769,7 @@ $layout-&gt;setTemplate('layout::layout');
 $content = $renderer-&gt;render('blog/entry', [
     'layout' =&gt; $layout,
     'entry'  =&gt; $entry,
-]);</code></pre></p>
+]);</code></pre>
 <h2 id="helpers">Helpers</h2>
 <p>Expressive provides overrides of specific view helpers in order to better
 integrate with PSR-7. These include:</p>

@@ -711,7 +711,7 @@
 <p>We recommend that your code raise exceptions for conditions where it cannot
 gracefully recover. Additionally, we recommend that you have a reasonable PHP
 <code>error_reporting</code> setting that includes warnings and fatal errors:</p>
-<p> <pre class=codehilite><code class=language-php>error_reporting(E_ALL &amp; ~E_USER_DEPRECATED &amp; ~E_DEPRECATED &amp; ~E_STRICT &amp; ~E_NOTICE);</code></pre></p>
+<pre class=codehilite><code class=language-php>error_reporting(E_ALL &amp; ~E_USER_DEPRECATED &amp; ~E_DEPRECATED &amp; ~E_STRICT &amp; ~E_NOTICE);</code></pre>
 <p>If you follow these guidelines, you can then write or use middleware that does
 the following:</p>
 <ul>
@@ -719,7 +719,7 @@ the following:</p>
 <li>wraps execution of the handler (<code>$handler-&gt;handle()</code>) with a try/catch block.</li>
 </ul>
 <p>As an example:</p>
-<p> <pre class=codehilite><code class=language-php>function (ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
+<pre class=codehilite><code class=language-php>function (ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
 {
     set_error_handler(function ($errno, $errstr, $errfile, $errline) {
         if (! (error_reporting() &amp; $errno)) {
@@ -743,10 +743,10 @@ the following:</p>
         $e-&gt;getMessage(),
         $e-&gt;getTraceAsString()
     ), 500);
-}</code></pre></p>
+}</code></pre>
 <p>You would then pipe this as the outermost (or close to outermost) layer of your
 application:</p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;pipe($errorMiddleware);</code></pre></p>
+<pre class=codehilite><code class=language-php>$app-&gt;pipe($errorMiddleware);</code></pre>
 <p>So that you do not need to do this, we provide an error handler for you, via
 zend-stratigility: <code>Zend\Stratigility\Middleware\ErrorHandler</code>.</p>
 <p>This implementation allows you to both:</p>
@@ -780,7 +780,7 @@ generating the instance; it should be mapped to the service
 </ul>
 <p>Map the service <code>Zend\Expressive\Middleware\ErrorResponseGenerator</code> to one of
 these two factories in your configuration:</p>
-<p> <pre class=codehilite><code class=language-php>use Zend\Expressive\Container;
+<pre class=codehilite><code class=language-php>use Zend\Expressive\Container;
 use Zend\Expressive\Middleware;
 use Zend\Stratigility\Middleware\ErrorHandler;
 
@@ -791,7 +791,7 @@ return [
             Middleware\ErrorResponseGenerator::class =&gt; Container\ErrorResponseGeneratorFactory::class,
         ],
     ],
-];</code></pre></p>
+];</code></pre>
 <blockquote>
 <h3>Use development mode configuration to enable whoops</h3>
 <p>You can specify the above in one of your <code>config/autoload/*.global.php</code> files,
@@ -800,7 +800,7 @@ to ensure you have a production-capable error response generator.</p>
 in your application (which is provided by default in the skeleton
 application), you can toggle usage of whoops by adding configuration to the file
 <code>config/autoload/development.local.php.dist</code>:</p>
-<p><pre class=codehilite><code class=language-php>
+<pre class=codehilite><code class=language-php>
 use Zend\Expressive\Container;
 use Zend\Expressive\Middleware;
 
@@ -811,7 +811,7 @@ return [
         ],
     ],
 ];
-</code></pre></p>
+</code></pre>
 <p>When you enable development mode, whoops will then be enabled; when you
 disable development mode, you'll be using your production generator.</p>
 <p>If you are not using zf-development-mode, you can define a
@@ -823,15 +823,15 @@ want to enable whoops.</p>
 features such as logging. <code>Zend\Stratigility\Middleware\ErrorHandler</code> provides
 the ability to do so via its <code>attachListener()</code> method.</p>
 <p>This method accepts a callable with the following signature:</p>
-<p> <pre class=codehilite><code class=language-php>function (
+<pre class=codehilite><code class=language-php>function (
     Throwable $error,
     ServerRequestInterface $request,
     ResponseInterface $response
-) : void</code></pre></p>
+) : void</code></pre>
 <p>The response provided is the response returned by your error response generator,
 allowing the listener the ability to introspect the generated response as well.</p>
 <p>As an example, you could create a logging listener as follows:</p>
-<p> <pre class=codehilite><code class=language-php>namespace Acme;
+<pre class=codehilite><code class=language-php>namespace Acme;
 
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -865,10 +865,10 @@ class LoggingErrorListener
             $error-&gt;getMessage()
         ));
     }
-}</code></pre></p>
+}</code></pre>
 <p>You could then use a <a href="../container/delegator-factories/">delegator factory</a> to
 create your logger listener and attach it to your error handler:</p>
-<p> <pre class=codehilite><code class=language-php>namespace Acme;
+<pre class=codehilite><code class=language-php>namespace Acme;
 
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -883,12 +883,12 @@ class LoggingErrorListenerDelegatorFactory
         $errorHandler-&gt;attachListener($listener);
         return $errorHandler;
     }
-}</code></pre></p>
+}</code></pre>
 <h2 id="handling-more-specific-error-types">Handling more specific error types</h2>
 <p>You could also write more specific error handlers. As an example, you might want
 to catch <code>UnauthorizedException</code> instances specifically, and display a login
 page:</p>
-<p> <pre class=codehilite><code class=language-php>function (ServerRequestInterface $request, RequestHandlerInterface $handler) use ($renderer) : ResponseInterface
+<pre class=codehilite><code class=language-php>function (ServerRequestInterface $request, RequestHandlerInterface $handler) use ($renderer) : ResponseInterface
 {
     try {
         $response = $handler-&gt;handle($request);
@@ -900,13 +900,13 @@ page:</p>
         $renderer-&gt;render('error::unauthorized'),
         401
     );
-}</code></pre></p>
+}</code></pre>
 <p>You could then push this into a middleware pipe only when it's needed:</p>
-<p> <pre class=codehilite><code class=language-php>$app-&gt;get('/dashboard', [
+<pre class=codehilite><code class=language-php>$app-&gt;get('/dashboard', [
     $unauthorizedHandlerMiddleware,
     $middlewareThatChecksForAuthorization,
     $middlewareBehindAuthorizationWall,
-], 'dashboard');</code></pre></p>
+], 'dashboard');</code></pre>
 <h2 id="page-not-found">Page not found</h2>
 <p>Error handlers work at the outermost layer, and are used to catch exceptions and
 errors in your application. At the <em>innermost</em> layer of your application, you
@@ -923,13 +923,13 @@ condition.</p>
 optionally using a composed template renderer to do so.</p>
 <p>We provide a factory, <code>Zend\Expressive\Container\NotFoundHandlerFactory</code>, for
 creating an instance, which we <a href="../container/factories/#notfoundhandlerfactory">detail elsewhere</a>. You should pipe it as the innermost layer of your application:</p>
-<p> <pre class=codehilite><code class=language-php>// A basic application:
+<pre class=codehilite><code class=language-php>// A basic application:
 $app-&gt;pipe(ErrorHandler::class);
 // . . .
 $app-&gt;pipe(RouteMiddleware::class);
 // . . .
 $app-&gt;pipe(DispatchMiddleware::class);
-$app-&gt;pipe(NotFoundHandler::class);</code></pre></p>
+$app-&gt;pipe(NotFoundHandler::class);</code></pre>
 <p>If you wish to provide an alternate response status or use a canned response,
 you should provide your own handler and pipe it to your application.</p>
 
