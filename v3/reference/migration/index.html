@@ -7,13 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="PSR-15 Middleware in Minutes">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-expressive/v3/reference/migration/">
+    <link rel="canonical" href="https://docs.zendframework.com/v3/reference/migration/">
     <link rel="shortcut icon" href="../../../img/favicon.ico">
 
     <title>Migration - Expressive - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../../../css/styles-5cfabd53ee.css">
-        <link href="../../../css/zend-expressive.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="../../../css/zend-expressive.css" rel="stylesheet">
 </head>
 <body id="page-top">
 
@@ -628,9 +628,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.mezzio.dev/mezzio/">mezzio/mezzio.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -767,7 +767,9 @@ changes were made throughout Expressive:</p>
 written, and your middleware will need to be update. We provide a tool for this
 via zend-expressive-tooling. Make sure that package is up-to-date (a version 1
 release should be installed), and run the following:</p>
-<pre class=codehilite><code class=language-php>$ ./vendor/bin/expressive migrate:interop-middleware</code></pre>
+<pre><code class="language-php">$ ./vendor/bin/expressive migrate:interop-middleware
+</code></pre>
+
 <p>This tool will locate any http-interop middleware and update it to PSR-15
 middleware.</p>
 <h2 id="new-dependencies">New dependencies</h2>
@@ -877,12 +879,14 @@ now, in order:</p>
 you continue to need double-pass middleware (e.g., defined by a third-party
 library), use <code>Zend\Stratigility\doublePassMiddleware()</code> to decorate it prior to
 piping or routing to it:</p>
-<pre class=codehilite><code class=language-php>use Zend\Diactoros\Response;
+<pre><code class="language-php">use Zend\Diactoros\Response;
 use function Zend\Stratigility\doublePassMiddleware;
 
 $app-&gt;pipe(doublePassMiddleware($someDoublePassMiddleware, new Response()));
 
-$app-&gt;get('/foo', doublePassMiddleware($someDoublePassMiddleware, new Response()));</code></pre>
+$app-&gt;get('/foo', doublePassMiddleware($someDoublePassMiddleware, new Response()));
+</code></pre>
+
 <p>Additionally, the following methods were <strong>removed</strong>:</p>
 <ul>
 <li><code>pipeRoutingMiddleware()</code>: use <code>pipe(\Zend\Expressive\Router\Middleware\RouteMiddleware::class)</code>
@@ -970,9 +974,13 @@ upgrade it to version 3.</p>
 in your latest changes (assuming you are using version control), or have a
 backup of your existing code.</p>
 <p>Install the migration tooling using the following command:</p>
-<pre class=codehilite><code class=language-bash>$ composer require --dev zendframework/zend-expressive-migration</code></pre>
+<pre><code class="language-bash">$ composer require --dev zendframework/zend-expressive-migration
+</code></pre>
+
 <p>Once installed, run the following command to migrate your application:</p>
-<pre class=codehilite><code class=language-bash>$ ./vendor/bin/expressive-migration migrate</code></pre>
+<pre><code class="language-bash">$ ./vendor/bin/expressive-migration migrate
+</code></pre>
+
 <p>This package does the following:</p>
 <ul>
 <li>Uninstalls all current dependencies (by removing the <code>vendor/</code> directory).</li>
@@ -1581,7 +1589,7 @@ this document to determine what else you may need to change.</p>
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -1589,10 +1597,10 @@ this document to determine what else you may need to change.</p>
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -1600,27 +1608,28 @@ this document to determine what else you may need to change.</p>
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '../../..',
             siteName = 'Expressive';
     </script>
-    <script src="../../../js/scripts-8d7ae56abf.js"></script>
-        <script src="../../../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../../../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

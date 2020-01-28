@@ -7,13 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="PSR-15 Middleware in Minutes">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-expressive/v2/features/helpers/server-url-helper/">
+    <link rel="canonical" href="https://docs.zendframework.com/v2/features/helpers/server-url-helper/">
     <link rel="shortcut icon" href="../../../../img/favicon.ico">
 
     <title>ServerUrlHelper - Expressive - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../../../../css/styles-5cfabd53ee.css">
-        <link href="../../../../css/zend-expressive.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="../../../../css/zend-expressive.css" rel="stylesheet">
 </head>
 <body id="page-top">
 
@@ -601,9 +601,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.mezzio.dev/mezzio/">mezzio/mezzio.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -703,17 +703,23 @@ generate a fully qualified URI.</p>
 <h2 id="usage">Usage</h2>
 <p>When you have an instance, use either its <code>generate()</code> method, or call the
 instance as an invokable:</p>
-<pre class=codehilite><code class=language-php>// Using the generate() method:
+<pre><code class="language-php">// Using the generate() method:
 $url = $helper-&gt;generate('/foo');
 
 // is equivalent to invocation:
-$url = $helper('/foo');</code></pre>
+$url = $helper('/foo');
+</code></pre>
+
 <p>The helper is particularly useful when used in conjunction with the
 <a href="../url-helper/">UrlHelper</a>, as you can then create fully qualified URIs for use
 with headers, API hypermedia links, etc.:</p>
-<pre class=codehilite><code class=language-php>$url = $serverUrl($url('resource', ['id' =&gt; 'sha1']));</code></pre>
+<pre><code class="language-php">$url = $serverUrl($url('resource', ['id' =&gt; 'sha1']));
+</code></pre>
+
 <p>The signature for the ServerUrlHelper <code>generate()</code> and <code>__invoke()</code> methods is:</p>
-<pre class=codehilite><code class=language-php>function ($path = null) : string</code></pre>
+<pre><code class="language-php">function ($path = null) : string
+</code></pre>
+
 <p>Where:</p>
 <ul>
 <li><code>$path</code>, when provided, can be a string path to use to generate a URI.</li>
@@ -731,7 +737,7 @@ instance, and, when invoked, injects it with the URI instance.</p>
   before the routing middleware.</li>
 </ul>
 <p>The following examples demonstrate registering the services.</p>
-<pre class=codehilite><code class=language-php>use Zend\Expressive\Helper\ServerUrlHelper;
+<pre><code class="language-php">use Zend\Expressive\Helper\ServerUrlHelper;
 use Zend\Expressive\Helper\ServerUrlMiddleware;
 use Zend\Expressive\Helper\ServerUrlMiddlewareFactory;
 
@@ -754,10 +760,12 @@ $container-&gt;set(ServerUrlMiddlewareFactory::class, $container-&gt;lazyNew(Ser
 $container-&gt;set(
     ServerUrlMiddleware::class,
     $container-&gt;lazyGetCall(ServerUrlMiddlewareFactory::class, '__invoke', $container)
-);</code></pre>
+);
+</code></pre>
+
 <p>To register the <code>ServerUrlMiddleware</code> as pipeline middleware anytime before the
 routing middleware:</p>
-<pre class=codehilite><code class=language-php>use Zend\Expressive\Helper\ServerUrlMiddleware;
+<pre><code class="language-php">use Zend\Expressive\Helper\ServerUrlMiddleware;
 
 // Programmatically:
 $app-&gt;pipe(ServerUrlMiddleware::class);
@@ -770,10 +778,12 @@ $app-&gt;pipeDispatchMiddleware();
 //         ['middleware' =&gt; ServerUrlMiddleware::class, 'priority' =&gt; PHP_INT_MAX],
 //         /* ... */
 //     ],
-// ]</code></pre>
+// ]
+</code></pre>
+
 <p>The following dependency configuration will work for all three when using the
 Expressive skeleton:</p>
-<pre class=codehilite><code class=language-php>return [
+<pre><code class="language-php">return [
     'dependencies' =&gt; [
         'invokables' =&gt; [
             ServerUrlHelper::class =&gt; ServerUrlHelper::class,
@@ -786,7 +796,9 @@ Expressive skeleton:</p>
         ['middleware' =&gt; ServerUrlMiddleware::class, 'priority' =&gt; PHP_INT_MAX],
         /* ... */
     ],
-];</code></pre>
+];
+</code></pre>
+
 <blockquote>
 <h3>Skeleton configures helpers</h3>
 <p>If you started your project using the Expressive skeleton package, the
@@ -796,7 +808,7 @@ for you, as is the <code>ServerUrlMiddleware</code> pipeline middleware.</p>
 <h2 id="using-the-helper-in-middleware">Using the helper in middleware</h2>
 <p>Compose the helper in your middleware (or elsewhere), and then use it to
 generate URI paths:</p>
-<pre class=codehilite><code class=language-php>use Interop\Http\ServerMiddleware\DelegateInterface;
+<pre><code class="language-php">use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Expressive\Helper\ServerUrlHelper;
@@ -818,7 +830,8 @@ class FooMiddleware implements MiddlewareInterface
             $this-&gt;helper-&gt;generate() . '; rel=&quot;self&quot;'
         );
     }
-}</code></pre>
+}
+</code></pre>
 
 
 
@@ -1341,7 +1354,7 @@ class FooMiddleware implements MiddlewareInterface
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -1349,10 +1362,10 @@ class FooMiddleware implements MiddlewareInterface
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -1360,27 +1373,28 @@ class FooMiddleware implements MiddlewareInterface
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '../../../..',
             siteName = 'Expressive';
     </script>
-    <script src="../../../../js/scripts-8d7ae56abf.js"></script>
-        <script src="../../../../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../../../../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

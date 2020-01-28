@@ -7,13 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="PSR-15 Middleware in Minutes">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-expressive/v2/getting-started/skeleton/">
+    <link rel="canonical" href="https://docs.zendframework.com/v2/getting-started/skeleton/">
     <link rel="shortcut icon" href="../../../img/favicon.ico">
 
     <title>Quick Start: Skeleton Installer - Expressive - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../../../css/styles-5cfabd53ee.css">
-        <link href="../../../css/zend-expressive.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="../../../css/zend-expressive.css" rel="stylesheet">
 </head>
 <body id="page-top">
 
@@ -601,9 +601,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.mezzio.dev/mezzio/">mezzio/mezzio.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -712,7 +712,9 @@ prompts you to choose a router, dependency injection container, template
 renderer, and error handler from the outset.</p>
 <h2 id="create-a-new-project">Create a new project</h2>
 <p>First, we'll create a new project, using Composer's <code>create-project</code> command:</p>
-<pre class=codehilite><code class=language-bash>$ composer create-project zendframework/zend-expressive-skeleton expressive</code></pre>
+<pre><code class="language-bash">$ composer create-project zendframework/zend-expressive-skeleton expressive
+</code></pre>
+
 <p>This will prompt you to choose:</p>
 <ul>
 <li>
@@ -744,7 +746,9 @@ renderer, and error handler from the outset.</p>
 when complete. You can test it out using <a href="http://php.net/manual/en/features.commandline.webserver.php">built-in web
 server</a>.</p>
 <p>From the project root directory, execute the following:</p>
-<pre class=codehilite><code class=language-bash>$ composer run --timeout=0 serve</code></pre>
+<pre><code class="language-bash">$ composer run --timeout=0 serve
+</code></pre>
+
 <p>This starts up a web server on localhost port 8080; browse to
 http://localhost:8080/ to see if your application responds correctly!</p>
 <blockquote>
@@ -767,9 +771,11 @@ $ composer run --timeout=86400 serve
 <h3>Development Mode</h3>
 <p><a href="https://github.com/zfcampus/zf-development-mode">zf-development-mode</a> allows
 you to enable and disable development mode from your cli.</p>
-<pre class=codehilite><code class=language-bash>$ composer development-enable  # enable development mode
+<pre><code class="language-bash">$ composer development-enable  # enable development mode
 $ composer development-disable # disable development mode
-$ composer development-status  # show development status</code></pre>
+$ composer development-status  # show development status
+</code></pre>
+
 <p>The development configuration is set in <code>config/autoload/development.local.php.dist</code>.
 It also allows you to specify configuration and modules that should only be enabled
 when in development, and not when in production.</p>
@@ -777,13 +783,17 @@ when in development, and not when in production.</p>
 <p>Production settings are the default, which means enabling the configuration cache.
 However, it must be easy for developers to clear the configuration cache. That's
 what this command does.</p>
-<pre class=codehilite><code class=language-bash>$ composer clear-config-cache</code></pre>
+<pre><code class="language-bash">$ composer clear-config-cache
+</code></pre>
+
 <h3>Testing Your Code</h3>
 <p><a href="https://phpunit.de">PHPUnit</a> and
 <a href="https://github.com/squizlabs/PHP_CodeSniffer">PHP_CodeSniffer</a> are now
 installed by default. To execute tests and detect coding standards violations,
 run the following command:</p>
-<pre class=codehilite><code class=language-bash>$ composer check</code></pre>
+<pre><code class="language-bash">$ composer check
+</code></pre>
+
 <h3>Security Advisories</h3>
 <p>We have included the <a href="https://github.com/Roave/SecurityAdvisories">security-advisories</a>
 package to notify you about installed dependencies with known security
@@ -819,7 +829,7 @@ configuration caching.</p>
 <p>As an example, your <code>config/config.php</code> file might read as follows in order to
 aggregate configuration from development mode settings, application
 configuration, and theoretical <code>User</code>, <code>Blog</code>, and <code>App</code> modules:</p>
-<pre class=codehilite><code class=language-php>&lt;?php // config/config.php
+<pre><code class="language-php">&lt;?php // config/config.php
 
 $aggregator = new ConfigAggregator([
     // Module configuration
@@ -839,7 +849,9 @@ $aggregator = new ConfigAggregator([
     new PhpFileProvider('config/development.config.php'),
 ], 'data/config-cache.php');
 
-return $aggregator-&gt;getMergedConfig();</code></pre>
+return $aggregator-&gt;getMergedConfig();
+</code></pre>
+
 <p>The configuration is merged in the same order as it is passed, with later entries
 having precedence.</p>
 <h3>Config Providers</h3>
@@ -850,7 +862,7 @@ generator) to be merged.</p>
 <p>Libraries or modules can have configuration providers that provide default values
 for a library or module. For the <code>UserModule\ConfigProvider</code> class loaded in the
 <code>ConfigAggregator</code> above, the <code>ConfigProvider</code> might look like this:</p>
-<pre class=codehilite><code class=language-php>&lt;?php
+<pre><code class="language-php">&lt;?php
 
 namespace UserModule;
 
@@ -905,7 +917,9 @@ class ConfigProvider
             ],
         ];
     }
-}</code></pre>
+}
+</code></pre>
+
 <h3>expressive-module command</h3>
 <p>To aid in the creation, registration, and deregistration of modules in your
 application, the installer will add the <a href="https://github.com/zendframework/zend-expressive-tooling">zendframework/zend-expressive-tooling</a>
@@ -940,12 +954,16 @@ In this section, we'll demonstrate setting up a basic pipeline that includes
 error handling, segregated applications, routing, middleware dispatch, and more.</p>
 <p>The error handler should be the first (most outer) middleware to catch all
 exceptions.</p>
-<pre class=codehilite><code class=language-php>$app-&gt;pipe(ErrorHandler::class);
-$app-&gt;pipe(ServerUrlMiddleware::class);</code></pre>
+<pre><code class="language-php">$app-&gt;pipe(ErrorHandler::class);
+$app-&gt;pipe(ServerUrlMiddleware::class);
+</code></pre>
+
 <p>After the <code>ErrorHandler</code> you can pipe more middleware that you want to execute
 on every request, such as bootstrapping, pre-conditions, and modifications to
 outgoing responses:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;pipe(ServerUrlMiddleware::class);</code></pre>
+<pre><code class="language-php">$app-&gt;pipe(ServerUrlMiddleware::class);
+</code></pre>
+
 <p>Piped middleware may be either callables or service names. Middleware may also
 be passed as an array; each item in the array must resolve to middleware
 eventually (i.e., callable or service name); underneath, Expressive creates
@@ -954,11 +972,15 @@ piped to it.</p>
 <p>Middleware can be attached to specific paths, allowing you to mix and match
 applications under a common domain. The handlers in each middleware attached
 this way will see a URI with the <strong>MATCHED PATH SEGMENT REMOVED!!!</strong></p>
-<pre class=codehilite><code class=language-php>$app-&gt;pipe('/api', $apiMiddleware);
+<pre><code class="language-php">$app-&gt;pipe('/api', $apiMiddleware);
 $app-&gt;pipe('/docs', $apiDocMiddleware);
-$app-&gt;pipe('/files', $filesMiddleware);</code></pre>
+$app-&gt;pipe('/files', $filesMiddleware);
+</code></pre>
+
 <p>Next, you should register the routing middleware in the middleware pipeline:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;pipeRoutingMiddleware();</code></pre>
+<pre><code class="language-php">$app-&gt;pipeRoutingMiddleware();
+</code></pre>
+
 <p>Add more middleware that needs to introspect the routing results; this might
 include:</p>
 <ul>
@@ -969,17 +991,23 @@ include:</p>
 <li>route-based validation</li>
 <li>etc.</li>
 </ul>
-<pre class=codehilite><code class=language-php>$app-&gt;pipe(ImplicitHeadMiddleware::class);
+<pre><code class="language-php">$app-&gt;pipe(ImplicitHeadMiddleware::class);
 $app-&gt;pipe(ImplicitOptionsMiddleware::class);
-$app-&gt;pipe(UrlHelperMiddleware::class);</code></pre>
+$app-&gt;pipe(UrlHelperMiddleware::class);
+</code></pre>
+
 <p>Next, register the dispatch middleware in the middleware pipeline:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;pipeDispatchMiddleware();</code></pre>
+<pre><code class="language-php">$app-&gt;pipeDispatchMiddleware();
+</code></pre>
+
 <p>At this point, if no response is return by any middleware, we need to provide a
 way of notifying the user of this; by default, we use the <code>NotFoundHandler</code>, but
 you can provide any other fallback middleware you wish:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;pipe(NotFoundHandler::class);</code></pre>
+<pre><code class="language-php">$app-&gt;pipe(NotFoundHandler::class);
+</code></pre>
+
 <p>The full example then looks something like this:</p>
-<pre class=codehilite><code class=language-php>// In config/pipeline.php:
+<pre><code class="language-php">// In config/pipeline.php:
 
 use Zend\Expressive\Helper\ServerUrlMiddleware;
 use Zend\Expressive\Helper\UrlHelperMiddleware;
@@ -1002,27 +1030,37 @@ $app-&gt;pipe(ImplicitOptionsMiddleware::class);
 $app-&gt;pipe(UrlHelperMiddleware::class);
 $app-&gt;pipeDispatchMiddleware();
 
-$app-&gt;pipe(NotFoundHandler::class);</code></pre>
+$app-&gt;pipe(NotFoundHandler::class);
+</code></pre>
+
 <h3>Routing</h3>
 <p><a href="../../features/router/piping/#routing">Routing</a> is an additional feature
 provided by Expressive. Routing is setup in <code>config/routes.php</code>.</p>
 <p>You can setup routes with a single request method:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;get('/', App\Action\HomePageAction::class, 'home');
+<pre><code class="language-php">$app-&gt;get('/', App\Action\HomePageAction::class, 'home');
 $app-&gt;post('/album', App\Action\AlbumCreateAction::class, 'album.create');
 $app-&gt;put('/album/:id', App\Action\AlbumUpdateAction::class, 'album.put');
 $app-&gt;patch('/album/:id', App\Action\AlbumUpdateAction::class, 'album.patch');
-$app-&gt;delete('/album/:id', App\Action\AlbumDeleteAction::class, 'album.delete');</code></pre>
+$app-&gt;delete('/album/:id', App\Action\AlbumDeleteAction::class, 'album.delete');
+</code></pre>
+
 <p>Or with multiple request methods:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;route('/contact', App\Action\ContactAction::class, ['GET', 'POST', ...], 'contact');</code></pre>
+<pre><code class="language-php">$app-&gt;route('/contact', App\Action\ContactAction::class, ['GET', 'POST', ...], 'contact');
+</code></pre>
+
 <p>Or handling all request methods:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;route('/contact', App\Action\ContactAction::class)-&gt;setName('contact');</code></pre>
+<pre><code class="language-php">$app-&gt;route('/contact', App\Action\ContactAction::class)-&gt;setName('contact');
+</code></pre>
+
 <p>Alternately, to be explicit, the above could be written as:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;route(
+<pre><code class="language-php">$app-&gt;route(
   '/contact',
   App\Action\ContactAction::class,
   Zend\Expressive\Router\Route::HTTP_METHOD_ANY,
   'contact'
-);</code></pre>
+);
+</code></pre>
+
 <p>We recommend a single middleware class per combination of route and request
 method.</p>
 <h2 id="next-steps">Next Steps</h2>
@@ -1069,7 +1107,7 @@ support for it will be discontinued with version 3.</p>
 under the namespace <code>App\Action</code>.</p>
 <p>Let's create a "Hello" action. Place the following in
 <code>src/App/Action/HelloAction.php</code>:</p>
-<pre class=codehilite><code class=language-php>&lt;?php
+<pre><code class="language-php">&lt;?php
 namespace App\Action;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
@@ -1095,13 +1133,15 @@ class HelloAction implements MiddlewareInterface
             $target
         ));
     }
-}</code></pre>
+}
+</code></pre>
+
 <p>The above looks for a query string parameter "target", and uses its value to
 provide a message, which is then returned in an HTML response.</p>
 <p>Now we need to inform the application of this middleware, and indicate what
 path will invoke it. Open the file <code>config/autoload/dependencies.global.php</code>.
 Edit that file to add an <em>invokable</em> entry for the new middleware:</p>
-<pre class=codehilite><code class=language-php>return [
+<pre><code class="language-php">return [
     'dependencies' =&gt; [
         /* ... */
         'invokables' =&gt; [
@@ -1110,10 +1150,14 @@ Edit that file to add an <em>invokable</em> entry for the new middleware:</p>
         ],
         /* ... */
     ],
-];</code></pre>
+];
+</code></pre>
+
 <p>Now open the file <code>config/routes.php</code>, and add the following at the bottom of
 the file:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;get('/hello', App\Action\HelloAction::class, 'hello');</code></pre>
+<pre><code class="language-php">$app-&gt;get('/hello', App\Action\HelloAction::class, 'hello');
+</code></pre>
+
 <p>Once you've completed the above, give it a try by going to each of the
 following URIs:</p>
 <ul>
@@ -1129,16 +1173,18 @@ templates. This particular exercise assumes you chose to use the
 register the template namespace <code>app</code> to correspond with the <code>templates/app</code>
 subdirectory. Create the file <code>templates/app/hello-world.phtml</code> with the
 following contents:</p>
-<pre class=codehilite><code class=language-php>&lt;?php $this-&gt;layout('layout::default', ['title' =&gt; 'Greetings']) ?&gt;
+<pre><code class="language-php">&lt;?php $this-&gt;layout('layout::default', ['title' =&gt; 'Greetings']) ?&gt;
 
-&lt;h2&gt;Hello, &lt;?= $this-&gt;e($target) ?&gt;&lt;/h2&gt;</code></pre>
+&lt;h2&gt;Hello, &lt;?= $this-&gt;e($target) ?&gt;&lt;/h2&gt;
+</code></pre>
+
 <p>Now that we have a template, we need to:</p>
 <ul>
 <li>Inject a renderer into our action class.</li>
 <li>Use the renderer to render the contents.</li>
 </ul>
 <p>Replace your <code>src/App/Action/HelloAction.php</code> file with the following contents:</p>
-<pre class=codehilite><code class=language-php>&lt;?php
+<pre><code class="language-php">&lt;?php
 namespace App\Action;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
@@ -1169,7 +1215,9 @@ class HelloAction implements MiddlewareInterface
             $this-&gt;renderer-&gt;render('app::hello-world', ['target' =&gt; $target])
         );
     }
-}</code></pre>
+}
+</code></pre>
+
 <p>The above modifies the class to accept a renderer to the constructor, and then
 calls on it to render a template. Note that we no longer need to escape our
 target; the template takes care of that for us.</p>
@@ -1181,15 +1229,17 @@ selection for a dependency injection container, zend-servicemanager.</p>
 <p>zend-servicemanager provides a console (command line) tool for generating factories 
 based on reflecting a class; we'll use that to generate our factory. Navigate to your
 root skeleton-app directory in the console and enter the following:</p>
-<pre class=codehilite><code class=language-bash>$ ./vendor/bin/generate-factory-for-class \
-&gt; &quot;App\\Action\\HelloAction&quot; &gt; ./src/App/src/Action/HelloActionFactory.php</code></pre>
+<pre><code class="language-bash">$ ./vendor/bin/generate-factory-for-class \
+&gt; &quot;App\\Action\\HelloAction&quot; &gt; ./src/App/src/Action/HelloActionFactory.php
+</code></pre>
+
 <blockquote>
 <p>For more information see <a href="https://docs.zendframework.com/zend-servicemanager/console-tools/#generate-factory-for-class">generate-factory-for-class</a></p>
 </blockquote>
 <p>With that in place, we'll now update our configuration. Open the file
 <code>config/autoload/dependencies.global.php</code>; we'll remove the <code>invokables</code> entry
 we created previously, and add a <code>factories</code> entry:</p>
-<pre class=codehilite><code class=language-php>return [
+<pre><code class="language-php">return [
     'dependencies' =&gt; [
         /* ... */
         'invokables' =&gt; [
@@ -1203,7 +1253,9 @@ we created previously, and add a <code>factories</code> entry:</p>
         ],
         /* ... */
     ],
-];</code></pre>
+];
+</code></pre>
+
 <p>Save that file, and now re-visit the URIs:</p>
 <ul>
 <li>http://localhost:8080/hello</li>
@@ -1743,7 +1795,7 @@ Expressive:</p>
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -1751,10 +1803,10 @@ Expressive:</p>
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -1762,27 +1814,28 @@ Expressive:</p>
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '../../..',
             siteName = 'Expressive';
     </script>
-    <script src="../../../js/scripts-8d7ae56abf.js"></script>
-        <script src="../../../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../../../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

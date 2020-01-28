@@ -7,13 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="PSR-15 Middleware in Minutes">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-expressive/v3/features/template/zend-view/">
+    <link rel="canonical" href="https://docs.zendframework.com/v3/features/template/zend-view/">
     <link rel="shortcut icon" href="../../../../img/favicon.ico">
 
     <title>Using zend-view - Expressive - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../../../../css/styles-5cfabd53ee.css">
-        <link href="../../../../css/zend-expressive.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="../../../../css/zend-expressive.css" rel="stylesheet">
 </head>
 <body id="page-top">
 
@@ -628,9 +628,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.mezzio.dev/mezzio/">mezzio/mezzio.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -734,16 +734,20 @@ provides:</p>
 <code>PhpRenderer</code> via <code>Zend\Expressive\ZendView\ZendViewRenderer</code>.</p>
 <h2 id="installing-zend-view">Installing zend-view</h2>
 <p>To use the zend-view wrapper, you must first install the zend-view integration:</p>
-<pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-expressive-zendviewrenderer</code></pre>
+<pre><code class="language-bash">$ composer require zendframework/zend-expressive-zendviewrenderer
+</code></pre>
+
 <h2 id="using-the-wrapper">Using the wrapper</h2>
 <p>If instantiated without arguments, <code>Zend\Expressive\ZendView\ZendViewRenderer</code> will create
 an instance of the <code>PhpRenderer</code>, which it will then proxy to.</p>
-<pre class=codehilite><code class=language-php>use Zend\Expressive\ZendView\ZendViewRenderer;
+<pre><code class="language-php">use Zend\Expressive\ZendView\ZendViewRenderer;
 
-$renderer = new ZendViewRenderer();</code></pre>
+$renderer = new ZendViewRenderer();
+</code></pre>
+
 <p>Alternately, you can instantiate and configure the engine yourself, and pass it
 to the <code>Zend\Expressive\ZendView\ZendViewRenderer</code> constructor:</p>
-<pre class=codehilite><code class=language-php>use Zend\Expressive\ZendView\ZendViewRenderer;
+<pre><code class="language-php">use Zend\Expressive\ZendView\ZendViewRenderer;
 use Zend\View\Renderer\PhpRenderer;
 use Zend\View\Resolver;
 
@@ -763,7 +767,9 @@ $resolver-&gt;attach(
 $renderer-&gt;setResolver($resolver);
 
 // Inject:
-$renderer = new ZendViewRenderer($renderer);</code></pre>
+$renderer = new ZendViewRenderer($renderer);
+</code></pre>
+
 <blockquote>
 <h3>Namespaced path resolving</h3>
 <p>Expressive defines a custom zend-view resolver,
@@ -803,12 +809,14 @@ render in order to provide content within the selected layout.</p>
   so will disable the layout.</li>
 </ul>
 <h3>Layout name passed to constructor</h3>
-<pre class=codehilite><code class=language-php>use Zend\Expressive\ZendView\ZendViewRenderer;
+<pre><code class="language-php">use Zend\Expressive\ZendView\ZendViewRenderer;
 
 // Create the engine instance with a layout name:
-$renderer = new ZendViewRenderer(null, 'layout::layout');</code></pre>
+$renderer = new ZendViewRenderer(null, 'layout::layout');
+</code></pre>
+
 <h3>Layout view model passed to constructor</h3>
-<pre class=codehilite><code class=language-php>use Zend\Expressive\ZendView\ZendViewRenderer;
+<pre><code class="language-php">use Zend\Expressive\ZendView\ZendViewRenderer;
 use Zend\View\Model\ViewModel;
 
 // Create the layout view model:
@@ -819,14 +827,18 @@ $layout = new ViewModel([
 $layout-&gt;setTemplate('layout::layout');
 
 // Create the engine instance with the layout:
-$renderer = new ZendViewRenderer(null, $layout);</code></pre>
+$renderer = new ZendViewRenderer(null, $layout);
+</code></pre>
+
 <h3>Provide a layout name when rendering</h3>
-<pre class=codehilite><code class=language-php>$content = $renderer-&gt;render('blog/entry', [
+<pre><code class="language-php">$content = $renderer-&gt;render('blog/entry', [
     'layout' =&gt; 'layout::blog',
     'entry'  =&gt; $entry,
-]);</code></pre>
+]);
+</code></pre>
+
 <h3>Provide a layout view model when rendering</h3>
-<pre class=codehilite><code class=language-php>use Zend\View\Model\ViewModel;
+<pre><code class="language-php">use Zend\View\Model\ViewModel;
 
 // Create the layout view model:
 $layout = new ViewModel([
@@ -838,7 +850,9 @@ $layout-&gt;setTemplate('layout::layout');
 $content = $renderer-&gt;render('blog/entry', [
     'layout' =&gt; $layout,
     'entry'  =&gt; $entry,
-]);</code></pre>
+]);
+</code></pre>
+
 <h2 id="helpers">Helpers</h2>
 <p>Expressive provides overrides of specific view helpers in order to better
 integrate with <a href="https://www.php-fig.org/psr/psr-7/">PSR-7</a>. These include:</p>
@@ -853,8 +867,9 @@ integrate with <a href="https://www.php-fig.org/psr/psr-7/">PSR-7</a>. These inc
 </ul>
 <p>To use this particular helper, you will need to inject it with the request URI
   somewhere within your application:</p>
-<p><code>php
-  $serverUrlHelper-&gt;setUri($request-&gt;getUri());</code></p>
+<pre><code class="language-php">  $serverUrlHelper-&gt;setUri($request-&gt;getUri());
+</code></pre>
+
 <p>We recommend doing this within a pre-pipeline middleware.</p>
 <h2 id="recommendations">Recommendations</h2>
 <p>We recommend the following practices when using the zend-view adapter:</p>
@@ -1413,7 +1428,7 @@ integrate with <a href="https://www.php-fig.org/psr/psr-7/">PSR-7</a>. These inc
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -1421,10 +1436,10 @@ integrate with <a href="https://www.php-fig.org/psr/psr-7/">PSR-7</a>. These inc
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -1432,27 +1447,28 @@ integrate with <a href="https://www.php-fig.org/psr/psr-7/">PSR-7</a>. These inc
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '../../../..',
             siteName = 'Expressive';
     </script>
-    <script src="../../../../js/scripts-8d7ae56abf.js"></script>
-        <script src="../../../../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../../../../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

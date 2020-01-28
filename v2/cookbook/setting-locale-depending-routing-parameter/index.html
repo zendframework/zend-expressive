@@ -7,13 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="PSR-15 Middleware in Minutes">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-expressive/v2/cookbook/setting-locale-depending-routing-parameter/">
+    <link rel="canonical" href="https://docs.zendframework.com/v2/cookbook/setting-locale-depending-routing-parameter/">
     <link rel="shortcut icon" href="../../../img/favicon.ico">
 
     <title>Setting a locale based on a routing parameter - Expressive - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../../../css/styles-5cfabd53ee.css">
-        <link href="../../../css/zend-expressive.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="../../../css/zend-expressive.css" rel="stylesheet">
 </head>
 <body id="page-top">
 
@@ -601,9 +601,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.mezzio.dev/mezzio/">mezzio/mezzio.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -704,7 +704,7 @@ to add a locale parameter to each route that requires localization.</p>
 of two lowercase alphabetical characters.</p>
 <h3>Dependency configuration</h3>
 <p>The examples assume the following middleware dependency configuration:</p>
-<pre class=codehilite><code class=language-php>use Application\Action;
+<pre><code class="language-php">use Application\Action;
 
 return [
     'dependencies' =&gt; [
@@ -713,11 +713,13 @@ return [
             Action\ContactPageAction::class =&gt; Action\ContactPageFactory::class,
         ],
     ],
-];</code></pre>
+];
+</code></pre>
+
 <h3>Programmatic routes</h3>
 <p>The following describes routing configuration for use when using a
 programmatic application.</p>
-<pre class=codehilite><code class=language-php>use Application\Action\ContactPageAction;
+<pre><code class="language-php">use Application\Action\ContactPageAction;
 use Application\Action\HomePageAction;
 
 $localeOptions = ['locale' =&gt; '[a-z]{2,3}([-_][a-zA-Z]{2}|)'];
@@ -725,11 +727,13 @@ $localeOptions = ['locale' =&gt; '[a-z]{2,3}([-_][a-zA-Z]{2}|)'];
 $app-&gt;get('/:locale', HomePageAction::class, 'home')
     -&gt;setOptions($localeOptions);
 $app-&gt;get('/:locale/contact', ContactPageAction::class, 'contact')
-    -&gt;setOptions($localeOptions);</code></pre>
+    -&gt;setOptions($localeOptions);
+</code></pre>
+
 <h3>Configuration-based routes</h3>
 <p>The following describes routing configuration for use when using a
 configuration-driven application.</p>
-<pre class=codehilite><code class=language-php>return [
+<pre><code class="language-php">return [
     'routes' =&gt; [
         [
             'name' =&gt; 'home',
@@ -754,7 +758,9 @@ configuration-driven application.</p>
             ],
         ],
     ],
-];</code></pre>
+];
+</code></pre>
+
 <blockquote>
 <h3>Note: Routing may differ based on router</h3>
 <p>The routing examples in this recipe use syntax for the zend-mvc router, and,
@@ -792,7 +798,7 @@ simply cut-and-paste them without modification.</p>
 you need to implement localization middleware that acts on the route result, and
 registered in the pipeline immediately following the routing middleware.</p>
 <p>Such a <code>LocalizationMiddleware</code> class could look similar to this:</p>
-<pre class=codehilite><code class=language-php>&lt;?php
+<pre><code class="language-php">&lt;?php
 
 namespace Application\I18n;
 
@@ -818,7 +824,9 @@ class LocalizationMiddleware implements MiddlewareInterface
         // Store the locale as a request attribute
         return $delegate-&gt;process($request-&gt;withAttribute(self::LOCALIZATION_ATTRIBUTE, $locale));
     }
-}</code></pre>
+}
+</code></pre>
+
 <blockquote>
 <h3>Locale::setDefault is unsafe</h3>
 <p>Do not use <code>Locale::setDefault($locale)</code> to set a global static locale.
@@ -829,7 +837,7 @@ specific to each process.</p>
 </blockquote>
 <p>Register this new middleware in either <code>config/autoload/middleware-pipeline.global.php</code>
 or <code>config/autoload/dependencies.global.php</code>:</p>
-<pre class=codehilite><code class=language-php>return [
+<pre><code class="language-php">return [
     'dependencies' =&gt; [
         'invokables' =&gt; [
             LocalizationMiddleware::class =&gt; LocalizationMiddleware::class,
@@ -837,18 +845,22 @@ or <code>config/autoload/dependencies.global.php</code>:</p>
         ],
         /* ... */
     ],
-];</code></pre>
+];
+</code></pre>
+
 <p>If using a programmatic pipeline, pipe it immediately after your routing middleware:</p>
-<pre class=codehilite><code class=language-php>use Application\I18n\LocalizationMiddleware;
+<pre><code class="language-php">use Application\I18n\LocalizationMiddleware;
 
 /* ... */
 $app-&gt;pipeRoutingMiddleware();
 $app-&gt;pipe(LocalizationMiddleware::class);
-/* ... */</code></pre>
+/* ... */
+</code></pre>
+
 <p>If using a configuration-driven application, register it within your
 <code>config/autoload/middleware-pipeline.global.php</code> file, injecting it
 into the pipeline following the routing middleware:</p>
-<pre class=codehilite><code class=language-php>return [
+<pre><code class="language-php">return [
     'middleware_pipeline' =&gt; [
         /* ... */
         [
@@ -862,7 +874,8 @@ into the pipeline following the routing middleware:</p>
         ],
         /* ... */
     ],
-];</code></pre>
+];
+</code></pre>
 
 
 
@@ -1385,7 +1398,7 @@ into the pipeline following the routing middleware:</p>
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -1393,10 +1406,10 @@ into the pipeline following the routing middleware:</p>
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -1404,27 +1417,28 @@ into the pipeline following the routing middleware:</p>
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '../../..',
             siteName = 'Expressive';
     </script>
-    <script src="../../../js/scripts-8d7ae56abf.js"></script>
-        <script src="../../../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../../../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

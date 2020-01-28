@@ -7,13 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="PSR-15 Middleware in Minutes">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-expressive/v1/features/template/twig/">
+    <link rel="canonical" href="https://docs.zendframework.com/v1/features/template/twig/">
     <link rel="shortcut icon" href="../../../../img/favicon.ico">
 
     <title>Using Twig - Expressive - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../../../../css/styles-5cfabd53ee.css">
-        <link href="../../../../css/zend-expressive.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="../../../../css/zend-expressive.css" rel="stylesheet">
 </head>
 <body id="page-top">
 
@@ -556,9 +556,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.mezzio.dev/mezzio/">mezzio/mezzio.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -666,16 +666,20 @@ as a standalone component by SensioLabs. It provides:</p>
 <code>Zend\Expressive\Twig\TwigRenderer</code>.</p>
 <h2 id="installing-twig">Installing Twig</h2>
 <p>To use the Twig wrapper, you must first install the Twig integration:</p>
-<pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-expressive-twigrenderer</code></pre>
+<pre><code class="language-bash">$ composer require zendframework/zend-expressive-twigrenderer
+</code></pre>
+
 <h2 id="using-the-wrapper">Using the wrapper</h2>
 <p>If instantiated without arguments, <code>Zend\Expressive\Twig\TwigRenderer</code> will create
 an instance of the Twig engine, which it will then proxy to.</p>
-<pre class=codehilite><code class=language-php>use Zend\Expressive\Twig\TwigRenderer;
+<pre><code class="language-php">use Zend\Expressive\Twig\TwigRenderer;
 
-$renderer = new TwigRenderer();</code></pre>
+$renderer = new TwigRenderer();
+</code></pre>
+
 <p>Alternately, you can instantiate and configure the engine yourself, and pass it
 to the <code>Zend\Expressive\Twig\TwigRenderer</code> constructor:</p>
-<pre class=codehilite><code class=language-php>use Twig_Environment;
+<pre><code class="language-php">use Twig_Environment;
 use Twig_Loader_Array;
 use Zend\Expressive\Twig\TwigRenderer;
 
@@ -688,7 +692,9 @@ $twig-&gt;addExtension(new CustomExtension());
 $twig-&gt;loadExtension(new CustomExtension();
 
 // Inject:
-$renderer = new TwigRenderer($twig);</code></pre>
+$renderer = new TwigRenderer($twig);
+</code></pre>
+
 <h2 id="included-extensions-and-functions">Included extensions and functions</h2>
 <p>The included Twig extension adds support for url generation. The extension is
 automatically activated if the <a href="../../helpers/url-helper/">UrlHelper</a> and
@@ -699,37 +705,42 @@ container.</p>
 <li><code>path</code>: Render the relative path for a given route and parameters. If there
   is no route, it returns the current path.</li>
 </ul>
-<p><code>twig
-  {{ path('article_show', {'id': '3'}) }}
-  Generates: /article/3</code></p>
+<pre><code class="language-twig">  {{ path('article_show', {'id': '3'}) }}
+  Generates: /article/3
+</code></pre>
+
 <ul>
 <li><code>url</code>: Render the absolute url for a given route and parameters. If there is
   no route, it returns the current url.</li>
 </ul>
-<p><code>twig
-  {{ url('article_show', {'slug': 'article.slug'}) }}
-  Generates: http://example.com/article/article.slug</code></p>
+<pre><code class="language-twig">  {{ url('article_show', {'slug': 'article.slug'}) }}
+  Generates: http://example.com/article/article.slug
+</code></pre>
+
 <ul>
 <li><code>absolute_url</code>: Render the absolute url from a given path. If the path is
   empty, it returns the current url.</li>
 </ul>
-<p><code>twig
-  {{ absolute_url('path/to/something') }}
-  Generates: http://example.com/path/to/something</code></p>
+<pre><code class="language-twig">  {{ absolute_url('path/to/something') }}
+  Generates: http://example.com/path/to/something
+</code></pre>
+
 <ul>
 <li><code>asset</code> Render an (optionally versioned) asset url.</li>
 </ul>
-<p><code>twig
-  {{ asset('path/to/asset/name.ext', version=3) }}
-  Generates: path/to/asset/name.ext?v=3</code></p>
+<pre><code class="language-twig">  {{ asset('path/to/asset/name.ext', version=3) }}
+  Generates: path/to/asset/name.ext?v=3
+</code></pre>
+
 <p>To get the absolute url for an asset:</p>
-<p><code>twig
-  {{ absolute_url(asset('path/to/asset/name.ext', version=3)) }}
-  Generates: http://example.com/path/to/asset/name.ext?v=3</code></p>
+<pre><code class="language-twig">  {{ absolute_url(asset('path/to/asset/name.ext', version=3)) }}
+  Generates: http://example.com/path/to/asset/name.ext?v=3
+</code></pre>
+
 <h2 id="configuration">Configuration</h2>
 <p>The following details configuration specific to Twig, as consumed by the
 <code>TwigRendererFactory</code>:</p>
-<pre class=codehilite><code class=language-php>return [
+<pre><code class="language-php">return [
     'templates' =&gt; [
         'extension' =&gt; 'file extension used by templates; defaults to html.twig',
         'paths' =&gt; [
@@ -751,7 +762,8 @@ container.</p>
             'ga_tracking' =&gt; 'UA-XXXXX-X'
         ],
     ],
-];</code></pre>
+];
+</code></pre>
 
 
 
@@ -1229,7 +1241,7 @@ container.</p>
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -1237,10 +1249,10 @@ container.</p>
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -1248,27 +1260,28 @@ container.</p>
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '../../../..',
             siteName = 'Expressive';
     </script>
-    <script src="../../../../js/scripts-8d7ae56abf.js"></script>
-        <script src="../../../../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../../../../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

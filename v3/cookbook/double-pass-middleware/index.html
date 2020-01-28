@@ -7,13 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="PSR-15 Middleware in Minutes">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-expressive/v3/cookbook/double-pass-middleware/">
+    <link rel="canonical" href="https://docs.zendframework.com/v3/cookbook/double-pass-middleware/">
     <link rel="shortcut icon" href="../../../img/favicon.ico">
 
     <title>Using double-pass middleware - Expressive - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../../../css/styles-5cfabd53ee.css">
-        <link href="../../../css/zend-expressive.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="../../../css/zend-expressive.css" rel="stylesheet">
 </head>
 <body id="page-top">
 
@@ -628,9 +628,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.mezzio.dev/mezzio/">mezzio/mezzio.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -735,7 +735,7 @@ middleware pipelines.</p>
 <code>$response</code> argument to the double-pass middleware. The following examples
 demostrate both piping and routing to double pass middleware using this
 technique, and using zend-diactoros to provide the response instance.</p>
-<pre class=codehilite><code class=language-php>use Zend\Diactoros\Response;
+<pre><code class="language-php">use Zend\Diactoros\Response;
 
 use function Zend\Stratigility\doublePassMiddleware;
 
@@ -748,7 +748,9 @@ $app-&gt;get('/api/ping', doublePassMiddleware(function ($request, $response, $n
     return new Response\JsonResponse([
         'ack' =&gt; time(),
     ]);
-}, new Response())); // &lt;-- note the response</code></pre>
+}, new Response())); // &lt;-- note the response
+</code></pre>
+
 <h2 id="double-pass-middleware-services">Double-Pass Middleware Services</h2>
 <p>What if you're piping or routing to a <em>service</em> &mdash; for instance, a class
 provided by a third-party implementation?</p>
@@ -764,7 +766,7 @@ will be using in your application, you can use the strategy outlined above to
 decorate your middleware before returning it, with one minor change: you can
 pull a response factory from the container as well.</p>
 <p>To demonstrate:</p>
-<pre class=codehilite><code class=language-php>use Psr\Container\ContainerInterface;
+<pre><code class="language-php">use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 
 use function Zend\Stratigility\doublePassMiddleware;
@@ -781,7 +783,9 @@ class SomeDoublePassMiddlewareFactory
             ($container-&gt;get(ResponseInterface::class))()
         );
     }
-}</code></pre>
+}
+</code></pre>
+
 <p>That last line may look a little strange.</p>
 <p>The <code>Psr\Http\Response\ResponseInterface</code> service returns a callable <em>factory</em>
 for producing response instances, and not a response instance itself. As such,
@@ -793,7 +797,7 @@ double-pass middleware. Let's look at the delegator factory solution.</p>
 <p>Delegator factories can be re-used for multiple services. In our case, we'll
 re-use it to decorate double-pass middleware.</p>
 <p>The delegator factory would look like this:</p>
-<pre class=codehilite><code class=language-php>use Psr\Container\ContainerInterface;
+<pre><code class="language-php">use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 
 use function Zend\Stratigility\doublePassMiddleware;
@@ -807,12 +811,14 @@ class DoublePassMiddlewareDelegator
             ($container-&gt;get(ResponseInterface::class))()
         );
     }
-}</code></pre>
+}
+</code></pre>
+
 <p>This looks similar to our previous solution, but is self-contained; we rely on
 the <code>$callback</code> argument to produce the middleware we want to decorate.</p>
 <p>Then, for each service we have that represents double-pass middleware, we can
 provide configuration like the following:</p>
-<pre class=codehilite><code class=language-php>return [
+<pre><code class="language-php">return [
     'dependencies' =&gt; [
         'delegators' =&gt; [
             SomeDoublePassMiddleware::class =&gt; [
@@ -820,7 +826,9 @@ provide configuration like the following:</p>
             ],
         ],
     ],
-];</code></pre>
+];
+</code></pre>
+
 <p>This approach has a couple of benefits:</p>
 <ul>
 <li>We do not need to change existing factories.</li>
@@ -1396,7 +1404,7 @@ double-pass middleware in your system.</p>
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -1404,10 +1412,10 @@ double-pass middleware in your system.</p>
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -1415,27 +1423,28 @@ double-pass middleware in your system.</p>
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '../../..',
             siteName = 'Expressive';
     </script>
-    <script src="../../../js/scripts-8d7ae56abf.js"></script>
-        <script src="../../../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../../../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

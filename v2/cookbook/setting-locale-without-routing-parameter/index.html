@@ -7,13 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="PSR-15 Middleware in Minutes">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-expressive/v2/cookbook/setting-locale-without-routing-parameter/">
+    <link rel="canonical" href="https://docs.zendframework.com/v2/cookbook/setting-locale-without-routing-parameter/">
     <link rel="shortcut icon" href="../../../img/favicon.ico">
 
     <title>Setting a locale without a routing parameter - Expressive - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../../../css/styles-5cfabd53ee.css">
-        <link href="../../../css/zend-expressive.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="../../../css/zend-expressive.css" rel="stylesheet">
 </head>
 <body id="page-top">
 
@@ -601,9 +601,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.mezzio.dev/mezzio/">mezzio/mezzio.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -711,7 +711,7 @@ from the request URI's path. If if doesn't find one, it sets a default.</p>
 <li>amends the request with a truncated path (removing the locale segment).</li>
 <li>adds the locale segment as the base path of the <code>UrlHelper</code>.</li>
 </ul>
-<pre class=codehilite><code class=language-php>&lt;?php
+<pre><code class="language-php">&lt;?php
 namespace Application\I18n;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
@@ -748,10 +748,12 @@ class SetLocaleMiddleware implements MiddlewareInterface
             $uri-&gt;withPath(substr($path, strlen($locale)+1))
         ));
     }
-}</code></pre>
+}
+</code></pre>
+
 <p>Then you will need a factory for the <code>SetLocaleMiddleware</code> to inject the
 <code>UrlHelper</code> instance.</p>
-<pre class=codehilite><code class=language-php>&lt;?php
+<pre><code class="language-php">&lt;?php
 namespace Application\I18n;
 
 use Psr\Container\ContainerInterface;
@@ -765,11 +767,13 @@ class SetLocaleMiddlewareFactory
             $container-&gt;get(UrlHelper::class)
         );
     }
-}</code></pre>
+}
+</code></pre>
+
 <p>Next, map the middleware to its factory in either
 <code>/config/autoload/dependencies.global.php</code> or
 <code>/config/autoload/middleware-pipeline.global.php</code>:</p>
-<pre class=codehilite><code class=language-php>use Application\I18n\SetLocaleMiddleware;
+<pre><code class="language-php">use Application\I18n\SetLocaleMiddleware;
 use Application\I18n\SetLocaleMiddlewareFactory;
 
 return [
@@ -780,11 +784,13 @@ return [
             /* ... */
         ],
     ],
-];</code></pre>
+];
+</code></pre>
+
 <p>Finally, you will need to configure your middleware pipeline to ensure this
 middleware is executed on every request.</p>
 <p>If using a programmatic pipeline:</p>
-<pre class=codehilite><code class=language-php>use Application\I18n\SetLocaleMiddleware;
+<pre><code class="language-php">use Application\I18n\SetLocaleMiddleware;
 use Zend\Expressive\Helper\UrlHelperMiddleware;
 
 /* ... */
@@ -793,10 +799,12 @@ $app-&gt;pipe(SetLocaleMiddleware::class);
 $app-&gt;pipeRoutingMiddleware();
 $app-&gt;pipe(UrlHelperMiddleware::class);
 $app-&gt;pipeDispatchMiddleware();
-/* ... */</code></pre>
+/* ... */
+</code></pre>
+
 <p>If using a configuration-driven application, update
 <code>/config/autoload/middleware-pipeline.global.php</code> to add the middleware:</p>
-<pre class=codehilite><code class=language-php>return [
+<pre><code class="language-php">return [
     'middleware_pipeline' =&gt; [
         [
             'middleware' =&gt; [
@@ -819,12 +827,16 @@ $app-&gt;pipeDispatchMiddleware();
 
         /* ... */
     ],
-];</code></pre>
+];
+</code></pre>
+
 <h2 id="url-generation-in-the-view">Url generation in the view</h2>
 <p>Since the <code>UrlHelper</code> has the locale set as a base path, you don't need
 to worry about generating URLs within your view. Just use the helper to
 generate a URL and it will do the rest.</p>
-<pre class=codehilite><code class=language-php>&lt;?php echo $this-&gt;url('your-route') ?&gt;</code></pre>
+<pre><code class="language-php">&lt;?php echo $this-&gt;url('your-route') ?&gt;
+</code></pre>
+
 <blockquote>
 <h3>Helpers differ between template renderers</h3>
 <p>The above example is specific to zend-view; syntax will differ for
@@ -834,7 +846,7 @@ Twig and Plates.</p>
 <p>If you want to add the locale parameter when creating URIs within your
 action middleware, you just need to inject the <code>UrlHelper</code> into your
 middleware and use it for URL generation:</p>
-<pre class=codehilite><code class=language-php>&lt;?php
+<pre><code class="language-php">&lt;?php
 namespace Application\Action;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
@@ -865,11 +877,13 @@ class RedirectAction implements MiddlewareInterface
             $this-&gt;helper-&gt;generate('your-route', $routeParams)
         );
     }
-}</code></pre>
+}
+</code></pre>
+
 <p>Injecting the <code>UrlHelper</code> into your middleware will also require that the
 middleware have a factory that manages the injection. As an example, the
 following would work for the above middleware:</p>
-<pre class=codehilite><code class=language-php>namespace Application\Action;
+<pre><code class="language-php">namespace Application\Action;
 
 use Psr\Container\ContainerInterface;
 use Zend\Expressive\Helper\UrlHelper;
@@ -882,7 +896,8 @@ class RedirectActionFactory
             $container-&gt;get(UrlHelper::class)
         );
     }
-}</code></pre>
+}
+</code></pre>
 
 
 
@@ -1405,7 +1420,7 @@ class RedirectActionFactory
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -1413,10 +1428,10 @@ class RedirectActionFactory
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -1424,27 +1439,28 @@ class RedirectActionFactory
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '../../..',
             siteName = 'Expressive';
     </script>
-    <script src="../../../js/scripts-8d7ae56abf.js"></script>
-        <script src="../../../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../../../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

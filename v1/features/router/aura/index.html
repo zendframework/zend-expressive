@@ -7,13 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="PSR-15 Middleware in Minutes">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-expressive/v1/features/router/aura/">
+    <link rel="canonical" href="https://docs.zendframework.com/v1/features/router/aura/">
     <link rel="shortcut icon" href="../../../../img/favicon.ico">
 
     <title>Using Aura - Expressive - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../../../../css/styles-5cfabd53ee.css">
-        <link href="../../../../css/zend-expressive.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="../../../../css/zend-expressive.css" rel="stylesheet">
 </head>
 <body id="page-top">
 
@@ -556,9 +556,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.mezzio.dev/mezzio/">mezzio/mezzio.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -661,25 +661,28 @@ configuration is to provide default specifications:</p>
 <ul>
 <li>A regular expression that applies the same for a given routing match:</li>
 </ul>
-<p><code>php
-  // Parameters named "id" will only match digits by default:
+<pre><code class="language-php">  // Parameters named &quot;id&quot; will only match digits by default:
   $router-&gt;addTokens([
     'id' =&gt; '\d+',
-  ]);</code></p>
+  ]);
+</code></pre>
+
 <ul>
 <li>A default parameter and/or its default value to always provide:</li>
 </ul>
-<p><code>php
-  // mediatype defaults to "application/xhtml+xml" and will be available in all
+<pre><code class="language-php">  // mediatype defaults to &quot;application/xhtml+xml&quot; and will be available in all
   // requests:
   $router-&gt;addValues([
     'mediatype' =&gt; 'application/xhtml+xml',
-  ]);</code></p>
+  ]);
+</code></pre>
+
 <ul>
 <li>Only match if secure (i.e., under HTTPS):</li>
 </ul>
-<p><code>php
-  $router-&gt;setSecure(true);</code></p>
+<pre><code class="language-php">  $router-&gt;setSecure(true);
+</code></pre>
+
 <p>In order to specify these, you need access to the underlying Aura.Router
 instance, however, and the <code>RouterInterface</code> does not provide an accessor!</p>
 <p>The answer, then, is to use dependency injection. This can be done in two ways:
@@ -687,19 +690,23 @@ programmatically, or via a factory to use in conjunction with your container
 instance.</p>
 <h2 id="installing-aurarouter">Installing Aura.Router</h2>
 <p>To use Aura.Router, you will first need to install the Aura.Router integration:</p>
-<pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-expressive-aurarouter</code></pre>
+<pre><code class="language-bash">$ composer require zendframework/zend-expressive-aurarouter
+</code></pre>
+
 <h2 id="quick-start">Quick Start</h2>
 <p>At its simplest, you can instantiate a <code>Zend\Expressive\Router\AuraRouter</code> instance
 with no arguments; it will create the underlying Aura.Router objects required
 and compose them for you:</p>
-<pre class=codehilite><code class=language-php>use Zend\Expressive\Router\AuraRouter;
+<pre><code class="language-php">use Zend\Expressive\Router\AuraRouter;
 
-$router = new AuraRouter();</code></pre>
+$router = new AuraRouter();
+</code></pre>
+
 <h2 id="programmatic-creation">Programmatic Creation</h2>
 <p>If you need greater control over the Aura.Router setup and configuration, you
 can create the instances necessary and inject them into
 <code>Zend\Expressive\Router\AuraRouter</code> during instantiation.</p>
-<pre class=codehilite><code class=language-php>&lt;?php
+<pre><code class="language-php">&lt;?php
 use Aura\Router\RouterFactory;
 use Zend\Expressive\AppFactory;
 use Zend\Expressive\Router\AuraRouter as AuraBridge;
@@ -714,7 +721,9 @@ $router = new AuraBridge($auraRouter);
 
 // First argument is the container to use, if not using the default;
 // second is the router.
-$app = AppFactory::create(null, $router);</code></pre>
+$app = AppFactory::create(null, $router);
+</code></pre>
+
 <blockquote>
 <h3>Piping the route middleware</h3>
 <p>As a reminder, you will need to ensure that middleware is piped in the order
@@ -732,7 +741,7 @@ two strategies for creating your Aura.Router implementation.</p>
 instantiate and return an instance of <code>Zend\Expressive\Router\AuraRouter</code> for the
 service name <code>Zend\Expressive\Router\RouterInterface</code>.</p>
 <p>A factory would look like this:</p>
-<pre class=codehilite><code class=language-php>// in src/Application/Container/RouterFactory.php
+<pre><code class="language-php">// in src/Application/Container/RouterFactory.php
 namespace Application\Container;
 
 use Interop\Container\ContainerInterface;
@@ -748,20 +757,28 @@ class RouterFactory
     {
         return new AuraRouter();
     }
-}</code></pre>
+}
+</code></pre>
+
 <p>You would register this with zend-servicemanager using:</p>
-<pre class=codehilite><code class=language-php>$container-&gt;setFactory(
+<pre><code class="language-php">$container-&gt;setFactory(
     'Zend\Expressive\Router\RouterInterface',
     'Application\Container\RouterFactory'
-);</code></pre>
+);
+</code></pre>
+
 <p>And in Pimple:</p>
-<pre class=codehilite><code class=language-php>$pimple['Zend\Expressive\Router\RouterInterface'] = new Application\Container\RouterFactory();</code></pre>
+<pre><code class="language-php">$pimple['Zend\Expressive\Router\RouterInterface'] = new Application\Container\RouterFactory();
+</code></pre>
+
 <p>For zend-servicemanager, you can omit the factory entirely, and register the
 class as an invokable:</p>
-<pre class=codehilite><code class=language-php>$container-&gt;setInvokableClass(
+<pre><code class="language-php">$container-&gt;setInvokableClass(
     'Zend\Expressive\Router\RouterInterface',
     'Zend\Expressive\Router\AuraRouter'
-);</code></pre>
+);
+</code></pre>
+
 <h3>Advanced Configuration</h3>
 <p>If you want to provide custom setup or configuration, you can do so. In this
 example, we will be defining two factories:</p>
@@ -772,7 +789,7 @@ example, we will be defining two factories:</p>
   <code>Aura\Router\Router</code> instance.</li>
 </ul>
 <p>Sound difficult? It's not; we've essentially done it above already!</p>
-<pre class=codehilite><code class=language-php>// in src/Application/Container/AuraRouterFactory.php:
+<pre><code class="language-php">// in src/Application/Container/AuraRouterFactory.php:
 namespace Application\Container;
 
 use Aura\Router\RouterFactory;
@@ -812,10 +829,12 @@ class RouterFactory
     {
         return new AuraBridge($container-&gt;get('Aura\Router\Router'));
     }
-}</code></pre>
+}
+</code></pre>
+
 <p>From here, you will need to register your factories with your IoC container.</p>
 <p>If you are using zend-servicemanager, this will look like:</p>
-<pre class=codehilite><code class=language-php>// Programmatically:
+<pre><code class="language-php">// Programmatically:
 use Zend\ServiceManager\ServiceManager;
 
 $container = new ServiceManager();
@@ -834,15 +853,18 @@ return [
         'Aura\Router\Router' =&gt; 'Application\Container\AuraRouterFactory',
         'Zend\Expressive\Router\RouterInterface' =&gt; 'Application\Container\RouterFactory',
     ],
-];</code></pre>
+];
+</code></pre>
+
 <p>For Pimple, configuration looks like:</p>
-<pre class=codehilite><code class=language-php>use Application\Container\AuraRouterFactory;
+<pre><code class="language-php">use Application\Container\AuraRouterFactory;
 use Application\Container\RouterFactory;
 use Interop\Container\Pimple\PimpleInterop as Pimple;
 
 $container = new Pimple();
 $container['Aura\Router\Router'] = new AuraRouterFactory();
-$container['Zend\Expressive\Router\RouterInterface'] = new RouterFactory();</code></pre>
+$container['Zend\Expressive\Router\RouterInterface'] = new RouterFactory();
+</code></pre>
 
 
 
@@ -1320,7 +1342,7 @@ $container['Zend\Expressive\Router\RouterInterface'] = new RouterFactory();</cod
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -1328,10 +1350,10 @@ $container['Zend\Expressive\Router\RouterInterface'] = new RouterFactory();</cod
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -1339,27 +1361,28 @@ $container['Zend\Expressive\Router\RouterInterface'] = new RouterFactory();</cod
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '../../../..',
             siteName = 'Expressive';
     </script>
-    <script src="../../../../js/scripts-8d7ae56abf.js"></script>
-        <script src="../../../../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../../../../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

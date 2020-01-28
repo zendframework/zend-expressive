@@ -7,13 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="PSR-15 Middleware in Minutes">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-expressive/v1/reference/migration/rc-to-v1/">
+    <link rel="canonical" href="https://docs.zendframework.com/v1/reference/migration/rc-to-v1/">
     <link rel="shortcut icon" href="../../../../img/favicon.ico">
 
     <title>From RC5 and Earlier - Expressive - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../../../../css/styles-5cfabd53ee.css">
-        <link href="../../../../css/zend-expressive.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="../../../../css/zend-expressive.css" rel="stylesheet">
 </head>
 <body id="page-top">
 
@@ -556,9 +556,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.mezzio.dev/mezzio/">mezzio/mezzio.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -698,7 +698,7 @@ two distinct methods: <code>routingMiddleware()</code> and <code>dispatchMiddlew
 <p>One reason for this split is to allow injecting middleware to operate between
 routing and dispatch. As an example, you could have middleware that determines
 if a matched route requires an authenticated identity:</p>
-<pre class=codehilite><code class=language-php>public function __invoke($request, $response, $next)
+<pre><code class="language-php">public function __invoke($request, $response, $next)
 {
     $result = $request-&gt;getAttribute(RouteResult::class);
     if (! in_array($result-&gt;getMatchedRouteName(), $this-&gt;authRequired)) {
@@ -709,11 +709,15 @@ if a matched route requires an authenticated identity:</p>
         return $next($request, $response-&gt;withStatus(401), 'authentication
         required');
     }
-}</code></pre>
+}
+</code></pre>
+
 <p>The above could then be piped between the routing and dispatch middleware:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;pipeRoutingMiddleware();
+<pre><code class="language-php">$app-&gt;pipeRoutingMiddleware();
 $app-&gt;pipe(AuthenticationMiddleware::class);
-$app-&gt;pipeDispatchMiddleware();</code></pre>
+$app-&gt;pipeDispatchMiddleware();
+</code></pre>
+
 <p>Since the routing middleware has been split, we determined we could no longer
 automatically pipe the routing middleware; detection would require detecting
 both sets of middleware, and ensuring they are in the correct order.
@@ -736,8 +740,10 @@ be undesired. As a result, we now require you to inject each manually.</p>
    is that <em>unless you register the routing <strong>and</strong> dispatch middleware, your routed
    middleware will not be executed!</em> As such, the following two lines <strong>must</strong>
    be added to your application prior to calling <code>Application::run()</code>:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;pipeRoutingMiddleware();
-$app-&gt;pipeDispatchMiddleware();</code></pre>
+<pre><code class="language-php">$app-&gt;pipeRoutingMiddleware();
+$app-&gt;pipeDispatchMiddleware();
+</code></pre>
+
 <ol>
 <li>If you are creating your <code>Application</code> instance using a container and the
    <code>Zend\Expressive\Container\ApplicationFactory</code>, you will need to update your
@@ -750,7 +756,7 @@ changed starting in RC6.  The changes are done in such a way as to honor
 configuration from RC5 and earlier, but using such configuration will now prompt
 you to update your application.</p>
 <p>RC5 and earlier defined the default <code>middleware_pipeline</code> configuration as follows:</p>
-<pre class=codehilite><code class=language-php>return [
+<pre><code class="language-php">return [
     'middleware_pipeline' =&gt; [
         // An array of middleware to register prior to registration of the
         // routing middleware
@@ -782,7 +788,9 @@ you to update your application.</p>
             //],
         ],
     ],
-];</code></pre>
+];
+</code></pre>
+
 <p>The following changes have been made:</p>
 <ul>
 <li>The concept of <code>pre_routing</code> and <code>post_routing</code> have been deprecated, and will
@@ -805,14 +813,16 @@ to follow the guidelines created with RC6.</p>
 <code>post_routing</code> keys. However, individual items within the array retain the same
 format as middleware inside those keys, with the addition of a new key,
 <code>priority</code>:</p>
-<pre class=codehilite><code class=language-php>[
+<pre><code class="language-php">[
     // Required:
     'middleware' =&gt; 'Name of middleware service, or a callable',
     // Optional:
     //    'path'  =&gt; '/path/to/match',
     //    'error' =&gt; true,
     //    'priority' =&gt; 1, // integer
-]</code></pre>
+]
+</code></pre>
+
 <p>The <code>priority</code> key is used to determine the order in which middleware is piped
 to the application. Higher integer values are piped earlier, while
 lower/negative integer values are piped later; middleware with the same priority
@@ -829,7 +839,7 @@ do not want to import the class. Similarly, for the dispatch middleware, use the
 constant <code>Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE</code>
 (value <code>EXPRESSIVE_DISPATCH_MIDDLEWARE</code>) to specify the dispatch middleware.</p>
 <p>As such, the default configuration now becomes:</p>
-<pre class=codehilite><code class=language-php>return [
+<pre><code class="language-php">return [
     'middleware_pipeline' =&gt; [
         // An array of middleware to pipe to the application.
         // Each item is of the following structure:
@@ -870,7 +880,9 @@ constant <code>Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE
         //     'priority' =&gt; -1000,
         // ],
     ],
-];</code></pre>
+];
+</code></pre>
+
 <p>To update an existing application:</p>
 <ul>
 <li>Promote all <code>pre_routing</code> middleware up a level, and remove the <code>pre_routing</code>
@@ -889,7 +901,7 @@ constant <code>Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE
   with an array of middleware that represents the "post routing" middleware.</li>
 </ul>
 <p>As an example, consider the following application configuration:</p>
-<pre class=codehilite><code class=language-php>return [
+<pre><code class="language-php">return [
     'middleware_pipeline' =&gt; [
         'pre_routing' =&gt; [
             [
@@ -909,9 +921,11 @@ constant <code>Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE
             ['middleware' =&gt; NotFoundMiddleware::class, 'error' =&gt; true],
         ],
     ],
-];</code></pre>
+];
+</code></pre>
+
 <p>This would be rewritten to the following to work with RC6 and later:</p>
-<pre class=codehilite><code class=language-php>return [
+<pre><code class="language-php">return [
     'middleware_pipeline' =&gt; [
         'always' =&gt; [
             'middleware' =&gt; [
@@ -943,7 +957,9 @@ constant <code>Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE
             'priority' =&gt; -1000,
         ],
     ],
-]</code></pre>
+]
+</code></pre>
+
 <p>Note in the above example the various groupings. By grouping middleware by
 priority, you can simplify adding new middleware, particularly if you know it
 should execute before routing, or as error middleware, or between routing and
@@ -979,15 +995,17 @@ based on how you create your instance.</p>
 <p>If you are <em>not</em> using the <code>ApplicationFactory</code>, you will need to pipe the
 <code>routeResultObserverMiddleware</code> to your application, between the routing and
 dispatch middleware:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;pipeRoutingMiddleware();
+<pre><code class="language-php">$app-&gt;pipeRoutingMiddleware();
 $app-&gt;pipeRouteResultObserverMiddleware();
-$app-&gt;pipeDispatchMiddleware();</code></pre>
+$app-&gt;pipeDispatchMiddleware();
+</code></pre>
+
 <p>If you are using the <code>ApplicationFactory</code>, you may need to update your
 configuration to allow injecting the route result observer middleware. If you
 have <em>not</em> updated your configuration to remove the <code>pre_routing</code> and/or
 <code>post_routing</code> keys, the middleware <em>will</em> be registered for you. If you have,
 however, you will need to register it following the routing middleware:</p>
-<pre class=codehilite><code class=language-php>[
+<pre><code class="language-php">[
     'middleware_pipeline' =&gt; [
         /* ... */
         'routing' =&gt; [
@@ -1000,14 +1018,16 @@ however, you will need to register it following the routing middleware:</p>
         ],
         /* ... */
     ],
-]</code></pre>
+]
+</code></pre>
+
 <p>To make your observers forwards-compatible requires two changes:</p>
 <ul>
 <li>Rewriting your observer as middleware.</li>
 <li>Registering your observer as middleware following the routing middleware.</li>
 </ul>
 <p>If your observer looked like the following:</p>
-<pre class=codehilite><code class=language-php>use Zend\Expressive\Router\RouteResult;
+<pre><code class="language-php">use Zend\Expressive\Router\RouteResult;
 use Zend\Expressive\Router\RouteResultObserverInterface;
 
 class MyObserver implements RouteResultObserverInterface
@@ -1023,9 +1043,11 @@ class MyObserver implements RouteResultObserverInterface
     {
         $this-&gt;logger-&gt;log($result);
     }
-}</code></pre>
+}
+</code></pre>
+
 <p>You could rewrite it as follows:</p>
-<pre class=codehilite><code class=language-php>use Zend\Expressive\Router\RouteResult;
+<pre><code class="language-php">use Zend\Expressive\Router\RouteResult;
 
 class MyObserver
 {
@@ -1046,14 +1068,18 @@ class MyObserver
         $this-&gt;logger-&gt;log($result);
         return $next($request, $response);
     }
-}</code></pre>
+}
+</code></pre>
+
 <p>You would then register it following the routing middleware. If you are building
 your application programmatically, you would do this as follows:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;pipeRoutingMiddleware();
+<pre><code class="language-php">$app-&gt;pipeRoutingMiddleware();
 $app-&gt;pipe(MyObserver::class);
-$app-&gt;pipeDispatchMiddleware();</code></pre>
+$app-&gt;pipeDispatchMiddleware();
+</code></pre>
+
 <p>If you are using the <code>ApplicationFactory</code>, alter your configuration:</p>
-<pre class=codehilite><code class=language-php>[
+<pre><code class="language-php">[
     'middleware_pipeline' =&gt; [
         /* ... */
         'routing' =&gt; [
@@ -1066,7 +1092,9 @@ $app-&gt;pipeDispatchMiddleware();</code></pre>
         ],
         /* ... */
     ],
-]</code></pre>
+]
+</code></pre>
+
 <h2 id="timeline-for-migration">Timeline for migration</h2>
 <p>The following features will be removed in version 1.1.0:</p>
 <ul>
@@ -1550,7 +1578,7 @@ $app-&gt;pipeDispatchMiddleware();</code></pre>
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -1558,10 +1586,10 @@ $app-&gt;pipeDispatchMiddleware();</code></pre>
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -1569,27 +1597,28 @@ $app-&gt;pipeDispatchMiddleware();</code></pre>
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '../../../..',
             siteName = 'Expressive';
     </script>
-    <script src="../../../../js/scripts-8d7ae56abf.js"></script>
-        <script src="../../../../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../../../../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

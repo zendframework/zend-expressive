@@ -7,13 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="PSR-15 Middleware in Minutes">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-expressive/v2/cookbook/using-a-base-path/">
+    <link rel="canonical" href="https://docs.zendframework.com/v2/cookbook/using-a-base-path/">
     <link rel="shortcut icon" href="../../../img/favicon.ico">
 
     <title>Using Expressive from a subdirectory - Expressive - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../../../css/styles-5cfabd53ee.css">
-        <link href="../../../css/zend-expressive.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="../../../css/zend-expressive.css" rel="stylesheet">
 </head>
 <body id="page-top">
 
@@ -601,9 +601,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.mezzio.dev/mezzio/">mezzio/mezzio.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -687,20 +687,24 @@
     <h1 id="how-can-i-tell-my-application-about-a-base-path">How can I tell my application about a base path?</h1>
 <p>In some environments, your application may be running in a subdirectory of your
 web root. For example:</p>
-<pre class=codehilite><code>var/
+<pre><code>var/
 |- www/
 |  |- wordpress/
 |  |- expressive/
 |  |  |- public/
-|  |  |  |- index.php</code></pre>
+|  |  |  |- index.php
+</code></pre>
+
 <p>where <code>/var/www</code> is the web root, and your Expressive application is in the
 <code>expressive/</code> subdirectory. How can you make your application work correctly in
 this environment?</p>
 <h2 id="htaccess-in-the-application-root">.htaccess in the application root.</h2>
 <p>If you are using Apache, your first step is to add an <code>.htaccess</code> file to your
 application root, with directives for rewriting to the <code>public/</code> directory:</p>
-<pre class=codehilite><code class=language-ApacheConf>RewriteEngine On
-RewriteRule (.*) ./public/$1</code></pre>
+<pre><code class="language-ApacheConf">RewriteEngine On
+RewriteRule (.*) ./public/$1
+</code></pre>
+
 <blockquote>
 <h3>Using other web servers</h3>
 <p>If you are using a web-server other than Apache, and know how to do a similar
@@ -724,18 +728,24 @@ rewrite the URL accordingly.</p>
 <p>To use <code>los/basepath</code>, install it via Composer, copy the configuration files to
 your application, and then edit the configuration.</p>
 <p>To install and copy the configuration:</p>
-<pre class=codehilite><code class=language-bash>$ composer require los/basepath
-$ cp vendor/los/basepath/config/los-basepath.global.php.dist config/autoload/los-basepath.global.php</code></pre>
+<pre><code class="language-bash">$ composer require los/basepath
+$ cp vendor/los/basepath/config/los-basepath.global.php.dist config/autoload/los-basepath.global.php
+</code></pre>
+
 <p>We recommend copying the global configuration to a local configuration file as
 well; this allows you to have the production settings in your global
 configuration, and development settings in a local configuration (which is
 excluded from git by default):</p>
-<pre class=codehilite><code class=language-bash>$ cp config/autoload/los-basepath.global.php config/autoload/los-basepath.local.php</code></pre>
+<pre><code class="language-bash">$ cp config/autoload/los-basepath.global.php config/autoload/los-basepath.local.php
+</code></pre>
+
 <p>Then edit one or both, to change the <code>los_basepath</code> settings:</p>
-<pre class=codehilite><code class=language-php>return [
+<pre><code class="language-php">return [
     'los_basepath' =&gt; '&lt;base path here&gt;',
     /* ... */
-];</code></pre>
+];
+</code></pre>
+
 <p>The base path should be the portion of the web root leading up to the
 <code>index.php</code> of your application. In the above example, this would be
 <code>/expressive</code>.</p>
@@ -743,10 +753,12 @@ excluded from git by default):</p>
 <p>To use <code>mtymek/blast-base-url</code>, install it via Composer, and register some
 configuration.</p>
 <p>To install it:</p>
-<pre class=codehilite><code class=language-bash>$ composer require mtymek/blast-base-url</code></pre>
+<pre><code class="language-bash">$ composer require mtymek/blast-base-url
+</code></pre>
+
 <p>To configure it, update the file <code>config/autoload/middleware-pipeline.global.php</code>,
 or <code>config/autoload/dependencies.global.php</code> to map the middleware to its factory:</p>
-<pre class=codehilite><code class=language-php>return [
+<pre><code class="language-php">return [
     'dependencies' =&gt; [
         'factories' =&gt; [
             Blast\BaseUrl\BaseUrlMiddleware::class =&gt; Blast\BaseUrl\BaseUrlMiddlewareFactory::class,
@@ -754,15 +766,21 @@ or <code>config/autoload/dependencies.global.php</code> to map the middleware to
         ],
         /* ... */
     ],
-];</code></pre>
+];
+</code></pre>
+
 <p>If using programmatic pipelines, pipe the middleware early in your pipeline:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;pipe(\Blast\BaseUrl\BaseUrlMiddleware::class);</code></pre>
+<pre><code class="language-php">$app-&gt;pipe(\Blast\BaseUrl\BaseUrlMiddleware::class);
+</code></pre>
+
 <p>For configuration-driven pipelines, add an entry in your
 <code>config/autoload/middleware-pipeline.global.php</code> file:</p>
-<pre class=codehilite><code class=language-php>'middleware_pipeline' =&gt; [
+<pre><code class="language-php">'middleware_pipeline' =&gt; [
     ['middleware' =&gt; [Blast\BaseUrl\BaseUrlMiddleware::class], 'priority' =&gt; 1000],
     /* ... */
-],</code></pre>
+],
+</code></pre>
+
 <p>At this point, the middleware will take care of the rewriting for you. No
 configuration is necessary, as it does auto-detection of the base path based on
 the request URI and the operating system path to the application.</p>
@@ -775,17 +793,19 @@ the request URI and the operating system path to the application.</p>
 </ul>
 <p>To enable these features, we'll add some configuration to
 <code>config/autoload/dependencies.global.php</code> file:</p>
-<pre class=codehilite><code class=language-php>return [
+<pre><code class="language-php">return [
     'dependencies' =&gt; [
         'invokables' =&gt; [
             Blast\BaseUrl\BasePathHelper::class =&gt; Blast\BaseUrl\BasePathHelper::class,
             /* ... */
         ],
     ],
-];</code></pre>
+];
+</code></pre>
+
 <p>Finally, if you're using zend-view, you can register a new "basePath" helper in
 your <code>config/autoload/templates.global.php</code>:</p>
-<pre class=codehilite><code class=language-php>return [
+<pre><code class="language-php">return [
     /* ... */
     'view_helpers' =&gt; [
         'factories' =&gt; [
@@ -794,14 +814,17 @@ your <code>config/autoload/templates.global.php</code>:</p>
         ],
         /* ... */
     ],
-];</code></pre>
+];
+</code></pre>
+
 <p>Usage of the <code>BasePath</code> helper is as follows:</p>
-<pre class=codehilite><code class=language-php>// where $basePathHelper is an instance of Blast\BaseUrl\BasePathHelper
+<pre><code class="language-php">// where $basePathHelper is an instance of Blast\BaseUrl\BasePathHelper
 // as pulled from your container:
 echo $basePathHelper('/icons/favicon.ico');
 
 // or, from zend-view's PhpRenderer:
-echo $this-&gt;basePath('/icons/favicon.ico');</code></pre>
+echo $this-&gt;basePath('/icons/favicon.ico');
+</code></pre>
 
 
 
@@ -1324,7 +1347,7 @@ echo $this-&gt;basePath('/icons/favicon.ico');</code></pre>
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -1332,10 +1355,10 @@ echo $this-&gt;basePath('/icons/favicon.ico');</code></pre>
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -1343,27 +1366,28 @@ echo $this-&gt;basePath('/icons/favicon.ico');</code></pre>
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '../../..',
             siteName = 'Expressive';
     </script>
-    <script src="../../../js/scripts-8d7ae56abf.js"></script>
-        <script src="../../../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../../../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

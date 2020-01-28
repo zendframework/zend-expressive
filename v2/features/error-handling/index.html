@@ -7,13 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="PSR-15 Middleware in Minutes">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-expressive/v2/features/error-handling/">
+    <link rel="canonical" href="https://docs.zendframework.com/v2/features/error-handling/">
     <link rel="shortcut icon" href="../../../img/favicon.ico">
 
     <title>Error Handling - Expressive - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../../../css/styles-5cfabd53ee.css">
-        <link href="../../../css/zend-expressive.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="../../../css/zend-expressive.css" rel="stylesheet">
 </head>
 <body id="page-top">
 
@@ -601,9 +601,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.mezzio.dev/mezzio/">mezzio/mezzio.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -696,7 +696,9 @@
 <p>We recommend that your code raise exceptions for conditions where it cannot
 gracefully recover. Additionally, we recommend that you have a reasonable PHP
 <code>error_reporting</code> setting that includes warnings and fatal errors:</p>
-<pre class=codehilite><code class=language-php>error_reporting(E_ALL &amp; ~E_USER_DEPRECATED &amp; ~E_DEPRECATED &amp; ~E_STRICT &amp; ~E_NOTICE);</code></pre>
+<pre><code class="language-php">error_reporting(E_ALL &amp; ~E_USER_DEPRECATED &amp; ~E_DEPRECATED &amp; ~E_STRICT &amp; ~E_NOTICE);
+</code></pre>
+
 <p>If you follow these guidelines, you can then write or use middleware that does
 the following:</p>
 <ul>
@@ -704,7 +706,7 @@ the following:</p>
 <li>wraps execution of the delegate (<code>$delegate-&gt;process()</code>) with a try/catch block.</li>
 </ul>
 <p>As an example:</p>
-<pre class=codehilite><code class=language-php>function ($request, DelegateInterface $delegate)
+<pre><code class="language-php">function ($request, DelegateInterface $delegate)
 {
     set_error_handler(function ($errno, $errstr, $errfile, $errline) {
         if (! (error_reporting() &amp; $errno)) {
@@ -729,10 +731,14 @@ the following:</p>
         $e-&gt;getMessage(),
         $e-&gt;getTraceAsString()
     ), 500);
-}</code></pre>
+}
+</code></pre>
+
 <p>You would then pipe this as the outermost (or close to outermost) layer of your
 application:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;pipe($errorMiddleware);</code></pre>
+<pre><code class="language-php">$app-&gt;pipe($errorMiddleware);
+</code></pre>
+
 <p>So that you do not need to do this, we provide an error handler for you, via
 zend-stratigility: <code>Zend\Stratigility\Middleware\ErrorHandler</code>.</p>
 <p>This implementation allows you to both:</p>
@@ -766,7 +772,7 @@ generating the instance; it should be mapped to the service
 </ul>
 <p>Map the service <code>Zend\Expressive\Middleware\ErrorResponseGenerator</code> to one of
 these two factories in your configuration:</p>
-<pre class=codehilite><code class=language-php>use Zend\Expressive\Container;
+<pre><code class="language-php">use Zend\Expressive\Container;
 use Zend\Expressive\Middleware;
 use Zend\Stratigility\Middleware\ErrorHandler;
 
@@ -777,7 +783,9 @@ return [
             Middleware\ErrorResponseGenerator::class =&gt; Container\ErrorResponseGeneratorFactory::class,
         ],
     ],
-];</code></pre>
+];
+</code></pre>
+
 <blockquote>
 <h3>Use development mode configuration to enable whoops</h3>
 <p>You can specify the above in one of your <code>config/autoload/*.global.php</code> files,
@@ -809,15 +817,17 @@ want to enable whoops.</p>
 features such as logging. <code>Zend\Stratigility\Middleware\ErrorHandler</code> provides
 the ability to do so via its <code>attachListener()</code> method.</p>
 <p>This method accepts a callable with the following signature:</p>
-<pre class=codehilite><code class=language-php>function (
+<pre><code class="language-php">function (
     Throwable|Exception $error,
     ServerRequestInterface $request,
     ResponseInterface $response
-) : void</code></pre>
+) : void
+</code></pre>
+
 <p>The response provided is the response returned by your error response generator,
 allowing the listener the ability to introspect the generated response as well.</p>
 <p>As an example, you could create a logging listener as follows:</p>
-<pre class=codehilite><code class=language-php>namespace Acme;
+<pre><code class="language-php">namespace Acme;
 
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -851,10 +861,12 @@ class LoggingErrorListener
             $error-&gt;getMessage()
         ));
     }
-}</code></pre>
+}
+</code></pre>
+
 <p>You could then use a <a href="../container/delegator-factories/">delegator factory</a> to
 create your logger listener and attach it to your error handler:</p>
-<pre class=codehilite><code class=language-php>namespace Acme;
+<pre><code class="language-php">namespace Acme;
 
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -875,12 +887,14 @@ class LoggingErrorListenerDelegatorFactory
         $errorHandler-&gt;attachListener($listener);
         return $errorHandler;
     }
-}</code></pre>
+}
+</code></pre>
+
 <h2 id="handling-more-specific-error-types">Handling more specific error types</h2>
 <p>You could also write more specific error handlers. As an example, you might want
 to catch <code>UnauthorizedException</code> instances specifically, and display a login
 page:</p>
-<pre class=codehilite><code class=language-php>function ($request, DelegateInterface $delegate) use ($renderer)
+<pre><code class="language-php">function ($request, DelegateInterface $delegate) use ($renderer)
 {
     try {
         $response = $delegate-&gt;process($request);
@@ -892,13 +906,17 @@ page:</p>
         $renderer-&gt;render('error::unauthorized'),
         401
     );
-}</code></pre>
+}
+</code></pre>
+
 <p>You could then push this into a middleware pipe only when it's needed:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;get('/dashboard', [
+<pre><code class="language-php">$app-&gt;get('/dashboard', [
     $unauthorizedHandlerMiddleware,
     $middlewareThatChecksForAuthorization,
     $middlewareBehindAuthorizationWall,
-], 'dashboard');</code></pre>
+], 'dashboard');
+</code></pre>
+
 <h2 id="default-delegates">Default delegates</h2>
 <p><code>Zend\Expressive\Application</code> manages an internal middleware pipeline; when you
 call <code>$delegate-&gt;process()</code>, <code>Application</code> is popping off the next middleware in
@@ -917,7 +935,7 @@ optionally using a composed template renderer to do so.</p>
 creating an instance, and this should be mapped to the
 <code>Zend\Expressive\Delegate\NotFoundDelegate</code> service, and aliased to the
 <code>Zend\Expressive\Delegate\DefaultDelegate</code> service:</p>
-<pre class=codehilite><code class=language-php>use Zend\Expressive\Container;
+<pre><code class="language-php">use Zend\Expressive\Container;
 use Zend\Expressive\Delegate;
 
 return [
@@ -929,7 +947,9 @@ return [
             Delegate\NotFoundDelegate::class =&gt; Container\NotFoundDelegateFactory::class,
         ],
     ],
-];</code></pre>
+];
+</code></pre>
+
 <p>The factory will consume the following services:</p>
 <ul>
 <li>
@@ -961,7 +981,7 @@ condition.</p>
 with an accompanying <code>Zend\Expressive\Container\NotFoundHandlerFactory</code>. This
 middleware composes and proxies to the <code>NotFoundDelegate</code> detailed in the
 previous section, and, as such, requires that that service be present.</p>
-<pre class=codehilite><code class=language-php>use Zend\Expressive\Container;
+<pre><code class="language-php">use Zend\Expressive\Container;
 use Zend\Expressive\Delegate;
 use Zend\Expressive\Middleware;
 
@@ -970,14 +990,17 @@ return [
         Delegate\NotFoundDelegate::class =&gt; Container\NotFoundDelegateFactory::class,
         Middleware\NotFoundHandler::class =&gt; Container\NotFoundHandlerFactory::class,
     ],
-];</code></pre>
+];
+</code></pre>
+
 <p>When registered, you should then pipe it as the innermost layer of your
 application:</p>
-<pre class=codehilite><code class=language-php>// A basic application:
+<pre><code class="language-php">// A basic application:
 $app-&gt;pipe(ErrorHandler::class);
 $app-&gt;pipeRoutingMiddleware();
 $app-&gt;pipeDispatchMiddleware();
-$app-&gt;pipe(NotFoundHandler::class);</code></pre>
+$app-&gt;pipe(NotFoundHandler::class);
+</code></pre>
 
 
 
@@ -1500,7 +1523,7 @@ $app-&gt;pipe(NotFoundHandler::class);</code></pre>
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -1508,10 +1531,10 @@ $app-&gt;pipe(NotFoundHandler::class);</code></pre>
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -1519,27 +1542,28 @@ $app-&gt;pipe(NotFoundHandler::class);</code></pre>
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '../../..',
             siteName = 'Expressive';
     </script>
-    <script src="../../../js/scripts-8d7ae56abf.js"></script>
-        <script src="../../../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../../../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

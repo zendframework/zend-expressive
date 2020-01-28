@@ -7,13 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="PSR-15 Middleware in Minutes">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-expressive/v2/features/container/factories/">
+    <link rel="canonical" href="https://docs.zendframework.com/v2/features/container/factories/">
     <link rel="shortcut icon" href="../../../../img/favicon.ico">
 
     <title>Container Factories - Expressive - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../../../../css/styles-5cfabd53ee.css">
-        <link href="../../../../css/zend-expressive.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="../../../../css/zend-expressive.css" rel="stylesheet">
 </head>
 <body id="page-top">
 
@@ -601,9 +601,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.mezzio.dev/mezzio/">mezzio/mezzio.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -778,38 +778,36 @@ order to seed the <code>Application</code> instance:</p>
 <p><code>middleware_pipeline</code> can be used to seed the middleware pipeline:</p>
 </li>
 </ul>
-<p>```php
-  'middleware_pipeline' =&gt; [
+<pre><code class="language-php">  'middleware_pipeline' =&gt; [
       // An array of middleware to register.
-      [ /<em> ... </em>/ ],</p>
-<pre class="codehilite"><code>  // Expressive 1.0:
-  Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
-  Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+      [ /* ... */ ],
 
-  // Expressive 1.1 and above (above constants will still work, though):
-  Zend\Expressive\Application::ROUTING_MIDDLEWARE,
-  Zend\Expressive\Application::DISPATCH_MIDDLEWARE,
+      // Expressive 1.0:
+      Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+      Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
 
-  [ /* ... */ ],</code></pre>
+      // Expressive 1.1 and above (above constants will still work, though):
+      Zend\Expressive\Application::ROUTING_MIDDLEWARE,
+      Zend\Expressive\Application::DISPATCH_MIDDLEWARE,
 
+      [ /* ... */ ],
+  ],
+</code></pre>
 
-<p>],
-  ```</p>
 <p>Each item of the array, other than the entries for routing and dispatch
   middleware, must be an array itself, with the following structure:</p>
-<p>```php
-  [
+<pre><code class="language-php">  [
       // required:
       'middleware' =&gt; 'Name of middleware service, valid middleware, or an array of these',
       // optional:
       'path'  =&gt; '/path/to/match',
-      'priority' =&gt; 1, // Integer</p>
-<pre class="codehilite"><code>  // optional under Expressive 1.X; ignored under 2.X:
-  'error' =&gt; false, // boolean</code></pre>
+      'priority' =&gt; 1, // Integer
 
+      // optional under Expressive 1.X; ignored under 2.X:
+      'error' =&gt; false, // boolean
+  ],
+</code></pre>
 
-<p>],
-  ```</p>
 <p>The <code>middleware</code> key itself is the middleware to execute, and must be a
   service name resolving to valid middleware, middleware instances (either
   http-interop middleware or callable double-pass middleware), or an array of
@@ -836,8 +834,7 @@ order to seed the <code>Application</code> instance:</p>
 <li><code>routes</code> is used to define routed middleware. The value must be an array,
   consisting of arrays defining each middleware:</li>
 </ul>
-<p><code>php
-  'routes' =&gt; [
+<pre><code class="language-php">  'routes' =&gt; [
       [
           'path' =&gt; '/path/to/match',
           'middleware' =&gt; 'Middleware service name, valid middleware, or array of these values',
@@ -849,20 +846,21 @@ order to seed the <code>Application</code> instance:</p>
           ],
       ],
       // etc.
-  ],</code></p>
+  ],
+</code></pre>
+
 <p>Each route <em>requires</em>:</p>
-<pre class="codehilite"><code>- `path`: the path to match. Format will be based on the router you choose for
+<pre><code>- `path`: the path to match. Format will be based on the router you choose for
   your project.
 
 - `middleware`: a service name resolving to valid middleware, valid
   middleware (either http-interop middleware or callable double-pass
   middleware), or an array of such values (which will be composed into
   a `Zend\Stratigility\MiddlewarePipe` instance); this middleware will be
-  dispatched when the route matches.</code></pre>
-
-
+  dispatched when the route matches.
+</code></pre>
 <p>Optionally, the route definition may provide:</p>
-<pre class="codehilite"><code>- `allowed_methods`: an array of allowed HTTP methods. If not provided, the
+<pre><code>- `allowed_methods`: an array of allowed HTTP methods. If not provided, the
   application assumes any method is allowed.
 
 - `name`: if not provided, the path will be used as the route name (and, if
@@ -870,9 +868,8 @@ order to seed the <code>Application</code> instance:</p>
 
 - `options`: a key/value set of additional options to pass to the underlying
   router implementation for the given route. (Typical use cases include
-  passing constraints or default values.)</code></pre>
-
-
+  passing constraints or default values.)
+</code></pre>
 <h2 id="errorhandlerfactory">ErrorHandlerFactory</h2>
 <ul>
 <li><strong>Provides</strong>: <code>Zend\Stratigility\Middleware\ErrorHandler</code></li>
@@ -910,12 +907,14 @@ order to seed the <code>Application</code> instance:</p>
   constant).</li>
 </ul>
 <p>As an example:</p>
-<pre class=codehilite><code class=language-php>'debug' =&gt; true,
+<pre><code class="language-php">'debug' =&gt; true,
 'zend-expressive' =&gt; [
     'error_handler' =&gt; [
         'template_error' =&gt; 'name of error template',
     ],
-],</code></pre>
+],
+</code></pre>
+
 <h2 id="notfounddelegatefactory">NotFoundDelegateFactory</h2>
 <ul>
 <li><strong>Provides</strong>: <code>Zend\Expressive\Delegate\NotFoundDelegate</code></li>
@@ -937,11 +936,13 @@ order to seed the <code>Application</code> instance:</p>
   <code>Zend\Expressive\Delegate\NotFoundDelegate::TEMPLATE_DEFAULT</code> constant).</li>
 </ul>
 <p>As an example:</p>
-<pre class=codehilite><code class=language-php>'zend-expressive' =&gt; [
+<pre><code class="language-php">'zend-expressive' =&gt; [
     'error_handler' =&gt; [
         'template_404' =&gt; 'name of 404 template',
     ],
-],</code></pre>
+],
+</code></pre>
+
 <h2 id="notfoundhandlerfactory">NotFoundHandlerFactory</h2>
 <ul>
 <li><strong>Provides</strong>: <code>Zend\Expressive\Middleware\NotFoundHandler</code></li>
@@ -975,13 +976,15 @@ properly with <code>Zend\Expressive\Application</code>; this includes disabling 
 write-to-output, disabling immediate quit, etc. The <code>PrettyPageHandler</code> returned
 for the <code>Zend\Expressive\WhoopsPageHandler</code> service will be injected.</p>
 <p>It consumes the following <code>config</code> structure:</p>
-<pre class=codehilite><code class=language-php>'whoops' =&gt; [
+<pre><code class="language-php">'whoops' =&gt; [
     'json_exceptions' =&gt; [
         'display'    =&gt; true,
         'show_trace' =&gt; true,
         'ajax_only'  =&gt; true,
     ],
-],</code></pre>
+],
+</code></pre>
+
 <p>If no <code>whoops</code> top-level key is present in the configuration, a default instance
 with no <code>JsonResponseHandler</code> composed will be created.</p>
 <h2 id="whoopspagehandlerfactory">WhoopsPageHandlerFactory</h2>
@@ -997,9 +1000,11 @@ with no <code>JsonResponseHandler</code> composed will be created.</p>
 </li>
 </ul>
 <p>It consumes the following <code>config</code> structure:</p>
-<pre class=codehilite><code class=language-php>'whoops' =&gt; [
+<pre><code class="language-php">'whoops' =&gt; [
     'editor' =&gt; 'editor name, editor service name, or callable',
-],</code></pre>
+],
+</code></pre>
+
 <p>The <code>editor</code> value must be a known editor name (see the Whoops documentation for
 pre-configured editor types), a callable, or a service name to use.</p>
 <h2 id="platesrendererfactory">PlatesRendererFactory</h2>
@@ -1016,7 +1021,7 @@ pre-configured editor types), a callable, or a service name to use.</p>
 </li>
 </ul>
 <p>It consumes the following <code>config</code> structure:</p>
-<pre class=codehilite><code class=language-php>'templates' =&gt; [
+<pre><code class="language-php">'templates' =&gt; [
     'extension' =&gt; 'file extension used by templates; defaults to html',
     'paths' =&gt; [
         // namespace / path pairs
@@ -1024,7 +1029,9 @@ pre-configured editor types), a callable, or a service name to use.</p>
         // Numeric namespaces imply the default/main namespace. Paths may be
         // strings or arrays of string paths to associate with the namespace.
     ],
-]</code></pre>
+]
+</code></pre>
+
 <p>One note: Due to a limitation in the Plates engine, you can only map one path
 per namespace when using Plates.</p>
 <h2 id="twigrendererfactory">TwigRendererFactory</h2>
@@ -1045,7 +1052,7 @@ per namespace when using Plates.</p>
 </li>
 </ul>
 <p>It consumes the following <code>config</code> structure:</p>
-<pre class=codehilite><code class=language-php>'debug' =&gt; boolean,
+<pre><code class="language-php">'debug' =&gt; boolean,
 'templates' =&gt; [
     'cache_dir' =&gt; 'path to cached templates',
     'assets_url' =&gt; 'base URL for assets',
@@ -1057,7 +1064,9 @@ per namespace when using Plates.</p>
         // Numeric namespaces imply the default/main namespace. Paths may be
         // strings or arrays of string paths to associate with the namespace.
     ],
-]</code></pre>
+]
+</code></pre>
+
 <p>When <code>debug</code> is true, it disables caching, enables debug mode, enables strict
 variables, and enables auto reloading. The <code>assets_*</code> values are used to seed
 the <code>TwigExtension</code> instance (assuming the router was found).</p>
@@ -1082,7 +1091,7 @@ the <code>TwigExtension</code> instance (assuming the router was found).</p>
 </li>
 </ul>
 <p>It consumes the following <code>config</code> structure:</p>
-<pre class=codehilite><code class=language-php>'templates' =&gt; [
+<pre><code class="language-php">'templates' =&gt; [
     'layout' =&gt; 'name of layout view to use, if any',
     'map'    =&gt; [
         // template =&gt; filename pairs
@@ -1093,7 +1102,9 @@ the <code>TwigExtension</code> instance (assuming the router was found).</p>
         // Numeric namespaces imply the default/main namespace. Paths may be
         // strings or arrays of string paths to associate with the namespace.
     ],
-]</code></pre>
+]
+</code></pre>
+
 <p>When creating the <code>PhpRenderer</code> instance, it will inject it with a
 <code>Zend\View\HelperPluginManager</code> instance (either pulled from the container, or
 instantiated directly). It injects the helper plugin manager with custom url and
@@ -1621,7 +1632,7 @@ serverurl helpers, <code>Zend\Expressive\ZendView\UrlHelper</code> and
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -1629,10 +1640,10 @@ serverurl helpers, <code>Zend\Expressive\ZendView\UrlHelper</code> and
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -1640,27 +1651,28 @@ serverurl helpers, <code>Zend\Expressive\ZendView\UrlHelper</code> and
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '../../../..',
             siteName = 'Expressive';
     </script>
-    <script src="../../../../js/scripts-8d7ae56abf.js"></script>
-        <script src="../../../../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../../../../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

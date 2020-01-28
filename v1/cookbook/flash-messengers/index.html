@@ -7,13 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="PSR-15 Middleware in Minutes">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-expressive/v1/cookbook/flash-messengers/">
+    <link rel="canonical" href="https://docs.zendframework.com/v1/cookbook/flash-messengers/">
     <link rel="shortcut icon" href="../../../img/favicon.ico">
 
     <title>Flash Messengers - Expressive - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../../../css/styles-5cfabd53ee.css">
-        <link href="../../../css/zend-expressive.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="../../../css/zend-expressive.css" rel="stylesheet">
 </head>
 <body id="page-top">
 
@@ -556,9 +556,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.mezzio.dev/mezzio/">mezzio/mezzio.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -662,10 +662,12 @@ damess/expressive-session-middleware.</p>
 <p>Slim's <a href="https://github.com/slimphp/Slim-Flash">Flash messages service provider</a> can be
 used in Expressive. It uses PHP's native session support.</p>
 <p>First, you'll need to add it to your application:</p>
-<pre class=codehilite><code class=language-bash>$ composer require slim/flash</code></pre>
+<pre><code class="language-bash">$ composer require slim/flash
+</code></pre>
+
 <p>Once you have, you'll need to create a factory to return middleware that will
 add the flash message provider to the request:</p>
-<pre class=codehilite><code class=language-php>namespace App;
+<pre><code class="language-php">namespace App;
 
 use Slim\Flash\Messages;
 
@@ -683,10 +685,12 @@ class SlimFlashMiddlewareFactory
             );
         };
     }
-}</code></pre>
+}
+</code></pre>
+
 <p>Now, let's register it with our middleware pipeline. In
 <code>config/autoload/middleware-pipeline.global.php</code>, make the following additions:</p>
-<pre class=codehilite><code class=language-php>return [
+<pre><code class="language-php">return [
     'dependencies' =&gt; [
         'factories' =&gt; [
             'App\SlimFlashMiddleware' =&gt; App\SlimFlashMiddlewareFactory::class,
@@ -704,7 +708,9 @@ class SlimFlashMiddlewareFactory
         ],
         /* ... */
     ],
-];</code></pre>
+];
+</code></pre>
+
 <blockquote>
 <h3>Where to register the flash middleware</h3>
 <p>Sessions can sometimes be expensive. As such, you may not want the flash
@@ -713,7 +719,7 @@ middleware as part of a route-specific pipeline instead.</p>
 </blockquote>
 <p>From here, you can add and read messages by accessing the request's flash
 attribute. As an example, middleware generating messages might read as follows:</p>
-<pre class=codehilite><code class=language-php>use Zend\Diactoros\Response\RedirectResponse;
+<pre><code class="language-php">use Zend\Diactoros\Response\RedirectResponse;
 
 public function __invoke($request, $response, $next)
 {
@@ -721,14 +727,18 @@ public function __invoke($request, $response, $next)
     $flash-&gt;addMessage('message', 'Hello World!');
 
     return new RedirectResponse('/other-middleware');
-}</code></pre>
+}
+</code></pre>
+
 <p>And middleware consuming the message might read:</p>
-<pre class=codehilite><code class=language-php>public function __invoke($request, $response, $next)
+<pre><code class="language-php">public function __invoke($request, $response, $next)
 {
     $flash = $request-&gt;getAttribute('flash');
     $messages = $flash-&gt;getMessages();
     // ...
-}</code></pre>
+}
+</code></pre>
+
 <p>From there, it's a matter of providing the flash messages to your template.</p>
 <h2 id="damessexpressive-session-middleware-and-aurasession">damess/expressive-session-middleware and Aura.Session</h2>
 <p><a href="https://github.com/dannym87/expressive-session-middleware">damess/expressive-session-middleware</a>
@@ -736,9 +746,11 @@ provides middleware for initializing an
 <a href="https://github.com/auraphp/Aura.Session">Aura.Session</a> instance; Aura.Session
 provides flash messaging capabilities as part of its featureset.</p>
 <p>Install it via Composer:</p>
-<pre class=codehilite><code class=language-bash>$ composer require damess/expressive-session-middleware</code></pre>
+<pre><code class="language-bash">$ composer require damess/expressive-session-middleware
+</code></pre>
+
 <p>In <code>config/autoload/dependencies.global.php</code>, add an entry for Aura.Session:</p>
-<pre class=codehilite><code class=language-php>return [
+<pre><code class="language-php">return [
     'dependencies' =&gt; [
         'factories' =&gt; [
             Aura\Session\Session::class =&gt; DaMess\Factory\AuraSessionFactory::class,
@@ -746,10 +758,12 @@ provides flash messaging capabilities as part of its featureset.</p>
         ],
         /* ... */
     ],
-];</code></pre>
+];
+</code></pre>
+
 <p>In <code>config/autoload/middleware-pipeline.global.php</code>, add a factory entry for the
 <code>damess/expressive-session-middleware</code>, and add it to the middleware pipeline:</p>
-<pre class=codehilite><code class=language-php>return [
+<pre><code class="language-php">return [
     'dependencies' =&gt; [
         'factories' =&gt; [
             DaMess\Http\SessionMiddleware::class =&gt; DaMess\Factory\SessionMiddlewareFactory::class,
@@ -767,7 +781,9 @@ provides flash messaging capabilities as part of its featureset.</p>
         ],
         /* ... */
     ],
-];</code></pre>
+];
+</code></pre>
+
 <blockquote>
 <h3>Where to register the session middleware</h3>
 <p>Sessions can sometimes be expensive. As such, you may not want the session
@@ -777,12 +793,14 @@ middleware as part of a route-specific pipeline instead.</p>
 <p>Once enabled, the <code>SessionMiddleware</code> will inject the Aura.Session instance into
 the request as the <code>session</code> attribute; you can thus retrieve it within
 middleware using the following:</p>
-<pre class=codehilite><code class=language-php>$session = $request-&gt;getAttribute('session');</code></pre>
+<pre><code class="language-php">$session = $request-&gt;getAttribute('session');
+</code></pre>
+
 <p>To create and consume flash messages, use Aura.Session's
 <a href="https://github.com/auraphp/Aura.Session#flash-values">flash values</a>. As
 an example, the middleware that is processing a POST request might set a flash
 message:</p>
-<pre class=codehilite><code class=language-php>use Zend\Diactoros\Response\RedirectResponse;
+<pre><code class="language-php">use Zend\Diactoros\Response\RedirectResponse;
 
 public function __invoke($request, $response, $next)
 {
@@ -791,16 +809,20 @@ public function __invoke($request, $response, $next)
             -&gt;setFlash('message', 'Hello World!');
 
     return new RedirectResponse('/other-middleware');
-}</code></pre>
+}
+</code></pre>
+
 <p>Another middleware, to which the original middleware redirects, might look like
 this:</p>
-<pre class=codehilite><code class=language-php>public function __invoke($request, $response, $next)
+<pre><code class="language-php">public function __invoke($request, $response, $next)
 {
     $session = $request-&gt;getAttribute('session');
     $message = $session-&gt;getSegment(__NAMESPACE__)
                        -&gt;getFlash('message');
     // ...
-}</code></pre>
+}
+</code></pre>
+
 <p>From there, it's a matter of providing the flash messages to your template.</p>
 
 
@@ -1279,7 +1301,7 @@ this:</p>
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -1287,10 +1309,10 @@ this:</p>
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -1298,27 +1320,28 @@ this:</p>
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '../../..',
             siteName = 'Expressive';
     </script>
-    <script src="../../../js/scripts-8d7ae56abf.js"></script>
-        <script src="../../../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../../../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

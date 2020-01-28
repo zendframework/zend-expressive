@@ -7,13 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="PSR-15 Middleware in Minutes">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-expressive/v1/features/application/">
+    <link rel="canonical" href="https://docs.zendframework.com/v1/features/application/">
     <link rel="shortcut icon" href="../../../img/favicon.ico">
 
     <title>Applications - Expressive - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../../../css/styles-5cfabd53ee.css">
-        <link href="../../../css/zend-expressive.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="../../../css/zend-expressive.css" rel="stylesheet">
 </head>
 <body id="page-top">
 
@@ -556,9 +556,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.mezzio.dev/mezzio/">mezzio/mezzio.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -676,7 +676,7 @@ likely interact with at some point or another.</p>
 <h3>Constructor</h3>
 <p>If you wish to manually instantiate the <code>Application</code> instance, it has the
 following constructor:</p>
-<pre class=codehilite><code class=language-php>/**
+<pre><code class="language-php">/**
  * @param Zend\Expressive\Router\RouterInterface $router
  * @param null|Interop\Container\ContainerInterface $container IoC container from which to pull services, if any.
  * @param null|callable $finalHandler Final handler to use when $out is not
@@ -689,7 +689,9 @@ public function __construct(
     Interop\Container\ContainerInterface $container = null,
     callable $finalHandler = null,
     Zend\Diactoros\Response\EmitterInterface $emitter = null
-);</code></pre>
+);
+</code></pre>
+
 <p>If no container is provided at instantiation, then all routed and piped
 middleware <strong>must</strong> be provided as callables.</p>
 <h3>AppFactory</h3>
@@ -697,10 +699,12 @@ middleware <strong>must</strong> be provided as callables.</p>
 <code>Application</code> instance; it makes the assumption that you will use defaults in
 most situations, and likely only change which container and/or router you wish
 to use. It has the following signature:</p>
-<pre class=codehilite><code class=language-php>AppFactory::create(
+<pre><code class="language-php">AppFactory::create(
     Interop\Container\ContainerInterface $container = null,
     Zend\Expressive\Router\RouterInterface $router = null
-);</code></pre>
+);
+</code></pre>
+
 <p>When no container or router are provided, it defaults to:</p>
 <ul>
 <li>zend-servicemanager for the container.</li>
@@ -719,12 +723,14 @@ the primary features of zend-expressive.</p>
 can use the following methods to provide routable middleware:</p>
 <h3>route()</h3>
 <p><code>route()</code> has the following signature:</p>
-<pre class=codehilite><code class=language-php>public function route(
+<pre><code class="language-php">public function route(
     $pathOrRoute,
     $middleware = null,
     array $methods = null,
     $name = null
-) : Zend\Expressive\Router\Route</code></pre>
+) : Zend\Expressive\Router\Route
+</code></pre>
+
 <p>where:</p>
 <ul>
 <li><code>$pathOrRoute</code> may be either a string path to match, or a
@@ -747,11 +753,13 @@ multiple HTTP request methods.</p>
 <h3>get(), post(), put(), patch(), delete(), any()</h3>
 <p>Each of the methods <code>get()</code>, <code>post()</code>, <code>put()</code>, <code>patch()</code>, <code>delete()</code>, and <code>any()</code>
 proxies to <code>route()</code> and has the signature:</p>
-<pre class=codehilite><code class=language-php>function (
+<pre><code class="language-php">function (
     $pathOrRoute,
     $middleware = null,
     $name = null
-) : Zend\Expressive\Router\Route</code></pre>
+) : Zend\Expressive\Router\Route
+</code></pre>
+
 <p>Essentially, each calls <code>route()</code> and specifies an array consisting solely of
 the corresponding HTTP method for the <code>$methods</code> argument.</p>
 <h3>Piping</h3>
@@ -761,7 +769,9 @@ and, more specifically, its <code>MiddlewarePipe</code> definition, you can also
 should execute on each request, defining error handlers, and/or segregating
 applications by subpath.</p>
 <p>The signature of <code>pipe()</code> is:</p>
-<pre class=codehilite><code class=language-php>public function pipe($pathOrMiddleware, $middleware = null)</code></pre>
+<pre><code class="language-php">public function pipe($pathOrMiddleware, $middleware = null)
+</code></pre>
+
 <p>where:</p>
 <ul>
 <li><code>$pathOrMiddleware</code> is either a string URI path (for path segregation), a
@@ -781,11 +791,15 @@ middleware only when it is invoked. Internally, it wraps the call to fetch and
 dispatch the middleware inside a closure.</p>
 <p>Additionally, we define a new method, <code>pipeErrorHandler()</code>, with the following
 signature:</p>
-<pre class=codehilite><code class=language-php>public function pipeErrorHandler($pathOrMiddleware, $middleware = null)</code></pre>
+<pre><code class="language-php">public function pipeErrorHandler($pathOrMiddleware, $middleware = null)
+</code></pre>
+
 <p>It acts just like <code>pipe()</code> except when the middleware specified is a service
 name; in that particular case, when it wraps the middleware in a closure, it
 uses the error handler signature:</p>
-<pre class=codehilite><code class=language-php>function ($error, ServerRequestInterface $request, ResponseInterface $response, callable $next);</code></pre>
+<pre><code class="language-php">function ($error, ServerRequestInterface $request, ResponseInterface $response, callable $next);
+</code></pre>
+
 <p>Read the section on <a href="../router/piping/">piping vs routing</a> for more information.</p>
 <h3>Registering routing and dispatch middleware</h3>
 <p>Routing is accomplished via a dedicated middleware method,
@@ -794,8 +808,10 @@ has a corresponding instance middleware method, <code>Application::dispatchMiddl
 Each can be piped/registered with other middleware platforms if desired.</p>
 <p>These methods <strong>MUST</strong> be piped to the application so that the application will
 route and dispatch routed middleware. This is done using the following methods:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;pipeRoutingMiddleware();
-$app-&gt;pipeDispatchMiddleware();</code></pre>
+<pre><code class="language-php">$app-&gt;pipeRoutingMiddleware();
+$app-&gt;pipeDispatchMiddleware();
+</code></pre>
+
 <p>See the section on <a href="../router/piping/">piping</a> to see how you can register
 non-routed middleware and create layered middleware applications.</p>
 <h2 id="retrieving-dependencies">Retrieving dependencies</h2>
@@ -817,10 +833,11 @@ methods for retrieving them. They include:</p>
 <p>When the application is completely setup, you can execute it with the <code>run()</code>
 method. The method may be called with no arguments, but has the following
 signature:</p>
-<pre class=codehilite><code class=language-php>public function run(
+<pre><code class="language-php">public function run(
     ServerRequestInterface $request = null,
     ResponseInterface $response = null
-);</code></pre>
+);
+</code></pre>
 
 
 
@@ -1298,7 +1315,7 @@ signature:</p>
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -1306,10 +1323,10 @@ signature:</p>
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -1317,27 +1334,28 @@ signature:</p>
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '../../..',
             siteName = 'Expressive';
     </script>
-    <script src="../../../js/scripts-8d7ae56abf.js"></script>
-        <script src="../../../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../../../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

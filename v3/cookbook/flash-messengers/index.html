@@ -7,13 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="PSR-15 Middleware in Minutes">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-expressive/v3/cookbook/flash-messengers/">
+    <link rel="canonical" href="https://docs.zendframework.com/v3/cookbook/flash-messengers/">
     <link rel="shortcut icon" href="../../../img/favicon.ico">
 
     <title>Flash Messengers - Expressive - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../../../css/styles-5cfabd53ee.css">
-        <link href="../../../css/zend-expressive.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="../../../css/zend-expressive.css" rel="stylesheet">
 </head>
 <body id="page-top">
 
@@ -628,9 +628,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.mezzio.dev/mezzio/">mezzio/mezzio.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -730,28 +730,36 @@ have a dependency on a session library. Two such libraries are:</p>
 is a new offering from Zend Framework. Using it requires a session persistence
 engine as well, and Zend Framework provides that as well. Install the component
 using the following:</p>
-<pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-expressive-flash zendframework/zend-expressive-session-ext</code></pre>
+<pre><code class="language-bash">$ composer require zendframework/zend-expressive-flash zendframework/zend-expressive-session-ext
+</code></pre>
+
 <p>Once installed, you will need to pipe the middleware, along with the
 zend-expressive-session middleware, in your pipeline. This can be done at the
 application level:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;pipe(\Zend\Expressive\Session\SessionMiddleware::class);
-$app-&gt;pipe(\Zend\Expressive\Flash\FlashMessageMiddleware::class);</code></pre>
+<pre><code class="language-php">$app-&gt;pipe(\Zend\Expressive\Session\SessionMiddleware::class);
+$app-&gt;pipe(\Zend\Expressive\Flash\FlashMessageMiddleware::class);
+</code></pre>
+
 <p>or within a routed middleware pipeline:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;post('/user/login', [
+<pre><code class="language-php">$app-&gt;post('/user/login', [
     \Zend\Expressive\Session\SessionMiddleware::class,
     \Zend\Expressive\Flash\FlashMessageMiddleware::class,
     LoginHandler::class,
-]);</code></pre>
+]);
+</code></pre>
+
 <p>Once this is in place, the flash message container will be registered as a
 request attribute, which you can then pull and manipulate:</p>
-<pre class=codehilite><code class=language-php>$flashMessages = $request-&gt;getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
+<pre><code class="language-php">$flashMessages = $request-&gt;getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
 // or $flashMessages = $request-&gt;getAttribute('flash');
 
 // Create a flash message for the next request:
 $flashMessages-&gt;flash($messageName, $messageValue);
 
 // Or retrieve them:
-$message = $flashMessages-&gt;getFlash($messageName);</code></pre>
+$message = $flashMessages-&gt;getFlash($messageName);
+</code></pre>
+
 <p>The component has functionality for specifying the number of hops the message
 will be valid for, as well as accessing messages created in the current request;
 <a href="https://docs.zendframework.com/zend-expressive-flash/intro/">read more in the documentation</a>.</p>
@@ -759,9 +767,11 @@ will be valid for, as well as accessing messages created in the current request;
 <p>Slim's <a href="https://github.com/slimphp/Slim-Flash">Flash messages service provider</a> can be
 used in Expressive. It uses PHP's native session support.</p>
 <p>First, you'll need to add it to your application:</p>
-<pre class=codehilite><code class=language-bash>$ composer require slim/flash</code></pre>
+<pre><code class="language-bash">$ composer require slim/flash
+</code></pre>
+
 <p>Second, create middleware that will add the flash message provider to the request:</p>
-<pre class=codehilite><code class=language-php>&lt;?php
+<pre><code class="language-php">&lt;?php
 namespace App;
 
 use Psr\Http\Message\ResponseInterface;
@@ -781,11 +791,13 @@ class SlimFlashMiddleware implements MiddlewareInterface
             $request-&gt;withAttribute('flash', new Messages())
         );
     }
-}</code></pre>
+}
+</code></pre>
+
 <p>Third, we will register the new middleware with our container as an invokable.
 Edit either the file <code>config/autoload/dependencies.global.php</code> or
 <code>config/autoload/middleware-pipeline.global.php</code> to add the following:</p>
-<pre class=codehilite><code class=language-php>return [
+<pre><code class="language-php">return [
     'dependencies' =&gt; [
         'invokables' =&gt; [
             App\SlimFlashMiddleware::class =&gt; App\SlimFlashMiddleware::class,
@@ -793,19 +805,25 @@ Edit either the file <code>config/autoload/dependencies.global.php</code> or
         ],
         /* ... */
     ],
-];</code></pre>
+];
+</code></pre>
+
 <p>Finally, let's register it with our middleware pipeline. For programmatic
 pipelines, pipe the middleware somewhere, generally before the routing middleware:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;pipe(App\SlimFlashMiddleware::class);</code></pre>
+<pre><code class="language-php">$app-&gt;pipe(App\SlimFlashMiddleware::class);
+</code></pre>
+
 <p>Or as part of a routed middleware pipeline:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;post('/form/handler', [
+<pre><code class="language-php">$app-&gt;post('/form/handler', [
     App\SlimFlashMiddleware::class,
     FormHandlerMiddleware::class,
-]);</code></pre>
+]);
+</code></pre>
+
 <p>If using configuration-driven pipelines, edit
 <code>config/autoload/middleware-pipeline.global.php</code> to make the following
 additions:</p>
-<pre class=codehilite><code class=language-php>return [
+<pre><code class="language-php">return [
     'middleware_pipeline' =&gt; [
         'always' =&gt; [
             'middleware' =&gt; [
@@ -816,7 +834,9 @@ additions:</p>
         ],
         /* ... */
     ],
-];</code></pre>
+];
+</code></pre>
+
 <blockquote>
 <h3>Where to register the flash middleware</h3>
 <p>Sessions can sometimes be expensive. As such, you may not want the flash
@@ -826,7 +846,7 @@ in the programmatic pipelines above.</p>
 </blockquote>
 <p>From here, you can add and read messages by accessing the request's flash
 attribute. As an example, middleware generating messages might read as follows:</p>
-<pre class=codehilite><code class=language-php>use Psr\Http\Server\RequestHandlerInterface;
+<pre><code class="language-php">use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Diactoros\Response\RedirectResponse;
 
 function($request, RequestHandlerInterface $handler)
@@ -835,16 +855,20 @@ function($request, RequestHandlerInterface $handler)
     $flash-&gt;addMessage('message', 'Hello World!');
 
     return new RedirectResponse('/other-middleware');
-}</code></pre>
+}
+</code></pre>
+
 <p>And middleware consuming the message might read:</p>
-<pre class=codehilite><code class=language-php>use Psr\Http\Server\RequestHandlerInterface;
+<pre><code class="language-php">use Psr\Http\Server\RequestHandlerInterface;
 
 function($request, RequestHandlerInterface $handler)
 {
     $flash = $request-&gt;getAttribute('flash');
     $messages = $flash-&gt;getMessages();
     // ...
-}</code></pre>
+}
+</code></pre>
+
 <p>From there, it's a matter of providing the flash messages to your template.</p>
 
 
@@ -1395,7 +1419,7 @@ function($request, RequestHandlerInterface $handler)
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -1403,10 +1427,10 @@ function($request, RequestHandlerInterface $handler)
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -1414,27 +1438,28 @@ function($request, RequestHandlerInterface $handler)
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '../../..',
             siteName = 'Expressive';
     </script>
-    <script src="../../../js/scripts-8d7ae56abf.js"></script>
-        <script src="../../../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../../../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

@@ -7,13 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="PSR-15 Middleware in Minutes">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-expressive/v1/reference/usage-examples/">
+    <link rel="canonical" href="https://docs.zendframework.com/v1/reference/usage-examples/">
     <link rel="shortcut icon" href="../../../img/favicon.ico">
 
     <title>Examples - Expressive - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../../../css/styles-5cfabd53ee.css">
-        <link href="../../../css/zend-expressive.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="../../../css/zend-expressive.css" rel="stylesheet">
 </head>
 <body id="page-top">
 
@@ -556,9 +556,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.mezzio.dev/mezzio/">mezzio/mezzio.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -626,14 +626,6 @@
             <ul class="toc__list">
                 
                     <li class="toc__entry">
-                        <a href="#hello-world-using-a-container" class="toc__link">Hello World using a Container</a>
-                    </li>
-                
-                    <li class="toc__entry">
-                        <a href="#hello-world-using-a-configuration-driven-container" class="toc__link">Hello World using a Configuration-Driven Container</a>
-                    </li>
-                
-                    <li class="toc__entry">
                         <a href="#hybrid-container-and-programmatic-creation" class="toc__link">Hybrid Container and Programmatic Creation</a>
                     </li>
                 
@@ -651,70 +643,72 @@
 <p>Below are several usage examples, covering a variety of ways of creating and
 managing an application.</p>
 <p>In all examples, the assumption is the following directory structure:</p>
-<pre class=codehilite><code>.
+<pre><code>.
 ├── config
 ├── data
 ├── composer.json
 ├── public
 │   └── index.php
 ├── src
-└── vendor</code></pre>
-<p>We assume also that:</p>
-<ul>
-<li>You have installed zend-expressive per the <a href="../../#installation">installation instructions</a>.</li>
-<li><code>public/</code> will be the document root of your application.</li>
-<li>Your own classes are under <code>src/</code> with the top-level namespace <code>Application</code>,
-  and you have configured <a href="https://getcomposer.org/doc/01-basic-usage.md#autoloading">autoloading</a> in your <code>composer.json</code> for those classes.</li>
-</ul>
-<blockquote>
-<h3>Using the built-in web server</h3>
-<p>You can use the built-in web server to run the examples. Run:</p>
-<pre class=codehilite><code class=language-bash>
-$ php -S 0.0.0.0:8080 -t public
-</code></pre>
-<p>from the application root to start up a web server running on port 8080, and
-then browse to http://localhost:8080/. If you used the Expressive installer,
-the following is equivalent:</p>
-<pre class=codehilite><code class=language-bash>
-$ composer serve
-</code></pre>
-<h3>Setting up autoloading for the Application namespace</h3>
-<p>In your <code>composer.json</code> file, place the following:</p>
-<pre class=codehilite><code class=language-javascript>
-&quot;autoload&quot;: {
-    &quot;psr-4&quot;: {
-        &quot;Application\\&quot;: &quot;src/&quot;
-    }
-},
-</code></pre>
-<p>Once done, run:</p>
-<pre class=codehilite><code class=language-bash>
-$ composer dump-autoload
-</code></pre>
-</blockquote>
-<h3>Routing</h3>
-<p>As noted in the <a href="../../features/application/#adding-routable-middleware">Application documentation</a>,
+└── vendor
+```
+
+We assume also that:
+
+- You have installed zend-expressive per the [installation instructions](../index.md#installation).
+- `public/` will be the document root of your application.
+- Your own classes are under `src/` with the top-level namespace `Application`,
+  and you have configured [autoloading](https://getcomposer.org/doc/01-basic-usage.md#autoloading) in your `composer.json` for those classes.
+
+&gt; ### Using the built-in web server
+&gt;
+&gt; You can use the built-in web server to run the examples. Run:
+&gt;
+&gt; $$$$FENCED_CODE_BLOCK_5e308a658275e5.55154472
+&gt;
+&gt; from the application root to start up a web server running on port 8080, and
+&gt; then browse to http://localhost:8080/. If you used the Expressive installer,
+&gt; the following is equivalent:
+&gt;
+&gt; $$$$FENCED_CODE_BLOCK_5e308a65827777.66503485
+
+&gt; ### Setting up autoloading for the Application namespace
+&gt;
+&gt; In your `composer.json` file, place the following:
+&gt;
+&gt; $$$$FENCED_CODE_BLOCK_5e308a65827959.49007748
+&gt;
+&gt; Once done, run:
+&gt;
+&gt; $$$$FENCED_CODE_BLOCK_5e308a658279f7.32300952
+
+### Routing
+
+As noted in the [Application documentation](../features/application.md#adding-routable-middleware),
 routing is abstracted and can be accomplished by calling any of the following
-methods:</p>
-<ul>
-<li><code>route($path, $middleware, array $methods = null, $name = null)</code> to route to a
-  path and match any HTTP method, multiple HTTP methods, or custom HTTP methods.</li>
-<li><code>get($path, $middleware, $name = null)</code> to route to a path that will only
-  respond to the GET HTTP method.</li>
-<li><code>post($path, $middleware, $name = null)</code> to route to a path that will only
-  respond to the POST HTTP method.</li>
-<li><code>put($path, $middleware, $name = null)</code> to route to a path that will only
-  respond to the PUT HTTP method.</li>
-<li><code>patch($path, $middleware, $name = null)</code> to route to a path that will only
-  respond to the PATCH HTTP method.</li>
-<li><code>delete($path, $middleware, $name = null)</code> to route to a path that will only
-  respond to the DELETE HTTP method.</li>
-</ul>
-<p>All methods return a <code>Zend\Expressive\Router\Route</code> method, which allows you to
+methods:
+
+- `route($path, $middleware, array $methods = null, $name = null)` to route to a
+  path and match any HTTP method, multiple HTTP methods, or custom HTTP methods.
+- `get($path, $middleware, $name = null)` to route to a path that will only
+  respond to the GET HTTP method.
+- `post($path, $middleware, $name = null)` to route to a path that will only
+  respond to the POST HTTP method.
+- `put($path, $middleware, $name = null)` to route to a path that will only
+  respond to the PUT HTTP method.
+- `patch($path, $middleware, $name = null)` to route to a path that will only
+  respond to the PATCH HTTP method.
+- `delete($path, $middleware, $name = null)` to route to a path that will only
+  respond to the DELETE HTTP method.
+
+All methods return a `Zend\Expressive\Router\Route` method, which allows you to
 specify additional options to associate with the route (e.g., for specifying
-criteria, default values to match, etc.).</p>
-<p>As examples:</p>
-<pre class=codehilite><code class=language-php>// GET
+criteria, default values to match, etc.).
+
+As examples:
+
+```php
+// GET
 // This demonstrates passing a callable middleware (assuming $helloWorld is
 // callable).
 $app-&gt;get('/', $helloWorld);
@@ -769,21 +763,32 @@ $app-&gt;route('/post', 'HandlePostCollection', ['GET', 'POST']);
 // Matching NO HTTP methods
 // Pass an empty array to the HTTP methods. HEAD and OPTIONS will still be
 // honored. (In FastRoute, GET is also honored.)
-$app-&gt;route('/post', 'WillThisHandlePost', []);</code></pre>
-<p>Finally, if desired, you can create a <code>Zend\Expressive\Router\Route</code> instance
-manually and pass it to <code>route()</code> as the sole argument:</p>
-<pre class=codehilite><code class=language-php>$route = new Route('/post', 'HandlePost', ['GET', 'POST']);
+$app-&gt;route('/post', 'WillThisHandlePost', []);
+```
+
+Finally, if desired, you can create a `Zend\Expressive\Router\Route` instance
+manually and pass it to `route()` as the sole argument:
+
+```php
+$route = new Route('/post', 'HandlePost', ['GET', 'POST']);
 $route-&gt;setOptions($options);
 
-$app-&gt;route($route);</code></pre>
-<h2 id="hello-world-using-a-container">Hello World using a Container</h2>
-<p>Expressive works with <a href="https://github.com/container-interop/container-interop">container-interop</a>,
-though it's an optional feature. By default, if you use the <code>AppFactory</code>, it
-will use <a href="https://github.com/zendframework/zend-servicemanager">zend-servicemanager</a>.</p>
-<p>In the following example, we'll populate the container with our middleware, and
-the application will pull it from there when matched.</p>
-<p>Edit your <code>public/index.php</code> to read as follows:</p>
-<pre class=codehilite><code class=language-php>use Zend\Diactoros\Response\JsonResponse;
+$app-&gt;route($route);
+```
+
+## Hello World using a Container
+
+Expressive works with [container-interop](https://github.com/container-interop/container-interop),
+though it's an optional feature. By default, if you use the `AppFactory`, it
+will use [zend-servicemanager](https://github.com/zendframework/zend-servicemanager).
+
+In the following example, we'll populate the container with our middleware, and
+the application will pull it from there when matched.
+
+Edit your `public/index.php` to read as follows:
+
+```php
+use Zend\Diactoros\Response\JsonResponse;
 use Zend\Expressive\AppFactory;
 use Zend\ServiceManager\ServiceManager;
 
@@ -811,33 +816,47 @@ $app-&gt;get('/ping', 'Ping');
 $app-&gt;pipeRoutingMiddleware();
 $app-&gt;pipeDispatchMiddleware();
 
-$app-&gt;run();</code></pre>
-<p>In the example above, we pass our container to <code>AppFactory</code>. We could have also
-done this instead:</p>
-<pre class=codehilite><code class=language-php>$app = AppFactory::create();
-$container = $app-&gt;getContainer();</code></pre>
-<p>and then added our service definitions. We recommend passing the container to
+$app-&gt;run();
+```
+
+In the example above, we pass our container to `AppFactory`. We could have also
+done this instead:
+
+```php
+$app = AppFactory::create();
+$container = $app-&gt;getContainer();
+```
+
+and then added our service definitions. We recommend passing the container to
 the factory instead; if we ever change which container we use by default, your
-code might not work!</p>
-<p>The following two lines are the ones of interest:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;get('/', 'HelloWorld');
-$app-&gt;get('/ping', 'Ping');</code></pre>
-<p>These map the two paths to <em>service names</em> instead of callables. When routing
-matches a path, it does the following:</p>
-<ul>
-<li>If the middleware provided when defining the route is callable, it uses it
-  directly.</li>
-<li>If the middleware is a valid service name in the container, it pulls it from
-  the container. <em>This is what happens in this example.</em></li>
-<li>Finally, if no container is available, or the service name is not found in the
+code might not work!
+
+The following two lines are the ones of interest:
+
+```php
+$app-&gt;get('/', 'HelloWorld');
+$app-&gt;get('/ping', 'Ping');
+```
+
+These map the two paths to *service names* instead of callables. When routing
+matches a path, it does the following:
+
+- If the middleware provided when defining the route is callable, it uses it
+  directly.
+- If the middleware is a valid service name in the container, it pulls it from
+  the container. *This is what happens in this example.*
+- Finally, if no container is available, or the service name is not found in the
   container, it checks to see if it's a valid class name; if so, it instantiates
-  and returns the class instance.</li>
-</ul>
-<p>If you fire up your web server, you'll find that the <code>/</code> and <code>/ping</code> paths
-continue to work.</p>
-<p>One other approach you could take would be to define the application itself in
-the container, and then pull it from there:</p>
-<pre class=codehilite><code class=language-php>$container-&gt;setFactory('Zend\Expressive\Application', function ($container) {
+  and returns the class instance.
+
+If you fire up your web server, you'll find that the `/` and `/ping` paths
+continue to work.
+
+One other approach you could take would be to define the application itself in
+the container, and then pull it from there:
+
+```php
+$container-&gt;setFactory('Zend\Expressive\Application', function ($container) {
     $app = AppFactory::create($container);
     $app-&gt;get('/', 'HelloWorld');
     $app-&gt;get('/ping', 'Ping');
@@ -845,29 +864,43 @@ the container, and then pull it from there:</p>
 });
 
 $app = $container-&gt;get('Zend\Expressive\Application');
-$app-&gt;run();</code></pre>
-<p>This is a nice way to encapsulate the application creation. You could then
+$app-&gt;run();
+```
+
+This is a nice way to encapsulate the application creation. You could then
 potentially move all service configuration to another file! (We already
-<a href="../../features/container/factories/#applicationfactory">document an ApplicationFactory for exactly this scenario.</a>)</p>
-<h2 id="hello-world-using-a-configuration-driven-container">Hello World using a Configuration-Driven Container</h2>
-<p>In the above example, we configured our middleware as services, and then passed
+[document an ApplicationFactory for exactly this scenario.](../features/container/factories.md#applicationfactory))
+
+## Hello World using a Configuration-Driven Container
+
+In the above example, we configured our middleware as services, and then passed
 our service container to the application. At the end, we hinted that you could
-potentially define the application itself as a service.</p>
-<p>Expressive already provides a service factory for the application instance
+potentially define the application itself as a service.
+
+Expressive already provides a service factory for the application instance
 to provide fine-grained control over your application. In this example, we'll
-leverage it, defining our routes via configuration.</p>
-<p>First, we're going to leverage zend-config to merge configuration files. This is
+leverage it, defining our routes via configuration.
+
+First, we're going to leverage zend-config to merge configuration files. This is
 important, as it allows us to define local, environment-specific configuration
 in files that we then can exclude from our repository. This practice ensures
 that things like credentials are not accidentally published in a public
 repository, and also provides a mechanism for slip-streaming in
 configuration based on our environment (you might use different settings in
-development than in production, after all!).</p>
-<p>First, install zend-config and zend-stdlib:</p>
-<pre class=codehilite><code class=language-bash>$ composer require zendframework/zend-config zendframework/zend-stdlib</code></pre>
-<p>Now we can start creating our configuration files and container factories.</p>
-<p>In <code>config/config.php</code>, place the following:</p>
-<pre class=codehilite><code class=language-php>&lt;?php
+development than in production, after all!).
+
+First, install zend-config and zend-stdlib:
+
+```bash
+$ composer require zendframework/zend-config zendframework/zend-stdlib
+```
+
+Now we can start creating our configuration files and container factories.
+
+In `config/config.php`, place the following:
+
+```php
+&lt;?php
 
 use Zend\Stdlib\ArrayUtils;
 use Zend\Stdlib\Glob;
@@ -880,9 +913,13 @@ foreach (Glob::glob('config/autoload/{{,*.}global,{,*.}local}.php', Glob::GLOB_B
 
 // Return an ArrayObject so we can inject the config as a service in Aura.Di
 // and still use array checks like ``is_array``.
-return new ArrayObject($config, ArrayObject::ARRAY_AS_PROPS);</code></pre>
-<p>In <code>config/container.php</code>, place the following:</p>
-<pre class=codehilite><code class=language-php>&lt;?php
+return new ArrayObject($config, ArrayObject::ARRAY_AS_PROPS);
+```
+
+In `config/container.php`, place the following:
+
+```php
+&lt;?php
 
 use Zend\ServiceManager\Config;
 use Zend\ServiceManager\ServiceManager;
@@ -897,9 +934,13 @@ $container = new ServiceManager();
 // Inject config
 $container-&gt;setService('config', $config);
 
-return $container;</code></pre>
-<p>In <code>config/autoload/dependencies.global.php</code>, place the following:</p>
-<pre class=codehilite><code class=language-php>&lt;?php
+return $container;
+```
+
+In `config/autoload/dependencies.global.php`, place the following:
+
+```php
+&lt;?php
 
 use Zend\ServiceManager\Factory\InvokableFactory;
 
@@ -913,9 +954,13 @@ return [
             \Zend\Expressive\Application::class =&gt; \Zend\Expressive\Container\ApplicationFactory::class,
         ],
     ]
-];</code></pre>
-<p>In <code>config/autoload/routes.global.php</code>, place the following:</p>
-<pre class=codehilite><code class=language-php>&lt;?php
+];
+```
+
+In `config/autoload/routes.global.php`, place the following:
+
+```php
+&lt;?php
 
 return [
     'routes' =&gt; [
@@ -930,9 +975,13 @@ return [
             'allowed_methods' =&gt; [ 'GET' ],
         ],
     ],
-];</code></pre>
-<p>In <code>src/Application/HelloWorld.php</code>, place the following:</p>
-<pre class=codehilite><code class=language-php>&lt;?php
+];
+```
+
+In `src/Application/HelloWorld.php`, place the following:
+
+```php
+&lt;?php
 namespace Application;
 
 class HelloWorld
@@ -942,9 +991,13 @@ class HelloWorld
         $res-&gt;getBody()-&gt;write('Hello, world!');
         return $res;
     }
-}</code></pre>
-<p>In <code>src/Application/Ping.php</code>, place the following:</p>
-<pre class=codehilite><code class=language-php>&lt;?php
+}
+```
+
+In `src/Application/Ping.php`, place the following:
+
+```php
+&lt;?php
 namespace Application;
 
 use Zend\Diactoros\Response\JsonResponse;
@@ -955,11 +1008,18 @@ class Ping
     {
         return new JsonResponse(['ack' =&gt; time()]);
     }
-}</code></pre>
-<p>After that’s done run:</p>
-<pre class=codehilite><code>composer dump-autoload</code></pre>
-<p>Finally, in <code>public/index.php</code>, place the following:</p>
-<pre class=codehilite><code class=language-php>&lt;?php
+}
+```
+
+After that’s done run:
+</code></pre>
+
+<p>composer dump-autoload</p>
+<pre><code>
+Finally, in `public/index.php`, place the following:
+
+```php
+&lt;?php
 // Change to the project root, to simplify resolving paths
 chdir(dirname(__DIR__));
 
@@ -968,7 +1028,9 @@ require 'vendor/autoload.php';
 
 $container = include 'config/services.php';
 $app       = $container-&gt;get(Zend\Expressive\Application::class);
-$app-&gt;run();</code></pre>
+$app-&gt;run();
+</code></pre>
+
 <p>Notice that our index file now doesn't have any code related to setting up the
 application any longer! All it does is setup autoloading, retrieve our service
 container, pull the application from it, and run it. Our choices for container,
@@ -983,20 +1045,24 @@ together.</p>
 <p>Fortunately, you can mix the two. Building on the example above, we'll add a new
 route and middleware. Between pulling the application from the container and
 calling <code>$app-&gt;run()</code>, add the following in your <code>public/index.php</code>:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;post('/post', function ($req, $res, $next) {
+<pre><code class="language-php">$app-&gt;post('/post', function ($req, $res, $next) {
     $res-&gt;getBody()-&gt;write('IN POST!');
     return $res;
-});</code></pre>
+});
+</code></pre>
+
 <p>Note that we're using <code>post()</code> here; that means you'll have to use cURL, HTTPie,
 Postman, or some other tool to test making a POST request to the path:</p>
-<pre class=codehilite><code class=language-bash>$ curl -X POST http://localhost:8080/post</code></pre>
+<pre><code class="language-bash">$ curl -X POST http://localhost:8080/post
+</code></pre>
+
 <p>You should see <code>IN POST!</code> for the response!</p>
 <p>Using this approach, you can build re-usable applications that are
 container-driven, and add one-off routes and middleware as needed.</p>
 <h3>Using the container to register middleware</h3>
 <p>If you use a container to fetch your application instance, you have an
 additional option for specifying middleware for the pipeline: configuration:</p>
-<pre class=codehilite><code class=language-php>&lt;?php
+<pre><code class="language-php">&lt;?php
 return [
     'routes' =&gt; [
         [
@@ -1014,19 +1080,23 @@ return [
     'middleware_pipeline' =&gt; [
         // See specification below
     ],
-];</code></pre>
+];
+</code></pre>
+
 <p>The key to note is <code>middleware_pipeline</code>, which is an array of middlewares to
 register in the pipeline; each will each be <code>pipe()</code>'d to the Application in the
 order specified.</p>
 <p>Each middleware specified must be in the following form:</p>
-<pre class=codehilite><code class=language-php>[
+<pre><code class="language-php">[
     // required:
     'middleware' =&gt; 'Name of middleware service, or a callable',
     // optional:
     'path'  =&gt; '/path/to/match',
     'error' =&gt; true,
     'priority' =&gt; 1, // Integer
-]</code></pre>
+]
+</code></pre>
+
 <p>Priority should be an integer, and follows the semantics of
 <a href="http://php.net/SplPriorityQueue">SplPriorityQueue</a>: higher numbers indicate
 higher priority (top of the queue; executed earliest), while lower numbers
@@ -1047,14 +1117,16 @@ the factory and expanded:</p>
   dispatch middleware.</li>
 </ul>
 <p>As an example:</p>
-<pre class=codehilite><code class=language-php>return [
+<pre><code class="language-php">return [
     'middleware_pipeline' =&gt; [
         [ /* ... */ ],
         Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
         Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
         [ /* ... */ ],
     ],
-];</code></pre>
+];
+</code></pre>
+
 <blockquote>
 <h4>Place routing middleware correctly</h4>
 <p>If you are defining routes <em>and</em> defining other middleware for the pipeline,
@@ -1078,7 +1150,7 @@ you can specify an array of such values; these will be composed in a single
 <code>Zend\Stratigility\MiddlewarePipe</code> instance, allowing layering of middleware.
 In fact, you can specify the various <code>ApplicationFactory::*_MIDDLEWARE</code>
 constants in such arrays as well:</p>
-<pre class=codehilite><code class=language-php>return [
+<pre><code class="language-php">return [
     'middleware_pipeline' =&gt; [
         [ /* ... */ ],
         'routing' =&gt; [
@@ -1091,7 +1163,9 @@ constants in such arrays as well:</p>
         ],
         [ /* ... */ ],
     ],
-];</code></pre>
+];
+</code></pre>
+
 <blockquote>
 <h4>Pipeline keys are ignored</h4>
 <p>Keys in a <code>middleware_pipeline</code> specification are ignored. However, they can
@@ -1150,7 +1224,7 @@ middleware, allowing you to do exactly that if desired.</p>
 <p>In the following example, we'll assume that <code>$api</code> and <code>$blog</code> are
 <code>Zend\Expressive\Application</code> instances, and compose them into a
 <code>Zend\Stratigility\MiddlewarePipe</code>.</p>
-<pre class=codehilite><code class=language-php>use Zend\Diactoros\Server;
+<pre><code class="language-php">use Zend\Diactoros\Server;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Stratigility\MiddlewarePipe;
 
@@ -1164,13 +1238,17 @@ $server = Server::createServerFromRequest(
     $app,
     ServerRequestFactory::fromGlobals()
 );
-$server-&gt;listen();</code></pre>
+$server-&gt;listen();
+</code></pre>
+
 <p>You could also compose them in an <code>Application</code> instance, and utilize <code>run()</code>:</p>
-<pre class=codehilite><code class=language-php>$app = AppFactory::create();
+<pre><code class="language-php">$app = AppFactory::create();
 $app-&gt;pipe('/blog', $blog);
 $app-&gt;pipe('/api', $api);
 
-$app-&gt;run();</code></pre>
+$app-&gt;run();
+</code></pre>
+
 <p>This approach allows you to develop discrete applications and compose them
 together to create a website.</p>
 
@@ -1650,7 +1728,7 @@ together to create a website.</p>
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -1658,10 +1736,10 @@ together to create a website.</p>
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -1669,27 +1747,28 @@ together to create a website.</p>
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '../../..',
             siteName = 'Expressive';
     </script>
-    <script src="../../../js/scripts-8d7ae56abf.js"></script>
-        <script src="../../../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../../../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

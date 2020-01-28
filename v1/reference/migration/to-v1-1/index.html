@@ -7,13 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="PSR-15 Middleware in Minutes">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-expressive/v1/reference/migration/to-v1-1/">
+    <link rel="canonical" href="https://docs.zendframework.com/v1/reference/migration/to-v1-1/">
     <link rel="shortcut icon" href="../../../../img/favicon.ico">
 
     <title>To Expressive 1.1 - Expressive - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../../../../css/styles-5cfabd53ee.css">
-        <link href="../../../../css/zend-expressive.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="../../../../css/zend-expressive.css" rel="stylesheet">
 </head>
 <body id="page-top">
 
@@ -556,9 +556,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.mezzio.dev/mezzio/">mezzio/mezzio.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -750,7 +750,7 @@ available starting with version 1.0.3.</p>
 <p>We recommend adding the <code>OriginalMessages</code> middleware as the outermost (first)
 middleware in your pipeline. Using configuration-driven middleware, that would
 look like this:</p>
-<pre class=codehilite><code class=language-php>// config/autoload/middleware-pipeline.global.php
+<pre><code class="language-php">// config/autoload/middleware-pipeline.global.php
 /* ... */
 use Zend\Expressive\Helper;
 use Zend\Stratigility\Middleware\OriginalMessages;
@@ -774,20 +774,28 @@ return [
 
         /* ... */
     ],
-];</code></pre>
+];
+</code></pre>
+
 <p>If you are <a href="https://mwop.net/blog/2016-05-16-programmatic-expressive.html">programmatically creating your pipeline</a>,
 use the following:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;pipe(OriginalMessages::class);
-/* all other middleware */</code></pre>
+<pre><code class="language-php">$app-&gt;pipe(OriginalMessages::class);
+/* all other middleware */
+</code></pre>
+
 <h3>Identifying and fixing getOriginal calls</h3>
 <p>To help you identify and update calls in your own code to the <code>getOriginal*()</code>
 methods, we provide a tool via the <a href="https://github.com/zendframework/zend-expressive-tooling">zendframework/zend-expressive-tooling</a>
 package, <code>vendor/bin/expressive-migrate-original-messages</code>.</p>
 <p>First, install the tooling package; since the tooling it provides is only
 useful during development, install it as a development requirement:</p>
-<pre class=codehilite><code class=language-bash>$ composer require --dev zendframework/zend-expressive-tooling</code></pre>
+<pre><code class="language-bash">$ composer require --dev zendframework/zend-expressive-tooling
+</code></pre>
+
 <p>Once installed,  you can execute the tool using:</p>
-<pre class=codehilite><code class=language-bash>$ ./vendor/bin/expressive-migrate-original-messages</code></pre>
+<pre><code class="language-bash">$ ./vendor/bin/expressive-migrate-original-messages
+</code></pre>
+
 <p>Passing the arguments <code>help</code>, <code>--help</code>, or <code>-h</code> will provide usage information;
 in most cases, it will assume sane defaults in order to run its scans.</p>
 <p>The tool updates calls to <code>getOriginalRequest()</code> and <code>getOriginalUri()</code> to
@@ -833,13 +841,15 @@ pipelines and routing</em>.</p>
 </li>
 </ul>
 <p>As an example pipeline:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;pipe(OriginalMessages::class);
+<pre><code class="language-php">$app-&gt;pipe(OriginalMessages::class);
 $app-&gt;pipe(Helper\ServerUrlMiddleware::class);
 $app-&gt;pipe(ErrorHandler::class);
 $app-&gt;pipeRoutingMiddleware();
 $app-&gt;pipe(Helper\UrlHelperMiddleware::class);
 $app-&gt;pipeDispatchMiddleware();
-$app-&gt;pipe(NotFoundHandler::class);</code></pre>
+$app-&gt;pipe(NotFoundHandler::class);
+</code></pre>
+
 <p>Expressive also provides methods for specifying routed middleware. These
 include:</p>
 <ul>
@@ -852,14 +862,18 @@ include:</p>
 </ul>
 <p>Each returns a <code>Zend\Expressive\Router\Route</code> instance; this is useful if you
 wish to provide additional options to your route:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;get('/api/ping', Ping::class)
+<pre><code class="language-php">$app-&gt;get('/api/ping', Ping::class)
     -&gt;setOptions([
         'timestamp' =&gt; date(),
-    ]);</code></pre>
+    ]);
+</code></pre>
+
 <p>As an example, the default routes defined in the skeleton application can be
 written as follows:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;get('/', \App\Action\HomePageAction::class, 'home');
-$app-&gt;get('/api/ping', \App\Action\PingAction::class, 'api.ping');</code></pre>
+<pre><code class="language-php">$app-&gt;get('/', \App\Action\HomePageAction::class, 'home');
+$app-&gt;get('/api/ping', \App\Action\PingAction::class, 'api.ping');
+</code></pre>
+
 <p>We recommend rewriting your middleware pipeline and routing configuration into
 programmatic/declarative statements. Specifically:</p>
 <ul>
@@ -872,21 +886,23 @@ your application:</p>
 <li>First, enable the <code>zend-expressive.programmatic_pipeline</code> configuration flag.
   This can be done in any <code>config/autoload/*.global.php</code> file:</li>
 </ul>
-<p><code>php
-  return [
+<pre><code class="language-php">  return [
       'zend-expressive' =&gt; [
           'programmatic_pipeline' =&gt; true,
       ],
-  ];</code></p>
+  ];
+</code></pre>
+
 <p>Once enabled, any <code>middleware_pipeline</code> or <code>routes</code> configuration will be
   ignored when creating the <code>Application</code> instance.</p>
 <ul>
 <li>Second, update your <code>public/index.php</code> to add the following lines immediately
   prior to calling <code>$app-&gt;run();</code>:</li>
 </ul>
-<p><code>php
-  require 'config/pipeline.php';
-  require 'config/routes.php';</code></p>
+<pre><code class="language-php">  require 'config/pipeline.php';
+  require 'config/routes.php';
+</code></pre>
+
 <p>Once this has been done, the application will use your new programmatic
 pipelines instead of configuration. You can remove the <code>middleware_pipeline</code> and
 <code>routes</code> configuration after verifying your application continues to work.</p>
@@ -925,11 +941,13 @@ in a try/catch block, and provides a flag for disabling that behavior entirely,
 <code>raise_throwables</code>.</p>
 <p>Starting in Expressive 1.1, you can set the <code>raise_throwables</code> flag in your
 configuration:</p>
-<pre class=codehilite><code class=language-php>return [
+<pre><code class="language-php">return [
     'zend-expressive' =&gt; [
         'raise_throwables' =&gt; true,
     ],
-];</code></pre>
+];
+</code></pre>
+
 <p>When enabled, the internal dispatcher will no longer catch exceptions.</p>
 <p>This both allows you to, and <em>requires</em> you to, write your own error handling
 middleware. This will require two things:</p>
@@ -944,7 +962,7 @@ middleware. This will require two things:</p>
 <p>The below sections detail approaches to each.</p>
 <h3>Error handling middleware</h3>
 <p>Error handling middleware generally will look something like this:</p>
-<pre class=codehilite><code class=language-php>function (
+<pre><code class="language-php">function (
     ServerRequestInterface $request,
     ResponseInterface $response,
     callable $next
@@ -963,7 +981,9 @@ middleware. This will require two things:</p>
     // ...
 
     return $response;
-}</code></pre>
+}
+</code></pre>
+
 <p>Stratigility 1.3 provides such an implementation via its
 <code>Zend\Stratigility\Middleware\ErrorHandler</code>. In addition to the try/catch block,
 it also sets up a PHP error handler that will catch any PHP error types in the
@@ -972,15 +992,17 @@ type <code>ErrorException</code> with the PHP error details.</p>
 <p>Stratigility's <code>ErrorHandler</code> allows injection of an "error response generator",
 which allows you to alter how the error response is generated based on the
 current environment. Error response generators are callables with the signature:</p>
-<pre class=codehilite><code class=language-php>function (
+<pre><code class="language-php">function (
     Throwable|Exception $e,
     ServerRequestInterface $request,
     ResponseInterface $response
-) : ResponseInterface</code></pre>
+) : ResponseInterface
+</code></pre>
+
 <p>We recommend using the Stratigility <code>ErrorHandler</code> and writing and attaching a
 custom error response generator. As a simple example, the following details a
 generator that will use a template to display an error page:</p>
-<pre class=codehilite><code class=language-php>namespace Acme;
+<pre><code class="language-php">namespace Acme;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -1013,10 +1035,12 @@ class TemplatedErrorResponseGenerator
         ]));
         return $response;
     }
-}</code></pre>
+}
+</code></pre>
+
 <p>You might then create a factory for generating the <code>ErrorHandler</code> and attaching
 this response generator as follows:</p>
-<pre class=codehilite><code class=language-php>namespace Acme\Container;
+<pre><code class="language-php">namespace Acme\Container;
 
 use Acme\TemplatedErrorResponseGenerator;
 use Interop\Container\ContainerInterface;
@@ -1034,9 +1058,11 @@ class ErrorHandlerFactory
 
         return new ErrorHandler(new Response(), $generator);
     }
-}</code></pre>
+}
+</code></pre>
+
 <p>Once that is created you can tell your middleware configuration about it:</p>
-<pre class=codehilite><code class=language-php>// in config/autoload/middleware-pipeline.global.php
+<pre><code class="language-php">// in config/autoload/middleware-pipeline.global.php
 use Acme\Container\ErrorHandlerFactory;
 use Zend\Stratigility\Middleware\ErrorHandler;
 
@@ -1059,20 +1085,24 @@ return [
         ],
         /* ... */
     ],
-];</code></pre>
+];
+</code></pre>
+
 <p>Alternately, if using a programmatic pipeline, as detailed in the previous
 section, you can use the following:</p>
-<pre class=codehilite><code class=language-php>use Zend\Stratigility\Middleware\ErrorHandler;
+<pre><code class="language-php">use Zend\Stratigility\Middleware\ErrorHandler;
 
 $app-&gt;pipe(ErrorHandler::class);
-// add all other middleware after it</code></pre>
+// add all other middleware after it
+</code></pre>
+
 <h3>Not Found middleware</h3>
 <p>At the innermost layer of your application, you need middleware guaranteed to
 return a response; typically, this indicates a failure to route the request,
 and, as such, an HTTP 404 response.  <code>Zend\Stratigility\Middleware\NotFoundHandler</code>
 provides an implementation, but is written such that the response body remains
 empty. As such, you might write a custom, templated handler:</p>
-<pre class=codehilite><code class=language-php>namespace Acme;
+<pre><code class="language-php">namespace Acme;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -1104,10 +1134,12 @@ class TemplatedNotFoundHandler
         $response-&gt;write($this-&gt;renderer-&gt;render($this-&gt;template));
         return $response-&gt;withStatus(404);
     }
-}</code></pre>
+}
+</code></pre>
+
 <p>Similar to the discussion of the <code>ErrorHandler</code> above, we'll create a factory
 for this:</p>
-<pre class=codehilite><code class=language-php>namespace Acme\Container;
+<pre><code class="language-php">namespace Acme\Container;
 
 use Acme\TemplatedNotFoundHandler;
 use Interop\Container\ContainerInterface;
@@ -1121,9 +1153,11 @@ class TemplatedNotFoundHandlerFactory
             $container-&gt;get(TemplateRendererInterface::class)
         );
     }
-}</code></pre>
+}
+</code></pre>
+
 <p>We can then register it in our pipeline:</p>
-<pre class=codehilite><code class=language-php>// in config/autoload/middleware-pipeline.global.php
+<pre><code class="language-php">// in config/autoload/middleware-pipeline.global.php
 use Acme\Container\NotFoundHandlerFactory;
 use Acme\TemplatedNotFoundHandler;
 
@@ -1148,12 +1182,16 @@ return [
 
         /* ... */
     ],
-];</code></pre>
+];
+</code></pre>
+
 <p>If you are using programmatic pipelines, as described in the previous section:</p>
-<pre class=codehilite><code class=language-php>use Acme\TemplatedNotFoundHandler;
+<pre><code class="language-php">use Acme\TemplatedNotFoundHandler;
 
 // all other pipeline directives, and then:
-$app-&gt;pipe(TemplatedNotFoundHandler::class);</code></pre>
+$app-&gt;pipe(TemplatedNotFoundHandler::class);
+</code></pre>
+
 <h3>Detecting error middleware usage</h3>
 <p>If you use the new error handling paradigm, we recommend that you also audit
 your application for legacy Stratigility error middleware, as well as invocation
@@ -1161,7 +1199,9 @@ of error middleware. To do this, we provide a tool via the
 <a href="https://github.com/zendframework/zend-expressive-tooling">zendframework/zend-expressive-tooling</a>
 package, <code>vendor/bin/expressive-scan-for-error-middleware</code>.</p>
 <p>First, install the tooling as a development requirement:</p>
-<pre class=codehilite><code class=language-bash>$ composer require --dev zendframework/zend-expressive-tooling</code></pre>
+<pre><code class="language-bash">$ composer require --dev zendframework/zend-expressive-tooling
+</code></pre>
+
 <p>The tool will scan the <code>src/</code> directory by default, but allows you to scan other
 directories via the <code>--dir</code> flag. It will detect and report files with any of
 the following:</p>
@@ -1171,9 +1211,11 @@ the following:</p>
 <li>Methods accepting <code>$next</code> that invoke it with an error argument.</li>
 </ul>
 <p>As an example running it:</p>
-<pre class=codehilite><code class=language-bash>$ ./vendor/bin/expressive-scan-for-error-middleware scan
+<pre><code class="language-bash">$ ./vendor/bin/expressive-scan-for-error-middleware scan
 # or, with a directory argument:
-$ ./vendor/bin/expressive-scan-for-error-middleware scan --dir ./lib</code></pre>
+$ ./vendor/bin/expressive-scan-for-error-middleware scan --dir ./lib
+</code></pre>
+
 <p>You may also call the tool using its <code>help</code> command, or either of the <code>--help</code>
 or <code>-h</code> flags to get full usage information.</p>
 <p>Use this tool to identify potential problem areas in your application, and
@@ -1186,7 +1228,7 @@ handling</a> &mdash; might look like the following examples.</p>
 <p>First, we'll tell Expressive to use programmatic pipelines, and to enable the
 new error handling (by telling it to "raise throwables", instead of catching
 them):</p>
-<pre class=codehilite><code class=language-php>// In config/autoload/zend-expressive.global.php:
+<pre><code class="language-php">// In config/autoload/zend-expressive.global.php:
 return [
     /* ... */
     'zend-expressive' =&gt; [
@@ -1194,10 +1236,12 @@ return [
         'raise_throwables' =&gt; true,
         /* ... */
     ],
-];</code></pre>
+];
+</code></pre>
+
 <p>Next, we'll update <code>config/autoload/middleware-pipeline.global.php</code> to list only
 dependencies:</p>
-<pre class=codehilite><code class=language-php>use Acme\Container;
+<pre><code class="language-php">use Acme\Container;
 use Acme\TemplatedNotFoundHandler;
 use Zend\Expressive\Container\ApplicationFactory;
 use Zend\Expressive\Helper;
@@ -1216,11 +1260,13 @@ return [
             TemplatedNotFoundHandler::class =&gt; Container\TemplatedNotFoundHandlerFactory::class,
         ],
     ],
-];</code></pre>
+];
+</code></pre>
+
 <p>We'll also update <code>config/autoload/routes.global.php</code> to only list dependencies;
 in the following example, we list only the middleware shipped by default with
 the skeleton application:</p>
-<pre class=codehilite><code class=language-php>use App\Action;
+<pre><code class="language-php">use App\Action;
 use Zend\Expressive\Router\FastRouteRouter;
 use Zend\Expressive\Router\RouterInterface;
 
@@ -1234,9 +1280,11 @@ return [
             Action\HomePageAction::class =&gt; Action\HomePageFactory::class,
         ],
     ],
-];</code></pre>
+];
+</code></pre>
+
 <p>To create our pipeline, we will create the file <code>config/pipeline.php</code>:</p>
-<pre class=codehilite><code class=language-php>use Acme\TemplatedNotFoundHandler;
+<pre><code class="language-php">use Acme\TemplatedNotFoundHandler;
 use Zend\Expressive\Container\ApplicationFactory;
 use Zend\Expressive\Helper;
 use Zend\Stratigility\Middleware\ErrorHandler;
@@ -1250,24 +1298,30 @@ $app-&gt;pipe([
     Helper\UrlHelperMiddleware::class,
     ApplicationFactory::DISPATCH_MIDDLEWARE,
 ]);
-$app-&gt;pipe(TemplatedNotFoundHandler::class);</code></pre>
+$app-&gt;pipe(TemplatedNotFoundHandler::class);
+</code></pre>
+
 <p>Note that you can use <em>arrays</em> of middleware just like you did in the
 configuration; this allows you to separate middleware into logical groups if
 desired!</p>
 <p>To provide our routed middleware, we will create the file
 <code>config/pipeline.php</code>:</p>
-<pre class=codehilite><code class=language-php>use App\Action;
+<pre><code class="language-php">use App\Action;
 
 $app-&gt;get('/', Action\HomePageAction::class, 'home');
-$app-&gt;get('/api/ping', Action\PingAction::class, 'api.ping');</code></pre>
+$app-&gt;get('/api/ping', Action\PingAction::class, 'api.ping');
+</code></pre>
+
 <p>The above exercises the various routing methods of the <code>Application</code> class.</p>
 <p>Finally, we will need to update our <code>public/index.php</code>, to tell it to require
 our new pipeline and routing files; we'll do that between retrieving the
 application from the container, and running the application:</p>
-<pre class=codehilite><code class=language-php>$app = $container-&gt;get(\Zend\Expressive\Application::class);
+<pre><code class="language-php">$app = $container-&gt;get(\Zend\Expressive\Application::class);
 require 'config/pipeline.php';
 require 'config/routes.php';
-$app-&gt;run();</code></pre>
+$app-&gt;run();
+</code></pre>
+
 <p>With these changes in place, your application should continue to run as it did
 previously!</p>
 <h2 id="looking-forward">Looking forward</h2>
@@ -1754,7 +1808,7 @@ order to make your application forwards-compatible.</p>
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -1762,10 +1816,10 @@ order to make your application forwards-compatible.</p>
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -1773,27 +1827,28 @@ order to make your application forwards-compatible.</p>
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '../../../..',
             siteName = 'Expressive';
     </script>
-    <script src="../../../../js/scripts-8d7ae56abf.js"></script>
-        <script src="../../../../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../../../../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

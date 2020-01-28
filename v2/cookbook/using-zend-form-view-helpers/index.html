@@ -7,13 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="PSR-15 Middleware in Minutes">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-expressive/v2/cookbook/using-zend-form-view-helpers/">
+    <link rel="canonical" href="https://docs.zendframework.com/v2/cookbook/using-zend-form-view-helpers/">
     <link rel="shortcut icon" href="../../../img/favicon.ico">
 
     <title>Using zend-form view helpers - Expressive - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../../../css/styles-5cfabd53ee.css">
-        <link href="../../../css/zend-expressive.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="../../../css/zend-expressive.css" rel="stylesheet">
 </head>
 <body id="page-top">
 
@@ -601,9 +601,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.mezzio.dev/mezzio/">mezzio/mezzio.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -675,18 +675,6 @@
                     </li>
                 
                     <li class="toc__entry">
-                        <a href="#replacing-the-helperpluginmanager-factory" class="toc__link">Replacing the HelperPluginManager factory</a>
-                    </li>
-                
-                    <li class="toc__entry">
-                        <a href="#delegator-factoriesservice-extension" class="toc__link">Delegator factories/service extension</a>
-                    </li>
-                
-                    <li class="toc__entry">
-                        <a href="#pipeline-middleware" class="toc__link">Pipeline middleware</a>
-                    </li>
-                
-                    <li class="toc__entry">
                         <a href="#registering-more-helpers" class="toc__link">Registering more helpers</a>
                     </li>
                 
@@ -715,33 +703,40 @@ a Composer plugin will add entries for their <code>ConfigProvider</code> classes
 <p>If for some reason you are not prompted, or chose "no" when answering the
 prompts, you can add them manually. Add the following entries in the array used
 to create your <code>ConfigAggregator</code> instance within <code>config/config.php</code>:</p>
-<pre class=codehilite><code class=language-php>    \Zend\Form\ConfigProvider::class,
+<pre><code class="language-php">    \Zend\Form\ConfigProvider::class,
     \Zend\InputFilter\ConfigProvider::class,
     \Zend\Filter\ConfigProvider::class,
     \Zend\Validator\ConfigProvider::class,
-    \Zend\Hydrator\ConfigProvider::class,</code></pre>
-<p>If you installed Expressive via the skeleton, the service
-<code>Zend\View\HelperPluginManager</code> is registered for you, and represents the helper
-plugin manager injected into the <code>PhpRenderer</code> instance. This instance gets its
-helper configuration from the <code>view_helpers</code> top-level configuration key &mdash;
-which the zend-form <code>ConfigProvider</code> helps to populate!</p>
-<p>At this point, all view helpers provided by zend-form are registered and ready
-to use.</p>
-<p>Alternative options to configure HelperPluginManager:</p>
-<ul>
-<li>Replace the <code>HelperPluginManager</code> factory with your own; or</li>
-<li>Add a delegator factory to or extend the <code>HelperPluginManager</code> service to
-  inject the additional helper configuration; or</li>
-<li>Add pipeline middleware that composes the <code>HelperPluginManager</code> and configures
-  it.</li>
-</ul>
-<h2 id="replacing-the-helperpluginmanager-factory">Replacing the HelperPluginManager factory</h2>
-<p>The zend-view integration provides <code>Zend\Expressive\ZendView\HelperPluginManagerFactory</code>,
+    \Zend\Hydrator\ConfigProvider::class,
+```
+
+If you installed Expressive via the skeleton, the service
+`Zend\View\HelperPluginManager` is registered for you, and represents the helper
+plugin manager injected into the `PhpRenderer` instance. This instance gets its
+helper configuration from the `view_helpers` top-level configuration key &amp;mdash;
+which the zend-form `ConfigProvider` helps to populate!
+
+At this point, all view helpers provided by zend-form are registered and ready
+to use.
+
+Alternative options to configure HelperPluginManager:
+
+- Replace the `HelperPluginManager` factory with your own; or
+- Add a delegator factory to or extend the `HelperPluginManager` service to
+  inject the additional helper configuration; or
+- Add pipeline middleware that composes the `HelperPluginManager` and configures
+  it.
+
+## Replacing the HelperPluginManager factory
+
+The zend-view integration provides `Zend\Expressive\ZendView\HelperPluginManagerFactory`,
 and the Expressive skeleton registers it be default. The simplest solution for
 adding other helpers is to replace it with your own. In your own factory, you
-will <em>also</em> configure the plugin manager with the configuration from the
-zend-form component (or whichever other components you wish to use).</p>
-<pre class=codehilite><code class=language-php>namespace Your\Application;
+will *also* configure the plugin manager with the configuration from the
+zend-form component (or whichever other components you wish to use).
+
+```php
+namespace Your\Application;
 
 use Psr\Container\ContainerInterface;
 use Zend\ServiceManager\Config;
@@ -759,22 +754,38 @@ class HelperPluginManagerFactory
 
         return $manager;
     }
-}</code></pre>
-<p>In your <code>config/autoload/templates.global.php</code> file, change the line that reads:</p>
-<pre class=codehilite><code class=language-php>Zend\View\HelperPluginManager::class =&gt; Zend\Expressive\ZendView\HelperPluginManagerFactory::class,</code></pre>
-<p>to instead read as:</p>
-<pre class=codehilite><code class=language-php>Zend\View\HelperPluginManager::class =&gt; Your\Application\HelperPluginManagerFactory::class,</code></pre>
-<p>This approach will work for any of the various containers supported.</p>
-<h2 id="delegator-factoriesservice-extension">Delegator factories/service extension</h2>
-<p><a href="https://docs.zendframework.com/zend-servicemanager/delegators/">Delegator factories</a>
-and <a href="https://github.com/silexphp/Pimple/tree/1.1#modifying-services-after-creation">service extension</a>
+}
+```
+
+In your `config/autoload/templates.global.php` file, change the line that reads:
+
+```php
+Zend\View\HelperPluginManager::class =&gt; Zend\Expressive\ZendView\HelperPluginManagerFactory::class,
+```
+
+to instead read as:
+
+```php
+Zend\View\HelperPluginManager::class =&gt; Your\Application\HelperPluginManagerFactory::class,
+```
+
+This approach will work for any of the various containers supported.
+
+## Delegator factories/service extension
+
+[Delegator factories](https://docs.zendframework.com/zend-servicemanager/delegators/)
+and [service extension](https://github.com/silexphp/Pimple/tree/1.1#modifying-services-after-creation)
 operate on the same principle: they intercept after the original factory was
 called, and then operate on the generated instance, either modifying or
 replacing it. We'll demonstrate this for zend-servicemanager and Pimple; at the
-time of writing, we're unaware of a mechanism for doing so in Aura.Di.</p>
-<h3>zend-servicemanager</h3>
-<p>You'll first need to create a delegator factory:</p>
-<pre class=codehilite><code class=language-php>namespace Your\Application;
+time of writing, we're unaware of a mechanism for doing so in Aura.Di.
+
+### zend-servicemanager
+
+You'll first need to create a delegator factory:
+
+```php
+namespace Your\Application;
 
 use Psr\Container\ContainerInterface;
 use Zend\ServiceManager\Config;
@@ -811,13 +822,18 @@ class FormHelpersDelegatorFactory
     ) {
         return $this($container, $name, $callback);
     }
-}</code></pre>
-<p>The above creates an instance of <code>Zend\ServiceManager\Config</code>, uses it to
-configure the already created <code>Zend\View\HelperPluginManager</code> instance, and then
-returns the plugin manager instance.</p>
-<p>From here, you'll add a <code>delegators</code> configuration key in your
-<code>config/autoload/templates.global.php</code> file:</p>
-<pre class=codehilite><code class=language-php>return [
+}
+```
+
+The above creates an instance of `Zend\ServiceManager\Config`, uses it to
+configure the already created `Zend\View\HelperPluginManager` instance, and then
+returns the plugin manager instance.
+
+From here, you'll add a `delegators` configuration key in your
+`config/autoload/templates.global.php` file:
+
+```php
+return [
     'dependencies' =&gt; [
         'delegators' =&gt; [
             Zend\View\HelperPluginManager::class =&gt; [
@@ -832,16 +848,22 @@ returns the plugin manager instance.</p>
     'view_helpers' =&gt; [
         /* ... */
     ],
-];</code></pre>
-<p>Note: delegator factories are keyed by the service they modify, and the value is
-an <em>array</em> of delegator factories, to allow multiple such factories to be in
-use.</p>
-<h3>Pimple</h3>
-<p>For Pimple, we don't currently support configuration of service extensions, so
+];
+```
+
+Note: delegator factories are keyed by the service they modify, and the value is
+an *array* of delegator factories, to allow multiple such factories to be in
+use.
+
+### Pimple
+
+For Pimple, we don't currently support configuration of service extensions, so
 you'll need to edit the main container configuration file,
-<code>config/container.php</code>. Place the following anywhere after the factories and
-invokables are defined:</p>
-<pre class=codehilite><code class=language-php>// The following assumes you've added the following import statements to
+`config/container.php`. Place the following anywhere after the factories and
+invokables are defined:
+
+```php
+// The following assumes you've added the following import statements to
 // the start of the file:
 // use Zend\ServiceManager\Config as ServiceConfig;
 // use Zend\View\HelperPluginManager;
@@ -853,14 +875,20 @@ $container[HelperPluginManager::class] = $container-&gt;extend(
         $config-&gt;configureServiceManager($helpers);
         return $helpers;
     }
-);</code></pre>
-<h2 id="pipeline-middleware">Pipeline middleware</h2>
-<p>Another option is to use pipeline middleware. This approach will
+);
+```
+
+## Pipeline middleware
+
+Another option is to use pipeline middleware. This approach will
 require that the middleware execute on every request, which introduces (very
 slight) performance overhead. However, it's a portable method that works
-regardless of the container implementation you choose.</p>
-<p>First, define the middleware:</p>
-<pre class=codehilite><code class=language-php>namespace Your\Application
+regardless of the container implementation you choose.
+
+First, define the middleware:
+
+```php
+namespace Your\Application
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
@@ -883,10 +911,14 @@ class FormHelpersMiddleware implements MiddlewareInterface
         $config-&gt;configureServiceManager($this-&gt;helpers);
         return $delegate-&gt;process($request);
     }
-}</code></pre>
-<p>You'll also need a factory for the middleware, to ensure it receives the
-<code>HelperPluginManager</code>:</p>
-<pre class=codehilite><code class=language-php>namespace Your\Application
+}
+```
+
+You'll also need a factory for the middleware, to ensure it receives the
+`HelperPluginManager`:
+
+```php
+namespace Your\Application
 
 use Zend\View\HelperPluginManager;
 
@@ -898,11 +930,15 @@ class FormHelpersMiddlewareFactory
             $container-&gt;get(HelperPluginManager::class)
         );
     }
-}</code></pre>
-<p>Next, register the middleware with its factory in one of
-<code>config/autoload/middleware-pipeline.global.php</code> or
-<code>config/autoload/dependencies.global.php</code>:</p>
-<pre class=codehilite><code class=language-php>return [
+}
+```
+
+Next, register the middleware with its factory in one of
+`config/autoload/middleware-pipeline.global.php` or
+`config/autoload/dependencies.global.php`:
+
+```php
+return [
     'dependencies' =&gt; [
         'factories' =&gt; [
             Your\Application\FormHelpersMiddleware::class =&gt; Your\Application\FormHelpersMiddlewareFactory::class
@@ -910,23 +946,30 @@ class FormHelpersMiddlewareFactory
         ],
         /* ... */
     ],
-];</code></pre>
-<p>If using programmatic pipelines, pipe the middleware in an appropriate location
-in your pipeline:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;pipe(FormHelpersMiddleware::class);
+];
+```
+
+If using programmatic pipelines, pipe the middleware in an appropriate location
+in your pipeline:
+
+```php
+$app-&gt;pipe(FormHelpersMiddleware::class);
 
 // or, perhaps, in a route-specific middleware pipeline:
 $app-&gt;post('/register', [
     FormHelpersMiddleware::class,
     RegisterMiddleware::class,
-], 'register');</code></pre>
-<p>If using configuration-driven pipelines or routing:</p>
-<pre class=codehilite><code>// Via the middleware pipeline:
+], 'register');
+```
+
+If using configuration-driven pipelines or routing:
+</code></pre>
+
+<p>// Via the middleware pipeline:
 'middleware_pipeline' =&gt; [
     ['middleware' =&gt; Your\Application\FormHelpersMiddleware::class, 'priority' =&gt; 1000],
-],
-
-// Or via routes:
+],</p>
+<p>// Or via routes:
 'routes' =&gt; [
     [
         'name'            =&gt; 'register',
@@ -937,7 +980,8 @@ $app-&gt;post('/register', [
         ],
         'allowed_methods' =&gt; ['POST'],
     ]
-]</code></pre>
+]
+```</p>
 <p>At that point, you're all set!</p>
 <h2 id="registering-more-helpers">Registering more helpers</h2>
 <p>What if you need to register helpers from multiple components?</p>
@@ -1470,7 +1514,7 @@ $app-&gt;post('/register', [
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -1478,10 +1522,10 @@ $app-&gt;post('/register', [
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -1489,27 +1533,28 @@ $app-&gt;post('/register', [
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '../../..',
             siteName = 'Expressive';
     </script>
-    <script src="../../../js/scripts-8d7ae56abf.js"></script>
-        <script src="../../../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../../../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

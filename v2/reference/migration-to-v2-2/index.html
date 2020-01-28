@@ -7,13 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="PSR-15 Middleware in Minutes">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-expressive/v2/reference/migration-to-v2-2/">
+    <link rel="canonical" href="https://docs.zendframework.com/v2/reference/migration-to-v2-2/">
     <link rel="shortcut icon" href="../../../img/favicon.ico">
 
     <title>To version 2.2 - Expressive - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../../../css/styles-5cfabd53ee.css">
-        <link href="../../../css/zend-expressive.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="../../../css/zend-expressive.css" rel="stylesheet">
 </head>
 <body id="page-top">
 
@@ -601,9 +601,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.mezzio.dev/mezzio/">mezzio/mezzio.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -729,8 +729,10 @@ configuration, including dependency information. We suggest you add these to
 your application's configuration. Add the following two lines in your
 <code>config/config.php</code> file, inside the array passed to the <code>ConfigAggregator</code>
 constructor:</p>
-<pre class=codehilite><code class=language-php>\Zend\Expressive\ConfigProvider::class,
-\Zend\Expressive\Router\ConfigProvider::class,</code></pre>
+<pre><code class="language-php">\Zend\Expressive\ConfigProvider::class,
+\Zend\Expressive\Router\ConfigProvider::class,
+</code></pre>
+
 <blockquote>
 <p>The command <code>./vendor/bin/expressive migrate:expressive-v2.2</code> will do this for
 you.</p>
@@ -738,12 +740,16 @@ you.</p>
 <h2 id="routing-and-dispatch-middleware">Routing and dispatch middleware</h2>
 <p>In previous releases of Expressive, you would route your routing and dispatch
 middleware using the following dedicated methods:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;pipeRoutingMiddleware();
-$app-&gt;pipeDispatchMiddleware();</code></pre>
+<pre><code class="language-php">$app-&gt;pipeRoutingMiddleware();
+$app-&gt;pipeDispatchMiddleware();
+</code></pre>
+
 <p>These methods are now <em>deprecated</em>, and will be removed in version 3.0.</p>
 <p>Instead, you should use <code>pipe()</code> with the following services:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;pipe(\Zend\Expressive\Router\Middleware\RouteMiddleware::class);
-$app-&gt;pipe(\Zend\Expressive\Router\Middleware\DispatchMiddleware::class);</code></pre>
+<pre><code class="language-php">$app-&gt;pipe(\Zend\Expressive\Router\Middleware\RouteMiddleware::class);
+$app-&gt;pipe(\Zend\Expressive\Router\Middleware\DispatchMiddleware::class);
+</code></pre>
+
 <blockquote>
 <p>The command <code>./vendor/bin/expressive migrate:expressive-v2.2</code> will do this for
 you.</p>
@@ -754,34 +760,42 @@ time!</p>
 <p>If you are using configuration-driven routes, you are likely using the constants
 <code>Zend\Expressive\Application::ROUTING_MIDDLEWARE</code> and <code>DISPATCH_MIDDLEWARE</code> to
 indicate the routing and dispatch middleware, as follows:</p>
-<pre class=codehilite><code class=language-php>'middleware_pipeline' =&gt; [
+<pre><code class="language-php">'middleware_pipeline' =&gt; [
     Application::ROUTING_MIDDLEWARE,
     Application::DISPATCH_MIDDLEWARE,
-],</code></pre>
+],
+</code></pre>
+
 <p>In the above section, we detailed deprecation of the methods
 <code>pipeRoutingMiddleware()</code> and <code>pipeDispatchMiddleware()</code>; the constants above
 are the configuration equivalent of calling these methods, and are similarly
 deprecated.</p>
 <p>Change these entries to use the same syntax as other pipeline middleware, and
 have the <code>middleware</code> key indicate the appropriate middleware class as follows:</p>
-<pre class=codehilite><code class=language-php>'middleware_pipeline' =&gt; [
+<pre><code class="language-php">'middleware_pipeline' =&gt; [
     [
         'middleware' =&gt; \Zend\Expressive\Router\Middleware\RouteMiddleware::class,
     ],
     [
         'middleware' =&gt; \Zend\Expressive\Router\Middleware\DispatchMiddleware::class,
     ],
-],</code></pre>
+],
+</code></pre>
+
 <h2 id="implicit-head-and-options-middleware">Implicit HEAD and OPTIONS middleware</h2>
 <p>These middleware have moved to the zend-expressive-router package. While they
 still exist within the zend-expressive package, we have added deprecation
 notices indicating their removal in v3. As such, update either of the following
 statements, if they exist in your application:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;pipe(\Zend\Expressive\Middleware\ImplicitHeadMiddleware::class);
-$app-&gt;pipe(\Zend\Expressive\Middleware\ImplicitOptionsMiddleware::class);</code></pre>
+<pre><code class="language-php">$app-&gt;pipe(\Zend\Expressive\Middleware\ImplicitHeadMiddleware::class);
+$app-&gt;pipe(\Zend\Expressive\Middleware\ImplicitOptionsMiddleware::class);
+</code></pre>
+
 <p>to:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;pipe(\Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware::class);
-$app-&gt;pipe(\Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware::class);</code></pre>
+<pre><code class="language-php">$app-&gt;pipe(\Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware::class);
+$app-&gt;pipe(\Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware::class);
+</code></pre>
+
 <blockquote>
 <p>The command <code>./vendor/bin/expressive migrate:expressive-v2.2</code> will do this for
 you.</p>
@@ -818,11 +832,13 @@ a response, but otherwise use the return value.</p>
 mapping has precedence by placing it in a <code>config/autoload/</code> configuration file.</p>
 <h2 id="double-pass-middleware">Double-Pass middleware</h2>
 <p><em>Double-pass middleware</em> refers to middleware that has the following signature:</p>
-<pre class=codehilite><code class=language-php>function (
+<pre><code class="language-php">function (
     ServerReqeustInterface $request,
     ResponseInterface $response,
     callable $next
-) : ResponseInterface</code></pre>
+) : ResponseInterface
+</code></pre>
+
 <p>where <code>$next</code> will receive <em>both</em> a request <em>and</em> a response instance (this
 latter is the origin of the "double-pass" phrasing).</p>
 <p>Such middleware was used in v1 releases of Expressive, and we have continued to
@@ -835,14 +851,16 @@ arguments, and decorates it to be used as http-interop middleware. (In version
 3, it will decorate it as PSR-15 middleware.)</p>
 <p>The zend-stratigility package provides a convenience function,
 <code>Zend\Stratigility\doublePassMiddleware()</code>, to simplify this for you:</p>
-<pre class=codehilite><code class=language-php>use Zend\Diactoros\Response;
+<pre><code class="language-php">use Zend\Diactoros\Response;
 use function Zend\Stratigility\doublePassMiddleware;
 
 // Piping:
 $app-&gt;pipe(doublePassMiddleware($someMiddleware, new Response()));
 
 // Routing:
-$app-&gt;get('/foo', doublePassMiddleware($someMiddleware, new Response()));</code></pre>
+$app-&gt;get('/foo', doublePassMiddleware($someMiddleware, new Response()));
+</code></pre>
+
 <h2 id="other-deprecations">Other deprecations</h2>
 <p>The following classes, traits, and instance methods were deprecated, and will be
 removed in version 3:</p>
@@ -926,19 +944,23 @@ services two purposes:</p>
 </ul>
 <p>To enable the delegator as a delegator factory, add the following configuration
 to a <code>config/autoload/</code> configuration file, or a configuration provider class:</p>
-<pre class=codehilite><code class=language-php>'dependencies' =&gt; [
+<pre><code class="language-php">'dependencies' =&gt; [
     'delegators' =&gt; [
         \Zend\Expressive\Application::class =&gt; [
             \Zend\Expressive\Container\ApplicationConfigInjectionDelegator::class,
         ],
     ],
-],</code></pre>
+],
+</code></pre>
+
 <p>To manually inject an <code>Application</code> instance, you can do the following:</p>
-<pre class=codehilite><code class=language-php>use Zend\Expressive\Container\ApplicationConfigInjectionDelegator;
+<pre><code class="language-php">use Zend\Expressive\Container\ApplicationConfigInjectionDelegator;
 
 // assuming $config is the application configuration:
 ApplicationConfigInjectionDelegator::injectPipelineFromConfig($app, $config);
-ApplicationConfigInjectionDelegator::injectRoutesFromConfig($app, $config);</code></pre>
+ApplicationConfigInjectionDelegator::injectRoutesFromConfig($app, $config);
+</code></pre>
+
 <p>These changes will be forwards-compatible with version 3.</p>
 
 
@@ -1462,7 +1484,7 @@ ApplicationConfigInjectionDelegator::injectRoutesFromConfig($app, $config);</cod
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -1470,10 +1492,10 @@ ApplicationConfigInjectionDelegator::injectRoutesFromConfig($app, $config);</cod
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -1481,27 +1503,28 @@ ApplicationConfigInjectionDelegator::injectRoutesFromConfig($app, $config);</cod
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '../../..',
             siteName = 'Expressive';
     </script>
-    <script src="../../../js/scripts-8d7ae56abf.js"></script>
-        <script src="../../../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../../../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

@@ -7,13 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="PSR-15 Middleware in Minutes">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-expressive/v2/features/helpers/url-helper/">
+    <link rel="canonical" href="https://docs.zendframework.com/v2/features/helpers/url-helper/">
     <link rel="shortcut icon" href="../../../../img/favicon.ico">
 
     <title>UrlHelper - Expressive - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../../../../css/styles-5cfabd53ee.css">
-        <link href="../../../../css/zend-expressive.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="../../../../css/zend-expressive.css" rel="stylesheet">
 </head>
 <body id="page-top">
 
@@ -601,9 +601,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.mezzio.dev/mezzio/">mezzio/mezzio.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -682,10 +682,6 @@
                     </li>
                 
                     <li class="toc__entry">
-                        <a href="#creating-an-instance" class="toc__link">Creating an instance</a>
-                    </li>
-                
-                    <li class="toc__entry">
                         <a href="#using-the-helper-in-middleware" class="toc__link">Using the helper in middleware</a>
                     </li>
                 
@@ -708,81 +704,89 @@ not provided will be pulled from those matched.</p>
 <h2 id="usage">Usage</h2>
 <p>When you have an instance, use either its <code>generate()</code> method, or call the
 instance as an invokable:</p>
-<pre class=codehilite><code class=language-php>// Using the generate() method:
+<pre><code class="language-php">// Using the generate() method:
 $url = $helper-&gt;generate('resource', ['id' =&gt; 'sha1']);
 
 // is equivalent to invocation:
-$url = $helper('resource', ['id' =&gt; 'sha1']);</code></pre>
-<p>The signature for both is:</p>
-<pre class=codehilite><code class=language-php>function (
+$url = $helper('resource', ['id' =&gt; 'sha1']);
+```
+
+The signature for both is:
+
+```php
+function (
     $routeName,
     array $routeParams = [],
     $queryParams = [],
     $fragmentIdentifier = null,
     array $options = []
-) : string</code></pre>
-<p>Where:</p>
-<ul>
-<li><code>$routeName</code> is the name of a route defined in the composed router. You may
+) : string
+```
+
+Where:
+
+- `$routeName` is the name of a route defined in the composed router. You may
   omit this argument if you want to generate the path for the currently matched
-  request.</li>
-<li><code>$routeParams</code> is an array of substitutions to use for the provided route, with the
-  following behavior:<ul>
-<li>If a <code>RouteResult</code> is composed in the helper, and the <code>$routeName</code> matches
-  it, the provided <code>$params</code> will be merged with any matched parameters, with
-  those provided taking precedence.</li>
-<li>If a <code>RouteResult</code> is not composed, or if the composed result does not match
-  the provided <code>$routeName</code>, then only the <code>$params</code> provided will be used
-  for substitutions.</li>
-<li>If no <code>$params</code> are provided, and the <code>$routeName</code> matches the currently
-  matched route, then any matched parameters found will be used.
-  parameters found will be used.</li>
-<li>If no <code>$params</code> are provided, and the <code>$routeName</code> does not match the
-  currently matched route, or if no route result is present, then no
-  substitutions will be made.</li>
-</ul>
-</li>
-<li><code>$queryParams</code> is an array of query string arguments to include in the
-  generated URI.</li>
-<li><code>$fragmentIdentifier</code> is a string to use as the URI fragment.</li>
-<li><code>$options</code> is an array of options to provide to the router for purposes of
-  controlling URI generation. As an example, zend-router can consume "translator"
-  and "text_domain" options in order to provide translated URIs.</li>
-</ul>
-<p>Each method will raise an exception if:</p>
-<ul>
-<li>No <code>$routeName</code> is provided, and no <code>RouteResult</code> is composed.</li>
-<li>No <code>$routeName</code> is provided, a <code>RouteResult</code> is composed, but that result
-  represents a matching failure.</li>
-<li>The given <code>$routeName</code> is not defined in the router.</li>
-</ul>
-<blockquote>
-<h3>Signature changes</h3>
-<p>The signature listed above is current as of version 3.0.0 of
-zendframework/zend-expressive-helpers. Prior to that version, the helper only
-accepted the route name and route parameters.</p>
-</blockquote>
-<h2 id="creating-an-instance">Creating an instance</h2>
-<p>In order to use the helper, you will need to instantiate it with the current
-<code>RouterInterface</code>. The factory <code>Zend\Expressive\Helper\UrlHelperFactory</code> has
+  request.
+- `$routeParams` is an array of substitutions to use for the provided route, with the
+  following behavior:
+    - If a `RouteResult` is composed in the helper, and the `$routeName` matches
+      it, the provided `$params` will be merged with any matched parameters, with
+      those provided taking precedence.
+    - If a `RouteResult` is not composed, or if the composed result does not match
+      the provided `$routeName`, then only the `$params` provided will be used
+      for substitutions.
+    - If no `$params` are provided, and the `$routeName` matches the currently
+      matched route, then any matched parameters found will be used.
+      parameters found will be used.
+    - If no `$params` are provided, and the `$routeName` does not match the
+      currently matched route, or if no route result is present, then no
+      substitutions will be made.
+- `$queryParams` is an array of query string arguments to include in the
+  generated URI.
+- `$fragmentIdentifier` is a string to use as the URI fragment.
+- `$options` is an array of options to provide to the router for purposes of
+  controlling URI generation. As an example, zend-router can consume &quot;translator&quot;
+  and &quot;text_domain&quot; options in order to provide translated URIs.
+
+Each method will raise an exception if:
+
+- No `$routeName` is provided, and no `RouteResult` is composed.
+- No `$routeName` is provided, a `RouteResult` is composed, but that result
+  represents a matching failure.
+- The given `$routeName` is not defined in the router.
+
+&gt; ### Signature changes
+&gt;
+&gt; The signature listed above is current as of version 3.0.0 of
+&gt; zendframework/zend-expressive-helpers. Prior to that version, the helper only
+&gt; accepted the route name and route parameters.
+
+## Creating an instance
+
+In order to use the helper, you will need to instantiate it with the current
+`RouterInterface`. The factory `Zend\Expressive\Helper\UrlHelperFactory` has
 been provided for this purpose, and can be used trivially with most
 dependency injection containers implementing
-<a href="https://www.php-fig.org/psr/psr-11/">PSR-11 Container</a>. Additionally,
+[PSR-11 Container](https://www.php-fig.org/psr/psr-11/). Additionally,
 it is most useful when injected with the current results of routing, which
 requires registering middleware with the application that can inject the route
-result. The following steps should be followed to register and configure the helper:</p>
-<ul>
-<li>Register the <code>UrlHelper</code> as a service in your container, using the provided
-  factory.</li>
-<li>Register the <code>UrlHelperMiddleware</code> as a service in your container, using the
-  provided factory.</li>
-<li>Register the <code>UrlHelperMiddleware</code> as pipeline middleware, immediately
-  following the routing middleware.</li>
-</ul>
-<h3>Registering the helper service</h3>
-<p>The following examples demonstrate programmatic registration of the <code>UrlHelper</code>
-service in your selected dependency injection container.</p>
-<pre class=codehilite><code class=language-php>use Zend\Expressive\Helper\UrlHelper;
+result. The following steps should be followed to register and configure the helper:
+
+- Register the `UrlHelper` as a service in your container, using the provided
+  factory.
+- Register the `UrlHelperMiddleware` as a service in your container, using the
+  provided factory.
+- Register the `UrlHelperMiddleware` as pipeline middleware, immediately
+  following the routing middleware.
+
+### Registering the helper service
+
+The following examples demonstrate programmatic registration of the `UrlHelper`
+service in your selected dependency injection container.
+
+```php
+use Zend\Expressive\Helper\UrlHelper;
 use Zend\Expressive\Helper\UrlHelperFactory;
 
 // zend-servicemanager:
@@ -799,23 +803,32 @@ $container-&gt;set(UrlHelperFactory::class, $container-&gt;lazyNew(UrlHelperFact
 $container-&gt;set(
     UrlHelper::class,
     $container-&gt;lazyGetCall(UrlHelperFactory::class, '__invoke', $container)
-);</code></pre>
-<p>The following dependency configuration will work for all three when using the
-Expressive skeleton:</p>
-<pre class=codehilite><code class=language-php>return ['dependencies' =&gt; [
+);
+```
+
+The following dependency configuration will work for all three when using the
+Expressive skeleton:
+
+```php
+return ['dependencies' =&gt; [
     'factories' =&gt; [
         UrlHelper::class =&gt; UrlHelperFactory::class,
     ],
-]]</code></pre>
-<blockquote>
-<h4>UrlHelperFactory requires RouterInterface</h4>
-<p>The factory requires that a service named <code>Zend\Expressive\Router\RouterInterface</code> is present,
-and will raise an exception if the service is not found.</p>
-</blockquote>
-<h3>Registering the pipeline middleware</h3>
-<p>To register the <code>UrlHelperMiddleware</code> as pipeline middleware following the
-routing middleware:</p>
-<pre class=codehilite><code class=language-php>use Zend\Expressive\Helper\UrlHelperMiddleware;
+]]
+```
+
+&gt; #### UrlHelperFactory requires RouterInterface
+&gt;
+&gt; The factory requires that a service named `Zend\Expressive\Router\RouterInterface` is present,
+&gt; and will raise an exception if the service is not found.
+
+### Registering the pipeline middleware
+
+To register the `UrlHelperMiddleware` as pipeline middleware following the
+routing middleware:
+
+```php
+use Zend\Expressive\Helper\UrlHelperMiddleware;
 
 // Programmatically:
 $app-&gt;pipeRoutingMiddleware();
@@ -848,10 +861,12 @@ $app-&gt;pipeDispatchMiddleware();
 //         ],
 //         /* ... */
 //     ],
-// ]</code></pre>
+// ]
+</code></pre>
+
 <p>The following dependency configuration will work for all three when using the
 Expressive skeleton:</p>
-<pre class=codehilite><code class=language-php>return [
+<pre><code class="language-php">return [
     'dependencies' =&gt; [
         'factories' =&gt; [
             UrlHelper::class =&gt; UrlHelperFactory::class,
@@ -883,7 +898,9 @@ return [
             'priority' =&gt; 1,
         ],
     ],
-];</code></pre>
+];
+</code></pre>
+
 <blockquote>
 <h4>Skeleton configures helpers</h4>
 <p>If you started your project using the Expressive skeleton package, the
@@ -893,7 +910,7 @@ you, as is the <code>UrlHelperMiddleware</code> pipeline middleware.</p>
 <h2 id="using-the-helper-in-middleware">Using the helper in middleware</h2>
 <p>Compose the helper in your middleware (or elsewhere), and then use it to
 generate URI paths:</p>
-<pre class=codehilite><code class=language-php>use Zend\Expressive\Helper\UrlHelper;
+<pre><code class="language-php">use Zend\Expressive\Helper\UrlHelper;
 
 class FooMiddleware
 {
@@ -912,7 +929,9 @@ class FooMiddleware
         );
         return $next($request, $response);
     }
-}</code></pre>
+}
+</code></pre>
+
 <h2 id="base-path-support">Base Path support</h2>
 <p>If your application is running under a subdirectory, or if you are running
 pipeline middleware that is intercepting on a subpath, the paths generated
@@ -923,7 +942,7 @@ present, it will be prepended to the path generated by the router.</p>
 prefix in the URL; this middleware could then inject the <code>UrlHelper</code> with the
 detected language, before stripping it off the request URI instance to pass on
 to the router:</p>
-<pre class=codehilite><code class=language-php>use Interop\Http\ServerMiddleware\DelegateInterface;
+<pre><code class="language-php">use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Locale;
 use Psr\Http\Message\ServerRequestInterface;
@@ -954,7 +973,9 @@ class LocaleMiddleware implements MiddlewareInterface
             $uri-&gt;withPath(substr($path, (strlen($locale) + 1)))
         ));
     }
-}</code></pre>
+}
+</code></pre>
+
 <p>(Note: if the base path injected is not prefixed with <code>/</code>, the helper will add
 the slash.)</p>
 <p>Paths generated by the <code>UriHelper</code> from this point forward will have the
@@ -1481,7 +1502,7 @@ detected language prefix.</p>
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -1489,10 +1510,10 @@ detected language prefix.</p>
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -1500,27 +1521,28 @@ detected language prefix.</p>
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '../../../..',
             siteName = 'Expressive';
     </script>
-    <script src="../../../../js/scripts-8d7ae56abf.js"></script>
-        <script src="../../../../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../../../../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

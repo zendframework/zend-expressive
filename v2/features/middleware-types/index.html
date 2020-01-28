@@ -7,13 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="PSR-15 Middleware in Minutes">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-expressive/v2/features/middleware-types/">
+    <link rel="canonical" href="https://docs.zendframework.com/v2/features/middleware-types/">
     <link rel="shortcut icon" href="../../../img/favicon.ico">
 
     <title>Middleware Types - Expressive - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../../../css/styles-5cfabd53ee.css">
-        <link href="../../../css/zend-expressive.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="../../../css/zend-expressive.css" rel="stylesheet">
 </head>
 <body id="page-top">
 
@@ -601,9 +601,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.mezzio.dev/mezzio/">mezzio/mezzio.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -728,7 +728,7 @@ Server Middleware that consumes <a href="http://www.php-fig.org/psr/psr-7/">PSR-
 messages. The project defines two interfaces, <code>Interop\Http\ServerMiddleware\MiddlewareInterface</code>
 and <code>Interop\Http\ServerMiddleware\DelegateInterface</code>. Expressive accepts
 middleware that implements the <code>MiddlewareInterface</code>. As an example:</p>
-<pre class=codehilite><code class=language-php>use Interop\Http\ServerMiddleware\DelegateInterface;
+<pre><code class="language-php">use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -742,14 +742,16 @@ class SomeMiddleware implements MiddlewareInterface
         //
         // return $delegate-&gt;process($request);
     }
-}</code></pre>
+}
+</code></pre>
+
 <p>If you are using PHP 7 or above, you could also implement such middleware via an
 anonymous class.</p>
 <h2 id="callable-http-middleware">Callable http-middleware</h2>
 <p>Sometimes you may not want to create a class for one-off middleware. As such,
 Expressive allows you to provide a PHP callable that uses the same signature as
 <code>Interop\Http\ServerMiddleware\MiddlewareInterface</code>:</p>
-<pre class=codehilite><code class=language-php>use Interop\Http\ServerMiddleware\DelegateInterface;
+<pre><code class="language-php">use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -760,14 +762,16 @@ function (ServerRequestInterface $request, DelegateInterface $delegate)
     // returning a response via:
     //
     // return $delegate-&gt;process($request);
-}</code></pre>
+}
+</code></pre>
+
 <p>One note: the <code>$request</code> argument does not require a typehint, and examples
 throughout the manual will omit the typehint when demonstrating callable
 middleware.</p>
 <h2 id="double-pass-middleware">Double-pass middleware</h2>
 <p>Expressive 1.X was based on Stratigility 1.X, which allowed middleware with the
 following signature:</p>
-<pre class=codehilite><code class=language-php>&lt;?php
+<pre><code class="language-php">&lt;?php
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -781,7 +785,9 @@ function(
     // the request via:
     //
     // return $next($request, $response);
-}</code></pre>
+}
+</code></pre>
+
 <p>This middleware is called "double-pass" due to the fact that it requires both
 the request and response arguments.</p>
 <p>In such middleware, no typehints are <em>required</em>, but they are <em>encouraged</em>.
@@ -806,7 +812,7 @@ instance, allowing it to be loaded only when dispatched.</p>
 To prevent the need for instantiating a <code>Zend\Stratigility\MiddlewarePipe</code> or
 <code>Zend\Expressive\Application</code> instance when defining the pipeline, Expressive
 allows you to provide an array of middleware:</p>
-<pre class=codehilite><code class=language-php>// Pipeline middleware:
+<pre><code class="language-php">// Pipeline middleware:
 $app-&gt;pipe([
     FirstMiddleware::class,
     SecondMiddleware::class,
@@ -816,7 +822,9 @@ $app-&gt;pipe([
 $app-&gt;get([
     FirstMiddleware::class,
     SecondMiddleware::class,
-]);</code></pre>
+]);
+</code></pre>
+
 <p>The values in these arrays may be any valid middleware type as defined in this
 chapter.</p>
 
@@ -1341,7 +1349,7 @@ chapter.</p>
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -1349,10 +1357,10 @@ chapter.</p>
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -1360,27 +1368,28 @@ chapter.</p>
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '../../..',
             siteName = 'Expressive';
     </script>
-    <script src="../../../js/scripts-8d7ae56abf.js"></script>
-        <script src="../../../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../../../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

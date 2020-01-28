@@ -7,13 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="PSR-15 Middleware in Minutes">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-expressive/v1/getting-started/skeleton/">
+    <link rel="canonical" href="https://docs.zendframework.com/v1/getting-started/skeleton/">
     <link rel="shortcut icon" href="../../../img/favicon.ico">
 
     <title>Quick Start: Skeleton Installer - Expressive - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../../../css/styles-5cfabd53ee.css">
-        <link href="../../../css/zend-expressive.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="../../../css/zend-expressive.css" rel="stylesheet">
 </head>
 <body id="page-top">
 
@@ -556,9 +556,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.mezzio.dev/mezzio/">mezzio/mezzio.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -655,7 +655,9 @@ prompts you to choose a router, dependency injection container, template
 renderer, and error handler from the outset.</p>
 <h2 id="1-create-a-new-project">1. Create a new project</h2>
 <p>First, we'll create a new project, using Composer's <code>create-project</code> command:</p>
-<pre class=codehilite><code class=language-bash>$ composer create-project zendframework/zend-expressive-skeleton expressive</code></pre>
+<pre><code class="language-bash">$ composer create-project zendframework/zend-expressive-skeleton expressive
+</code></pre>
+
 <p>This will prompt you to choose:</p>
 <ul>
 <li>A router. We recommend using the default, FastRoute.</li>
@@ -672,7 +674,9 @@ renderer, and error handler from the outset.</p>
 when complete. You can test it out using <a href="http://php.net/manual/en/features.commandline.webserver.php">built-in web
 server</a>.</p>
 <p>From the project root directory, execute the following:</p>
-<pre class=codehilite><code class=language-bash>$ composer serve</code></pre>
+<pre><code class="language-bash">$ composer serve
+</code></pre>
+
 <p>This starts up a web server on localhost port 8080; browse to
 http://localhost:8080/ to see if your application responds correctly!</p>
 <h2 id="next-steps">Next Steps</h2>
@@ -688,7 +692,7 @@ namespace for you, and suggests placing middleware under the namespace
 <code>App\Action</code>.</p>
 <p>Let's create a "Hello" action. Place the following in
 <code>src/App/Action/HelloAction.php</code>:</p>
-<pre class=codehilite><code class=language-php>&lt;?php
+<pre><code class="language-php">&lt;?php
 namespace App\Action;
 
 use Psr\Http\Message\ResponseInterface;
@@ -708,22 +712,26 @@ class HelloAction
         ));
         return $response-&gt;withHeader('Content-Type', 'text/html');
     }
-}</code></pre>
+}
+</code></pre>
+
 <p>The above looks for a query string parameter "target", and uses its value to
 provide a message, which is then returned in an HTML response.</p>
 <p>Now we need to inform the application of this middleware, and indicate what
 path will invoke it. Open the file <code>config/autoload/routes.global.php</code>. Inside
 that file, you should have a structure similar to the following:</p>
-<pre class=codehilite><code class=language-php>return [
+<pre><code class="language-php">return [
     'dependencies' =&gt; [
         /* ... */
     ],
     'routes' =&gt; [
         /* ... */
     ],
-];</code></pre>
+];
+</code></pre>
+
 <p>We're going to add an entry under <code>routes</code>:</p>
-<pre class=codehilite><code class=language-php>return [
+<pre><code class="language-php">return [
     /* ... */
     'routes' =&gt; [
         /* ... */
@@ -734,7 +742,9 @@ that file, you should have a structure similar to the following:</p>
             'allowed_methods' =&gt; ['GET'],
         ],
     ],
-];</code></pre>
+];
+</code></pre>
+
 <p>Once you've added the above entry, give it a try by going to each of the
 following URIs:</p>
 <ul>
@@ -750,16 +760,18 @@ templates. This particular exercise assumes you chose to use the
 register the template namespace <code>app</code> to correspond with the <code>templates/app</code>
 subdirectory. Create the file <code>templates/app/hello-world.phtml</code> with the
 following contents:</p>
-<pre class=codehilite><code class=language-php>&lt;?php $this-&gt;layout('layout::default', ['title' =&gt; 'Greetings']) ?&gt;
+<pre><code class="language-php">&lt;?php $this-&gt;layout('layout::default', ['title' =&gt; 'Greetings']) ?&gt;
 
-&lt;h2&gt;Hello, &lt;?= $this-&gt;e($target) ?&gt;&lt;/h2&gt;</code></pre>
+&lt;h2&gt;Hello, &lt;?= $this-&gt;e($target) ?&gt;&lt;/h2&gt;
+</code></pre>
+
 <p>Now that we have a template, we need to:</p>
 <ul>
 <li>Inject a renderer into our action class.</li>
 <li>Use the renderer to render the contents.</li>
 </ul>
 <p>Replace your <code>src/App/Action/HelloAction.php</code> file with the following contents:</p>
-<pre class=codehilite><code class=language-php>&lt;?php
+<pre><code class="language-php">&lt;?php
 namespace App\Action;
 
 use Psr\Http\Message\ResponseInterface;
@@ -785,7 +797,9 @@ class HelloAction
             $this-&gt;renderer-&gt;render('app::hello-world', ['target' =&gt; $target])
         );
     }
-}</code></pre>
+}
+</code></pre>
+
 <p>The above modifies the class to accept a renderer to the constructor, and then
 calls on it to render a template. A few things to note:</p>
 <ul>
@@ -802,7 +816,7 @@ creating the <code>HelloAction</code> instance; the example assumes you used the
 selection for a dependency injection container, Zend ServiceManager.</p>
 <p>Let's create a factory. Create the file <code>src/App/Action/HelloActionFactory.php</code> with
 the following contents:</p>
-<pre class=codehilite><code class=language-php>&lt;?php
+<pre><code class="language-php">&lt;?php
 namespace App\Action;
 
 use Interop\Container\ContainerInterface;
@@ -816,11 +830,13 @@ class HelloActionFactory
             $container-&gt;get(TemplateRendererInterface::class)
         );
     }
-}</code></pre>
+}
+</code></pre>
+
 <p>With that in place, we'll now update our configuration. Open the file
 <code>config/autoload/routes.global.php</code>; it should have a structure similar to
 the following:</p>
-<pre class=codehilite><code class=language-php>return [
+<pre><code class="language-php">return [
     'dependencies' =&gt; [
         'invokables' =&gt; [
             /* ... */
@@ -829,10 +845,12 @@ the following:</p>
     'routes' =&gt; [
         /* ... */
     ],
-];</code></pre>
+];
+</code></pre>
+
 <p>We're going to tell our application that we have a <em>factory</em> for our
 <code>HelloAction</code> class:</p>
-<pre class=codehilite><code class=language-php>return [
+<pre><code class="language-php">return [
     'dependencies' =&gt; [
         /* ... */
         'factories' =&gt; [
@@ -843,7 +861,9 @@ the following:</p>
     'routes' =&gt; [
         /* ... */
     ],
-];</code></pre>
+];
+</code></pre>
+
 <p>Save that file, and now re-visit the URIs:</p>
 <ul>
 <li>http://localhost:8080/hello</li>
@@ -1338,7 +1358,7 @@ Expressive:</p>
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -1346,10 +1366,10 @@ Expressive:</p>
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -1357,27 +1377,28 @@ Expressive:</p>
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '../../..',
             siteName = 'Expressive';
     </script>
-    <script src="../../../js/scripts-8d7ae56abf.js"></script>
-        <script src="../../../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../../../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

@@ -7,13 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="PSR-15 Middleware in Minutes">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-expressive/v3/features/helpers/body-parse/">
+    <link rel="canonical" href="https://docs.zendframework.com/v3/features/helpers/body-parse/">
     <link rel="shortcut icon" href="../../../../img/favicon.ico">
 
     <title>Body Parsing Middleware - Expressive - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../../../../css/styles-5cfabd53ee.css">
-        <link href="../../../../css/zend-expressive.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="../../../../css/zend-expressive.css" rel="stylesheet">
 </head>
 <body id="page-top">
 
@@ -628,9 +628,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.mezzio.dev/mezzio/">mezzio/mezzio.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -729,13 +729,17 @@ grow with your accepted content types.</p>
 </ul>
 <h2 id="registering-the-middleware">Registering the middleware</h2>
 <p>You can register it programmatically:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;pipe(BodyParamsMiddleware::class);</code></pre>
+<pre><code class="language-php">$app-&gt;pipe(BodyParamsMiddleware::class);
+</code></pre>
+
 <p>Since body parsing does not necessarily need to happen for every request, you
 can also choose to incorporate it in route-specific middleware pipelines:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;post('/login', [
+<pre><code class="language-php">$app-&gt;post('/login', [
     BodyParamsMiddleware::class,
     LoginMiddleware::class,
-]);</code></pre>
+]);
+</code></pre>
+
 <p>Using route-based middleware pipelines has the advantage of ensuring that the
 body parsing middleware only executes for routes that require the processing.
 While the middleware has some checks to ensure it only triggers for HTTP
@@ -745,7 +749,7 @@ can accomplish that.</p>
 <h2 id="strategies">Strategies</h2>
 <p>If you want to intercept and parse other payload types, you can add <em>strategies</em>
 to the middleware. Strategies implement <code>Zend\Expressive\Helper\BodyParams\StrategyInterface</code>:</p>
-<pre class=codehilite><code class=language-php>namespace Zend\Expressive\Helper\BodyParams;
+<pre><code class="language-php">namespace Zend\Expressive\Helper\BodyParams;
 
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -760,14 +764,18 @@ interface StrategyInterface
      * Parse the body content and return a new request.
      */
     public function parse(ServerRequestInterface $request) : ServerRequestInterface;
-}</code></pre>
+}
+</code></pre>
+
 <p>You then register them with the middleware using the <code>addStrategy()</code> method:</p>
-<pre class=codehilite><code class=language-php>$bodyParams-&gt;addStrategy(new MyCustomBodyParamsStrategy());</code></pre>
+<pre><code class="language-php">$bodyParams-&gt;addStrategy(new MyCustomBodyParamsStrategy());
+</code></pre>
+
 <p>To automate the registration, we recommend writing a factory for the
 <code>BodyParamsMiddleware</code>, and replacing the <code>invokables</code> registration with a
 registration in the <code>factories</code> section of the <code>middleware-pipeline.config.php</code>
 file:</p>
-<pre class=codehilite><code class=language-php>use Zend\Expressive\Helper\BodyParams\BodyParamsMiddleware;
+<pre><code class="language-php">use Zend\Expressive\Helper\BodyParams\BodyParamsMiddleware;
 
 class MyCustomBodyParamsStrategyFactory
 {
@@ -795,7 +803,9 @@ return [
             /* ... */
         ],
     ],
-];</code></pre>
+];
+</code></pre>
+
 <p>Alternately, use a <a href="../../container/factories/">delegator factory</a>.</p>
 <h2 id="removing-the-default-strategies">Removing the default strategies</h2>
 <p>By default, <code>BodyParamsMiddleware</code> composes the following strategies:</p>
@@ -809,7 +819,9 @@ operate in the order they do to ensure the most common content type &mdash;
 delegates parsing to the first match.</p>
 <p>If you do not want to use these default strategies, you can clear them from the
 middleware using <code>clearStrategies()</code>:</p>
-<pre class=codehilite><code class=language-php>$bodyParamsMiddleware-&gt;clearStrategies();</code></pre>
+<pre><code class="language-php">$bodyParamsMiddleware-&gt;clearStrategies();
+</code></pre>
+
 <p>Note: if you do this, <strong>all</strong> strategies will be removed! As such, we recommend
 doing this only immediately before registering any custom strategies you might
 be using.</p>
@@ -1362,7 +1374,7 @@ be using.</p>
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -1370,10 +1382,10 @@ be using.</p>
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -1381,27 +1393,28 @@ be using.</p>
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '../../../..',
             siteName = 'Expressive';
     </script>
-    <script src="../../../../js/scripts-8d7ae56abf.js"></script>
-        <script src="../../../../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../../../../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

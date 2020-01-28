@@ -7,13 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="PSR-15 Middleware in Minutes">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-expressive/v1/cookbook/modular-layout/">
+    <link rel="canonical" href="https://docs.zendframework.com/v1/cookbook/modular-layout/">
     <link rel="shortcut icon" href="../../../img/favicon.ico">
 
     <title>Building modular applications - Expressive - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../../../css/styles-5cfabd53ee.css">
-        <link href="../../../css/zend-expressive.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="../../../css/zend-expressive.css" rel="stylesheet">
 </head>
 <body id="page-top">
 
@@ -556,9 +556,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.mezzio.dev/mezzio/">mezzio/mezzio.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -668,12 +668,14 @@ provide its own services (with factories), default configuration, and routes.</p
 a lightweight library that aggregates and merges configuration, optionally caching it.</p>
 <h2 id="install-the-configuration-manager">Install the configuration manager</h2>
 <p>The configuration manager is available in Packagist:</p>
-<pre class=codehilite><code class=language-bash>$ composer require mtymek/expressive-config-manager</code></pre>
+<pre><code class="language-bash">$ composer require mtymek/expressive-config-manager
+</code></pre>
+
 <h2 id="generate-your-config">Generate your config</h2>
 <p>The default Expressive skeleton installs a <code>config/config.php</code> file, which
 aggregates all configuration. When using the configuration manager, you will
 need to replace the contents of that file with the following code:</p>
-<pre class=codehilite><code class=language-php>&lt;?php
+<pre><code class="language-php">&lt;?php
 
 use Zend\Expressive\ConfigManager\ConfigManager;
 use Zend\Expressive\ConfigManager\PhpFileProvider;
@@ -682,7 +684,9 @@ $configManager = new ConfigManager([
     new PhpFileProvider('config/autoload/{{,*.}global,{,*.}local}.php'),
 ]);
 
-return new ArrayObject($configManager-&gt;getMergedConfig());</code></pre>
+return new ArrayObject($configManager-&gt;getMergedConfig());
+</code></pre>
+
 <p>If you open your application in a browser, it should still work in exactly the
 same way as it was before. Now you can start adding your modules.</p>
 <h2 id="first-module">First module</h2>
@@ -691,7 +695,7 @@ module; its only requirement is to expose default configuration using a "config
 provider", which is simply an invokable class that returns a configuration
 array.</p>
 <p>For instance, this is how your module could provide its own routes:</p>
-<pre class=codehilite><code class=language-php>namespace MyModule;
+<pre><code class="language-php">namespace MyModule;
 
 class ModuleConfig
 {
@@ -714,15 +718,19 @@ class ModuleConfig
             ],
         ];
     }
-}</code></pre>
+}
+</code></pre>
+
 <h2 id="enabling-the-module">Enabling the module</h2>
 <p>Finally, you can enable your module by adding a reference to your config class
 within the arguments of the <code>ConfigManager</code> constructor in the <code>config/config.php</code>
 file:</p>
-<pre class=codehilite><code class=language-php>$configManager = new ConfigManager([
+<pre><code class="language-php">$configManager = new ConfigManager([
     MyModule\ModuleConfig::class,
     new PhpFileProvider('config/autoload/{{,*.}global,{,*.}local}.php'),
-]);</code></pre>
+]);
+</code></pre>
+
 <h2 id="caching-configuration">Caching configuration</h2>
 <p>In order to provide configuration caching, two things must occur:</p>
 <ul>
@@ -741,7 +749,7 @@ them in two locations:</p>
   appropriate to the current environment. In development, for instance, this
   would be <code>false</code>.</li>
 </ul>
-<pre class=codehilite><code class=language-php>// config/autoload/global.php
+<pre><code class="language-php">// config/autoload/global.php
 
 return [
     'config_cache_enabled' =&gt; true,
@@ -753,15 +761,19 @@ return [
 return [
     'config_cache_enabled' =&gt; false, // &lt;- development!
     /* ... */
-];</code></pre>
+];
+</code></pre>
+
 <p>You would then alter your <code>config/config.php</code> file to add the second argument.
 The following example builds on the previous, and demonstrates having the
 <code>AppConfig</code> entry enabled. The configuration will be cached to
 <code>data/config-cache.php</code> in the application root:</p>
-<pre class=codehilite><code class=language-php>$configManager = new ConfigManager([
+<pre><code class="language-php">$configManager = new ConfigManager([
     App\AppConfig::class,
     new PhpFileProvider('config/autoload/{{,*.}global,{,*.}local}.php'),
-], 'data/config-cache.php');</code></pre>
+], 'data/config-cache.php');
+</code></pre>
+
 <p>When the configuration cache path is present, if the <code>config_cache_enabled</code> flag
 is enabled, then configuration will be read from the cached configuration,
 instead of parsing and merging the various configuration sources.</p>
@@ -1253,7 +1265,7 @@ instead of parsing and merging the various configuration sources.</p>
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -1261,10 +1273,10 @@ instead of parsing and merging the various configuration sources.</p>
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -1272,27 +1284,28 @@ instead of parsing and merging the various configuration sources.</p>
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '../../..',
             siteName = 'Expressive';
     </script>
-    <script src="../../../js/scripts-8d7ae56abf.js"></script>
-        <script src="../../../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../../../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

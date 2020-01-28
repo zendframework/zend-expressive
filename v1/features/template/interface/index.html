@@ -7,13 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="PSR-15 Middleware in Minutes">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-expressive/v1/features/template/interface/">
+    <link rel="canonical" href="https://docs.zendframework.com/v1/features/template/interface/">
     <link rel="shortcut icon" href="../../../../img/favicon.ico">
 
     <title>Template Renderer Interface - Expressive - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../../../../css/styles-5cfabd53ee.css">
-        <link href="../../../../css/zend-expressive.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="../../../../css/zend-expressive.css" rel="stylesheet">
 </head>
 <body id="page-top">
 
@@ -556,9 +556,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.mezzio.dev/mezzio/">mezzio/mezzio.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -650,7 +650,7 @@
 <p>Expressive defines <code>Zend\Expressive\Template\TemplateRendererInterface</code>, which can be
 injected into middleware in order to create templated response bodies. The
 interface is defined as follows:</p>
-<pre class=codehilite><code class=language-php>namespace Zend\Expressive\Template;
+<pre><code class="language-php">namespace Zend\Expressive\Template;
 
 interface TemplateRendererInterface
 {
@@ -704,7 +704,9 @@ interface TemplateRendererInterface
      * @param mixed $value
      */
     public function addDefaultParam($templateName, $param, $value);
-}</code></pre>
+}
+</code></pre>
+
 <blockquote>
 <h3>Namespaces</h3>
 <p>Unfortunately, namespace syntax varies between different template engine
@@ -727,39 +729,51 @@ and allow it to use alternate template engines.</p>
 <p>Most template engines and implementations will require that you specify one or
 more paths to templates; these are then used when resolving a template name to
 the actual template. You may use the <code>addPath()</code> method to do so:</p>
-<pre class=codehilite><code class=language-php>$renderer-&gt;addPath('templates');</code></pre>
+<pre><code class="language-php">$renderer-&gt;addPath('templates');
+</code></pre>
+
 <p>Template engines adapted for zend-expressive are also required to allow
 <em>namespacing</em> templates; when adding a path, you specify the template
 <em>namespace</em> that it fulfills, and the engine will only return a template from
 that path if the namespace provided matches the namespace for the path.</p>
-<pre class=codehilite><code class=language-php>// Resolves to a path registered with the namespace &quot;error&quot;;
+<pre><code class="language-php">// Resolves to a path registered with the namespace &quot;error&quot;;
 // this example is specific to the Plates engine.
-$content = $renderer-&gt;render('error::404');</code></pre>
+$content = $renderer-&gt;render('error::404');
+</code></pre>
+
 <p>You can provide a namespace when registering a path via an optional second
 argument:</p>
-<pre class=codehilite><code class=language-php>// Registers the &quot;error&quot; namespace to the path &quot;templates/error/&quot;
-$renderer-&gt;addPath('templates/error/', 'error');</code></pre>
+<pre><code class="language-php">// Registers the &quot;error&quot; namespace to the path &quot;templates/error/&quot;
+$renderer-&gt;addPath('templates/error/', 'error');
+</code></pre>
+
 <h2 id="rendering">Rendering</h2>
 <p>To render a template, call the <code>render()</code> method. This method requires the name
 of a template as the first argument:</p>
-<pre class=codehilite><code class=language-php>$content = $renderer-&gt;render('foo');</code></pre>
+<pre><code class="language-php">$content = $renderer-&gt;render('foo');
+</code></pre>
+
 <p>You can specify a namespaced template using the syntax <code>namespace::template</code>;
 the <code>template</code> segment of the template name may use additional directory
 separators when necessary.</p>
 <p>One key reason to use templates is to dynamically provide data to inject in the
 template. You may do so by passing either an associative array or an object as
 the second argument to <code>render()</code>:</p>
-<pre class=codehilite><code class=language-php>$content = $renderer-&gt;render('message', [
+<pre><code class="language-php">$content = $renderer-&gt;render('message', [
     'greeting'  =&gt; 'Hello',
     'recipient' =&gt; 'World',
-]);</code></pre>
+]);
+</code></pre>
+
 <p>It is up to the underlying template engine to determine how to perform the
 injections.</p>
 <h3>Default params</h3>
 <p>The <code>TemplateRendererInterface</code> defines the method <code>addDefaultParam()</code>. This
 method can be used to specify default parameters to use when rendering a
 template. The signature is:</p>
-<pre class=codehilite><code class=language-php>public function addDefaultParam($templateName, $param, $value)</code></pre>
+<pre><code class="language-php">public function addDefaultParam($templateName, $param, $value)
+</code></pre>
+
 <p>If you want a parameter to be used for <em>every</em> template, you can specify the
 constant <code>TemplateRendererInterface::TEMPLATE_ALL</code> for the <code>$templateName</code>
 parameter.</p>
@@ -771,7 +785,7 @@ items having precedence over earlier ones:</p>
 <li>Parameters specified when rendering.</li>
 </ul>
 <p>As an example, if we did the following:</p>
-<pre class=codehilite><code class=language-php>$renderer-&gt;addDefaultParam($renderer::TEMPLATE_ALL, 'foo', 'bar');
+<pre><code class="language-php">$renderer-&gt;addDefaultParam($renderer::TEMPLATE_ALL, 'foo', 'bar');
 $renderer-&gt;addDefaultParam($renderer::TEMPLATE_ALL, 'bar', 'baz');
 $renderer-&gt;addDefaultParam($renderer::TEMPLATE_ALL, 'baz', 'bat');
 
@@ -780,7 +794,9 @@ $renderer-&gt;addDefaultParam('example', 'bar', 'template default bar');
 
 $content = $renderer-&gt;render('example', [
     'foo' =&gt; 'override',
-]);</code></pre>
+]);
+</code></pre>
+
 <p>Then we can expect the following substitutions will occur when rendering:</p>
 <ul>
 <li>References to the "foo" variable will contain "override".</li>
@@ -1274,7 +1290,7 @@ implementations support the feature.</p>
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -1282,10 +1298,10 @@ implementations support the feature.</p>
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -1293,27 +1309,28 @@ implementations support the feature.</p>
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '../../../..',
             siteName = 'Expressive';
     </script>
-    <script src="../../../../js/scripts-8d7ae56abf.js"></script>
-        <script src="../../../../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../../../../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

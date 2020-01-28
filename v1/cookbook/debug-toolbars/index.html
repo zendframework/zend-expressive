@@ -7,13 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="PSR-15 Middleware in Minutes">  
-    <link rel="canonical" href="https://docs.zendframework.com/zend-expressive/v1/cookbook/debug-toolbars/">
+    <link rel="canonical" href="https://docs.zendframework.com/v1/cookbook/debug-toolbars/">
     <link rel="shortcut icon" href="../../../img/favicon.ico">
 
     <title>Enabling debug toolbars - Expressive - Zend Framework Docs</title>
 
-    <link rel="stylesheet" href="../../../css/styles-5cfabd53ee.css">
-        <link href="../../../css/zend-expressive.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="../../../css/zend-expressive.css" rel="stylesheet">
 </head>
 <body id="page-top">
 
@@ -556,9 +556,9 @@
     <div class="laminas-announcement">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                Zend Framework transitions to the Linux Foundation. <a href="https://getlaminas.org">Learn More.</a>
-            </div>
+            <div class="col-xs-12"><strong>
+                This package has moved. Visit its replacement, <a href="https://docs.mezzio.dev/mezzio/">mezzio/mezzio.</a>
+            </strong></div>
         </div>
     </div>
 </div>
@@ -667,7 +667,9 @@ This package wraps <a href="https://github.com/fabfuel/prophiler">fabfuel/prophi
 which provides a PHP-based profiling tool and toolbar; the bitExpert package
 wraps this in PSR-7 middleware to make consumption in those paradigms trivial.</p>
 <p>To add the toolbar middleware to your application, use composer:</p>
-<pre class=codehilite><code class=language-bash>$ composer require bitExpert/prophiler-psr7-middleware</code></pre>
+<pre><code class="language-bash">$ composer require bitExpert/prophiler-psr7-middleware
+</code></pre>
+
 <p>From there, you will need to create a factory for the middleware, and add it to
 your middleware pipeline. Stephan Hochdörfer, author of the package, has written
 a <a href="https://blog.bitexpert.de/blog/using-prophiler-with-zend-expressive/">post detailing these steps</a>.</p>
@@ -685,27 +687,31 @@ information!</p>
 provides a PSR-7 middleware wrapper around <a href="https://github.com/maximebf/php-debugbar">maximebf/php-debugbar</a>,
 a popular framework-agnostic debug bar for PHP projects.</p>
 <p>First, install the middleware in your application:</p>
-<pre class=codehilite><code class=language-bash>$ composer require php-middleware/php-debug-bar</code></pre>
+<pre><code class="language-bash">$ composer require php-middleware/php-debug-bar
+</code></pre>
+
 <p>This package provides a config provider. You can add it to your application in
 one of two ways:</p>
 <ul>
 <li>If you are using the <a href="../modular-layout/">ConfigManager</a>, add an entry for it:</li>
 </ul>
-<p><code>php
-  $configManager = new Zend\Expressive\ConfigManager\ConfigManager([
+<pre><code class="language-php">  $configManager = new Zend\Expressive\ConfigManager\ConfigManager([
       PhpMiddleware\PhpDebugBar\ConfigProvider::class,
       new Zend\Expressive\ConfigManager\PhpFileProvider('config/autoload/{{,*.}global,{,*.}local}.php'),
-  ]);</code></p>
+  ]);
+</code></pre>
+
 <ul>
 <li>If you are not using the ConfigManager, create a new configuration file,
   <code>config/autoload/php-debugbar.global.php</code>, with the following contents:</li>
 </ul>
-<p>```php
-  &lt;?php
-  use PhpMiddleware\PhpDebugBar\ConfigProvider;</p>
-<p>$provider = new ConfigProvider();
+<pre><code class="language-php">  &lt;?php
+  use PhpMiddleware\PhpDebugBar\ConfigProvider;
+
+  $provider = new ConfigProvider();
   return $provider();
-  ```</p>
+</code></pre>
+
 <blockquote>
 <h3>Use locally!</h3>
 <p>Remember to enable <code>PhpMiddleware\PhpDebugBar\ConfigProvider</code> only in your
@@ -1188,7 +1194,7 @@ development enviroments!</p>
             
             <div class="col-md-9">
                 <h4 class="footer__headline">Copyright</h4>
-                <p>&copy; 2006-2019 by <a href="https://www.zend.com/">Zend</a>, a <a href="https://www.roguewave.com/">Rogue Wave Company</a>.</p>
+                <p>&copy; 2006-2020 by <a href="https://www.zend.com/">Zend</a> by <a href="https://www.perforce.com/">Perforce</a>.</p>
             </div>
 
             
@@ -1196,10 +1202,10 @@ development enviroments!</p>
                 <h4 class="footer__headline">Support</h4>
                 <ul class="support__list">
                     <li class="support__list-item">
-                        <a href="https://discourse.zendframework.com" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
                     </li>
                     <li class="support__list-item">
-                        <a href="https://zendframework-slack.herokuapp.com" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                        <a href="https://laminas.dev/chat/" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
                     </li>
                     <li class="support__list-item">
                         <a href="https://github.com/zendframework" class="support__link" title="Github"><i class="fa fa-github"></i></a>
@@ -1207,27 +1213,28 @@ development enviroments!</p>
                     <li class="support__list-item">
                         <a href="https://twitter.com/zfdevteam" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li class="support__list-item">
-                        <a href="https://tinyletter.com/mwopzend" class="support__link" title="Newsletter"><i class="fa fa-envelope"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
-                    </li>
-                    <li class="support__list-item">
-                        <a href="https://framework.zend.com/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
-                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </footer>
 
+<nav class="cookie-bar navbar navbar-fixed-bottom navbar-default hidden">
+    <div class="container">
+        <p class="navbar-text">
+            We use cookies to allow you to dismiss dialogs such as the Laminas
+            Project notification.
+        </p>
+        <button type="button" class="cookie-button btn btn-default navbar-btn">Allow Cookies</button>
+    </div>
+</nav>
+
     <script>
         var base_url = '../../..',
             siteName = 'Expressive';
     </script>
-    <script src="../../../js/scripts-8d7ae56abf.js"></script>
-        <script src="../../../search/main.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="../../../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
